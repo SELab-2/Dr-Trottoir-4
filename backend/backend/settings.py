@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-6jh@t2qxm!3dt5+fgwv%!f6h5))kh3e&m$ec$1d=(*x(rx@)%o
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'localhost', '127.0.0.1', '172.17.0.0']
 
 # Application definition
 
@@ -79,10 +79,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db',
+        'NAME': 'drtrottoir',
+        'USER': 'django',
+        'PASSWORD': 'password',
+        # 'HOST': 'localhost' # If you want to run using python manage.py runserver
+        'HOST': 'web',  # If you want to use `docker-compose up`
         'PORT': '5432',
     }
 }
