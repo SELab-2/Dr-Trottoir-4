@@ -1,4 +1,4 @@
-name: Code Formatting and Linting
+name: Code Formatting and Linting Python
 
 on:
   # all branches when pushing, only pull request for the main branch
