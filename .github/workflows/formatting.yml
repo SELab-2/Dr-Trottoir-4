@@ -28,16 +28,14 @@ jobs:
         uses: docker://python:3.8
         with:
           args: |
-            pip install flake8
-            flake8 .
+            sh -c "pip install flake8 && flake8 ."
 
       # using `prettier`
       - name: Format JavaScript code
         uses: docker://node:16
         with:
           args: |
-            npm install --global prettier
-            prettier --write "**/*.js"
+            sh -c "npm install --global prettier && prettier --write '**/*.js'"
 
       # using `eslint`
       - name: Lint JavaScript code
@@ -45,16 +43,14 @@ jobs:
         uses: docker://node:16
         with:
           args: |
-            npm install --global eslint
-            eslint "**/*.js"
+            sh -c "npm install --global eslint && eslint '**/*.js'"
 
       # using `sqlparse`
       - name: Format SQL code
         uses: docker://python:3.8
         with:
           args: |
-            pip install sqlparse
-            find . -name "*.sql" -type f -exec sh -c 'sql-formatter -f {} > {}.new && mv {}.new {}' \;
+            sh -c "pip install sqlparse && find . -name '*.sql' -type f -exec sh -c 'sql-formatter -f {} > {}.new && mv {}.new {}' \;"
 
       # using `sqlfluff`
       - name: Lint SQL code
@@ -62,8 +58,7 @@ jobs:
         uses: docker://python:3.8
         with:
           args: |
-            pip install sqlfluff
-            sqlfluff lint
+            sh -c "pip install sqlfluff && sqlfluff lint"
 
       # if either one has a linting error when executing a pull request, give an error and don't allow the request
       - name: Check for linting errors
