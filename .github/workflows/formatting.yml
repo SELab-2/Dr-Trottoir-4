@@ -20,8 +20,7 @@ jobs:
         uses: docker://python:3.8
         with:
           args: |
-            pip install black
-            black .
+            sh -c "pip install black && black ."
 
       # using `flake8`
       - name: Lint Python code
