@@ -1,0 +1,56 @@
+formatting_python:
+  yml:
+name: Code Formatting and Linting
+
+on:
+  # all branches when pushing, only pull request for the main branch
+  push:
+    branches: ['**']
+    paths:
+      - '**.js'
+  pull_request:
+    branches: [main]
+
+jobs:
+  format_and_lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # using `prettier`
+      - name: Format JavaScript code
+        uses: docker://node:16
+        with:
+          args: |
+            sh -c "npm install --global prettier && prettier --write '**/*.js'"
+
+      # using `eslint`
+      - name: Lint JavaScript code
+        id: javascript-lint
+        uses: docker://node:16
+        with:
+          args: |
+            sh -c "npm install --global eslint && eslint '**/*.js'"
+
+      # if either one has a linting error when executing a pull request, give an error and don't allow the request
+      - name: Check for linting errors
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          if [ ${{ steps.javascript-lint.outcome }} == 'failure' ]; then
+            echo "Linting of JavaScript files failed. Please fix the errors before merging the pull request."
+            exit 1
+          fi
+
+      # if no linting errors, format code and finalize request
+      - name: Commit changes
+        if: ${{ success() }}
+        run: |
+          git config --global user.email "group4@selab2.com"
+          git config --global user.name "Group 4"
+          if git diff --name-only | grep -E '\.js$'; then
+            git add .
+            git commit -m "Auto-format and lint JavaScript code"
+            git push
+          fi

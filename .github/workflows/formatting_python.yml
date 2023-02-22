@@ -1,0 +1,55 @@
+name: Code Formatting and Linting
+
+on:
+  # all branches when pushing, only pull request for the main branch
+  push:
+    branches: ['**']
+    paths:
+      - '**.py'
+  pull_request:
+    branches: [main]
+
+jobs:
+  format_and_lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # using `black`
+      - name: Format Python code
+        uses: docker://python:3.8
+        with:
+          args: |
+            sh -c "pip install black && black ."
+
+      # using `flake8`
+      - name: Lint Python code
+        id: python-lint
+        uses: docker://python:3.8
+        with:
+          args: |
+            sh -c "pip install flake8 && flake8 ."
+
+
+      # if there is a linting error when executing a pull request, give an error and don't allow the request
+      - name: Check for linting errors
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          if [ ${{ steps.python-lint.outcome }} == 'failure' ]; then
+            echo "Linting of Python files failed. Please fix the errors before merging the pull request."
+            exit 1
+          fi
+
+      # if no linting errors, format code and finalize request
+      - name: Commit changes
+        if: ${{ success() }}
+        run: |
+          git config --global user.email "group4@selab2.com"
+          git config --global user.name "Group 4"
+          if git diff --name-only | grep -E '\.py$'; then
+            git add .
+            git commit -m "Auto-format and lint Python code"
+            git push
+          fi
