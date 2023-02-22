@@ -17,6 +17,7 @@ jobs:
 
       # using `black`
       - name: Format Python code
+        if: `find . -name '*.py' -type f | grep -q .`
         uses: docker://python:3.8
         with:
           args: |
@@ -24,6 +25,7 @@ jobs:
 
       # using `flake8`
       - name: Lint Python code
+        if: `find . -name '*.py' -type f | grep -q .`
         id: python-lint
         uses: docker://python:3.8
         with:
@@ -32,6 +34,7 @@ jobs:
 
       # using `prettier`
       - name: Format JavaScript code
+        if: `find . -name '*.js' -type f | grep -q .`
         uses: docker://node:16
         with:
           args: |
@@ -39,6 +42,7 @@ jobs:
 
       # using `eslint`
       - name: Lint JavaScript code
+        if: `find . -name '*.js' -type f | grep -q .`
         id: javascript-lint
         uses: docker://node:16
         with:
@@ -47,6 +51,7 @@ jobs:
 
       # using `sqlparse`
       - name: Format SQL code
+        if: `find . -name '*.sql' -type f | grep -q .`
         uses: docker://python:3.8
         with:
           args: |
@@ -54,6 +59,7 @@ jobs:
 
       # using `sqlfluff`
       - name: Lint SQL code
+        if: `find . -name '*.sql' -type f | grep -q .`
         id: sql-lint
         uses: docker://python:3.8
         with:
