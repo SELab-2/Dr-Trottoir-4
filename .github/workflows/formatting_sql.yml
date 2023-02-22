@@ -1,4 +1,4 @@
-formatting_python:
+formatting_sql:
   yml:
 name: Code Formatting and Linting
 
