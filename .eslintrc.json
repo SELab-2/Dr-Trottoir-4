@@ -12,12 +12,12 @@
     "ecmaVersion": 2022,
     "sourceType": "module"
   },
-  "plugins": [
+  //"plugins": [
     // "react",
-    "prettier"
-  ],
+    //"prettier"
+  //],
   "rules": {
-    "prettier/prettier": "error",
+    //"prettier/prettier": "error",
     "no-console": "off",
     "no-unused-vars": "warn"
   }
