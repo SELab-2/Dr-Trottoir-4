@@ -3,10 +3,7 @@
 // take input from the user
 
 
-
-const number = parseInt(
-
-    prompt('Enter a positive integer: '));
+const number = 5;
 
 // checking if number is negative
 if (number < 0) {
@@ -33,9 +30,9 @@ else {
 
 
     let fact = 1;
-    for (i = 1; i <= number; i++) {
+    for (let i = 1; i <= number; i++) {
         fact *= i;
     }
-    
+
     console.log(`The factorial of ${number} is ${fact}.`);
 }
