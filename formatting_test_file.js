@@ -1,26 +1,41 @@
-function HelloWorld({greeting = "hello", greeted = '"World"', silent = false, onMouseOver,}) {
+// program to find the factorial of a number
 
-  
-  if(!greeting){return null};
-
-
-     // TODO: Don't use random in render
-  let num = Math.floor (Math.random() * 1E+7).toString().replace(/\.\d+/ig, "")
-
-  return <div className='HelloWorld' title={`You are visitor number ${ num }`} onMouseOver={onMouseOver}>
+// take input from the user
 
 
-    <strong>{ greeting.slice( 0, 1 ).toUpperCase() + greeting.slice(1).toLowerCase() }</strong>
 
-    {greeting.endsWith(",") ? " " : <span style={{color: '\grey'}}>", "</span> }
+const number = parseInt(
 
-    <em>
-	{ greeted }
-	</em>
-    { (silent)
-      ? "."
-      : "!"}
+    prompt('Enter a positive integer: '));
 
-    </div>;
+// checking if number is negative
+if (number < 0) {
 
+
+        console.log('Error! ' +
+            'Factorial for negative ' +
+            'number does not exist.'
+
+        );
+
+
+}
+
+// if number is 0
+else if (number === 0) {
+
+
+  console.log(`The factorial of ${number} is 1.`);
+}
+
+// if number is positive
+else {
+
+
+    let fact = 1;
+    for (i = 1; i <= number; i++) {
+        fact *= i;
+    }
+    
+    console.log(`The factorial of ${number} is ${fact}.`);
 }
