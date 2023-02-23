@@ -1,4 +1,5 @@
 CREATE TABLE MortgageCompanies (ID INTEGER PRIMARY KEY, NAME CHAR(30));
+
 INSERT INTO
   MortgageCompanies
 VALUES

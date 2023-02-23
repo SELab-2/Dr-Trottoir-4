@@ -30,7 +30,7 @@ jobs:
         uses: docker://python:3.8
         with:
           args: |
-            sh -c "pip install sqlfluff && sqlfluff lint"
+            sh -c "pip install sqlfluff && sqlfluff lint --dialect postgres"
 
       # if either one has a linting error when executing a pull request, give an error and don't allow the request
       - name: Check for linting errors
