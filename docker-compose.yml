@@ -4,12 +4,15 @@ services:
     image: nginx
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - backend
       - frontend
     ports:
       - "80:80"
       - "433:433"
+    restart: always
+
   # database
   web:
     image: postgres:15-alpine
