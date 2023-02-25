@@ -1,4 +1,15 @@
 services:
+
+  webserver:
+    image: nginx
+    volumes:
+      - ./nginx/default.conf
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+      -
   # database
   web:
     image: postgres:15-alpine
