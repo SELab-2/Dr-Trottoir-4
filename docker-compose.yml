@@ -1,17 +1,17 @@
 services:
 
-#  nginx:
-#    image: nginx
-#    volumes:
-#      - ./nginx/default.conf:/etc/nginx/conf.d/nginx.conf
-#      - /etc/letsencrypt:/etc/letsencrypt:ro
-#    depends_on:
-#      - backend
-#      - frontend
-#    ports:
-#      - "80:80"
-#      - "433:433"
-#    restart: always
+  reverseproxy:
+    image: reverseproxy
+    ports:
+      - 8080:8080
+      - 8081:8081
+      - 8082:8082
+      - 8000:8000
+      - 80:80
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
 
   # database
   web:
@@ -32,14 +32,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
 
-    ports:
-      - '3000:3000'
+#    ports:
+#      - '3000'
 
     volumes:
       - ./frontend:/app/frontend
 
     depends_on:
       - backend
+      - reverseproxy
 
   backend:
     build:
@@ -51,8 +52,8 @@ services:
       - POSTGRES_USER=django
       - POSTGRES_DB=drtrottoir
 
-    ports:
-      - '8000:8000'
+#    ports:
+#      - '8000:8000'
 
     volumes:
       - ./backend:/app/backend
