@@ -6,7 +6,7 @@ function App() {
 
     const [data, setData] = useState(null);
 
-    // todo change to sel2-4.ugent.be on server
+    // todo change to https://sel2-4.ugent.be on server
     useEffect(() => {
         fetch('http://localhost:2002/test/')
             .then(res => res.json())

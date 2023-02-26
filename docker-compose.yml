@@ -32,9 +32,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
 
-#    ports:
-#      - '3000'
-
     volumes:
       - ./frontend:/app/frontend
 
@@ -51,9 +48,6 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=django
       - POSTGRES_DB=drtrottoir
-
-#    ports:
-#      - '8000:8000'
 
     volumes:
       - ./backend:/app/backend
