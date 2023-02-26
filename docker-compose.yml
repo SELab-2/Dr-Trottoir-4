@@ -3,7 +3,7 @@ services:
   reverseproxy:
     image: reverseproxy
     ports:
-      - 8000:8000
+      - 2002:2002
       - 80:80
       - 443:443
     build:
