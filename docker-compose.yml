@@ -1,5 +1,5 @@
 services:
-  # database
+  # drtrottoir
   web:
     image: postgres:15-alpine
     ports:
