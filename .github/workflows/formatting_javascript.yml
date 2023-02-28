@@ -1,13 +1,12 @@
 name: Code Formatting and Linting JavaScript
 
 on:
-  # all branches when pushing, only pull request for the main branch
-  push:
-    branches: ['**']
+  pull_request:
+    branches:
+      - main
+      - develop
     paths:
       - '**.js'
-  pull_request:
-    branches: [main]
 
 jobs:
   format_and_lint:
