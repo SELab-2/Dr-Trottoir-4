@@ -17,7 +17,6 @@ if True:
 
 
 
-
     print("No newline above me!")
 
 
