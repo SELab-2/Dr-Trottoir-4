@@ -6,7 +6,9 @@ import styles from '@/styles/Home.module.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export async function getStaticProps() {
+
   try {
+    // todo change to https://sel2-4.ugent.be on server
     const res = await fetch('http://backend:8000/test');
     const data = await res.json();
 
