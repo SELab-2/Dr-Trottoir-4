@@ -1,5 +1,18 @@
 services:
-  # drtrottoir
+  reverseproxy:
+    image: reverseproxy
+    ports:
+      - 2002:2002
+      - 80:80
+      - 443:443
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+    restart: always
+
+  # database
   web:
     image: postgres:15-alpine
     ports:
@@ -18,14 +31,12 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
 
-    ports:
-      - '3000:3000'
-
     volumes:
       - ./frontend:/app/frontend
 
     depends_on:
       - backend
+      - reverseproxy
 
   backend:
     build:
@@ -36,9 +47,6 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=django
       - POSTGRES_DB=drtrottoir
-
-    ports:
-      - '8000:8000'
 
     volumes:
       - ./backend:/app/backend
