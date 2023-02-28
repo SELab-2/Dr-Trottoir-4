@@ -1,6 +1,6 @@
 # Migrations in Django
 
-Django migrations are used to propagate changes made in our models ([models.py](backend/drtrottoir/models.py)) to our database schema.
+Django migrations are used to propagate changes made in our models ([models.py](../backend/drtrottoir/models.py)) to our database schema.
 This guide explains everything you need to know about migrations in Django, but a more detailed guide can be found [here](https://docs.djangoproject.com/en/4.1/topics/migrations/).
 
 **Warning**:
@@ -9,7 +9,7 @@ The filenames and content of these files can never be changed, as this will caus
 
 ### Execute migrations
 
-To just execute the migrations that are added to the project, you can use the bash script [migrations.sh](migrations.sh): 
+To just execute the migrations that are added to the project, you can use the bash script [migrations.sh](../migrations.sh): 
 
 ```
 $ ./migrations.sh
@@ -19,7 +19,7 @@ This will execute all migrations that were not yet applied to the database.
 
 ### Model migrations
 
-To create a new migration based on the changes you have made to the model in [models.py](backend/drtrottoir/models.py), use the command:
+To create a new migration based on the changes you have made to the model in [models.py](../backend/drtrottoir/models.py), use the command:
 ```python manage.py makemigrations```
 
 but in our case we need to execute this in our docker container (in the project directory), so we use instead:
@@ -32,7 +32,7 @@ Make sure that your docker container is running with `docker-compose up`.
 
 New migrations that are created have a unique identifier, this identifier is just an autoincremented id. 
 
-There are already some migration files in our project, these can be found in the [migrations](backend/drtrottoir/migrations) folder. 
+There are already some migration files in our project, these can be found in the [migrations](../backend/drtrottoir/migrations) folder. 
 
 **Warning**:
 **The filenames and content of these files can never be changed, as this will cause problems for those who already executed these migrations!**
@@ -66,7 +66,7 @@ This needs to be added to the operations list inside the migration class and the
 docker-compose exec backend python manage.py migrate
 ```
 
-An example of a data migration file is [0002_auto_20230227_1453.py](backend/drtrottoir/migrations/0002_auto_20230227_1453.py).
+An example of a data migration file is [0002_auto_20230227_1453.py](../backend/drtrottoir/migrations/0002_auto_20230227_1453.py).
 
 ### Conclusion
 

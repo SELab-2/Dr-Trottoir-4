@@ -46,7 +46,7 @@ If you use an IDE (e.g. [Pycharm](https://www.jetbrains.com/toolbox-app/)), this
 #### Running the backend
 
 *The biggest problem with this method, is that you have to change 'web' to 'localhost'
-in [settings.py](backend/backend/settings.py). Unless a solution is found, we will probably have to let go this option
+in [settings.py](../backend/backend/settings.py). Unless a solution is found, we will probably have to let go this option
 of running.*
 
 `sudo systemctl start postgresql` (or `enable`)
@@ -75,13 +75,13 @@ We also might decide to not use this option at all and always run with docker-co
 `python manage.py migrate`
 
 Finally, running the backend code can be done by typing:
-`python manage.py runserver` in [backend](backend).
+`python manage.py runserver` in [backend](../backend).
 
 `sudo systemctl stop postgresql` (optionally)
 
 ### Run only frontend code
 
-Run `npm start` in the directory [frontend](frontend). But of course, if the backend is not attached, you won't see any
+Run `npm start` in the directory [frontend](../frontend). But of course, if the backend is not attached, you won't see any
 data visualized.
 
 
