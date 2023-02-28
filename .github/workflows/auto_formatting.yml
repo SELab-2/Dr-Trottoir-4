@@ -1,15 +1,17 @@
-name: Code Formatting and Linting JavaScript
+name: Code Formatting and Linting
 
 on:
   push:
     branches: [ '**' ]
     paths:
+      - '**.py'
       - '**.js'
   pull_request:
     branches:
       - main
       - develop
     paths:
+      - '**.py'
       - '**.js'
 
 jobs:
@@ -20,15 +22,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # using `prettier`
+      # using `black` for Python
+      - name: Format Python code
+        if: ${{ github.event_path contains '.py' }}
+        uses: docker://python:3.8
+        with:
+          args: |
+            sh -c "pip install black && black ."
+
+      # using `flake8` for Python
+      - name: Lint Python code
+        if: ${{ github.event_path contains '.py' }}
+        id: python-lint
+        uses: docker://python:3.8
+        with:
+          args: |
+            sh -c "pip install flake8 && flake8 ."
+
+
+      # using `prettier` for JavaScript
       - name: Format JavaScript code
+        if: ${{ github.event_path contains '.js' }}
         uses: docker://node:16
         with:
           args: |
             sh -c "npm install --global prettier && prettier --write '**/*.js'"
 
-      # using `eslint`
+      # using `eslint` for JavaScript
       - name: Lint JavaScript code
+        if: ${{ github.event_path contains '.js' }}
         id: javascript-lint
         uses: docker://node:16
         with:
@@ -39,8 +61,8 @@ jobs:
       - name: Check for linting errors
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          if [ ${{ steps.javascript-lint.outcome }} == 'failure' ]; then
-            echo "Linting of JavaScript files failed. Please fix the errors before merging the pull request."
+          if [ ${{ steps.python-lint.outcome }} == 'failure' -o ${{ steps.javascript-lint.outcome }} == 'failure' ]; then
+            echo "Linting of code failed. Please fix the errors before merging the pull request."
             exit 1
           fi
 
@@ -50,8 +72,8 @@ jobs:
         run: |
           git config --global user.email "group4@selab2.com"
           git config --global user.name "Group 4"
-          if git diff --name-only | grep -E '\.js$'; then
+          if git diff --name-only | grep -E '\.py$|\.js$'; then
             git add .
-            git commit -m "Auto-format and lint JavaScript code"
+            git commit -m "Auto-format and lint code"
             git push
           fi
