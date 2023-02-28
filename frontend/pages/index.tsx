@@ -9,7 +9,7 @@ export async function getStaticProps() {
 
   try {
     // todo change to https://sel2-4.ugent.be on server
-    const res = await fetch('http://backend:8000/test');
+    const res = await fetch('http://reverseproxy:2002/test');
     const data = await res.json();
 
     return {
