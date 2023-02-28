@@ -1,6 +1,10 @@
 name: Code Formatting and Linting JavaScript
 
 on:
+  push:
+    branches: [ '**' ]
+    paths:
+      - '**.js'
   pull_request:
     branches:
       - main

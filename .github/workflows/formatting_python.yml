@@ -1,6 +1,10 @@
 name: Code Formatting and Linting Python
 
 on:
+  push:
+    branches: [ '**' ]
+    paths:
+      - '**.py'
   pull_request:
     branches:
       - main
