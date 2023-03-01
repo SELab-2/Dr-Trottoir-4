@@ -4,10 +4,10 @@ from django.db import migrations
 from datetime import datetime
 
 def generate_data(apps, schema_editor):
-    Ronde = apps.get_model('drtrottoir', 'Ronde')
-    Regio = apps.get_model('drtrottoir', 'Regio')
-    User = apps.get_model('drtrottoir', 'User')
-    Gebouw = apps.get_model('drtrottoir', 'Gebouw')
+    Ronde = apps.get_model('base', 'Ronde')
+    Regio = apps.get_model('base', 'Regio')
+    User = apps.get_model('base', 'User')
+    Gebouw = apps.get_model('base', 'Gebouw')
     ronde_namen = ['Coupure', 'Sterre', 'Noord', 'West', 'Winkelstraat']
 
     regios = Regio.objects.all()
@@ -36,18 +36,18 @@ def generate_data(apps, schema_editor):
 
 
 
-    Gebouw = apps.get_model('drtrottoir', 'Gebouw')
-    Vuilophaling = apps.get_model('drtrottoir', 'Vuilophaling')
-    GebouwOpRonde = apps.get_model('drtrottoir', 'GebouwOpRonde')
-    StudentBijGebouwOpRonde = apps.get_model('drtrottoir', 'StudentBijGebouwOpRonde')
-    FotoGebouw = apps.get_model('drtrottoir', 'FotoGebouw')
-    Handleiding = apps.get_model('drtrottoir', 'Handleiding')
+    Gebouw = apps.get_model('base', 'Gebouw')
+    Vuilophaling = apps.get_model('base', 'Vuilophaling')
+    GebouwOpRonde = apps.get_model('base', 'GebouwOpRonde')
+    StudentBijGebouwOpRonde = apps.get_model('base', 'StudentBijGebouwOpRonde')
+    FotoGebouw = apps.get_model('base', 'FotoGebouw')
+    Handleiding = apps.get_model('base', 'Handleiding')
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('drtrottoir', '0002_auto_20230227_1453'),
+        ('base', '0002_auto_20230227_1453'),
     ]
 
     operations = [
