@@ -68,6 +68,39 @@ docker-compose exec backend python manage.py migrate
 
 An example of a data migration file is [0002_auto_20230227_1453.py](../backend/drtrottoir/migrations/0002_auto_20230227_1453.py).
 
+### View data migrations in postgres
+
+To check if the data migrations are migrated to the database, we can log onto the postgres docker container:
+We can do this by first checking our running containers, using the command:
+```
+$ docker ps
+CONTAINER ID   IMAGE                COMMAND                  CREATED              STATUS              PORTS                                                              NAMES
+7742c9f9dfcb   project-frontend     "docker-entrypoint.s…"   About a minute ago   Up About a minute                                                                      project-frontend-1
+075ff1639b24   project-backend      "python manage.py ru…"   About a minute ago   Up About a minute                                                                      project-backend-1
+32771801b817   reverseproxy         "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp, 0.0.0.0:2002->2002/tcp   project-reverseproxy-1
+68e6b6e00ab1   postgres:15-alpine   "docker-entrypoint.s…"   26 hours ago         Up About a minute   0.0.0.0:5432->5432/tcp
+```
+In the output we can view the `CONTAINER ID` the postgres container has, in this case it is `68e6b6e00ab1`.
+
+Finally, we can log onto the container with the command:
+```
+$ docker exec -it <container_id> psql -U django drtrottoir
+```
+here you replace `<container_id>` with the corresponding container id.
+
+Now if we want to do any operation in sql, we can do so. The tables that are created in the database get named by django. Django names the tables like `appname_modelname`.
+
+For example if we want the rows of our users, we can type:
+
+```
+drtrottoir=# SELECT * from drtrottoir_user;
+```
+
+To get a list of all tables created by django, you can use the command:
+```
+drtrottoir=# \dt
+```
+
 ### Conclusion
 
 That's it, this is everything you need to know about django migrations.
