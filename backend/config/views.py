@@ -6,5 +6,5 @@ from rest_framework.response import Response
 def send_some_data(request):
     # In urls.py, this function is mapped with '/test'
     return Response({
-        "data": "Hello from django backend"
+        "data": "Hello from django config"
     })
