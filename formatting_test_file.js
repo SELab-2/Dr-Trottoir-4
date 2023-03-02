@@ -23,6 +23,7 @@ if (
 else if
 
 
+
 (number === 0) {
   console.log(`The factorial of ${number} is 1.`);
 }

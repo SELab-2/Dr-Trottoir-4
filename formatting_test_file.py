@@ -10,7 +10,6 @@ if 1 == 1 \
     pass
 
 
-
 def foo():
 
     print("All the newlines above me should be deleted!")
