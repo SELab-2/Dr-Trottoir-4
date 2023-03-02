@@ -1,0 +1,48 @@
+name: Code Formatting and Linting Frontend
+
+on:
+  # push:
+  #   branches: [ main ]
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches:
+      - main
+      - develop
+
+defaults:
+  run:
+    working-directory: frontend
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup@v2
+      - uses: docker://node:16
+
+      - name: Format with Prettier
+        run: |
+          npm install
+          npx prettier --check .
+          RESULT=$?
+          [ $RESULT -ne 0 ] && exit 1
+          exit 0
+    
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+     - uses: actions/checkout@v2
+     - uses: actions/setup@v2
+     - uses: docker://node:16
+
+     - name: Lint with ESLint
+       run: |
+         rm package-lock.json
+         npm install
+         npm run lint
+         RESULT=$?
+         [ $RESULT -ne 0 ] && exit 1
+         exit 0

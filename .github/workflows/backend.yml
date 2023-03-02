@@ -1,0 +1,46 @@
+name: Code Formatting and Linting Backend
+
+on:
+  # push:
+  #   branches: [ main ]
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches:
+      - main
+      - develop
+
+defaults:
+  run:
+    working-directory: backend
+
+
+jobs:
+  format_and_lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # using `black` for Python
+      - name: Format Python code
+        uses: docker://python:3.8
+        run: |
+          pip install black && black .
+
+      # using `flake8` for Python
+      - name: Lint Python code
+        id: python-lint
+        uses: docker://python:3.8
+        run: |
+          pip install flake8 && flake8 .
+
+      - name: Check for linting errors
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          if [ ${{ steps.python-lint.outcome }} == 'failure' ]; then
+            echo "Linting of code failed. Please fix the errors before merging the pull request."
+            exit 1
+          fi
+          exit 0
