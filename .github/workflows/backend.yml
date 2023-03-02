@@ -14,26 +14,30 @@ defaults:
   run:
     working-directory: backend
 
-
 jobs:
-  format_and_lint:
+  format:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
       - uses: actions/checkout@v2
       - uses: docker://python:3.8
 
-      # using `black` for Python
-      - name: Format Python code
+      - name: Format with Black
         run: |
-          pip install black && black .
+          pip install black
+          black .
+  lint:
+    runs-on: ubuntu-latest
 
-      # using `flake8` for Python
-      - name: Lint Python code
+    steps:
+      - uses:actions/checkout@v2
+      - uses: docker://python:3.8
+
+      - name: Lint with Flake8
         id: python-lint
         run: |
-          pip install flake8 && flake8 .
+          pip install flake8
+          flake8 .
 
       - name: Check for linting errors
         if: ${{ github.event_name == 'pull_request' }}
