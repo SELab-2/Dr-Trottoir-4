@@ -24,7 +24,7 @@ jobs:
 
       # using `black` for Python
       - name: Format Python code
-        if: ${{ github.event_path contains '.py' }}
+        if: git diff --name-only | grep -E '\.py$'
         uses: docker://python:3.8
         with:
           args: |
@@ -32,7 +32,7 @@ jobs:
 
       # using `flake8` for Python
       - name: Lint Python code
-        if: ${{ github.event_path contains '.py' }}
+        if: git diff --name-only | grep -E '\.py$'
         id: python-lint
         uses: docker://python:3.8
         with:
@@ -42,7 +42,7 @@ jobs:
 
       # using `prettier` for JavaScript
       - name: Format JavaScript code
-        if: ${{ github.event_path contains '.js' }}
+        if: git diff --name-only | grep -E '\.js$'
         uses: docker://node:16
         with:
           args: |
@@ -50,7 +50,7 @@ jobs:
 
       # using `eslint` for JavaScript
       - name: Lint JavaScript code
-        if: ${{ github.event_path contains '.js' }}
+        if: git diff --name-only | grep -E '\.js$'
         id: javascript-lint
         uses: docker://node:16
         with:
