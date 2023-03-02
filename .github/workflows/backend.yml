@@ -21,18 +21,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: docker://python:3.8
 
       # using `black` for Python
       - name: Format Python code
-        uses: docker://python:3.8
         run: |
           pip install black && black .
 
       # using `flake8` for Python
       - name: Lint Python code
         id: python-lint
-        uses: docker://python:3.8
         run: |
           pip install flake8 && flake8 .
 
