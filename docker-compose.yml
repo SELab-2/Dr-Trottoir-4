@@ -24,7 +24,7 @@ services:
       - POSTGRES_DB=drtrottoir
 
     volumes:
-      - ./data/base:/var/lib/postgresql/data/
+      - ./data/drtrottoir:/var/lib/postgresql/data/
 
   frontend:
     build:
