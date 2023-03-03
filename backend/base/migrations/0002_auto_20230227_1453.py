@@ -1,8 +1,8 @@
 from django.db import migrations
 
 def generate_data(apps, schema_editor):
-    User = apps.get_model('drtrottoir', 'User')
-    Regio = apps.get_model('drtrottoir', 'Regio')
+    User = apps.get_model('base', 'User')
+    Regio = apps.get_model('base', 'Regio')
 
     regios = ['Gent', 'Antwerpen', 'Brugge', 'Hasselt', 'Leuven']
 
@@ -27,7 +27,7 @@ def generate_data(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('drtrottoir', '0001_initial'),
+        ('base', '0001_initial'),
     ]
 
     operations = [

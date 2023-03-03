@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('naam', models.CharField(max_length=40)),
                 ('modified_at', models.DateTimeField()),
-                ('regio', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='drtrottoir.regio')),
+                ('regio', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='base.regio')),
             ],
         ),
         migrations.CreateModel(
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                 ('achternaam', models.CharField(max_length=40)),
                 ('telefoon', models.CharField(max_length=20)),
                 ('rol', models.CharField(choices=[('ST', 'Student'), ('SS', 'Superstudent'), ('AD', 'Admin'), ('SY', 'Syndicus')], max_length=2)),
-                ('regio', models.ManyToManyField(to='drtrottoir.regio')),
+                ('regio', models.ManyToManyField(to='base.regio')),
             ],
         ),
         migrations.CreateModel(
@@ -56,20 +56,20 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('datum', models.DateField()),
-                ('gebouw', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='drtrottoir.gebouw')),
-                ('ronde', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='drtrottoir.ronde')),
-                ('student', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='drtrottoir.user')),
+                ('gebouw', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.gebouw')),
+                ('ronde', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.ronde')),
+                ('student', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='base.user')),
             ],
         ),
         migrations.AddField(
             model_name='gebouw',
             name='regio',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='drtrottoir.regio'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='base.regio'),
         ),
         migrations.AddField(
             model_name='gebouw',
             name='syndicus',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='drtrottoir.user'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='base.user'),
         ),
         migrations.CreateModel(
             name='FotoGebouw',
@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
                 ('beschrijving', models.TextField(blank=True, null=True)),
                 ('tijdstip', models.DateTimeField()),
                 ('type', models.CharField(choices=[('AA', 'Aankomst'), ('BI', 'Binnen'), ('VE', 'Vertrek'), ('OP', 'Opmerking')], max_length=2)),
-                ('gebouw', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='drtrottoir.gebouw')),
+                ('gebouw', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.gebouw')),
             ],
         ),
         migrations.CreateModel(
@@ -88,7 +88,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('datum', models.DateField()),
                 ('soort_vuil', models.CharField(choices=[('GFT', 'GFT'), ('GLS', 'Glas'), ('GRF', 'Grof vuil'), ('KER', 'Kerstbomen'), ('PAP', 'Papier'), ('PMD', 'PMD'), ('RES', 'Restafval')], max_length=3)),
-                ('gebouw', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='drtrottoir.gebouw')),
+                ('gebouw', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.gebouw')),
             ],
             options={
                 'unique_together': {('gebouw_id', 'soort_vuil', 'datum')},
@@ -100,7 +100,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('versienummer', models.IntegerField()),
                 ('bestandsnaam', models.CharField(max_length=2048)),
-                ('gebouw', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='drtrottoir.gebouw')),
+                ('gebouw', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.gebouw')),
             ],
             options={
                 'unique_together': {('gebouw_id', 'versienummer')},
@@ -113,7 +113,7 @@ class Migration(migrations.Migration):
                 ('url', models.CharField(max_length=2048)),
                 ('voornaam_inwoner', models.CharField(max_length=40)),
                 ('achternaam_inwoner', models.CharField(max_length=40)),
-                ('gebouw', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='drtrottoir.gebouw')),
+                ('gebouw', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.gebouw')),
             ],
             options={
                 'unique_together': {('url', 'gebouw_id')},
@@ -124,8 +124,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('index', models.IntegerField()),
-                ('gebouw', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='drtrottoir.gebouw')),
-                ('ronde', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='drtrottoir.ronde')),
+                ('gebouw', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.gebouw')),
+                ('ronde', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.ronde')),
             ],
             options={
                 'unique_together': {('index', 'ronde')},

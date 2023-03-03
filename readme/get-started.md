@@ -46,7 +46,7 @@ If you use an IDE (e.g. [Pycharm](https://www.jetbrains.com/toolbox-app/)), this
 #### Running the backend
 
 *The biggest problem with this method, is that you have to change 'web' to 'localhost'
-in [settings.py](../backend/backend/settings.py). Unless a solution is found, we will probably have to let go this option
+in [settings.py](../backend/config/settings.py). Unless a solution is found, we will probably have to let go this option
 of running.*
 
 `sudo systemctl start postgresql` (or `enable`)
