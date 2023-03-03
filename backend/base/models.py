@@ -38,6 +38,7 @@ class Gebouw(models.Model):
     straat = models.CharField(max_length=60)
     huisnummer = models.CharField(max_length=10)
     klantennummer = models.CharField(max_length=40, blank=True, null=True)
+    duur = models.TimeField(default='00:00')
     syndicus = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     regio = models.ForeignKey(Regio, on_delete=models.SET_NULL, blank=True, null=True)
 

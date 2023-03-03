@@ -1,1 +1,0 @@
-DJANGO_SECRET_KEY = 'sample_secret'
