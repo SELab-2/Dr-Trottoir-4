@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'rest_framework'
+    'rest_framework',
+    'drtrottoir'
 ]
 
 MIDDLEWARE = [
@@ -82,7 +83,7 @@ DATABASES = {
         'NAME': 'drtrottoir',
         'USER': 'django',
         'PASSWORD': 'password',
-        # 'HOST': 'localhost' # If you want to run using python manage.py runserver
+        #'HOST': 'localhost', # If you want to run using python manage.py runserver
         'HOST': 'web',  # If you want to use `docker-compose up`
         'PORT': '5432',
     }
