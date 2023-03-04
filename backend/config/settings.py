@@ -37,8 +37,38 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'django.contrib.sites',
+    'phonenumber_field',
     'base'
 ]
+
+REST_FRAMEWORK = {
+   'DEFAULT_PERMISSION_CLASSES': [
+       'rest_framework.permissions.IsAuthenticated',
+   ],
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'rest_framework.authentication.SessionAuthentication',
+       'rest_framework.authentication.TokenAuthentication',
+   )
+}
+
+AUTH_USER_MODEL = 'base.User'
+
+# 'allauth' settings
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = False
+
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -53,6 +83,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = ['http://localhost:2002']
 
 ROOT_URLCONF = 'config.urls'
 
