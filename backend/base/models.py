@@ -33,7 +33,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'email'  # there is a username field and a password field
-    REQUIRED_FIELDS = ['firstname', 'lastname']
+    REQUIRED_FIELDS = ['firstname', 'lastname', 'phone_number', 'role']
 
     firstname = models.CharField(max_length=40)
     lastname = models.CharField(max_length=40)
