@@ -27,35 +27,45 @@ DEBUG = True
 ALLOWED_HOSTS = ['*', 'localhost', '127.0.0.1', '172.17.0.0']
 
 # Application definition
-
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
-    'rest_framework',
+    'django.contrib.sites',
+]
+
+AUTHENTICATION = [
     'rest_framework.authtoken',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth',
     'dj_rest_auth.registration',
-    'django.contrib.sites',
+]
+
+THIRD_PARTY_APPS = AUTHENTICATION + [
+    'corsheaders',
+    'rest_framework',
     'phonenumber_field',
+]
+
+CREATED_APPS = [
     'base'
 ]
 
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CREATED_APPS
+
 REST_FRAMEWORK = {
-   'DEFAULT_PERMISSION_CLASSES': [
-       'rest_framework.permissions.IsAuthenticated',
-   ],
-   'DEFAULT_AUTHENTICATION_CLASSES': (
-       'rest_framework.authentication.SessionAuthentication',
-       'rest_framework.authentication.TokenAuthentication',
-   )
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
 }
 
 AUTH_USER_MODEL = 'base.User'
@@ -66,7 +76,6 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
-
 
 SITE_ID = 1
 
@@ -114,7 +123,7 @@ DATABASES = {
         'NAME': 'drtrottoir',
         'USER': 'django',
         'PASSWORD': 'password',
-        #'HOST': 'localhost', # If you want to run using python manage.py runserver
+        # 'HOST': 'localhost', # If you want to run using python manage.py runserver
         'HOST': 'web',  # If you want to use `docker-compose up`
         'PORT': '5432',
     }
