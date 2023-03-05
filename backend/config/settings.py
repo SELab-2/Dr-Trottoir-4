@@ -41,7 +41,6 @@ AUTHENTICATION = [
     'rest_framework.authtoken',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',
     'dj_rest_auth',
     'dj_rest_auth.registration',
 ]
@@ -63,12 +62,21 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     )
 }
 
+# authentication settings
 AUTH_USER_MODEL = 'base.User'
+REST_USE_JWT = True
+JWT_AUTH_HTTP_ONLY = False
+JWT_AUTH_COOKIE = 'auth-token'
+JWT_AUTH_REFRESH_COOKIE = 'auth-refresh-token'
+
+AUTHENTICATION_BACKENDS = [
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # 'allauth' settings
 ACCOUNT_AUTHENTICATION_METHOD = 'email'

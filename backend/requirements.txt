@@ -12,6 +12,7 @@ django-phonenumber-field==7.0.2
 django-rename-app==0.1.5
 django-rest-framework==0.1.0
 djangorestframework==3.14.0
+djangorestframework-simplejwt==5.2.2
 idna==3.4
 oauthlib==3.2.2
 phonenumbers==8.13.6
