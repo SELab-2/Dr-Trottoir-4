@@ -1,5 +1,4 @@
 from django.contrib.auth.models import PermissionsMixin
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
@@ -8,7 +7,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.authtoken.models import Token
-from base.managers import UserManager
+from users.managers import UserManager
 
 
 class Region(models.Model):
@@ -19,10 +18,10 @@ class Region(models.Model):
 
 
 # Catches the post_save signal (in signals.py) and creates a user token if not yet created
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
+# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+# def create_auth_token(sender, instance=None, created=False, **kwargs):
+#     if created:
+#         Token.objects.create(user=instance)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
