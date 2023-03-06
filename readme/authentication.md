@@ -35,7 +35,7 @@ docker-compose exec backend python manage.py createsuperuser
 ```
 You will be prompted with several questions. Feel free to play around.
 By convention, we will always use a @test.com email address for test accounts. Be sure to remember your password!
-[!superuser creation](../img/create_superuser.png)
+[../img/create_superuser.png](https://github.com/SELab-2/Dr-Trottoir-4/blob/feature/token_based_auth/readme/img/create_superuser.png)
 
 ### Step 2: Admin page
 Now we are able to login into the [admin](http://localhost:2002/admin) page with the super user credentials.
