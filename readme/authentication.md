@@ -48,7 +48,10 @@ Now we'll create a user.
 - Get a temporary e-mail box on this website: https://temp-mail.org/en/
 - Use this e-mail on the following page: http://localhost:2002/user/signup
   - You don't need to add a username, since we don't use that.
-  - You should receive a e-mail in te mailbox once you've hit `POST`
+  - You should receive an e-mail in te mailbox once you've hit `POST`
+  - Before verifying with the link, try to log in with the email and password on this page: http://localhost:2002/user/login
+    - This shouldn't work, since you haven't verified yet.
+    - Now continue with verification
   - The e-mail link is not a valid one, since the port isn't in it. This will be correct once we are in production.
   - Use the link but add the port `:2002` in the domain.
   - You can now see the verification, by adding the key (part after /account-confirm-email/) in the key input field, you will see the verification status
