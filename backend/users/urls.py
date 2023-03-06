@@ -2,13 +2,14 @@ from dj_rest_auth.jwt_auth import get_refresh_view
 from dj_rest_auth.registration.views import VerifyEmailView
 from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView, LoginView, UserDetailsView, \
     PasswordChangeView
-from django.urls import path
+from django.urls import path, include
 from rest_framework_simplejwt.views import TokenVerifyView
 
 from users.views import CustomLogoutView
 
 urlpatterns = [
     # URLs that do not require a session or valid token
+    path('signup/', include('dj_rest_auth.registration.urls')),
     path('password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
     path('password/reset/confirm/', PasswordResetConfirmView.as_view(), name='rest_password_reset_confirm'),
     path('login/', LoginView.as_view(), name='rest_login'),
