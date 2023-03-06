@@ -1,21 +1,25 @@
+from dj_rest_auth.jwt_auth import get_refresh_view
 from dj_rest_auth.registration.views import VerifyEmailView
-from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
-from django.urls import path, include
+from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView, LoginView, UserDetailsView, \
+    PasswordChangeView
+from django.urls import path
+from rest_framework_simplejwt.views import TokenVerifyView
+
+from users.views import CustomLogoutView
 
 urlpatterns = [
-    path('', include('dj_rest_auth.urls')),
-    path('signup/', include("dj_rest_auth.registration.urls")),
+    # URLs that do not require a session or valid token
+    path('password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
+    path('password/reset/confirm/', PasswordResetConfirmView.as_view(), name='rest_password_reset_confirm'),
+    path('login/', LoginView.as_view(), name='rest_login'),
+    path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('token/refresh/', get_refresh_view().as_view(), name='token_refresh'),
+    # URLs that require a user to be logged in with a valid session / token.
+    path('logout/', CustomLogoutView.as_view(), name='rest_logout'),
+    path('user/', UserDetailsView.as_view(), name='rest_user_details'),
+    path('password/change/', PasswordChangeView.as_view(), name='rest_password_change'),
+
     path('verify-email/', VerifyEmailView.as_view(), name="rest_verify_email"),
-    path(
-        'account-confirm-email/',
-        VerifyEmailView.as_view(),
-        name='account_confirm_email_sent',
-    ),
-    path(
-        "account-confirm-email/<key>/",
-        VerifyEmailView.as_view(),
-        name='account_confirm_email',
-    ),
-    path('password-reset/', PasswordResetView.as_view()),
-    path('password-reset-confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('account-confirm-email/', VerifyEmailView.as_view(), name='account_confirm_email_sent', ),
+    path('account-confirm-email/<key>/', VerifyEmailView.as_view(), name='account_confirm_email', ),
 ]

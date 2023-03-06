@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 from .secrets import DJANGO_SECRET_KEY, SECRET_EMAIL_USER, SECRET_EMAIL_USER_PSWD
 
@@ -44,6 +44,7 @@ AUTHENTICATION = [
     'allauth.socialaccount',
     'dj_rest_auth',
     'dj_rest_auth.registration',
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 THIRD_PARTY_APPS = AUTHENTICATION + [
@@ -75,6 +76,13 @@ REST_AUTH = {
     'JWT_AUTH_HTTPONLY': False,
     'JWT_AUTH_COOKIE': 'auth-token',
     'JWT_AUTH_REFRESH_COOKIE': 'auth-refresh-token',
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
+    'ROTATE_REFRESH_TOKEN': True,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
 
 AUTHENTICATION_BACKENDS = [
