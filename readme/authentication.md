@@ -1,4 +1,7 @@
 # Authentication
+## Update secrets.py
+There is a new `secrets.py` file, don't forget to update yours!
+
 ## Clean up
 Since authentication brings alot of changes to the structure of the database,
 we need a clean start. Follow these steps to get a clean start.
