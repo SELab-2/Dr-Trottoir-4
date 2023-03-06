@@ -10,8 +10,8 @@ from users.views import CustomLogoutView
 urlpatterns = [
     # URLs that do not require a session or valid token
     path('signup/', include('dj_rest_auth.registration.urls')),
-    path('password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
-    path('password/reset/confirm/', PasswordResetConfirmView.as_view(), name='rest_password_reset_confirm'),
+    path('password/reset/', PasswordResetView.as_view()),
+    path('password/reset/confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('login/', LoginView.as_view(), name='rest_login'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('token/refresh/', get_refresh_view().as_view(), name='token_refresh'),
