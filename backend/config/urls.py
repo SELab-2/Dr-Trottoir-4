@@ -30,7 +30,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('user/', include(user_urls)),
-    path('password-reset/', PasswordResetView.as_view()),
-    path('password-reset-confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
 ]
