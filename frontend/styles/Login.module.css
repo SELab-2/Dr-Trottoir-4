@@ -1,22 +1,15 @@
-.main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .main_container{
     width: 850px;
     height: 600px;
-    border: 1px solid #1D1D1D;
     border-radius: 5px;
     margin:auto;
     position:absolute;
     top:0;bottom:0;
     left:0;right:0;
-
+    box-shadow: 2px 2px 20px gray;
 }
 
-.filler{
+.filler_container{
     float: left;
     width: 55%;
     height: 100%;
@@ -25,6 +18,7 @@
 .filler_image{
     width: 100%;
     height: 100%;
+    display: block;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }
@@ -35,7 +29,7 @@
     height: 100%;
 }
 
-.login_title{
+.title{
     text-align: left;
     margin-left: 60px;
     margin-top: 100px;
@@ -44,21 +38,24 @@
     font-weight: bold;
 }
 
-.login_text{
+.text{
     margin-left: 60px;
     margin-top: 20px;
     margin-bottom: 10px;
     font: 16px Helvetica, sans-serif;
 }
 
-.login_input{
+.input{
     width: 250px;
     height: 40px;
     margin-left: 60px;
     margin-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    overflow: hidden;
 }
 
-.login_button{
+.button{
     width: 250px;
     height: 40px;
     margin-top: 20px;
@@ -66,4 +63,15 @@
     border-radius: 5px;
     background-color: #1D1D1D;
     color: yellow;
+}
+
+.button:hover{
+    width: 250px;
+    height: 40px;
+    margin-top: 20px;
+    margin-left: 60px;
+    border-radius: 5px;
+    background-color: transparent;
+    color: #1D1D1D;
+    transition: ease-in 0.2s;
 }

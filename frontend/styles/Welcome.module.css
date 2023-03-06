@@ -1,0 +1,12 @@
+.title {
+    text-align: center;
+    margin-top: 100px;
+    font: 56px Helvetica, sans-serif;
+    font-weight: bold;
+}
+
+.image{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
