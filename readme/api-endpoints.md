@@ -1,7 +1,8 @@
 # API endpoints
 
 This is a temporary document that will be changed according to future needs.
-For now, it can be used by both the backend team and the frontend team as a clear overview on how the API will look like.
+For now, it can be used by both the backend team and the frontend team as a clear overview on how the API will look
+like.
 In the future, it might be useful to automatically generate API documentation.
 
 ## Table of contents
@@ -29,13 +30,19 @@ In the future, it might be useful to automatically generate API documentation.
 
 > Get a list of URL's to all users in the database
 
-TODO: perhaps it would be more wise to define `all_students`, `all_superstudents` ... According to the authorization rights of the logged in user, the user might fetch `all_students`, but not `all_superstudents`
-
+TODO: perhaps it would be more wise to define `all_students`, `all_superstudents` ... According to the authorization
+rights of the logged in user, the user might fetch `all_students`, but not `all_superstudents`  
+However, we can also change the view depending on the authorization level of the requester
 
 ### Post
 
 TODO: figure out how this will work with auth.  
 I am guessing an admin needs to create an account for a superstudent, a superstudent or admin for a student ...
+
+Perhaps we could do something like this:  
+Everyone can make a user account, but won't be able to do much (except perhaps fill in more info, see the welcome
+page, ... ). Then a superstudent/admin could give the right permissions / role to that user  
+*To be continued ...*
 
 | Parameter    | 
 |--------------|
@@ -119,12 +126,8 @@ TODO: figure out how to change email, maybe this will be clear if we implement a
 
 > Get all buildings owned by user with given userid
 
-* `/resident/{userid}`
 
-> Get all buildings where user with given userid is a resident
-
-
-TODO: Are the last two URL's necessary? No, but implementing those might speed up the app if there is a lot of
+TODO: Is last URL necessary? No, but implementing this might speed up the app if there is a lot of
 data to be fetched. If the frontend people would require more such detailed endpoints, it is easy for us to implement
 them
 
@@ -186,7 +189,7 @@ Maybe rename it to e.g. resident_building_info?
 
 * `/resident/{userid}`
 
-> Get all links where the user with given userid is a resident 
+> Get all links where the user with given userid is a resident
 
 ### Post
 
@@ -288,7 +291,6 @@ Maybe rename it to e.g. resident_building_info?
 
 > Get all info about a building on a tour with the given id
 
-
 * `/all/{tourid}`
 
 > Get all buildings on a tour with the given tourid
@@ -300,7 +302,6 @@ Maybe rename it to e.g. resident_building_info?
 | tour      | 
 | building  |
 | index     | 
-
 
 ### Delete
 
@@ -331,7 +332,6 @@ TODO: we could also work like this: `/{studentId}/{buildingId}/{tourId}`
 * `/{studentid}`
 
 > Get all buildings in a tour where the student with given studentid has been
-
 
 ### Post
 
