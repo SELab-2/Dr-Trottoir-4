@@ -78,6 +78,8 @@ Now we'll create a user.
       you will see the verification status
 - Login on the following page with your created account: http://localhost:2002/user/login/
 - You should have received an access token and a refresh token.
+  - For security reasons we store the tokens in `HTTP-Only` cookies.
+  - You can check them out if you `inspect` the page (dev, go to `application` and check out the cookies `auth-refresh-token` and `auth-access-token`
 - Because you are authorized, you should see a list of users here: http://localhost:2002/users/
 - Try resetting your password of your newly created account
     - Surf to: http://localhost:2002/user/password/reset/

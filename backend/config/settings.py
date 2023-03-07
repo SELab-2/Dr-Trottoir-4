@@ -73,15 +73,16 @@ AUTH_USER_MODEL = 'base.User'
 
 REST_AUTH = {
     'USE_JWT': True,
-    'JWT_AUTH_HTTPONLY': False,
-    'JWT_AUTH_COOKIE': 'auth-token',
+    'JWT_AUTH_HTTPONLY': True,
+    'JWT_AUTH_SAMESITE': 'Strict',
+    'JWT_AUTH_COOKIE': 'auth-access-token',
     'JWT_AUTH_REFRESH_COOKIE': 'auth-refresh-token',
 }
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
-    'ROTATE_REFRESH_TOKEN': True,
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
