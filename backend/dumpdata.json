@@ -1,0 +1,670 @@
+[
+{
+    "model": "sessions.session",
+    "pk": "agkbb75z1jzznlehgnfqgxnkftmu2h65",
+    "fields": {
+        "session_data": ".eJxVjMEOwiAQRP-FsyG2WGC96Y-QZdkNjQ1NBE7Gf7c1Pehx3sy8lwrYWw698jPMSV3VoE6_LCI9uOwFLsuONRKtvTT93Rx11bctcWkzYZvXcj9ef6qMNW8eGQAvZHGckiemJCSeIaHY0ft4tgCQRMxI0QEMyBDBiHGT4wnQW6PeH_JXPT8:1pZrZn:aofO3hoPSRwP3rzhXO-gnpWAA2ykYuOdsRHuX5zTVZ4",
+        "expire_date": "2023-03-22T11:03:19.294Z"
+    }
+},
+{
+    "model": "sites.site",
+    "fields": {
+        "domain": "example.com",
+        "name": "example.com"
+    }
+},
+{
+    "model": "base.region",
+    "pk": 1,
+    "fields": {
+        "region": "Gent"
+    }
+},
+{
+    "model": "base.region",
+    "pk": 2,
+    "fields": {
+        "region": "Antwerpen"
+    }
+},
+{
+    "model": "base.user",
+    "fields": {
+        "password": "pbkdf2_sha256$390000$LneoZqgVm9PqiDPxZHKYMp$BhH6A6JVnjcLNFgZXjIZTox19QOWVJbdZtzdq+CIRx4=",
+        "last_login": "2023-03-08T11:03:19.287Z",
+        "is_superuser": true,
+        "email": "simonvdb@test.com",
+        "is_staff": true,
+        "is_active": true,
+        "firstname": "Simon",
+        "lastname": "Van den Bussche",
+        "phone_number": "+32492760623",
+        "role": "AD",
+        "groups": [],
+        "user_permissions": [],
+        "region": []
+    }
+},
+{
+    "model": "base.user",
+    "fields": {
+        "password": "pbkdf2_sha256$390000$fLGtxUssqTgAR3Lsn7qxeH$udLnqtnrFr+CTYapqoDsadJe0NvmN4lZjo3BgiD4hYM=",
+        "last_login": "2023-03-08T11:01:16Z",
+        "is_superuser": false,
+        "email": "tomdc@test.com",
+        "is_staff": false,
+        "is_active": true,
+        "firstname": "Tom",
+        "lastname": "De Coninck",
+        "phone_number": "+32457214387",
+        "role": "SS",
+        "groups": [],
+        "user_permissions": [],
+        "region": [
+            1,
+            2
+        ]
+    }
+},
+{
+    "model": "base.user",
+    "fields": {
+        "password": "pbkdf2_sha256$390000$sqSL3eFzPTN3gHbZgxe0TS$bkzTIFETmr6FU7ksflC/zSdvfuU6VhG4rY6HFqz5+o4=",
+        "last_login": "2023-03-08T11:01:35Z",
+        "is_superuser": false,
+        "email": "lindadv@test.com",
+        "is_staff": false,
+        "is_active": true,
+        "firstname": "Linda",
+        "lastname": "De Vrees",
+        "phone_number": "+32489056787",
+        "role": "ST",
+        "groups": [],
+        "user_permissions": [],
+        "region": [
+            2
+        ]
+    }
+},
+{
+    "model": "base.user",
+    "fields": {
+        "password": "pbkdf2_sha256$390000$zSgQKMX4QYMmBoZbyNeDW3$AriWQAGEbukHBKv2TdrabWf9flBv8M2eiHHPZbsblGU=",
+        "last_login": "2023-03-08T11:02:00Z",
+        "is_superuser": false,
+        "email": "ericj@test.com",
+        "is_staff": false,
+        "is_active": true,
+        "firstname": "Eric",
+        "lastname": "Janssens",
+        "phone_number": "+3268940526",
+        "role": "ST",
+        "groups": [],
+        "user_permissions": [],
+        "region": [
+            1
+        ]
+    }
+},
+{
+    "model": "base.user",
+    "fields": {
+        "password": "pbkdf2_sha256$390000$t2cGO6Wd0ZIJCrmrVkvzYw$+Ru1He77eKXbYTaCZ8Wrg2nvpdEToeaNP1jz5lYFywc=",
+        "last_login": "2023-03-08T11:02:33Z",
+        "is_superuser": false,
+        "email": "wiml@test.com",
+        "is_staff": false,
+        "is_active": true,
+        "firstname": "Wim",
+        "lastname": "Lippens",
+        "phone_number": "+3287649134",
+        "role": "SY",
+        "groups": [],
+        "user_permissions": [],
+        "region": []
+    }
+},
+{
+    "model": "base.user",
+    "fields": {
+        "password": "pbkdf2_sha256$390000$AwafqciaEIwiZz1PRWGGlB$K9tHSmS83L0JLaOlQqMmxXsxY7cNHrGlj9Z3OhvKkBY=",
+        "last_login": "2023-03-08T11:03:04Z",
+        "is_superuser": false,
+        "email": "bjorndg@test.com",
+        "is_staff": false,
+        "is_active": true,
+        "firstname": "Bjorn",
+        "lastname": "De Grootte",
+        "phone_number": "+3286491357",
+        "role": "SY",
+        "groups": [],
+        "user_permissions": [],
+        "region": [
+            1,
+            2
+        ]
+    }
+},
+{
+    "model": "base.building",
+    "pk": 1,
+    "fields": {
+        "city": "Antwerpen",
+        "postal_code": "2000",
+        "street": "Grote Markt",
+        "house_number": "5",
+        "client_number": "48943513",
+        "duration": "00:30:00",
+        "syndic": [
+            "bjorndg@test.com"
+        ],
+        "region": 2
+    }
+},
+{
+    "model": "base.building",
+    "pk": 2,
+    "fields": {
+        "city": "Gent",
+        "postal_code": "9000",
+        "street": "Veldstraat",
+        "house_number": "48",
+        "client_number": "489643543",
+        "duration": "00:45:00",
+        "syndic": [
+            "wiml@test.com"
+        ],
+        "region": 1
+    }
+},
+{
+    "model": "base.tour",
+    "pk": 1,
+    "fields": {
+        "name": "Centrum",
+        "region": 1,
+        "modified_at": "2023-03-08T11:08:29Z"
+    }
+},
+{
+    "model": "base.tour",
+    "pk": 2,
+    "fields": {
+        "name": "Grote Markt",
+        "region": 2,
+        "modified_at": "2023-03-08T11:08:45Z"
+    }
+},
+{
+    "model": "base.buildingontour",
+    "pk": 1,
+    "fields": {
+        "tour": 2,
+        "building": 1,
+        "index": 1
+    }
+},
+{
+    "model": "base.buildingontour",
+    "pk": 2,
+    "fields": {
+        "tour": 1,
+        "building": 2,
+        "index": 1
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 1,
+    "fields": {
+        "building_on_tour": 2,
+        "date": "2023-03-08",
+        "student": [
+            "ericj@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 2,
+    "fields": {
+        "building_on_tour": 1,
+        "date": "2023-03-08",
+        "student": [
+            "lindadv@test.com"
+        ]
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 1,
+    "fields": {
+        "user": [
+            "tomdc@test.com"
+        ],
+        "jti": "a195fc2e7bd2401ea22fda9d83850779",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY3OTQ4Mjg3NCwiaWF0IjoxNjc4MjczMjc0LCJqdGkiOiJhMTk1ZmMyZTdiZDI0MDFlYTIyZmRhOWQ4Mzg1MDc3OSIsInVzZXJfaWQiOjJ9.IMc_u4M0O-eOhmj0VneNZV6rob68vbdzBDKTyvPtu38",
+        "created_at": "2023-03-08T11:01:14.548Z",
+        "expires_at": "2023-03-22T11:01:14Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 2,
+    "fields": {
+        "user": [
+            "lindadv@test.com"
+        ],
+        "jti": "124b7a3ac2654ad7b22d5dadee830693",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY3OTQ4Mjg5NCwiaWF0IjoxNjc4MjczMjk0LCJqdGkiOiIxMjRiN2EzYWMyNjU0YWQ3YjIyZDVkYWRlZTgzMDY5MyIsInVzZXJfaWQiOjN9._jd_jI10naYOQdIxGp3nSsacPaQN1CblJiMO_42MmNU",
+        "created_at": "2023-03-08T11:01:34.702Z",
+        "expires_at": "2023-03-22T11:01:34Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 3,
+    "fields": {
+        "user": [
+            "ericj@test.com"
+        ],
+        "jti": "d3825c9a4f074327a9f6832a9b54743a",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY3OTQ4MjkxOSwiaWF0IjoxNjc4MjczMzE5LCJqdGkiOiJkMzgyNWM5YTRmMDc0MzI3YTlmNjgzMmE5YjU0NzQzYSIsInVzZXJfaWQiOjR9.vM_cNpsJPBy21_4c_XCaFuZvHAFJU-z9k2TJj0xUr3E",
+        "created_at": "2023-03-08T11:01:59.707Z",
+        "expires_at": "2023-03-22T11:01:59Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 4,
+    "fields": {
+        "user": [
+            "wiml@test.com"
+        ],
+        "jti": "20286babfa6a4c768f6edb4ab9da6fe7",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY3OTQ4Mjk1MSwiaWF0IjoxNjc4MjczMzUxLCJqdGkiOiIyMDI4NmJhYmZhNmE0Yzc2OGY2ZWRiNGFiOWRhNmZlNyIsInVzZXJfaWQiOjV9.wb468ciVP-CLyIy7w6Q4ivAIcXCszLPTG-yJWvdOwHA",
+        "created_at": "2023-03-08T11:02:31.902Z",
+        "expires_at": "2023-03-22T11:02:31Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 5,
+    "fields": {
+        "user": [
+            "bjorndg@test.com"
+        ],
+        "jti": "60594ba953c1489fb4863d17006bfe11",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY3OTQ4Mjk4MywiaWF0IjoxNjc4MjczMzgzLCJqdGkiOiI2MDU5NGJhOTUzYzE0ODlmYjQ4NjNkMTcwMDZiZmUxMSIsInVzZXJfaWQiOjZ9.MgyQe0yLxpXzzORVabq_kEwykczAxqfwaBg-e1Qw79Q",
+        "created_at": "2023-03-08T11:03:03.395Z",
+        "expires_at": "2023-03-22T11:03:03Z"
+    }
+},
+{
+    "model": "account.emailaddress",
+    "pk": 1,
+    "fields": {
+        "user": [
+            "tomdc@test.com"
+        ],
+        "email": "tomdc@test.com",
+        "verified": false,
+        "primary": true
+    }
+},
+{
+    "model": "account.emailaddress",
+    "pk": 2,
+    "fields": {
+        "user": [
+            "lindadv@test.com"
+        ],
+        "email": "lindadv@test.com",
+        "verified": false,
+        "primary": true
+    }
+},
+{
+    "model": "account.emailaddress",
+    "pk": 3,
+    "fields": {
+        "user": [
+            "ericj@test.com"
+        ],
+        "email": "ericj@test.com",
+        "verified": false,
+        "primary": true
+    }
+},
+{
+    "model": "account.emailaddress",
+    "pk": 4,
+    "fields": {
+        "user": [
+            "wiml@test.com"
+        ],
+        "email": "wiml@test.com",
+        "verified": false,
+        "primary": true
+    }
+},
+{
+    "model": "account.emailaddress",
+    "pk": 5,
+    "fields": {
+        "user": [
+            "bjorndg@test.com"
+        ],
+        "email": "bjorndg@test.com",
+        "verified": false,
+        "primary": true
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+        "action_time": "2023-03-08T11:03:35.634Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "region"
+        ],
+        "object_id": "1",
+        "object_repr": "Gent",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+        "action_time": "2023-03-08T11:03:42.624Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "region"
+        ],
+        "object_id": "2",
+        "object_repr": "Antwerpen",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+        "action_time": "2023-03-08T11:03:57.783Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "user"
+        ],
+        "object_id": "6",
+        "object_repr": "bjorndg@test.com (SY)",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 4,
+    "fields": {
+        "action_time": "2023-03-08T11:04:44.376Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "user"
+        ],
+        "object_id": "5",
+        "object_repr": "wiml@test.com (SY)",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Role\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 5,
+    "fields": {
+        "action_time": "2023-03-08T11:05:07.303Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "user"
+        ],
+        "object_id": "4",
+        "object_repr": "ericj@test.com (ST)",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 6,
+    "fields": {
+        "action_time": "2023-03-08T11:05:41.683Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "user"
+        ],
+        "object_id": "3",
+        "object_repr": "lindadv@test.com (ST)",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 7,
+    "fields": {
+        "action_time": "2023-03-08T11:07:00.287Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "user"
+        ],
+        "object_id": "2",
+        "object_repr": "tomdc@test.com (SS)",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 8,
+    "fields": {
+        "action_time": "2023-03-08T11:07:35.819Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "building"
+        ],
+        "object_id": "1",
+        "object_repr": "Grote Markt 5, Antwerpen 2000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 9,
+    "fields": {
+        "action_time": "2023-03-08T11:08:03.963Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "building"
+        ],
+        "object_id": "2",
+        "object_repr": "Veldstraat 48, Gent 9000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 10,
+    "fields": {
+        "action_time": "2023-03-08T11:08:08.653Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "building"
+        ],
+        "object_id": "1",
+        "object_repr": "Grote Markt 5, Antwerpen 2000",
+        "action_flag": 2,
+        "change_message": "[]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 11,
+    "fields": {
+        "action_time": "2023-03-08T11:08:11.945Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "building"
+        ],
+        "object_id": "2",
+        "object_repr": "Veldstraat 48, Gent 9000",
+        "action_flag": 2,
+        "change_message": "[]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 12,
+    "fields": {
+        "action_time": "2023-03-08T11:08:30.873Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "tour"
+        ],
+        "object_id": "1",
+        "object_repr": "Centrum in regio Gent",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 13,
+    "fields": {
+        "action_time": "2023-03-08T11:08:46.625Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "tour"
+        ],
+        "object_id": "2",
+        "object_repr": "Grote Markt in regio Antwerpen",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 14,
+    "fields": {
+        "action_time": "2023-03-08T11:09:15.748Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "buildingontour"
+        ],
+        "object_id": "1",
+        "object_repr": "Grote Markt 5, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 15,
+    "fields": {
+        "action_time": "2023-03-08T11:09:25.895Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "buildingontour"
+        ],
+        "object_id": "2",
+        "object_repr": "Veldstraat 48, Gent 9000 op ronde Centrum in regio Gent, index: 1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 16,
+    "fields": {
+        "action_time": "2023-03-08T11:09:55.581Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "1",
+        "object_repr": "ericj@test.com (ST) bij Veldstraat 48, Gent 9000 op ronde Centrum in regio Gent, index: 1 op 2023-03-08",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 17,
+    "fields": {
+        "action_time": "2023-03-08T11:10:06.377Z",
+        "user": [
+            "simonvdb@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "2",
+        "object_repr": "lindadv@test.com (ST) bij Grote Markt 5, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 1 op 2023-03-08",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+}
+]
