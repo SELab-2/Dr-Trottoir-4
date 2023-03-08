@@ -1,70 +1,99 @@
+from django.contrib.auth.models import PermissionsMixin
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
+from django.conf import settings
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from phonenumber_field.modelfields import PhoneNumberField
+from rest_framework.authtoken.models import Token
+from users.managers import UserManager
 
 
-class Regio(models.Model):
-    regio = models.CharField(max_length=40, unique=True)
+class Region(models.Model):
+    region = models.CharField(max_length=40, unique=True)
 
     def __str__(self):
-        return self.regio
+        return self.region
 
-class User(models.Model):
-    email = models.CharField(max_length=254, unique=True)
-    voornaam = models.CharField(max_length=40)
-    achternaam = models.CharField(max_length=40)
-    telefoon = models.CharField(max_length=20)
-    regio = models.ManyToManyField(Regio)
+
+# Catches the post_save signal (in signals.py) and creates a user token if not yet created
+# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+# def create_auth_token(sender, instance=None, created=False, **kwargs):
+#     if created:
+#         Token.objects.create(user=instance)
+
+
+class User(AbstractBaseUser, PermissionsMixin):
+    username = None
+    # extra fields for authentication
+    email = models.EmailField(_('email address'), unique=True)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+
+    USERNAME_FIELD = 'email'  # there is a username field and a password field
+    REQUIRED_FIELDS = ['firstname', 'lastname', 'phone_number', 'role']
+
+    firstname = models.CharField(max_length=40)
+    lastname = models.CharField(max_length=40)
+    phone_number = PhoneNumberField(region='BE')
+    region = models.ManyToManyField(Region)
 
     STUDENT = 'ST'
     SUPERSTUDENT = 'SS'
     ADMIN = 'AD'
-    SYNDICUS = 'SY'
-    ROLLEN = [
+    SYNDIC = 'SY'
+    ROLES = [
         (STUDENT, 'Student'),
         (SUPERSTUDENT, 'Superstudent'),
         (ADMIN, 'Admin'),
-        (SYNDICUS, 'Syndicus')
+        (SYNDIC, 'Syndic')
     ]
-    rol = models.CharField(
+    role = models.CharField(
         max_length=2,
-        choices=ROLLEN)
+        choices=ROLES)
+
+    objects = UserManager()
 
     def __str__(self):
-        return self.email
+        return f"{self.email} ({self.role})"
 
 
-class Gebouw(models.Model):
-    stad = models.CharField(max_length=40)
-    postcode = models.CharField(max_length=10)
-    straat = models.CharField(max_length=60)
-    huisnummer = models.CharField(max_length=10)
-    klantennummer = models.CharField(max_length=40, blank=True, null=True)
-    duur = models.TimeField(default='00:00')
-    syndicus = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-    regio = models.ForeignKey(Regio, on_delete=models.SET_NULL, blank=True, null=True)
+class Building(models.Model):
+    city = models.CharField(max_length=40)
+    postal_code = models.CharField(max_length=10)
+    street = models.CharField(max_length=60)
+    house_number = models.CharField(max_length=10)
+    client_number = models.CharField(max_length=40, blank=True, null=True)
+    duration = models.TimeField(default='00:00')
+    syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
-        unique_together = ('stad', 'postcode', 'straat', 'huisnummer')
+        # TODO: Check if this shouldn't be an ID
+        unique_together = ('city', 'postal_code', 'street', 'house_number')
 
     def __str__(self):
-        return f"{self.straat} {self.huisnummer}, {self.stad} {self.postcode}"
+        return f"{self.street} {self.house_number}, {self.city} {self.postal_code}"
 
 
-class GebouwURL(models.Model):
+class BuildingURL(models.Model):
     url = models.CharField(max_length=2048)
-    voornaam_inwoner = models.CharField(max_length=40)
-    achternaam_inwoner = models.CharField(max_length=40)
-    gebouw = models.ForeignKey(Gebouw, on_delete=models.CASCADE)
+    firstname_resident = models.CharField(max_length=40)
+    lastname_resident = models.CharField(max_length=40)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('url', 'gebouw_id')
+        # TODO: Why not an ID?
+        unique_together = ('url', 'building_id')
 
     def __str__(self):
-        return f"{self.voornaam_inwoner} {self.achternaam_inwoner} : {self.url}"
+        return f"{self.firstname_resident} {self.lastname_resident} : {self.url}"
 
 
-class Vuilophaling(models.Model):
-    gebouw = models.ForeignKey(Gebouw, on_delete=models.CASCADE)
-    datum = models.DateField()
+class GarbageCollection(models.Model):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    date = models.DateField()
 
     GFT = 'GFT'
     GLAS = 'GLS'
@@ -73,7 +102,7 @@ class Vuilophaling(models.Model):
     PAPIER = 'PAP'
     PMD = 'PMD'
     RESTAFVAL = 'RES'
-    VUIL = [
+    GARBAGE = [
         (GFT, 'GFT'),
         (GLAS, 'Glas'),
         (GROF_VUIL, 'Grof vuil'),
@@ -82,53 +111,53 @@ class Vuilophaling(models.Model):
         (PMD, 'PMD'),
         (RESTAFVAL, 'Restafval')
     ]
-    soort_vuil = models.CharField(
+    garbage_type = models.CharField(
         max_length=3,
-        choices=VUIL)
+        choices=GARBAGE)
 
     def __str__(self):
-        return f"{self.soort_vuil} op {self.datum} voor {self.gebouw_id}"
+        return f"{self.garbage_type} op {self.date} voor {self.building_id}"
 
     class Meta:
-        unique_together = ('gebouw_id', 'soort_vuil', 'datum')
+        unique_together = ('building_id', 'garbage_type', 'date')
 
 
-class Ronde(models.Model):
-    naam = models.CharField(max_length=40)
-    regio = models.ForeignKey(Regio, on_delete=models.SET_NULL, blank=True, null=True)
+class Tour(models.Model):
+    name = models.CharField(max_length=40)
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
     modified_at = models.DateTimeField()
 
     def __str__(self):
-        return f"{self.naam} in regio {self.regio}"
+        return f"{self.name} in regio {self.region}"
 
 
-class GebouwOpRonde(models.Model):
-    ronde = models.ForeignKey(Ronde, on_delete=models.CASCADE)
-    gebouw = models.ForeignKey(Gebouw, on_delete=models.CASCADE)
+class BuildingOnTour(models.Model):
+    tour = models.ForeignKey(Tour, on_delete=models.CASCADE)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
     index = models.IntegerField()
 
     def __str__(self):
-        return f"{self.gebouw} op ronde {self.ronde}, index: {self.index}"
+        return f"{self.building} op ronde {self.tour}, index: {self.index}"
 
     class Meta:
-        unique_together = ('index', 'ronde')
+        unique_together = ('index', 'tour')
 
 
-class StudentBijGebouwOpRonde(models.Model):
-    ronde = models.ForeignKey(Ronde, on_delete=models.CASCADE)
-    gebouw = models.ForeignKey(Gebouw, on_delete=models.CASCADE)
-    datum = models.DateField()
+class StudentAtBuildingOnTour(models.Model):
+    tour = models.ForeignKey(Tour, on_delete=models.CASCADE)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    date = models.DateField()
     student = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.student} bij {self.gebouw} op {self.ronde} op {self.datum}"
+        return f"{self.student} bij {self.building} op {self.tour} op {self.date}"
 
 
-class FotoGebouw(models.Model):
-    gebouw = models.ForeignKey(Gebouw, on_delete=models.CASCADE)
-    foto_naam = models.CharField(max_length=2048)
-    beschrijving = models.TextField(blank=True, null=True)
-    tijdstip = models.DateTimeField()
+class PictureBuilding(models.Model):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    picture_name = models.CharField(max_length=2048)
+    description = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField()
 
     AANKOMST = 'AA'
     BINNEN = 'BI'
@@ -147,16 +176,16 @@ class FotoGebouw(models.Model):
         choices=TYPE)
 
     def __str__(self):
-        return f"{self.type} = {self.foto_naam} bij {self.gebouw} ({self.tijdstip}): {self.beschrijving}"
+        return f"{self.type} = {self.picture_name} bij {self.building} ({self.timestamp}): {self.description}"
 
 
-class Handleiding(models.Model):
-    gebouw = models.ForeignKey(Gebouw, on_delete=models.CASCADE)
-    versienummer = models.IntegerField()
-    bestandsnaam = models.CharField(max_length=2048)
+class Manual(models.Model):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    version_number = models.IntegerField()
+    filename = models.CharField(max_length=2048)
 
     def __str__(self):
-        return f"Handleiding: {self.bestandsnaam} (versie {self.versienummer}) voor {self.gebouw}"
+        return f"Handleiding: {self.filename} (versie {self.version_number}) voor {self.building}"
 
     class Meta:
-        unique_together = ('gebouw_id', 'versienummer')
+        unique_together = ('building_id', 'version_number')
