@@ -64,6 +64,9 @@ On this page you can add/remove users, regions, ...
 When you surf to http://localhost:2002/users, you shouldn't be able to see all the users (401 Unauthorized).
 Now we'll create a user.
 
+Before we can test the 'production' workflow, you should adapt the code temporarily and set `DEBUG = False`. This is needed
+because e-mail verification is set `'optional'` in development and only in production it is set to `'mandatory'`.
+
 - Get a temporary e-mail box on this website: https://temp-mail.org/
 - Use this e-mail on the following page: http://localhost:2002/user/signup
     - You don't need to add a username, since we don't use that.
