@@ -8,6 +8,7 @@ from django.db.models.signals import post_save
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.authtoken.models import Token
 from users.managers import UserManager
+from django.core.exceptions import ValidationError
 
 
 class Region(models.Model):
@@ -37,7 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     firstname = models.CharField(max_length=40)
     lastname = models.CharField(max_length=40)
     phone_number = PhoneNumberField(region='BE')
-    region = models.ManyToManyField(Region)
+    region = models.ManyToManyField(Region, blank=True)
 
     STUDENT = 'ST'
     SUPERSTUDENT = 'SS'
@@ -69,6 +70,17 @@ class Building(models.Model):
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
 
+
+    '''
+    Only a syndic can own a building, not a student.
+    '''
+    def clean(self):
+        super().clean()
+        user = self.syndic
+        print(user)
+        if user.role != 'SY':
+            raise ValidationError("User must be a syndic to create a building")
+
     class Meta:
         # TODO: Check if this shouldn't be an ID
         unique_together = ('city', 'postal_code', 'street', 'house_number')
@@ -78,14 +90,10 @@ class Building(models.Model):
 
 
 class BuildingURL(models.Model):
-    url = models.CharField(max_length=2048)
+    url = models.CharField(max_length=2048,  unique=True)
     firstname_resident = models.CharField(max_length=40)
     lastname_resident = models.CharField(max_length=40)
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
-
-    class Meta:
-        # TODO: Why not an ID?
-        unique_together = ('url', 'building_id')
 
     def __str__(self):
         return f"{self.firstname_resident} {self.lastname_resident} : {self.url}"
@@ -134,7 +142,18 @@ class Tour(models.Model):
 class BuildingOnTour(models.Model):
     tour = models.ForeignKey(Tour, on_delete=models.CASCADE)
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    index = models.IntegerField()
+    index = models.PositiveIntegerField()
+
+
+    '''
+    The region of a tour and of a building needs to be the same.
+    '''
+    def clean(self):
+        tour_region = self.tour.region
+        building_region = self.building.region
+        if tour_region != building_region:
+            raise ValidationError(f"The tour ({tour_region}) and building ({building_region}) "
+                                  f"correspond to different region. ")
 
     def __str__(self):
         return f"{self.building} op ronde {self.tour}, index: {self.index}"
@@ -144,13 +163,27 @@ class BuildingOnTour(models.Model):
 
 
 class StudentAtBuildingOnTour(models.Model):
-    tour = models.ForeignKey(Tour, on_delete=models.CASCADE)
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    building_on_tour = models.ForeignKey(BuildingOnTour, on_delete=models.SET_NULL, null=True)
     date = models.DateField()
-    student = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    '''
+    A syndic can't do tours, so we need to check that a student assigned to the building on the tour is not a syndic.
+    Also, the student that does the tour needs to have selected the region where the building is located.
+    '''
+    def clean(self):
+        super().clean()
+        user = self.student
+        if user.role == 'SY':
+            raise ValidationError("Syndic can't do tours.")
+        building_on_tour_region = self.building_on_tour.tour.region
+        if not self.student.region.all().filter(region=building_on_tour_region).exists():
+            raise ValidationError(f"User doesn't tour the region {building_on_tour_region}"
+                                  f" where the building is located")
+
 
     def __str__(self):
-        return f"{self.student} bij {self.building} op {self.tour} op {self.date}"
+        return f"{self.student} bij {self.building_on_tour} op {self.date}"
 
 
 class PictureBuilding(models.Model):
