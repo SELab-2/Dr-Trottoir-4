@@ -5,7 +5,7 @@ An example of a fixtures is [dumpdata_1.json](../backend/dumpdata_1.json).
 
 In order to create a dumpdata of our database file using docker, we can use the command:
 ```
-docker-compose exec backend python manage.py dumpdata -o <name>.json
+manage.py dumpdata --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 4 -o <output_name>.json
 ```
 There are other file extension possible but this will do for our test data.
 

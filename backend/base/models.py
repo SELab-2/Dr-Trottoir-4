@@ -70,6 +70,10 @@ class Building(models.Model):
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
 
+
+    '''
+    Only a syndic can own a building, not a student.
+    '''
     def clean(self):
         super().clean()
         user = self.syndic
@@ -86,14 +90,10 @@ class Building(models.Model):
 
 
 class BuildingURL(models.Model):
-    url = models.CharField(max_length=2048)
+    url = models.CharField(max_length=2048,  unique=True)
     firstname_resident = models.CharField(max_length=40)
     lastname_resident = models.CharField(max_length=40)
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
-
-    class Meta:
-        # TODO: Why not an ID?
-        unique_together = ('url', 'building_id')
 
     def __str__(self):
         return f"{self.firstname_resident} {self.lastname_resident} : {self.url}"
@@ -144,6 +144,10 @@ class BuildingOnTour(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
     index = models.PositiveIntegerField()
 
+
+    '''
+    The region of a tour and of a building needs to be the same.
+    '''
     def clean(self):
         tour_region = self.tour.region
         building_region = self.building.region
@@ -163,6 +167,10 @@ class StudentAtBuildingOnTour(models.Model):
     date = models.DateField()
     student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
+    '''
+    A syndic can't do tours, so we need to check that a student assigned to the building on the tour is not a syndic.
+    Also, the student that does the tour needs to have selected the region where the building is located.
+    '''
     def clean(self):
         super().clean()
         user = self.student
