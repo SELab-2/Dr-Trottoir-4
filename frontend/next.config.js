@@ -1,4 +1,5 @@
-/** @type {import('next').NextConfig} */
+/** @type {{redirects(): Promise<[{permanent: boolean, destination: string, source: string}]>}} */
+
 const nextConfig = {
   async redirects() {
     return [

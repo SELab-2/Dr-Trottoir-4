@@ -3,7 +3,20 @@ import styles from "styles/Login.module.css"
 import Image from "next/image";
 import filler_logo from "../public/filler_logo.png"
 import Link from "next/link";
+import {Router} from "next/router";
 
+const loginApi = async (username: string, password: string): Promise<void> => {
+  const resp = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user, password }),
+  });
+  if (resp.status !== 200) {
+    throw new Error(await resp.text());
+  }
+  // @ts-ignore
+    Router.push("/welcome");
+};
 
 function Login() {
     return (
@@ -16,10 +29,10 @@ function Login() {
                 <div className={styles.login_container}>
                     <p className={styles.title}>Login.</p>
                     <p className={styles.text}>E-mailadres:</p>
-                    <input className={styles.input} type={"text"}/>
+                    <input id="user" className={styles.input} type={"text"}/>
                     <br/>
                     <p className={styles.text}>Wachtwoord:</p>
-                    <input className={styles.input} type={"password"}/>
+                    <input id="password" className={styles.input} type={"password"}/>
                     <Link href={"/welcome"}>
                         <button className={styles.button}>Login</button>
                     </Link>
