@@ -1,4 +1,6 @@
 from django.contrib.auth.models import PermissionsMixin
+from django.db.models import UniqueConstraint
+from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
@@ -69,6 +71,7 @@ class Building(models.Model):
     duration = models.TimeField(default='00:00')
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
 
 
     '''
@@ -82,8 +85,15 @@ class Building(models.Model):
             raise ValidationError("User must be a syndic to create a building")
 
     class Meta:
-        # TODO: Check if this shouldn't be an ID
-        unique_together = ('city', 'postal_code', 'street', 'house_number')
+        constraints = [
+            UniqueConstraint(
+                Lower('city'),
+                Lower('street'),
+                Lower('postal_code'),
+                Lower('house_number'),
+                name='address_unique',
+            ),
+        ]
 
     def __str__(self):
         return f"{self.street} {self.house_number}, {self.city} {self.postal_code}"
@@ -124,10 +134,17 @@ class GarbageCollection(models.Model):
         choices=GARBAGE)
 
     def __str__(self):
-        return f"{self.garbage_type} op {self.date} voor {self.building_id}"
+        return f"{self.garbage_type} op {self.date} voor {self.building}"
 
     class Meta:
-        unique_together = ('building_id', 'garbage_type', 'date')
+        constraints = [
+            UniqueConstraint(
+                'building',
+                Lower('garbage_type'),
+                'date',
+                name='garbage_collection_unique',
+            ),
+        ]
 
 
 class Tour(models.Model):
@@ -159,7 +176,13 @@ class BuildingOnTour(models.Model):
         return f"{self.building} op ronde {self.tour}, index: {self.index}"
 
     class Meta:
-        unique_together = ('index', 'tour')
+        constraints = [
+            UniqueConstraint(
+                'index',
+                'tour',
+                name='unique_building_on_tour',
+            ),
+        ]
 
 
 class StudentAtBuildingOnTour(models.Model):
@@ -214,11 +237,17 @@ class PictureBuilding(models.Model):
 
 class Manual(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    version_number = models.IntegerField()
+    version_number = models.PositiveIntegerField()
     filename = models.CharField(max_length=2048)
 
     def __str__(self):
         return f"Handleiding: {self.filename} (versie {self.version_number}) voor {self.building}"
 
     class Meta:
-        unique_together = ('building_id', 'version_number')
+        constraints = [
+            UniqueConstraint(
+                'building_id',
+                'version_number',
+                name='unique_manual',
+            ),
+        ]
