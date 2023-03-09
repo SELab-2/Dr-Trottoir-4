@@ -16,7 +16,8 @@ class Default(APIView):
             return Response('"name" field is required', status.HTTP_400_BAD_REQUEST)
         b = Region(region=name)
         b.save()
-        return Response("", status.HTTP_201_CREATED)
+        serializer = RegionSerializer(b)
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
 
 class RegionIndividualView(APIView):
