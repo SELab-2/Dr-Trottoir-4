@@ -1,7 +1,7 @@
 # Load data to database using fixtures
 
 **Fixtures** in django are a useful way to dump data and add the data to our database. 
-An example of a fixtures is [dump-data.json](../backend/dumpdata_1.json).
+An example of a fixtures is [dump-data.json](https://github.com/SELab-2/Dr-Trottoir-4/blob/develop/backend/dumpdata.json).
 
 In order to create a data dump of our database file using docker, we can use the command:
 ```bash
@@ -19,7 +19,18 @@ To load the data in the database, use the command:
 docker-compose exec backend python manage.py loaddata <fixturename>
 ```
 
-The example fixtures we have provided will serve as a good initial batch of data for testing purposes.
+The example fixtures we have provided will serve as a good initial batch of data for testing purposes. 
+Please note that not all tables have been filled; below is a list of those that have been filled:
+<ul>
+    <li>Building on tours</li>
+    <li>Buildings</li>
+    <li>Garbage Collections</li>
+    <li>Regions</li>
+    <li>Student at buildings on tours</li></li>
+    <li>Tours</li>
+    <li>Users</li>
+</ul>
+
 There are currently 22 users, all of whom share the same password `drtrottoir123`.
 The names of these users have been chosen to make it easier to recognize what role they have:
 <ul>
