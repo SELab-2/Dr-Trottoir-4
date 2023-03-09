@@ -73,10 +73,10 @@ class Building(models.Model):
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
 
-
     '''
     Only a syndic can own a building, not a student.
     '''
+
     def clean(self):
         super().clean()
         user = self.syndic
@@ -100,7 +100,7 @@ class Building(models.Model):
 
 
 class BuildingURL(models.Model):
-    url = models.CharField(max_length=2048,  unique=True)
+    url = models.CharField(max_length=2048, unique=True)
     firstname_resident = models.CharField(max_length=40)
     lastname_resident = models.CharField(max_length=40)
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
@@ -155,16 +155,25 @@ class Tour(models.Model):
     def __str__(self):
         return f"{self.name} in regio {self.region}"
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                Lower('name'),
+                'region',
+                name='unique_tour',
+            ),
+        ]
+
 
 class BuildingOnTour(models.Model):
     tour = models.ForeignKey(Tour, on_delete=models.CASCADE)
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
     index = models.PositiveIntegerField()
 
-
     '''
     The region of a tour and of a building needs to be the same.
     '''
+
     def clean(self):
         super().clean()
         tour_region = self.tour.region
@@ -195,6 +204,7 @@ class StudentAtBuildingOnTour(models.Model):
     A syndic can't do tours, so we need to check that a student assigned to the building on the tour is not a syndic.
     Also, the student that does the tour needs to have selected the region where the building is located.
     '''
+
     def clean(self):
         super().clean()
         user = self.student
@@ -205,6 +215,15 @@ class StudentAtBuildingOnTour(models.Model):
             raise ValidationError(f"User doesn't tour the region {building_on_tour_region}"
                                   f" where the building is located")
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                'building_on_tour',
+                'date',
+                'student',
+                name='unique_student_at_building_on_tour',
+            ),
+        ]
 
     def __str__(self):
         return f"{self.student} bij {self.building_on_tour} op {self.date}"
@@ -231,6 +250,17 @@ class PictureBuilding(models.Model):
     type = models.CharField(
         max_length=2,
         choices=TYPE)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                'building',
+                Lower('picture_name'),
+                Lower('description'),
+                'timestamp',
+                name='unique_picture_building',
+            ),
+        ]
 
     def __str__(self):
         return f"{self.type} = {self.picture_name} bij {self.building} ({self.timestamp}): {self.description}"
