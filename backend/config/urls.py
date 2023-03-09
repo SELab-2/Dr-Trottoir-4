@@ -22,6 +22,9 @@ from rest_framework.routers import DefaultRouter
 from users import urls as user_urls
 from users.views import UserViewSet
 
+from authentication import urls as authentication_urls
+from building import urls as building_urls
+
 router = DefaultRouter()
 # NOTE: This is a temporary view to test 'IsAuthenticated"
 router.register(r'users', UserViewSet)
@@ -29,6 +32,8 @@ router.register(r'users', UserViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('authentication/', include(authentication_urls)),
+    path('building/', include(building_urls)),
     path('user/', include(user_urls)),
     re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
 ]
