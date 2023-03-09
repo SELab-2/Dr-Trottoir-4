@@ -1,5 +1,7 @@
 from base.models import Region
 from base.serializers import RegionSerializer
+from django.core.exceptions import NON_FIELD_ERRORS
+from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -15,6 +17,11 @@ class Default(APIView):
         if not name:
             return Response('"name" field is required', status.HTTP_400_BAD_REQUEST)
         b = Region(region=name)
+        try:
+            b.full_clean()
+        except ValidationError as e:
+            print(e)
+            return Response(e.message_dict["region"], status.HTTP_500_INTERNAL_SERVER_ERROR)
         b.save()
         serializer = RegionSerializer(b)
         return Response(serializer.data, status.HTTP_201_CREATED)
