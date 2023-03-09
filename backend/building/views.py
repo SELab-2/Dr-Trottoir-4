@@ -1,14 +1,53 @@
-from rest_framework.response import Response
+from django.core.exceptions import ValidationError
+from rest_framework import permissions
 from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from base.models import Building
 from base.serializers import BuildingSerializer
 
 
-class BuildingIndividualView(APIView):
+# TODO: code repetition
 
-    # TODO: permission classes
+
+class DefaultBuilding(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        """
+        Create a new building
+        """
+        data = request.data.dict()
+
+        if "syndic" in data.keys():
+            data["syndic_id"] = data["syndic"]
+            # del data["syndic"]
+
+        building_instance = Building()
+
+        for key in data.keys():
+            if key in vars(building_instance):
+                setattr(building_instance, key, data[key])
+
+        try:
+            building_instance.full_clean()
+        except ValidationError as e:
+            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
+
+        building_instance.save()
+        serializer = BuildingSerializer(building_instance)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class BuildingIndividualView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def _bad_request(self):
+        return Response(
+            {"res": "Object with given building ID does not exists."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     def get(self, request, building_id):
         """
@@ -17,15 +56,47 @@ class BuildingIndividualView(APIView):
         building_instance = Building.objects.get(id=building_id)
 
         if not building_instance:
-            return Response(
-                {"res": "Object with given building ID does not exists."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return self._bad_request()
 
         serializer = BuildingSerializer(building_instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # TODO: Also implement delete, patch ...
+    def delete(self, request, building_id):
+        """
+        Delete building with given id
+        """
+        building_instance = Building.objects.get(id=building_id)
+        if not building_instance:
+            return self._bad_request()
+
+        building_instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, building_id):
+        """
+        Edit building with given ID  (DOES NOT WORK YET)
+        """
+        building_instance = Building.objects.get(id=building_id)
+        if not building_instance:
+            return self._bad_request()
+        data = request.data.dict()
+
+        if "syndic" in data.keys():
+            data["syndic_id"] = data["syndic"]
+            # del data["syndic"]
+
+        for key in data.keys():
+            if key in vars(building_instance):
+                print(f"key: {key}")
+                setattr(building_instance, key, data[key])
+
+        try:
+            building_instance.full_clean()
+        except ValidationError as e:
+            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
+
+        building_instance.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AllBuildingsView(APIView):
@@ -37,7 +108,6 @@ class AllBuildingsView(APIView):
         building_instances = Building.objects.all()
 
         if not building_instances:
-            # TODO: testen of dit niet gewoon een leeg object teruggeeft
             return Response(
                 {"res": "No buildings found"},
                 status=status.HTTP_400_BAD_REQUEST
