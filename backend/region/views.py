@@ -24,7 +24,7 @@ class RegionIndividualView(APIView):
 
     def get(self, request, region_id):
         """
-        Get info about a Region with given name
+        Get info about a Region with given id
         """
         region_instance = Region.objects.get(id=region_id)
 
