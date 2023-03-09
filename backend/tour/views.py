@@ -77,11 +77,11 @@ class TourIndividualView(APIView):
         tour_instance.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def delete(self, request, region_id):
+    def delete(self, request, tour_id):
         """
         delete a region from the database
         """
-        tour_instance = Tour.objects.get(id=region_id)
+        tour_instance = Tour.objects.get(id=tour_id)
         if not tour_instance:
             return Response(
                 {"res": "Object with given tour id does not exist."},
