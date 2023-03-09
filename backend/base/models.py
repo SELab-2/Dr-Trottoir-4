@@ -166,6 +166,7 @@ class BuildingOnTour(models.Model):
     The region of a tour and of a building needs to be the same.
     '''
     def clean(self):
+        super().clean()
         tour_region = self.tour.region
         building_region = self.building.region
         if tour_region != building_region:
