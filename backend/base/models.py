@@ -190,8 +190,13 @@ class BuildingOnTour(models.Model):
             UniqueConstraint(
                 'index',
                 'tour',
-                name='unique_building_on_tour',
+                name='unique_index_on_tour',
             ),
+            UniqueConstraint(
+                'building',
+                'tour',
+                name='unique_building_on_tour',
+            )
         ]
 
 
