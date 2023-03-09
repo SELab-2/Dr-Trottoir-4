@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from .models import *
 
 
@@ -7,3 +8,9 @@ class BuildingSerializer(serializers.ModelSerializer):
         model = Building
         fields = ["city", "postal_code", "street", "house_number", "client_number",
                   "duration", "syndic", "region", "name"]
+
+
+class RegionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
+        fields = ["region"]
