@@ -7,3 +7,8 @@ class BuildingSerializer(serializers.ModelSerializer):
         model = Building
         fields = ["city", "postal_code", "street", "house_number", "client_number",
                   "duration", "syndic", "region", "name"]
+
+class BuildingTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BuildingOnTour
+        fields = [ "id", "building", "tour", "index"]
