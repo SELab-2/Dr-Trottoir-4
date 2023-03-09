@@ -13,4 +13,4 @@ class BuildingSerializer(serializers.ModelSerializer):
 class TourSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
-        field = ["id", "name", "region", "modified_at"]
+        fields = ["id", "name", "region", "modified_at"]
