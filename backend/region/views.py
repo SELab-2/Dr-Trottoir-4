@@ -55,6 +55,19 @@ class RegionIndividualView(APIView):
         region_instance.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def delete(self, request, region_id):
+        """
+        delete a region from the database
+        """
+        region_instance = Region.objects.get(id=region_id)
+        if not region_instance:
+            return Response(
+                {"res": "Object with given region id does not exist."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        region_instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class AllRegionsView(APIView):
     def get(self, request):
