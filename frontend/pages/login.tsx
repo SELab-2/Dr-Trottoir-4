@@ -3,11 +3,12 @@ import styles from "styles/Login.module.css"
 import Image from "next/image";
 import filler_logo from "../public/filler_logo.png"
 import Link from "next/link";
-import login from "lib/auth";
-import {Router} from "next/router";
+import {useRouter} from "next/router";
 import {FormEvent} from "react";
 
 export default function Login() {
+
+    const router = useRouter();
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
 
@@ -19,7 +20,8 @@ export default function Login() {
         }
 
         const JSONdata = JSON.stringify(data); // Might want to change this so we hash the password locally
-        //"http://" + process.env.NEXT_PUBLIC_HOST_API + ":" + process.env.NEXT_PUBLIC_HOST_PORT + "/user/login/";
+        // "http://localhost:2002/user/login/";
+        // "http://" + process.env.NEXT_PUBLIC_HOST_API + ":" + process.env.NEXT_PUBLIC_HOST_PORT + "/user/login/";
         const endpoint = "http://localhost:2002/user/login/";
 
         // try and authenticate
@@ -33,10 +35,8 @@ export default function Login() {
             throw new Error(await response.text());
         }
 
-        // authentication was successful
-        const result = await response.json();
-        alert(`Is this your username and password: ${result.data}`);
-        // await Router.push("/welcome");
+        // authentication was successful, so go to the welcome page
+        await router.push("/welcome");
     }
     return (
         <>
