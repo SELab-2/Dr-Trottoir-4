@@ -24,7 +24,7 @@ class Default(APIView):
             b.full_clean()
         except ValidationError as e:
             print(e)
-            return Response(e.message_dict["tour"], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(e.message_dict["tour"], status=status.HTTP_400_BAD_REQUEST)
         b.save()
         serializer = TourSerializer(b)
         return Response(serializer.data, status.HTTP_201_CREATED)
@@ -73,7 +73,7 @@ class TourIndividualView(APIView):
             tour_instance.full_clean()
         except ValidationError as e:
             # print(e)
-            return Response(e.message_dict["tour"], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(e.message_dict["tour"], status=status.HTTP_400_BAD_REQUEST)
         tour_instance.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
