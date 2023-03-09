@@ -13,4 +13,4 @@ class BuildingSerializer(serializers.ModelSerializer):
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Region
-        fields = ["region"]
+        fields = ["id", "region"]
