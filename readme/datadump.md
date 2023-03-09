@@ -26,7 +26,7 @@ Please note that not all tables have been filled; below is a list of those that 
     <li>Buildings</li>
     <li>Garbage Collections</li>
     <li>Regions</li>
-    <li>Student at buildings on tours</li></li>
+    <li>Student at buildings on tours</li>
     <li>Tours</li>
     <li>Users</li>
 </ul>
