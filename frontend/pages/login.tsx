@@ -9,7 +9,7 @@ const loginApi = async (username: string, password: string): Promise<void> => {
   const resp = await fetch("/api/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ user, password }),
+    body: JSON.stringify({ username, password }),
   });
   if (resp.status !== 200) {
     throw new Error(await resp.text());
