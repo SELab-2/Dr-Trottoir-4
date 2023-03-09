@@ -5,22 +5,39 @@ import filler_logo from "../public/filler_logo.png"
 import Link from "next/link";
 import login from "lib/auth";
 import {Router} from "next/router";
+import {FormEvent} from "react";
 
-// const loginApi = async (username: string, password: string): Promise<void> => {
-//   const resp = await fetch("/api/login", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ user, password }),
-//   });
-//   if (resp.status !== 200) {
-//     throw new Error(await resp.text());
-//   }
-//   // @ts-ignore
-//     Router.push("/welcome");
-// };
+export default function Login() {
+    const handleSubmit = async (event: FormEvent) => {
+        event.preventDefault();
 
-function Login() {
-    const API_BASE = "http://localhost:2002/user/login/";
+        const form = event.target as HTMLFormElement;
+
+        const data = {
+            email: form.email.value as string,
+            password: form.password.value as string,
+        }
+
+        const JSONdata = JSON.stringify(data); // Might want to change this so we hash the password locally
+        //"http://" + process.env.NEXT_PUBLIC_HOST_API + ":" + process.env.NEXT_PUBLIC_HOST_PORT + "/user/login/";
+        const endpoint = "http://localhost:2002/user/login/";
+
+        // try and authenticate
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSONdata,
+        });
+
+        if (response.status != 200) { // authentication failed
+            throw new Error(await response.text());
+        }
+
+        // authentication was successful
+        const result = await response.json();
+        alert(`Is this your username and password: ${result.data}`);
+        // await Router.push("/welcome");
+    }
     return (
         <>
             <BaseHeader/>
@@ -29,11 +46,11 @@ function Login() {
                     <Image src={filler_logo} alt="My App Logo" className={styles.filler_image}/>
                 </div>
                 <div className={styles.login_container}>
-                    <form action={API_BASE} method="post">
+                    <form onSubmit={handleSubmit}>
                         <label htmlFor="email">E-mailadres:</label>
-                        <input type="text" id="email" name="email"/>
+                        <input type="text" id="email" name="email" required/>
                         <label htmlFor="password">Wachtwoord:</label>
-                        <input type="text" id="password" name="password"/>
+                        <input type="text" id="password" name="password" required/>
                         <button type="submit">Login</button>
                     </form>
 
@@ -51,5 +68,3 @@ function Login() {
         </>
     )
 }
-
-export default Login
