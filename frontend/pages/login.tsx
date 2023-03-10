@@ -53,6 +53,7 @@ export default function Login() {
                         <input className={styles.input} type="password" id="password" name="password" required/>
                         <button className={styles.button} type="submit">Login</button>
                     </form>
+                    <p className={styles.text}><Link href="/reset-password"><u>Forgot Password</u></Link></p>
                     <p className={styles.text}>Don't have an account? <Link href="/signup"><u>Sign up here</u></Link></p>
                 </div>
             </div>

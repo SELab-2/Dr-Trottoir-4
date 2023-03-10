@@ -28,7 +28,7 @@ export default function Signup() {
             return;
         }
 
-         const JSONdata = JSON.stringify(data); // Might want to change this, so we hash the password locally
+        const JSONdata = JSON.stringify(data); // Might want to change this, so we hash the password locally
 
         const endpoint = "http://" + process.env.NEXT_PUBLIC_API_HOST + ":" + process.env.NEXT_PUBLIC_API_PORT + process.env.NEXT_PUBLIC_API_SIGNUP;
 
