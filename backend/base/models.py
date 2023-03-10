@@ -241,7 +241,7 @@ class StudentAtBuildingOnTour(models.Model):
 
 class PictureBuilding(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    picture_name = models.CharField(max_length=2048)
+    picture = models.ImageField(upload_to='building_pictures/', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField()
 
@@ -265,7 +265,7 @@ class PictureBuilding(models.Model):
         constraints = [
             UniqueConstraint(
                 'building',
-                Lower('picture_name'),
+                Lower('picture'),
                 Lower('description'),
                 'timestamp',
                 name='unique_picture_building',
@@ -274,16 +274,16 @@ class PictureBuilding(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.type} = {self.picture_name} bij {self.building} ({self.timestamp}): {self.description}"
+        return f"{self.type} = {str(self.picture).split('/')[-1]} bij {self.building} ({self.timestamp}): {self.description}"
 
 
 class Manual(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
     version_number = models.PositiveIntegerField()
-    filename = models.CharField(max_length=2048)
+    file = models.FileField(upload_to='building_manuals/', blank=True, null=True)
 
     def __str__(self):
-        return f"Handleiding: {self.filename} (versie {self.version_number}) voor {self.building}"
+        return f"Handleiding: {str(self.file).split('/')[-1]} (versie {self.version_number}) voor {self.building}"
 
     class Meta:
         constraints = [
