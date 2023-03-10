@@ -4,8 +4,11 @@ from .models import *
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ["id", "username", "email", "firstname", "lastname",
+        model = User
+        fields = ["id", "username", "email", "first_name", "last_name",
                   "phone_number", "region", "role"]
+
+        read_only_fields = ["id", "email"]
 
 
 class BuildingSerializer(serializers.ModelSerializer):
@@ -13,3 +16,4 @@ class BuildingSerializer(serializers.ModelSerializer):
         model = Building
         fields = ["id", "city", "postal_code", "street", "house_number", "client_number",
                   "duration", "syndic", "region", "name"]
+        read_only_fields = ["id"]
