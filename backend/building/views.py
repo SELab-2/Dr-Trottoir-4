@@ -14,6 +14,8 @@ from base.serializers import BuildingSerializer
 class DefaultBuilding(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
+    # TODO: in order for this to work, you have to pass a password
+    # In the future, we probably won't use POST this way anymore (if we work with the whitelist method)
     def post(self, request):
         """
         Create a new building
@@ -53,7 +55,7 @@ class BuildingIndividualView(APIView):
         """
         Get info about building with given id
         """
-        building_instance = Building.objects.get(id=building_id)
+        building_instance = Building.objects.filter(id=building_id)
 
         if not building_instance:
             return self._bad_request()
@@ -65,7 +67,7 @@ class BuildingIndividualView(APIView):
         """
         Delete building with given id
         """
-        building_instance = Building.objects.get(id=building_id)
+        building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
             return self._bad_request()
 
@@ -74,9 +76,9 @@ class BuildingIndividualView(APIView):
 
     def patch(self, request, building_id):
         """
-        Edit building with given ID  (DOES NOT WORK YET)
+        Edit building with given ID
         """
-        building_instance = Building.objects.get(id=building_id)
+        building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
             return self._bad_request()
         data = request.data.dict()
