@@ -117,11 +117,5 @@ class AllBuildingToursView(APIView):
         """
         buildingOnTourInstances = BuildingOnTour.objects.all()
 
-        if not buildingOnTourInstances:
-            return Response(
-                {"res", "No buildings on tours found"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
         serializer = BuildingTourSerializer(buildingOnTourInstances, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
