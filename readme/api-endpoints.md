@@ -5,6 +5,21 @@ For now, it can be used by both the backend team and the frontend team as a clea
 like.
 In the future, it might be useful to automatically generate API documentation.
 
+#### Used HTTP response status codes
+
+_Succesful_
+
+* GET: 200 OK
+* POST/DELETE: 204 No Content
+* PATCH: 201 Created
+
+_Unsuccessful_
+
+* Not logged in: 401 Unauthorized
+* Nonexistent id in URL: 400 Bad Request
+
+An internal server error (500) after a request should never happen.
+
 ## Table of contents
 
 - [/user](#user)
@@ -142,7 +157,7 @@ them
 | client_number | 
 | duration      | 
 | syndic        |                                    
-| region        |             
+| region        |
 
 **NOTE**: fields like syndic and region are foreign keys (IDs). So make sure they are already present before trying to
 patch
