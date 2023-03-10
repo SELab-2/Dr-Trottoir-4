@@ -1,11 +1,9 @@
 from base.models import Building, Tour, BuildingOnTour
 from base.serializers import BuildingTourSerializer
-from django.core.exceptions import NON_FIELD_ERRORS
 from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 
 
 class Default(APIView):
@@ -15,8 +13,8 @@ class Default(APIView):
         """
         data = request.data
         tour = data.get("tour")
-        building = data.get("tour")
-        index = data.get("tour")
+        building = data.get("building")
+        index = data.get("index")
         if not tour or not building or not index:
             return Response('"tour", "building" and "index" fields are required', status.HTTP_400_BAD_REQUEST)
         # checking if tour id exists
@@ -28,12 +26,11 @@ class Default(APIView):
         b = Building.objects.filter(id=building)
         if len(b) != 1:
             return Response('"building" field was not valid', status.HTTP_400_BAD_REQUEST)
-        building_isntance = b[0]
-        newTour = BuildingOnTour(tour=tour_instance, building=building_isntance, index=index)
+        building_instance = b[0]
+        newTour = BuildingOnTour(tour=tour_instance, building=building_instance, index=index)
         try:
             newTour.full_clean()
         except ValidationError as e:
-            print(e)
             return Response(e.message_dict["__all__"], status.HTTP_400_BAD_REQUEST)
         newTour.save()
         serializer = BuildingTourSerializer(newTour)
