@@ -158,6 +158,7 @@ them
 | duration      | 
 | syndic        |                                    
 | region        |
+| name          |
 
 **NOTE**: fields like syndic and region are foreign keys (IDs). So make sure they are already present before trying to
 patch
@@ -182,6 +183,7 @@ patch
 | duration      | 
 | syndic        |
 | region        |
+| name          |
 
 ## /buildingurl
 
