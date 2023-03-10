@@ -9,6 +9,7 @@ import {FormEvent} from "react";
 export default function Login() {
 
     const router = useRouter();
+
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
 
@@ -19,10 +20,8 @@ export default function Login() {
             password: form.password.value as string,
         }
 
-        const JSONdata = JSON.stringify(data); // Might want to change this so we hash the password locally
-        // "http://localhost:2002/user/login/";
-        // "http://" + process.env.NEXT_PUBLIC_HOST_API + ":" + process.env.NEXT_PUBLIC_HOST_PORT + "/user/login/";
-        const endpoint = "http://localhost:2002/user/login/";
+        const JSONdata = JSON.stringify(data); // Might want to change this, so we hash the password locally
+        const endpoint = "http://" + process.env.NEXT_PUBLIC_API_HOST + ":" + process.env.NEXT_PUBLIC_API_PORT + process.env.NEXT_PUBLIC_API_LOGIN;
 
         // try and authenticate
         const response = await fetch(endpoint, {
@@ -32,11 +31,12 @@ export default function Login() {
         });
 
         if (response.status != 200) { // authentication failed
-            throw new Error(await response.text());
+            // await response.text() -> contains error message
+            alert("Invalid credentials. Please try again.");
+        } else {
+            // authentication was successful, so go to the welcome page
+            await router.push("/welcome");
         }
-
-        // authentication was successful, so go to the welcome page
-        await router.push("/welcome");
     }
     return (
         <>
@@ -47,22 +47,13 @@ export default function Login() {
                 </div>
                 <div className={styles.login_container}>
                     <form onSubmit={handleSubmit}>
-                        <label htmlFor="email">E-mailadres:</label>
-                        <input type="text" id="email" name="email" required/>
-                        <label htmlFor="password">Wachtwoord:</label>
-                        <input type="text" id="password" name="password" required/>
-                        <button type="submit">Login</button>
+                        <label className={styles.text} htmlFor="email">E-mailadres:</label>
+                        <input className={styles.input} type="email" id="email" name="email" required/>
+                        <label className={styles.text} htmlFor="password">Wachtwoord:</label>
+                        <input className={styles.input} type="password" id="password" name="password" required/>
+                        <button className={styles.button} type="submit">Login</button>
                     </form>
-
-                    {/*<p className={styles.title}>Login.</p>*/}
-                    {/*<p className={styles.text}>E-mailadres:</p>*/}
-                    {/*<input id="user" className={styles.input} type={"text"}/>*/}
-                    {/*<br/>*/}
-                    {/*<p className={styles.text}>Wachtwoord:</p>*/}
-                    {/*<input id="password" className={styles.input} type={"password"}/>*/}
-                    {/*<Link href={"/welcome"}>*/}
-                    {/*    <button onClick={(e) => login()} className={styles.button}>Login</button>*/}
-                    {/*</Link>*/}
+                    <p className={styles.text}>Don't have an account? <Link href="/signup"><u>Sign up here</u></Link></p>
                 </div>
             </div>
         </>
