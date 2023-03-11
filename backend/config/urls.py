@@ -32,6 +32,6 @@ urlpatterns = [
     path('authentication/', include(authentication_urls)),
     path('building/', include(building_urls)),
     path('user/', include(user_urls)),
-    path('student_at_building_on_tour/', stud_buil_tour_urls),
+    path('student_at_building_on_tour/', include(stud_buil_tour_urls)),
     re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
 ]
