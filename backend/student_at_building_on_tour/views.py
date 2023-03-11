@@ -29,7 +29,8 @@ class Default(APIView):
         except ValidationError as e:
             return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
         sbt.save()
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = StudBuildTourSerializer(sbt)
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
 
 class build_tour_per_studentView(APIView):
@@ -88,8 +89,6 @@ class stud_build_tourIndividualView(APIView):
         except ValidationError as e:
             return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
         stud_tour_building_instance.save()
-        return Response(status=status.HTTP_201_CREATED)
-
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def delete(self, request, id):
