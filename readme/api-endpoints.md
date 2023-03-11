@@ -240,7 +240,7 @@ Maybe rename it to e.g. resident_building_info?
 
 > Get all info about the garbage collection with given id
 
-* `/{buildingid}`
+* `/building/{buildingid}`
 
 > Get all info about the garbage collection of the building with given buildingid
 
