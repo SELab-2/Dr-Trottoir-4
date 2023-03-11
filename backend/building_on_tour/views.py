@@ -87,10 +87,7 @@ class BuildingTourIndividualView(APIView):
         try:
             building_on_tour_instance.full_clean()
         except ValidationError as e:
-            if "tour" in e.message_dict:
-                return Response(e.message_dict["tour"], status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response(e.message_dict["__all__"], status=status.HTTP_400_BAD_REQUEST)
+            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
         building_on_tour_instance.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -107,7 +104,6 @@ class BuildingTourIndividualView(APIView):
             )
         building_on_tour_instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 
 class AllBuildingToursView(APIView):
