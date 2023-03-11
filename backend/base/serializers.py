@@ -17,3 +17,8 @@ class BuildingSerializer(serializers.ModelSerializer):
         fields = ["id", "city", "postal_code", "street", "house_number", "client_number",
                   "duration", "syndic", "region", "name"]
         read_only_fields = ["id"]
+
+class StudBuildTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentAtBuildingOnTour
+        fields = ["id", "building_on_tour", "date", "student"]
