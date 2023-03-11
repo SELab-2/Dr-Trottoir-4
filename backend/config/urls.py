@@ -20,6 +20,7 @@ from rest_framework.routers import DefaultRouter
 
 from authentication import urls as authentication_urls
 from building import urls as building_urls
+from garbage_collection import urls as garbage_collection_urls
 from users import urls as user_urls
 
 router = DefaultRouter()
@@ -31,6 +32,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('authentication/', include(authentication_urls)),
     path('building/', include(building_urls)),
+    path('garbage_collection/', include(garbage_collection_urls)),
     path('user/', include(user_urls)),
     re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
 ]

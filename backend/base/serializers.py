@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from .models import *
 
 
@@ -7,7 +8,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "username", "email", "first_name", "last_name",
                   "phone_number", "region", "role"]
-
         read_only_fields = ["id", "email"]
 
 
@@ -23,4 +23,11 @@ class BuildingUrlSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuildingURL
         fields = ["id", "first_name_resident", "last_name_resident", "building"]
+        read_only_fields = ["id"]
+
+
+class GarbageCollectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GarbageCollection
+        fields = ["id", "building", "date", "garbage_type"]
         read_only_fields = ["id"]
