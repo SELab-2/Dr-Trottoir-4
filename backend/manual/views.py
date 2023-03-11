@@ -34,8 +34,39 @@ class Default(APIView):
 
 
 class ManualView(APIView):
-    pass
+    def get(self, request, manual_id):
+        manual_instances = Manual.objects.filter(id=manual_id)
+        if len(manual_instances) != 1:
+            return Response("There is no manual with that id", status=status.HTTP_400_BAD_REQUEST)
+        serializer = ManualSerializer(manual_instances[0])
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def delete(self, request, manual_id):
+        manual_instances = Manual.objects.filter(id=manual_id)
+        if len(manual_instances) != 1:
+            return Response("There is no manual with that id", status=status.HTTP_400_BAD_REQUEST)
+        manual_instances[0].delete()
+        return Response(status=status.HTTP_200_OK)
+
+    def patch(self, request, manual_id):
+        manual_instances = Manual.objects.filter(id=manual_id)
+        if len(manual_instances) != 1:
+            return Response(
+                "Object with given id does not exist.",
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        instance = manual_instances[0]
+        data = request.data
+        building = data.get("building")
+        candidates = Building.objects.filter(id=building)
+        if len(candidates) != 1:
+            return Response('"Building" field was not valid', status=status.HTTP_400_BAD_REQUEST)
+        instance.building = candidates[0]
+        try:
+            instance.full_clean()
+        except ValidationError as e:
+            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ManualBuildingView(APIView):
     def get(self, request, building_id):
