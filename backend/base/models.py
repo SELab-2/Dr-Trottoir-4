@@ -14,7 +14,7 @@ from django.core.exceptions import ValidationError
 
 
 class Region(models.Model):
-    region = models.CharField(max_length=40, unique=True)
+    region = models.CharField(max_length=40, unique=True, error_messages={'unique': "Deze regio bestaat al."})
 
     def __str__(self):
         return self.region
@@ -30,7 +30,7 @@ class Region(models.Model):
 class User(AbstractBaseUser, PermissionsMixin):
     username = None
     # extra fields for authentication
-    email = models.EmailField(_('email address'), unique=True)
+    email = models.EmailField(_('email address'), unique=True, error_messages={'unique': "Er is al een gebruiker met deze email."})
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
@@ -82,7 +82,7 @@ class Building(models.Model):
         user = self.syndic
         print(user)
         if user.role != 'SY':
-            raise ValidationError("User must be a syndic to create a building")
+            raise ValidationError("Enkel een gebruiker met rol \"syndicus\" kan een gebouw hebben.")
 
     class Meta:
         constraints = [
@@ -92,6 +92,7 @@ class Building(models.Model):
                 Lower('postal_code'),
                 Lower('house_number'),
                 name='address_unique',
+                violation_error_message='Er is al een gebouw met dit adres.'
             ),
         ]
 
@@ -100,7 +101,7 @@ class Building(models.Model):
 
 
 class BuildingURL(models.Model):
-    url = models.CharField(max_length=2048, unique=True)
+    url = models.CharField(max_length=2048, unique=True, error_messages={'unique': "Deze URL bestaat al."})
     firstname_resident = models.CharField(max_length=40)
     lastname_resident = models.CharField(max_length=40)
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
@@ -143,6 +144,7 @@ class GarbageCollection(models.Model):
                 Lower('garbage_type'),
                 'date',
                 name='garbage_collection_unique',
+                violation_error_message='Dit soort afval wordt al op deze dag bij het gebouw afgehaald.'
             ),
         ]
 
@@ -161,6 +163,7 @@ class Tour(models.Model):
                 Lower('name'),
                 'region',
                 name='unique_tour',
+                violation_error_message='Er bestaat al een ronde met dezelfde naam in de regio.'
             ),
         ]
 
@@ -179,8 +182,8 @@ class BuildingOnTour(models.Model):
         tour_region = self.tour.region
         building_region = self.building.region
         if tour_region != building_region:
-            raise ValidationError(f"The tour ({tour_region}) and building ({building_region}) "
-                                  f"correspond to different region. ")
+            raise ValidationError(f"De regio's van de ronde ({tour_region}) en gebouw ({building_region}) "
+                                  f"zijn verschillend.")
 
     def __str__(self):
         return f"{self.building} op ronde {self.tour}, index: {self.index}"
@@ -191,11 +194,13 @@ class BuildingOnTour(models.Model):
                 'index',
                 'tour',
                 name='unique_index_on_tour',
+                violation_error_message='De ronde heeft al een gebouw op deze index.'
             ),
             UniqueConstraint(
                 'building',
                 'tour',
                 name='unique_building_on_tour',
+                violation_error_message='Dit gebouw komt al voor op deze ronde.'
             )
         ]
 
@@ -214,11 +219,10 @@ class StudentAtBuildingOnTour(models.Model):
         super().clean()
         user = self.student
         if user.role == 'SY':
-            raise ValidationError("Syndic can't do tours.")
+            raise ValidationError("Een syndicus kan geen rondes doen.")
         building_on_tour_region = self.building_on_tour.tour.region
         if not self.student.region.all().filter(region=building_on_tour_region).exists():
-            raise ValidationError(f"User doesn't tour the region {building_on_tour_region}"
-                                  f" where the building is located")
+            raise ValidationError(f"Student ({user.email}) doet geen rondes in de regio van het gebouw ({building_on_tour_region}).")
 
     class Meta:
         constraints = [
@@ -227,6 +231,7 @@ class StudentAtBuildingOnTour(models.Model):
                 'date',
                 'student',
                 name='unique_student_at_building_on_tour',
+                violation_error_message='De student doet op deze dag al de ronde.'
             ),
         ]
 
@@ -236,7 +241,7 @@ class StudentAtBuildingOnTour(models.Model):
 
 class PictureBuilding(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    picture_name = models.CharField(max_length=2048)
+    picture = models.ImageField(upload_to='building_pictures/', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField()
 
@@ -260,24 +265,25 @@ class PictureBuilding(models.Model):
         constraints = [
             UniqueConstraint(
                 'building',
-                Lower('picture_name'),
+                Lower('picture'),
                 Lower('description'),
                 'timestamp',
                 name='unique_picture_building',
+                violation_error_message='Het gebouw heeft al hetzelfde soort foto op hetzelfde tijdstip.'
             ),
         ]
 
     def __str__(self):
-        return f"{self.type} = {self.picture_name} bij {self.building} ({self.timestamp}): {self.description}"
+        return f"{self.type} = {str(self.picture).split('/')[-1]} bij {self.building} ({self.timestamp}): {self.description}"
 
 
 class Manual(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
     version_number = models.PositiveIntegerField()
-    filename = models.CharField(max_length=2048)
+    file = models.FileField(upload_to='building_manuals/', blank=True, null=True)
 
     def __str__(self):
-        return f"Handleiding: {self.filename} (versie {self.version_number}) voor {self.building}"
+        return f"Handleiding: {str(self.file).split('/')[-1]} (versie {self.version_number}) voor {self.building}"
 
     class Meta:
         constraints = [
@@ -285,5 +291,6 @@ class Manual(models.Model):
                 'building_id',
                 'version_number',
                 name='unique_manual',
+                violation_error_message='Het gebouw heeft al een handleiding met dit versienummer.'
             ),
         ]
