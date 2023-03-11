@@ -24,6 +24,7 @@ from users.views import UserViewSet
 
 from authentication import urls as authentication_urls
 from building import urls as building_urls
+from picture_building import urls as picture_building_urls
 
 router = DefaultRouter()
 # NOTE: This is a temporary view to test 'IsAuthenticated"
@@ -34,6 +35,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('authentication/', include(authentication_urls)),
     path('building/', include(building_urls)),
+    path('picture_building/', include(picture_building_urls)),
     path('user/', include(user_urls)),
     re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
 ]
