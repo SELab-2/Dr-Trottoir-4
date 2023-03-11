@@ -204,7 +204,7 @@ Maybe rename it to e.g. resident_building_info?
 
 > Get all links of a syndic with given userid
 
-* `/resident/{userid}`
+* `/building/{buildingid}`
 
 > Get all links where the user with given userid is a resident
 
