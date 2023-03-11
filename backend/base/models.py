@@ -11,6 +11,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.authtoken.models import Token
 from users.managers import UserManager
 from django.core.exceptions import ValidationError
+from django_random_id_model import RandomIDModel
 
 
 class Region(models.Model):
@@ -99,14 +100,13 @@ class Building(models.Model):
         return f"{self.street} {self.house_number}, {self.city} {self.postal_code}"
 
 
-class BuildingURL(models.Model):
-    url = models.CharField(max_length=2048, unique=True)
-    firstname_resident = models.CharField(max_length=40)
-    lastname_resident = models.CharField(max_length=40)
+class BuildingURL(RandomIDModel):
+    first_name_resident = models.CharField(max_length=40)
+    last_name_resident = models.CharField(max_length=40)
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.firstname_resident} {self.lastname_resident} : {self.url}"
+        return f"{self.first_name_resident} {self.last_name_resident} : {self.id}"
 
 
 class GarbageCollection(models.Model):

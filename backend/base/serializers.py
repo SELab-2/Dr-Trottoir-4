@@ -17,3 +17,10 @@ class BuildingSerializer(serializers.ModelSerializer):
         fields = ["id", "city", "postal_code", "street", "house_number", "client_number",
                   "duration", "syndic", "region", "name"]
         read_only_fields = ["id"]
+
+
+class BuildingUrlSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BuildingURL
+        fields = ["id", "first_name_resident", "last_name_resident", "building"]
+        read_only_fields = ["id"]
