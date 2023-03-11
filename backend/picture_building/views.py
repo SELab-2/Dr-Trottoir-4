@@ -22,6 +22,10 @@ class Default(APIView):
             return Response('"Building" field was not valid', status=status.HTTP_400_BAD_REQUEST)
         pb = PictureBuilding(building=candidates[0], picture=picture, description=description, timestamp=timestamp,
                              type=picture_type)
+        try:
+            pb.full_clean()
+        except ValidationError as e:
+            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
         pb.save()
         serializer = PictureBuildingSerializer(pb)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
