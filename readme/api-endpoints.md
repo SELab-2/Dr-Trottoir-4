@@ -250,11 +250,11 @@ Maybe rename it to e.g. resident_building_info?
 
 ### Post
 
-| Parameter    | Description                                                                |
-|--------------|----------------------------------------------------------------------------|
-| building     |                                                                            |
-| date         |                                                                            |
-| garbage_type | ∈ {"GFT", "GLAS", "GROF_VUIL", "KERSTBOMEN", "PAPIER", "PMD", "RESTAFVAL"} |
+| Parameter    | Description                                         |
+|--------------|-----------------------------------------------------|
+| building     |                                                     |
+| date         | e.g. "2023-12-25"                                   |
+| garbage_type | ∈ {"GFT", "GLS", "GRF", "KER", "PAP", "PMD", "RES"} |
 
 ### Delete
 
