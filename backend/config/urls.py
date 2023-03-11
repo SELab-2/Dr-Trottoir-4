@@ -13,18 +13,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib import admin
 from django.urls import path, include, re_path, reverse_lazy
 from django.views.generic import RedirectView
 from rest_framework.routers import DefaultRouter
 
-from users import urls as user_urls
-from users.views import UserViewSet
-
 from authentication import urls as authentication_urls
 from building import urls as building_urls
 from picture_building import urls as picture_building_urls
+from users import urls as user_urls
 
 router = DefaultRouter()
 # NOTE: This is a temporary view to test 'IsAuthenticated"
