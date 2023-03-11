@@ -21,7 +21,7 @@ class Default(APIView):
             b.full_clean()
         except ValidationError as e:
             print(e)
-            return Response(e.message_dict["region"], status.HTTP_400_BAD_REQUEST)
+            return Response(e.message_dict, status.HTTP_400_BAD_REQUEST)
         b.save()
         serializer = RegionSerializer(b)
         return Response(serializer.data, status.HTTP_201_CREATED)
@@ -33,36 +33,36 @@ class RegionIndividualView(APIView):
         """
         Get info about a Region with given id
         """
-        region_instance = Region.objects.get(id=region_id)
+        region_instance = Region.objects.filter(id=region_id)
 
-        if not region_instance:
+        if len(region_instance) != 1:
             return Response(
                 {"res": "Object with given region id does not exist."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        serializer = RegionSerializer(region_instance)
+        serializer = RegionSerializer(region_instance[0])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, region_id):
         """
         edit info about a Region with given id
         """
-        region_instance = Region.objects.get(id=region_id)
-        if not region_instance:
+        region_instances = Region.objects.filter(id=region_id)
+        if len(region_instances) != 1:
             return Response(
                 {"res": "Object with given region id does not exist."},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        region_instance = region_instances[0]
         data = request.data
         name = data.get("name")
-        print(name)
         if not name:
             return Response('"name" field is required', status.HTTP_400_BAD_REQUEST)
         region_instance.region = name
         try:
             region_instance.full_clean()
         except ValidationError as e:
-            return Response(e.message_dict["tour"], status=status.HTTP_400_BAD_REQUEST)
+            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
         region_instance.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -70,13 +70,13 @@ class RegionIndividualView(APIView):
         """
         delete a region from the database
         """
-        region_instance = Region.objects.get(id=region_id)
-        if not region_instance:
+        region_instances = Region.objects.filter(id=region_id)
+        if len(region_instances) != 1:
             return Response(
                 {"res": "Object with given region id does not exist."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        region_instance.delete()
+        region_instances[0].delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -86,12 +86,5 @@ class AllRegionsView(APIView):
         Get all regions
         """
         region_instances = Region.objects.all()
-
-        if not region_instances:
-            return Response(
-                {"res", "No regions found"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
         serializer = RegionSerializer(region_instances, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
