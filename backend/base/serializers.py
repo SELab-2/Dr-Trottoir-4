@@ -31,3 +31,8 @@ class GarbageCollectionSerializer(serializers.ModelSerializer):
         model = GarbageCollection
         fields = ["id", "building", "date", "garbage_type"]
         read_only_fields = ["id"]
+
+class ManualSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Manual
+        fields = ["id", "building", "version_number", "file"]

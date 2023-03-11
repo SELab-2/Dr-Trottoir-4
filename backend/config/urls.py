@@ -22,6 +22,7 @@ from authentication import urls as authentication_urls
 from building import urls as building_urls
 from garbage_collection import urls as garbage_collection_urls
 from users import urls as user_urls
+from manual import urls as manual_urls
 
 router = DefaultRouter()
 # NOTE: This is a temporary view to test 'IsAuthenticated"
@@ -34,5 +35,6 @@ urlpatterns = [
     path('building/', include(building_urls)),
     path('garbage_collection/', include(garbage_collection_urls)),
     path('user/', include(user_urls)),
+    path('manual/', include(manual_urls)),
     re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
 ]
