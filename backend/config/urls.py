@@ -13,13 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from authentication import urls as authentication_urls
+from building import urls as building_urls
 from django.contrib import admin
 from django.urls import path, include, re_path, reverse_lazy
 from django.views.generic import RedirectView
 from rest_framework.routers import DefaultRouter
-
-from authentication import urls as authentication_urls
-from building import urls as building_urls
+from student_at_building_on_tour import urls as stud_buil_tour_urls
 from users import urls as user_urls
 
 router = DefaultRouter()
@@ -32,5 +32,6 @@ urlpatterns = [
     path('authentication/', include(authentication_urls)),
     path('building/', include(building_urls)),
     path('user/', include(user_urls)),
+    path('student_at_building_on_tour/', stud_buil_tour_urls)
     re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
 ]
