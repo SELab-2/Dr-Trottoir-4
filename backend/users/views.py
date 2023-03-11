@@ -1,25 +1,19 @@
-from django.core.exceptions import ValidationError
-from rest_framework import permissions
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
-from base.models import User, Region
-from base.serializers import UserSerializer
-
 import json
 
+from rest_framework import permissions
+from rest_framework.views import APIView
 
-# TODO: code quality isn't the best yet
+from base.models import User
+from base.serializers import UserSerializer
+from util.request_response_util import *
 
 
-# TODO: ergens een file maken met functies die in alle views nuttig zijn over meerdere apps
-#  Handig zodat we bijvoorbeeld overal dezelfde HTTP code gebruiken
-def _bad_request():
-    return Response(
-        {"res": "Object with given building ID does not exists."},
-        status=status.HTTP_400_BAD_REQUEST
-    )
+def _try_adding_region_to_user_instance(user_instance, region_value):
+    try:
+        user_instance.region.add(region_value)
+    except IntegrityError as e:
+        user_instance.delete()
+        return Response(str(e.__cause__), status=status.HTTP_400_BAD_REQUEST)
 
 
 class DefaultUser(APIView):
@@ -27,9 +21,8 @@ class DefaultUser(APIView):
     # TODO: authorization
     # permission_classes = [permissions.IsAuthenticated]
 
-    # TODO:
-    # Document the usage of region:
-    #  region -> "{"arbitraryname1": 1, "arbitraryname2": 2}"
+    # TODO: in order for this to work, you have to pass a password
+    #  In the future, we probably won't use POST this way anymore (if we work with the whitelist method)
     def post(self, request):
         """
         Create a new user
@@ -39,35 +32,29 @@ class DefaultUser(APIView):
         user_instance = User()
 
         for key in data.keys():
-            print(f"----------> {key}")
             if key in vars(user_instance):
                 setattr(user_instance, key, data[key])
-        try:
-            user_instance.full_clean()
-        except ValidationError as e:
-            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
+
+        if r := try_full_clean_and_save(user_instance):
+            return r
 
         user_instance.save()
 
         # Now that we have an ID, we can look at the many-to-many relationship region
-        # TODO: make sure to test 'region' well!
-        if "region" in data.keys():
-            # print(data)
-            # print(data["region"])
-            region_dict = json.loads(data["region"])
-            # print(region_dict)
-            for value in region_dict.values():
-                user_instance.region.add(value)
-        # TODO: what if this fails? the previous instance is already saved
-        try:
-            user_instance.full_clean()
-        except ValidationError as e:
-            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
 
-        user_instance.save()
+        print("beginnen met REGIONNNNNNN ")
+
+        if "region" in data.keys():
+            region_dict = json.loads(data["region"])
+            for value in region_dict.values():
+                if r := _try_adding_region_to_user_instance(user_instance, value):
+                    return r
+
+        if r := try_full_clean_and_save(user_instance, rm=True):
+            return r
 
         serializer = UserSerializer(user_instance)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return post_succes(serializer)
 
 
 class UserIndividualView(APIView):
@@ -80,10 +67,10 @@ class UserIndividualView(APIView):
 
         user_instance = User.objects.filter(id=user_id)
         if not user_instance:
-            return _bad_request()
+            return bad_request(object_name="User")
 
         serializer = UserSerializer(user_instance[0])
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_succes(serializer)
 
     def delete(self, request, user_id):
         """
@@ -91,18 +78,19 @@ class UserIndividualView(APIView):
         """
         user_instance = User.objects.filter(id=user_id)
         if not user_instance:
-            return _bad_request()
+            return bad_request(object_name="User")
 
         user_instance[0].delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return delete_succes()
 
     def patch(self, request, user_id):
         """
         Edit user with given id
         """
         user_instance = User.objects.filter(id=user_id)
+
         if not user_instance:
-            return _bad_request()
+            return bad_request(object_name="User")
         user_instance = user_instance[0]
 
         data = request.data.dict()
@@ -110,29 +98,23 @@ class UserIndividualView(APIView):
         for key in data.keys():
             if key in vars(user_instance):
                 setattr(user_instance, key, data[key])
-        try:
-            user_instance.full_clean()
-        except ValidationError as e:
-            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
 
-        user_instance.save()
+        if r := try_full_clean_and_save(user_instance):
+            return r
 
         # Now that we have an ID, we can look at the many-to-many relationship region
         if "region" in data.keys():
             region_dict = json.loads(data["region"])
             user_instance.region.clear()
             for value in region_dict.values():
-                user_instance.region.add(value)
+                if r := _try_adding_region_to_user_instance(user_instance, value):
+                    return r
 
-        try:
-            user_instance.full_clean()
-        except ValidationError as e:
-            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
-
-        user_instance.save()
+        if r := try_full_clean_and_save(user_instance, rm=True):
+            return r
 
         serializer = UserSerializer(user_instance)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return patch_succes(serializer)
 
 
 class AllUsersView(APIView):
@@ -141,14 +123,6 @@ class AllUsersView(APIView):
         """
         Get all users
         """
-
         user_instances = User.objects.all()
-
-        if not user_instances:
-            return Response(
-                {"res": "No users found"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
         serializer = UserSerializer(user_instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_succes(serializer)
