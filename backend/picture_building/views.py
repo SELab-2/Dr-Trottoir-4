@@ -29,7 +29,8 @@ class Default(APIView):
         candidates = Building.objects.filter(id=building)
         if len(candidates) != 1:
             return Response('"Building" field was not valid', status=status.HTTP_400_BAD_REQUEST)
-        pb = PictureBuilding(building=candidates[0], picture=picture, description=description, timestamp=timestamp, type=picture_type)
+        pb = PictureBuilding(building=candidates[0], picture=picture, description=description, timestamp=timestamp,
+                             type=picture_type)
         pb.save()
         return Response(status=status.HTTP_201_CREATED)
 
@@ -103,10 +104,22 @@ class PictureBuildingIndividualView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class PicturesOfBuildingView(APIView):
+    def get(self, request, building_id):
+        candidates = Building.objects.filter(id=building_id)
+        if len(candidates) != 1:
+            return Response('building_id was not valid', status=status.HTTP_400_BAD_REQUEST)
+        building = candidates[0]
+        picture_building_instances = PictureBuilding.objects.filter(building=building)
+
+        serializer = PictureBuildingSerializer(picture_building_instances, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class AllPictureBuildingsView(APIView):
     def get(self, request):
         """
-        Get all tours
+        Get all pictureBuilding
         """
         picture_building_instances = PictureBuilding.objects.all()
 
