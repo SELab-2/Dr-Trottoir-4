@@ -206,7 +206,7 @@ Maybe rename it to e.g. resident_building_info?
 
 * `/building/{buildingid}`
 
-> Get all links where the user with given userid is a resident
+> Get all links of the building with given building id
 
 ### Post
 
