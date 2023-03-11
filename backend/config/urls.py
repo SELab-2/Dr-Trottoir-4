@@ -13,28 +13,30 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from authentication import urls as authentication_urls
+from building import urls as building_urls
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include, re_path, reverse_lazy
 from django.views.generic import RedirectView
-from rest_framework.routers import DefaultRouter
-
-from authentication import urls as authentication_urls
-from building import urls as building_urls
 from garbage_collection import urls as garbage_collection_urls
-from users import urls as user_urls
 from manual import urls as manual_urls
+from rest_framework.routers import DefaultRouter
+from users import urls as user_urls
+
+from .settings import MEDIA_URL, MEDIA_ROOT
 
 router = DefaultRouter()
 # NOTE: This is a temporary view to test 'IsAuthenticated"
 # router.register(r'users', UserViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include(router.urls)),
-    path('authentication/', include(authentication_urls)),
-    path('building/', include(building_urls)),
-    path('garbage_collection/', include(garbage_collection_urls)),
-    path('user/', include(user_urls)),
-    path('manual/', include(manual_urls)),
-    re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
-]
+                  path('admin/', admin.site.urls),
+                  path('', include(router.urls)),
+                  path('authentication/', include(authentication_urls)),
+                  path('building/', include(building_urls)),
+                  path('garbage_collection/', include(garbage_collection_urls)),
+                  path('user/', include(user_urls)),
+                  path('manual/', include(manual_urls)),
+                  re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
+              ] + static(MEDIA_URL, document_root=MEDIA_ROOT)
