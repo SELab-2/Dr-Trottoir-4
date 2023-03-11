@@ -7,3 +7,8 @@ class BuildingSerializer(serializers.ModelSerializer):
         model = Building
         fields = ["city", "postal_code", "street", "house_number", "client_number",
                   "duration", "syndic", "region", "name"]
+
+class PictureBuildingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PictureBuilding
+        fields = ["building", "picture_name", "description", "timestamp", "type"]
