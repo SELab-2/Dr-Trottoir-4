@@ -21,4 +21,4 @@ class BuildingSerializer(serializers.ModelSerializer):
 class PictureBuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = PictureBuilding
-        fields = ["building", "picture_name", "description", "timestamp", "type"]
+        fields = ["building", "picture", "description", "timestamp", "type"]
