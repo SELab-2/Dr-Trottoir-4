@@ -60,6 +60,7 @@ class BuildingIndividualView(APIView):
         if not building_instance:
             return self._bad_request()
 
+        building_instance = building_instance[0]
         serializer = BuildingSerializer(building_instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -67,7 +68,7 @@ class BuildingIndividualView(APIView):
         """
         Delete building with given id
         """
-        building_instance = Building.objects.filter(id=building_id)
+        building_instance = Building.objects.filter(id=building_id)[0]
         if not building_instance:
             return self._bad_request()
 
@@ -78,9 +79,10 @@ class BuildingIndividualView(APIView):
         """
         Edit building with given ID
         """
-        building_instance = Building.objects.filter(id=building_id)
+        building_instance = Building.objects.filter(id=building_id)[0]
         if not building_instance:
             return self._bad_request()
+        building_instance = building_instance[0]
         data = request.data.dict()
 
         if "syndic" in data.keys():
