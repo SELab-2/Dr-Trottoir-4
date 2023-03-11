@@ -13,16 +13,25 @@ class Default(APIView):
         """
         data = request.data
         print(data)
+        print(request.FILES)
         building = data.get("building")
-        picture_name = data.get("picture")
+        picture = request.FILES.get("picture")
+        print(picture)
         description = data.get("description")
         timestamp = data.get("timestamp")
         picture_type = data.get("type")
-        if not building or not picture_name or not description or not timestamp or not picture_type:
+        # print(picture)
+        print(type(picture))
+        if not building or not picture or not description or not timestamp or not picture_type:
             return Response('"building", "picture", "description", "timestamp" and "type" fields are required',
                             status.HTTP_400_BAD_REQUEST)
         # todo fix creating an image
-        return Response(status=status.HTTP_418_IM_A_TEAPOT)
+        candidates = Building.objects.filter(id=building)
+        if len(candidates) != 1:
+            return Response('"Building" field was not valid', status=status.HTTP_400_BAD_REQUEST)
+        pb = PictureBuilding(building=candidates[0], picture=picture, description=description, timestamp=timestamp, type=picture_type)
+        pb.save()
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class PictureBuildingIndividualView(APIView):
