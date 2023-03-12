@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.response import Response
@@ -19,16 +19,18 @@ def bad_request_relation(object1: str, object2: str):
 
 
 def try_full_clean_and_save(model_instance, rm=False):
+    error_message = None
     try:
         model_instance.full_clean()
         model_instance.save()
     except ValidationError as e:
+        error_message = e.message_dict
+    except (IntegrityError, ObjectDoesNotExist, ValueError) as e:
+        error_message = str(e)
+    finally:
         if rm: model_instance.delete()
-        return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
-    except IntegrityError as e:
-        if rm: model_instance.delete()
-        return Response(str(e.__cause__), status=status.HTTP_400_BAD_REQUEST)
-
+        if error_message:
+            return Response(error_message, status=status.HTTP_400_BAD_REQUEST)
     return None
 
 
