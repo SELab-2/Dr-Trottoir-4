@@ -69,7 +69,8 @@ class TourIndividualView(APIView):
         except ValidationError as e:
             return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
         tour_instance.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        serializer = TourSerializer(tour_instance)
+        return patch_succes(serializer)
 
     def delete(self, request, tour_id):
         """
