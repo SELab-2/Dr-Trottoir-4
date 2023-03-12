@@ -1,15 +1,19 @@
 from base.models import Tour, Region
 from base.serializers import TourSerializer
 from django.core.exceptions import ValidationError
+from rest_framework import permissions
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from util.request_response_util import *
 
 
 class Default(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request):
         """
-        Create a new tour with name from post
+        Create a new tour
         """
         data = request.data
         name = data.get("name")
@@ -18,13 +22,9 @@ class Default(APIView):
         if not name or not region or not modified_at:
             return Response('"name", "region" and "modified_at" fields are required', status.HTTP_400_BAD_REQUEST)
         b = Tour(name=name, region=Region.objects.get(id=region), modified_at=modified_at)
-        try:
-            b.full_clean()
-        except ValidationError as e:
-            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
-        b.save()
-        serializer = TourSerializer(b)
-        return Response(serializer.data, status.HTTP_201_CREATED)
+        if r := try_full_clean_and_save(b):
+            return r
+        return patch_succes(TourSerializer(b))
 
 
 class TourIndividualView(APIView):
@@ -35,24 +35,18 @@ class TourIndividualView(APIView):
         tour_instances = Tour.objects.filter(id=tour_id)
 
         if not tour_instances:
-            return Response(
-                {"res": "Object with given tour id does not exist."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return bad_request(object_name="Tour")
         tour_instance = tour_instances[0]
         serializer = TourSerializer(tour_instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_succes(serializer)
 
     def patch(self, request, tour_id):
         """
-        edit info about a tour with given id
+        edit a tour with given id
         """
         tour_instances = Tour.objects.filter(id=tour_id)
         if not tour_instances:
-            return Response(
-                {"res": "Object with given tour id does not exist."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return bad_request(object_name="Tour")
         tour_instance = tour_instances[0]
         data = request.data
         name = data.get("name")
@@ -76,17 +70,14 @@ class TourIndividualView(APIView):
 
     def delete(self, request, tour_id):
         """
-        delete a tour from the database
+        delete a tour with given id
         """
         tour_instances = Tour.objects.filter(id=tour_id)
         if not tour_instances:
-            return Response(
-                {"res": "Object with given tour id does not exist."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return bad_request(object_name="Tour")
         tour_instance = tour_instances[0]
         tour_instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return delete_succes()
 
 
 class AllToursView(APIView):
@@ -97,4 +88,4 @@ class AllToursView(APIView):
         tour_instances = Tour.objects.all()
 
         serializer = TourSerializer(tour_instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_succes(serializer)
