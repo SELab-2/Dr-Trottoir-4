@@ -65,6 +65,8 @@ one of the errors we talked about earlier, more specifically the `unable to gues
 we'll be specifying a serializer which should fix the error. Without this line the documentation for `/user/all` will just
 not appear at all.
 
+Don't forget to generate a new `schema.yml` once you're done!
+
 For another (bigger) example, click [here](https://github.com/tfranzel/drf-spectacular#usage). For the full documentation of
 [drf-spectacular](https://github.com/tfranzel/drf-spectacular#customization-by-using-extend_schema), click
 [here](https://drf-spectacular.readthedocs.io/en/latest/).
