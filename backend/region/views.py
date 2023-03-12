@@ -12,7 +12,7 @@ class Default(APIView):
         """
         Create a new region
         """
-        data = request.data.dict()
+        data = request.data
 
         region_instance = Region()
         for key in data.keys():
@@ -22,7 +22,7 @@ class Default(APIView):
             return r
 
         serializer = RegionSerializer(region_instance)
-        return post_success(serializer)
+        return post_succes(serializer)
 
 
 class RegionIndividualView(APIView):
@@ -37,7 +37,7 @@ class RegionIndividualView(APIView):
         if len(region_instance) != 1:
             return bad_request(object_name="Region")
         serializer = RegionSerializer(region_instance[0])
-        return get_success(serializer)
+        return get_succes(serializer)
 
     def patch(self, request, region_id):
         """
