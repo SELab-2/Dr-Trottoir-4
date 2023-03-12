@@ -1,6 +1,5 @@
 from base.models import Tour, Region
 from base.serializers import TourSerializer
-from django.core.exceptions import ValidationError
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework.response import Response
@@ -64,11 +63,8 @@ class TourIndividualView(APIView):
             tour_instance.region = r[0]
         if modified_at:
             tour_instance.modified_at = modified_at
-        try:
-            tour_instance.full_clean()
-        except ValidationError as e:
-            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
-        tour_instance.save()
+        if r := try_full_clean_and_save(tour_instance):
+            return r
         serializer = TourSerializer(tour_instance)
         return patch_succes(serializer)
 
