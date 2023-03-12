@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path, reverse_lazy
 from django.views.generic import RedirectView
 from rest_framework.routers import DefaultRouter
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from users import urls as user_urls
 from users.views import UserViewSet
@@ -27,6 +28,9 @@ router = DefaultRouter()
 router.register(r'users', UserViewSet)
 
 urlpatterns = [
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    # Optional UI:
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('user/', include(user_urls)),
