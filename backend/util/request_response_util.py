@@ -25,6 +25,10 @@ def try_full_clean_and_save(model_instance, rm=False):
         model_instance.save()
     except ValidationError as e:
         error_message = e.message_dict
+    except AttributeError as e:
+        # If body is empty, an attribute error is thrown in the clean function
+        error_message = str(e) + \
+                        ". This error could be thrown after you passed an empty body with e.g. a POST request."
     except (IntegrityError, ObjectDoesNotExist, ValueError) as e:
         error_message = str(e)
     finally:
@@ -32,6 +36,12 @@ def try_full_clean_and_save(model_instance, rm=False):
         if error_message:
             return Response(error_message, status=status.HTTP_400_BAD_REQUEST)
     return None
+
+
+def request_to_dict(request_data):
+    if request_data:
+        return request_data.data.dict()
+    return {}
 
 
 # Below functions are used to be able to change the status codes really quick if we would decide to use another one

@@ -12,7 +12,7 @@ class DefaultGarbageCollection(APIView):
         Create new garbage collection
         """
 
-        data = request.data.dict()
+        data = request_to_dict(request.data)
 
         if "building" in data:
             data["building_id"] = data["building"]
@@ -61,7 +61,7 @@ class GarbageCollectionIndividualView(APIView):
             return bad_request("GarbageCollection")
 
         garbage_collection_instance = garbage_collection_instance[0]
-        data = request.data.dict()
+        data = request_to_dict(request.data)
 
         if "building" in data:
             data["building_id"] = data["building"]

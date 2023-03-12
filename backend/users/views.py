@@ -27,7 +27,7 @@ class DefaultUser(APIView):
         """
         Create a new user
         """
-        data = request.data.dict()
+        data = request_to_dict(request.data)
 
         user_instance = User()
 
@@ -93,7 +93,7 @@ class UserIndividualView(APIView):
             return bad_request(object_name="User")
         user_instance = user_instance[0]
 
-        data = request.data.dict()
+        data = request_to_dict(request.data)
 
         for key in data.keys():
             if key in vars(user_instance):

@@ -13,7 +13,7 @@ class DefaultBuilding(APIView):
         """
         Create a new building
         """
-        data = request.data.dict()
+        data = request_to_dict(request.data)
 
         if "syndic" in data.keys():
             data["syndic_id"] = data["syndic"]
@@ -67,7 +67,7 @@ class BuildingIndividualView(APIView):
             return bad_request(object_name="building")
 
         building_instance = building_instance[0]
-        data = request.data.dict()
+        data = request_to_dict(request.data)
 
         if "syndic" in data.keys():
             data["syndic_id"] = data["syndic"]

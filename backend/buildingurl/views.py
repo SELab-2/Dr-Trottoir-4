@@ -11,7 +11,7 @@ class BuildingUrlDefault(APIView):
         """
         Create a new building url
         """
-        data = request.data.dict()
+        data = request_to_dict(request.data)
 
         building_url_instance = BuildingURL()
 
@@ -69,7 +69,7 @@ class BuildingUrlIndividualView(APIView):
             return bad_request("BuildingUrl")
 
         building_url_instance = building_url_instance[0]
-        data = request.data.dict()
+        data = request_to_dict(request.data)
 
         if "building" in data.keys():
             data["building_id"] = data["building"]
