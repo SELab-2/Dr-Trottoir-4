@@ -51,9 +51,10 @@ class BuildingIndividualView(APIView):
         """
         Delete building with given id
         """
-        building_instance = Building.objects.filter(id=building_id)[0]
+        building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
             return bad_request(object_name="building")
+        building_instance = building_instance[0]
 
         building_instance.delete()
         return delete_succes()
@@ -62,7 +63,7 @@ class BuildingIndividualView(APIView):
         """
         Edit building with given ID
         """
-        building_instance = Building.objects.filter(id=building_id)[0]
+        building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
             return bad_request(object_name="building")
 
