@@ -10,3 +10,10 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+.text{
+    margin-left: 60px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font: 16px Helvetica, sans-serif;
+}
