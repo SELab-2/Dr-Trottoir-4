@@ -21,7 +21,10 @@ class Default(APIView):
         modified_at = data.get("modified_at")
         if not name or not region or not modified_at:
             return Response('"name", "region" and "modified_at" fields are required', status.HTTP_400_BAD_REQUEST)
-        b = Tour(name=name, region=Region.objects.get(id=region), modified_at=modified_at)
+        candidates = Region.objects.filter(id=region)
+        if len(candidates) != 1:
+            return bad_request(object_name="Region")
+        b = Tour(name=name, region=candidates[0], modified_at=modified_at)
         if r := try_full_clean_and_save(b):
             return r
         return patch_succes(TourSerializer(b))
