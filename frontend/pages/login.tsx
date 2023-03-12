@@ -9,18 +9,14 @@ import {useRouter} from "next/router";
 
 export default function Login() {
     const router = useRouter();
-
+    //const { auth, setAuth } = useContext(AuthContext);
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
         try {
-          const resp = await login(username, password, router);
-          // @ts-ignore
-            if (resp.status === 401) {
-                console.log("Invalid login credentials");
-            }
+          await login(username, password, router);
         } catch (error) {
           console.error(error);
         }
@@ -34,6 +30,7 @@ export default function Login() {
                     <Image src={filler_logo} alt="My App Logo" className={styles.filler_image}/>
                 </div>
                 <div className={styles.login_container}>
+                    <p className={styles.title}>Login.</p>
                     <form onSubmit={handleSubmit}>
                         <label className={styles.text} htmlFor="email">E-mailadres:</label>
                        <input
