@@ -9,6 +9,14 @@
 },
 {
     "model": "sessions.session",
+    "pk": "j021p17ab4dax6ex6axkiseb98hrwu47",
+    "fields": {
+        "session_data": ".eJxVjEEOwiAURO_C2hCk8AF39iLk84FAbGgidGW8u63pQpfz3sy8mMdtFL_19PQ1shuTkl1-YUB6pHYYXJYDcyRatzb4t3Pqzu97Sm1UwlHXNp-rv6uCvew_FoECSCVcSAooAiXtUpbZSpODimYCAqcdOm13JY0Vxlw1iCDiFKNi7w_sujxp:1pZxhm:zSprMzikHaWdPjNCuXbw1np1Z5NGjDr-mfABOH_t0xQ",
+        "expire_date": "2023-03-22T17:35:58.939Z"
+    }
+},
+{
+    "model": "sessions.session",
     "pk": "k4own88w8gyx1hru7z4awm02mzm0bjp6",
     "fields": {
         "session_data": ".eJxVjM0OwiAQhN-Fs2koPwt40xdpll0aiA1NhJ6M725retDjfN_MvMSEW8_T1tJzKiyuQo_i8gsj0iPVw-CyHHhAonWrffh2Tt2G255S7YWwl7Xez9XfVcaW9x-PQBGUkSEmA8RAyYY0q9krN0fDTgNBsAGD9btSzkvnRgsyStbMRrw_7Ls8aQ:1pZuvb:yMwFJC-JuHYDMGaXc_0E_-cyNrFJ5vQHdHyGCWplruI",
@@ -463,7 +471,7 @@
     "model": "base.user",
     "fields": {
         "password": "pbkdf2_sha256$390000$XIix7oaPLNdNBRo3mwywn1$kL4TIo2RxnAnLOfG95pfoc39X2/JQHADOTfd1oC9erg=",
-        "last_login": "2023-03-08T14:38:03Z",
+        "last_login": "2023-03-08T17:35:58.934Z",
         "is_superuser": true,
         "email": "admin@test.com",
         "is_staff": true,
@@ -775,7 +783,7 @@
     "pk": 6,
     "fields": {
         "building": 1,
-        "date": "2023-03-10",
+        "date": "2023-03-09",
         "garbage_type": "PMD"
     }
 },
@@ -1222,20 +1230,178 @@
 },
 {
     "model": "base.studentatbuildingontour",
-    "pk": 1,
+    "pk": 3,
     "fields": {
-        "building_on_tour": 2,
-        "date": "2023-03-08",
-        "student": null
+        "building_on_tour": 1,
+        "date": "2023-03-09",
+        "student": [
+            "stella@test.com"
+        ]
     }
 },
 {
     "model": "base.studentatbuildingontour",
-    "pk": 2,
+    "pk": 4,
     "fields": {
-        "building_on_tour": 1,
+        "building_on_tour": 15,
+        "date": "2023-03-09",
+        "student": [
+            "stella@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 5,
+    "fields": {
+        "building_on_tour": 14,
+        "date": "2023-03-09",
+        "student": [
+            "stella@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 6,
+    "fields": {
+        "building_on_tour": 16,
+        "date": "2023-03-09",
+        "student": [
+            "stella@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 7,
+    "fields": {
+        "building_on_tour": 2,
+        "date": "2023-03-09",
+        "student": [
+            "stijn@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 8,
+    "fields": {
+        "building_on_tour": 11,
+        "date": "2023-03-09",
+        "student": [
+            "stijn@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 9,
+    "fields": {
+        "building_on_tour": 12,
+        "date": "2023-03-09",
+        "student": [
+            "stijn@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 10,
+    "fields": {
+        "building_on_tour": 13,
+        "date": "2023-03-09",
+        "student": [
+            "stijn@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 11,
+    "fields": {
+        "building_on_tour": 3,
         "date": "2023-03-08",
-        "student": null
+        "student": [
+            "stacey@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 12,
+    "fields": {
+        "building_on_tour": 4,
+        "date": "2023-03-08",
+        "student": [
+            "stacey@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 13,
+    "fields": {
+        "building_on_tour": 5,
+        "date": "2023-03-08",
+        "student": [
+            "stacey@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 14,
+    "fields": {
+        "building_on_tour": 6,
+        "date": "2023-03-08",
+        "student": [
+            "stacey@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 15,
+    "fields": {
+        "building_on_tour": 7,
+        "date": "2023-03-08",
+        "student": [
+            "stef@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 16,
+    "fields": {
+        "building_on_tour": 8,
+        "date": "2023-03-08",
+        "student": [
+            "stef@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 17,
+    "fields": {
+        "building_on_tour": 9,
+        "date": "2023-03-08",
+        "student": [
+            "stef@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentatbuildingontour",
+    "pk": 18,
+    "fields": {
+        "building_on_tour": 10,
+        "date": "2023-03-08",
+        "student": [
+            "stef@test.com"
+        ]
     }
 },
 {
@@ -3913,6 +4079,384 @@
         ],
         "object_id": "35",
         "object_repr": "GFT op 2023-03-09 voor Universiteitsplein 1, Antwerpen 2000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 143,
+    "fields": {
+        "action_time": "2023-03-09T12:33:52.307Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "2",
+        "object_repr": "None bij Grote Markt 1, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 1 op 2023-03-08",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 144,
+    "fields": {
+        "action_time": "2023-03-09T12:33:52.342Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "1",
+        "object_repr": "None bij Veldstraat 1, Gent 9000 op ronde Centrum in regio Gent, index: 1 op 2023-03-08",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 145,
+    "fields": {
+        "action_time": "2023-03-09T12:34:17.008Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "3",
+        "object_repr": "stella@test.com (ST) bij Grote Markt 1, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 1 op 2023-03-09",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 146,
+    "fields": {
+        "action_time": "2023-03-09T12:34:49.451Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "4",
+        "object_repr": "stefanie@test.com (ST) bij Grote Markt 3, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 3 op 2023-03-09",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 147,
+    "fields": {
+        "action_time": "2023-03-09T12:35:13.899Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "4",
+        "object_repr": "stella@test.com (ST) bij Grote Markt 3, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 3 op 2023-03-09",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Student\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 148,
+    "fields": {
+        "action_time": "2023-03-09T12:35:35.405Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "5",
+        "object_repr": "stella@test.com (ST) bij Grote Markt 2, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 2 op 2023-03-09",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 149,
+    "fields": {
+        "action_time": "2023-03-09T12:35:44.530Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "6",
+        "object_repr": "stella@test.com (ST) bij Grote Markt 4, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 4 op 2023-03-09",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 150,
+    "fields": {
+        "action_time": "2023-03-09T12:36:00.017Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "7",
+        "object_repr": "stijn@test.com (ST) bij Veldstraat 1, Gent 9000 op ronde Centrum in regio Gent, index: 1 op 2023-03-09",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 151,
+    "fields": {
+        "action_time": "2023-03-09T12:36:07.204Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "8",
+        "object_repr": "stijn@test.com (ST) bij Veldstraat 2, Gent 9000 op ronde Centrum in regio Gent, index: 2 op 2023-03-09",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 152,
+    "fields": {
+        "action_time": "2023-03-09T12:36:25.455Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "9",
+        "object_repr": "stijn@test.com (ST) bij Veldstraat 3, Gent 9000 op ronde Centrum in regio Gent, index: 3 op 2023-03-09",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 153,
+    "fields": {
+        "action_time": "2023-03-09T12:36:33.904Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "10",
+        "object_repr": "stijn@test.com (ST) bij Veldstraat 4, Gent 9000 op ronde Centrum in regio Gent, index: 4 op 2023-03-09",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 154,
+    "fields": {
+        "action_time": "2023-03-09T12:36:55.073Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "garbagecollection"
+        ],
+        "object_id": "6",
+        "object_repr": "PMD op 2023-03-09 voor Grote Markt 1, Antwerpen 2000",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Date\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 155,
+    "fields": {
+        "action_time": "2023-03-09T12:37:38.045Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "11",
+        "object_repr": "stacey@test.com (ST) bij Universiteitsplein 1, Antwerpen 2000 op ronde UAntwerpen Campussen in regio Antwerpen, index: 1 op 2023-03-08",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 156,
+    "fields": {
+        "action_time": "2023-03-09T12:37:48.452Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "12",
+        "object_repr": "stacey@test.com (ST) bij Groenenborgerlaan 171, Antwerpen 2000 op ronde UAntwerpen Campussen in regio Antwerpen, index: 2 op 2023-03-08",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 157,
+    "fields": {
+        "action_time": "2023-03-09T12:38:01.522Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "13",
+        "object_repr": "stacey@test.com (ST) bij Groenenborgerlaan 171, Antwerpen 2000 op ronde UAntwerpen Campussen in regio Antwerpen, index: 2 op 2023-03-08",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 158,
+    "fields": {
+        "action_time": "2023-03-09T12:41:07.229Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "13",
+        "object_repr": "stacey@test.com (ST) bij Middelheimlaan 1, Antwerpen 2000 op ronde UAntwerpen Campussen in regio Antwerpen, index: 3 op 2023-03-08",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Building on tour\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 159,
+    "fields": {
+        "action_time": "2023-03-09T12:41:50.298Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "14",
+        "object_repr": "stacey@test.com (ST) bij Prinsstraat 13, Antwerpen 2000 op ronde UAntwerpen Campussen in regio Antwerpen, index: 4 op 2023-03-08",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 160,
+    "fields": {
+        "action_time": "2023-03-09T12:42:53.582Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "15",
+        "object_repr": "stef@test.com (ST) bij Krijgslaan 281, Gent 9000 op ronde UGent Campussen in regio Gent, index: 1 op 2023-03-08",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 161,
+    "fields": {
+        "action_time": "2023-03-09T12:43:03.669Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "16",
+        "object_repr": "stef@test.com (ST) bij Sint-Pietersnieuwstraat 33, Gent 9000 op ronde UGent Campussen in regio Gent, index: 2 op 2023-03-08",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 162,
+    "fields": {
+        "action_time": "2023-03-09T12:43:21.870Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "17",
+        "object_repr": "stef@test.com (ST) bij Tweekerkenstraat 2, Gent 9000 op ronde UGent Campussen in regio Gent, index: 3 op 2023-03-08",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 163,
+    "fields": {
+        "action_time": "2023-03-09T12:43:31.322Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentatbuildingontour"
+        ],
+        "object_id": "18",
+        "object_repr": "stef@test.com (ST) bij Karel Lodewijk Ledeganckstraat 35, Gent 9000 op ronde UGent Campussen in regio Gent, index: 4 op 2023-03-08",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }

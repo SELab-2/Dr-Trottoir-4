@@ -1,11 +1,9 @@
 from dj_rest_auth.registration.views import VerifyEmailView
-from dj_rest_auth.registration.views import VerifyEmailView
-from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView, UserDetailsView, \
-    PasswordChangeView
+from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView, PasswordChangeView
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenVerifyView
 
-from authentication.views_auth import LogoutViewWithBlacklisting, RefreshViewHiddenTokens, LoginViewWithHiddenTokens
+from authentication.views import LoginViewWithHiddenTokens, RefreshViewHiddenTokens, LogoutViewWithBlacklisting
 
 urlpatterns = [
     # URLs that do not require a session or valid token
@@ -20,7 +18,6 @@ urlpatterns = [
     # URLs that require a user to be logged in with a valid session / token.
 
     path('logout/', LogoutViewWithBlacklisting.as_view(), name='rest_logout'),
-    path('user/', UserDetailsView.as_view(), name='rest_user_details'),  # TODO: dit staat hier goed bij authentication?
     path('password/change/', PasswordChangeView.as_view(), name='rest_password_change'),
     path('verify-email/', VerifyEmailView.as_view(), name="rest_verify_email"),
     path('account-confirm-email/', VerifyEmailView.as_view(), name='account_confirm_email_sent', ),
