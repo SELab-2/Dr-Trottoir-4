@@ -53,8 +53,8 @@
         "email": "sylvie@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "sylvie",
-        "lastname": "test",
+        "first_name": "sylvie",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "SY",
         "groups": [],
@@ -73,8 +73,8 @@
         "email": "sydney@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "sydney",
-        "lastname": "test",
+        "first_name": "sydney",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "SY",
         "groups": [],
@@ -93,8 +93,8 @@
         "email": "sylvano@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "sylvano",
-        "lastname": "test",
+        "first_name": "sylvano",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "SY",
         "groups": [],
@@ -113,8 +113,8 @@
         "email": "sylke@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "sylke",
-        "lastname": "test",
+        "first_name": "sylke",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "SY",
         "groups": [],
@@ -133,8 +133,8 @@
         "email": "sylvian@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "sylvian",
-        "lastname": "test",
+        "first_name": "sylvian",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "SY",
         "groups": [],
@@ -153,8 +153,8 @@
         "email": "stijn@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "stijn",
-        "lastname": "test",
+        "first_name": "stijn",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "ST",
         "groups": [],
@@ -173,8 +173,8 @@
         "email": "stef@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "stef",
-        "lastname": "test",
+        "first_name": "stef",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "ST",
         "groups": [],
@@ -193,8 +193,8 @@
         "email": "stephan@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "stephan",
-        "lastname": "test",
+        "first_name": "stephan",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "ST",
         "groups": [],
@@ -213,8 +213,8 @@
         "email": "steven@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "steven",
-        "lastname": "test",
+        "first_name": "steven",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "ST",
         "groups": [],
@@ -233,8 +233,8 @@
         "email": "sten@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "sten",
-        "lastname": "test",
+        "first_name": "sten",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "ST",
         "groups": [],
@@ -253,8 +253,8 @@
         "email": "sterre@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "sterre",
-        "lastname": "test",
+        "first_name": "sterre",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "ST",
         "groups": [],
@@ -273,8 +273,8 @@
         "email": "stella@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "stella",
-        "lastname": "test",
+        "first_name": "stella",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "ST",
         "groups": [],
@@ -293,8 +293,8 @@
         "email": "stefanie@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "stefanie",
-        "lastname": "test",
+        "first_name": "stefanie",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "ST",
         "groups": [],
@@ -313,8 +313,8 @@
         "email": "stacey@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "stacey",
-        "lastname": "test",
+        "first_name": "stacey",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "ST",
         "groups": [],
@@ -333,8 +333,8 @@
         "email": "stanford@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "stanford",
-        "lastname": "test",
+        "first_name": "stanford",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "ST",
         "groups": [],
@@ -353,8 +353,8 @@
         "email": "adam@test.com",
         "is_staff": true,
         "is_active": true,
-        "firstname": "adam",
-        "lastname": "test",
+        "first_name": "adam",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "AD",
         "groups": [],
@@ -374,8 +374,8 @@
         "email": "adriana@test.com",
         "is_staff": true,
         "is_active": true,
-        "firstname": "adriana",
-        "lastname": "test",
+        "first_name": "adriana",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "AD",
         "groups": [],
@@ -395,8 +395,8 @@
         "email": "adelynn@test.com",
         "is_staff": true,
         "is_active": true,
-        "firstname": "adelynn",
-        "lastname": "test",
+        "first_name": "adelynn",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "AD",
         "groups": [],
@@ -416,8 +416,8 @@
         "email": "suzanne@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "suzanne",
-        "lastname": "test",
+        "first_name": "suzanne",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "SS",
         "groups": [],
@@ -436,8 +436,8 @@
         "email": "suzy@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "suzy",
-        "lastname": "test",
+        "first_name": "suzy",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "SS",
         "groups": [],
@@ -456,8 +456,8 @@
         "email": "suffried@test.com",
         "is_staff": false,
         "is_active": true,
-        "firstname": "suffried",
-        "lastname": "test",
+        "first_name": "suffried",
+        "last_name": "test",
         "phone_number": "+32485710347",
         "role": "SS",
         "groups": [],
@@ -476,8 +476,8 @@
         "email": "admin@test.com",
         "is_staff": true,
         "is_active": true,
-        "firstname": "joe",
-        "lastname": "joe",
+        "first_name": "joe",
+        "last_name": "joe",
         "phone_number": "+32485710347",
         "role": "AD",
         "groups": [],
@@ -2010,7 +2010,7 @@
         "object_id": "30",
         "object_repr": "sunny@test.com (SS)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Role\"]}}]"
     }
 },
 {
@@ -2028,7 +2028,7 @@
         "object_id": "29",
         "object_repr": "suzy@test.com (SS)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Role\"]}}]"
     }
 },
 {
@@ -2064,7 +2064,7 @@
         "object_id": "28",
         "object_repr": "suzanne@test.com (SS)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Role\"]}}]"
     }
 },
 {
@@ -2082,7 +2082,7 @@
         "object_id": "27",
         "object_repr": "adelynn@test.com (AD)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Superuser status\", \"Is staff\", \"Firstname\", \"Lastname\", \"Phone number\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"Superuser status\", \"Is staff\", \"first_name\", \"last_name\", \"Phone number\", \"Role\"]}}]"
     }
 },
 {
@@ -2100,7 +2100,7 @@
         "object_id": "26",
         "object_repr": "adriana@test.com (AD)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Superuser status\", \"Is staff\", \"Firstname\", \"Lastname\", \"Phone number\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"Superuser status\", \"Is staff\", \"first_name\", \"last_name\", \"Phone number\", \"Role\"]}}]"
     }
 },
 {
@@ -2118,7 +2118,7 @@
         "object_id": "25",
         "object_repr": "adam@test.com (AD)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Superuser status\", \"Is staff\", \"Firstname\", \"Lastname\", \"Phone number\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"Superuser status\", \"Is staff\", \"first_name\", \"last_name\", \"Phone number\", \"Role\"]}}]"
     }
 },
 {
@@ -2136,7 +2136,7 @@
         "object_id": "24",
         "object_repr": "stanford@test.com (ST)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2172,7 +2172,7 @@
         "object_id": "30",
         "object_repr": "suffried@test.com (SS)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Email address\", \"Firstname\", \"Region\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"Email address\", \"first_name\", \"Region\"]}}]"
     }
 },
 {
@@ -2298,7 +2298,7 @@
         "object_id": "23",
         "object_repr": "stacey@test.com (ST)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2316,7 +2316,7 @@
         "object_id": "22",
         "object_repr": "stefanie@test.com (ST)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2334,7 +2334,7 @@
         "object_id": "21",
         "object_repr": "stella@test.com (ST)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2352,7 +2352,7 @@
         "object_id": "20",
         "object_repr": "sterre@test.com (ST)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2370,7 +2370,7 @@
         "object_id": "19",
         "object_repr": "sten@test.com (ST)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2388,7 +2388,7 @@
         "object_id": "18",
         "object_repr": "steven@test.com (ST)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2406,7 +2406,7 @@
         "object_id": "16",
         "object_repr": "stef@test.com (ST)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2424,7 +2424,7 @@
         "object_id": "17",
         "object_repr": "stephan@test.com (ST)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2442,7 +2442,7 @@
         "object_id": "14",
         "object_repr": "sylvian@test.com (SY)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Email address\", \"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"Email address\", \"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2460,7 +2460,7 @@
         "object_id": "15",
         "object_repr": "stijn@test.com (ST)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2478,7 +2478,7 @@
         "object_id": "13",
         "object_repr": "sylke@test.com (SY)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2496,7 +2496,7 @@
         "object_id": "12",
         "object_repr": "sylvano@test.com (SY)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2514,7 +2514,7 @@
         "object_id": "11",
         "object_repr": "sydney@test.com (SY)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {
@@ -2532,7 +2532,7 @@
         "object_id": "10",
         "object_repr": "sylvie@test.com (SY)",
         "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Firstname\", \"Lastname\", \"Phone number\", \"Region\", \"Role\"]}}]"
+        "change_message": "[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"Phone number\", \"Region\", \"Role\"]}}]"
     }
 },
 {

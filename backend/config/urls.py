@@ -22,11 +22,14 @@ from building import urls as building_urls
 from buildingurl import urls as building_url_urls
 from garbage_collection import urls as garbage_collection_urls
 from users import urls as user_urls
+from region import urls as region_urls
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('authentication/', include(authentication_urls)),
     path('building/', include(building_urls)),
+    path('region/', include(region_urls)),
     path('buildingurl/', include(building_url_urls)),
     path('garbage_collection/', include(garbage_collection_urls)),
     path('user/', include(user_urls)),

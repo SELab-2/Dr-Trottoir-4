@@ -31,3 +31,9 @@ class GarbageCollectionSerializer(serializers.ModelSerializer):
         model = GarbageCollection
         fields = ["id", "building", "date", "garbage_type"]
         read_only_fields = ["id"]
+
+
+class RegionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
+        fields = ["id", "region"]
