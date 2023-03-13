@@ -46,6 +46,12 @@ class GarbageCollectionSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
+class ManualSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Manual
+        fields = ["id", "building", "version_number", "file"]
+
+
 class BuildingTourSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuildingOnTour
@@ -62,3 +68,4 @@ class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Region
         fields = ["id", "region"]
+

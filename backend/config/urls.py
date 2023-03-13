@@ -22,12 +22,16 @@ from django.contrib import admin
 from django.urls import path, include, re_path, reverse_lazy
 from django.views.generic import RedirectView
 from garbage_collection import urls as garbage_collection_urls
+from manual import urls as manual_urls
+
 from picture_building import urls as picture_building_urls
 from region import urls as region_urls
 from rest_framework.routers import DefaultRouter
 from student_at_building_on_tour import urls as stud_buil_tour_urls
 from tour import urls as tour_urls
 from users import urls as user_urls
+
+from .settings import MEDIA_URL, MEDIA_ROOT
 
 router = DefaultRouter()
 # NOTE: This is a temporary view to test 'IsAuthenticated"
@@ -38,6 +42,7 @@ urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('', include(router.urls)),
                   path('authentication/', include(authentication_urls)),
+                  path('manual/', include(manual_urls)),
                   path('picture_building/', include(picture_building_urls)),
                   path('building/', include(building_urls)),
                   path('region/', include(region_urls)),
