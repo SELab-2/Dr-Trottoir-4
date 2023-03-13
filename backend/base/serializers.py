@@ -19,6 +19,12 @@ class BuildingSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
+class StudBuildTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentAtBuildingOnTour
+        fields = ["id", "building_on_tour", "date", "student"]
+
+
 class BuildingUrlSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuildingURL

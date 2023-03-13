@@ -13,9 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from authentication import urls as authentication_urls
+from building import urls as building_urls
 from django.contrib import admin
 from django.urls import path, include, re_path, reverse_lazy
 from django.views.generic import RedirectView
+from rest_framework.routers import DefaultRouter
+from student_at_building_on_tour import urls as stud_buil_tour_urls
 
 from authentication import urls as authentication_urls
 from building import urls as building_urls
@@ -37,6 +41,7 @@ urlpatterns = [
     path('garbage_collection/', include(garbage_collection_urls)),
     path('building_on_tour/', include(building_on_tour_urls)),
     path('user/', include(user_urls)),
+    path('student_at_building_on_tour/', include(stud_buil_tour_urls)),
     path('tour/', include(tour_urls)),
     re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
 ]
