@@ -1,5 +1,4 @@
-import Cookies from 'js-cookie';
-import axios from 'axios';
+import axios, {request} from 'axios';
 import {useRouter} from "next/router";
 
 /*export function getTokens() {
@@ -32,40 +31,44 @@ const api = axios.create({
 
 
 api.interceptors.request.use(
-  (config) => {
-      console.log("Interceptor ran on request")
-    /*const { accessToken } = getTokens();
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-      console.log(config)
-    }*/
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
+    (config: any) => {
+        console.log("Interceptor ran on request");
+        /*const { accessToken } = getTokens();
+        if (accessToken) {
+          config.headers.Authorization = `Bearer ${accessToken}`;
+          console.log(config)
+        }*/
+        return config;
+    },
+    (error: any) => {
+        return Promise.reject(error);
+    }
 );
 
 api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-      console.log("Interceptor ran on response")
-    if (error.response.status === 401 && !error.config.retry) {
-      error.config.retry = true;
-      try {
-          await api.post('/user/token/refresh');
-        // const accessToken = await refreshAccessToken();
-        // error.config.headers.Authorization = `Bearer ${accessToken}`;
-        // return api.request(error.config);
-      } catch (error) {
-        console.error('Failed to refresh access token:', error);
-        // const router = useRouter();
-        // router.push('/login');
+    (response: any) => {
+        console.log("Interceptor ran, response was OK");
+        return response;
+    },
+    async (error: any) => {
+        console.log("Interceptor ran, response was NOT OK");
+        console.log(error.response);
+        if (error.response.status === 401 && !error.config.retry) {
+            error.config.retry = true;
+            try {
+                await api.post('user/token/refresh/');
+                // const accessToken = await refreshAccessToken();
+                // error.config.headers.Authorization = `Bearer ${accessToken}`;
+                return api.request(error.config);
+            } catch (error) {
+                console.error('Failed to refresh access token:', error);
+                const router = useRouter();
+                router.push('/login');
+                throw error;
+            }
+        }
         throw error;
-      }
     }
-    throw error;
-  }
 );
 
 export default api;
