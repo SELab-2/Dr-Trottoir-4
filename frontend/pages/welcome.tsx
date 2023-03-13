@@ -9,7 +9,7 @@ function Welcome() {
 
     const getData = async () => {
       try {
-        const response = await api.get('/users', {withCredentials: true});
+        const response = await api.get('/users');
         return response.data;
       } catch (error) {
         // Handle API error

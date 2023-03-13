@@ -11,8 +11,7 @@ const login = async (email: string, password: string, router : any): Promise<voi
   };
 
   api.post(host, data, {
-      headers: { 'Content-Type': 'application/json' },
-      withCredentials: true
+      headers: { 'Content-Type': 'application/json' }
   })
     .then((response: { status : number, data: any; })  => {
       console.log(response);
