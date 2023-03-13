@@ -11,7 +11,7 @@ docker-compose exec backend python manage.py spectacular --file schema.yml
 ```
 To access the documentation, head over to http://localhost:2002/api/schema/swagger-ui/.
 
-Please note that generating the schema might output a lot of warnings and errors. In the next section we'll talk about to
+Please note that generating the schema might output a lot of warnings and errors. In the next section we'll talk about how to
 fix the most common error, but I am unsure whether the warnings will cause any issues. I recommend to fix the errors first
 to see if the result is already as desired, and if so, we can probably ignore the warnings.
 
