@@ -54,7 +54,7 @@ class DefaultUser(APIView):
             return r
 
         serializer = UserSerializer(user_instance)
-        return post_succes(serializer)
+        return post_success(serializer)
 
 
 class UserIndividualView(APIView):
@@ -70,7 +70,7 @@ class UserIndividualView(APIView):
             return bad_request(object_name="User")
 
         serializer = UserSerializer(user_instance[0])
-        return get_succes(serializer)
+        return get_success(serializer)
 
     def delete(self, request, user_id):
         """
@@ -81,7 +81,7 @@ class UserIndividualView(APIView):
             return bad_request(object_name="User")
 
         user_instance[0].delete()
-        return delete_succes()
+        return delete_success()
 
     def patch(self, request, user_id):
         """
@@ -114,7 +114,7 @@ class UserIndividualView(APIView):
             return r
 
         serializer = UserSerializer(user_instance)
-        return patch_succes(serializer)
+        return patch_success(serializer)
 
 
 class AllUsersView(APIView):
@@ -125,4 +125,4 @@ class AllUsersView(APIView):
         """
         user_instances = User.objects.all()
         serializer = UserSerializer(user_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)

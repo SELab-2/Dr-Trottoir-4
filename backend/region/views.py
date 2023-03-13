@@ -22,7 +22,7 @@ class Default(APIView):
             return r
 
         serializer = RegionSerializer(region_instance)
-        return post_succes(serializer)
+        return post_success(serializer)
 
 
 class RegionIndividualView(APIView):
@@ -37,7 +37,7 @@ class RegionIndividualView(APIView):
         if len(region_instance) != 1:
             return bad_request(object_name="Region")
         serializer = RegionSerializer(region_instance[0])
-        return get_succes(serializer)
+        return get_success(serializer)
 
     def patch(self, request, region_id):
         """
@@ -55,7 +55,7 @@ class RegionIndividualView(APIView):
         if r := try_full_clean_and_save(region_instance):
             return r
 
-        return patch_succes(RegionSerializer(region_instance))
+        return patch_success(RegionSerializer(region_instance))
 
     def delete(self, request, region_id):
         """
@@ -65,7 +65,7 @@ class RegionIndividualView(APIView):
         if len(region_instances) != 1:
             return bad_request(object_name="Region")
         region_instances[0].delete()
-        return delete_succes()
+        return delete_success()
 
 
 class AllRegionsView(APIView):
@@ -77,4 +77,4 @@ class AllRegionsView(APIView):
         """
         region_instances = Region.objects.all()
         serializer = RegionSerializer(region_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)

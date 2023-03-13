@@ -26,7 +26,7 @@ class Default(APIView):
         b = Tour(name=name, region=candidates[0], modified_at=modified_at)
         if r := try_full_clean_and_save(b):
             return r
-        return patch_succes(TourSerializer(b))
+        return patch_success(TourSerializer(b))
 
 
 class TourIndividualView(APIView):
@@ -40,7 +40,7 @@ class TourIndividualView(APIView):
             return bad_request(object_name="Tour")
         tour_instance = tour_instances[0]
         serializer = TourSerializer(tour_instance)
-        return get_succes(serializer)
+        return get_success(serializer)
 
     def patch(self, request, tour_id):
         """
@@ -66,7 +66,7 @@ class TourIndividualView(APIView):
         if r := try_full_clean_and_save(tour_instance):
             return r
         serializer = TourSerializer(tour_instance)
-        return patch_succes(serializer)
+        return patch_success(serializer)
 
     def delete(self, request, tour_id):
         """
@@ -77,7 +77,7 @@ class TourIndividualView(APIView):
             return bad_request(object_name="Tour")
         tour_instance = tour_instances[0]
         tour_instance.delete()
-        return delete_succes()
+        return delete_success()
 
 
 class AllToursView(APIView):
@@ -88,4 +88,4 @@ class AllToursView(APIView):
         tour_instances = Tour.objects.all()
 
         serializer = TourSerializer(tour_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)

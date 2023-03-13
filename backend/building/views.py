@@ -28,7 +28,7 @@ class DefaultBuilding(APIView):
             return r
 
         serializer = BuildingSerializer(building_instance)
-        return post_succes(serializer)
+        return post_success(serializer)
 
 
 class BuildingIndividualView(APIView):
@@ -45,7 +45,7 @@ class BuildingIndividualView(APIView):
 
         building_instance = building_instance[0]
         serializer = BuildingSerializer(building_instance)
-        return get_succes(serializer)
+        return get_success(serializer)
 
     def delete(self, request, building_id):
         """
@@ -57,7 +57,7 @@ class BuildingIndividualView(APIView):
         building_instance = building_instance[0]
 
         building_instance.delete()
-        return delete_succes()
+        return delete_success()
 
     def patch(self, request, building_id):
         """
@@ -80,7 +80,7 @@ class BuildingIndividualView(APIView):
         if r := try_full_clean_and_save(building_instance):
             return r
 
-        return patch_succes(BuildingSerializer(building_instance))
+        return patch_success(BuildingSerializer(building_instance))
 
 
 class AllBuildingsView(APIView):
@@ -92,7 +92,7 @@ class AllBuildingsView(APIView):
         building_instances = Building.objects.all()
 
         serializer = BuildingSerializer(building_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)
 
 
 class BuildingOwnerView(APIView):
@@ -107,4 +107,4 @@ class BuildingOwnerView(APIView):
             return bad_request_relation("building", "syndic")
 
         serializer = BuildingSerializer(building_instance, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)

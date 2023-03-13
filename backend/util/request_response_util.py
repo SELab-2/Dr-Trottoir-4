@@ -45,17 +45,17 @@ def request_to_dict(request_data):
 
 
 # Below functions are used to be able to change the status codes really quick if we would decide to use another one
-def delete_succes():
+def delete_success():
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-def post_succes(serializer):
+def post_success(serializer):
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-def get_succes(serializer):
+def get_success(serializer):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-def patch_succes(serializer):
-    return get_succes(serializer)
+def patch_success(serializer):
+    return get_success(serializer)

@@ -36,7 +36,7 @@ class BuildingUrlDefault(APIView):
             return r
 
         serializer = BuildingUrlSerializer(building_url_instance)
-        return post_succes(serializer)
+        return post_success(serializer)
 
 
 class BuildingUrlIndividualView(APIView):
@@ -50,7 +50,7 @@ class BuildingUrlIndividualView(APIView):
             return bad_request("BuildingUrl")
 
         serializer = BuildingUrlSerializer(building_url_instance[0])
-        return get_succes(serializer)
+        return get_success(serializer)
 
     def delete(self, request, building_url_id):
         """
@@ -61,7 +61,7 @@ class BuildingUrlIndividualView(APIView):
             return bad_request("BuildingUrl")
 
         building_url_instance[0].delete()
-        return delete_succes()
+        return delete_success()
 
     def patch(self, request, building_url_id):
         building_url_instance = BuildingURL.objects.filter(id=building_url_id)
@@ -85,7 +85,7 @@ class BuildingUrlIndividualView(APIView):
             return r
 
         serializer = BuildingUrlSerializer(building_url_instance)
-        return patch_succes(serializer)
+        return patch_success(serializer)
 
 
 class BuildingUrlSyndicView(APIView):
@@ -103,7 +103,7 @@ class BuildingUrlSyndicView(APIView):
 
         building_urls_instances = BuildingURL.objects.filter(building__in=building_ids)
         serializer = BuildingUrlSerializer(building_urls_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)
 
 
 class BuildingUrlBuildingView(APIView):
@@ -117,7 +117,7 @@ class BuildingUrlBuildingView(APIView):
         """
         building_url_instances = BuildingURL.objects.filter(building=building_id)
         serializer = BuildingUrlSerializer(building_url_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)
 
 
 class BuildingUrlAllView(APIView):
@@ -128,4 +128,4 @@ class BuildingUrlAllView(APIView):
         """
         building_url_instances = BuildingURL.objects.all()
         serializer = BuildingUrlSerializer(building_url_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)
