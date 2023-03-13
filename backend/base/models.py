@@ -1,16 +1,14 @@
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.core.exceptions import ValidationError
+from django.db import models
 from django.db.models import UniqueConstraint
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.base_user import AbstractBaseUser
-from django.db import models
-from django.conf import settings
-from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django_random_id_model import RandomIDModel
 from phonenumber_field.modelfields import PhoneNumberField
-from rest_framework.authtoken.models import Token
+
 from users.managers import UserManager
-from django.core.exceptions import ValidationError
 
 
 class Region(models.Model):
@@ -30,15 +28,16 @@ class Region(models.Model):
 class User(AbstractBaseUser, PermissionsMixin):
     username = None
     # extra fields for authentication
-    email = models.EmailField(_('email address'), unique=True, error_messages={'unique': "Er is al een gebruiker met deze email."})
+    email = models.EmailField(_('email address'), unique=True,
+                              error_messages={'unique': "Er is al een gebruiker met deze email."})
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'email'  # there is a username field and a password field
-    REQUIRED_FIELDS = ['firstname', 'lastname', 'phone_number', 'role']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone_number', 'role']
 
-    firstname = models.CharField(max_length=40)
-    lastname = models.CharField(max_length=40)
+    first_name = models.CharField(max_length=40)
+    last_name = models.CharField(max_length=40)
     phone_number = PhoneNumberField(region='BE')
     region = models.ManyToManyField(Region, blank=True)
 
@@ -100,14 +99,13 @@ class Building(models.Model):
         return f"{self.street} {self.house_number}, {self.city} {self.postal_code}"
 
 
-class BuildingURL(models.Model):
-    url = models.CharField(max_length=2048, unique=True, error_messages={'unique': "Deze URL bestaat al."})
-    firstname_resident = models.CharField(max_length=40)
-    lastname_resident = models.CharField(max_length=40)
+class BuildingURL(RandomIDModel):
+    first_name_resident = models.CharField(max_length=40)
+    last_name_resident = models.CharField(max_length=40)
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.firstname_resident} {self.lastname_resident} : {self.url}"
+        return f"{self.first_name_resident} {self.last_name_resident} : {self.id}"
 
 
 class GarbageCollection(models.Model):
@@ -222,7 +220,8 @@ class StudentAtBuildingOnTour(models.Model):
             raise ValidationError("Een syndicus kan geen rondes doen.")
         building_on_tour_region = self.building_on_tour.tour.region
         if not self.student.region.all().filter(region=building_on_tour_region).exists():
-            raise ValidationError(f"Student ({user.email}) doet geen rondes in de regio van het gebouw ({building_on_tour_region}).")
+            raise ValidationError(
+                f"Student ({user.email}) doet geen rondes in de regio van het gebouw ({building_on_tour_region}).")
 
     class Meta:
         constraints = [
