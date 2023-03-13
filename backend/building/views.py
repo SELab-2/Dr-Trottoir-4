@@ -15,14 +15,9 @@ class DefaultBuilding(APIView):
         """
         data = request_to_dict(request.data)
 
-        if "syndic" in data.keys():
-            data["syndic_id"] = data["syndic"]
-
         building_instance = Building()
 
-        for key in data.keys():
-            if key in vars(building_instance):
-                setattr(building_instance, key, data[key])
+        set_keys_of_instance(building_instance, data, {"syndic": "syndic_id"})
 
         if r := try_full_clean_and_save(building_instance):
             return r
@@ -53,7 +48,7 @@ class BuildingIndividualView(APIView):
         """
         building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
-            return bad_request(object_name="building")
+            return bad_request(object_name="Building")
         building_instance = building_instance[0]
 
         building_instance.delete()
@@ -65,17 +60,12 @@ class BuildingIndividualView(APIView):
         """
         building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
-            return bad_request(object_name="building")
+            return bad_request(object_name="Building")
 
         building_instance = building_instance[0]
         data = request_to_dict(request.data)
 
-        if "syndic" in data.keys():
-            data["syndic_id"] = data["syndic"]
-
-        for key in data.keys():
-            if key in vars(building_instance):
-                setattr(building_instance, key, data[key])
+        set_keys_of_instance(building_instance, data, {"syndic": "syndic_id"})
 
         if r := try_full_clean_and_save(building_instance):
             return r

@@ -84,6 +84,10 @@ class Building(models.Model):
 
     def clean(self):
         super().clean()
+
+        # If this is not checked, `self.syndic` will cause an internal server error 500
+        _check_for_present_keys(self, {"syndic_id"})
+
         user = self.syndic
         print(user)
         if user.role != 'SY':
