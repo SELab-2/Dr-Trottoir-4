@@ -15,33 +15,37 @@ Including another URLconf
 """
 from authentication import urls as authentication_urls
 from building import urls as building_urls
+from building_on_tour import urls as building_on_tour_urls
+from buildingurl import urls as building_url_urls
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include, re_path, reverse_lazy
 from django.views.generic import RedirectView
+from garbage_collection import urls as garbage_collection_urls
+from picture_building import urls as picture_building_urls
+from region import urls as region_urls
 from rest_framework.routers import DefaultRouter
 from student_at_building_on_tour import urls as stud_buil_tour_urls
-
-from authentication import urls as authentication_urls
-from building import urls as building_urls
-from buildingurl import urls as building_url_urls
-from garbage_collection import urls as garbage_collection_urls
-from users import urls as user_urls
-from building_on_tour import urls as building_on_tour_urls
 from tour import urls as tour_urls
-from region import urls as region_urls
+from users import urls as user_urls
 
+router = DefaultRouter()
+# NOTE: This is a temporary view to test 'IsAuthenticated"
+# router.register(r'users', UserViewSet)
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('authentication/', include(authentication_urls)),
-    path('building/', include(building_urls)),
-    path('region/', include(region_urls)),
-    path('buildingurl/', include(building_url_urls)),
-    path('garbage_collection/', include(garbage_collection_urls)),
-    path('building_on_tour/', include(building_on_tour_urls)),
-    path('user/', include(user_urls)),
-    path('student_at_building_on_tour/', include(stud_buil_tour_urls)),
-    path('tour/', include(tour_urls)),
-    re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
-]
+                  path('admin/', admin.site.urls),
+                  path('', include(router.urls)),
+                  path('authentication/', include(authentication_urls)),
+                  path('picture_building/', include(picture_building_urls)),
+                  path('building/', include(building_urls)),
+                  path('region/', include(region_urls)),
+                  path('buildingurl/', include(building_url_urls)),
+                  path('garbage_collection/', include(garbage_collection_urls)),
+                  path('building_on_tour/', include(building_on_tour_urls)),
+                  path('user/', include(user_urls)),
+                  path('student_at_building_on_tour/', include(stud_buil_tour_urls)),
+                  path('tour/', include(tour_urls)),
+                  re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
+              ] + static(MEDIA_URL, document_root=MEDIA_ROOT)

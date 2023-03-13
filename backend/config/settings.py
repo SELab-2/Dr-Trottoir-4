@@ -201,7 +201,7 @@ EMAIL_HOST_PASSWORD = SECRET_EMAIL_USER_PSWD
 
 # Media
 MEDIA_ROOT = '/app/media'
-MEDIA_URL = 'http://localhost:2002/media/'
+MEDIA_URL = '/media/'
 
 # allow upload big file
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 20  # 20M
