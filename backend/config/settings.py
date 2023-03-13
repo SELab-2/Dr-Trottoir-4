@@ -51,6 +51,7 @@ THIRD_PARTY_APPS = AUTHENTICATION + [
     'corsheaders',
     'rest_framework',
     'phonenumber_field',
+    'drf_spectacular',
 ]
 
 CREATED_APPS = [
@@ -65,7 +66,17 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-    )
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+#drf-spectacular settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Dr-Trottoir API',
+    'DESCRIPTION': 'This is the documentation for the Dr-trottoir API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
 }
 
 # authentication settings

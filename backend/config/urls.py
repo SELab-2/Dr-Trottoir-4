@@ -13,34 +13,29 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from authentication import urls as authentication_urls
-from building import urls as building_urls
-from building_on_tour import urls as building_on_tour_urls
-from buildingurl import urls as building_url_urls
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include, re_path, reverse_lazy
 from django.views.generic import RedirectView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+from authentication import urls as authentication_urls
+from building import urls as building_urls
+from building_on_tour import urls as building_on_tour_urls
+from buildingurl import urls as building_url_urls
 from garbage_collection import urls as garbage_collection_urls
 from manual import urls as manual_urls
-
 from picture_building import urls as picture_building_urls
 from region import urls as region_urls
-from rest_framework.routers import DefaultRouter
 from student_at_building_on_tour import urls as stud_buil_tour_urls
 from tour import urls as tour_urls
 from users import urls as user_urls
-
 from .settings import MEDIA_URL, MEDIA_ROOT
-
-router = DefaultRouter()
-# NOTE: This is a temporary view to test 'IsAuthenticated"
-# router.register(r'users', UserViewSet)
-
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
-                  path('', include(router.urls)),
+                  path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+                  path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
                   path('authentication/', include(authentication_urls)),
                   path('manual/', include(manual_urls)),
                   path('picture_building/', include(picture_building_urls)),
