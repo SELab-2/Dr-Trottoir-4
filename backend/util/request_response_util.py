@@ -4,6 +4,18 @@ from rest_framework import status
 from rest_framework.response import Response
 
 
+def set_keys_of_instance(instance, data: dict, translation: dict):
+    for key in translation.keys():
+        if key in data:
+            data[translation[key]] = data[key]
+
+    for key in data.keys():
+        if key in vars(instance):
+            setattr(instance, key, data[key])
+
+    return instance
+
+
 def bad_request(object_name="Object"):
     return Response(
         {"res", f"{object_name} with given ID does not exist."},

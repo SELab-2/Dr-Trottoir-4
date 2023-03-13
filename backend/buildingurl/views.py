@@ -25,12 +25,7 @@ class BuildingUrlDefault(APIView):
         except IntegrityError:
             pass
 
-        if "building" in data.keys():
-            data["building_id"] = data["building"]
-
-        for key in data.keys():
-            if key in vars(building_url_instance):
-                setattr(building_url_instance, key, data[key])
+        set_keys_of_instance(building_url_instance, data, {"building": "building_id"})
 
         if r := try_full_clean_and_save(building_url_instance):
             return r
@@ -64,6 +59,9 @@ class BuildingUrlIndividualView(APIView):
         return delete_success()
 
     def patch(self, request, building_url_id):
+        """
+        Edit info about buildingurl with given id
+        """
         building_url_instance = BuildingURL.objects.filter(id=building_url_id)
         if not building_url_instance:
             return bad_request("BuildingUrl")
@@ -74,12 +72,7 @@ class BuildingUrlIndividualView(APIView):
         if "building" in data.keys():
             data["building_id"] = data["building"]
 
-        print("DATA")
-        print(data)
-
-        for key in data.keys():
-            if key in vars(building_url_instance):
-                setattr(building_url_instance, key, data[key])
+        set_keys_of_instance(building_url_instance, data, {"building": "building_id"})
 
         if r := try_full_clean_and_save(building_url_instance):
             return r
