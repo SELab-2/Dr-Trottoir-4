@@ -108,6 +108,25 @@ class BuildingURL(RandomIDModel):
         return f"{self.first_name_resident} {self.last_name_resident} : {self.id}"
 
 
+class BuildingComment(models.Model):
+    comment = models.TextField()
+    date = models.DateTimeField()
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Comment: {self.comment} ({self.date}) for {self.building}"
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                'building',
+                Lower('comment'),
+                'date',
+                name='building_comment_unique',
+                violation_error_message='Deze comment bestaat al en is aangemaakt op hetzelfde tijdstip'
+            ),
+        ]
+
 class GarbageCollection(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
     date = models.DateField()
