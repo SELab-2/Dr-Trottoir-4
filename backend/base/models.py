@@ -202,6 +202,12 @@ class BuildingOnTour(models.Model):
             raise ValidationError(f"De regio's van de ronde ({tour_region}) en gebouw ({building_region}) "
                                   f"zijn verschillend.")
 
+        nr_of_buildings = BuildingOnTour.objects.filter(tour=self.tour).count()
+        if self.index > nr_of_buildings:
+            raise ValidationError(f"De maximaal toegestane index voor dit gebouw is {nr_of_buildings}")
+
+
+
     def __str__(self):
         return f"{self.building} op ronde {self.tour}, index: {self.index}"
 
