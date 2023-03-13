@@ -1,16 +1,8 @@
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from base.models import BuildingURL, Building
 from base.serializers import BuildingUrlSerializer
-
-
-def _bad_request():
-    return Response(
-        {"res": "Object with given building ID does not exists."},
-        status=status.HTTP_400_BAD_REQUEST
-    )
+from util.request_response_util import *
 
 
 class BuildingUrlDefault(APIView):
@@ -19,9 +11,19 @@ class BuildingUrlDefault(APIView):
         """
         Create a new building url
         """
-        data = request.data.dict()
+        data = request_to_dict(request.data)
 
         building_url_instance = BuildingURL()
+
+        # Below line is necessary since we use RandomIDModel
+        # Without this line, we would have a ValidationError because we do not have an id yet
+        # save() calls the function from the parent class RandomIDModel
+        # The try is needed because the save will fail because there is no building etc. given
+        # (It's a dirty fix, but it works)
+        try:
+            building_url_instance.save()
+        except IntegrityError:
+            pass
 
         if "building" in data.keys():
             data["building_id"] = data["building"]
@@ -30,9 +32,11 @@ class BuildingUrlDefault(APIView):
             if key in vars(building_url_instance):
                 setattr(building_url_instance, key, data[key])
 
-        building_url_instance.save()
+        if r := try_full_clean_and_save(building_url_instance):
+            return r
+
         serializer = BuildingUrlSerializer(building_url_instance)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return post_succes(serializer)
 
 
 class BuildingUrlIndividualView(APIView):
@@ -43,10 +47,10 @@ class BuildingUrlIndividualView(APIView):
         """
         building_url_instance = BuildingURL.objects.filter(id=building_url_id)
         if not building_url_instance:
-            return _bad_request()
+            return bad_request("BuildingUrl")
 
         serializer = BuildingUrlSerializer(building_url_instance[0])
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_succes(serializer)
 
     def delete(self, request, building_url_id):
         """
@@ -54,18 +58,18 @@ class BuildingUrlIndividualView(APIView):
         """
         building_url_instance = BuildingURL.objects.filter(id=building_url_id)
         if not building_url_instance:
-            return _bad_request()
+            return bad_request("BuildingUrl")
 
         building_url_instance[0].delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return delete_succes()
 
     def patch(self, request, building_url_id):
         building_url_instance = BuildingURL.objects.filter(id=building_url_id)
         if not building_url_instance:
-            return _bad_request()
+            return bad_request("BuildingUrl")
 
         building_url_instance = building_url_instance[0]
-        data = request.data.dict()
+        data = request_to_dict(request.data)
 
         if "building" in data.keys():
             data["building_id"] = data["building"]
@@ -74,9 +78,11 @@ class BuildingUrlIndividualView(APIView):
             if key in vars(building_url_instance):
                 setattr(building_url_instance, key, data[key])
 
-        building_url_instance.save()
+        if r := try_full_clean_and_save(building_url_instance):
+            return r
+
         serializer = BuildingUrlSerializer(building_url_instance)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return patch_succes(serializer)
 
 
 class BuildingUrlSyndicView(APIView):
@@ -94,7 +100,7 @@ class BuildingUrlSyndicView(APIView):
 
         building_urls_instances = BuildingURL.objects.filter(building__in=building_ids)
         serializer = BuildingUrlSerializer(building_urls_instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_succes(serializer)
 
 
 class BuildingUrlBuildingView(APIView):
@@ -108,7 +114,7 @@ class BuildingUrlBuildingView(APIView):
         """
         building_url_instances = BuildingURL.objects.filter(building=building_id)
         serializer = BuildingUrlSerializer(building_url_instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_succes(serializer)
 
 
 class BuildingUrlAllView(APIView):
@@ -119,4 +125,4 @@ class BuildingUrlAllView(APIView):
         """
         building_url_instances = BuildingURL.objects.all()
         serializer = BuildingUrlSerializer(building_url_instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_succes(serializer)

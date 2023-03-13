@@ -1,17 +1,8 @@
-from django.core.exceptions import ValidationError
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from base.models import GarbageCollection
 from base.serializers import GarbageCollectionSerializer
-
-
-def _bad_request():
-    return Response(
-        {"res": "Object with given garbage collection ID does not exists."},
-        status=status.HTTP_400_BAD_REQUEST
-    )
+from util.request_response_util import *
 
 
 class DefaultGarbageCollection(APIView):
@@ -21,7 +12,7 @@ class DefaultGarbageCollection(APIView):
         Create new garbage collection
         """
 
-        data = request.data.dict()
+        data = request_to_dict(request.data)
 
         if "building" in data:
             data["building_id"] = data["building"]
@@ -32,15 +23,11 @@ class DefaultGarbageCollection(APIView):
             if key in vars(garbage_collection_instance):
                 setattr(garbage_collection_instance, key, data[key])
 
-        try:
-            garbage_collection_instance.full_clean()
-        except ValidationError as e:
-            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
-
-        garbage_collection_instance.save()
+        if r := try_full_clean_and_save(garbage_collection_instance):
+            return r
 
         serializer = GarbageCollectionSerializer(garbage_collection_instance)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return post_succes(serializer)
 
 
 class GarbageCollectionIndividualView(APIView):
@@ -51,9 +38,9 @@ class GarbageCollectionIndividualView(APIView):
         """
         garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
         if not garbage_collection_instance:
-            return _bad_request()
+            return bad_request("GarbageCollection")
         serializer = GarbageCollectionSerializer(garbage_collection_instance[0])
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_succes(serializer)
 
     def delete(self, request, garbage_collection_id):
         """
@@ -61,9 +48,9 @@ class GarbageCollectionIndividualView(APIView):
         """
         garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
         if not garbage_collection_instance:
-            return _bad_request()
+            return bad_request("GarbageCollection")
         garbage_collection_instance[0].delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return delete_succes()
 
     def patch(self, request, garbage_collection_id):
         """
@@ -71,10 +58,10 @@ class GarbageCollectionIndividualView(APIView):
         """
         garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
         if not garbage_collection_instance:
-            return _bad_request()
+            return bad_request("GarbageCollection")
 
         garbage_collection_instance = garbage_collection_instance[0]
-        data = request.data.dict()
+        data = request_to_dict(request.data)
 
         if "building" in data:
             data["building_id"] = data["building"]
@@ -83,14 +70,11 @@ class GarbageCollectionIndividualView(APIView):
             if key in vars(garbage_collection_instance):
                 setattr(garbage_collection_instance, key, data[key])
 
-        try:
-            garbage_collection_instance.full_clean()
-        except ValidationError as e:
-            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
+        if r := try_full_clean_and_save(garbage_collection_instance):
+            return r
 
-        garbage_collection_instance.save()
         serializer = GarbageCollectionSerializer(garbage_collection_instance)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return patch_succes(serializer)
 
 
 class GarbageCollectionIndividualBuildingView(APIView):
@@ -104,7 +88,7 @@ class GarbageCollectionIndividualBuildingView(APIView):
         """
         garbage_collection_instances = GarbageCollection.objects.filter(building=building_id)
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_succes(serializer)
 
 
 class GarbageCollectionAllView(APIView):
@@ -115,4 +99,4 @@ class GarbageCollectionAllView(APIView):
         """
         garbage_collection_instances = GarbageCollection.objects.all()
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_succes(serializer)

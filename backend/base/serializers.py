@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+
 from .models import *
 
 
@@ -19,6 +20,18 @@ class BuildingSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
+class PictureBuildingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PictureBuilding
+        fields = ["id", "building", "picture", "description", "timestamp", "type"]
+
+
+class StudBuildTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentAtBuildingOnTour
+        fields = ["id", "building_on_tour", "date", "student"]
+
+
 class BuildingUrlSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuildingURL
@@ -32,7 +45,27 @@ class GarbageCollectionSerializer(serializers.ModelSerializer):
         fields = ["id", "building", "date", "garbage_type"]
         read_only_fields = ["id"]
 
+
 class ManualSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manual
         fields = ["id", "building", "version_number", "file"]
+
+
+class BuildingTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BuildingOnTour
+        fields = ["id", "building", "tour", "index"]
+
+
+class TourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tour
+        fields = ["id", "name", "region", "modified_at"]
+
+
+class RegionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
+        fields = ["id", "region"]
+
