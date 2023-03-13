@@ -9,16 +9,17 @@ In the future, it might be useful to automatically generate API documentation.
 
 _Succesful_
 
-* GET: 200 OK
-* POST/DELETE: 204 No Content
-* PATCH: 201 Created
+* GET/PATCH: 200 OK
+* DELETE: 204 No Content
+* POST: 201 Created
 
 _Unsuccessful_
 
 * Not logged in: 401 Unauthorized
 * Nonexistent id in URL: 400 Bad Request
 
-An internal server error (500) after a request should never happen.
+An internal server error (500) after a request should never happen. If this should happen, report this to the backend
+team.
 
 ## Table of contents
 
@@ -69,7 +70,9 @@ page, ... ). Then a superstudent/admin could give the right permissions / role t
 | region       | 
 | role         | 
 
-After a post, the server could respond with the link to the newly created resource.
+Posting (or patching) a region should happen via an object, e.g. `{"region1": <region1_id>, "region2": <region2_id>}`
+
+After a post, the server responds with the newly created resource.
 
 ### Delete
 
@@ -204,9 +207,9 @@ Maybe rename it to e.g. resident_building_info?
 
 > Get all links of a syndic with given userid
 
-* `/resident/{userid}`
+* `/building/{buildingid}`
 
-> Get all links where the user with given userid is a resident
+> Get all links of the building with given building id
 
 ### Post
 
@@ -240,17 +243,21 @@ Maybe rename it to e.g. resident_building_info?
 
 > Get all info about the garbage collection with given id
 
-* `/{buildingid}`
+* `/building/{buildingid}`
 
 > Get all info about the garbage collection of the building with given buildingid
 
+* `/all`
+
+> Get all garbage collections
+
 ### Post
 
-| Parameter    | Description                                                                |
-|--------------|----------------------------------------------------------------------------|
-| building     |                                                                            |
-| date         |                                                                            |
-| garbage_type | ∈ {"GFT", "GLAS", "GROF_VUIL", "KERSTBOMEN", "PAPIER", "PMD", "RESTAFVAL"} |
+| Parameter    | Description                                         |
+|--------------|-----------------------------------------------------|
+| building     |                                                     |
+| date         | e.g. "2023-12-25"                                   |
+| garbage_type | ∈ {"GFT", "GLS", "GRF", "KER", "PAP", "PMD", "RES"} |
 
 ### Delete
 
