@@ -11,17 +11,11 @@ class DefaultGarbageCollection(APIView):
         """
         Create new garbage collection
         """
-
         data = request_to_dict(request.data)
-
-        if "building" in data:
-            data["building_id"] = data["building"]
 
         garbage_collection_instance = GarbageCollection()
 
-        for key in data.keys():
-            if key in vars(garbage_collection_instance):
-                setattr(garbage_collection_instance, key, data[key])
+        set_keys_of_instance(garbage_collection_instance, data, {"building": "building_id"})
 
         if r := try_full_clean_and_save(garbage_collection_instance):
             return r
@@ -63,12 +57,7 @@ class GarbageCollectionIndividualView(APIView):
         garbage_collection_instance = garbage_collection_instance[0]
         data = request_to_dict(request.data)
 
-        if "building" in data:
-            data["building_id"] = data["building"]
-
-        for key in data.keys():
-            if key in vars(garbage_collection_instance):
-                setattr(garbage_collection_instance, key, data[key])
+        set_keys_of_instance(garbage_collection_instance, data, {"building": "building_id"})
 
         if r := try_full_clean_and_save(garbage_collection_instance):
             return r
