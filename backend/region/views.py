@@ -47,7 +47,7 @@ class RegionIndividualView(APIView):
         if len(region_instances) != 1:
             return bad_request(object_name="Region")
         region_instance = region_instances[0]
-        data = request.data.dict()
+        data = request_to_dict(request.data)
         for key in data.keys():
             if key in vars(region_instance):
                 setattr(region_instance, key, data[key])

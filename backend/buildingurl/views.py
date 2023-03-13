@@ -74,6 +74,9 @@ class BuildingUrlIndividualView(APIView):
         if "building" in data.keys():
             data["building_id"] = data["building"]
 
+        print("DATA")
+        print(data)
+
         for key in data.keys():
             if key in vars(building_url_instance):
                 setattr(building_url_instance, key, data[key])
