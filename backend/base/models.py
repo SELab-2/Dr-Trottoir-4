@@ -11,6 +11,12 @@ from phonenumber_field.modelfields import PhoneNumberField
 from users.managers import UserManager
 
 
+def _check_for_present_keys(instance, keys_iterable):
+    for key in keys_iterable:
+        if not vars(instance)[key]:
+            raise ValidationError(f"Tried to access {key} but it was not found in object")
+
+
 class Region(models.Model):
     region = models.CharField(max_length=40, unique=True, error_messages={'unique': "Deze regio bestaat al."})
 
@@ -177,6 +183,9 @@ class BuildingOnTour(models.Model):
 
     def clean(self):
         super().clean()
+
+        _check_for_present_keys(self, {"tour_id", "building_id", "index", "index"})
+
         tour_region = self.tour.region
         building_region = self.building.region
         if tour_region != building_region:
