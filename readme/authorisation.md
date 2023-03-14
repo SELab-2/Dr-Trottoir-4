@@ -13,6 +13,7 @@
 ### Object based permissions
 
 - `OwnerOfBuilding` (global + object): checks if the user is a syndic and if he owns the building
+- `OwnsAccount` (object): checks if the user tries to access his own user info
 
 ## Protected endpoints
 For all these views, `IsAuthenticated` is required. Therefor we only mention the interesting permissions here.

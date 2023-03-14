@@ -1,8 +1,9 @@
 import json
 
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from authorisation.permissions import IsAdmin, IsSuperStudent, OwnsAccount, CanEditUser
 from base.models import User
 from base.serializers import UserSerializer
 from util.request_response_util import *
@@ -17,9 +18,7 @@ def _try_adding_region_to_user_instance(user_instance, region_value):
 
 
 class DefaultUser(APIView):
-
-    # TODO: authorization
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
 
     # TODO: in order for this to work, you have to pass a password
     #  In the future, we probably won't use POST this way anymore (if we work with the whitelist method)
@@ -41,9 +40,6 @@ class DefaultUser(APIView):
         user_instance.save()
 
         # Now that we have an ID, we can look at the many-to-many relationship region
-
-        print("beginnen met REGIONNNNNNN ")
-
         if "region" in data.keys():
             region_dict = json.loads(data["region"])
             for value in region_dict.values():
@@ -58,7 +54,7 @@ class DefaultUser(APIView):
 
 
 class UserIndividualView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnsAccount, CanEditUser]
 
     def get(self, request, user_id):
         """
@@ -68,8 +64,11 @@ class UserIndividualView(APIView):
         user_instance = User.objects.filter(id=user_id)
         if not user_instance:
             return bad_request(object_name="User")
+        user_instance = user_instance[0]
 
-        serializer = UserSerializer(user_instance[0])
+        self.check_object_permissions(request, user_instance)
+
+        serializer = UserSerializer(user_instance)
         return get_succes(serializer)
 
     def delete(self, request, user_id):
@@ -79,8 +78,11 @@ class UserIndividualView(APIView):
         user_instance = User.objects.filter(id=user_id)
         if not user_instance:
             return bad_request(object_name="User")
+        user_instance = user_instance[0]
 
-        user_instance[0].delete()
+        self.check_object_permissions(request, user_instance)
+
+        user_instance.delete()
         return delete_succes()
 
     def patch(self, request, user_id):
@@ -92,6 +94,8 @@ class UserIndividualView(APIView):
         if not user_instance:
             return bad_request(object_name="User")
         user_instance = user_instance[0]
+
+        self.check_object_permissions(request, user_instance)
 
         data = request_to_dict(request.data)
 
@@ -118,6 +122,7 @@ class UserIndividualView(APIView):
 
 
 class AllUsersView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
 
     def get(self, request):
         """

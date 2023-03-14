@@ -1,6 +1,7 @@
 from rest_framework.permissions import BasePermission
-from rest_framework.permissions import SAFE_METHODS
-from base.models import Building
+from base.models import Building, User
+
+SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS']
 
 
 # ----------------------
@@ -65,10 +66,33 @@ class OwnerOfBuilding(BasePermission):
     """
     Checks if the user owns the building
     """
-    message = "You can only access the buildings that you own"
+    message = "You can only access/edit the buildings that you own"
 
     def has_permission(self, request, view):
         return request.user.role == 'SY'
 
     def has_object_permission(self, request, view, obj: Building):
         return request.user.id == obj.syndic_id
+
+
+class OwnsAccount(BasePermission):
+    """
+    Checks if the user is owns the user account
+    """
+    message = "You can only access/edit your own account"
+
+    def has_object_permission(self, request, view, obj: User):
+        if request.method in SAFE_METHODS + ['PATCH']:
+            return request.user.id == obj.id
+
+
+class CanEditUser(BasePermission):
+    """
+    Checks if the user has the right permissions to edit
+    """
+    message = "You don't have the right permissions to edit the user accordingly"
+
+    def has_object_permission(self, request, view, obj: User):
+        if request.method in ['PATCH', 'DELETE']:
+            # TODO: Depending on the 'Rank' of the 'Role', we should determine this permission
+            return True
