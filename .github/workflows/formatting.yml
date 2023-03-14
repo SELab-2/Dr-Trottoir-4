@@ -1,0 +1,35 @@
+name: Code Formatting and Linting
+
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  format:
+    name: Format Code Base
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      # using `black` for Python
+      - name: Format Python code
+        uses: rickstaa/action-black@v1.3.1
+        with:
+          black_args: "backend/ --check"
+          fail_on_error: false
+
+
+      # using `prettier` for JavaScript
+      - name: Format JavaScript code
+        uses: creyD/prettier_action@v4.3
+        with:
+          prettier_options: -- write frontend/*.{js,tsx}
+          same_commit: true

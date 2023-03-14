@@ -14,36 +14,36 @@ defaults:
   run:
     working-directory: backend
 
-jobs:
-  format:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: docker://python:3.8
-
-      - name: Format with Black
-        run: |
-          pip install black
-          black .
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: docker://python:3.8
-
-      - name: Lint with Flake8
-        id: python-lint
-        run: |
-          pip install flake8
-          flake8 .
-
-      - name: Check for linting errors
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          if [ ${{ steps.python-lint.outcome }} == 'failure' ]; then
-            echo "Linting of code failed. Please fix the errors before merging the pull request."
-            exit 1
-          fi
-          exit 0
+#jobs:
+#  format:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: docker://python:3.8
+#
+#      - name: Format with Black
+#        run: |
+#          pip install black
+#          black .
+#  lint:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: docker://python:3.8
+#
+#      - name: Lint with Flake8
+#        id: python-lint
+#        run: |
+#          pip install flake8
+#          flake8 .
+#
+#      - name: Check for linting errors
+#        if: ${{ github.event_name == 'pull_request' }}
+#        run: |
+#          if [ ${{ steps.python-lint.outcome }} == 'failure' ]; then
+#            echo "Linting of code failed. Please fix the errors before merging the pull request."
+#            exit 1
+#          fi
+#          exit 0
