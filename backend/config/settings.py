@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import collections
 from datetime import timedelta
 from pathlib import Path
 from .secrets import DJANGO_SECRET_KEY, SECRET_EMAIL_USER, SECRET_EMAIL_USER_PSWD
@@ -35,6 +36,7 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django_nose',
 ]
 
 AUTHENTICATION = [
@@ -69,6 +71,13 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+# hack to make nose run
+# this is needed because a lib was updated
+# https://stackoverflow.com/a/70641487
+collections.Callable = collections.abc.Callable
+# Use nose to run all tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 #drf-spectacular settings
 SPECTACULAR_SETTINGS = {
@@ -157,8 +166,8 @@ DATABASES = {
         'NAME': 'drtrottoir',
         'USER': 'django',
         'PASSWORD': 'password',
-        # 'HOST': 'localhost', # If you want to run using python manage.py runserver
-        'HOST': 'web',  # If you want to use `docker-compose up`
+        'HOST': 'localhost', # If you want to run using python manage.py runserver
+        # 'HOST': 'web',  # If you want to use `docker-compose up`
         'PORT': '5432',
     }
 }
