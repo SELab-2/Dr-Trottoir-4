@@ -3,6 +3,7 @@ from dj_rest_auth.jwt_auth import unset_jwt_cookies, CookieTokenRefreshSerialize
 from dj_rest_auth.views import LogoutView, LoginView
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -12,6 +13,8 @@ from config import settings
 
 
 class LogoutViewWithBlacklisting(LogoutView):
+    permission_classes = [IsAuthenticated]
+
     def logout(self, request):
         response = Response(
             {'detail': _('Successfully logged out.')},
@@ -45,6 +48,7 @@ class LogoutViewWithBlacklisting(LogoutView):
 
 
 class RefreshViewHiddenTokens(TokenRefreshView):
+    permission_classes = [IsAuthenticated]
     serializer_class = CookieTokenRefreshSerializer
 
     def finalize_response(self, request, response, *args, **kwargs):
