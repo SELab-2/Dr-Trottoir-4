@@ -45,7 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
     phone_number = PhoneNumberField(region='BE')
-    region = models.ManyToManyField(Region, blank=True)
+    region = models.ManyToManyField(Region)
 
     STUDENT = 'ST'
     SUPERSTUDENT = 'SS'
