@@ -22,9 +22,9 @@ jobs:
       # using `black` for Python
       - name: Format Python code
         uses: rickstaa/action-black@v1.3.1
+        id: action_black
         with:
-          black_args: "backend/ --check"
-          fail_on_error: false
+          black_args: "."
 
 
       # using `prettier` for JavaScript
@@ -33,3 +33,12 @@ jobs:
         with:
           prettier_options: --write **/*.{js,tsx}
           same_commit: true
+
+      - name: Commit Python changes
+        if: steps.action_black.outputs.is_formatted == 'true'
+        run: |
+          git config --global user.email "group4@selab2.com"
+          git config --global user.name "Group 4"
+          git pull
+          git commit --amend --no-edit
+          git push origin -f
