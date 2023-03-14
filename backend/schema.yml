@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Dr-Trottoir API
   version: 1.0.0
-  description: This is the documentation for the Dr-trottoir API
+  description: This is the documentation for the Dr-Trottoir API
 paths:
   /authentication/account-confirm-email/:
     post:
@@ -454,7 +454,7 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
@@ -482,6 +482,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Building'
           description: ''
+        '400':
+          description: No response body
     patch:
       operationId: building_partial_update
       description: Edit building with given ID
@@ -508,12 +510,10 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Building'
-          description: ''
+        '204':
+          description: No response body
+        '400':
+          description: No response body
     delete:
       operationId: building_destroy
       description: Delete building with given id
@@ -530,6 +530,8 @@ paths:
       - jwtCookieAuth: []
       responses:
         '204':
+          description: No response body
+        '400':
           description: No response body
   /building/all/:
     get:
@@ -569,6 +571,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Building'
           description: ''
+        '400':
+          description: No response body
   /building_on_tour/:
     post:
       operationId: building_on_tour_create
@@ -591,12 +595,14 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BuildingTour'
           description: ''
+        '400':
+          description: No response body
   /building_on_tour/{buildingTour_id}/:
     get:
       operationId: building_on_tour_retrieve
@@ -619,6 +625,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BuildingTour'
           description: ''
+        '400':
+          description: No response body
     patch:
       operationId: building_on_tour_partial_update
       description: edit info about a BuildingOnTour with given id
@@ -645,12 +653,10 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuildingTour'
-          description: ''
+        '204':
+          description: No response body
+        '400':
+          description: No response body
     delete:
       operationId: building_on_tour_destroy
       description: delete a BuildingOnTour from the database
@@ -667,6 +673,8 @@ paths:
       - jwtCookieAuth: []
       responses:
         '204':
+          description: No response body
+        '400':
           description: No response body
   /building_on_tour/all/:
     get:
@@ -706,7 +714,7 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
@@ -734,6 +742,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BuildingUrl'
           description: ''
+        '400':
+          description: No response body
     patch:
       operationId: buildingurl_partial_update
       parameters:
@@ -759,12 +769,10 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuildingUrl'
-          description: ''
+        '204':
+          description: No response body
+        '400':
+          description: No response body
     delete:
       operationId: buildingurl_destroy
       description: Delete buildingurl with given id
@@ -781,6 +789,8 @@ paths:
       - jwtCookieAuth: []
       responses:
         '204':
+          description: No response body
+        '400':
           description: No response body
   /buildingurl/all/:
     get:
@@ -865,7 +875,7 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
@@ -893,6 +903,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/GarbageCollection'
           description: ''
+        '400':
+          description: No response body
     patch:
       operationId: garbage_collection_partial_update
       description: Edit garbage collection with given id
@@ -919,12 +931,10 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GarbageCollection'
-          description: ''
+        '204':
+          description: No response body
+        '400':
+          description: No response body
     delete:
       operationId: garbage_collection_destroy
       description: Delete garbage collection with given id
@@ -941,6 +951,8 @@ paths:
       - jwtCookieAuth: []
       responses:
         '204':
+          description: No response body
+        '400':
           description: No response body
   /garbage_collection/all/:
     get:
@@ -1002,12 +1014,14 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Manual'
           description: ''
+        '400':
+          description: No response body
   /manual/{manual_id}/:
     get:
       operationId: manual_retrieve
@@ -1029,6 +1043,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Manual'
           description: ''
+        '400':
+          description: No response body
     patch:
       operationId: manual_partial_update
       parameters:
@@ -1054,12 +1070,10 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Manual'
-          description: ''
+        '204':
+          description: No response body
+        '400':
+          description: No response body
     delete:
       operationId: manual_destroy
       parameters:
@@ -1075,6 +1089,8 @@ paths:
       - jwtCookieAuth: []
       responses:
         '204':
+          description: No response body
+        '400':
           description: No response body
   /manual/all/:
     get:
@@ -1112,6 +1128,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Manual'
           description: ''
+        '400':
+          description: No response body
   /picture_building/:
     post:
       operationId: picture_building_create
@@ -1133,12 +1151,14 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PictureBuilding'
           description: ''
+        '400':
+          description: No response body
   /picture_building/{pictureBuilding_id}/:
     get:
       operationId: picture_building_retrieve
@@ -1160,6 +1180,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/PictureBuilding'
           description: ''
+        '400':
+          description: No response body
     patch:
       operationId: picture_building_partial_update
       parameters:
@@ -1185,12 +1207,12 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PictureBuilding'
-          description: ''
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+        '501':
+          description: No response body
     delete:
       operationId: picture_building_destroy
       description: delete a pictureBuilding from the database
@@ -1207,6 +1229,8 @@ paths:
       - jwtCookieAuth: []
       responses:
         '204':
+          description: No response body
+        '400':
           description: No response body
   /picture_building/all/:
     get:
@@ -1245,6 +1269,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/PictureBuilding'
           description: ''
+        '400':
+          description: No response body
   /region/:
     post:
       operationId: region_create
@@ -1267,7 +1293,7 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
@@ -1295,6 +1321,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Region'
           description: ''
+        '400':
+          description: No response body
     patch:
       operationId: region_partial_update
       description: Edit Region with given id
@@ -1321,12 +1349,10 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Region'
-          description: ''
+        '204':
+          description: No response body
+        '400':
+          description: No response body
     delete:
       operationId: region_destroy
       description: delete a region with given id
@@ -1343,6 +1369,8 @@ paths:
       - jwtCookieAuth: []
       responses:
         '204':
+          description: No response body
+        '400':
           description: No response body
   /region/all/:
     get:
@@ -1381,12 +1409,14 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/StudBuildTour'
           description: ''
+        '400':
+          description: No response body
   /student_at_building_on_tour/{id}/:
     get:
       operationId: student_at_building_on_tour_retrieve
@@ -1408,6 +1438,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/StudBuildTour'
           description: ''
+        '400':
+          description: No response body
     patch:
       operationId: student_at_building_on_tour_partial_update
       parameters:
@@ -1433,12 +1465,10 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StudBuildTour'
-          description: ''
+        '204':
+          description: No response body
+        '400':
+          description: No response body
     delete:
       operationId: student_at_building_on_tour_destroy
       description: delete from the database
@@ -1455,6 +1485,8 @@ paths:
       - jwtCookieAuth: []
       responses:
         '204':
+          description: No response body
+        '400':
           description: No response body
   /student_at_building_on_tour/all/:
     get:
@@ -1493,6 +1525,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/StudBuildTour'
           description: ''
+        '400':
+          description: No response body
   /tour/:
     post:
       operationId: tour_create
@@ -1515,12 +1549,14 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Tour'
           description: ''
+        '400':
+          description: No response body
   /tour/{tour_id}/:
     get:
       operationId: tour_retrieve
@@ -1543,6 +1579,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Tour'
           description: ''
+        '400':
+          description: No response body
     patch:
       operationId: tour_partial_update
       description: edit a tour with given id
@@ -1569,12 +1607,10 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tour'
-          description: ''
+        '204':
+          description: No response body
+        '400':
+          description: No response body
     delete:
       operationId: tour_destroy
       description: delete a tour with given id
@@ -1591,6 +1627,8 @@ paths:
       - jwtCookieAuth: []
       responses:
         '204':
+          description: No response body
+        '400':
           description: No response body
   /tour/all/:
     get:
@@ -1630,7 +1668,7 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
@@ -1658,6 +1696,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+        '400':
+          description: No response body
     patch:
       operationId: user_partial_update
       description: Edit user with given id
@@ -1684,12 +1724,10 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
+        '204':
+          description: No response body
+        '400':
+          description: No response body
     delete:
       operationId: user_destroy
       description: Delete user with given id
@@ -1706,6 +1744,8 @@ paths:
       - jwtCookieAuth: []
       responses:
         '204':
+          description: No response body
+        '400':
           description: No response body
   /user/all/:
     get:

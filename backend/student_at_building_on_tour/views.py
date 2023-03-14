@@ -4,11 +4,16 @@ from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 
 class Default(APIView):
     serializer_class = StudBuildTourSerializer
 
+    @extend_schema(
+        responses={201: StudBuildTourSerializer,
+                   400: None}
+    )
     def post(self, request):
         data = request.data
         buildingOnTour = data.get("building_on_tour")
@@ -38,6 +43,10 @@ class Default(APIView):
 class build_tour_per_studentView(APIView):
     serializer_class = StudBuildTourSerializer
 
+    @extend_schema(
+        responses={200: StudBuildTourSerializer,
+                   400: None}
+    )
     def get(self, request, student_id):
         stud_candidates = User.objects.filter(id=student_id)
         if len(stud_candidates) != 1:
@@ -52,6 +61,10 @@ class build_tour_per_studentView(APIView):
 class stud_build_tourIndividualView(APIView):
     serializer_class = StudBuildTourSerializer
 
+    @extend_schema(
+        responses={200: StudBuildTourSerializer,
+                   400: None}
+    )
     def get(self, request, id):
         stud_tour_building_instance = StudentAtBuildingOnTour.objects.filter(id=id)
 
@@ -63,6 +76,10 @@ class stud_build_tourIndividualView(APIView):
         serializer = StudBuildTourSerializer(stud_tour_building_instance[0])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def patch(self, request, id):
         stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=id)
 
@@ -97,6 +114,10 @@ class stud_build_tourIndividualView(APIView):
         stud_tour_building_instance.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def delete(self, request, id):
         """
         delete from the database

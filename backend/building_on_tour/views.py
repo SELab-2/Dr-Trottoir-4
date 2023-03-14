@@ -4,11 +4,16 @@ from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 
 class Default(APIView):
     serializer_class = BuildingTourSerializer
 
+    @extend_schema(
+        responses={201: BuildingTourSerializer,
+                   400: None}
+    )
     def post(self, request):
         """
         Create a new BuildingOnTour with data from post
@@ -42,6 +47,10 @@ class Default(APIView):
 class BuildingTourIndividualView(APIView):
     serializer_class = BuildingTourSerializer
 
+    @extend_schema(
+        responses={200: BuildingTourSerializer,
+                   400: None}
+    )
     def get(self, request, buildingTour_id):
         """
         Get info about a BuildingOnTour with given id
@@ -56,6 +65,10 @@ class BuildingTourIndividualView(APIView):
         serializer = BuildingTourSerializer(building_on_tour_instance[0])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def patch(self, request, buildingTour_id):
         """
         edit info about a BuildingOnTour with given id
@@ -95,6 +108,10 @@ class BuildingTourIndividualView(APIView):
         building_on_tour_instance.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def delete(self, request, buildingTour_id):
         """
         delete a BuildingOnTour from the database

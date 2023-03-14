@@ -5,12 +5,17 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from util.request_response_util import *
+from drf_spectacular.utils import extend_schema
 
 
 class Default(APIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = TourSerializer
 
+    @extend_schema(
+        responses={201: TourSerializer,
+                   400: None}
+    )
     def post(self, request):
         """
         Create a new tour
@@ -32,6 +37,11 @@ class Default(APIView):
 
 class TourIndividualView(APIView):
     serializer_class = TourSerializer
+
+    @extend_schema(
+        responses={200: TourSerializer,
+                   400: None}
+    )
     def get(self, request, tour_id):
         """
         Get info about a Tour with given id
@@ -44,6 +54,11 @@ class TourIndividualView(APIView):
         serializer = TourSerializer(tour_instance)
         return get_succes(serializer)
 
+
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def patch(self, request, tour_id):
         """
         edit a tour with given id
@@ -70,6 +85,10 @@ class TourIndividualView(APIView):
         serializer = TourSerializer(tour_instance)
         return patch_succes(serializer)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def delete(self, request, tour_id):
         """
         delete a tour with given id
@@ -84,6 +103,7 @@ class TourIndividualView(APIView):
 
 class AllToursView(APIView):
     serializer_class = TourSerializer
+
     def get(self, request):
         """
         Get all tours

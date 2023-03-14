@@ -4,11 +4,16 @@ from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 
 class Default(APIView):
     serializer_class = ManualSerializer
 
+    @extend_schema(
+        responses={201: ManualSerializer,
+                   400: None}
+    )
     def post(self, request):
         data = request.data
         building = data.get("building")
@@ -38,6 +43,10 @@ class Default(APIView):
 class ManualView(APIView):
     serializer_class = ManualSerializer
 
+    @extend_schema(
+        responses={200: ManualSerializer,
+                   400: None}
+    )
     def get(self, request, manual_id):
         manual_instances = Manual.objects.filter(id=manual_id)
         if len(manual_instances) != 1:
@@ -45,6 +54,10 @@ class ManualView(APIView):
         serializer = ManualSerializer(manual_instances[0])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def delete(self, request, manual_id):
         manual_instances = Manual.objects.filter(id=manual_id)
         if len(manual_instances) != 1:
@@ -52,6 +65,10 @@ class ManualView(APIView):
         manual_instances[0].delete()
         return Response(status=status.HTTP_200_OK)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def patch(self, request, manual_id):
         manual_instances = Manual.objects.filter(id=manual_id)
         if len(manual_instances) != 1:
@@ -76,6 +93,10 @@ class ManualView(APIView):
 class ManualBuildingView(APIView):
     serializer_class = ManualSerializer
 
+    @extend_schema(
+        responses={200: ManualSerializer,
+                   400: None}
+    )
     def get(self, request, building_id):
         candidates = Building.objects.filter(id=building_id)
         if len(candidates) != 1:

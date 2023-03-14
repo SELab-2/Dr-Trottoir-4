@@ -21,6 +21,8 @@ decorator from [drf-spectacular](https://github.com/tfranzel/drf-spectacular#cus
 of how to use it:
 
 ```python
+from drf_spectacular.utils import extend_schema
+
 class AllUsersView(APIView):
     serializer_class = UserSerializer
 

@@ -4,11 +4,15 @@ from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from drf_spectacular.utils import extend_schema
 
 class Default(APIView):
     serializer_class = PictureBuildingSerializer
 
+    @extend_schema(
+        responses={201: PictureBuildingSerializer,
+                   400: None}
+    )
     def post(self, request):
         data = request.data
         building = data.get("building")
@@ -36,6 +40,10 @@ class Default(APIView):
 class PictureBuildingIndividualView(APIView):
     serializer_class = PictureBuildingSerializer
 
+    @extend_schema(
+        responses={200: PictureBuildingSerializer,
+                   400: None}
+    )
     def get(self, request, pictureBuilding_id):
         pictureBuilding_instance = PictureBuilding.objects.filter(id=pictureBuilding_id)
 
@@ -47,6 +55,11 @@ class PictureBuildingIndividualView(APIView):
         serializer = PictureBuildingSerializer(pictureBuilding_instance[0])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None,
+                   501: None}
+    )
     def patch(self, request, pictureBuilding_id):
         # fixme picture itself cannot currently be patched
         pictureBuilding_candidates = PictureBuilding.objects.filter(id=pictureBuilding_id)
@@ -82,6 +95,10 @@ class PictureBuildingIndividualView(APIView):
         pictureBuilding_instance.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def delete(self, request, pictureBuilding_id):
         """
         delete a pictureBuilding from the database
@@ -99,6 +116,10 @@ class PictureBuildingIndividualView(APIView):
 class PicturesOfBuildingView(APIView):
     serializer_class = PictureBuildingSerializer
 
+    @extend_schema(
+        responses={200: PictureBuildingSerializer,
+                   400: None}
+    )
     def get(self, request, building_id):
         candidates = Building.objects.filter(id=building_id)
         if len(candidates) != 1:

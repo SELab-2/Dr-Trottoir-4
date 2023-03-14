@@ -3,6 +3,7 @@ from base.serializers import RegionSerializer
 from rest_framework import permissions
 from rest_framework.views import APIView
 from util.request_response_util import *
+from drf_spectacular.utils import extend_schema
 
 
 class Default(APIView):
@@ -10,6 +11,9 @@ class Default(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
 
+    @extend_schema(
+        responses={201: RegionSerializer}
+    )
     def post(self, request):
         """
         Create a new region
@@ -32,6 +36,10 @@ class RegionIndividualView(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
 
+    @extend_schema(
+        responses={200: RegionSerializer,
+                   400: None}
+    )
     def get(self, request, region_id):
         """
         Get info about a Region with given id
@@ -43,6 +51,11 @@ class RegionIndividualView(APIView):
         serializer = RegionSerializer(region_instance[0])
         return get_succes(serializer)
 
+
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def patch(self, request, region_id):
         """
         Edit Region with given id
@@ -61,6 +74,11 @@ class RegionIndividualView(APIView):
 
         return patch_succes(RegionSerializer(region_instance))
 
+
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def delete(self, request, region_id):
         """
         delete a region with given id

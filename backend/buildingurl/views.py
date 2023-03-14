@@ -3,11 +3,14 @@ from rest_framework.views import APIView
 from base.models import BuildingURL, Building
 from base.serializers import BuildingUrlSerializer
 from util.request_response_util import *
-
+from drf_spectacular.utils import extend_schema
 
 class BuildingUrlDefault(APIView):
     serializer_class = BuildingUrlSerializer
 
+    @extend_schema(
+        responses={201: BuildingUrlSerializer}
+    )
     def post(self, request):
         """
         Create a new building url
@@ -43,6 +46,10 @@ class BuildingUrlDefault(APIView):
 class BuildingUrlIndividualView(APIView):
     serializer_class = BuildingUrlSerializer
 
+    @extend_schema(
+        responses={200: BuildingUrlSerializer,
+                   400: None}
+    )
     def get(self, request, building_url_id):
         """
         Get info about a buildingurl with given id
@@ -54,6 +61,10 @@ class BuildingUrlIndividualView(APIView):
         serializer = BuildingUrlSerializer(building_url_instance[0])
         return get_succes(serializer)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def delete(self, request, building_url_id):
         """
         Delete buildingurl with given id
@@ -65,6 +76,10 @@ class BuildingUrlIndividualView(APIView):
         building_url_instance[0].delete()
         return delete_succes()
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def patch(self, request, building_url_id):
         building_url_instance = BuildingURL.objects.filter(id=building_url_id)
         if not building_url_instance:
