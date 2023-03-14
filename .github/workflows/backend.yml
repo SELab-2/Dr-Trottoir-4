@@ -1,18 +1,18 @@
-name: Code Formatting and Linting Backend
-
-on:
-  # push:
-  #   branches: [ main ]
-  push:
-    branches: [ '**' ]
-  pull_request:
-    branches:
-      - main
-      - develop
-
-defaults:
-  run:
-    working-directory: backend
+#name: Code Formatting and Linting Backend
+#
+#on:
+#  # push:
+#  #   branches: [ main ]
+#  push:
+#    branches: [ '**' ]
+#  pull_request:
+#    branches:
+#      - main
+#      - develop
+#
+#defaults:
+#  run:
+#    working-directory: backend
 
 #jobs:
 #  format:
