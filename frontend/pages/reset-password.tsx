@@ -11,12 +11,12 @@ export default function ResetPassword() {
     const router = useRouter();
     const [email, setEmail] = useState<string>("");
 
-    const handleSubmit = async (event:FormEvent) => {
+    const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         try {
-          await reset(email, router);
+            await reset(email, router);
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
     }
 
@@ -43,9 +43,10 @@ export default function ResetPassword() {
 
                         <button className={styles.button} type="submit">Confirm</button>
                     </form>
-                    <p className={styles.text}>Already have an account? <Link href="/login"><u>Log in here</u></Link></p>
+                    <p className={styles.text}>Already have an account? <Link href="/login"><u>Log in here</u></Link>
+                    </p>
                 </div>
             </div>
         </>
-  );
+    );
 }

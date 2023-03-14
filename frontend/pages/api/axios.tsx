@@ -29,7 +29,7 @@ api.interceptors.response.use(
         if (error.response.status === 401 && !error.config.retry) {
             error.config.retry = true;
             try {
-                const request_url : string = `${process.env.NEXT_PUBLIC_API_REFRESH_TOKEN}`
+                const request_url: string = `${process.env.NEXT_PUBLIC_API_REFRESH_TOKEN}`
                 await api.post(request_url);
                 return api.request(error.config);
             } catch (error) {

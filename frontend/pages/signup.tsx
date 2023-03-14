@@ -5,9 +5,7 @@ import styles from "@/styles/Login.module.css";
 import Image from "next/image";
 import filler_logo from "@/public/filler_logo.png";
 import Link from "next/link";
-import {SignUp} from "@/types.d";
 import signup from "@/lib/signup";
-import login from "@/lib/login";
 
 
 export default function Signup() {

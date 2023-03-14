@@ -1,5 +1,5 @@
 export type Login = {
-    email : string
+    email: string
     password: string
 }
 
@@ -12,5 +12,5 @@ export type SignUp = {
 }
 
 export type Reset_Password = {
-    email : string
+    email: string
 }

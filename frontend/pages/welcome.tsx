@@ -4,51 +4,52 @@ import soon from "public/coming_soon.png";
 import Image from "next/image";
 import api from "../pages/api/axios"
 import {useEffect, useState} from "react";
+import {useRouter} from "next/router";
 
 function Welcome() {
-
-    const getData = async () => {
-      try {
-        const response = await api.get('/users');
-        return response.data;
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
     const [data, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-      useEffect(() => {
+    useEffect(() => {
         async function fetchData() {
-          const result = await getData();
-          setData(result);
+            try {
+                const response = await api.get('/data');
+                setData(response.data);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setIsLoading(false);
+            }
         }
-        fetchData();
-      }, []);
 
-      if (!data || data.length == 0) {
-        return (
-            <>
-                <BaseHeader/>
-                <p className={styles.title}>Welcome!</p>
-                <Image src={soon} alt="Site coming soon" className={styles.image}/>
-            </>
-        )
-      } else {
-          return (
-            <>
-                <BaseHeader/>
-                <p className={styles.title}>Welcome!</p>
-                <Image src={soon} alt="Site coming soon" className={styles.image}/>
-                <h1 className={styles.text}>Users:</h1>
-                  <ul>
-                      {data.map((item, index) => (
-                        <li key={index}>{JSON.stringify(item)}</li>
-                      ))}
-                    </ul>
-            </>
+        fetchData();
+    }, []);
+
+    const router = useRouter();
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!data || data.length === 0) {
+        router.push('/login');
+        return null;
+    }
+
+    return (
+        <>
+            <BaseHeader/>
+            <p className={styles.title}>Welcome!</p>
+            <Image src={soon} alt="Site coming soon" className={styles.image}/>
+            <h1 className={styles.text}>Users:</h1>
+            <ul>
+                {data.map((item, index) => (
+                    <li key={index}>{JSON.stringify(item)}</li>
+                ))}
+            </ul>
+        </>
     )
-      }
+
 
 }
 
