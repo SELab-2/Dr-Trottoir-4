@@ -42,3 +42,10 @@ jobs:
           git pull
           git commit --amend --no-edit
           git push origin -f
+
+      - name: Lint Code Base
+        uses: github/super-linter@v4.10.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
