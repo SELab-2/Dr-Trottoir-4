@@ -14,10 +14,15 @@
 
 - `OwnerOfBuilding` (global + object): checks if the user is a syndic and if he owns the building
 - `OwnsAccount` (object): checks if the user tries to access his own user info
+- **TODO** `CanEditUser` (object): checks if the user who tries to edit the user has the right permissions (higher rank, doesn't
+  edit the rolt to a higher rank than itself, ...)
 
 ## Protected endpoints
+
 For all these views, `IsAuthenticated` is required. Therefor we only mention the interesting permissions here.
+
 ### Building urls
+
 - `building/ - [..., IsAdmin|IsSuperStudent]`
 - `building/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding]`
 - `building/owner/id - [..., IsAdmin | IsSuperStudent | OwnerOfBuilding]`
