@@ -22,5 +22,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OUTPUT_DETAILS: detailed
-          VALIDATE_ALL_CODEBASE: false
+#          VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
