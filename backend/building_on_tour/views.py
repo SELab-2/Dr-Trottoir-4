@@ -4,6 +4,8 @@ from base.models import BuildingOnTour
 from base.serializers import BuildingTourSerializer
 from util.request_response_util import *
 
+TRANSLATE = {"building": "building_id", "tour": "tour_id"}
+
 
 class Default(APIView):
     def post(self, request):
@@ -13,7 +15,7 @@ class Default(APIView):
         data = request_to_dict(request.data)
         building_on_tour_instance = BuildingOnTour()
 
-        set_keys_of_instance(building_on_tour_instance, data, {"building": "building_id", "tour": "tour_id"})
+        set_keys_of_instance(building_on_tour_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(building_on_tour_instance):
             return r
@@ -48,7 +50,7 @@ class BuildingTourIndividualView(APIView):
 
         data = request_to_dict(request.data)
 
-        set_keys_of_instance(building_on_tour_instance, data, {"building": "building_id", "tour": "tour_id"})
+        set_keys_of_instance(building_on_tour_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(building_on_tour_instance):
             return r
@@ -73,6 +75,6 @@ class AllBuildingToursView(APIView):
         """
         Get all buildings on tours
         """
-        buildingOnTourInstances = BuildingOnTour.objects.all()
-        serializer = BuildingTourSerializer(buildingOnTourInstances, many=True)
+        building_on_tour_instances = BuildingOnTour.objects.all()
+        serializer = BuildingTourSerializer(building_on_tour_instances, many=True)
         return get_success(serializer)

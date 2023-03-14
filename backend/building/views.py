@@ -5,6 +5,10 @@ from base.models import Building
 from base.serializers import BuildingSerializer
 from util.request_response_util import *
 
+# TODO:  we don't actually have to work with 'syndic' key, we can also require 'syndic_id' as parameter in body
+#  however, de automatic documentation might be a bit harder?
+TRANSLATE = {"syndic": "syndic_id"}
+
 
 class DefaultBuilding(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -17,7 +21,7 @@ class DefaultBuilding(APIView):
 
         building_instance = Building()
 
-        set_keys_of_instance(building_instance, data, {"syndic": "syndic_id"})
+        set_keys_of_instance(building_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(building_instance):
             return r
@@ -65,7 +69,7 @@ class BuildingIndividualView(APIView):
         building_instance = building_instance[0]
         data = request_to_dict(request.data)
 
-        set_keys_of_instance(building_instance, data, {"syndic": "syndic_id"})
+        set_keys_of_instance(building_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(building_instance):
             return r

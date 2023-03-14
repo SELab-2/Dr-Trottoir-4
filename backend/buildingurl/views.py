@@ -4,6 +4,8 @@ from base.models import BuildingURL, Building
 from base.serializers import BuildingUrlSerializer
 from util.request_response_util import *
 
+TRANSLATE = {"building": "building_id"}
+
 
 class BuildingUrlDefault(APIView):
 
@@ -25,7 +27,7 @@ class BuildingUrlDefault(APIView):
         except IntegrityError:
             pass
 
-        set_keys_of_instance(building_url_instance, data, {"building": "building_id"})
+        set_keys_of_instance(building_url_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(building_url_instance):
             return r
@@ -69,7 +71,7 @@ class BuildingUrlIndividualView(APIView):
         building_url_instance = building_url_instance[0]
         data = request_to_dict(request.data)
 
-        set_keys_of_instance(building_url_instance, data, {"building": "building_id"})
+        set_keys_of_instance(building_url_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(building_url_instance):
             return r

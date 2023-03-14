@@ -4,6 +4,7 @@ from base.models import PictureBuilding, Building
 from base.serializers import PictureBuildingSerializer
 from util.request_response_util import *
 
+TRANSLATE = {"building": "building_id"}
 
 class Default(APIView):
     def post(self, request):
@@ -13,9 +14,7 @@ class Default(APIView):
         data = request_to_dict(request.data)
         picture_building_instance = PictureBuilding()
 
-        print(vars(picture_building_instance))
-
-        set_keys_of_instance(picture_building_instance, data, {"building": "building_id"})
+        set_keys_of_instance(picture_building_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(picture_building_instance):
             return r
@@ -47,7 +46,7 @@ class PictureBuildingIndividualView(APIView):
 
         data = request_to_dict(request.data)
 
-        set_keys_of_instance(picture_building_instance, data, {"building": "building_id"})
+        set_keys_of_instance(picture_building_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(picture_building_instance):
             return r
@@ -71,7 +70,7 @@ class PicturesOfBuildingView(APIView):
         Get all pictures of a building with given id
         """
 
-        # TODO: The existence of the building_id was checked in the original code of this function, but is this really necessary?
+        # TODO: The existence of the building_id was checked in the original code of this function (before cleanup), but is this really necessary?
         #  I vote no
         #  Anyway, this will be made clear if we write tests (then it should be consistent in all routes)
         if not Building.objects.filter(id=building_id):

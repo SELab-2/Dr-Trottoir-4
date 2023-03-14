@@ -4,6 +4,7 @@ from base.models import GarbageCollection
 from base.serializers import GarbageCollectionSerializer
 from util.request_response_util import *
 
+TRANSLATE = {"building": "building_id"}
 
 class DefaultGarbageCollection(APIView):
 
@@ -15,7 +16,7 @@ class DefaultGarbageCollection(APIView):
 
         garbage_collection_instance = GarbageCollection()
 
-        set_keys_of_instance(garbage_collection_instance, data, {"building": "building_id"})
+        set_keys_of_instance(garbage_collection_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(garbage_collection_instance):
             return r
@@ -57,7 +58,7 @@ class GarbageCollectionIndividualView(APIView):
         garbage_collection_instance = garbage_collection_instance[0]
         data = request_to_dict(request.data)
 
-        set_keys_of_instance(garbage_collection_instance, data, {"building": "building_id"})
+        set_keys_of_instance(garbage_collection_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(garbage_collection_instance):
             return r

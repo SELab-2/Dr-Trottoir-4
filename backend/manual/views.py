@@ -4,6 +4,8 @@ from base.models import Manual, Building
 from base.serializers import ManualSerializer
 from util.request_response_util import *
 
+TRANSLATE = {"building": "building_id"}
+
 
 class Default(APIView):
     def post(self, request):
@@ -13,7 +15,7 @@ class Default(APIView):
         data = request_to_dict(request.data)
         manual_instance = Manual()
 
-        set_keys_of_instance(manual_instance, data, {"building": "building_id"})
+        set_keys_of_instance(manual_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(manual_instance):
             return r
@@ -52,7 +54,7 @@ class ManualView(APIView):
         manual_instance = manual_instances[0]
         data = request_to_dict(request.data)
 
-        set_keys_of_instance(manual_instance, data, {"building": "building_id"})
+        set_keys_of_instance(manual_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(manual_instance):
             return r

@@ -41,7 +41,7 @@ class DefaultUser(APIView):
 
         user_instance = User()
 
-        set_keys_of_instance(user_instance, data, {})
+        set_keys_of_instance(user_instance, data)
 
         if r := try_full_clean_and_save(user_instance):
             return r
