@@ -41,15 +41,10 @@ class DefaultUser(APIView):
 
         user_instance = User()
 
-        for key in data.keys():
-            if key in vars(user_instance):
-                setattr(user_instance, key, data[key])
+        set_keys_of_instance(user_instance, data, {})
 
         if r := try_full_clean_and_save(user_instance):
             return r
-
-        print("vars user_instance")
-        print(vars(user_instance))
 
         # Now that we have an ID, we can look at the many-to-many relationship region
 
@@ -107,9 +102,7 @@ class UserIndividualView(APIView):
 
         data = request_to_dict(request.data)
 
-        for key in data.keys():
-            if key in vars(user_instance):
-                setattr(user_instance, key, data[key])
+        set_keys_of_instance(user_instance, data)
 
         if r := try_full_clean_and_save(user_instance):
             return r
@@ -133,10 +126,8 @@ class AllUsersView(APIView):
         Get all users
         """
         if _include_inactive(request):
-            print("include inactive")
             user_instances = User.objects.all()
         else:
-            print("not include inactive")
             user_instances = User.objects.filter(is_active=True)
         serializer = UserSerializer(user_instances, many=True)
         return get_success(serializer)
