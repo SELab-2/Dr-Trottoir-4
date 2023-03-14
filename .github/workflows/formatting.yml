@@ -3,9 +3,9 @@ name: Code Formatting and Linting
 
 on:
   pull_request:
-    branches:
-      - main
-      - develop
+    branches: [ '**' ]
+#      - main
+#      - develop
 
 jobs:
   format:
