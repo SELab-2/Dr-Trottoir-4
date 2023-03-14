@@ -1,14 +1,14 @@
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
+from authorisation.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
 from base.models import Tour, Region
 from base.serializers import TourSerializer
-from rest_framework import permissions
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from util.request_response_util import *
 
 
 class Default(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
 
     def post(self, request):
         """
@@ -30,6 +30,8 @@ class Default(APIView):
 
 
 class TourIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
+
     def get(self, request, tour_id):
         """
         Get info about a Tour with given id
@@ -81,6 +83,8 @@ class TourIndividualView(APIView):
 
 
 class AllToursView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+
     def get(self, request):
         """
         Get all tours
