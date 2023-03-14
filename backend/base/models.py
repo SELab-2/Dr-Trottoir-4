@@ -291,18 +291,33 @@ class PictureBuilding(models.Model):
 
 class Manual(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    version_number = models.PositiveIntegerField()
+    version_number = models.PositiveIntegerField(default=0)
     file = models.FileField(upload_to='building_manuals/', blank=True, null=True)
 
     def __str__(self):
         return f"Handleiding: {str(self.file).split('/')[-1]} (versie {self.version_number}) voor {self.building}"
 
+    def clean(self):
+        super().clean()
+        _check_for_present_keys(self, {"building_id", "file"})
+        # If no version number is given, the new version number should be the highest + 1
+        # If only version numbers 1, 2 and 3 are in the database, a version number of e.g. 3000 is not permitted
+
+        manuals = Manual.objects.filter(building_id=self.building_id)
+        version_numbers = {manual.version_number for manual in manuals}
+        version_numbers.add(-1)
+        max_version_number = max(version_numbers)
+
+        if self.version_number == 0 or self.version_number > max_version_number + 1 or self.version_number in version_numbers:
+            self.version_number = max_version_number + 1
+
     class Meta:
         constraints = [
-            UniqueConstraint(
-                'building_id',
-                'version_number',
-                name='unique_manual',
-                violation_error_message='Het gebouw heeft al een handleiding met dit versienummer.'
-            ),
+            # Het is sowieso uniek door de code in `clean`, het wordt nu wel 'silent' opgelost
+            # UniqueConstraint(
+            #    'building_id',
+            #    'version_number',
+            #    name='unique_manual',
+            #    violation_error_message='Het gebouw heeft al een handleiding met dit versienummer.'
+            # ),
         ]
