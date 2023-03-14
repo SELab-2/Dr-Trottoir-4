@@ -7,40 +7,45 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 
 function Welcome() {
+    const router = useRouter();
     const [data, setData] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await api.get('/data');
-                setData(response.data);
+                api.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`).then(info => {
+                    console.log(info);
+                    if (!info.data || info.data.length === 0) {
+                        router.push('/login');
+                    } else {
+                        setData(info.data);
+                    }
+                });
             } catch (error) {
                 console.log(error);
-            } finally {
-                setIsLoading(false);
             }
         }
 
         fetchData();
     }, []);
 
-    const router = useRouter();
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (!data || data.length === 0) {
-        router.push('/login');
-        return null;
-    }
+    const handleLogout = async () => {
+        try {
+            const response = await api.post(`${process.env.NEXT_PUBLIC_API_LOGOUT}`);
+            if (response.status === 200) {
+                await router.push('/login');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <>
             <BaseHeader/>
             <p className={styles.title}>Welcome!</p>
             <Image src={soon} alt="Site coming soon" className={styles.image}/>
+            <button className={styles.button} onClick={handleLogout}>Logout</button>
             <h1 className={styles.text}>Users:</h1>
             <ul>
                 {data.map((item, index) => (
