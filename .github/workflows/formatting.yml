@@ -1,4 +1,4 @@
-name: Format Code Base
+name: Format and Lint Code Base
 
 
 on:
@@ -8,8 +8,8 @@ on:
 #      - develop
 
 jobs:
-  format:
-    name: Format Code Base
+  build:
+    name: Format and Lint Code Base
     runs-on: ubuntu-latest
 
     steps:
@@ -49,3 +49,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
+          VALIDATE_YAML: false
