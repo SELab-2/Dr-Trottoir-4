@@ -137,6 +137,7 @@ class BuildingComment(models.Model):
             ),
         ]
 
+
 class GarbageCollection(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
     date = models.DateField()
@@ -219,8 +220,6 @@ class BuildingOnTour(models.Model):
         if self.index > nr_of_buildings:
             raise ValidationError(f"De maximaal toegestane index voor dit gebouw is {nr_of_buildings}")
 
-
-
     def __str__(self):
         return f"{self.building} op ronde {self.tour}, index: {self.index}"
 
@@ -297,6 +296,10 @@ class PictureBuilding(models.Model):
     type = models.CharField(
         max_length=2,
         choices=TYPE)
+
+    def clean(self):
+        super().clean()
+        _check_for_present_keys(self, {"building_id", "picture", "description", "timestamp"})
 
     class Meta:
         constraints = [
