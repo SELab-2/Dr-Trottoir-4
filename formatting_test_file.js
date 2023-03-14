@@ -2,9 +2,7 @@
 
 // take input from the user
 
-const number =
-
-    5;
+const number = 5;
 
 // checking if number is negative
 if (number < 0) {
