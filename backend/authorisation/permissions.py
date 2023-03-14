@@ -1,12 +1,12 @@
-from rest_framework import permissions
-
+from rest_framework.permissions import BasePermission
+from rest_framework.permissions import SAFE_METHODS
 from base.models import Building
 
 
 # ----------------------
 # ROLE BASED PERMISSIONS
 # ----------------------
-class IsAdmin(permissions.BasePermission):
+class IsAdmin(BasePermission):
     """
     Global permission that only grants access to admin users
     """
@@ -16,7 +16,7 @@ class IsAdmin(permissions.BasePermission):
         return request.user.role == 'AD'
 
 
-class IsSuperStudent(permissions.BasePermission):
+class IsSuperStudent(BasePermission):
     """
     Global permission that grants access to super students
     """
@@ -26,7 +26,7 @@ class IsSuperStudent(permissions.BasePermission):
         return request.user.role == 'SS'
 
 
-class IsStudent(permissions.BasePermission):
+class IsStudent(BasePermission):
     """
     Global permission that grants access to students
     """
@@ -36,7 +36,18 @@ class IsStudent(permissions.BasePermission):
         return request.user.role == 'ST'
 
 
-class IsSyndic(permissions.BasePermission):
+class ReadOnlyStudent(BasePermission):
+    """
+    Global permission that only grants read access for students
+    """
+    message = "Students are only allowed to read"
+
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            return request.user.role == 'ST'
+
+
+class IsSyndic(BasePermission):
     """
     Global permission that grants access to syndicates
     """
@@ -50,11 +61,14 @@ class IsSyndic(permissions.BasePermission):
 # OBJECT PERMISSIONS
 # ------------------
 
-class OwnsBuilding(permissions.BasePermission):
+class OwnerOfBuilding(BasePermission):
     """
     Checks if the user owns the building
     """
-    message = "You must be the owner of the building to be able to perform this request"
+    message = "You can only access the buildings that you own"
+
+    def has_permission(self, request, view):
+        return request.user.role == 'SY'
 
     def has_object_permission(self, request, view, obj: Building):
-        return request.user.id == obj.syndic
+        return request.user.id == obj.syndic_id
