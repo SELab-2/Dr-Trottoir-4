@@ -14,7 +14,7 @@ from users.managers import UserManager
 def _check_for_present_keys(instance, keys_iterable):
     for key in keys_iterable:
         if not vars(instance)[key]:
-            raise ValidationError(f"Tried to access {key} but it was not found in object")
+            raise ValidationError(f"Tried to access {key}, but it was not found in object")
 
 
 class Region(models.Model):
@@ -252,6 +252,7 @@ class StudentAtBuildingOnTour(models.Model):
 
     def clean(self):
         super().clean()
+        _check_for_present_keys(self, {"student_id", "building_on_tour_id", "date"})
         user = self.student
         if user.role == 'SY':
             raise ValidationError("Een syndicus kan geen rondes doen.")

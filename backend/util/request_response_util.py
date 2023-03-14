@@ -39,12 +39,14 @@ def try_full_clean_and_save(model_instance, rm=False):
         error_message = e.message_dict
     except AttributeError as e:
         # If body is empty, an attribute error is thrown in the clean function
+        #  if there is not checked whether the fields in self are intialized
         error_message = str(e) + \
                         ". This error could be thrown after you passed an empty body with e.g. a POST request."
     except (IntegrityError, ObjectDoesNotExist, ValueError) as e:
         error_message = str(e)
     finally:
-        if rm: model_instance.delete()
+        if rm:
+            model_instance.delete()
         if error_message:
             return Response(error_message, status=status.HTTP_400_BAD_REQUEST)
     return None
@@ -56,7 +58,6 @@ def request_to_dict(request_data):
     return {}
 
 
-# Below functions are used to be able to change the status codes really quick if we would decide to use another one
 def delete_success():
     return Response(status=status.HTTP_204_NO_CONTENT)
 
