@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 
 
 class Default(APIView):
+    serializer_class = PictureBuildingSerializer
+
     def post(self, request):
         data = request.data
         building = data.get("building")
@@ -32,6 +34,8 @@ class Default(APIView):
 
 
 class PictureBuildingIndividualView(APIView):
+    serializer_class = PictureBuildingSerializer
+
     def get(self, request, pictureBuilding_id):
         pictureBuilding_instance = PictureBuilding.objects.filter(id=pictureBuilding_id)
 
@@ -93,6 +97,8 @@ class PictureBuildingIndividualView(APIView):
 
 
 class PicturesOfBuildingView(APIView):
+    serializer_class = PictureBuildingSerializer
+
     def get(self, request, building_id):
         candidates = Building.objects.filter(id=building_id)
         if len(candidates) != 1:
@@ -105,6 +111,8 @@ class PicturesOfBuildingView(APIView):
 
 
 class AllPictureBuildingsView(APIView):
+    serializer_class = PictureBuildingSerializer
+
     def get(self, request):
         """
         Get all pictureBuilding

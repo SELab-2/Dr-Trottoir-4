@@ -6,6 +6,8 @@ from util.request_response_util import *
 
 
 class Default(APIView):
+    serializer_class = RegionSerializer
+
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -26,6 +28,8 @@ class Default(APIView):
 
 
 class RegionIndividualView(APIView):
+    serializer_class = RegionSerializer
+
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, region_id):
@@ -69,6 +73,8 @@ class RegionIndividualView(APIView):
 
 
 class AllRegionsView(APIView):
+    serializer_class = RegionSerializer
+
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):

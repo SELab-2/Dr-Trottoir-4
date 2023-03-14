@@ -12,6 +12,8 @@ from config import settings
 
 
 class LogoutViewWithBlacklisting(LogoutView):
+    serializer_class = CookieTokenRefreshSerializer
+
     def logout(self, request):
         response = Response(
             {'detail': _('Successfully logged out.')},
@@ -62,6 +64,7 @@ class RefreshViewHiddenTokens(TokenRefreshView):
 
 
 class LoginViewWithHiddenTokens(LoginView):
+    serializer_class = CookieTokenRefreshSerializer
 
     def finalize_response(self, request, response, *args, **kwargs):
         if response.status_code == 200 and 'access_token' in response.data:

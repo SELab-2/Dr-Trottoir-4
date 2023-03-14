@@ -8,6 +8,7 @@ from util.request_response_util import *
 
 class DefaultBuilding(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = BuildingSerializer
 
     def post(self, request):
         """
@@ -33,6 +34,7 @@ class DefaultBuilding(APIView):
 
 class BuildingIndividualView(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = BuildingSerializer
 
     def get(self, request, building_id):
         """
@@ -84,6 +86,7 @@ class BuildingIndividualView(APIView):
 
 
 class AllBuildingsView(APIView):
+    serializer_class = BuildingSerializer
 
     def get(self, request):
         """
@@ -96,6 +99,7 @@ class AllBuildingsView(APIView):
 
 
 class BuildingOwnerView(APIView):
+    serializer_class = BuildingSerializer
 
     def get(self, request, owner_id):
         """

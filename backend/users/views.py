@@ -17,7 +17,7 @@ def _try_adding_region_to_user_instance(user_instance, region_value):
 
 
 class DefaultUser(APIView):
-
+    serializer_class = UserSerializer
     # TODO: authorization
     # permission_classes = [permissions.IsAuthenticated]
 
@@ -58,6 +58,7 @@ class DefaultUser(APIView):
 
 
 class UserIndividualView(APIView):
+    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, user_id):
@@ -118,6 +119,7 @@ class UserIndividualView(APIView):
 
 
 class AllUsersView(APIView):
+    serializer_class = UserSerializer
 
     def get(self, request):
         """

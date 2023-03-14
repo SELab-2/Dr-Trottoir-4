@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 
 
 class Default(APIView):
+    serializer_class = ManualSerializer
+
     def post(self, request):
         data = request.data
         building = data.get("building")
@@ -34,6 +36,8 @@ class Default(APIView):
 
 
 class ManualView(APIView):
+    serializer_class = ManualSerializer
+
     def get(self, request, manual_id):
         manual_instances = Manual.objects.filter(id=manual_id)
         if len(manual_instances) != 1:
@@ -68,7 +72,10 @@ class ManualView(APIView):
             return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class ManualBuildingView(APIView):
+    serializer_class = ManualSerializer
+
     def get(self, request, building_id):
         candidates = Building.objects.filter(id=building_id)
         if len(candidates) != 1:
@@ -81,6 +88,8 @@ class ManualBuildingView(APIView):
 
 
 class ManualsView(APIView):
+    serializer_class = ManualSerializer
+
     def get(self, request):
         instances = Manual.objects.all()
 

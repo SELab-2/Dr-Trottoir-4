@@ -6,6 +6,7 @@ from util.request_response_util import *
 
 
 class DefaultGarbageCollection(APIView):
+    serializer_class = GarbageCollectionSerializer
 
     def post(self, request):
         """
@@ -31,6 +32,7 @@ class DefaultGarbageCollection(APIView):
 
 
 class GarbageCollectionIndividualView(APIView):
+    serializer_class = GarbageCollectionSerializer
 
     def get(self, request, garbage_collection_id):
         """
@@ -81,6 +83,7 @@ class GarbageCollectionIndividualBuildingView(APIView):
     """
     /building/<buildingid>
     """
+    serializer_class = GarbageCollectionSerializer
 
     def get(self, request, building_id):
         """
@@ -92,6 +95,7 @@ class GarbageCollectionIndividualBuildingView(APIView):
 
 
 class GarbageCollectionAllView(APIView):
+    serializer_class = GarbageCollectionSerializer
 
     def get(self, request):
         """

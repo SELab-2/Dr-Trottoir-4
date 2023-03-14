@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 
 
 class Default(APIView):
+    serializer_class = BuildingTourSerializer
+
     def post(self, request):
         """
         Create a new BuildingOnTour with data from post
@@ -38,6 +40,8 @@ class Default(APIView):
 
 
 class BuildingTourIndividualView(APIView):
+    serializer_class = BuildingTourSerializer
+
     def get(self, request, buildingTour_id):
         """
         Get info about a BuildingOnTour with given id
@@ -107,6 +111,8 @@ class BuildingTourIndividualView(APIView):
 
 
 class AllBuildingToursView(APIView):
+    serializer_class = BuildingTourSerializer
+
     def get(self, request):
         """
         Get all buildings on tours

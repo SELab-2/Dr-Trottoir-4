@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 
 
 class Default(APIView):
+    serializer_class = StudBuildTourSerializer
+
     def post(self, request):
         data = request.data
         buildingOnTour = data.get("building_on_tour")
@@ -34,6 +36,8 @@ class Default(APIView):
 
 
 class build_tour_per_studentView(APIView):
+    serializer_class = StudBuildTourSerializer
+
     def get(self, request, student_id):
         stud_candidates = User.objects.filter(id=student_id)
         if len(stud_candidates) != 1:
@@ -46,6 +50,8 @@ class build_tour_per_studentView(APIView):
 
 
 class stud_build_tourIndividualView(APIView):
+    serializer_class = StudBuildTourSerializer
+
     def get(self, request, id):
         stud_tour_building_instance = StudentAtBuildingOnTour.objects.filter(id=id)
 
@@ -106,6 +112,8 @@ class stud_build_tourIndividualView(APIView):
 
 
 class AllView(APIView):
+    serializer_class = StudBuildTourSerializer
+
     def get(self, request):
         """
         Get all data

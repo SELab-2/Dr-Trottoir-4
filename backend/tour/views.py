@@ -9,6 +9,7 @@ from util.request_response_util import *
 
 class Default(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = TourSerializer
 
     def post(self, request):
         """
@@ -30,6 +31,7 @@ class Default(APIView):
 
 
 class TourIndividualView(APIView):
+    serializer_class = TourSerializer
     def get(self, request, tour_id):
         """
         Get info about a Tour with given id
@@ -81,6 +83,7 @@ class TourIndividualView(APIView):
 
 
 class AllToursView(APIView):
+    serializer_class = TourSerializer
     def get(self, request):
         """
         Get all tours

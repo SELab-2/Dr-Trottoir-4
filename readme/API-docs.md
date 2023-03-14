@@ -62,8 +62,8 @@ we'll still need to respecify it since using the `responses` field will override
 
 Now note how we set `serializer_class = UserSerializer` without ever using `serializer_class`. This was necessary to fix
 one of the errors we talked about earlier, more specifically the `unable to guess serializer` error. By adding this line
-we'll be specifying a serializer which should fix the error. Without this line the documentation for `/user/all` will just
-not appear at all.
+we'll be specifying a serializer which should fix the error. Without this line the documentation for `/user/all` will be missing
+the response body.
 
 Don't forget to generate a new `schema.yml` once you're done!
 

@@ -73,7 +73,7 @@ REST_FRAMEWORK = {
 #drf-spectacular settings
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Dr-Trottoir API',
-    'DESCRIPTION': 'This is the documentation for the Dr-trottoir API',
+    'DESCRIPTION': 'This is the documentation for the Dr-Trottoir API',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS

@@ -6,6 +6,7 @@ from util.request_response_util import *
 
 
 class BuildingUrlDefault(APIView):
+    serializer_class = BuildingUrlSerializer
 
     def post(self, request):
         """
@@ -40,6 +41,7 @@ class BuildingUrlDefault(APIView):
 
 
 class BuildingUrlIndividualView(APIView):
+    serializer_class = BuildingUrlSerializer
 
     def get(self, request, building_url_id):
         """
@@ -89,6 +91,7 @@ class BuildingUrlSyndicView(APIView):
     """
     /syndic/<syndic_id>
     """
+    serializer_class = BuildingUrlSerializer
 
     def get(self, request, syndic_id):
         """
@@ -107,6 +110,7 @@ class BuildingUrlBuildingView(APIView):
     """
     building/<building_id>
     """
+    serializer_class = BuildingUrlSerializer
 
     def get(self, request, building_id):
         """
@@ -118,6 +122,7 @@ class BuildingUrlBuildingView(APIView):
 
 
 class BuildingUrlAllView(APIView):
+    serializer_class = BuildingUrlSerializer
 
     def get(self, request):
         """
