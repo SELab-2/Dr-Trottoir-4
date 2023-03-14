@@ -1,5 +1,4 @@
-name: Format and Lint Code Base
-
+name: Format Code Base
 
 on:
   push:
@@ -9,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Format and Lint Code Base
+    name: Format Code Base
     runs-on: ubuntu-latest
 
     steps:
@@ -32,22 +31,17 @@ jobs:
         uses: creyD/prettier_action@v4.3
         with:
           prettier_options: --write **/*.{js,tsx}
-          same_commit: true
+          commit_message: "Auto formatted JS code"
+          only_changed: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit Python changes
+
+      - name: Commit changes
         if: steps.action_black.outputs.is_formatted == 'true'
         run: |
           git config --global user.email "group4@selab2.com"
           git config --global user.name "Group 4"
           git pull
-          git commit --amend --no-edit
-          git push origin -f
-          git pull
-
-      - name: Lint Code Base
-        uses: github/super-linter@v4.10.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: main
-          VALIDATE_YAML: false
+          git add **/*.py
+          git commit -m "Auto formatted Python code"
+          git push

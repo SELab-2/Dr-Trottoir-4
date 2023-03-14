@@ -3,7 +3,7 @@
 // take input from the user
 
 const number =
-    
+
     5;
 
 // checking if number is negative
