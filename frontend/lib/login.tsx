@@ -1,16 +1,15 @@
-import api from '../lib/axios';
+import api from '../pages/api/axios';
+import {Login} from "@/types.d";
 const login = async (email: string, password: string, router : any): Promise<void> => {
 
-  const host : string =
-      `http://${process.env.NEXT_PUBLIC_API_HOST}:${process.env.NEXT_PUBLIC_API_PORT}/user/login/`;
-  console.log(JSON.stringify({email, password}))
+  const host : string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_LOGIN}`;
 
-  const data = {
+  const login_data : Login = {
     email: email,
     password: password,
   };
 
-  api.post(host, data, {
+  api.post(host, login_data, {
       headers: { 'Content-Type': 'application/json' }
   })
     .then((response: { status : number, data: any; })  => {

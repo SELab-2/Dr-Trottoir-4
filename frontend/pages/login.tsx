@@ -4,16 +4,15 @@ import Image from "next/image";
 import filler_logo from "../public/filler_logo.png"
 import Link from "next/link";
 import login from "../lib/login"
-import {useState} from "react";
+import {FormEvent, useState} from "react";
 import {useRouter} from "next/router";
 
 export default function Login() {
     const router = useRouter();
-    //const { auth, setAuth } = useContext(AuthContext);
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
         try {
           await login(username, password, router);
@@ -36,23 +35,15 @@ export default function Login() {
                        <input
                           type="text"
                           className={styles.input}
-                          id="username"
-                          name="username"
                           value={username}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setUsername(e.target.value)
-                          }
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
                         />
                         <label className={styles.text} htmlFor="password">Wachtwoord:</label>
                         <input
                           type="password"
                           className={styles.input}
-                          id="password"
-                          name="password"
                           value={password}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setPassword(e.target.value)
-                          }
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                           required
                         />
                         <button className={styles.button} type="submit">Login</button>

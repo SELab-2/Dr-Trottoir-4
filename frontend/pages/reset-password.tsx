@@ -1,38 +1,22 @@
 import {useRouter} from "next/router";
-import {FormEvent} from "react";
+import React, {FormEvent, useState} from "react";
 import BaseHeader from "@/components/header/BaseHeader";
 import styles from "@/styles/Login.module.css";
 import Image from "next/image";
 import filler_logo from "@/public/filler_logo.png";
 import Link from "next/link";
+import reset from "@/lib/reset";
 
 export default function ResetPassword() {
     const router = useRouter();
+    const [email, setEmail] = useState<string>("");
 
     const handleSubmit = async (event:FormEvent) => {
         event.preventDefault();
-
-        const form = event.target as HTMLFormElement;
-
-        const data = {
-            email: form.email.value as string,
-        }
-
-        const JSONdata = JSON.stringify(data);
-
-        const endpoint = "http://" + process.env.NEXT_PUBLIC_API_HOST + ":" + process.env.NEXT_PUBLIC_API_PORT
-            + process.env.NEXT_PUBLIC_API_RESET_PASSWORD;
-
-        const response = await fetch(endpoint, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSONdata,
-        });
-
-        if (response.status != 200) {
-            throw Error(await response.text());
-        } else {
-            alert("A password reset e-mail has been sent to the provided e-mail address");
+        try {
+          await reset(email, router);
+        } catch (error) {
+          console.error(error);
         }
     }
 
@@ -48,7 +32,14 @@ export default function ResetPassword() {
                     <br/>
                     <form onSubmit={handleSubmit}>
                         <label className={styles.text} htmlFor="email">E-mailadres:</label>
-                        <input className={styles.input} type="email" id="email" name="email" required/>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            className={styles.input}
+                            value={email}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                            required/>
 
                         <button className={styles.button} type="submit">Confirm</button>
                     </form>

@@ -2,7 +2,7 @@ import BaseHeader from "@/components/header/BaseHeader";
 import styles from "styles/Welcome.module.css";
 import soon from "public/coming_soon.png";
 import Image from "next/image";
-import api from "../lib/axios"
+import api from "../pages/api/axios"
 import {useEffect, useState} from "react";
 
 function Welcome() {
@@ -12,7 +12,7 @@ function Welcome() {
         const response = await api.get('/users');
         return response.data;
       } catch (error) {
-        // Handle API error
+        console.log(error);
       }
     };
 
