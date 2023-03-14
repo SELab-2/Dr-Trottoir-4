@@ -1,4 +1,4 @@
-name: Code Formatting and Linting
+name: Format Code Base
 
 
 on:
@@ -31,5 +31,5 @@ jobs:
       - name: Format JavaScript code
         uses: creyD/prettier_action@v4.3
         with:
-          prettier_options: -- write **/*.{js,tsx}
+          prettier_options: --write **/*.{js,tsx}
           same_commit: true
