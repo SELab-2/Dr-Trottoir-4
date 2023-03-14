@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 
 
-def set_keys_of_instance(instance, data: dict, translation: dict):
+def set_keys_of_instance(instance, data: dict, translation: dict = {}):
     for key in translation.keys():
         if key in data:
             data[translation[key]] = data[key]

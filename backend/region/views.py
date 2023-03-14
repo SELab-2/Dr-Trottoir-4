@@ -1,7 +1,8 @@
-from base.models import Region
-from base.serializers import RegionSerializer
 from rest_framework import permissions
 from rest_framework.views import APIView
+
+from base.models import Region
+from base.serializers import RegionSerializer
 from util.request_response_util import *
 
 
@@ -15,9 +16,9 @@ class Default(APIView):
         data = request.data
 
         region_instance = Region()
-        for key in data.keys():
-            if key in vars(region_instance):
-                setattr(region_instance, key, data[key])
+
+        set_keys_of_instance(region_instance, data)
+
         if r := try_full_clean_and_save(region_instance):
             return r
 
@@ -36,6 +37,7 @@ class RegionIndividualView(APIView):
 
         if len(region_instance) != 1:
             return bad_request(object_name="Region")
+
         serializer = RegionSerializer(region_instance[0])
         return get_success(serializer)
 
@@ -44,13 +46,15 @@ class RegionIndividualView(APIView):
         Edit Region with given id
         """
         region_instances = Region.objects.filter(id=region_id)
+
         if len(region_instances) != 1:
             return bad_request(object_name="Region")
+
         region_instance = region_instances[0]
+
         data = request_to_dict(request.data)
-        for key in data.keys():
-            if key in vars(region_instance):
-                setattr(region_instance, key, data[key])
+
+        set_keys_of_instance(region_instance, data)
 
         if r := try_full_clean_and_save(region_instance):
             return r
@@ -62,8 +66,10 @@ class RegionIndividualView(APIView):
         delete a region with given id
         """
         region_instances = Region.objects.filter(id=region_id)
+
         if len(region_instances) != 1:
             return bad_request(object_name="Region")
+
         region_instances[0].delete()
         return delete_success()
 
