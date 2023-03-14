@@ -7,7 +7,7 @@ from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 from django_random_id_model import RandomIDModel
 from phonenumber_field.modelfields import PhoneNumberField
-
+from datetime import date
 from users.managers import UserManager
 
 
@@ -89,7 +89,6 @@ class Building(models.Model):
         _check_for_present_keys(self, {"syndic_id"})
 
         user = self.syndic
-        print(user)
         if user.role != 'SY':
             raise ValidationError("Enkel een gebruiker met rol \"syndicus\" kan een gebouw hebben.")
 
@@ -180,7 +179,15 @@ class GarbageCollection(models.Model):
 class Tour(models.Model):
     name = models.CharField(max_length=40)
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
-    modified_at = models.DateTimeField()
+    modified_at = models.DateTimeField(null=True, blank=True)
+
+    def clean(self):
+        super().clean()
+
+        _check_for_present_keys(self, {"name", "region_id"})
+
+        if not self.modified_at:
+            self.modified_at = str(date.today())
 
     def __str__(self):
         return f"{self.name} in regio {self.region}"

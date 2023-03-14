@@ -33,16 +33,23 @@ def bad_request_relation(object1: str, object2: str):
 def try_full_clean_and_save(model_instance, rm=False):
     error_message = None
     try:
+        print("CLEANEN")
         model_instance.full_clean()
+        print("FULL CLEAN IS GEDAAN")
+        print()
         model_instance.save()
     except ValidationError as e:
+        print("VALIDATION ERROR")
+        print(vars(model_instance))
         error_message = e.message_dict
     except AttributeError as e:
         # If body is empty, an attribute error is thrown in the clean function
         #  if there is not checked whether the fields in self are intialized
+        print("ATTRIBUTE ERROR")
         error_message = str(e) + \
                         ". This error could be thrown after you passed an empty body with e.g. a POST request."
     except (IntegrityError, ObjectDoesNotExist, ValueError) as e:
+        print("VALIDATIONERROR")
         error_message = str(e)
     finally:
         if rm:

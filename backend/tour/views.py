@@ -1,10 +1,11 @@
-from base.models import Tour, Region
-from base.serializers import TourSerializer
 from rest_framework import permissions
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from base.models import Tour
+from base.serializers import TourSerializer
 from util.request_response_util import *
+
+TRANSLATE = {"region": "region_id"}
 
 
 class Default(APIView):
@@ -14,19 +15,15 @@ class Default(APIView):
         """
         Create a new tour
         """
-        data = request.data
-        name = data.get("name")
-        region = data.get("region")
-        modified_at = data.get("modified_at")
-        if not name or not region or not modified_at:
-            return Response('"name", "region" and "modified_at" fields are required', status.HTTP_400_BAD_REQUEST)
-        candidates = Region.objects.filter(id=region)
-        if len(candidates) != 1:
-            return bad_request(object_name="Region")
-        b = Tour(name=name, region=candidates[0], modified_at=modified_at)
-        if r := try_full_clean_and_save(b):
+        data = request_to_dict(request.data)
+        tour_instance = Tour()
+
+        set_keys_of_instance(tour_instance, data, TRANSLATE)
+
+        if r := try_full_clean_and_save(tour_instance):
             return r
-        return patch_success(TourSerializer(b))
+
+        return post_success(TourSerializer(tour_instance))
 
 
 class TourIndividualView(APIView):
@@ -38,45 +35,40 @@ class TourIndividualView(APIView):
 
         if not tour_instances:
             return bad_request(object_name="Tour")
+
         tour_instance = tour_instances[0]
         serializer = TourSerializer(tour_instance)
         return get_success(serializer)
 
     def patch(self, request, tour_id):
         """
-        edit a tour with given id
+        Edit a tour with given id
         """
-        tour_instances = Tour.objects.filter(id=tour_id)
-        if not tour_instances:
+        tour_instance = Tour.objects.filter(id=tour_id)
+        data = request_to_dict(request.data)
+
+        if not tour_instance:
             return bad_request(object_name="Tour")
-        tour_instance = tour_instances[0]
-        data = request.data
-        name = data.get("name")
-        region = data.get("region")
-        modified_at = data.get("modified_at")
-        if name:
-            tour_instance.name = name
-        if region:
-            r = Region.objects.filter(id=region)
-            if len(r) == 0:
-                return Response('"region" field was not valid', status.HTTP_400_BAD_REQUEST)
-            tour_instance.region = r[0]
-        if modified_at:
-            tour_instance.modified_at = modified_at
+
+        tour_instance = tour_instance[0]
+
+        set_keys_of_instance(tour_instance, data, TRANSLATE)
+
         if r := try_full_clean_and_save(tour_instance):
             return r
-        serializer = TourSerializer(tour_instance)
-        return patch_success(serializer)
+
+        return patch_success(TourSerializer(tour_instance))
 
     def delete(self, request, tour_id):
         """
-        delete a tour with given id
+        Delete a tour with given id
         """
         tour_instances = Tour.objects.filter(id=tour_id)
+
         if not tour_instances:
             return bad_request(object_name="Tour")
-        tour_instance = tour_instances[0]
-        tour_instance.delete()
+
+        tour_instances[0].delete()
         return delete_success()
 
 
