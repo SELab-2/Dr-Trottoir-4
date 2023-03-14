@@ -55,7 +55,19 @@ THIRD_PARTY_APPS = AUTHENTICATION + [
 ]
 
 CREATED_APPS = [
-    'base'
+    'authentication',
+    'authorisation',
+    'base',
+    'building',
+    'building_on_tour',
+    'buildingurl',
+    'garbage_collection',
+    'manual',
+    'picture_building',
+    'region',
+    'student_at_building_on_tour',
+    'tour',
+    'users',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CREATED_APPS
@@ -70,7 +82,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-#drf-spectacular settings
+# drf-spectacular settings
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Dr-Trottoir API',
     'DESCRIPTION': 'This is the documentation for the Dr-trottoir API',
@@ -88,6 +100,7 @@ REST_AUTH = {
     'JWT_AUTH_SAMESITE': 'Strict',
     'JWT_AUTH_COOKIE': 'auth-access-token',
     'JWT_AUTH_REFRESH_COOKIE': 'auth-refresh-token',
+    'USER_DETAILS_SERIALIZER': 'base.serializers.UserSerializer',
 }
 
 SIMPLE_JWT = {
