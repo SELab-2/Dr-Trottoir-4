@@ -16,13 +16,16 @@ class Default(APIView):
         if not building or not file:
             return Response('"building" and "file" fields are required',
                             status.HTTP_400_BAD_REQUEST)
-        if not version:
-            # latest version ophalen
-            instances = Manual.objects.all()
-            version = max([instance.version_number for instance in instances]) + 1
         candidates = Building.objects.filter(id=building)
         if len(candidates) != 1:
             return Response('"Building" field was not valid', status=status.HTTP_400_BAD_REQUEST)
+        if not version:
+            # latest version ophalen
+            instances = Manual.objects.filter(building=candidates[0])
+            if len(instances) == 0:
+                version = 1
+            else:
+                version = max([instance.version_number for instance in instances]) + 1
         pb = Manual(building=candidates[0], file=file, version_number=version)
         try:
             pb.full_clean()
@@ -67,6 +70,7 @@ class ManualView(APIView):
         except ValidationError as e:
             return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class ManualBuildingView(APIView):
     def get(self, request, building_id):
