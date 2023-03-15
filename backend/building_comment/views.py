@@ -1,5 +1,7 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from authorisation.permissions import IsAdmin, IsSuperStudent, OwnerOfBuilding, ReadOnlyStudent
 from base.models import BuildingComment
 from base.serializers import BuildingCommentSerializer
 from util.request_response_util import *
@@ -8,6 +10,7 @@ TRANSLATE = {"building": "building_id"}
 
 
 class DefaultBuildingComment(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding]
 
     def post(self, request):
         """
@@ -16,6 +19,8 @@ class DefaultBuildingComment(APIView):
         data = request_to_dict(request.data)
 
         building_comment_instance = BuildingComment()
+
+        self.check_object_permissions(request, building_comment_instance.building)
 
         set_keys_of_instance(building_comment_instance, data, TRANSLATE)
 
@@ -26,12 +31,15 @@ class DefaultBuildingComment(APIView):
 
 
 class BuildingCommentIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]
 
     def get(self, request, building_comment_id):
         """
         Get an invividual BuildingComment with given id
         """
         building_comment_instance = BuildingComment.objects.filter(id=building_comment_id)
+
+        self.check_object_permissions(request, building_comment_instance.building)
 
         if not building_comment_instance:
             return bad_request("BuildingComment")
@@ -42,7 +50,9 @@ class BuildingCommentIndividualView(APIView):
         """
         Delete a BuildingComment with given id
         """
-        building_comment_instance = BuildingComment.objectts.filter(id=building_comment_id)
+        building_comment_instance = BuildingComment.objects.filter(id=building_comment_id)
+
+        self.check_object_permissions(request, building_comment_instance.building)
 
         if not building_comment_instance:
             return bad_request("BuildingComment")
@@ -60,6 +70,8 @@ class BuildingCommentIndividualView(APIView):
             return bad_request("BuildingComment")
 
         building_comment_instance = building_comment_instance[0]
+        self.check_object_permissions(request, building_comment_instance.building)
+
         data = request_to_dict(request.data)
 
         set_keys_of_instance(building_comment_instance, data, TRANSLATE)
@@ -71,6 +83,7 @@ class BuildingCommentIndividualView(APIView):
 
 
 class BuildingCommentBuildingView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]
 
     def get(self, request, building_id):
         """
@@ -86,6 +99,7 @@ class BuildingCommentBuildingView(APIView):
 
 
 class BuildingCommentAllView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
 
     def get(self, request):
         """

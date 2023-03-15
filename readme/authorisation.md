@@ -28,6 +28,11 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 - `building/owner/id - [..., IsAdmin | IsSuperStudent | ReadOnlyOwnerOfBuilding]`
 - `building/all - [...,IsAdmin | IsSuperStudent]`
 
+### BuildingComment urls
+- `building/ - [..., IsAdmin | IsSuperStudent | OwnerOfBuildin]`
+- `building/comment_id - [..., IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]`
+- `building/building_id - [..., IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]`
+
 ### User urls
 
 - `user/ - [..., IsAdmin | IsSuperStudent]`

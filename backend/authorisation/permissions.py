@@ -63,11 +63,24 @@ class IsSyndic(BasePermission):
 # OBJECT PERMISSIONS
 # ------------------
 
-class ReadOnlyOwnerOfBuilding(BasePermission):
+class OwnerOfBuilding(BasePermission):
     """
-    Checks if the user owns the building
+    Check if the user owns the building
     """
     message = "You can only access/edit the buildings that you own"
+
+    def has_permission(self, request, view):
+        return request.user.role.name.lower() == 'syndic'
+
+    def has_object_permission(self, request, view, obj: Building):
+        return request.user.id == obj.syndic_id
+
+
+class ReadOnlyOwnerOfBuilding(BasePermission):
+    """
+    Checks if the user owns the building and only tries to read from it
+    """
+    message = "You can only read the building that you own"
 
     def has_permission(self, request, view):
         return request.user.role.name.lower() == 'syndic'
