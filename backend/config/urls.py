@@ -21,6 +21,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from authentication import urls as authentication_urls
 from building import urls as building_urls
+from building_comment import urls as building_comment_urls
 from building_on_tour import urls as building_on_tour_urls
 from buildingurl import urls as building_url_urls
 from garbage_collection import urls as garbage_collection_urls
@@ -40,6 +41,7 @@ urlpatterns = [
                   path('manual/', include(manual_urls)),
                   path('picture_building/', include(picture_building_urls)),
                   path('building/', include(building_urls)),
+                  path('building_comment/', include(building_comment_urls)),
                   path('region/', include(region_urls)),
                   path('buildingurl/', include(building_url_urls)),
                   path('garbage_collection/', include(garbage_collection_urls)),

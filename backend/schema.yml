@@ -506,6 +506,100 @@ paths:
       responses:
         '200':
           description: No response body
+  /building_comment/:
+    post:
+      operationId: building_comment_create
+      description: Create a new BuildingComment
+      tags:
+      - building_comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /building_comment/{building_comment_id}/:
+    get:
+      operationId: building_comment_retrieve
+      description: Get an invividual BuildingComment with given id
+      parameters:
+      - in: path
+        name: building_comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building_comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: building_comment_partial_update
+      description: Edit BuildingComment with given id
+      parameters:
+      - in: path
+        name: building_comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building_comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: building_comment_destroy
+      description: Delete a BuildingComment with given id
+      parameters:
+      - in: path
+        name: building_comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building_comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /building_comment/all/:
+    get:
+      operationId: building_comment_all_retrieve
+      description: Get all BuildingComments in database
+      tags:
+      - building_comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /building_comment/building/{building_id}/:
+    get:
+      operationId: building_comment_building_retrieve
+      description: Get all BuildingComments of building with given building id
+      parameters:
+      - in: path
+        name: building_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - building_comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
   /building_on_tour/:
     post:
       operationId: building_on_tour_create
@@ -518,13 +612,13 @@ paths:
       responses:
         '200':
           description: No response body
-  /building_on_tour/{buildingTour_id}/:
+  /building_on_tour/{building_tour_id}/:
     get:
       operationId: building_on_tour_retrieve
       description: Get info about a BuildingOnTour with given id
       parameters:
       - in: path
-        name: buildingTour_id
+        name: building_tour_id
         schema:
           type: integer
         required: true
@@ -541,7 +635,7 @@ paths:
       description: edit info about a BuildingOnTour with given id
       parameters:
       - in: path
-        name: buildingTour_id
+        name: building_tour_id
         schema:
           type: integer
         required: true
@@ -558,7 +652,7 @@ paths:
       description: delete a BuildingOnTour from the database
       parameters:
       - in: path
-        name: buildingTour_id
+        name: building_tour_id
         schema:
           type: integer
         required: true
@@ -614,6 +708,7 @@ paths:
           description: No response body
     patch:
       operationId: buildingurl_partial_update
+      description: Edit info about buildingurl with given id
       parameters:
       - in: path
         name: building_url_id
@@ -792,6 +887,7 @@ paths:
   /manual/:
     post:
       operationId: manual_create
+      description: Create a new manual with data from post
       tags:
       - manual
       security:
@@ -803,6 +899,7 @@ paths:
   /manual/{manual_id}/:
     get:
       operationId: manual_retrieve
+      description: Get info about a manual with given id
       parameters:
       - in: path
         name: manual_id
@@ -819,6 +916,7 @@ paths:
           description: No response body
     patch:
       operationId: manual_partial_update
+      description: Edit info about a manual with given id
       parameters:
       - in: path
         name: manual_id
@@ -835,6 +933,7 @@ paths:
           description: No response body
     delete:
       operationId: manual_destroy
+      description: Delete manual with given id
       parameters:
       - in: path
         name: manual_id
@@ -852,6 +951,7 @@ paths:
   /manual/all/:
     get:
       operationId: manual_all_retrieve
+      description: Get all manuals
       tags:
       - manual
       security:
@@ -863,6 +963,7 @@ paths:
   /manual/building/{building_id}/:
     get:
       operationId: manual_building_retrieve
+      description: Get all manuals of a building with given id
       parameters:
       - in: path
         name: building_id
@@ -880,6 +981,7 @@ paths:
   /picture_building/:
     post:
       operationId: picture_building_create
+      description: Create a new PictureBuilding
       tags:
       - picture_building
       security:
@@ -888,12 +990,13 @@ paths:
       responses:
         '200':
           description: No response body
-  /picture_building/{pictureBuilding_id}/:
+  /picture_building/{picture_building_id}/:
     get:
       operationId: picture_building_retrieve
+      description: Get PictureBuilding with given id
       parameters:
       - in: path
-        name: pictureBuilding_id
+        name: picture_building_id
         schema:
           type: integer
         required: true
@@ -907,9 +1010,10 @@ paths:
           description: No response body
     patch:
       operationId: picture_building_partial_update
+      description: Edit info about PictureBuilding with given id
       parameters:
       - in: path
-        name: pictureBuilding_id
+        name: picture_building_id
         schema:
           type: integer
         required: true
@@ -926,7 +1030,7 @@ paths:
       description: delete a pictureBuilding from the database
       parameters:
       - in: path
-        name: pictureBuilding_id
+        name: picture_building_id
         schema:
           type: integer
         required: true
@@ -953,6 +1057,7 @@ paths:
   /picture_building/building/{building_id}/:
     get:
       operationId: picture_building_building_retrieve
+      description: Get all pictures of a building with given id
       parameters:
       - in: path
         name: building_id
@@ -1046,6 +1151,7 @@ paths:
   /student_at_building_on_tour/:
     post:
       operationId: student_at_building_on_tour_create
+      description: Create a new StudentAtBuildingOnTour
       tags:
       - student_at_building_on_tour
       security:
@@ -1054,12 +1160,13 @@ paths:
       responses:
         '200':
           description: No response body
-  /student_at_building_on_tour/{id}/:
+  /student_at_building_on_tour/{student_at_building_on_tour_id}/:
     get:
       operationId: student_at_building_on_tour_retrieve
+      description: Get an individual StudentAtBuildingOnTour with given id
       parameters:
       - in: path
-        name: id
+        name: student_at_building_on_tour_id
         schema:
           type: integer
         required: true
@@ -1073,9 +1180,11 @@ paths:
           description: No response body
     patch:
       operationId: student_at_building_on_tour_partial_update
+      description: Edit info about an individual StudentAtBuildingOnTour with given
+        id
       parameters:
       - in: path
-        name: id
+        name: student_at_building_on_tour_id
         schema:
           type: integer
         required: true
@@ -1089,10 +1198,10 @@ paths:
           description: No response body
     delete:
       operationId: student_at_building_on_tour_destroy
-      description: delete from the database
+      description: Delete StudentAtBuildingOnTour with given id
       parameters:
       - in: path
-        name: id
+        name: student_at_building_on_tour_id
         schema:
           type: integer
         required: true
@@ -1107,7 +1216,7 @@ paths:
   /student_at_building_on_tour/all/:
     get:
       operationId: student_at_building_on_tour_all_retrieve
-      description: Get all data
+      description: Get all StudentAtBuildingOnTours
       tags:
       - student_at_building_on_tour
       security:
@@ -1119,6 +1228,7 @@ paths:
   /student_at_building_on_tour/student/{student_id}/:
     get:
       operationId: student_at_building_on_tour_student_retrieve
+      description: Get all StudentAtBuildingOnTour for a student with given id
       parameters:
       - in: path
         name: student_id
@@ -1165,7 +1275,7 @@ paths:
           description: No response body
     patch:
       operationId: tour_partial_update
-      description: edit a tour with given id
+      description: Edit a tour with given id
       parameters:
       - in: path
         name: tour_id
@@ -1182,7 +1292,7 @@ paths:
           description: No response body
     delete:
       operationId: tour_destroy
-      description: delete a tour with given id
+      description: Delete a tour with given id
       parameters:
       - in: path
         name: tour_id
@@ -1258,7 +1368,9 @@ paths:
           description: No response body
     delete:
       operationId: user_destroy
-      description: Delete user with given id
+      description: |-
+        Delete user with given id
+        We don't acutally delete a user, we put the user on inactive mode
       parameters:
       - in: path
         name: user_id
