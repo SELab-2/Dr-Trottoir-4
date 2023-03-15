@@ -1,24 +1,18 @@
-from base.models import PictureBuilding, Building
-from base.serializers import PictureBuildingSerializer
-from django.core.exceptions import ValidationError
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from base.models import PictureBuilding
 from base.serializers import PictureBuildingSerializer
 from util.request_response_util import *
+from drf_spectacular.utils import extend_schema
 
 TRANSLATE = {"building": "building_id"}
 
-from drf_spectacular.utils import extend_schema
 
 class Default(APIView):
     serializer_class = PictureBuildingSerializer
 
     @extend_schema(
-        responses={201: PictureBuildingSerializer,
-                   400: None}
+        responses={201: PictureBuildingSerializer}
     )
     def post(self, request):
         """
@@ -53,11 +47,9 @@ class PictureBuildingIndividualView(APIView):
         serializer = PictureBuildingSerializer(picture_building_instance[0])
         return get_success(serializer)
 
-
     @extend_schema(
         responses={204: None,
-                   400: None,
-                   501: None}
+                   400: None}
     )
     def patch(self, request, picture_building_id):
         """
@@ -96,10 +88,6 @@ class PictureBuildingIndividualView(APIView):
 class PicturesOfBuildingView(APIView):
     serializer_class = PictureBuildingSerializer
 
-    @extend_schema(
-        responses={200: PictureBuildingSerializer,
-                   400: None}
-    )
     def get(self, request, building_id):
         """
         Get all pictures of a building with given id

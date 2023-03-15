@@ -12,8 +12,7 @@ class Default(APIView):
     serializer_class = StudBuildTourSerializer
 
     @extend_schema(
-        responses={201: StudBuildTourSerializer,
-                   400: None}
+        responses={201: StudBuildTourSerializer}
     )
     def post(self, request):
         """
@@ -36,10 +35,6 @@ class Default(APIView):
 class BuildingTourPerStudentView(APIView):
     serializer_class = StudBuildTourSerializer
 
-    @extend_schema(
-        responses={200: StudBuildTourSerializer,
-                   400: None}
-    )
     def get(self, request, student_id):
         """
         Get all StudentAtBuildingOnTour for a student with given id

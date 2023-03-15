@@ -12,8 +12,7 @@ class Default(APIView):
     serializer_class = BuildingTourSerializer
 
     @extend_schema(
-        responses={201: BuildingTourSerializer,
-                   400: None}
+        responses={201: BuildingTourSerializer}
     )
     def post(self, request):
         """
