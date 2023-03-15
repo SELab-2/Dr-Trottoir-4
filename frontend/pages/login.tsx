@@ -10,6 +10,7 @@ import AuthContext from "@/context/AuthProvider";
 
 export default function Login() {
     let {loginUser} = useContext(AuthContext);
+
     const router = useRouter();
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");

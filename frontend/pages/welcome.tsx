@@ -11,7 +11,7 @@ function Welcome() {
     let {auth, logoutUser} = useContext(AuthContext);
     const router = useRouter();
     const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true); // prevents preview welcome page before auth check
 
     useEffect(() => {
         if (!auth) {
@@ -25,7 +25,6 @@ function Welcome() {
     async function fetchData() {
         try {
             api.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`).then(info => {
-                console.log(info);
                 if (!info.data || info.data.length === 0) {
                     router.push('/login');
                 } else {
@@ -33,7 +32,7 @@ function Welcome() {
                 }
             });
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
 
@@ -45,29 +44,28 @@ function Welcome() {
                 await router.push('/login');
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 
     return (
         <>
-          {loading ? (
-            // Show an empty screen or a loading indicator until the variable is checked.
-            <div>Loading...</div>
-          ) : (
-            <>
-                <BaseHeader/>
-                <p className={styles.title}>Welcome!</p>
-                <Image src={soon} alt="Site coming soon" className={styles.image}/>
-                <button className={styles.button} onClick={handleLogout}>Logout</button>
-                <h1 className={styles.text}>Users:</h1>
-                <ul>
-                    {data.map((item, index) => (
-                        <li key={index}>{JSON.stringify(item)}</li>
-                    ))}
-                </ul>
-            </>
-          )}
+            {loading ? (
+                <div>Loading...</div>
+            ) : (
+                <>
+                    <BaseHeader/>
+                    <p className={styles.title}>Welcome!</p>
+                    <Image src={soon} alt="Site coming soon" className={styles.image}/>
+                    <button className={styles.button} onClick={handleLogout}>Logout</button>
+                    <h1 className={styles.text}>Users:</h1>
+                    <ul>
+                        {data.map((item, index) => (
+                            <li key={index}>{JSON.stringify(item)}</li>
+                        ))}
+                    </ul>
+                </>
+            )}
         </>
     )
 

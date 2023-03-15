@@ -1,16 +1,15 @@
 import axios from 'axios';
 import {useRouter} from "next/router";
 
-
+// Instance used to make authenticated requests
 const api = axios.create({
     baseURL: `${process.env.NEXT_PUBLIC_BASE_API_URL}`,
     withCredentials: true
 });
 
-
+// Intercept on request and add access tokens to request
 api.interceptors.request.use(
     (config: any) => {
-        console.log("Interceptor ran on request");
         return config;
     },
     (error: any) => {
@@ -18,14 +17,13 @@ api.interceptors.request.use(
     }
 );
 
+// Intercept on response and renew refresh token if necessary
 api.interceptors.response.use(
     (response: any) => {
-        console.log("Interceptor ran, response was OK");
         return response;
     },
     async (error: any) => {
-        console.log("Interceptor ran, response was NOT OK");
-        console.log(error.response);
+        console.error(error.response);
         if (error.response.status === 401 && !error.config.retry) {
             error.config.retry = true;
             try {
@@ -33,13 +31,13 @@ api.interceptors.response.use(
                 await api.post(request_url);
                 return api.request(error.config);
             } catch (error) {
-                console.error("Failed to refresh access token:", error);
+                console.error(error);
                 const router = useRouter();
                 await router.push('/login');
                 throw error;
             }
         }
-        throw error;
+        return Promise.reject(error);
     }
 );
 

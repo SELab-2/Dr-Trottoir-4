@@ -34,6 +34,7 @@ export default function Signup() {
                     <Image src={filler_logo} alt="My App Logo" className={styles.filler_image}/>
                 </div>
                 <div className={styles.login_container}>
+                    <p className={styles.signup_title}>Signup</p>
                     <form onSubmit={handleSubmit}>
                         <label className={styles.text} htmlFor="firstname">Voornaam:</label>
                         <input
@@ -87,9 +88,10 @@ export default function Signup() {
 
                         <button className={styles.button} type="submit">Sign up</button>
                     </form>
-                    <p className={styles.text}>Already have an account? <Link href="/login"><u>Log in here</u></Link></p>
+                    <p className={styles.text}>Already have an account? <Link href="/login"><u>Log in here</u></Link>
+                    </p>
                 </div>
             </div>
         </>
-  );
+    );
 }

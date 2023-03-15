@@ -1,7 +1,7 @@
-import {createContext, useState, ReactNode} from "react";
+import {createContext, ReactNode, useState} from "react";
 
 const AuthContext = createContext({
-    auth : false,
+    auth: false,
     loginUser: () => {},
     logoutUser: () => {}
 });
@@ -12,12 +12,10 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     const [auth, setAuth] = useState<boolean>(false);
 
     let loginUser = async () => {
-        console.log("USER IS LOGGED IN");
         setAuth(true);
     }
 
     let logoutUser = async () => {
-        console.log("USER IS LOGGED OUT");
         setAuth(false);
     }
 
