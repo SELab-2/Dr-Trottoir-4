@@ -12,7 +12,7 @@
 
 ### Object based permissions
 
-- `OwnerOfBuilding` (global + object): checks if the user is a syndic and if he owns the building
+- `ReadOnlyOwnerOfBuilding` (global + object): checks if the user is a syndic and if he owns the building
 - `OwnsAccount` (object): checks if the user tries to access his own user info
 - `CanEditUser` (object): checks if the user who tries to edit is in fact the user himself or someone with a higher rank
 - `CanEditRole` (object): checks if the user who tries to assign a role, doesn't set a role higher than his own role
@@ -24,8 +24,8 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 ### Building urls
 
 - `building/ - [..., IsAdmin|IsSuperStudent]`
-- `building/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding]`
-- `building/owner/id - [..., IsAdmin | IsSuperStudent | OwnerOfBuilding]`
+- `building/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding]`
+- `building/owner/id - [..., IsAdmin | IsSuperStudent | ReadOnlyOwnerOfBuilding]`
 - `building/all - [...,IsAdmin | IsSuperStudent]`
 
 ### User urls

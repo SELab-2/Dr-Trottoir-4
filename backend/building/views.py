@@ -1,7 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from authorisation.permissions import OwnerOfBuilding, IsAdmin, IsSuperStudent, ReadOnlyStudent, IsSyndic
+from authorisation.permissions import ReadOnlyOwnerOfBuilding, IsAdmin, IsSuperStudent, ReadOnlyStudent, IsSyndic
 from base.models import Building
 from base.serializers import BuildingSerializer
 from util.request_response_util import *
@@ -33,7 +33,7 @@ class DefaultBuilding(APIView):
 
 class BuildingIndividualView(APIView):
     permission_classes = [IsAuthenticated,
-                          IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding
+                          IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding
                           ]
 
     def get(self, request, building_id):
@@ -98,7 +98,7 @@ class AllBuildingsView(APIView):
 
 
 class BuildingOwnerView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyOwnerOfBuilding]
 
     def get(self, request, owner_id):
         """

@@ -63,7 +63,7 @@ class IsSyndic(BasePermission):
 # OBJECT PERMISSIONS
 # ------------------
 
-class OwnerOfBuilding(BasePermission):
+class ReadOnlyOwnerOfBuilding(BasePermission):
     """
     Checks if the user owns the building
     """
@@ -73,7 +73,7 @@ class OwnerOfBuilding(BasePermission):
         return request.user.role.name.lower() == 'syndic'
 
     def has_object_permission(self, request, view, obj: Building):
-        if request.method in SAFE_METHODS + ['PATCH']:
+        if request.method in SAFE_METHODS:
             return request.user.id == obj.syndic_id
         return False
 
