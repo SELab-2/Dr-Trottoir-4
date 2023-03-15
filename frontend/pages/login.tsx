@@ -4,10 +4,12 @@ import Image from "next/image";
 import filler_logo from "../public/filler_logo.png"
 import Link from "next/link";
 import login from "../lib/login"
-import {FormEvent, useState} from "react";
+import {FormEvent, useContext, useState} from "react";
 import {useRouter} from "next/router";
+import AuthContext from "@/context/AuthProvider";
 
 export default function Login() {
+    let {loginUser} = useContext(AuthContext);
     const router = useRouter();
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -15,7 +17,7 @@ export default function Login() {
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
         try {
-            await login(username, password, router);
+            await login(username, password, router, loginUser);
         } catch (error) {
             console.error(error);
         }
