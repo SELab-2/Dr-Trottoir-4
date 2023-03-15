@@ -11,10 +11,13 @@ function Welcome() {
     let {auth, logoutUser} = useContext(AuthContext);
     const router = useRouter();
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         if (!auth) {
             router.push('/login');
         } else {
+            setLoading(false);
             fetchData();
         }
     }, []);
@@ -48,16 +51,23 @@ function Welcome() {
 
     return (
         <>
-            <BaseHeader/>
-            <p className={styles.title}>Welcome!</p>
-            <Image src={soon} alt="Site coming soon" className={styles.image}/>
-            <button className={styles.button} onClick={handleLogout}>Logout</button>
-            <h1 className={styles.text}>Users:</h1>
-            <ul>
-                {data.map((item, index) => (
-                    <li key={index}>{JSON.stringify(item)}</li>
-                ))}
-            </ul>
+          {loading ? (
+            // Show an empty screen or a loading indicator until the variable is checked.
+            <div>Loading...</div>
+          ) : (
+            <>
+                <BaseHeader/>
+                <p className={styles.title}>Welcome!</p>
+                <Image src={soon} alt="Site coming soon" className={styles.image}/>
+                <button className={styles.button} onClick={handleLogout}>Logout</button>
+                <h1 className={styles.text}>Users:</h1>
+                <ul>
+                    {data.map((item, index) => (
+                        <li key={index}>{JSON.stringify(item)}</li>
+                    ))}
+                </ul>
+            </>
+          )}
         </>
     )
 
