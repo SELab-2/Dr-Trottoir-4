@@ -1,10 +1,11 @@
 from rest_framework.views import APIView
 
-from base.models import PictureBuilding, Building
+from base.models import PictureBuilding
 from base.serializers import PictureBuildingSerializer
 from util.request_response_util import *
 
 TRANSLATE = {"building": "building_id"}
+
 
 class Default(APIView):
     def post(self, request):
@@ -69,13 +70,6 @@ class PicturesOfBuildingView(APIView):
         """
         Get all pictures of a building with given id
         """
-
-        # TODO: The existence of the building_id was checked in the original code of this function (before cleanup), but is this really necessary?
-        #  I vote no
-        #  Anyway, this will be made clear if we write tests (then it should be consistent in all routes)
-        if not Building.objects.filter(id=building_id):
-            return bad_request("Building")
-
         picture_building_instances = PictureBuilding.objects.filter(building_id=building_id)
         serializer = PictureBuildingSerializer(picture_building_instances, many=True)
         return get_success(serializer)
