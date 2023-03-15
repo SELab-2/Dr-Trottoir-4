@@ -1,5 +1,6 @@
 from rest_framework.permissions import BasePermission
-from base.models import Building, User
+from base.models import Building, User, Role
+from util.request_response_util import request_to_dict
 
 SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS']
 
@@ -14,7 +15,7 @@ class IsAdmin(BasePermission):
     message = "Admin permission required"
 
     def has_permission(self, request, view):
-        return request.user.role == 'AD'
+        return request.user.role.role.lower() == 'admin'
 
 
 class IsSuperStudent(BasePermission):
@@ -24,7 +25,7 @@ class IsSuperStudent(BasePermission):
     message = "Super student permission required"
 
     def has_permission(self, request, view):
-        return request.user.role == 'SS'
+        return request.user.role.role.lower() == 'superstudent'
 
 
 class IsStudent(BasePermission):
@@ -34,7 +35,7 @@ class IsStudent(BasePermission):
     message = "Student permission required"
 
     def has_permission(self, request, view):
-        return request.user.role == 'ST'
+        return request.user.role.role.lower() == 'student'
 
 
 class ReadOnlyStudent(BasePermission):
@@ -45,7 +46,7 @@ class ReadOnlyStudent(BasePermission):
 
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
-            return request.user.role == 'ST'
+            return request.user.role.role.lower() == 'student'
 
 
 class IsSyndic(BasePermission):
@@ -55,7 +56,7 @@ class IsSyndic(BasePermission):
     message = "Syndic permission required"
 
     def has_permission(self, request, view):
-        return request.user.role == 'SY'
+        return request.user.role.role.lower() == 'syndic'
 
 
 # ------------------
@@ -69,7 +70,7 @@ class OwnerOfBuilding(BasePermission):
     message = "You can only access/edit the buildings that you own"
 
     def has_permission(self, request, view):
-        return request.user.role == 'SY'
+        return request.user.role.role.lower() == 'syndic'
 
     def has_object_permission(self, request, view, obj: Building):
         return request.user.id == obj.syndic_id
@@ -82,8 +83,7 @@ class OwnsAccount(BasePermission):
     message = "You can only access/edit your own account"
 
     def has_object_permission(self, request, view, obj: User):
-        if request.method in SAFE_METHODS + ['PATCH']:
-            return request.user.id == obj.id
+        return request.user.id == obj.id
 
 
 class CanEditUser(BasePermission):
@@ -93,6 +93,20 @@ class CanEditUser(BasePermission):
     message = "You don't have the right permissions to edit the user accordingly"
 
     def has_object_permission(self, request, view, obj: User):
-        if request.method in ['PATCH', 'DELETE']:
-            # TODO: Depending on the 'Rank' of the 'Role', we should determine this permission
-            return True
+        if request.method == 'PATCH':
+            return request.user.id == obj.id or request.user.role.rank < obj.role.rank
+        return True
+
+
+class CanEditRole(BasePermission):
+    """
+    Checks if the user has the right permissions to edit the role of a user
+    """
+    message = "You can't assign a role that is higher that your own"
+
+    def has_object_permission(self, request, view, obj: User):
+        if request.method in ['PATCH']:
+            data = request_to_dict(request.data)
+            role_instance = Role.objects.filter(id=data['role'])[0]
+            return request.user.role.rank <= role_instance.rank
+        return True
