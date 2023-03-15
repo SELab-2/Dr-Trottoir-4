@@ -3,41 +3,27 @@ import styles from "styles/Login.module.css"
 import Image from "next/image";
 import filler_logo from "../public/filler_logo.png"
 import Link from "next/link";
+import login from "../lib/login"
+import {FormEvent, useContext, useState} from "react";
 import {useRouter} from "next/router";
-import {FormEvent} from "react";
+import AuthContext from "@/context/AuthProvider";
 
 export default function Login() {
+    let {loginUser} = useContext(AuthContext);
 
     const router = useRouter();
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
 
-    const handleSubmit = async (event: FormEvent) => {
+    const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
-
-        const form = event.target as HTMLFormElement;
-
-        const data = {
-            email: form.email.value as string,
-            password: form.password.value as string,
+        try {
+            await login(username, password, router, loginUser);
+        } catch (error) {
+            console.error(error);
         }
+    };
 
-        const JSONdata = JSON.stringify(data); // Might want to change this, so we hash the password locally
-        const endpoint = "http://" + process.env.NEXT_PUBLIC_API_HOST + ":" + process.env.NEXT_PUBLIC_API_PORT + process.env.NEXT_PUBLIC_API_LOGIN;
-
-        // try and authenticate
-        const response = await fetch(endpoint, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSONdata,
-        });
-
-        if (response.status != 200) { // authentication failed
-            // await response.text() -> contains error message
-            alert("Invalid credentials. Please try again.");
-        } else {
-            // authentication was successful, so go to the welcome page
-            await router.push("/welcome");
-        }
-    }
     return (
         <>
             <BaseHeader/>
@@ -46,15 +32,28 @@ export default function Login() {
                     <Image src={filler_logo} alt="My App Logo" className={styles.filler_image}/>
                 </div>
                 <div className={styles.login_container}>
+                    <p className={styles.title}>Login.</p>
                     <form onSubmit={handleSubmit}>
                         <label className={styles.text} htmlFor="email">E-mailadres:</label>
-                        <input className={styles.input} type="email" id="email" name="email" required/>
+                        <input
+                            type="text"
+                            className={styles.input}
+                            value={username}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+                        />
                         <label className={styles.text} htmlFor="password">Wachtwoord:</label>
-                        <input className={styles.input} type="password" id="password" name="password" required/>
+                        <input
+                            type="password"
+                            className={styles.input}
+                            value={password}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                            required
+                        />
                         <button className={styles.button} type="submit">Login</button>
                     </form>
                     <p className={styles.text}><Link href="/reset-password"><u>Forgot Password</u></Link></p>
-                    <p className={styles.text}>Don't have an account? <Link href="/signup"><u>Sign up here</u></Link></p>
+                    <p className={styles.text}>Don't have an account? <Link href="/signup"><u>Sign up here</u></Link>
+                    </p>
                 </div>
             </div>
         </>

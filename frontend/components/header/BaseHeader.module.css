@@ -1,4 +1,4 @@
-.container{
+.container {
     width: 100%;
     height: 50px;
     background-color: #1D1D1D;
@@ -7,7 +7,7 @@
     display: flex;
 }
 
-.logo{
+.logo {
     object-fit: cover;
     margin-top: auto;
     margin-left: 30px;
