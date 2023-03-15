@@ -63,6 +63,13 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 - `manual/building/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding]`
 - `manual/all/ - [..., IsAdmin | IsSuperStudent]`
 
+### PictureBuilding
+
+- `picture_building/ - [..., IsAdmin | IsSuperStudent | IsStudent]`
+- `picture_building/id - [..., IsAdmin | IsSuperStudent | IsStudent | ReadOnlyOwnerOfBuilding]`
+- `picture_building/building/id - [..., IsAdmin | IsSuperStudent | IsStudent | ReadOnlyOwnerOfBuilding]`
+- `picture_building/all - [..., IsAdmin | IsSuperStudent]`
+
 ### User urls
 
 - `user/ - [..., IsAdmin | IsSuperStudent]`
