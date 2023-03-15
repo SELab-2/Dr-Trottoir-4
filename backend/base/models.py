@@ -36,7 +36,7 @@ class Role(models.Model):
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.role} (rank: {self.rank})"
+        return f"{self.name} (rank: {self.rank})"
 
     def clean(self):
         super().clean()
@@ -103,7 +103,7 @@ class Building(models.Model):
 
         user = self.syndic
 
-        if user.role.role.lower() != 'syndic':
+        if user.role.name.lower() != 'syndic':
             raise ValidationError("Only a user with role \"syndic\" can own a building.")
 
     class Meta:
@@ -276,7 +276,7 @@ class StudentAtBuildingOnTour(models.Model):
         super().clean()
         _check_for_present_keys(self, {"student_id", "building_on_tour_id", "date"})
         user = self.student
-        if user.role.role.lower() == 'syndic':
+        if user.role.name.lower() == 'syndic':
             raise ValidationError("A syndic can't do tours")
         building_on_tour_region = self.building_on_tour.tour.region
         if not self.student.region.all().filter(region=building_on_tour_region).exists():

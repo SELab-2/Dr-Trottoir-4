@@ -5,11 +5,17 @@ from authorisation.permissions import IsAdmin, IsSuperStudent
 from base.models import Role
 from base.serializers import RoleSerializer
 from util.request_response_util import *
+from drf_spectacular.utils import extend_schema
 
 
 class DefaultRoleView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
+    serializer_class = RoleSerializer
 
+    @extend_schema(
+        responses={201: RoleSerializer,
+                   400: None}
+    )
     def post(self, request):
         """
         Create a new role
@@ -28,7 +34,12 @@ class DefaultRoleView(APIView):
 
 class RoleIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = RoleSerializer
 
+    @extend_schema(
+        responses={200: RoleSerializer,
+                   400: None}
+    )
     def get(self, request, role_id):
         """
         Get info about a Role with given id
@@ -41,6 +52,10 @@ class RoleIndividualView(APIView):
         serializer = RoleSerializer(role_instance[0])
         return get_success(serializer)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def delete(self, request, role_id):
         """
         Delete a Role with given id
@@ -53,6 +68,10 @@ class RoleIndividualView(APIView):
         role_instance[0].delete()
         return delete_success()
 
+    @extend_schema(
+        responses={200: RoleSerializer,
+                   400: None}
+    )
     def patch(self, request, role_id):
         """
         Edit info about a Role with given id
@@ -76,6 +95,7 @@ class RoleIndividualView(APIView):
 
 class AllRolesView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = RoleSerializer
 
     def get(self, request):
         """
