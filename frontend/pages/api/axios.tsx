@@ -9,20 +9,20 @@ const api = axios.create({
 
 // Intercept on request and add access tokens to request
 api.interceptors.request.use(
-    (config: any) => {
+    (config) => {
         return config;
     },
-    (error: any) => {
+    (error) => {
         return Promise.reject(error);
     }
 );
 
 // Intercept on response and renew refresh token if necessary
 api.interceptors.response.use(
-    (response: any) => {
+    (response) => {
         return response;
     },
-    async (error: any) => {
+    async (error) => {
         console.error(error.response);
         if (error.response.status === 401 && !error.config.retry) {
             error.config.retry = true;

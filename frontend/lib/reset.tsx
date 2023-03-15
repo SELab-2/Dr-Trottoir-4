@@ -1,6 +1,7 @@
 import {Reset_Password} from "@/types.d";
+import {Router} from "next/router";
 
-const reset = async (email: string, router: any): Promise<void> => {
+const reset = async (email: string, router: Router): Promise<void> => {
 
     const host = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_RESET_PASSWORD}`
     const reset_data: Reset_Password = {
