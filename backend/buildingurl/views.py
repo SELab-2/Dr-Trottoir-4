@@ -5,6 +5,9 @@ from base.serializers import BuildingUrlSerializer
 from util.request_response_util import *
 from drf_spectacular.utils import extend_schema
 
+TRANSLATE = {"building": "building_id"}
+
+
 class BuildingUrlDefault(APIView):
     serializer_class = BuildingUrlSerializer
 
@@ -29,18 +32,13 @@ class BuildingUrlDefault(APIView):
         except IntegrityError:
             pass
 
-        if "building" in data.keys():
-            data["building_id"] = data["building"]
-
-        for key in data.keys():
-            if key in vars(building_url_instance):
-                setattr(building_url_instance, key, data[key])
+        set_keys_of_instance(building_url_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(building_url_instance):
             return r
 
         serializer = BuildingUrlSerializer(building_url_instance)
-        return post_succes(serializer)
+        return post_success(serializer)
 
 
 class BuildingUrlIndividualView(APIView):
@@ -59,7 +57,7 @@ class BuildingUrlIndividualView(APIView):
             return bad_request("BuildingUrl")
 
         serializer = BuildingUrlSerializer(building_url_instance[0])
-        return get_succes(serializer)
+        return get_success(serializer)
 
     @extend_schema(
         responses={204: None,
@@ -74,13 +72,16 @@ class BuildingUrlIndividualView(APIView):
             return bad_request("BuildingUrl")
 
         building_url_instance[0].delete()
-        return delete_succes()
+        return delete_success()
 
     @extend_schema(
         responses={204: None,
                    400: None}
     )
     def patch(self, request, building_url_id):
+        """
+        Edit info about buildingurl with given id
+        """
         building_url_instance = BuildingURL.objects.filter(id=building_url_id)
         if not building_url_instance:
             return bad_request("BuildingUrl")
@@ -88,18 +89,13 @@ class BuildingUrlIndividualView(APIView):
         building_url_instance = building_url_instance[0]
         data = request_to_dict(request.data)
 
-        if "building" in data.keys():
-            data["building_id"] = data["building"]
-
-        for key in data.keys():
-            if key in vars(building_url_instance):
-                setattr(building_url_instance, key, data[key])
+        set_keys_of_instance(building_url_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(building_url_instance):
             return r
 
         serializer = BuildingUrlSerializer(building_url_instance)
-        return patch_succes(serializer)
+        return patch_success(serializer)
 
 
 class BuildingUrlSyndicView(APIView):
@@ -118,7 +114,7 @@ class BuildingUrlSyndicView(APIView):
 
         building_urls_instances = BuildingURL.objects.filter(building__in=building_ids)
         serializer = BuildingUrlSerializer(building_urls_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)
 
 
 class BuildingUrlBuildingView(APIView):
@@ -133,7 +129,7 @@ class BuildingUrlBuildingView(APIView):
         """
         building_url_instances = BuildingURL.objects.filter(building=building_id)
         serializer = BuildingUrlSerializer(building_url_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)
 
 
 class BuildingUrlAllView(APIView):
@@ -145,4 +141,4 @@ class BuildingUrlAllView(APIView):
         """
         building_url_instances = BuildingURL.objects.all()
         serializer = BuildingUrlSerializer(building_url_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)

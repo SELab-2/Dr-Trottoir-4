@@ -9,6 +9,16 @@ from util.request_response_util import *
 from drf_spectacular.utils import extend_schema
 
 
+# In GET, you only get active users
+# Except when you explicitly pass a parameter 'include_inactive' to the body of the request and set it as true
+# If you
+def _include_inactive(request) -> bool:
+    data = request_to_dict(request.data)
+    if "include_inactive" in data:
+        return data["include_inactive"]
+    return False
+
+
 def _try_adding_region_to_user_instance(user_instance, region_value):
     try:
         user_instance.region.add(region_value)
@@ -35,18 +45,12 @@ class DefaultUser(APIView):
 
         user_instance = User()
 
-        for key in data.keys():
-            if key in vars(user_instance):
-                setattr(user_instance, key, data[key])
+        set_keys_of_instance(user_instance, data)
 
         if r := try_full_clean_and_save(user_instance):
             return r
 
-        user_instance.save()
-
         # Now that we have an ID, we can look at the many-to-many relationship region
-
-        print("beginnen met REGIONNNNNNN ")
 
         if "region" in data.keys():
             region_dict = json.loads(data["region"])
@@ -54,11 +58,8 @@ class DefaultUser(APIView):
                 if r := _try_adding_region_to_user_instance(user_instance, value):
                     return r
 
-        if r := try_full_clean_and_save(user_instance, rm=True):
-            return r
-
         serializer = UserSerializer(user_instance)
-        return post_succes(serializer)
+        return post_success(serializer)
 
 
 class UserIndividualView(APIView):
@@ -73,13 +74,13 @@ class UserIndividualView(APIView):
         """
         Get info about user with given id
         """
-
         user_instance = User.objects.filter(id=user_id)
+
         if not user_instance:
             return bad_request(object_name="User")
 
         serializer = UserSerializer(user_instance[0])
-        return get_succes(serializer)
+        return get_success(serializer)
 
     @extend_schema(
         responses={204: None,
@@ -88,13 +89,18 @@ class UserIndividualView(APIView):
     def delete(self, request, user_id):
         """
         Delete user with given id
+        We don't acutally delete a user, we put the user on inactive mode
         """
         user_instance = User.objects.filter(id=user_id)
         if not user_instance:
             return bad_request(object_name="User")
 
-        user_instance[0].delete()
-        return delete_succes()
+        user_instance = user_instance[0]
+
+        user_instance.is_active = False
+        user_instance.save()
+
+        return delete_success()
 
     @extend_schema(
         responses={204: None,
@@ -108,13 +114,12 @@ class UserIndividualView(APIView):
 
         if not user_instance:
             return bad_request(object_name="User")
+
         user_instance = user_instance[0]
 
         data = request_to_dict(request.data)
 
-        for key in data.keys():
-            if key in vars(user_instance):
-                setattr(user_instance, key, data[key])
+        set_keys_of_instance(user_instance, data)
 
         if r := try_full_clean_and_save(user_instance):
             return r
@@ -127,11 +132,8 @@ class UserIndividualView(APIView):
                 if r := _try_adding_region_to_user_instance(user_instance, value):
                     return r
 
-        if r := try_full_clean_and_save(user_instance, rm=True):
-            return r
-
         serializer = UserSerializer(user_instance)
-        return patch_succes(serializer)
+        return patch_success(serializer)
 
 
 class AllUsersView(APIView):
@@ -141,6 +143,9 @@ class AllUsersView(APIView):
         """
         Get all users
         """
-        user_instances = User.objects.all()
+        if _include_inactive(request):
+            user_instances = User.objects.all()
+        else:
+            user_instances = User.objects.filter(is_active=True)
         serializer = UserSerializer(user_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)
