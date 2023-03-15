@@ -1,6 +1,8 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from base.models import BuildingURL, Building
+from authorisation.permissions import IsAdmin, OwnerOfBuilding, OwnsAccount
+from base.models import BuildingURL, Building, User
 from base.serializers import BuildingUrlSerializer
 from util.request_response_util import *
 
@@ -8,6 +10,7 @@ TRANSLATE = {"building": "building_id"}
 
 
 class BuildingUrlDefault(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | OwnerOfBuilding]
 
     def post(self, request):
         """
@@ -16,6 +19,8 @@ class BuildingUrlDefault(APIView):
         data = request_to_dict(request.data)
 
         building_url_instance = BuildingURL()
+
+        self.check_object_permissions(request, building_url_instance.building)
 
         # Below line is necessary since we use RandomIDModel
         # Without this line, we would have a ValidationError because we do not have an id yet
@@ -37,6 +42,7 @@ class BuildingUrlDefault(APIView):
 
 
 class BuildingUrlIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | OwnerOfBuilding]
 
     def get(self, request, building_url_id):
         """
@@ -45,6 +51,8 @@ class BuildingUrlIndividualView(APIView):
         building_url_instance = BuildingURL.objects.filter(id=building_url_id)
         if not building_url_instance:
             return bad_request("BuildingUrl")
+
+        self.check_object_permissions(request, building_url_instance.building)
 
         serializer = BuildingUrlSerializer(building_url_instance[0])
         return get_success(serializer)
@@ -56,8 +64,11 @@ class BuildingUrlIndividualView(APIView):
         building_url_instance = BuildingURL.objects.filter(id=building_url_id)
         if not building_url_instance:
             return bad_request("BuildingUrl")
+        building_url_instance = building_url_instance[0]
 
-        building_url_instance[0].delete()
+        self.check_object_permissions(request, building_url_instance.building)
+
+        building_url_instance.delete()
         return delete_success()
 
     def patch(self, request, building_url_id):
@@ -69,6 +80,8 @@ class BuildingUrlIndividualView(APIView):
             return bad_request("BuildingUrl")
 
         building_url_instance = building_url_instance[0]
+        self.check_object_permissions(request, building_url_instance.building)
+
         data = request_to_dict(request.data)
 
         set_keys_of_instance(building_url_instance, data, TRANSLATE)
@@ -85,10 +98,15 @@ class BuildingUrlSyndicView(APIView):
     /syndic/<syndic_id>
     """
 
+    permission_classes = [IsAuthenticated, IsAdmin | OwnsAccount]
+
     def get(self, request, syndic_id):
         """
         Get all building urls of buildings where the user with given user id is syndic
         """
+        id_holder = type("", (), {})()
+        id_holder.id = syndic_id
+        self.check_object_permissions(request, id_holder)
 
         # All building IDs where user is syndic
         building_ids = [building.id for building in Building.objects.filter(syndic=syndic_id)]
@@ -103,21 +121,30 @@ class BuildingUrlBuildingView(APIView):
     building/<building_id>
     """
 
+    permission_classes = [IsAuthenticated, IsAdmin | OwnerOfBuilding]
+
     def get(self, request, building_id):
         """
         Get all building urls of a given building
         """
+        building_instance = Building.objects.filter(building_id=building_id)[0]
+        if not building_instance:
+            bad_request(building_instance)
+        self.check_object_permissions(request, building_instance)
+
         building_url_instances = BuildingURL.objects.filter(building=building_id)
         serializer = BuildingUrlSerializer(building_url_instances, many=True)
         return get_success(serializer)
 
 
 class BuildingUrlAllView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
 
     def get(self, request):
         """
         Get all building urls
         """
+
         building_url_instances = BuildingURL.objects.all()
         serializer = BuildingUrlSerializer(building_url_instances, many=True)
         return get_success(serializer)
