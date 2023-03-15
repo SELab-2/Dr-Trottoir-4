@@ -99,7 +99,7 @@ class ReadOnlyOwnerOfBuilding(BasePermission):
         return False
 
 
-class OwnsAccount(BasePermission):
+class OwnerAccount(BasePermission):
     """
     Checks if the user is owns the user account
     """
@@ -107,6 +107,18 @@ class OwnsAccount(BasePermission):
 
     def has_object_permission(self, request, view, obj: User):
         return request.user.id == obj.id
+
+
+class ReadOnlyOwnerAccount(BasePermission):
+    """
+        Checks if the user is owns the user account
+        """
+    message = "You can only access/edit your own account"
+
+    def has_object_permission(self, request, view, obj: User):
+        if request.method in SAFE_METHODS:
+            return request.user.id == obj.id
+        return False
 
 
 class CanEditUser(BasePermission):

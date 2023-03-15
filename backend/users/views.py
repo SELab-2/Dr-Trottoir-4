@@ -3,7 +3,7 @@ import json
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from authorisation.permissions import IsAdmin, IsSuperStudent, OwnsAccount, CanEditUser, CanEditRole
+from authorisation.permissions import IsAdmin, IsSuperStudent, OwnerAccount, CanEditUser, CanEditRole
 from base.models import User
 from base.serializers import UserSerializer
 from util.request_response_util import *
@@ -60,7 +60,7 @@ class DefaultUser(APIView):
 
 
 class UserIndividualView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnsAccount, CanEditUser, CanEditRole]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerAccount, CanEditUser, CanEditRole]
 
     def get(self, request, user_id):
         """

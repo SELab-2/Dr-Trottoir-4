@@ -1,7 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from authorisation.permissions import IsAdmin, OwnerOfBuilding, OwnsAccount
+from authorisation.permissions import IsAdmin, OwnerOfBuilding, OwnerAccount
 from base.models import BuildingURL, Building, User
 from base.serializers import BuildingUrlSerializer
 from util.request_response_util import *
@@ -98,7 +98,7 @@ class BuildingUrlSyndicView(APIView):
     /syndic/<syndic_id>
     """
 
-    permission_classes = [IsAuthenticated, IsAdmin | OwnsAccount]
+    permission_classes = [IsAuthenticated, IsAdmin | OwnerAccount]
 
     def get(self, request, syndic_id):
         """

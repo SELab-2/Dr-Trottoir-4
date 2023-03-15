@@ -13,9 +13,14 @@
 ### Object based permissions
 
 - `ReadOnlyOwnerOfBuilding` (global + object): checks if the user is a syndic and if he owns the building
-- `OwnsAccount` (object): checks if the user tries to access his own user info
+- `OwnerAccount` (object): checks if the user tries to access his own user info or info that belongs to him/her
+- `ReadOnlyOwnerAccount` (object): checks if the user tries to read his own user info or info that belongs to him/her
 - `CanEditUser` (object): checks if the user who tries to edit is in fact the user himself or someone with a higher rank
 - `CanEditRole` (object): checks if the user who tries to assign a role, doesn't set a role higher than his own role
+
+### Action based permissions
+
+- `ReadOnly` (global): checks if the method is a safe method (`GET`, `HEAD`, `OPTIONS`)
 
 ## Protected endpoints
 
@@ -81,6 +86,13 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 - `role/ - [..., IsAdmin]`
 - `role/id - [..., IsAdmin | IsSuperStudent]`
 - `role/all - [..., IsAdmin | IsSuperStudent]`
+
+### Student at building on tour
+
+- `student_at_building_on_tour/ - [..., IsAdmin | IsSuperStudent]`
+- `student_at_building_on_tour/id - [..., IsAdmin | IsSuperStudent | ReadOnlyOwnerAccount]`
+- `student_at_building_on_tour/student/id - [..., IsAdmin | IsSuperStudent | OwnerAccount]`
+- `student_at_building_on_tour/all - [..., IsAdmin | IsSuperStudent]`
 
 ### User urls
 
