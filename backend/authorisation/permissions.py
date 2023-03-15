@@ -60,6 +60,14 @@ class IsSyndic(BasePermission):
 
 
 # ------------------
+# ACTION PERMISSIONS
+# ------------------
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request in SAFE_METHODS
+
+
+# ------------------
 # OBJECT PERMISSIONS
 # ------------------
 

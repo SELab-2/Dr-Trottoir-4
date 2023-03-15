@@ -1,13 +1,14 @@
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from authorisation.permissions import IsAdmin, ReadOnly, IsSuperStudent, IsStudent
 from base.models import Region
 from base.serializers import RegionSerializer
 from util.request_response_util import *
 
 
 class Default(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin]
 
     def post(self, request):
         """
@@ -27,7 +28,7 @@ class Default(APIView):
 
 
 class RegionIndividualView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin | ReadOnly]
 
     def get(self, request, region_id):
         """
@@ -75,7 +76,7 @@ class RegionIndividualView(APIView):
 
 
 class AllRegionsView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent]
 
     def get(self, request):
         """
