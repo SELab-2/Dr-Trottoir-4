@@ -1,5 +1,7 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from authorisation.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
 from base.models import BuildingOnTour
 from base.serializers import BuildingTourSerializer
 from util.request_response_util import *
@@ -8,6 +10,8 @@ TRANSLATE = {"building": "building_id", "tour": "tour_id"}
 
 
 class Default(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+
     def post(self, request):
         """
         Create a new BuildingOnTour with data from post
@@ -25,6 +29,8 @@ class Default(APIView):
 
 
 class BuildingTourIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
+
     def get(self, request, building_tour_id):
         """
         Get info about a BuildingOnTour with given id
@@ -71,6 +77,8 @@ class BuildingTourIndividualView(APIView):
 
 
 class AllBuildingToursView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
+
     def get(self, request):
         """
         Get all buildings on tours

@@ -33,6 +33,11 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 - `building/comment_id - [..., IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]`
 - `building/building_id - [..., IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]`
 
+### BuildingOnTour urls
+- `building_on_tour/ - [...,IsAdmin | IsSuperStudent]`
+- `building_on_tour/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent]`
+- `building_on_tour/all - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent]`
+
 ### User urls
 
 - `user/ - [..., IsAdmin | IsSuperStudent]`
