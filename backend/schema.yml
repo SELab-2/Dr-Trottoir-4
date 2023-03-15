@@ -1148,6 +1148,82 @@ paths:
       responses:
         '200':
           description: No response body
+  /role/:
+    post:
+      operationId: role_create
+      description: Create a new role
+      tags:
+      - role
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /role/{role_id}/:
+    get:
+      operationId: role_retrieve
+      description: Get info about a Role with given id
+      parameters:
+      - in: path
+        name: role_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - role
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: role_partial_update
+      description: Edit info about a Role with given id
+      parameters:
+      - in: path
+        name: role_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - role
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: role_destroy
+      description: Delete a Role with given id
+      parameters:
+      - in: path
+        name: role_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - role
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /role/all/:
+    get:
+      operationId: role_all_retrieve
+      description: Get all roles
+      tags:
+      - role
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
   /student_at_building_on_tour/:
     post:
       operationId: student_at_building_on_tour_create

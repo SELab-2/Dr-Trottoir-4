@@ -28,6 +28,7 @@ from garbage_collection import urls as garbage_collection_urls
 from manual import urls as manual_urls
 from picture_building import urls as picture_building_urls
 from region import urls as region_urls
+from role import urls as role_urls
 from student_at_building_on_tour import urls as stud_buil_tour_urls
 from tour import urls as tour_urls
 from users import urls as user_urls
@@ -47,6 +48,7 @@ urlpatterns = [
                   path('garbage_collection/', include(garbage_collection_urls)),
                   path('building_on_tour/', include(building_on_tour_urls)),
                   path('user/', include(user_urls)),
+                  path('role/', include(role_urls)),
                   path('student_at_building_on_tour/', include(stud_buil_tour_urls)),
                   path('tour/', include(tour_urls)),
                   re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api'), permanent=False)),
