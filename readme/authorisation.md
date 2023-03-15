@@ -94,14 +94,15 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 - `student_at_building_on_tour/student/id - [..., IsAdmin | IsSuperStudent | OwnerAccount]`
 - `student_at_building_on_tour/all - [..., IsAdmin | IsSuperStudent]`
 
-### User urls
-
-- `user/ - [..., IsAdmin | IsSuperStudent]`
-- `user/id - [..., IsAuthenticated, IsAdmin | IsSuperStudent | OwnsAccount, CanEditUser, CanEditRole]`
-- `user/all - [..., IsAdmin | IsSuperStudent]`
-
 ### Tour urls
 
 - `tour/ - [..., IsAdmin | IsSuperStudent]`
 - `tour/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent]`
 - `tour/all - [..., IsAdmin | IsSuperStudent]`
+
+
+### User urls
+
+- `user/ - [..., IsAdmin | IsSuperStudent]`
+- `user/id - [..., IsAuthenticated, IsAdmin | IsSuperStudent | OwnsAccount, CanEditUser, CanEditRole]`
+- `user/all - [..., IsAdmin | IsSuperStudent]`
