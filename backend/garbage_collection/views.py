@@ -1,12 +1,16 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from base.models import GarbageCollection
+from authorisation.permissions import IsSuperStudent, IsAdmin, ReadOnlyStudent, OwnerOfBuilding, ReadOnlyOwnerOfBuilding
+from base.models import GarbageCollection, Building
 from base.serializers import GarbageCollectionSerializer
 from util.request_response_util import *
 
 TRANSLATE = {"building": "building_id"}
 
+
 class DefaultGarbageCollection(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
 
     def post(self, request):
         """
@@ -26,6 +30,7 @@ class DefaultGarbageCollection(APIView):
 
 
 class GarbageCollectionIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
 
     def get(self, request, garbage_collection_id):
         """
@@ -72,16 +77,24 @@ class GarbageCollectionIndividualBuildingView(APIView):
     /building/<buildingid>
     """
 
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding]
+
     def get(self, request, building_id):
         """
         Get info about all garbage collections of a building with given id
         """
+        building_instance = Building.objects.filter(building_id=building_id)
+        if not (building_instance):
+            bad_request(building_instance)
+        self.check_object_permissions(request, building_instance[0])
+
         garbage_collection_instances = GarbageCollection.objects.filter(building=building_id)
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
         return get_success(serializer)
 
 
 class GarbageCollectionAllView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
 
     def get(self, request):
         """

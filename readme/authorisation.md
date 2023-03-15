@@ -29,21 +29,31 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 - `building/all - [...,IsAdmin | IsSuperStudent]`
 
 ### BuildingComment urls
+
 - `building/ - [..., IsAdmin | IsSuperStudent | OwnerOfBuildin]`
 - `building/comment_id - [..., IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]`
 - `building/building_id - [..., IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]`
 
 ### BuildingOnTour urls
+
 - `building_on_tour/ - [...,IsAdmin | IsSuperStudent]`
 - `building_on_tour/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent]`
 - `building_on_tour/all - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent]`
 
 ### BuildingUrls urls
+
 - `buildingurl/ - [..., IsAdmin | OwnerOfBuilding]`
 - `buildingurl/id - [..., IsAdmin | OwnerOfBuilding]`
 - `buildingurl/syndic/id - [..., IsAdmin | OwnsAccount]`
 - `buildingurl/building/id - [..., IsAdmin | OwnerOfBuilding]`
 - `buildingurl/all - [..., IsAdmin]`
+
+### Garbage Collection
+
+- `garbage_collection/ - [..., IsAdmin | IsSuperStudent]`
+- `garbage_collection/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent]`
+- `garbage_collection/building/id - [IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding]`
+- `garbage_collection/all - [..., IsAdmin | IsSuperStudent]`
 
 ### User urls
 
