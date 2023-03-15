@@ -66,7 +66,7 @@ class BuildingCommentIndividualView(APIView):
         return delete_success()
 
     @extend_schema(
-        responses={204: None,
+        responses={200: None,
                    400: None}
     )
     def patch(self, request, building_comment_id):
