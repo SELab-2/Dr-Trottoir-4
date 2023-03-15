@@ -3,11 +3,18 @@ from rest_framework.views import APIView
 from base.models import PictureBuilding
 from base.serializers import PictureBuildingSerializer
 from util.request_response_util import *
+from drf_spectacular.utils import extend_schema
 
 TRANSLATE = {"building": "building_id"}
 
 
 class Default(APIView):
+    serializer_class = PictureBuildingSerializer
+
+    @extend_schema(
+        responses={201: PictureBuildingSerializer,
+                   400: None}
+    )
     def post(self, request):
         """
         Create a new PictureBuilding
@@ -24,6 +31,12 @@ class Default(APIView):
 
 
 class PictureBuildingIndividualView(APIView):
+    serializer_class = PictureBuildingSerializer
+
+    @extend_schema(
+        responses={200: PictureBuildingSerializer,
+                   400: None}
+    )
     def get(self, request, picture_building_id):
         """
         Get PictureBuilding with given id
@@ -35,6 +48,10 @@ class PictureBuildingIndividualView(APIView):
         serializer = PictureBuildingSerializer(picture_building_instance[0])
         return get_success(serializer)
 
+    @extend_schema(
+        responses={200: PictureBuildingSerializer,
+                   400: None}
+    )
     def patch(self, request, picture_building_id):
         """
         Edit info about PictureBuilding with given id
@@ -54,6 +71,10 @@ class PictureBuildingIndividualView(APIView):
 
         return patch_success(PictureBuildingSerializer(picture_building_instance))
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def delete(self, request, picture_building_id):
         """
         delete a pictureBuilding from the database
@@ -66,6 +87,8 @@ class PictureBuildingIndividualView(APIView):
 
 
 class PicturesOfBuildingView(APIView):
+    serializer_class = PictureBuildingSerializer
+
     def get(self, request, building_id):
         """
         Get all pictures of a building with given id
@@ -76,6 +99,8 @@ class PicturesOfBuildingView(APIView):
 
 
 class AllPictureBuildingsView(APIView):
+    serializer_class = PictureBuildingSerializer
+
     def get(self, request):
         """
         Get all pictureBuilding

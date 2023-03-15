@@ -7,11 +7,19 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
+from drf_spectacular.utils import extend_schema
 
 from config import settings
 
 
 class LogoutViewWithBlacklisting(LogoutView):
+    serializer_class = CookieTokenRefreshSerializer
+
+    @extend_schema(
+        responses={200: None,
+                   401: None,
+                   500: None}
+    )
     def logout(self, request):
         response = Response(
             {'detail': _('Successfully logged out.')},
@@ -62,6 +70,7 @@ class RefreshViewHiddenTokens(TokenRefreshView):
 
 
 class LoginViewWithHiddenTokens(LoginView):
+    serializer_class = CookieTokenRefreshSerializer
 
     def finalize_response(self, request, response, *args, **kwargs):
         if response.status_code == 200 and 'access_token' in response.data:

@@ -3,12 +3,18 @@ from rest_framework.views import APIView
 from base.models import BuildingURL, Building
 from base.serializers import BuildingUrlSerializer
 from util.request_response_util import *
+from drf_spectacular.utils import extend_schema
 
 TRANSLATE = {"building": "building_id"}
 
 
 class BuildingUrlDefault(APIView):
+    serializer_class = BuildingUrlSerializer
 
+    @extend_schema(
+        responses={201: BuildingUrlSerializer,
+                   400: None}
+    )
     def post(self, request):
         """
         Create a new building url
@@ -37,7 +43,12 @@ class BuildingUrlDefault(APIView):
 
 
 class BuildingUrlIndividualView(APIView):
+    serializer_class = BuildingUrlSerializer
 
+    @extend_schema(
+        responses={200: BuildingUrlSerializer,
+                   400: None}
+    )
     def get(self, request, building_url_id):
         """
         Get info about a buildingurl with given id
@@ -49,6 +60,10 @@ class BuildingUrlIndividualView(APIView):
         serializer = BuildingUrlSerializer(building_url_instance[0])
         return get_success(serializer)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def delete(self, request, building_url_id):
         """
         Delete buildingurl with given id
@@ -60,6 +75,10 @@ class BuildingUrlIndividualView(APIView):
         building_url_instance[0].delete()
         return delete_success()
 
+    @extend_schema(
+        responses={200: BuildingUrlSerializer,
+                   400: None}
+    )
     def patch(self, request, building_url_id):
         """
         Edit info about buildingurl with given id
@@ -84,6 +103,7 @@ class BuildingUrlSyndicView(APIView):
     """
     /syndic/<syndic_id>
     """
+    serializer_class = BuildingUrlSerializer
 
     def get(self, request, syndic_id):
         """
@@ -102,6 +122,7 @@ class BuildingUrlBuildingView(APIView):
     """
     building/<building_id>
     """
+    serializer_class = BuildingUrlSerializer
 
     def get(self, request, building_id):
         """
@@ -113,6 +134,7 @@ class BuildingUrlBuildingView(APIView):
 
 
 class BuildingUrlAllView(APIView):
+    serializer_class = BuildingUrlSerializer
 
     def get(self, request):
         """

@@ -3,11 +3,17 @@ from rest_framework.views import APIView
 from base.models import GarbageCollection
 from base.serializers import GarbageCollectionSerializer
 from util.request_response_util import *
+from drf_spectacular.utils import extend_schema
 
 TRANSLATE = {"building": "building_id"}
 
 class DefaultGarbageCollection(APIView):
+    serializer_class = GarbageCollectionSerializer
 
+    @extend_schema(
+        responses={201: GarbageCollectionSerializer,
+                   400: None}
+    )
     def post(self, request):
         """
         Create new garbage collection
@@ -26,7 +32,12 @@ class DefaultGarbageCollection(APIView):
 
 
 class GarbageCollectionIndividualView(APIView):
+    serializer_class = GarbageCollectionSerializer
 
+    @extend_schema(
+        responses={200: GarbageCollectionSerializer,
+                   400: None}
+    )
     def get(self, request, garbage_collection_id):
         """
         Get info about a garbage collection with given id
@@ -37,6 +48,10 @@ class GarbageCollectionIndividualView(APIView):
         serializer = GarbageCollectionSerializer(garbage_collection_instance[0])
         return get_success(serializer)
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def delete(self, request, garbage_collection_id):
         """
         Delete garbage collection with given id
@@ -47,6 +62,10 @@ class GarbageCollectionIndividualView(APIView):
         garbage_collection_instance[0].delete()
         return delete_success()
 
+    @extend_schema(
+        responses={200: GarbageCollectionSerializer,
+                   400: None}
+    )
     def patch(self, request, garbage_collection_id):
         """
         Edit garbage collection with given id
@@ -71,6 +90,7 @@ class GarbageCollectionIndividualBuildingView(APIView):
     """
     /building/<buildingid>
     """
+    serializer_class = GarbageCollectionSerializer
 
     def get(self, request, building_id):
         """
@@ -82,6 +102,7 @@ class GarbageCollectionIndividualBuildingView(APIView):
 
 
 class GarbageCollectionAllView(APIView):
+    serializer_class = GarbageCollectionSerializer
 
     def get(self, request):
         """

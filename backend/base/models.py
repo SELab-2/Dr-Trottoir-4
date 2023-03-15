@@ -236,7 +236,7 @@ class BuildingOnTour(models.Model):
     def clean(self):
         super().clean()
 
-        _check_for_present_keys(self, {"tour_id", "building_id", "index", "index"})
+        _check_for_present_keys(self, {"tour_id", "building_id", "index"})
 
         tour_region = self.tour.region
         building_region = self.building.region
