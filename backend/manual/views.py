@@ -12,8 +12,7 @@ class Default(APIView):
     serializer_class = ManualSerializer
 
     @extend_schema(
-        responses={201: ManualSerializer,
-                   400: None}
+        responses={201: ManualSerializer}
     )
     def post(self, request):
         """
