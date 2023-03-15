@@ -73,7 +73,9 @@ class OwnerOfBuilding(BasePermission):
         return request.user.role.name.lower() == 'syndic'
 
     def has_object_permission(self, request, view, obj: Building):
-        return request.user.id == obj.syndic_id
+        if request.method in SAFE_METHODS + ['PATCH']:
+            return request.user.id == obj.syndic_id
+        return False
 
 
 class OwnsAccount(BasePermission):
