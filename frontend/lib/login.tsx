@@ -1,8 +1,8 @@
 import api from '../pages/api/axios';
 import {Login} from "@/types.d";
-import {Router} from "next/router";
+import {NextRouter} from "next/router";
 
-const login = async (email: string, password: string, router: Router, loginUser: () => void): Promise<void> => {
+const login = async (email: string, password: string, router: NextRouter, loginUser: () => void): Promise<void> => {
 
     const host: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_LOGIN}`;
     const login_data: Login = {
