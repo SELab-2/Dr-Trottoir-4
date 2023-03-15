@@ -1,5 +1,7 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from authorisation.permissions import IsAdmin, IsSuperStudent, IsSyndic, OwnerOfBuilding, ReadOnlyStudent
 from base.models import Manual, Building
 from base.serializers import ManualSerializer
 from util.request_response_util import *
@@ -8,6 +10,8 @@ TRANSLATE = {"building": "building_id"}
 
 
 class Default(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsSyndic]
+
     def post(self, request):
         """
         Create a new manual with data from post
@@ -24,6 +28,9 @@ class Default(APIView):
 
 
 class ManualView(APIView):
+    # TODO: Change IsSyndic to the owner of the manual (once that is added to the Manual model)
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | IsSyndic]
+
     def get(self, request, manual_id):
         """
         Get info about a manual with given id
@@ -63,6 +70,8 @@ class ManualView(APIView):
 
 
 class ManualBuildingView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding]
+
     def get(self, request, building_id):
         """
         Get all manuals of a building with given id
@@ -76,6 +85,8 @@ class ManualBuildingView(APIView):
 
 
 class ManualsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+
     def get(self, request):
         """
         Get all manuals

@@ -55,6 +55,14 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 - `garbage_collection/building/id - [IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding]`
 - `garbage_collection/all - [..., IsAdmin | IsSuperStudent]`
 
+### Manual
+
+- `manual/ - [..., IsAdmin | IsSuperStudent | IsSyndic]`
+- `manual/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent | IsSyndic]`
+    - **TODO** Change IsSyndic to IsOwnerOfManual once that is added to the model
+- `manual/building/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding]`
+- `manual/all/ - [..., IsAdmin | IsSuperStudent]`
+
 ### User urls
 
 - `user/ - [..., IsAdmin | IsSuperStudent]`
