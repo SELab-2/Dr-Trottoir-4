@@ -35,7 +35,8 @@ class DefaultUser(APIView):
     # TODO: in order for this to work, you have to pass a password
     #  In the future, we probably won't use POST this way anymore (if we work with the whitelist method)
     @extend_schema(
-        responses={201: UserSerializer}
+        responses={201: UserSerializer,
+                   400: None}
     )
     def post(self, request):
         """
@@ -103,7 +104,7 @@ class UserIndividualView(APIView):
         return delete_success()
 
     @extend_schema(
-        responses={204: None,
+        responses={200: UserSerializer,
                    400: None}
     )
     def patch(self, request, user_id):

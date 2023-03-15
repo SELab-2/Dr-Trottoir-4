@@ -460,6 +460,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Building'
           description: ''
+        '400':
+          description: No response body
   /building/{building_id}/:
     get:
       operationId: building_retrieve
@@ -510,8 +512,12 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+          description: ''
         '400':
           description: No response body
     delete:
@@ -601,6 +607,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BuildingTour'
           description: ''
+        '400':
+          description: No response body
   /building_on_tour/{building_tour_id}/:
     get:
       operationId: building_on_tour_retrieve
@@ -651,8 +659,12 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingTour'
+          description: ''
         '400':
           description: No response body
     delete:
@@ -718,6 +730,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BuildingUrl'
           description: ''
+        '400':
+          description: No response body
   /buildingurl/{building_url_id}/:
     get:
       operationId: buildingurl_retrieve
@@ -768,8 +782,12 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingUrl'
+          description: ''
         '400':
           description: No response body
     delete:
@@ -880,6 +898,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/GarbageCollection'
           description: ''
+        '400':
+          description: No response body
   /garbage_collection/{garbage_collection_id}/:
     get:
       operationId: garbage_collection_retrieve
@@ -930,8 +950,12 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GarbageCollection'
+          description: ''
         '400':
           description: No response body
     delete:
@@ -1020,6 +1044,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Manual'
           description: ''
+        '400':
+          description: No response body
   /manual/{manual_id}/:
     get:
       operationId: manual_retrieve
@@ -1070,8 +1096,12 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manual'
+          description: ''
         '400':
           description: No response body
     delete:
@@ -1161,6 +1191,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/PictureBuilding'
           description: ''
+        '400':
+          description: No response body
   /picture_building/{picture_building_id}/:
     get:
       operationId: picture_building_retrieve
@@ -1211,8 +1243,12 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PictureBuilding'
+          description: ''
         '400':
           description: No response body
     delete:
@@ -1300,6 +1336,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Region'
           description: ''
+        '400':
+          description: No response body
   /region/{region_id}/:
     get:
       operationId: region_retrieve
@@ -1350,8 +1388,12 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+          description: ''
         '400':
           description: No response body
     delete:
@@ -1417,6 +1459,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/StudBuildTour'
           description: ''
+        '400':
+          description: No response body
   /student_at_building_on_tour/{student_at_building_on_tour_id}/:
     get:
       operationId: student_at_building_on_tour_retrieve
@@ -1468,8 +1512,12 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudBuildTour'
+          description: ''
         '400':
           description: No response body
     delete:
@@ -1557,6 +1605,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Tour'
           description: ''
+        '400':
+          description: No response body
   /tour/{tour_id}/:
     get:
       operationId: tour_retrieve
@@ -1607,8 +1657,12 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tour'
+          description: ''
         '400':
           description: No response body
     delete:
@@ -1674,6 +1728,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+        '400':
+          description: No response body
   /user/{user_id}/:
     get:
       operationId: user_retrieve
@@ -1724,8 +1780,12 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
         '400':
           description: No response body
     delete:

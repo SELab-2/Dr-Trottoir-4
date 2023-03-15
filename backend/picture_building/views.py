@@ -12,7 +12,8 @@ class Default(APIView):
     serializer_class = PictureBuildingSerializer
 
     @extend_schema(
-        responses={201: PictureBuildingSerializer}
+        responses={201: PictureBuildingSerializer,
+                   400: None}
     )
     def post(self, request):
         """
@@ -48,7 +49,7 @@ class PictureBuildingIndividualView(APIView):
         return get_success(serializer)
 
     @extend_schema(
-        responses={204: None,
+        responses={200: PictureBuildingSerializer,
                    400: None}
     )
     def patch(self, request, picture_building_id):

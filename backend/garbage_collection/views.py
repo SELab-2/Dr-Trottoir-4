@@ -11,7 +11,8 @@ class DefaultGarbageCollection(APIView):
     serializer_class = GarbageCollectionSerializer
 
     @extend_schema(
-        responses={201: GarbageCollectionSerializer}
+        responses={201: GarbageCollectionSerializer,
+                   400: None}
     )
     def post(self, request):
         """
@@ -62,7 +63,7 @@ class GarbageCollectionIndividualView(APIView):
         return delete_success()
 
     @extend_schema(
-        responses={204: None,
+        responses={200: GarbageCollectionSerializer,
                    400: None}
     )
     def patch(self, request, garbage_collection_id):

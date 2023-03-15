@@ -12,7 +12,8 @@ class Default(APIView):
     serializer_class = ManualSerializer
 
     @extend_schema(
-        responses={201: ManualSerializer}
+        responses={201: ManualSerializer,
+                   400: None}
     )
     def post(self, request):
         """
@@ -61,7 +62,7 @@ class ManualView(APIView):
         return delete_success()
 
     @extend_schema(
-        responses={204: None,
+        responses={200: ManualSerializer,
                    400: None}
     )
     def patch(self, request, manual_id):

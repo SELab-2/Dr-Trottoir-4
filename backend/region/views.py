@@ -13,7 +13,8 @@ class Default(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     @extend_schema(
-        responses={201: RegionSerializer}
+        responses={201: RegionSerializer,
+                   400: None}
     )
     def post(self, request):
         """
@@ -53,9 +54,8 @@ class RegionIndividualView(APIView):
         serializer = RegionSerializer(region_instance[0])
         return get_success(serializer)
 
-
     @extend_schema(
-        responses={204: None,
+        responses={200: RegionSerializer,
                    400: None}
     )
     def patch(self, request, region_id):

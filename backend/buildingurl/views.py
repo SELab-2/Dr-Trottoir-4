@@ -12,7 +12,8 @@ class BuildingUrlDefault(APIView):
     serializer_class = BuildingUrlSerializer
 
     @extend_schema(
-        responses={201: BuildingUrlSerializer}
+        responses={201: BuildingUrlSerializer,
+                   400: None}
     )
     def post(self, request):
         """
@@ -75,7 +76,7 @@ class BuildingUrlIndividualView(APIView):
         return delete_success()
 
     @extend_schema(
-        responses={204: None,
+        responses={200: BuildingUrlSerializer,
                    400: None}
     )
     def patch(self, request, building_url_id):
