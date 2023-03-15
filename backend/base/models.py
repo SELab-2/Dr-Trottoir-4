@@ -37,7 +37,7 @@ class Region(models.Model):
 #         Token.objects.create(user=instance)
 
 class Role(models.Model):
-    role = models.CharField(max_length=20)
+    name = models.CharField(max_length=20)
     rank = models.PositiveIntegerField()
     description = models.TextField(blank=True, null=True)
 
@@ -54,9 +54,9 @@ class Role(models.Model):
     class Meta:
         constraints = [
             UniqueConstraint(
-                Lower('role'),
+                Lower('name'),
                 name='role_unique',
-                violation_error_message='This role already exists.'
+                violation_error_message='This role name already exists.'
             ),
         ]
 

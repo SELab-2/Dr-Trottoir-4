@@ -11,6 +11,13 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "email"]
 
 
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ["id", "name", "rank", "description"]
+        read_only_fields = ["id"]
+
+
 class BuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Building
