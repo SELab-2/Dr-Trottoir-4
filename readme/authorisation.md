@@ -71,9 +71,16 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 - `picture_building/all - [..., IsAdmin | IsSuperStudent]`
 
 ### Region
+
 - `region/ - [..., IsAdmin]`
 - `region/id - [..., IsAdmin | ReadOnly]`
 - `region/all - [..., IsAdmin | IsSuperStudent | IsStudent]`
+
+### Role
+
+- `role/ - [..., IsAdmin]`
+- `role/id - [..., IsAdmin | IsSuperStudent]`
+- `role/all - [..., IsAdmin | IsSuperStudent]`
 
 ### User urls
 

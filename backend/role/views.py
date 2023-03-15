@@ -1,12 +1,14 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from authorisation.permissions import IsAdmin, IsSuperStudent
 from base.models import Role
 from base.serializers import RoleSerializer
 from util.request_response_util import *
 
 
-
 class DefaultRoleView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
 
     def post(self, request):
         """
@@ -25,6 +27,7 @@ class DefaultRoleView(APIView):
 
 
 class RoleIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
 
     def get(self, request, role_id):
         """
@@ -72,6 +75,7 @@ class RoleIndividualView(APIView):
 
 
 class AllRolesView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
 
     def get(self, request):
         """
