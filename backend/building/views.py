@@ -6,6 +6,10 @@ from base.serializers import BuildingSerializer
 from util.request_response_util import *
 from drf_spectacular.utils import extend_schema
 
+# TODO:  we don't actually have to work with 'syndic' key, we can also require 'syndic_id' as parameter in body
+#  however, de automatic documentation might be a bit harder?
+TRANSLATE = {"syndic": "syndic_id"}
+
 
 class DefaultBuilding(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -20,20 +24,15 @@ class DefaultBuilding(APIView):
         """
         data = request_to_dict(request.data)
 
-        if "syndic" in data.keys():
-            data["syndic_id"] = data["syndic"]
-
         building_instance = Building()
 
-        for key in data.keys():
-            if key in vars(building_instance):
-                setattr(building_instance, key, data[key])
+        set_keys_of_instance(building_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(building_instance):
             return r
 
         serializer = BuildingSerializer(building_instance)
-        return post_succes(serializer)
+        return post_success(serializer)
 
 
 class BuildingIndividualView(APIView):
@@ -55,7 +54,7 @@ class BuildingIndividualView(APIView):
 
         building_instance = building_instance[0]
         serializer = BuildingSerializer(building_instance)
-        return get_succes(serializer)
+        return get_success(serializer)
 
     @extend_schema(
         responses={204: None,
@@ -67,11 +66,11 @@ class BuildingIndividualView(APIView):
         """
         building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
-            return bad_request(object_name="building")
+            return bad_request(object_name="Building")
         building_instance = building_instance[0]
 
         building_instance.delete()
-        return delete_succes()
+        return delete_success()
 
     @extend_schema(
         responses={204: None,
@@ -83,22 +82,17 @@ class BuildingIndividualView(APIView):
         """
         building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
-            return bad_request(object_name="building")
+            return bad_request(object_name="Building")
 
         building_instance = building_instance[0]
         data = request_to_dict(request.data)
 
-        if "syndic" in data.keys():
-            data["syndic_id"] = data["syndic"]
-
-        for key in data.keys():
-            if key in vars(building_instance):
-                setattr(building_instance, key, data[key])
+        set_keys_of_instance(building_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(building_instance):
             return r
 
-        return patch_succes(BuildingSerializer(building_instance))
+        return patch_success(BuildingSerializer(building_instance))
 
 
 class AllBuildingsView(APIView):
@@ -111,7 +105,7 @@ class AllBuildingsView(APIView):
         building_instances = Building.objects.all()
 
         serializer = BuildingSerializer(building_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)
 
 
 class BuildingOwnerView(APIView):
@@ -131,4 +125,4 @@ class BuildingOwnerView(APIView):
             return bad_request_relation("building", "syndic")
 
         serializer = BuildingSerializer(building_instance, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)

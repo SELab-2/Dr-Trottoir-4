@@ -1,135 +1,106 @@
-from base.models import StudentAtBuildingOnTour, User, BuildingOnTour
-from base.serializers import StudBuildTourSerializer
-from django.core.exceptions import ValidationError
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema
+
+from base.models import StudentAtBuildingOnTour
+from base.serializers import StudBuildTourSerializer
+from util.request_response_util import *
+
+TRANSLATE = {"building_on_tour": "building_on_tour_id", "student": "student_id"}
 
 
 class Default(APIView):
     serializer_class = StudBuildTourSerializer
 
     @extend_schema(
-        responses={201: StudBuildTourSerializer,
-                   400: None}
+        responses={201: StudBuildTourSerializer}
     )
     def post(self, request):
-        data = request.data
-        buildingOnTour = data.get("building_on_tour")
-        date = data.get("date")
-        student = data.get("student")
-        if not buildingOnTour or not date or not student:
-            return Response('"building_on_tour", "date" and "student" fields are required', status.HTTP_400_BAD_REQUEST)
-        candidates = BuildingOnTour.objects.filter(id=buildingOnTour)
-        if len(candidates) != 1:
-            return Response('"building_on_tour" field was not valid', status=status.HTTP_400_BAD_REQUEST)
-        building_instance = candidates[0]
-        candidates2 = User.objects.filter(id=student)
-        if len(candidates2) != 1:
-            return Response('"student" field was not valid', status=status.HTTP_400_BAD_REQUEST)
-        student_instance = candidates2[0]
+        """
+        Create a new StudentAtBuildingOnTour
+        """
+        data = request_to_dict(request.data)
+        student_at_building_on_tour_instance = StudentAtBuildingOnTour()
 
-        sbt = StudentAtBuildingOnTour(building_on_tour=building_instance, student=student_instance, date=date)
-        try:
-            sbt.full_clean()
-        except ValidationError as e:
-            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
-        sbt.save()
-        serializer = StudBuildTourSerializer(sbt)
-        return Response(serializer.data, status.HTTP_201_CREATED)
+        print("VARS")
+        print(vars(student_at_building_on_tour_instance))
+
+        set_keys_of_instance(student_at_building_on_tour_instance, data, TRANSLATE)
+
+        if r := try_full_clean_and_save(student_at_building_on_tour_instance):
+            return r
+
+        return post_success(StudBuildTourSerializer(student_at_building_on_tour_instance))
 
 
-class build_tour_per_studentView(APIView):
+class BuildingTourPerStudentView(APIView):
     serializer_class = StudBuildTourSerializer
 
-    @extend_schema(
-        responses={200: StudBuildTourSerializer,
-                   400: None}
-    )
     def get(self, request, student_id):
-        stud_candidates = User.objects.filter(id=student_id)
-        if len(stud_candidates) != 1:
-            return Response('no entries for given student is', status=status.HTTP_400_BAD_REQUEST)
-        student = stud_candidates[0]
-        pictureBuilding_instance = StudentAtBuildingOnTour.objects.filter(student=student)
-
-        serializer = StudBuildTourSerializer(pictureBuilding_instance, many=True)
+        """
+        Get all StudentAtBuildingOnTour for a student with given id
+        """
+        student_at_building_on_tour_instances = StudentAtBuildingOnTour.objects.filter(student_id=student_id)
+        serializer = StudBuildTourSerializer(student_at_building_on_tour_instances, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class stud_build_tourIndividualView(APIView):
+class StudentAtBuildingOnTourIndividualView(APIView):
     serializer_class = StudBuildTourSerializer
 
     @extend_schema(
         responses={200: StudBuildTourSerializer,
                    400: None}
     )
-    def get(self, request, id):
-        stud_tour_building_instance = StudentAtBuildingOnTour.objects.filter(id=id)
+    def get(self, request, student_at_building_on_tour_id):
+        """
+        Get an individual StudentAtBuildingOnTour with given id
+        """
+        stud_tour_building_instance = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
 
         if len(stud_tour_building_instance) != 1:
-            return Response(
-                {"res": "Object with given id does not exist."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return bad_request("StudentAtBuildingOnTour")
+
         serializer = StudBuildTourSerializer(stud_tour_building_instance[0])
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_success(serializer)
 
     @extend_schema(
         responses={204: None,
                    400: None}
     )
-    def patch(self, request, id):
-        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=id)
+    def patch(self, request, student_at_building_on_tour_id):
+        """
+        Edit info about an individual StudentAtBuildingOnTour with given id
+        """
+        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
 
         if len(stud_tour_building_instances) != 1:
-            return Response(
-                {"res": "Object with given id does not exist."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            bad_request("StudentAtBuildingOnTour")
+
         stud_tour_building_instance = stud_tour_building_instances[0]
-        data = request.data
-        buildingOnTour = data.get("building_on_tour")
-        date = data.get("date")
-        student = data.get("student")
-        if buildingOnTour:
-            candidates = BuildingOnTour.objects.filter(id=buildingOnTour)
-            if len(candidates) != 1:
-                return Response('"building_on_tour" field was not valid', status=status.HTTP_400_BAD_REQUEST)
-            building_instance = candidates[0]
-            stud_tour_building_instance.building_on_tour = building_instance
-        if date:
-            stud_tour_building_instance.date = date
-        if student:
-            candidates2 = User.objects.filter(id=student)
-            if len(candidates2) != 1:
-                return Response('"student" field was not valid', status=status.HTTP_400_BAD_REQUEST)
-            student_instance = candidates2[0]
-            stud_tour_building_instance.student = student_instance
-        try:
-            stud_tour_building_instance.full_clean()
-        except ValidationError as e:
-            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
-        stud_tour_building_instance.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+
+        data = request_to_dict(request.data)
+
+        set_keys_of_instance(stud_tour_building_instance, data, TRANSLATE)
+
+        if r := try_full_clean_and_save(stud_tour_building_instance):
+            return r
+
+        serializer = StudBuildTourSerializer(stud_tour_building_instance)
+        return patch_success(serializer)
 
     @extend_schema(
         responses={204: None,
                    400: None}
     )
-    def delete(self, request, id):
+    def delete(self, request, student_at_building_on_tour_id):
         """
-        delete from the database
+        Delete StudentAtBuildingOnTour with given id
         """
-        possible_instances = StudentAtBuildingOnTour.objects.filter(id=id)
-        if len(possible_instances) != 1:
-            return Response(
-                {"res": "Object with given id does not exist."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        possible_instances[0].delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
+        if len(stud_tour_building_instances) != 1:
+            return bad_request("StudentAtBuildingOnTour")
+        stud_tour_building_instances[0].delete()
+        return delete_success()
 
 
 class AllView(APIView):
@@ -137,7 +108,7 @@ class AllView(APIView):
 
     def get(self, request):
         """
-        Get all data
+        Get all StudentAtBuildingOnTours
         """
         stud_tour_building_instance = StudentAtBuildingOnTour.objects.all()
 

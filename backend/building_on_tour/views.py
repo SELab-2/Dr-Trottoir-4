@@ -1,47 +1,33 @@
-from base.models import Building, Tour, BuildingOnTour
-from base.serializers import BuildingTourSerializer
-from django.core.exceptions import ValidationError
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema
+
+from base.models import BuildingOnTour
+from base.serializers import BuildingTourSerializer
+from util.request_response_util import *
+
+TRANSLATE = {"building": "building_id", "tour": "tour_id"}
 
 
 class Default(APIView):
     serializer_class = BuildingTourSerializer
 
     @extend_schema(
-        responses={201: BuildingTourSerializer,
-                   400: None}
+        responses={201: BuildingTourSerializer}
     )
     def post(self, request):
         """
         Create a new BuildingOnTour with data from post
         """
-        data = request.data
-        tour = data.get("tour")
-        building = data.get("building")
-        index = data.get("index")
-        if not tour or not building or not index:
-            return Response('"tour", "building" and "index" fields are required', status.HTTP_400_BAD_REQUEST)
-        # checking if tour id exists
-        t = Tour.objects.filter(id=tour)
-        if len(t) != 1:
-            return Response('"tour" field was not valid', status.HTTP_400_BAD_REQUEST)
-        tour_instance = t[0]
-        # checking if building id exists
-        b = Building.objects.filter(id=building)
-        if len(b) != 1:
-            return Response('"building" field was not valid', status.HTTP_400_BAD_REQUEST)
-        building_instance = b[0]
-        newTour = BuildingOnTour(tour=tour_instance, building=building_instance, index=index)
-        try:
-            newTour.full_clean()
-        except ValidationError as e:
-            return Response(e.message_dict["__all__"], status.HTTP_400_BAD_REQUEST)
-        newTour.save()
-        serializer = BuildingTourSerializer(newTour)
-        return Response(serializer.data, status.HTTP_201_CREATED)
+        data = request_to_dict(request.data)
+        building_on_tour_instance = BuildingOnTour()
+
+        set_keys_of_instance(building_on_tour_instance, data, TRANSLATE)
+
+        if r := try_full_clean_and_save(building_on_tour_instance):
+            return r
+
+        serializer = BuildingTourSerializer(building_on_tour_instance)
+        return post_success(serializer)
 
 
 class BuildingTourIndividualView(APIView):
@@ -51,80 +37,57 @@ class BuildingTourIndividualView(APIView):
         responses={200: BuildingTourSerializer,
                    400: None}
     )
-    def get(self, request, buildingTour_id):
+    def get(self, request, building_tour_id):
         """
         Get info about a BuildingOnTour with given id
         """
-        building_on_tour_instance = BuildingOnTour.objects.filter(id=buildingTour_id)
+        building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id)
 
-        if len(building_on_tour_instance) != 1:
-            return Response(
-                {"res": "Object with given building_on_tour id does not exist."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        if not building_on_tour_instance:
+            return bad_request("BuildingOnTour")
+
         serializer = BuildingTourSerializer(building_on_tour_instance[0])
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_success(serializer)
 
     @extend_schema(
         responses={204: None,
                    400: None}
     )
-    def patch(self, request, buildingTour_id):
+    def patch(self, request, building_tour_id):
         """
         edit info about a BuildingOnTour with given id
         """
-        building_on_tour_instance = BuildingOnTour.objects.filter(id=buildingTour_id)
+        building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id)
 
-        if len(building_on_tour_instance) != 1:
-            return Response(
-                {"res": "Object with given building_on_tour id does not exist."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        data = request.data
-        tour = data.get("tour")
-        building = data.get("building")
-        index = data.get("index")
+        if not building_on_tour_instance:
+            return bad_request("BuildingOnTour")
 
-        if tour:
-            # checking if tour id exists
-            t = Tour.objects.filter(id=tour)
-            if len(t) != 1:
-                return Response('"tour" field was not valid', status.HTTP_400_BAD_REQUEST)
-            tour_instance = t[0]
-            building_on_tour_instance.tour = tour_instance
-        if building:
-            # checking if building id exists
-            b = Building.objects.filter(id=building)
-            if len(b) != 1:
-                return Response('"building" field was not valid', status.HTTP_400_BAD_REQUEST)
-            building_instance = b[0]
-            building_on_tour_instance.building = building_instance
-        if index:
-            building_on_tour_instance.index = index
-        try:
-            building_on_tour_instance.full_clean()
-        except ValidationError as e:
-            return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
-        building_on_tour_instance.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        building_on_tour_instance = building_on_tour_instance[0]
+
+        data = request_to_dict(request.data)
+
+        set_keys_of_instance(building_on_tour_instance, data, TRANSLATE)
+
+        if r := try_full_clean_and_save(building_on_tour_instance):
+            return r
+
+        return patch_success(BuildingTourSerializer(building_on_tour_instance))
 
     @extend_schema(
         responses={204: None,
                    400: None}
     )
-    def delete(self, request, buildingTour_id):
+    def delete(self, request, building_tour_id):
         """
         delete a BuildingOnTour from the database
         """
-        building_on_tour_instance = BuildingOnTour.objects.filter(id=buildingTour_id)
+        building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id)
 
-        if len(building_on_tour_instance) != 1:
-            return Response(
-                {"res": "Object with given building_on_tour id does not exist."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        building_on_tour_instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if not building_on_tour_instance:
+            return bad_request("BuildingOnTour")
+
+        building_on_tour_instance[0].delete()
+        return delete_success()
 
 
 class AllBuildingToursView(APIView):
@@ -134,7 +97,6 @@ class AllBuildingToursView(APIView):
         """
         Get all buildings on tours
         """
-        buildingOnTourInstances = BuildingOnTour.objects.all()
-
-        serializer = BuildingTourSerializer(buildingOnTourInstances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        building_on_tour_instances = BuildingOnTour.objects.all()
+        serializer = BuildingTourSerializer(building_on_tour_instances, many=True)
+        return get_success(serializer)
