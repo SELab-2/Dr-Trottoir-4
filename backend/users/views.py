@@ -9,6 +9,8 @@ from base.serializers import UserSerializer
 from util.request_response_util import *
 
 
+TRANSLATE = {"role": "role_id"}
+
 # In GET, you only get active users
 # Except when you explicitly pass a parameter 'include_inactive' to the body of the request and set it as true
 # If you
@@ -40,7 +42,7 @@ class DefaultUser(APIView):
 
         user_instance = User()
 
-        set_keys_of_instance(user_instance, data)
+        set_keys_of_instance(user_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(user_instance):
             return r
@@ -107,7 +109,7 @@ class UserIndividualView(APIView):
 
         data = request_to_dict(request.data)
 
-        set_keys_of_instance(user_instance, data)
+        set_keys_of_instance(user_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(user_instance):
             return r

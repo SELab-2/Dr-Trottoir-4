@@ -15,9 +15,6 @@ class Default(APIView):
         data = request_to_dict(request.data)
         student_at_building_on_tour_instance = StudentAtBuildingOnTour()
 
-        print("VARS")
-        print(vars(student_at_building_on_tour_instance))
-
         set_keys_of_instance(student_at_building_on_tour_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(student_at_building_on_tour_instance):
@@ -33,7 +30,7 @@ class BuildingTourPerStudentView(APIView):
         """
         student_at_building_on_tour_instances = StudentAtBuildingOnTour.objects.filter(student_id=student_id)
         serializer = StudBuildTourSerializer(student_at_building_on_tour_instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_success(serializer)
 
 
 class StudentAtBuildingOnTourIndividualView(APIView):
@@ -56,7 +53,7 @@ class StudentAtBuildingOnTourIndividualView(APIView):
         stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
 
         if len(stud_tour_building_instances) != 1:
-            bad_request("StudentAtBuildingOnTour")
+            return bad_request("StudentAtBuildingOnTour")
 
         stud_tour_building_instance = stud_tour_building_instances[0]
 

@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.exceptions import ValidationError
@@ -7,12 +9,13 @@ from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 from django_random_id_model import RandomIDModel
 from phonenumber_field.modelfields import PhoneNumberField
-from datetime import date
+
 from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2**31 - 1
+MAX_INT = 2 ** 31 - 1
+
 
 def _check_for_present_keys(instance, keys_iterable):
     for key in keys_iterable:
@@ -28,7 +31,7 @@ class Region(models.Model):
 
 
 class Role(models.Model):
-    role = models.CharField(max_length=20)
+    name = models.CharField(max_length=20)
     rank = models.PositiveIntegerField()
     description = models.TextField(blank=True, null=True)
 
@@ -42,13 +45,12 @@ class Role(models.Model):
             if self.rank > highest_rank + 1:
                 raise ValidationError(f"The maximum rank allowed is {highest_rank + 1}.")
 
-
     class Meta:
         constraints = [
             UniqueConstraint(
-                Lower('role'),
+                Lower('name'),
                 name='role_unique',
-                violation_error_message='This role already exists.'
+                violation_error_message='This role name already exists.'
             ),
         ]
 
@@ -100,6 +102,7 @@ class Building(models.Model):
         _check_for_present_keys(self, {"syndic_id"})
 
         user = self.syndic
+
         if user.role.role.lower() != 'syndic':
             raise ValidationError("Only a user with role \"syndic\" can own a building.")
 
@@ -361,7 +364,6 @@ class Manual(models.Model):
 
     class Meta:
         constraints = [
-            # It's guaranteed to be unique due to the code in `clean`. It gets resolved silently now.
             UniqueConstraint(
                 'building_id',
                 'version_number',

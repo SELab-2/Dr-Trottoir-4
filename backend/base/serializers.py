@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-
 from .models import *
 
 
@@ -12,11 +11,25 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "email"]
 
 
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ["id", "name", "rank", "description"]
+        read_only_fields = ["id"]
+
+
 class BuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Building
         fields = ["id", "city", "postal_code", "street", "house_number", "client_number",
                   "duration", "syndic", "region", "name"]
+        read_only_fields = ["id"]
+
+
+class BuildingCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BuildingComment
+        fields = ["id", "comment", "date", "building"]
         read_only_fields = ["id"]
 
 
@@ -68,4 +81,3 @@ class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Region
         fields = ["id", "region"]
-
