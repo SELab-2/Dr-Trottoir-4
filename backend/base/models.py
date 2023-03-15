@@ -7,12 +7,18 @@ from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 from django_random_id_model import RandomIDModel
 from phonenumber_field.modelfields import PhoneNumberField
-
+from datetime import date
 from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
 MAX_INT = 2**31 - 1
+
+def _check_for_present_keys(instance, keys_iterable):
+    for key in keys_iterable:
+        if not vars(instance)[key]:
+            raise ValidationError(f"Tried to access {key}, but it was not found in object")
+
 
 class Region(models.Model):
     region = models.CharField(max_length=40, unique=True, error_messages={'unique': "Deze regio bestaat al."})
@@ -67,7 +73,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
     phone_number = PhoneNumberField(region='BE')
-    region = models.ManyToManyField(Region, blank=True)
+    region = models.ManyToManyField(Region)
 
     # This is the new role model
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
@@ -95,8 +101,11 @@ class Building(models.Model):
 
     def clean(self):
         super().clean()
+
+        # If this is not checked, `self.syndic` will cause an internal server error 500
+        _check_for_present_keys(self, {"syndic_id"})
+
         user = self.syndic
-        print(user)
         if user.role.role.lower() != 'syndic':
             raise ValidationError("Only a user with role \"syndic\" can own a building.")
 
@@ -188,7 +197,15 @@ class GarbageCollection(models.Model):
 class Tour(models.Model):
     name = models.CharField(max_length=40)
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
-    modified_at = models.DateTimeField()
+    modified_at = models.DateTimeField(null=True, blank=True)
+
+    def clean(self):
+        super().clean()
+
+        _check_for_present_keys(self, {"name", "region_id"})
+
+        if not self.modified_at:
+            self.modified_at = str(date.today())
 
     def __str__(self):
         return f"Tour {self.name} in region {self.region}"
@@ -215,6 +232,9 @@ class BuildingOnTour(models.Model):
 
     def clean(self):
         super().clean()
+
+        _check_for_present_keys(self, {"tour_id", "building_id", "index", "index"})
+
         tour_region = self.tour.region
         building_region = self.building.region
         if tour_region != building_region:
@@ -257,6 +277,7 @@ class StudentAtBuildingOnTour(models.Model):
 
     def clean(self):
         super().clean()
+        _check_for_present_keys(self, {"student_id", "building_on_tour_id", "date"})
         user = self.student
         if user.role.role.lower() == 'syndic':
             raise ValidationError("A syndic can't do tours")
@@ -302,6 +323,10 @@ class PictureBuilding(models.Model):
         max_length=2,
         choices=TYPE)
 
+    def clean(self):
+        super().clean()
+        _check_for_present_keys(self, {"building_id", "picture", "description", "timestamp"})
+
     class Meta:
         constraints = [
             UniqueConstraint(
@@ -320,14 +345,29 @@ class PictureBuilding(models.Model):
 
 class Manual(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    version_number = models.PositiveIntegerField()
+    version_number = models.PositiveIntegerField(default=0)
     file = models.FileField(upload_to='building_manuals/', blank=True, null=True)
 
     def __str__(self):
         return f"Manual: {str(self.file).split('/')[-1]} (version {self.version_number}) for {self.building}"
 
+    def clean(self):
+        super().clean()
+        _check_for_present_keys(self, {"building_id", "file"})
+        # If no version number is given, the new version number should be the highest + 1
+        # If only version numbers 1, 2 and 3 are in the database, a version number of e.g. 3000 is not permitted
+
+        manuals = Manual.objects.filter(building_id=self.building_id)
+        version_numbers = {manual.version_number for manual in manuals}
+        version_numbers.add(-1)
+        max_version_number = max(version_numbers)
+
+        if self.version_number == 0 or self.version_number > max_version_number + 1 or self.version_number in version_numbers:
+            self.version_number = max_version_number + 1
+
     class Meta:
         constraints = [
+            # It's guaranteed to be unique due to the code in `clean`. It gets resolved silently now.
             UniqueConstraint(
                 'building_id',
                 'version_number',

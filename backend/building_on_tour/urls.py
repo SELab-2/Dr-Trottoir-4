@@ -7,7 +7,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path('<int:buildingTour_id>/', BuildingTourIndividualView.as_view()),
+    path('<int:building_tour_id>/', BuildingTourIndividualView.as_view()),
     path('all/', AllBuildingToursView.as_view()),
     path('', Default.as_view())
 ]
