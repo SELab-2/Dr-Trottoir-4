@@ -15,7 +15,7 @@ class IsAdmin(BasePermission):
     message = "Admin permission required"
 
     def has_permission(self, request, view):
-        return request.user.role.role.lower() == 'admin'
+        return request.user.role.name.lower() == 'admin'
 
 
 class IsSuperStudent(BasePermission):
@@ -25,7 +25,7 @@ class IsSuperStudent(BasePermission):
     message = "Super student permission required"
 
     def has_permission(self, request, view):
-        return request.user.role.role.lower() == 'superstudent'
+        return request.user.role.name.lower() == 'superstudent'
 
 
 class IsStudent(BasePermission):
@@ -35,7 +35,7 @@ class IsStudent(BasePermission):
     message = "Student permission required"
 
     def has_permission(self, request, view):
-        return request.user.role.role.lower() == 'student'
+        return request.user.role.name.lower() == 'student'
 
 
 class ReadOnlyStudent(BasePermission):
@@ -46,7 +46,7 @@ class ReadOnlyStudent(BasePermission):
 
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
-            return request.user.role.role.lower() == 'student'
+            return request.user.role.name.lower() == 'student'
 
 
 class IsSyndic(BasePermission):
@@ -56,7 +56,7 @@ class IsSyndic(BasePermission):
     message = "Syndic permission required"
 
     def has_permission(self, request, view):
-        return request.user.role.role.lower() == 'syndic'
+        return request.user.role.name.lower() == 'syndic'
 
 
 # ------------------
@@ -70,7 +70,7 @@ class OwnerOfBuilding(BasePermission):
     message = "You can only access/edit the buildings that you own"
 
     def has_permission(self, request, view):
-        return request.user.role.role.lower() == 'syndic'
+        return request.user.role.name.lower() == 'syndic'
 
     def has_object_permission(self, request, view, obj: Building):
         return request.user.id == obj.syndic_id
