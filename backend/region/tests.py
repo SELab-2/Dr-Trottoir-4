@@ -42,3 +42,30 @@ class RegionTests(TestCase):
             assert key in response.data
         # er moet ook een id bij zitten
         assert "id" in response.data
+
+    def test_insert_multiple_regions(self):
+        user = createUser()
+        client = APIClient()
+        client.force_authenticate(user=user)
+        data1 = {
+            "region": "Gent"
+        }
+        data2 = {
+            "region": "Antwerpen"
+        }
+        response1 = client.post("http://localhost:2002/region/", data1, follow=True)
+        response2 = client.post("http://localhost:2002/region/", data2, follow=True)
+        assert response1.status_code == 201
+        assert response2.status_code == 201
+        for key in data1:
+            # alle info zou er in moeten zitten
+            assert key in response1.data
+        for key in data2:
+            # alle info zou er in moeten zitten
+            assert key in response2.data
+        # er moet ook een id bij zitten
+        assert "id" in response1.data
+        assert "id" in response2.data
+        results = client.get("/region/all/")
+        print([r for r in results.data])
+        assert False
