@@ -3,12 +3,18 @@ from rest_framework.views import APIView
 from base.models import BuildingComment
 from base.serializers import BuildingCommentSerializer
 from util.request_response_util import *
+from drf_spectacular.utils import extend_schema
 
 TRANSLATE = {"building": "building_id"}
 
 
 class DefaultBuildingComment(APIView):
+    serializer_class = BuildingCommentSerializer
 
+    @extend_schema(
+        responses={201: BuildingCommentSerializer,
+                   400: None}
+    )
     def post(self, request):
         """
         Create a new BuildingComment
@@ -26,7 +32,12 @@ class DefaultBuildingComment(APIView):
 
 
 class BuildingCommentIndividualView(APIView):
+    serializer_class = BuildingCommentSerializer
 
+    @extend_schema(
+        responses={200: BuildingCommentSerializer,
+                   400: None}
+    )
     def get(self, request, building_comment_id):
         """
         Get an invividual BuildingComment with given id
@@ -38,6 +49,10 @@ class BuildingCommentIndividualView(APIView):
 
         return get_success(BuildingCommentSerializer(building_comment_instance[0]))
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def delete(self, request, building_comment_id):
         """
         Delete a BuildingComment with given id
@@ -50,6 +65,10 @@ class BuildingCommentIndividualView(APIView):
         building_comment_instance[0].delete()
         return delete_success()
 
+    @extend_schema(
+        responses={204: None,
+                   400: None}
+    )
     def patch(self, request, building_comment_id):
         """
         Edit BuildingComment with given id
@@ -71,7 +90,12 @@ class BuildingCommentIndividualView(APIView):
 
 
 class BuildingCommentBuildingView(APIView):
+    serializer_class = BuildingCommentSerializer
 
+    @extend_schema(
+        responses={200: BuildingCommentSerializer,
+                   400: None}
+    )
     def get(self, request, building_id):
         """
         Get all BuildingComments of building with given building id
@@ -86,6 +110,7 @@ class BuildingCommentBuildingView(APIView):
 
 
 class BuildingCommentAllView(APIView):
+    serializer_class = BuildingCommentSerializer
 
     def get(self, request):
         """
