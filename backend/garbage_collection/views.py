@@ -4,6 +4,7 @@ from base.models import GarbageCollection
 from base.serializers import GarbageCollectionSerializer
 from util.request_response_util import *
 
+TRANSLATE = {"building": "building_id"}
 
 class DefaultGarbageCollection(APIView):
 
@@ -11,23 +12,17 @@ class DefaultGarbageCollection(APIView):
         """
         Create new garbage collection
         """
-
         data = request_to_dict(request.data)
-
-        if "building" in data:
-            data["building_id"] = data["building"]
 
         garbage_collection_instance = GarbageCollection()
 
-        for key in data.keys():
-            if key in vars(garbage_collection_instance):
-                setattr(garbage_collection_instance, key, data[key])
+        set_keys_of_instance(garbage_collection_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(garbage_collection_instance):
             return r
 
         serializer = GarbageCollectionSerializer(garbage_collection_instance)
-        return post_succes(serializer)
+        return post_success(serializer)
 
 
 class GarbageCollectionIndividualView(APIView):
@@ -40,7 +35,7 @@ class GarbageCollectionIndividualView(APIView):
         if not garbage_collection_instance:
             return bad_request("GarbageCollection")
         serializer = GarbageCollectionSerializer(garbage_collection_instance[0])
-        return get_succes(serializer)
+        return get_success(serializer)
 
     def delete(self, request, garbage_collection_id):
         """
@@ -50,7 +45,7 @@ class GarbageCollectionIndividualView(APIView):
         if not garbage_collection_instance:
             return bad_request("GarbageCollection")
         garbage_collection_instance[0].delete()
-        return delete_succes()
+        return delete_success()
 
     def patch(self, request, garbage_collection_id):
         """
@@ -63,18 +58,13 @@ class GarbageCollectionIndividualView(APIView):
         garbage_collection_instance = garbage_collection_instance[0]
         data = request_to_dict(request.data)
 
-        if "building" in data:
-            data["building_id"] = data["building"]
-
-        for key in data.keys():
-            if key in vars(garbage_collection_instance):
-                setattr(garbage_collection_instance, key, data[key])
+        set_keys_of_instance(garbage_collection_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(garbage_collection_instance):
             return r
 
         serializer = GarbageCollectionSerializer(garbage_collection_instance)
-        return patch_succes(serializer)
+        return patch_success(serializer)
 
 
 class GarbageCollectionIndividualBuildingView(APIView):
@@ -88,7 +78,7 @@ class GarbageCollectionIndividualBuildingView(APIView):
         """
         garbage_collection_instances = GarbageCollection.objects.filter(building=building_id)
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)
 
 
 class GarbageCollectionAllView(APIView):
@@ -99,4 +89,4 @@ class GarbageCollectionAllView(APIView):
         """
         garbage_collection_instances = GarbageCollection.objects.all()
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)

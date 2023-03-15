@@ -1,7 +1,8 @@
-from base.models import Region
-from base.serializers import RegionSerializer
 from rest_framework import permissions
 from rest_framework.views import APIView
+
+from base.models import Region
+from base.serializers import RegionSerializer
 from util.request_response_util import *
 
 
@@ -15,14 +16,14 @@ class Default(APIView):
         data = request.data
 
         region_instance = Region()
-        for key in data.keys():
-            if key in vars(region_instance):
-                setattr(region_instance, key, data[key])
+
+        set_keys_of_instance(region_instance, data)
+
         if r := try_full_clean_and_save(region_instance):
             return r
 
         serializer = RegionSerializer(region_instance)
-        return post_succes(serializer)
+        return post_success(serializer)
 
 
 class RegionIndividualView(APIView):
@@ -36,36 +37,41 @@ class RegionIndividualView(APIView):
 
         if len(region_instance) != 1:
             return bad_request(object_name="Region")
+
         serializer = RegionSerializer(region_instance[0])
-        return get_succes(serializer)
+        return get_success(serializer)
 
     def patch(self, request, region_id):
         """
         Edit Region with given id
         """
         region_instances = Region.objects.filter(id=region_id)
+
         if len(region_instances) != 1:
             return bad_request(object_name="Region")
+
         region_instance = region_instances[0]
-        data = request.data.dict()
-        for key in data.keys():
-            if key in vars(region_instance):
-                setattr(region_instance, key, data[key])
+
+        data = request_to_dict(request.data)
+
+        set_keys_of_instance(region_instance, data)
 
         if r := try_full_clean_and_save(region_instance):
             return r
 
-        return patch_succes(RegionSerializer(region_instance))
+        return patch_success(RegionSerializer(region_instance))
 
     def delete(self, request, region_id):
         """
         delete a region with given id
         """
         region_instances = Region.objects.filter(id=region_id)
+
         if len(region_instances) != 1:
             return bad_request(object_name="Region")
+
         region_instances[0].delete()
-        return delete_succes()
+        return delete_success()
 
 
 class AllRegionsView(APIView):
@@ -77,4 +83,4 @@ class AllRegionsView(APIView):
         """
         region_instances = Region.objects.all()
         serializer = RegionSerializer(region_instances, many=True)
-        return get_succes(serializer)
+        return get_success(serializer)
