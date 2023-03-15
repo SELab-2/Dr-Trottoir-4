@@ -47,7 +47,7 @@
     "model": "base.role",
     "pk": 1,
     "fields": {
-      "role": "Default",
+      "name": "Default",
       "rank": 2147483647,
       "description": "The default role"
     }
@@ -56,7 +56,7 @@
     "model": "base.role",
     "pk": 2,
     "fields": {
-      "role": "Admin",
+      "name": "Admin",
       "rank": 1,
       "description": "The admin role"
     }
@@ -65,7 +65,7 @@
     "model": "base.role",
     "pk": 3,
     "fields": {
-      "role": "Superstudent",
+      "name": "Superstudent",
       "rank": 2,
       "description": "The superstudent role"
     }
@@ -74,7 +74,7 @@
     "model": "base.role",
     "pk": 4,
     "fields": {
-      "role": "Student",
+      "name": "Student",
       "rank": 3,
       "description": "The student role"
     }
@@ -83,7 +83,7 @@
     "model": "base.role",
     "pk": 5,
     "fields": {
-      "role": "Syndic",
+      "name": "Syndic",
       "rank": 3,
       "description": "The syndic role"
     }
