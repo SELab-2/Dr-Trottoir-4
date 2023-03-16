@@ -70,7 +70,7 @@ class RefreshViewHiddenTokens(TokenRefreshView):
 
 
 class LoginViewWithHiddenTokens(LoginView):
-    serializer_class = CookieTokenRefreshSerializer
+    # serializer_class = CookieTokenRefreshSerializer
 
     def finalize_response(self, request, response, *args, **kwargs):
         if response.status_code == 200 and 'access_token' in response.data:
