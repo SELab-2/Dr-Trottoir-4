@@ -10,9 +10,11 @@ const api = axios.create({
 // Intercept on request and add access tokens to request
 api.interceptors.request.use(
     (config) => {
+        console.log("Request");
         return config;
     },
     (error) => {
+        console.log("Error: request");
         return Promise.reject(error);
     }
 );
@@ -24,16 +26,20 @@ api.interceptors.response.use(
     },
     async (error) => {
         console.error(error.response);
-        if (error.response.status === 401 && !error.config.retry) {
-            error.config.retry = true;
+        if (error.response.status === 401 && !error.config._retry) {
+            error.config._retry = true;
             try {
                 const request_url: string = `${process.env.NEXT_PUBLIC_API_REFRESH_TOKEN}`
                 await api.post(request_url);
+                console.log("post");
                 return api.request(error.config);
             } catch (error) {
+                console.log("ERROR");
                 console.error(error);
                 const router = useRouter();
-                await router.push('/login');
+                if (router.pathname != '/login') {
+                    await router.push('/login');
+                }
                 throw error;
             }
         }

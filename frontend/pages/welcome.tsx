@@ -14,7 +14,7 @@ function Welcome() {
     const [loading, setLoading] = useState(true); // prevents preview welcome page before auth check
 
     useEffect(() => {
-        if (!auth) {
+        if (!sessionStorage.getItem('auth')) {
             router.push('/login');
         } else {
             setLoading(false);
