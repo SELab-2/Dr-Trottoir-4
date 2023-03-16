@@ -46,7 +46,7 @@ export default function Signup() {
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFirstname(e.target.value)}
                             required/>
 
-                        <label className={styles.text} htmlFor="lastname">Naam:</label>
+                        <label className={styles.text} htmlFor="lastname">Achternaam:</label>
                         <input
                             type="text"
                             id="lastname"
