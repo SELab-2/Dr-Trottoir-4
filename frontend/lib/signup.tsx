@@ -4,8 +4,8 @@ const signup = async (firstname: string, lastname: string, email: string, passwo
 
     const host = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_SIGNUP}`;
     const signup_data: SignUp = {
-        firstname: firstname,
-        lastname: lastname,
+        first_name: firstname,
+        last_name: lastname,
         email: email,
         password1: password1,
         password2: password2,
@@ -25,7 +25,7 @@ const signup = async (firstname: string, lastname: string, email: string, passwo
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(signup_data),
         });
-
+        alert(await response.text());
         if (response.status == 201) {
             alert("Successfully created account");
             await router.push("/login");

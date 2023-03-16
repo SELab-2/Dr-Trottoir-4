@@ -24,8 +24,8 @@ api.interceptors.response.use(
     },
     async (error) => {
         console.error(error.response);
-        if (error.response.status === 401 && !error.config.retry) {
-            error.config.retry = true;
+        if (error.response.status === 401 && !error.config._retry) {
+            error.config._retry = true;
             try {
                 const request_url: string = `${process.env.NEXT_PUBLIC_API_REFRESH_TOKEN}`
                 await api.post(request_url);
