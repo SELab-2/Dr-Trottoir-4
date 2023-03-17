@@ -45,13 +45,6 @@ class StudBuildTourSerializer(serializers.ModelSerializer):
         fields = ["id", "building_on_tour", "date", "student"]
 
 
-class BuildingUrlSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BuildingURL
-        fields = ["id", "first_name_resident", "last_name_resident", "building"]
-        read_only_fields = ["id"]
-
-
 class GarbageCollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = GarbageCollection
