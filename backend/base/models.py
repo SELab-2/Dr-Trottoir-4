@@ -99,6 +99,7 @@ class Building(models.Model):
     postal_code = models.CharField(max_length=10)
     street = models.CharField(max_length=60)
     house_number = models.CharField(max_length=10)
+    bus = models.CharField(max_length=2, blank=True, null=True)
     client_number = models.CharField(max_length=40, blank=True, null=True)
     duration = models.TimeField(default='00:00')
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
