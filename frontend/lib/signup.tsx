@@ -25,7 +25,6 @@ const signup = async (firstname: string, lastname: string, email: string, passwo
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(signup_data),
         });
-        alert(await response.text());
         if (response.status == 201) {
             alert("Successfully created account");
             await router.push("/login");
