@@ -1,5 +1,4 @@
 services:
-
   reverseproxy:
     image: reverseproxy
     ports:
@@ -54,4 +53,3 @@ services:
 
     depends_on:
       - web
-

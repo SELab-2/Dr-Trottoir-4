@@ -1,0 +1,2416 @@
+openapi: 3.0.3
+info:
+  title: Dr-Trottoir API
+  version: 1.0.0
+  description: This is the documentation for the Dr-Trottoir API
+paths:
+  /authentication/account-confirm-email/:
+    post:
+      operationId: authentication_account_confirm_email_create
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /authentication/account-confirm-email/{key}/:
+    post:
+      operationId: authentication_account_confirm_email_create_2
+      parameters:
+      - in: path
+        name: key
+        schema:
+          type: string
+        required: true
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /authentication/login/:
+    post:
+      operationId: authentication_login_create
+      description: |-
+        Check the credentials and return the REST Token
+        if the credentials are valid and authenticated.
+        Calls Django Auth login method to register User ID
+        in Django session framework
+
+        Accept the following POST parameters: username, password
+        Return the REST Framework Token Object's key.
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /authentication/logout/:
+    get:
+      operationId: authentication_logout_retrieve
+      description: |-
+        Calls Django logout method and delete the Token object
+        assigned to the current User object.
+
+        Accepts/Returns nothing.
+      tags:
+      - authentication
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+    post:
+      operationId: authentication_logout_create
+      description: |-
+        Calls Django logout method and delete the Token object
+        assigned to the current User object.
+
+        Accepts/Returns nothing.
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /authentication/password/change/:
+    post:
+      operationId: authentication_password_change_create
+      description: |-
+        Calls Django Auth SetPasswordForm save method.
+
+        Accepts the following POST parameters: new_password1, new_password2
+        Returns the success/fail message.
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /authentication/password/reset/:
+    post:
+      operationId: authentication_password_reset_create
+      description: |-
+        Calls Django Auth PasswordResetForm save method.
+
+        Accepts the following POST parameters: email
+        Returns the success/fail message.
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /authentication/password/reset/confirm/{uidb64}/{token}/:
+    post:
+      operationId: authentication_password_reset_confirm_create
+      description: |-
+        Password reset e-mail link is confirmed, therefore
+        this resets the user's password.
+
+        Accepts the following POST parameters: token, uid,
+            new_password1, new_password2
+        Returns the success/fail message.
+      parameters:
+      - in: path
+        name: token
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: uidb64
+        schema:
+          type: string
+        required: true
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /authentication/signup/:
+    post:
+      operationId: authentication_signup_create
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+          description: ''
+  /authentication/signup/resend-email/:
+    post:
+      operationId: authentication_signup_resend_email_create
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResendEmailVerification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResendEmailVerification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResendEmailVerification'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /authentication/signup/verify-email/:
+    post:
+      operationId: authentication_signup_verify_email_create
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /authentication/token/refresh/:
+    post:
+      operationId: authentication_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /authentication/token/verify/:
+    post:
+      operationId: authentication_token_verify_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+  /authentication/verify-email/:
+    post:
+      operationId: authentication_verify_email_create
+      tags:
+      - authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /building/:
+    post:
+      operationId: building_create
+      description: Create a new building
+      tags:
+      - building
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Building'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Building'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Building'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+          description: ''
+        '400':
+          description: No response body
+  /building/{building_id}/:
+    get:
+      operationId: building_retrieve
+      description: Get info about building with given id
+      parameters:
+      - in: path
+        name: building_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: building_partial_update
+      description: Edit building with given ID
+      parameters:
+      - in: path
+        name: building_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBuilding'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBuilding'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBuilding'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: building_destroy
+      description: Delete building with given id
+      parameters:
+      - in: path
+        name: building_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /building/all/:
+    get:
+      operationId: building_all_retrieve
+      description: Get all buildings
+      tags:
+      - building
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+          description: ''
+  /building/owner/{owner_id}/:
+    get:
+      operationId: building_owner_retrieve
+      description: Get all buildings owned by syndic with given id
+      parameters:
+      - in: path
+        name: owner_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+          description: ''
+        '400':
+          description: No response body
+  /building_on_tour/:
+    post:
+      operationId: building_on_tour_create
+      description: Create a new BuildingOnTour with data from post
+      tags:
+      - building_on_tour
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildingTour'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BuildingTour'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuildingTour'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingTour'
+          description: ''
+        '400':
+          description: No response body
+  /building_on_tour/{building_tour_id}/:
+    get:
+      operationId: building_on_tour_retrieve
+      description: Get info about a BuildingOnTour with given id
+      parameters:
+      - in: path
+        name: building_tour_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building_on_tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingTour'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: building_on_tour_partial_update
+      description: edit info about a BuildingOnTour with given id
+      parameters:
+      - in: path
+        name: building_tour_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building_on_tour
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingTour'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingTour'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingTour'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingTour'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: building_on_tour_destroy
+      description: delete a BuildingOnTour from the database
+      parameters:
+      - in: path
+        name: building_tour_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building_on_tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /building_on_tour/all/:
+    get:
+      operationId: building_on_tour_all_retrieve
+      description: Get all buildings on tours
+      tags:
+      - building_on_tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingTour'
+          description: ''
+  /buildingurl/:
+    post:
+      operationId: buildingurl_create
+      description: Create a new building url
+      tags:
+      - buildingurl
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildingUrl'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BuildingUrl'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuildingUrl'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingUrl'
+          description: ''
+        '400':
+          description: No response body
+  /buildingurl/{building_url_id}/:
+    get:
+      operationId: buildingurl_retrieve
+      description: Get info about a buildingurl with given id
+      parameters:
+      - in: path
+        name: building_url_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - buildingurl
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingUrl'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: buildingurl_partial_update
+      description: Edit info about buildingurl with given id
+      parameters:
+      - in: path
+        name: building_url_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - buildingurl
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingUrl'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingUrl'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingUrl'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingUrl'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: buildingurl_destroy
+      description: Delete buildingurl with given id
+      parameters:
+      - in: path
+        name: building_url_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - buildingurl
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /buildingurl/all/:
+    get:
+      operationId: buildingurl_all_retrieve
+      description: Get all building urls
+      tags:
+      - buildingurl
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingUrl'
+          description: ''
+  /buildingurl/building/{building_id}/:
+    get:
+      operationId: buildingurl_building_retrieve
+      description: Get all building urls of a given building
+      parameters:
+      - in: path
+        name: building_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - buildingurl
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingUrl'
+          description: ''
+  /buildingurl/syndic/{syndic_id}/:
+    get:
+      operationId: buildingurl_syndic_retrieve
+      description: Get all building urls of buildings where the user with given user
+        id is syndic
+      parameters:
+      - in: path
+        name: syndic_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - buildingurl
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingUrl'
+          description: ''
+  /garbage_collection/:
+    post:
+      operationId: garbage_collection_create
+      description: Create new garbage collection
+      tags:
+      - garbage_collection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GarbageCollection'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GarbageCollection'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GarbageCollection'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GarbageCollection'
+          description: ''
+        '400':
+          description: No response body
+  /garbage_collection/{garbage_collection_id}/:
+    get:
+      operationId: garbage_collection_retrieve
+      description: Get info about a garbage collection with given id
+      parameters:
+      - in: path
+        name: garbage_collection_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - garbage_collection
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GarbageCollection'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: garbage_collection_partial_update
+      description: Edit garbage collection with given id
+      parameters:
+      - in: path
+        name: garbage_collection_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - garbage_collection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGarbageCollection'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedGarbageCollection'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedGarbageCollection'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GarbageCollection'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: garbage_collection_destroy
+      description: Delete garbage collection with given id
+      parameters:
+      - in: path
+        name: garbage_collection_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - garbage_collection
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /garbage_collection/all/:
+    get:
+      operationId: garbage_collection_all_retrieve
+      description: Get all garbage collections
+      tags:
+      - garbage_collection
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GarbageCollection'
+          description: ''
+  /garbage_collection/building/{building_id}/:
+    get:
+      operationId: garbage_collection_building_retrieve
+      description: Get info about all garbage collections of a building with given
+        id
+      parameters:
+      - in: path
+        name: building_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - garbage_collection
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GarbageCollection'
+          description: ''
+  /manual/:
+    post:
+      operationId: manual_create
+      description: Create a new manual with data from post
+      tags:
+      - manual
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Manual'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Manual'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Manual'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manual'
+          description: ''
+        '400':
+          description: No response body
+  /manual/{manual_id}/:
+    get:
+      operationId: manual_retrieve
+      description: Get info about a manual with given id
+      parameters:
+      - in: path
+        name: manual_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - manual
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manual'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: manual_partial_update
+      description: Edit info about a manual with given id
+      parameters:
+      - in: path
+        name: manual_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - manual
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedManual'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedManual'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedManual'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manual'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: manual_destroy
+      description: Delete manual with given id
+      parameters:
+      - in: path
+        name: manual_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - manual
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /manual/all/:
+    get:
+      operationId: manual_all_retrieve
+      description: Get all manuals
+      tags:
+      - manual
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manual'
+          description: ''
+  /manual/building/{building_id}/:
+    get:
+      operationId: manual_building_retrieve
+      description: Get all manuals of a building with given id
+      parameters:
+      - in: path
+        name: building_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - manual
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manual'
+          description: ''
+        '400':
+          description: No response body
+  /picture_building/:
+    post:
+      operationId: picture_building_create
+      description: Create a new PictureBuilding
+      tags:
+      - picture_building
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PictureBuilding'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PictureBuilding'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PictureBuilding'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PictureBuilding'
+          description: ''
+        '400':
+          description: No response body
+  /picture_building/{picture_building_id}/:
+    get:
+      operationId: picture_building_retrieve
+      description: Get PictureBuilding with given id
+      parameters:
+      - in: path
+        name: picture_building_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - picture_building
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PictureBuilding'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: picture_building_partial_update
+      description: Edit info about PictureBuilding with given id
+      parameters:
+      - in: path
+        name: picture_building_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - picture_building
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPictureBuilding'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPictureBuilding'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPictureBuilding'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PictureBuilding'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: picture_building_destroy
+      description: delete a pictureBuilding from the database
+      parameters:
+      - in: path
+        name: picture_building_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - picture_building
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /picture_building/all/:
+    get:
+      operationId: picture_building_all_retrieve
+      description: Get all pictureBuilding
+      tags:
+      - picture_building
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PictureBuilding'
+          description: ''
+  /picture_building/building/{building_id}/:
+    get:
+      operationId: picture_building_building_retrieve
+      description: Get all pictures of a building with given id
+      parameters:
+      - in: path
+        name: building_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - picture_building
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PictureBuilding'
+          description: ''
+  /region/:
+    post:
+      operationId: region_create
+      description: Create a new region
+      tags:
+      - region
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Region'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Region'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Region'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+          description: ''
+        '400':
+          description: No response body
+  /region/{region_id}/:
+    get:
+      operationId: region_retrieve
+      description: Get info about a Region with given id
+      parameters:
+      - in: path
+        name: region_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - region
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: region_partial_update
+      description: Edit Region with given id
+      parameters:
+      - in: path
+        name: region_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - region
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRegion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRegion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRegion'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: region_destroy
+      description: delete a region with given id
+      parameters:
+      - in: path
+        name: region_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - region
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /region/all/:
+    get:
+      operationId: region_all_retrieve
+      description: Get all regions
+      tags:
+      - region
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+          description: ''
+  /student_at_building_on_tour/:
+    post:
+      operationId: student_at_building_on_tour_create
+      description: Create a new StudentAtBuildingOnTour
+      tags:
+      - student_at_building_on_tour
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudBuildTour'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StudBuildTour'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StudBuildTour'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudBuildTour'
+          description: ''
+        '400':
+          description: No response body
+  /student_at_building_on_tour/{student_at_building_on_tour_id}/:
+    get:
+      operationId: student_at_building_on_tour_retrieve
+      description: Get an individual StudentAtBuildingOnTour with given id
+      parameters:
+      - in: path
+        name: student_at_building_on_tour_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - student_at_building_on_tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudBuildTour'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: student_at_building_on_tour_partial_update
+      description: Edit info about an individual StudentAtBuildingOnTour with given
+        id
+      parameters:
+      - in: path
+        name: student_at_building_on_tour_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - student_at_building_on_tour
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedStudBuildTour'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedStudBuildTour'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedStudBuildTour'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudBuildTour'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: student_at_building_on_tour_destroy
+      description: Delete StudentAtBuildingOnTour with given id
+      parameters:
+      - in: path
+        name: student_at_building_on_tour_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - student_at_building_on_tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /student_at_building_on_tour/all/:
+    get:
+      operationId: student_at_building_on_tour_all_retrieve
+      description: Get all StudentAtBuildingOnTours
+      tags:
+      - student_at_building_on_tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudBuildTour'
+          description: ''
+  /student_at_building_on_tour/student/{student_id}/:
+    get:
+      operationId: student_at_building_on_tour_student_retrieve
+      description: Get all StudentAtBuildingOnTour for a student with given id
+      parameters:
+      - in: path
+        name: student_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - student_at_building_on_tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudBuildTour'
+          description: ''
+  /tour/:
+    post:
+      operationId: tour_create
+      description: Create a new tour
+      tags:
+      - tour
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tour'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Tour'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Tour'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tour'
+          description: ''
+        '400':
+          description: No response body
+  /tour/{tour_id}/:
+    get:
+      operationId: tour_retrieve
+      description: Get info about a Tour with given id
+      parameters:
+      - in: path
+        name: tour_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tour'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: tour_partial_update
+      description: Edit a tour with given id
+      parameters:
+      - in: path
+        name: tour_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tour
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTour'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTour'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTour'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tour'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: tour_destroy
+      description: Delete a tour with given id
+      parameters:
+      - in: path
+        name: tour_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /tour/all/:
+    get:
+      operationId: tour_all_retrieve
+      description: Get all tours
+      tags:
+      - tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tour'
+          description: ''
+  /user/:
+    post:
+      operationId: user_create
+      description: Create a new user
+      tags:
+      - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '400':
+          description: No response body
+  /user/{user_id}/:
+    get:
+      operationId: user_retrieve
+      description: Get info about user with given id
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - user
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: user_partial_update
+      description: Edit user with given id
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: user_destroy
+      description: |-
+        Delete user with given id
+        We don't acutally delete a user, we put the user on inactive mode
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - user
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /user/all/:
+    get:
+      operationId: user_all_retrieve
+      description: Get all users
+      tags:
+      - user
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+components:
+  schemas:
+    Building:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        city:
+          type: string
+          maxLength: 40
+        postal_code:
+          type: string
+          maxLength: 10
+        street:
+          type: string
+          maxLength: 60
+        house_number:
+          type: string
+          maxLength: 10
+        client_number:
+          type: string
+          nullable: true
+          maxLength: 40
+        duration:
+          type: string
+          format: time
+        syndic:
+          type: integer
+          nullable: true
+        region:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 100
+      required:
+      - city
+      - house_number
+      - id
+      - postal_code
+      - street
+    BuildingTour:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building:
+          type: integer
+        tour:
+          type: integer
+        index:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - building
+      - id
+      - index
+      - tour
+    BuildingUrl:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name_resident:
+          type: string
+          maxLength: 40
+        last_name_resident:
+          type: string
+          maxLength: 40
+        building:
+          type: integer
+      required:
+      - building
+      - first_name_resident
+      - id
+      - last_name_resident
+    GarbageCollection:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building:
+          type: integer
+        date:
+          type: string
+          format: date
+        garbage_type:
+          $ref: '#/components/schemas/GarbageTypeEnum'
+      required:
+      - building
+      - date
+      - garbage_type
+      - id
+    GarbageTypeEnum:
+      enum:
+      - GFT
+      - GLS
+      - GRF
+      - KER
+      - PAP
+      - PMD
+      - RES
+      type: string
+      description: |-
+        * `GFT` - GFT
+        * `GLS` - Glas
+        * `GRF` - Grof vuil
+        * `KER` - Kerstbomen
+        * `PAP` - Papier
+        * `PMD` - PMD
+        * `RES` - Restafval
+    JWT:
+      type: object
+      description: Serializer for JWT authentication.
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserDetails'
+      required:
+      - access_token
+      - refresh_token
+      - user
+    Manual:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building:
+          type: integer
+        version_number:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        file:
+          type: string
+          format: uri
+          nullable: true
+      required:
+      - building
+      - id
+    PasswordChange:
+      type: object
+      properties:
+        new_password1:
+          type: string
+          maxLength: 128
+        new_password2:
+          type: string
+          maxLength: 128
+      required:
+      - new_password1
+      - new_password2
+    PasswordReset:
+      type: object
+      description: Serializer for requesting a password reset e-mail.
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    PasswordResetConfirm:
+      type: object
+      description: Serializer for confirming a password reset attempt.
+      properties:
+        new_password1:
+          type: string
+          maxLength: 128
+        new_password2:
+          type: string
+          maxLength: 128
+        uid:
+          type: string
+        token:
+          type: string
+      required:
+      - new_password1
+      - new_password2
+      - token
+      - uid
+    PatchedBuilding:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        city:
+          type: string
+          maxLength: 40
+        postal_code:
+          type: string
+          maxLength: 10
+        street:
+          type: string
+          maxLength: 60
+        house_number:
+          type: string
+          maxLength: 10
+        client_number:
+          type: string
+          nullable: true
+          maxLength: 40
+        duration:
+          type: string
+          format: time
+        syndic:
+          type: integer
+          nullable: true
+        region:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 100
+    PatchedBuildingTour:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building:
+          type: integer
+        tour:
+          type: integer
+        index:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+    PatchedBuildingUrl:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name_resident:
+          type: string
+          maxLength: 40
+        last_name_resident:
+          type: string
+          maxLength: 40
+        building:
+          type: integer
+    PatchedGarbageCollection:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building:
+          type: integer
+        date:
+          type: string
+          format: date
+        garbage_type:
+          $ref: '#/components/schemas/GarbageTypeEnum'
+    PatchedManual:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building:
+          type: integer
+        version_number:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        file:
+          type: string
+          format: uri
+          nullable: true
+    PatchedPictureBuilding:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building:
+          type: integer
+        picture:
+          type: string
+          format: uri
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+    PatchedRegion:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        region:
+          type: string
+          maxLength: 40
+    PatchedStudBuildTour:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building_on_tour:
+          type: integer
+          nullable: true
+        date:
+          type: string
+          format: date
+        student:
+          type: integer
+          nullable: true
+    PatchedTour:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 40
+        region:
+          type: integer
+          nullable: true
+        modified_at:
+          type: string
+          format: date-time
+          nullable: true
+    PatchedUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        is_active:
+          type: boolean
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+        first_name:
+          type: string
+          maxLength: 40
+        last_name:
+          type: string
+          maxLength: 40
+        phone_number:
+          type: string
+          maxLength: 128
+        region:
+          type: array
+          items:
+            type: integer
+        role:
+          type: integer
+          nullable: true
+    PictureBuilding:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building:
+          type: integer
+        picture:
+          type: string
+          format: uri
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+      required:
+      - building
+      - id
+      - timestamp
+      - type
+    Region:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        region:
+          type: string
+          maxLength: 40
+      required:
+      - id
+      - region
+    Register:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 0
+          minLength: 1
+        email:
+          type: string
+          format: email
+        password1:
+          type: string
+          writeOnly: true
+        password2:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password1
+      - password2
+    ResendEmailVerification:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    RestAuthDetail:
+      type: object
+      properties:
+        detail:
+          type: string
+          readOnly: true
+      required:
+      - detail
+    StudBuildTour:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building_on_tour:
+          type: integer
+          nullable: true
+        date:
+          type: string
+          format: date
+        student:
+          type: integer
+          nullable: true
+      required:
+      - date
+      - id
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token
+    Tour:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 40
+        region:
+          type: integer
+          nullable: true
+        modified_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - id
+      - name
+    TypeEnum:
+      enum:
+      - AA
+      - BI
+      - VE
+      - OP
+      type: string
+      description: |-
+        * `AA` - Aankomst
+        * `BI` - Binnen
+        * `VE` - Vertrek
+        * `OP` - Opmerking
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        is_active:
+          type: boolean
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+        first_name:
+          type: string
+          maxLength: 40
+        last_name:
+          type: string
+          maxLength: 40
+        phone_number:
+          type: string
+          maxLength: 128
+        region:
+          type: array
+          items:
+            type: integer
+        role:
+          type: integer
+          nullable: true
+      required:
+      - email
+      - first_name
+      - id
+      - last_name
+      - phone_number
+      - region
+    UserDetails:
+      type: object
+      description: User model w/o password
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+        first_name:
+          type: string
+          maxLength: 40
+        last_name:
+          type: string
+          maxLength: 40
+      required:
+      - email
+      - first_name
+      - last_name
+      - pk
+    VerifyEmail:
+      type: object
+      properties:
+        key:
+          type: string
+          writeOnly: true
+      required:
+      - key
+  securitySchemes:
+    jwtCookieAuth:
+      type: apiKey
+      in: cookie
+      name: jwt-auth
+    jwtHeaderAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
