@@ -37,7 +37,7 @@ from .settings import MEDIA_URL, MEDIA_ROOT
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('docs/', SpectacularAPIView.as_view(), name='schema'),
-                  path('docs/ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+                  path('docs/ui/', SpectacularSwaggerView.as_view(url='/api/docs'), name='swagger-ui'),
                   path('authentication/', include(authentication_urls)),
                   path('manual/', include(manual_urls)),
                   path('picture_building/', include(picture_building_urls)),
