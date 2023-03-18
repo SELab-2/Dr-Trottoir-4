@@ -98,8 +98,8 @@ class Building(models.Model):
     city = models.CharField(max_length=40)
     postal_code = models.CharField(max_length=10)
     street = models.CharField(max_length=60)
-    house_number = models.CharField(max_length=10)
-    bus = models.CharField(max_length=2, blank=True, null=True)
+    house_number = models.PositiveIntegerField()
+    bus = models.CharField(max_length=10, blank=True, null=True)
     client_number = models.CharField(max_length=40, blank=True, null=True)
     duration = models.TimeField(default='00:00')
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
@@ -117,8 +117,10 @@ class Building(models.Model):
         # If this is not checked, `self.syndic` will cause an internal server error 500
         _check_for_present_keys(self, {"syndic_id"})
 
-        user = self.syndic
+        if self.house_number == 0:
+            raise ValidationError("The house number of the building must be positive and not zero.")
 
+        user = self.syndic
         if user.role.name.lower() != 'syndic':
             raise ValidationError("Only a user with role \"syndic\" can own a building.")
 
