@@ -11,10 +11,7 @@ TRANSLATE = {"building": "building_id"}
 class Default(APIView):
     serializer_class = PictureBuildingSerializer
 
-    @extend_schema(
-        responses={201: PictureBuildingSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={201: PictureBuildingSerializer, 400: None})
     def post(self, request):
         """
         Create a new PictureBuilding
@@ -33,30 +30,28 @@ class Default(APIView):
 class PictureBuildingIndividualView(APIView):
     serializer_class = PictureBuildingSerializer
 
-    @extend_schema(
-        responses={200: PictureBuildingSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={200: PictureBuildingSerializer, 400: None})
     def get(self, request, picture_building_id):
         """
         Get PictureBuilding with given id
         """
-        picture_building_instance = PictureBuilding.objects.filter(id=picture_building_id)
+        picture_building_instance = PictureBuilding.objects.filter(
+            id=picture_building_id
+        )
 
         if len(picture_building_instance) != 1:
             return bad_request("PictureBuilding")
         serializer = PictureBuildingSerializer(picture_building_instance[0])
         return get_success(serializer)
 
-    @extend_schema(
-        responses={200: PictureBuildingSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={200: PictureBuildingSerializer, 400: None})
     def patch(self, request, picture_building_id):
         """
         Edit info about PictureBuilding with given id
         """
-        picture_building_instance = PictureBuilding.objects.filter(id=picture_building_id)
+        picture_building_instance = PictureBuilding.objects.filter(
+            id=picture_building_id
+        )
         if not picture_building_instance:
             return bad_request("PictureBuilding")
 
@@ -71,15 +66,14 @@ class PictureBuildingIndividualView(APIView):
 
         return patch_success(PictureBuildingSerializer(picture_building_instance))
 
-    @extend_schema(
-        responses={204: None,
-                   400: None}
-    )
+    @extend_schema(responses={204: None, 400: None})
     def delete(self, request, picture_building_id):
         """
         delete a pictureBuilding from the database
         """
-        picture_building_instance = PictureBuilding.objects.filter(id=picture_building_id)
+        picture_building_instance = PictureBuilding.objects.filter(
+            id=picture_building_id
+        )
         if len(picture_building_instance) != 1:
             return bad_request("PictureBuilding")
         picture_building_instance[0].delete()
@@ -93,7 +87,9 @@ class PicturesOfBuildingView(APIView):
         """
         Get all pictures of a building with given id
         """
-        picture_building_instances = PictureBuilding.objects.filter(building_id=building_id)
+        picture_building_instances = PictureBuilding.objects.filter(
+            building_id=building_id
+        )
         serializer = PictureBuildingSerializer(picture_building_instances, many=True)
         return get_success(serializer)
 

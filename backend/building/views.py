@@ -15,10 +15,7 @@ class DefaultBuilding(APIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = BuildingSerializer
 
-    @extend_schema(
-        responses={201: BuildingSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={201: BuildingSerializer, 400: None})
     def post(self, request):
         """
         Create a new building
@@ -40,10 +37,7 @@ class BuildingIndividualView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = BuildingSerializer
 
-    @extend_schema(
-        responses={200: BuildingSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={200: BuildingSerializer, 400: None})
     def get(self, request, building_id):
         """
         Get info about building with given id
@@ -57,10 +51,7 @@ class BuildingIndividualView(APIView):
         serializer = BuildingSerializer(building_instance)
         return get_success(serializer)
 
-    @extend_schema(
-        responses={204: None,
-                   400: None}
-    )
+    @extend_schema(responses={204: None, 400: None})
     def delete(self, request, building_id):
         """
         Delete building with given id
@@ -73,10 +64,7 @@ class BuildingIndividualView(APIView):
         building_instance.delete()
         return delete_success()
 
-    @extend_schema(
-        responses={200: BuildingSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={200: BuildingSerializer, 400: None})
     def patch(self, request, building_id):
         """
         Edit building with given ID
@@ -112,10 +100,7 @@ class AllBuildingsView(APIView):
 class BuildingOwnerView(APIView):
     serializer_class = BuildingSerializer
 
-    @extend_schema(
-        responses={200: BuildingSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={200: BuildingSerializer, 400: None})
     def get(self, request, owner_id):
         """
         Get all buildings owned by syndic with given id
