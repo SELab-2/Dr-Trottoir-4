@@ -11,10 +11,7 @@ TRANSLATE = {"building_on_tour": "building_on_tour_id", "student": "student_id"}
 class Default(APIView):
     serializer_class = StudBuildTourSerializer
 
-    @extend_schema(
-        responses={201: StudBuildTourSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={201: StudBuildTourSerializer, 400: None})
     def post(self, request):
         """
         Create a new StudentAtBuildingOnTour
@@ -27,7 +24,9 @@ class Default(APIView):
         if r := try_full_clean_and_save(student_at_building_on_tour_instance):
             return r
 
-        return post_success(StudBuildTourSerializer(student_at_building_on_tour_instance))
+        return post_success(
+            StudBuildTourSerializer(student_at_building_on_tour_instance)
+        )
 
 
 class BuildingTourPerStudentView(APIView):
@@ -37,23 +36,26 @@ class BuildingTourPerStudentView(APIView):
         """
         Get all StudentAtBuildingOnTour for a student with given id
         """
-        student_at_building_on_tour_instances = StudentAtBuildingOnTour.objects.filter(student_id=student_id)
-        serializer = StudBuildTourSerializer(student_at_building_on_tour_instances, many=True)
+        student_at_building_on_tour_instances = StudentAtBuildingOnTour.objects.filter(
+            student_id=student_id
+        )
+        serializer = StudBuildTourSerializer(
+            student_at_building_on_tour_instances, many=True
+        )
         return get_success(serializer)
 
 
 class StudentAtBuildingOnTourIndividualView(APIView):
     serializer_class = StudBuildTourSerializer
 
-    @extend_schema(
-        responses={200: StudBuildTourSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={200: StudBuildTourSerializer, 400: None})
     def get(self, request, student_at_building_on_tour_id):
         """
         Get an individual StudentAtBuildingOnTour with given id
         """
-        stud_tour_building_instance = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
+        stud_tour_building_instance = StudentAtBuildingOnTour.objects.filter(
+            id=student_at_building_on_tour_id
+        )
 
         if len(stud_tour_building_instance) != 1:
             return bad_request("StudentAtBuildingOnTour")
@@ -61,15 +63,14 @@ class StudentAtBuildingOnTourIndividualView(APIView):
         serializer = StudBuildTourSerializer(stud_tour_building_instance[0])
         return get_success(serializer)
 
-    @extend_schema(
-        responses={200: StudBuildTourSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={200: StudBuildTourSerializer, 400: None})
     def patch(self, request, student_at_building_on_tour_id):
         """
         Edit info about an individual StudentAtBuildingOnTour with given id
         """
-        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
+        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(
+            id=student_at_building_on_tour_id
+        )
 
         if len(stud_tour_building_instances) != 1:
             return bad_request("StudentAtBuildingOnTour")
@@ -86,15 +87,14 @@ class StudentAtBuildingOnTourIndividualView(APIView):
         serializer = StudBuildTourSerializer(stud_tour_building_instance)
         return patch_success(serializer)
 
-    @extend_schema(
-        responses={204: None,
-                   400: None}
-    )
+    @extend_schema(responses={204: None, 400: None})
     def delete(self, request, student_at_building_on_tour_id):
         """
         Delete StudentAtBuildingOnTour with given id
         """
-        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
+        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(
+            id=student_at_building_on_tour_id
+        )
         if len(stud_tour_building_instances) != 1:
             return bad_request("StudentAtBuildingOnTour")
         stud_tour_building_instances[0].delete()

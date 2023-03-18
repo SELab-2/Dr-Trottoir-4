@@ -11,10 +11,7 @@ TRANSLATE = {"building": "building_id"}
 class Default(APIView):
     serializer_class = ManualSerializer
 
-    @extend_schema(
-        responses={201: ManualSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={201: ManualSerializer, 400: None})
     def post(self, request):
         """
         Create a new manual with data from post
@@ -33,10 +30,7 @@ class Default(APIView):
 class ManualView(APIView):
     serializer_class = ManualSerializer
 
-    @extend_schema(
-        responses={200: ManualSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={200: ManualSerializer, 400: None})
     def get(self, request, manual_id):
         """
         Get info about a manual with given id
@@ -47,10 +41,7 @@ class ManualView(APIView):
         serializer = ManualSerializer(manual_instances[0])
         return get_success(serializer)
 
-    @extend_schema(
-        responses={204: None,
-                   400: None}
-    )
+    @extend_schema(responses={204: None, 400: None})
     def delete(self, request, manual_id):
         """
         Delete manual with given id
@@ -61,10 +52,7 @@ class ManualView(APIView):
         manual_instances[0].delete()
         return delete_success()
 
-    @extend_schema(
-        responses={200: ManualSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={200: ManualSerializer, 400: None})
     def patch(self, request, manual_id):
         """
         Edit info about a manual with given id
@@ -86,10 +74,7 @@ class ManualView(APIView):
 class ManualBuildingView(APIView):
     serializer_class = ManualSerializer
 
-    @extend_schema(
-        responses={200: ManualSerializer,
-                   400: None}
-    )
+    @extend_schema(responses={200: ManualSerializer, 400: None})
     def get(self, request, building_id):
         """
         Get all manuals of a building with given id
