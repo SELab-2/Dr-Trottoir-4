@@ -29,7 +29,7 @@ jobs:
       - name: Format JavaScript code
         uses: creyD/prettier_action@v4.3
         with:
-          prettier_options: --print-width 120 --write **/*.{js,tsx}
+          prettier_options: --print-width 120 --tab-width 4 --write **/*.{js,tsx}
           commit_message: "Auto formatted code"
           only_changed: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
