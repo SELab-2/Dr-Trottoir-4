@@ -16,7 +16,8 @@ class DefaultEmailWhiteList(APIView):
 
     @extend_schema(
         description="If you do not set a verification_code yourself, the backend will provide a safe one for you.",
-        responses={201: EmailWhitelistSerializer, 400: None})
+        responses={201: EmailWhitelistSerializer, 400: None},
+    )
     def post(self, request):
         """
         Create a new whitelisted email
@@ -89,8 +90,9 @@ class EmailWhiteListIndividualView(APIView):
 class EmailWhiteListNewVerificationCode(APIView):
     serializer_class = EmailWhitelistSerializer
 
-    @extend_schema(description="Generate a new token. The body of the request is ignored.",
-                   responses={204: None, 400: None})
+    @extend_schema(
+        description="Generate a new token. The body of the request is ignored.", responses={204: None, 400: None}
+    )
     def post(self, request, email_whitelist_id):
         """
         Do a POST with an empty body on `email_whitelist/new_verification_code/ to generate a new verification code
