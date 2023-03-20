@@ -2,6 +2,19 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.response import Response
+import uuid
+from typing import Callable
+
+
+def get_unique_uuid(lookup_func: Callable[[str], bool] = None):
+    # https://docs.python.org/3/library/uuid.html
+    out_id = uuid.uuid4().hex
+
+    # Normally it should never happen that the generated `id` is not unique,
+    #  but just to be theoretically sure, you can pass a function that checks if the uuid is already in the database
+    while lookup_func and lookup_func(out_id):
+        out_id = uuid.uuid4().hex
+    return out_id
 
 
 def set_keys_of_instance(instance, data: dict, translation: dict = {}):
