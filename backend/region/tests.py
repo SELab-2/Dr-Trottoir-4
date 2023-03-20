@@ -110,6 +110,14 @@ class RegionTests(TestCase):
         assert response3.data["region"] == "Gent"
         assert "id" in response3.data
 
+    def test_patch_invalid_region(self):
+        user = createUser()
+        client = APIClient()
+        client.force_authenticate(user=user)
+        data = rf.getRegion()
+        response2 = client.patch(f"{backend_url}/region/123434687658/", data, follow=True)
+        assert response2.status_code == 400
+
     def test_patch_error_region(self):
         user = createUser()
         client = APIClient()
