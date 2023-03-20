@@ -60,6 +60,13 @@ class EmailTemplateSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
+class EmailWhitelistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailWhitelist
+        fields = ["id", "email", "verification_code"]
+        read_only_fields = ["id"]
+
+
 class PictureBuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = PictureBuilding
