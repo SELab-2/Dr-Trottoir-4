@@ -1,6 +1,5 @@
 function Home() {
-    return null; // instant redirect to login page
+  return null; // instant redirect to login page
 }
 
 export default Home;
-

@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class BuildingCommentConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'building_comment'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "building_comment"
