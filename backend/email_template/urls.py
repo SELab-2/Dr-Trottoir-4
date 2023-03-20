@@ -8,6 +8,6 @@ from .views import (
 
 urlpatterns = [
     path("all/", EmailTemplateAllView.as_view()),
-    path("email_template/<email_template_id>/", EmailTemplateIndividualView.as_view()),
+    path("<email_template_id>/", EmailTemplateIndividualView.as_view()),
     path("", DefaultEmailTemplate.as_view())
 ]
