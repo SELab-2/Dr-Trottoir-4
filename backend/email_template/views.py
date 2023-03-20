@@ -6,6 +6,8 @@ from base.serializers import EmailTemplateSerializer
 from util.request_response_util import *
 
 
+# TODO: when testing this route, add the correct authorization classes
+
 class DefaultEmailTemplate(APIView):
     serializer_class = EmailTemplateSerializer
 

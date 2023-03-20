@@ -5,6 +5,8 @@ from base.models import EmailWhitelist
 from base.serializers import EmailWhitelistSerializer
 from util.request_response_util import *
 
+# TODO: when testing this route, add the correct authorization classes
+
 
 def _add_verification_code_if_necessary(data):
     if "verification_code" not in data:
