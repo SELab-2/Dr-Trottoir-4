@@ -35,11 +35,13 @@ class BuildingSerializer(serializers.ModelSerializer):
             "postal_code",
             "street",
             "house_number",
+            "bus"
             "client_number",
             "duration",
             "syndic",
             "region",
             "name",
+            "public_id"
         ]
         read_only_fields = ["id"]
 
