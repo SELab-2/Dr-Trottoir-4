@@ -3,12 +3,11 @@ import json
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from authorisation.permissions import IsAdmin, IsSuperStudent, OwnerAccount, CanEditUser, CanEditRole
+from authorisation.permissions import IsAdmin, IsSuperStudent, OwnerAccount, CanEditUser, CanEditRole, CanDeleteUser
 from base.models import User
 from base.serializers import UserSerializer
 from util.request_response_util import *
 from drf_spectacular.utils import extend_schema
-
 
 TRANSLATE = {"role": "role_id"}
 
@@ -64,7 +63,9 @@ class DefaultUser(APIView):
 
 
 class UserIndividualView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerAccount, CanEditUser, CanEditRole]
+    permission_classes = [IsAuthenticated,
+                          IsAdmin | IsSuperStudent | OwnerAccount,
+                          CanEditUser, CanEditRole, CanDeleteUser]
     serializer_class = UserSerializer
 
     @extend_schema(responses={200: UserSerializer, 400: None})
