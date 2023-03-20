@@ -4,48 +4,64 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('base', '0001_initial'),
+        ("base", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='EmailTemplate',
+            name="EmailTemplate",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=40)),
-                ('template', models.TextField()),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=40)),
+                ("template", models.TextField()),
             ],
         ),
         migrations.CreateModel(
-            name='EmailWhitelist',
+            name="EmailWhitelist",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email', models.EmailField(error_messages={'unique': 'This email is already on the whitelist.'}, max_length=254, unique=True, verbose_name='email address')),
-                ('verification_code', models.CharField(error_messages={'unique': 'This verification code already exists.'}, max_length=128, unique=True)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "email",
+                    models.EmailField(
+                        error_messages={"unique": "This email is already on the whitelist."},
+                        max_length=254,
+                        unique=True,
+                        verbose_name="email address",
+                    ),
+                ),
+                (
+                    "verification_code",
+                    models.CharField(
+                        error_messages={"unique": "This verification code already exists."}, max_length=128, unique=True
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='building',
-            name='bus',
+            model_name="building",
+            name="bus",
             field=models.CharField(blank=True, max_length=10, null=True),
         ),
         migrations.AddField(
-            model_name='building',
-            name='public_id',
+            model_name="building",
+            name="public_id",
             field=models.CharField(blank=True, max_length=32, null=True),
         ),
         migrations.AlterField(
-            model_name='building',
-            name='house_number',
+            model_name="building",
+            name="house_number",
             field=models.PositiveIntegerField(),
         ),
         migrations.DeleteModel(
-            name='BuildingURL',
+            name="BuildingURL",
         ),
         migrations.AddConstraint(
-            model_name='emailtemplate',
-            constraint=models.UniqueConstraint(models.F('name'), name='unique_template_name', violation_error_message='The name for this template already exists.'),
+            model_name="emailtemplate",
+            constraint=models.UniqueConstraint(
+                models.F("name"),
+                name="unique_template_name",
+                violation_error_message="The name for this template already exists.",
+            ),
         ),
     ]
