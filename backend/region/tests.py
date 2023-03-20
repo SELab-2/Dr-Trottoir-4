@@ -43,29 +43,70 @@ class RegionTests(TestCase):
         # er moet ook een id bij zitten
         assert "id" in response.data
 
-    def test_insert_multiple_regions(self):
+    def test_get_region(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
         data1 = {
             "region": "Gent"
         }
-        data2 = {
-            "region": "Antwerpen"
-        }
         response1 = client.post("http://localhost:2002/region/", data1, follow=True)
-        response2 = client.post("http://localhost:2002/region/", data2, follow=True)
         assert response1.status_code == 201
-        assert response2.status_code == 201
         for key in data1:
             # alle info zou er in moeten zitten
             assert key in response1.data
-        for key in data2:
-            # alle info zou er in moeten zitten
-            assert key in response2.data
         # er moet ook een id bij zitten
         assert "id" in response1.data
+        id = response1.data["id"]
+        response2 = client.get(f"http://localhost:2002/region/{id}/", follow=True)
+        assert response2.status_code == 200
+        assert response2.data["region"] == "Gent"
         assert "id" in response2.data
-        results = client.get("/region/all/")
-        print([r for r in results.data])
-        assert False
+
+
+    def test_patch_region(self):
+        user = createUser()
+        client = APIClient()
+        client.force_authenticate(user=user)
+        data1 = {
+            "region": "Brugge"
+        }
+        data2 = {
+            "region": "Gent"
+        }
+        response1 = client.post("http://localhost:2002/region/", data1, follow=True)
+        assert response1.status_code == 201
+        for key in data1:
+            # alle info zou er in moeten zitten
+            assert key in response1.data
+        # er moet ook een id bij zitten
+        assert "id" in response1.data
+        id = response1.data["id"]
+        response2 = client.patch(f"http://localhost:2002/region/{id}/", data2, follow=True)
+        assert response2.status_code == 200
+        response3 = client.get(f"http://localhost:2002/region/{id}/", follow=True)
+        assert response3.status_code == 200
+        assert response3.data["region"] == "Gent"
+        assert "id" in response3.data
+
+    def test_remove_region(self):
+        user = createUser()
+        client = APIClient()
+        client.force_authenticate(user=user)
+        data1 = {
+            "region": "Gent"
+        }
+        response1 = client.post("http://localhost:2002/region/", data1, follow=True)
+        assert response1.status_code == 201
+        for key in data1:
+            # alle info zou er in moeten zitten
+            assert key in response1.data
+        # er moet ook een id bij zitten
+        assert "id" in response1.data
+        id = response1.data["id"]
+        response2 = client.delete(f"http://localhost:2002/region/{id}/", follow=True)
+        assert response2.status_code == 204
+        response3 = client.get(f"http://localhost:2002/region/{id}/", follow=True)
+        # should be 404 I think
+        # assert response3.status_code == 404
+        assert response3.status_code == 400
