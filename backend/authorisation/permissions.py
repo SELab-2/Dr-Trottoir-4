@@ -121,6 +121,21 @@ class ReadOnlyOwnerAccount(BasePermission):
         return False
 
 
+class CanCreateUser(BasePermission):
+    """
+    Checks if the user has the right permissions to create the user
+    """
+    message = "You can't create a user of a higher role"
+
+    def has_object_permission(self, request, view, obj: User):
+        if request.method in ['POST']:
+            data = request_to_dict(request.data)
+            if 'role' in data.keys():
+                role_instance = Role.objects.filter(id=data['role'])[0]
+                return request.user.role.rank <= role_instance.rank
+        return True
+
+
 class CanEditUser(BasePermission):
     """
     Checks if the user has the right permissions to edit
