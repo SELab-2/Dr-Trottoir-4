@@ -5,13 +5,16 @@ from authorisation.permissions import IsSuperStudent, IsAdmin, ReadOnlyStudent, 
 from base.models import GarbageCollection, Building
 from base.serializers import GarbageCollectionSerializer
 from util.request_response_util import *
+from drf_spectacular.utils import extend_schema
 
 TRANSLATE = {"building": "building_id"}
 
 
 class DefaultGarbageCollection(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = GarbageCollectionSerializer
 
+    @extend_schema(responses={201: GarbageCollectionSerializer, 400: None})
     def post(self, request):
         """
         Create new garbage collection
@@ -31,32 +34,42 @@ class DefaultGarbageCollection(APIView):
 
 class GarbageCollectionIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
+    serializer_class = GarbageCollectionSerializer
 
+    @extend_schema(responses={200: GarbageCollectionSerializer, 400: None})
     def get(self, request, garbage_collection_id):
         """
         Get info about a garbage collection with given id
         """
-        garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
+        garbage_collection_instance = GarbageCollection.objects.filter(
+            id=garbage_collection_id
+        )
         if not garbage_collection_instance:
             return bad_request("GarbageCollection")
         serializer = GarbageCollectionSerializer(garbage_collection_instance[0])
         return get_success(serializer)
 
+    @extend_schema(responses={204: None, 400: None})
     def delete(self, request, garbage_collection_id):
         """
         Delete garbage collection with given id
         """
-        garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
+        garbage_collection_instance = GarbageCollection.objects.filter(
+            id=garbage_collection_id
+        )
         if not garbage_collection_instance:
             return bad_request("GarbageCollection")
         garbage_collection_instance[0].delete()
         return delete_success()
 
+    @extend_schema(responses={200: GarbageCollectionSerializer, 400: None})
     def patch(self, request, garbage_collection_id):
         """
         Edit garbage collection with given id
         """
-        garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
+        garbage_collection_instance = GarbageCollection.objects.filter(
+            id=garbage_collection_id
+        )
         if not garbage_collection_instance:
             return bad_request("GarbageCollection")
 
@@ -78,6 +91,7 @@ class GarbageCollectionIndividualBuildingView(APIView):
     """
 
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding]
+    serializer_class = GarbageCollectionSerializer
 
     def get(self, request, building_id):
         """
@@ -95,11 +109,14 @@ class GarbageCollectionIndividualBuildingView(APIView):
 
 class GarbageCollectionAllView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = GarbageCollectionSerializer
 
     def get(self, request):
         """
         Get all garbage collections
         """
         garbage_collection_instances = GarbageCollection.objects.all()
-        serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
+        serializer = GarbageCollectionSerializer(
+            garbage_collection_instances, many=True
+        )
         return get_success(serializer)

@@ -7,9 +7,11 @@ from authorisation.permissions import IsAdmin, IsSuperStudent, OwnerAccount, Can
 from base.models import User
 from base.serializers import UserSerializer
 from util.request_response_util import *
+from drf_spectacular.utils import extend_schema
 
 
 TRANSLATE = {"role": "role_id"}
+
 
 # In GET, you only get active users
 # Except when you explicitly pass a parameter 'include_inactive' to the body of the request and set it as true
@@ -31,9 +33,11 @@ def _try_adding_region_to_user_instance(user_instance, region_value):
 
 class DefaultUser(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = UserSerializer
 
     # TODO: in order for this to work, you have to pass a password
     #  In the future, we probably won't use POST this way anymore (if we work with the whitelist method)
+    @extend_schema(responses={201: UserSerializer, 400: None})
     def post(self, request):
         """
         Create a new user
@@ -61,7 +65,9 @@ class DefaultUser(APIView):
 
 class UserIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerAccount, CanEditUser, CanEditRole]
+    serializer_class = UserSerializer
 
+    @extend_schema(responses={200: UserSerializer, 400: None})
     def get(self, request, user_id):
         """
         Get info about user with given id
@@ -77,6 +83,7 @@ class UserIndividualView(APIView):
         serializer = UserSerializer(user_instance)
         return get_success(serializer)
 
+    @extend_schema(responses={204: None, 400: None})
     def delete(self, request, user_id):
         """
         Delete user with given id
@@ -94,6 +101,7 @@ class UserIndividualView(APIView):
 
         return delete_success()
 
+    @extend_schema(responses={200: UserSerializer, 400: None})
     def patch(self, request, user_id):
         """
         Edit user with given id
@@ -128,6 +136,7 @@ class UserIndividualView(APIView):
 
 class AllUsersView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = UserSerializer
 
     def get(self, request):
         """

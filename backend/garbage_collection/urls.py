@@ -4,12 +4,12 @@ from .views import (
     GarbageCollectionIndividualView,
     GarbageCollectionIndividualBuildingView,
     DefaultGarbageCollection,
-    GarbageCollectionAllView
+    GarbageCollectionAllView,
 )
 
 urlpatterns = [
-    path('all/', GarbageCollectionAllView.as_view()),
-    path('building/<building_id>/', GarbageCollectionIndividualBuildingView.as_view()),
-    path('<garbage_collection_id>/', GarbageCollectionIndividualView.as_view()),
-    path('', DefaultGarbageCollection.as_view())
+    path("all/", GarbageCollectionAllView.as_view()),
+    path("building/<building_id>/", GarbageCollectionIndividualBuildingView.as_view()),
+    path("<garbage_collection_id>/", GarbageCollectionIndividualView.as_view()),
+    path("", DefaultGarbageCollection.as_view()),
 ]

@@ -1,6 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-}
+/** @type {{redirects(): Promise<[{permanent: boolean, destination: string, source: string}]>}} */
 
-module.exports = nextConfig
+const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/login",
+        permanent: true,
+      },
+    ];
+  },
+};
+
+module.exports = nextConfig;
