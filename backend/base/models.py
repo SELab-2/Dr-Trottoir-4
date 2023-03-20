@@ -137,7 +137,7 @@ class Building(models.Model):
                 Lower("street"),
                 Lower("postal_code"),
                 "house_number",
-                Lower('bus'),
+                Lower("bus"),
                 name="address_unique",
                 violation_error_message="A building with this address already exists.",
             ),
