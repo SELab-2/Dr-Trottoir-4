@@ -64,12 +64,14 @@ class PictureBuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = PictureBuilding
         fields = ["id", "building", "picture", "description", "timestamp", "type"]
+        read_only_fields = ["id"]
 
 
 class StudBuildTourSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentAtBuildingOnTour
         fields = ["id", "building_on_tour", "date", "student"]
+        read_only_fields = ["id"]
 
 
 class GarbageCollectionSerializer(serializers.ModelSerializer):
@@ -83,21 +85,25 @@ class ManualSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manual
         fields = ["id", "building", "version_number", "file"]
+        read_only_fields = ["id"]
 
 
 class BuildingTourSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuildingOnTour
         fields = ["id", "building", "tour", "index"]
+        read_only_fields = ["id"]
 
 
 class TourSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
         fields = ["id", "name", "region", "modified_at"]
+        read_only_fields = ["id"]
 
 
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Region
         fields = ["id", "region"]
+        read_only_fields = ["id"]
