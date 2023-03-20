@@ -3,6 +3,8 @@ from rest_framework.test import APIClient
 
 from base.models import User
 
+backend_url = "http://localhost:2002"
+
 
 def createUser(is_staff: bool = True) -> User:
     user = User(
@@ -23,7 +25,7 @@ class RegionTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        response = client.get("http://localhost:2002/region/all", follow=True)
+        response = client.get(f"{backend_url}/region/all", follow=True)
         assert response.status_code == 200
         data = [response.data[e] for e in response.data]
         assert len(data) == 0
@@ -35,7 +37,7 @@ class RegionTests(TestCase):
         data = {
             "region": "Gent"
         }
-        response = client.post("http://localhost:2002/region/", data, follow=True)
+        response = client.post(f"{backend_url}/region/", data, follow=True)
         assert response.status_code == 201
         for key in data:
             # alle info zou er in moeten zitten
@@ -50,7 +52,7 @@ class RegionTests(TestCase):
         data1 = {
             "region": "Gent"
         }
-        response1 = client.post("http://localhost:2002/region/", data1, follow=True)
+        response1 = client.post(f"{backend_url}/region/", data1, follow=True)
         assert response1.status_code == 201
         for key in data1:
             # alle info zou er in moeten zitten
@@ -58,7 +60,7 @@ class RegionTests(TestCase):
         # er moet ook een id bij zitten
         assert "id" in response1.data
         id = response1.data["id"]
-        response2 = client.get(f"http://localhost:2002/region/{id}/", follow=True)
+        response2 = client.get(f"{backend_url}/region/{id}/", follow=True)
         assert response2.status_code == 200
         assert response2.data["region"] == "Gent"
         assert "id" in response2.data
@@ -74,7 +76,7 @@ class RegionTests(TestCase):
         data2 = {
             "region": "Gent"
         }
-        response1 = client.post("http://localhost:2002/region/", data1, follow=True)
+        response1 = client.post(f"{backend_url}/region/", data1, follow=True)
         assert response1.status_code == 201
         for key in data1:
             # alle info zou er in moeten zitten
@@ -82,9 +84,9 @@ class RegionTests(TestCase):
         # er moet ook een id bij zitten
         assert "id" in response1.data
         id = response1.data["id"]
-        response2 = client.patch(f"http://localhost:2002/region/{id}/", data2, follow=True)
+        response2 = client.patch(f"{backend_url}/region/{id}/", data2, follow=True)
         assert response2.status_code == 200
-        response3 = client.get(f"http://localhost:2002/region/{id}/", follow=True)
+        response3 = client.get(f"{backend_url}/region/{id}/", follow=True)
         assert response3.status_code == 200
         assert response3.data["region"] == "Gent"
         assert "id" in response3.data
@@ -96,7 +98,7 @@ class RegionTests(TestCase):
         data1 = {
             "region": "Gent"
         }
-        response1 = client.post("http://localhost:2002/region/", data1, follow=True)
+        response1 = client.post(f"{backend_url}/region/", data1, follow=True)
         assert response1.status_code == 201
         for key in data1:
             # alle info zou er in moeten zitten
@@ -104,9 +106,9 @@ class RegionTests(TestCase):
         # er moet ook een id bij zitten
         assert "id" in response1.data
         id = response1.data["id"]
-        response2 = client.delete(f"http://localhost:2002/region/{id}/", follow=True)
+        response2 = client.delete(f"{backend_url}/region/{id}/", follow=True)
         assert response2.status_code == 204
-        response3 = client.get(f"http://localhost:2002/region/{id}/", follow=True)
+        response3 = client.get(f"{backend_url}/region/{id}/", follow=True)
         # should be 404 I think
         # assert response3.status_code == 404
         assert response3.status_code == 400

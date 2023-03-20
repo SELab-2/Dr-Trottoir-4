@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import collections
+import sys
 from datetime import timedelta
 from pathlib import Path
+
 from .secrets import DJANGO_SECRET_KEY, SECRET_EMAIL_USER, SECRET_EMAIL_USER_PSWD
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -79,7 +81,7 @@ collections.Callable = collections.abc.Callable
 # Use nose to run all tests
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
-#drf-spectacular settings
+# drf-spectacular settings
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Dr-Trottoir API',
     'DESCRIPTION': 'This is the documentation for the Dr-trottoir API',
@@ -166,8 +168,10 @@ DATABASES = {
         'NAME': 'drtrottoir',
         'USER': 'django',
         'PASSWORD': 'password',
-        'HOST': 'localhost', # If you want to run using python manage.py runserver
-        # 'HOST': 'web',  # If you want to use `docker-compose up`
+        # since testing is run outside the docker, we need a localhost db
+        # the postgres docker port is exposed to it should be used as well
+        # this 'hack' is just to fix the name resolving of 'web'
+        'HOST': 'localhost' if "test" in sys.argv else "web",
         'PORT': '5432',
     }
 }
