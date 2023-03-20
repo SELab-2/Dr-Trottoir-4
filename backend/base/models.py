@@ -7,14 +7,13 @@ from django.db import models
 from django.db.models import UniqueConstraint
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
-from django_random_id_model import RandomIDModel
 from phonenumber_field.modelfields import PhoneNumberField
 
 from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2**31 - 1
+MAX_INT = 2 ** 31 - 1
 
 
 def _check_for_present_keys(instance, keys_iterable):
@@ -92,7 +91,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class EmailWhitelist(models.Model):
     email = models.EmailField(
-        _("email address"), unique=True, error_messages={"unique": "This email is already on the whitelist."}
+        _("email address"), unique=True, error_messages={"unique": "This email is already in the whitelist."}
     )
     # The verification code, preferably hashed
     verification_code = models.CharField(
@@ -199,7 +198,7 @@ class GarbageCollection(models.Model):
                 "date",
                 name="garbage_collection_unique",
                 violation_error_message="This type of garbage is already being collected on the same day for this "
-                "building.",
+                                        "building.",
             ),
         ]
 
@@ -373,9 +372,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-            self.version_number == 0
-            or self.version_number > max_version_number + 1
-            or self.version_number in version_numbers
+                self.version_number == 0
+                or self.version_number > max_version_number + 1
+                or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 

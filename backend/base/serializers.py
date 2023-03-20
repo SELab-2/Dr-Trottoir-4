@@ -53,6 +53,13 @@ class BuildingCommentSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
+class EmailTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailTemplate
+        fields = ["id", "name", "template"]
+        read_only_fields = ["id"]
+
+
 class PictureBuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = PictureBuilding
