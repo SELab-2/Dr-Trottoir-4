@@ -125,10 +125,10 @@ class CanEditUser(BasePermission):
     """
     Checks if the user has the right permissions to edit
     """
-    message = "You don't have the right permissions to edit the user accordingly"
+    message = "You don't have the right permissions to edit/delete this user"
 
     def has_object_permission(self, request, view, obj: User):
-        if request.method == 'PATCH':
+        if request.method in ['PATCH', 'DELETE']:
             return request.user.id == obj.id or request.user.role.rank < obj.role.rank
         return True
 
