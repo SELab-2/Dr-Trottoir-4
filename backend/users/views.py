@@ -3,12 +3,12 @@ import json
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from authorisation.permissions import IsAdmin, IsSuperStudent, OwnerAccount, CanEditUser, CanEditRole
+from authorisation.permissions import IsAdmin, IsSuperStudent, OwnerAccount, CanEditUser, CanEditRole, CanDeleteUser, \
+    CanCreateUser
 from base.models import User
 from base.serializers import UserSerializer
 from util.request_response_util import *
 from drf_spectacular.utils import extend_schema
-
 
 TRANSLATE = {"role": "role_id"}
 
@@ -32,7 +32,7 @@ def _try_adding_region_to_user_instance(user_instance, region_value):
 
 
 class DefaultUser(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent, CanCreateUser]
     serializer_class = UserSerializer
 
     # TODO: in order for this to work, you have to pass a password
@@ -47,6 +47,8 @@ class DefaultUser(APIView):
         user_instance = User()
 
         set_keys_of_instance(user_instance, data, TRANSLATE)
+
+        self.check_object_permissions(request, user_instance)
 
         if r := try_full_clean_and_save(user_instance):
             return r
@@ -64,7 +66,9 @@ class DefaultUser(APIView):
 
 
 class UserIndividualView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerAccount, CanEditUser, CanEditRole]
+    permission_classes = [IsAuthenticated,
+                          IsAdmin | IsSuperStudent | OwnerAccount,
+                          CanEditUser, CanEditRole, CanDeleteUser]
     serializer_class = UserSerializer
 
     @extend_schema(responses={200: UserSerializer, 400: None})

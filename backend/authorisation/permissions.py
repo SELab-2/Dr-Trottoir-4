@@ -121,14 +121,41 @@ class ReadOnlyOwnerAccount(BasePermission):
         return False
 
 
+class CanCreateUser(BasePermission):
+    """
+    Checks if the user has the right permissions to create the user
+    """
+    message = "You can't create a user of a higher role"
+
+    def has_object_permission(self, request, view, obj: User):
+        if request.method in ['POST']:
+            data = request_to_dict(request.data)
+            if 'role' in data.keys():
+                role_instance = Role.objects.filter(id=data['role'])[0]
+                return request.user.role.rank <= role_instance.rank
+        return True
+
+
+class CanDeleteUser(BasePermission):
+    """
+    Checks if the user has the right permissions to delete a user
+    """
+    message = "You don't have the right permissions to delete this user"
+
+    def has_object_permission(self, request, view, obj: User):
+        if request.method in ['DELETE']:
+            return request.user.role.rank < obj.role.rank
+        return True
+
+
 class CanEditUser(BasePermission):
     """
     Checks if the user has the right permissions to edit
     """
-    message = "You don't have the right permissions to edit the user accordingly"
+    message = "You don't have the right permissions to edit this user"
 
     def has_object_permission(self, request, view, obj: User):
-        if request.method == 'PATCH':
+        if request.method in ['PATCH']:
             return request.user.id == obj.id or request.user.role.rank < obj.role.rank
         return True
 
@@ -137,11 +164,15 @@ class CanEditRole(BasePermission):
     """
     Checks if the user has the right permissions to edit the role of a user
     """
-    message = "You can't assign a role that is higher that your own"
+    message = "You can't assign a role to yourself or assign a role tha is higher than your own"
 
     def has_object_permission(self, request, view, obj: User):
         if request.method in ['PATCH']:
             data = request_to_dict(request.data)
-            role_instance = Role.objects.filter(id=data['role'])[0]
-            return request.user.role.rank <= role_instance.rank
+            if 'role' in data.keys():
+                if request.user.id == obj.id:
+                    # you aren't allowed to change your own role
+                    return False
+                role_instance = Role.objects.filter(id=data['role'])[0]
+                return request.user.role.rank <= role_instance.rank
         return True
