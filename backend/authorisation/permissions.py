@@ -142,6 +142,7 @@ class CanEditRole(BasePermission):
     def has_object_permission(self, request, view, obj: User):
         if request.method in ['PATCH']:
             data = request_to_dict(request.data)
-            role_instance = Role.objects.filter(id=data['role'])[0]
-            return request.user.role.rank <= role_instance.rank
+            if 'role' in data.keys():
+                role_instance = Role.objects.filter(id=data['role'])[0]
+                return request.user.role.rank <= role_instance.rank
         return True
