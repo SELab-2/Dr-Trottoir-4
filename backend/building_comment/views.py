@@ -5,13 +5,16 @@ from authorisation.permissions import IsAdmin, IsSuperStudent, OwnerOfBuilding, 
 from base.models import BuildingComment
 from base.serializers import BuildingCommentSerializer
 from util.request_response_util import *
+from drf_spectacular.utils import extend_schema
 
 TRANSLATE = {"building": "building_id"}
 
 
 class DefaultBuildingComment(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding]
+    serializer_class = BuildingCommentSerializer
 
+    @extend_schema(responses={201: BuildingCommentSerializer, 400: None})
     def post(self, request):
         """
         Create a new BuildingComment
@@ -32,12 +35,16 @@ class DefaultBuildingComment(APIView):
 
 class BuildingCommentIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]
+    serializer_class = BuildingCommentSerializer
 
+    @extend_schema(responses={200: BuildingCommentSerializer, 400: None})
     def get(self, request, building_comment_id):
         """
         Get an invividual BuildingComment with given id
         """
-        building_comment_instance = BuildingComment.objects.filter(id=building_comment_id)
+        building_comment_instance = BuildingComment.objects.filter(
+            id=building_comment_id
+        )
 
         self.check_object_permissions(request, building_comment_instance.building)
 
@@ -46,11 +53,14 @@ class BuildingCommentIndividualView(APIView):
 
         return get_success(BuildingCommentSerializer(building_comment_instance[0]))
 
+    @extend_schema(responses={204: None, 400: None})
     def delete(self, request, building_comment_id):
         """
         Delete a BuildingComment with given id
         """
-        building_comment_instance = BuildingComment.objects.filter(id=building_comment_id)
+        building_comment_instance = BuildingComment.objectts.filter(
+            id=building_comment_id
+        )
 
         self.check_object_permissions(request, building_comment_instance.building)
 
@@ -60,11 +70,14 @@ class BuildingCommentIndividualView(APIView):
         building_comment_instance[0].delete()
         return delete_success()
 
+    @extend_schema(responses={200: BuildingCommentSerializer, 400: None})
     def patch(self, request, building_comment_id):
         """
         Edit BuildingComment with given id
         """
-        building_comment_instance = BuildingComment.objects.filter(id=building_comment_id)
+        building_comment_instance = BuildingComment.objects.filter(
+            id=building_comment_id
+        )
 
         if not building_comment_instance:
             return bad_request("BuildingComment")
@@ -84,12 +97,16 @@ class BuildingCommentIndividualView(APIView):
 
 class BuildingCommentBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]
+    serializer_class = BuildingCommentSerializer
 
+    @extend_schema(responses={200: BuildingCommentSerializer, 400: None})
     def get(self, request, building_id):
         """
         Get all BuildingComments of building with given building id
         """
-        building_comment_instance = BuildingComment.objects.filter(building_id=building_id)
+        building_comment_instance = BuildingComment.objects.filter(
+            building_id=building_id
+        )
 
         if not building_comment_instance:
             return bad_request_relation("BuildingComment", "building")
@@ -100,6 +117,7 @@ class BuildingCommentBuildingView(APIView):
 
 class BuildingCommentAllView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = BuildingCommentSerializer
 
     def get(self, request):
         """

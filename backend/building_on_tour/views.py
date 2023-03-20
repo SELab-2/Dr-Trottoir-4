@@ -1,5 +1,6 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 from authorisation.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
 from base.models import BuildingOnTour
@@ -11,7 +12,9 @@ TRANSLATE = {"building": "building_id", "tour": "tour_id"}
 
 class Default(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = BuildingTourSerializer
 
+    @extend_schema(responses={201: BuildingTourSerializer, 400: None})
     def post(self, request):
         """
         Create a new BuildingOnTour with data from post
@@ -30,7 +33,9 @@ class Default(APIView):
 
 class BuildingTourIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
+    serializer_class = BuildingTourSerializer
 
+    @extend_schema(responses={200: BuildingTourSerializer, 400: None})
     def get(self, request, building_tour_id):
         """
         Get info about a BuildingOnTour with given id
@@ -43,6 +48,7 @@ class BuildingTourIndividualView(APIView):
         serializer = BuildingTourSerializer(building_on_tour_instance[0])
         return get_success(serializer)
 
+    @extend_schema(responses={200: BuildingTourSerializer, 400: None})
     def patch(self, request, building_tour_id):
         """
         edit info about a BuildingOnTour with given id
@@ -63,6 +69,7 @@ class BuildingTourIndividualView(APIView):
 
         return patch_success(BuildingTourSerializer(building_on_tour_instance))
 
+    @extend_schema(responses={204: None, 400: None})
     def delete(self, request, building_tour_id):
         """
         delete a BuildingOnTour from the database
@@ -78,6 +85,7 @@ class BuildingTourIndividualView(APIView):
 
 class AllBuildingToursView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
+    serializer_class = BuildingTourSerializer
 
     def get(self, request):
         """

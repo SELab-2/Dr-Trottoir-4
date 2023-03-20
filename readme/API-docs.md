@@ -9,7 +9,7 @@ Use the following command to generate a schema:
 ```bash
 docker-compose exec backend python manage.py spectacular --file schema.yml
 ```
-To access the documentation, head over to http://localhost:2002/api/schema/swagger-ui/.
+To access the documentation, head over to http://localhost:2002/docs/ui/.
 
 Please note that generating the schema might output a lot of warnings and errors. In the next section we'll talk about how to
 fix the most common error, but I am unsure whether the warnings will cause any issues. I recommend to fix the errors first
@@ -21,6 +21,8 @@ decorator from [drf-spectacular](https://github.com/tfranzel/drf-spectacular#cus
 of how to use it:
 
 ```python
+from drf_spectacular.utils import extend_schema
+
 class AllUsersView(APIView):
     serializer_class = UserSerializer
 
@@ -62,8 +64,8 @@ we'll still need to respecify it since using the `responses` field will override
 
 Now note how we set `serializer_class = UserSerializer` without ever using `serializer_class`. This was necessary to fix
 one of the errors we talked about earlier, more specifically the `unable to guess serializer` error. By adding this line
-we'll be specifying a serializer which should fix the error. Without this line the documentation for `/user/all` will just
-not appear at all.
+we'll be specifying a serializer which should fix the error. Without this line the documentation for `/user/all` will be missing
+the response body.
 
 Don't forget to generate a new `schema.yml` once you're done!
 

@@ -1,5 +1,6 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 from authorisation.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount
 from base.models import StudentAtBuildingOnTour
@@ -11,7 +12,9 @@ TRANSLATE = {"building_on_tour": "building_on_tour_id", "student": "student_id"}
 
 class Default(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = StudBuildTourSerializer
 
+    @extend_schema(responses={201: StudBuildTourSerializer, 400: None})
     def post(self, request):
         """
         Create a new StudentAtBuildingOnTour
@@ -24,11 +27,14 @@ class Default(APIView):
         if r := try_full_clean_and_save(student_at_building_on_tour_instance):
             return r
 
-        return post_success(StudBuildTourSerializer(student_at_building_on_tour_instance))
+        return post_success(
+            StudBuildTourSerializer(student_at_building_on_tour_instance)
+        )
 
 
 class BuildingTourPerStudentView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerAccount]
+    serializer_class = StudBuildTourSerializer
 
     def get(self, request, student_id):
         """
@@ -37,20 +43,27 @@ class BuildingTourPerStudentView(APIView):
         id_holder = type("", (), {})()
         id_holder.id = student_id
         self.check_object_permissions(request, id_holder)
-
-        student_at_building_on_tour_instances = StudentAtBuildingOnTour.objects.filter(student_id=student_id)
-        serializer = StudBuildTourSerializer(student_at_building_on_tour_instances, many=True)
+        student_at_building_on_tour_instances = StudentAtBuildingOnTour.objects.filter(
+            student_id=student_id
+        )
+        serializer = StudBuildTourSerializer(
+            student_at_building_on_tour_instances, many=True
+        )
         return get_success(serializer)
 
 
 class StudentAtBuildingOnTourIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyOwnerAccount]
+    serializer_class = StudBuildTourSerializer
 
+    @extend_schema(responses={200: StudBuildTourSerializer, 400: None})
     def get(self, request, student_at_building_on_tour_id):
         """
         Get an individual StudentAtBuildingOnTour with given id
         """
-        stud_tour_building_instance = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
+        stud_tour_building_instance = StudentAtBuildingOnTour.objects.filter(
+            id=student_at_building_on_tour_id
+        )
 
         if len(stud_tour_building_instance) != 1:
             return bad_request("StudentAtBuildingOnTour")
@@ -61,11 +74,14 @@ class StudentAtBuildingOnTourIndividualView(APIView):
         serializer = StudBuildTourSerializer(stud_tour_building_instance)
         return get_success(serializer)
 
+    @extend_schema(responses={200: StudBuildTourSerializer, 400: None})
     def patch(self, request, student_at_building_on_tour_id):
         """
         Edit info about an individual StudentAtBuildingOnTour with given id
         """
-        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
+        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(
+            id=student_at_building_on_tour_id
+        )
 
         if len(stud_tour_building_instances) != 1:
             return bad_request("StudentAtBuildingOnTour")
@@ -84,11 +100,14 @@ class StudentAtBuildingOnTourIndividualView(APIView):
         serializer = StudBuildTourSerializer(stud_tour_building_instance)
         return patch_success(serializer)
 
+    @extend_schema(responses={204: None, 400: None})
     def delete(self, request, student_at_building_on_tour_id):
         """
         Delete StudentAtBuildingOnTour with given id
         """
-        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
+        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(
+            id=student_at_building_on_tour_id
+        )
         if len(stud_tour_building_instances) != 1:
             return bad_request("StudentAtBuildingOnTour")
         stud_tour_building_instance = stud_tour_building_instances[0]
@@ -101,6 +120,7 @@ class StudentAtBuildingOnTourIndividualView(APIView):
 
 class AllView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = StudBuildTourSerializer
 
     def get(self, request):
         """
