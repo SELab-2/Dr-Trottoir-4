@@ -539,7 +539,7 @@
         "city": "Antwerpen",
         "postal_code": "2000",
         "street": "Grote Markt",
-        "house_number": "1",
+        "house_number": 1,
         "client_number": "48943513",
         "duration": "00:30:00",
         "syndic": [
@@ -556,7 +556,7 @@
         "city": "Gent",
         "postal_code": "9000",
         "street": "Veldstraat",
-        "house_number": "1",
+        "house_number": 1,
         "client_number": null,
         "duration": "00:45:00",
         "syndic": [
@@ -573,7 +573,7 @@
         "city": "Antwerpen",
         "postal_code": "2000",
         "street": "Universiteitsplein",
-        "house_number": "1",
+        "house_number": 1,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
@@ -590,7 +590,7 @@
         "city": "Antwerpen",
         "postal_code": "2000",
         "street": "Groenenborgerlaan",
-        "house_number": "171",
+        "house_number": 171,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
@@ -607,7 +607,7 @@
         "city": "Antwerpen",
         "postal_code": "2000",
         "street": "Middelheimlaan",
-        "house_number": "1",
+        "house_number": 1,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
@@ -624,7 +624,7 @@
         "city": "Antwerpen",
         "postal_code": "2000",
         "street": "Prinsstraat",
-        "house_number": "13",
+        "house_number": 13,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
@@ -641,7 +641,7 @@
         "city": "Gent",
         "postal_code": "9000",
         "street": "Krijgslaan",
-        "house_number": "281",
+        "house_number": 281,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
@@ -658,7 +658,7 @@
         "city": "Gent",
         "postal_code": "9000",
         "street": "Karel Lodewijk Ledeganckstraat",
-        "house_number": "35",
+        "house_number": 35,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
@@ -675,7 +675,7 @@
         "city": "Gent",
         "postal_code": "9000",
         "street": "Tweekerkenstraat",
-        "house_number": "2",
+        "house_number": 2,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
@@ -692,7 +692,7 @@
         "city": "Gent",
         "postal_code": "9000",
         "street": "Sint-Pietersnieuwstraat",
-        "house_number": "33",
+        "house_number": 33,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
@@ -709,7 +709,7 @@
         "city": "Gent",
         "postal_code": "9000",
         "street": "Veldstraat",
-        "house_number": "2",
+        "house_number": 2,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
@@ -726,7 +726,7 @@
         "city": "Gent",
         "postal_code": "9000",
         "street": "Veldstraat",
-        "house_number": "3",
+        "house_number": 3,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
@@ -743,7 +743,7 @@
         "city": "Gent",
         "postal_code": "9000",
         "street": "Veldstraat",
-        "house_number": "4",
+        "house_number": 4,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
@@ -760,7 +760,7 @@
         "city": "Antwerpen",
         "postal_code": "2000",
         "street": "Grote Markt",
-        "house_number": "2",
+        "house_number": 2,
         "client_number": null,
         "duration": "00:00:00",
         "syndic": [
@@ -777,7 +777,7 @@
         "city": "Antwerpen",
         "postal_code": "2000",
         "street": "Grote Markt",
-        "house_number": "3",
+        "house_number": 3,
         "client_number": null,
         "duration": "00:00:00",
         "syndic": [
@@ -794,7 +794,7 @@
         "city": "Antwerpen",
         "postal_code": "2000",
         "street": "Grote Markt",
-        "house_number": "4",
+        "house_number": 4,
         "client_number": null,
         "duration": "00:00:00",
         "syndic": [

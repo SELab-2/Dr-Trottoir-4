@@ -96,16 +96,26 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f"{self.email} ({self.role})"
 
 
+class EmailWhitelist(models.Model):
+    email = models.EmailField(_('email address'), unique=True,
+                              error_messages={'unique': "This email is already on the whitelist."})
+    # The verification code, preferably hashed
+    verification_code = models.CharField(max_length=128, unique=True,
+                                    error_messages={'unique': "This verification code already exists."})
+
+
 class Building(models.Model):
     city = models.CharField(max_length=40)
     postal_code = models.CharField(max_length=10)
     street = models.CharField(max_length=60)
-    house_number = models.CharField(max_length=10)
+    house_number = models.PositiveIntegerField()
+    bus = models.CharField(max_length=10, blank=True, null=True)
     client_number = models.CharField(max_length=40, blank=True, null=True)
     duration = models.TimeField(default="00:00")
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
+    public_id = models.CharField(max_length=32, blank=True, null=True)
 
     """
     Only a syndic can own a building, not a student.
@@ -117,10 +127,12 @@ class Building(models.Model):
         # If this is not checked, `self.syndic` will cause an internal server error 500
         _check_for_present_keys(self, {"syndic_id"})
 
-        user = self.syndic
+        if self.house_number == 0:
+            raise ValidationError("The house number of the building must be positive and not zero.")
 
-        if user.role.name.lower() != "syndic":
-            raise ValidationError('Only a user with role "syndic" can own a building.')
+        user = self.syndic
+        if user.role.name.lower() != 'syndic':
+            raise ValidationError("Only a user with role \"syndic\" can own a building.")
 
     class Meta:
         constraints = [
@@ -136,15 +148,6 @@ class Building(models.Model):
 
     def __str__(self):
         return f"{self.street} {self.house_number}, {self.city} {self.postal_code}"
-
-
-class BuildingURL(RandomIDModel):
-    first_name_resident = models.CharField(max_length=40)
-    last_name_resident = models.CharField(max_length=40)
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.first_name_resident} {self.last_name_resident} : {self.id}"
 
 
 class BuildingComment(models.Model):
@@ -398,5 +401,19 @@ class Manual(models.Model):
                 "version_number",
                 name="unique_manual",
                 violation_error_message="The building already has a manual with the same version number",
+            ),
+        ]
+
+
+class EmailTemplate(models.Model):
+    name = models.CharField(max_length=40)
+    template = models.TextField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                'name',
+                name='unique_template_name',
+                violation_error_message='The name for this template already exists.'
             ),
         ]
