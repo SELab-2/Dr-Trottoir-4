@@ -16,7 +16,6 @@ class DefaultBuilding(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = BuildingSerializer
 
-
     @extend_schema(responses={201: BuildingSerializer, 400: None})
     def post(self, request):
         """
@@ -36,11 +35,8 @@ class DefaultBuilding(APIView):
 
 
 class BuildingIndividualView(APIView):
-    permission_classes = [IsAuthenticated,
-                          IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding
-                          ]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = BuildingSerializer
-
 
     @extend_schema(responses={200: BuildingSerializer, 400: None})
     def get(self, request, building_id):

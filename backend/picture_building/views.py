@@ -39,9 +39,7 @@ class PictureBuildingIndividualView(APIView):
         """
         Get PictureBuilding with given id
         """
-        picture_building_instance = PictureBuilding.objects.filter(
-            id=picture_building_id
-        )
+        picture_building_instance = PictureBuilding.objects.filter(id=picture_building_id)
 
         if len(picture_building_instance) != 1:
             return bad_request("PictureBuilding")
@@ -57,9 +55,7 @@ class PictureBuildingIndividualView(APIView):
         """
         Edit info about PictureBuilding with given id
         """
-        picture_building_instance = PictureBuilding.objects.filter(
-            id=picture_building_id
-        )
+        picture_building_instance = PictureBuilding.objects.filter(id=picture_building_id)
         if not picture_building_instance:
             return bad_request("PictureBuilding")
 
@@ -80,9 +76,7 @@ class PictureBuildingIndividualView(APIView):
         """
         delete a pictureBuilding from the database
         """
-        picture_building_instance = PictureBuilding.objects.filter(
-            id=picture_building_id
-        )
+        picture_building_instance = PictureBuilding.objects.filter(id=picture_building_id)
         if len(picture_building_instance) != 1:
             return bad_request("PictureBuilding")
         picture_building_instance = picture_building_instance[0]
@@ -109,9 +103,7 @@ class PicturesOfBuildingView(APIView):
 
         self.check_object_permissions(request, building_instance)
 
-        picture_building_instances = PictureBuilding.objects.filter(
-            building_id=building_id
-        )
+        picture_building_instances = PictureBuilding.objects.filter(building_id=building_id)
         serializer = PictureBuildingSerializer(picture_building_instances, many=True)
         return get_success(serializer)
 

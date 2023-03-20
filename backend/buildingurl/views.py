@@ -118,9 +118,7 @@ class BuildingUrlSyndicView(APIView):
         self.check_object_permissions(request, id_holder)
 
         # All building IDs where user is syndic
-        building_ids = [
-            building.id for building in Building.objects.filter(syndic=syndic_id)
-        ]
+        building_ids = [building.id for building in Building.objects.filter(syndic=syndic_id)]
 
         building_urls_instances = BuildingURL.objects.filter(building__in=building_ids)
         serializer = BuildingUrlSerializer(building_urls_instances, many=True)
@@ -153,7 +151,6 @@ class BuildingUrlBuildingView(APIView):
 class BuildingUrlAllView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = BuildingUrlSerializer
-
 
     def get(self, request):
         """

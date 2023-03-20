@@ -42,9 +42,7 @@ class BuildingCommentIndividualView(APIView):
         """
         Get an invividual BuildingComment with given id
         """
-        building_comment_instance = BuildingComment.objects.filter(
-            id=building_comment_id
-        )
+        building_comment_instance = BuildingComment.objects.filter(id=building_comment_id)
 
         self.check_object_permissions(request, building_comment_instance.building)
 
@@ -58,9 +56,7 @@ class BuildingCommentIndividualView(APIView):
         """
         Delete a BuildingComment with given id
         """
-        building_comment_instance = BuildingComment.objectts.filter(
-            id=building_comment_id
-        )
+        building_comment_instance = BuildingComment.objectts.filter(id=building_comment_id)
 
         self.check_object_permissions(request, building_comment_instance.building)
 
@@ -75,9 +71,7 @@ class BuildingCommentIndividualView(APIView):
         """
         Edit BuildingComment with given id
         """
-        building_comment_instance = BuildingComment.objects.filter(
-            id=building_comment_id
-        )
+        building_comment_instance = BuildingComment.objects.filter(id=building_comment_id)
 
         if not building_comment_instance:
             return bad_request("BuildingComment")
@@ -104,9 +98,7 @@ class BuildingCommentBuildingView(APIView):
         """
         Get all BuildingComments of building with given building id
         """
-        building_comment_instance = BuildingComment.objects.filter(
-            building_id=building_id
-        )
+        building_comment_instance = BuildingComment.objects.filter(building_id=building_id)
 
         if not building_comment_instance:
             return bad_request_relation("BuildingComment", "building")

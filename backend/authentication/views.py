@@ -21,7 +21,6 @@ class LogoutViewWithBlacklisting(LogoutView):
     permission_classes = [IsAuthenticated]
     serializer_class = CookieTokenRefreshSerializer
 
-
     @extend_schema(responses={200: None, 401: None, 500: None})
     def logout(self, request):
         response = Response(
@@ -38,16 +37,11 @@ class LogoutViewWithBlacklisting(LogoutView):
                 token = RefreshToken(request.COOKIES.get(cookie_name))
                 token.blacklist()
         except KeyError:
-            response.data = {
-                "detail": _("Refresh token was not included in request cookies.")
-            }
+            response.data = {"detail": _("Refresh token was not included in request cookies.")}
             response.status_code = status.HTTP_401_UNAUTHORIZED
         except (TokenError, AttributeError, TypeError) as error:
             if hasattr(error, "args"):
-                if (
-                    "Token is blacklisted" in error.args
-                    or "Token is invalid or expired" in error.args
-                ):
+                if "Token is blacklisted" in error.args or "Token is invalid or expired" in error.args:
                     response.data = {"detail": _(error.args[0])}
                     response.status_code = status.HTTP_401_UNAUTHORIZED
                 else:
@@ -78,7 +72,6 @@ class RefreshViewHiddenTokens(TokenRefreshView):
 
 
 class LoginViewWithHiddenTokens(LoginView):
-
     def finalize_response(self, request, response, *args, **kwargs):
         if response.status_code == 200 and "access_token" in response.data:
             response.data["access_token"] = _("set successfully")

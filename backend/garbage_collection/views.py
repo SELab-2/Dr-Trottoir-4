@@ -41,9 +41,7 @@ class GarbageCollectionIndividualView(APIView):
         """
         Get info about a garbage collection with given id
         """
-        garbage_collection_instance = GarbageCollection.objects.filter(
-            id=garbage_collection_id
-        )
+        garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
         if not garbage_collection_instance:
             return bad_request("GarbageCollection")
         serializer = GarbageCollectionSerializer(garbage_collection_instance[0])
@@ -54,9 +52,7 @@ class GarbageCollectionIndividualView(APIView):
         """
         Delete garbage collection with given id
         """
-        garbage_collection_instance = GarbageCollection.objects.filter(
-            id=garbage_collection_id
-        )
+        garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
         if not garbage_collection_instance:
             return bad_request("GarbageCollection")
         garbage_collection_instance[0].delete()
@@ -67,9 +63,7 @@ class GarbageCollectionIndividualView(APIView):
         """
         Edit garbage collection with given id
         """
-        garbage_collection_instance = GarbageCollection.objects.filter(
-            id=garbage_collection_id
-        )
+        garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
         if not garbage_collection_instance:
             return bad_request("GarbageCollection")
 
@@ -116,7 +110,5 @@ class GarbageCollectionAllView(APIView):
         Get all garbage collections
         """
         garbage_collection_instances = GarbageCollection.objects.all()
-        serializer = GarbageCollectionSerializer(
-            garbage_collection_instances, many=True
-        )
+        serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
         return get_success(serializer)

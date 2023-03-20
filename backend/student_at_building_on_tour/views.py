@@ -27,9 +27,7 @@ class Default(APIView):
         if r := try_full_clean_and_save(student_at_building_on_tour_instance):
             return r
 
-        return post_success(
-            StudBuildTourSerializer(student_at_building_on_tour_instance)
-        )
+        return post_success(StudBuildTourSerializer(student_at_building_on_tour_instance))
 
 
 class BuildingTourPerStudentView(APIView):
@@ -43,12 +41,8 @@ class BuildingTourPerStudentView(APIView):
         id_holder = type("", (), {})()
         id_holder.id = student_id
         self.check_object_permissions(request, id_holder)
-        student_at_building_on_tour_instances = StudentAtBuildingOnTour.objects.filter(
-            student_id=student_id
-        )
-        serializer = StudBuildTourSerializer(
-            student_at_building_on_tour_instances, many=True
-        )
+        student_at_building_on_tour_instances = StudentAtBuildingOnTour.objects.filter(student_id=student_id)
+        serializer = StudBuildTourSerializer(student_at_building_on_tour_instances, many=True)
         return get_success(serializer)
 
 
@@ -61,9 +55,7 @@ class StudentAtBuildingOnTourIndividualView(APIView):
         """
         Get an individual StudentAtBuildingOnTour with given id
         """
-        stud_tour_building_instance = StudentAtBuildingOnTour.objects.filter(
-            id=student_at_building_on_tour_id
-        )
+        stud_tour_building_instance = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
 
         if len(stud_tour_building_instance) != 1:
             return bad_request("StudentAtBuildingOnTour")
@@ -79,9 +71,7 @@ class StudentAtBuildingOnTourIndividualView(APIView):
         """
         Edit info about an individual StudentAtBuildingOnTour with given id
         """
-        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(
-            id=student_at_building_on_tour_id
-        )
+        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
 
         if len(stud_tour_building_instances) != 1:
             return bad_request("StudentAtBuildingOnTour")
@@ -105,9 +95,7 @@ class StudentAtBuildingOnTourIndividualView(APIView):
         """
         Delete StudentAtBuildingOnTour with given id
         """
-        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(
-            id=student_at_building_on_tour_id
-        )
+        stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
         if len(stud_tour_building_instances) != 1:
             return bad_request("StudentAtBuildingOnTour")
         stud_tour_building_instance = stud_tour_building_instances[0]
