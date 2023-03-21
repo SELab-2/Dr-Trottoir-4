@@ -178,7 +178,7 @@ class CanEditRole(BasePermission):
     Checks if the user has the right permissions to edit the role of a user
     """
 
-    message = "You can't assign a role to yourself or assign a role tha is higher than your own"
+    message = "You can't assign a role to yourself or assign a role that is higher than your own"
 
     def has_object_permission(self, request, view, obj: User):
         if request.method in ["PATCH"]:

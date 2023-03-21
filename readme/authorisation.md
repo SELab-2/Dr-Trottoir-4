@@ -12,9 +12,12 @@
 
 ### Object based permissions
 
-- `ReadOnlyOwnerOfBuilding` (global + object): checks if the user is a syndic and if he owns the building
+- `OwnerOfBuilding` (global + object): checks if the user is a syndic and if he is the owner
+- `ReadOnlyOwnerOfBuilding` (global + object): checks if the user is a syndic and if he owns the building and only tries to read from it
 - `OwnerAccount` (object): checks if the user tries to access his own user info or info that belongs to him/her
 - `ReadOnlyOwnerAccount` (object): checks if the user tries to read his own user info or info that belongs to him/her
+- `CanCreateUser` (object): checks if the user only creates users of higher or equal rank
+- `CanDeleteUser` (object): checks if the user has a higher rank than the one he tries to delete
 - `CanEditUser` (object): checks if the user who tries to edit is in fact the user himself or someone with a higher rank
 - `CanEditRole` (object): checks if the user who tries to assign a role, doesn't set a role higher than his own role
 
@@ -49,7 +52,7 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 
 - `buildingurl/ - [..., IsAdmin | OwnerOfBuilding]`
 - `buildingurl/id - [..., IsAdmin | OwnerOfBuilding]`
-- `buildingurl/syndic/id - [..., IsAdmin | OwnsAccount]`
+- `buildingurl/syndic/id - [..., IsAdmin | OwnerAccount]`
 - `buildingurl/building/id - [..., IsAdmin | OwnerOfBuilding]`
 - `buildingurl/all - [..., IsAdmin]`
 
@@ -64,7 +67,7 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 
 - `manual/ - [..., IsAdmin | IsSuperStudent | IsSyndic]`
 - `manual/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent | IsSyndic]`
-    - **TODO** Change IsSyndic to IsOwnerOfManual once that is added to the model
+    - **TODO** IsSyndic should be updated to : can access manuals of his own buildings only!
 - `manual/building/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding]`
 - `manual/all/ - [..., IsAdmin | IsSuperStudent]`
 
@@ -103,6 +106,6 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 
 ### User urls
 
-- `user/ - [..., IsAdmin | IsSuperStudent]`
-- `user/id - [..., IsAuthenticated, IsAdmin | IsSuperStudent | OwnsAccount, CanEditUser, CanEditRole]`
+- `user/ - [..., IsAdmin | IsSuperStudent, CanCreateUser]`
+- `user/id - [..., IsAuthenticated, IsAdmin | IsSuperStudent | OwnerAccount, CanEditUser, CanEditRole, CanDeleteUser]`
 - `user/all - [..., IsAdmin | IsSuperStudent]`
