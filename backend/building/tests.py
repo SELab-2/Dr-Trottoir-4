@@ -1,40 +1,9 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from base.models import User, Region
+from util.data_generators import createUser, insert_dummy_region, insert_dummy_syndic
 
 backend_url = "http://localhost:2002"
-
-
-def insert_dummy_region():
-    r = Region(region="Gent")
-    r.save()
-    return r.id
-
-
-def insert_dummy_syndic():
-    s = User(
-        first_name="test",
-        last_name="test",
-        phone_number="0487172529",
-        role="SY"
-    )
-    s.save()
-    return s.id
-
-
-def createUser(is_staff: bool = True) -> User:
-    user = User(
-        first_name="test",
-        last_name="test",
-        email="test@test.com",
-        is_staff=is_staff,
-        is_active=True,
-        phone_number="+32485710347",
-        role="AD"
-    )
-    user.save()
-    return user
 
 
 class BuildingTests(TestCase):
@@ -70,7 +39,6 @@ class BuildingTests(TestCase):
             assert key in resp.data
         assert "id" in resp.data
 
-
     def test_insert_dupe_building(self):
         user = createUser()
         client = APIClient()
@@ -94,7 +62,7 @@ class BuildingTests(TestCase):
         response = client.post(f"{backend_url}/building/", data, follow=True)
         assert response.status_code == 400
 
-    def test_get_tour(self):
+    def test_get_building(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -130,7 +98,7 @@ class BuildingTests(TestCase):
         resp = client.get(f"{backend_url}/building/123456789", follow=True)
         assert resp.status_code == 400  # should be changed to 404
 
-    def test_patch_tour(self):
+    def test_patch_building(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user)
@@ -170,7 +138,7 @@ class BuildingTests(TestCase):
         assert response3.status_code == 200
         assert "id" in response3.data
 
-    def test_patch_invalid_tour(self):
+    def test_patch_invalid_building(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -190,7 +158,7 @@ class BuildingTests(TestCase):
         response2 = client.patch(f"{backend_url}/building/123434687658/", data, follow=True)
         assert response2.status_code == 400
 
-    def test_patch_error_tour(self):
+    def test_patch_error_building(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -225,7 +193,7 @@ class BuildingTests(TestCase):
         response2 = client.patch(f"{backend_url}/building/{id}/", data2, follow=True)
         assert response2.status_code == 400
 
-    def test_remove_tour(self):
+    def test_remove_building(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -252,14 +220,14 @@ class BuildingTests(TestCase):
         # assert response3.status_code == 404
         assert response3.status_code == 400
 
-    def test_remove_nonexistent_tour(self):
+    def test_remove_nonexistent_building(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
         response2 = client.delete(f"{backend_url}/building/123456789/", follow=True)
         assert response2.status_code == 400
 
-    def test_add_existing_region(self):
+    def test_add_existing_building(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)

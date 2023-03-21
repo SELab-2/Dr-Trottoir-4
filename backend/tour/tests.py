@@ -1,29 +1,9 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from base.models import User, Region
+from util.data_generators import createUser, insert_dummy_region
 
 backend_url = "http://localhost:2002"
-
-
-def insert_dummy_region():
-    r = Region(region="Gent")
-    r.save()
-    return r.id
-
-
-def createUser(is_staff: bool = True) -> User:
-    user = User(
-        first_name="test",
-        last_name="test",
-        email="test@test.com",
-        is_staff=is_staff,
-        is_active=True,
-        phone_number="+32485710347",
-        role="AD"
-    )
-    user.save()
-    return user
 
 
 class TourTests(TestCase):
@@ -98,7 +78,7 @@ class TourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user)
         resp = client.get(f"{backend_url}/tour/123456789", follow=True)
-        assert resp.status_code == 400 # should be changed to 404
+        assert resp.status_code == 400  # should be changed to 404
 
     def test_patch_tour(self):
         user = createUser()
@@ -194,7 +174,7 @@ class TourTests(TestCase):
         response2 = client.delete(f"{backend_url}/tour/123456789/", follow=True)
         assert response2.status_code == 400
 
-    def test_add_existing_region(self):
+    def test_add_existing_tour(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)

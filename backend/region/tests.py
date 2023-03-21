@@ -2,22 +2,9 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 from base.models import User
+from util.data_generators import createUser
 
 backend_url = "http://localhost:2002"
-
-
-def createUser(is_staff: bool = True) -> User:
-    user = User(
-        first_name="test",
-        last_name="test",
-        email="test@test.com",
-        is_staff=is_staff,
-        is_active=True,
-        phone_number="+32485710347",
-        role="AD"
-    )
-    user.save()
-    return user
 
 
 class RegionTests(TestCase):
