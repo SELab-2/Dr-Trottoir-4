@@ -1,4 +1,5 @@
 import { SignUp } from "@/types.d";
+import login from "@/lib/login";
 
 const signup = async (
     firstname: string,
@@ -33,7 +34,7 @@ const signup = async (
         });
         if (response.status == 201) {
             alert("Successfully created account");
-            await router.push("/login");
+            await login(email, password1, router); // instantly log in
         }
     } catch (error) {
         console.error(error);
