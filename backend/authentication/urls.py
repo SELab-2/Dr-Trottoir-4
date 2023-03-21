@@ -1,4 +1,3 @@
-from dj_rest_auth.registration.views import VerifyEmailView
 from dj_rest_auth.views import (
     PasswordResetView,
     PasswordResetConfirmView,
@@ -28,15 +27,4 @@ urlpatterns = [
     # URLs that require a user to be logged in with a valid session / token.
     path("logout/", LogoutViewWithBlacklisting.as_view(), name="rest_logout"),
     path("password/change/", PasswordChangeView.as_view(), name="rest_password_change"),
-    path("verify-email/", VerifyEmailView.as_view(), name="rest_verify_email"),
-    path(
-        "account-confirm-email/",
-        VerifyEmailView.as_view(),
-        name="account_confirm_email_sent",
-    ),
-    path(
-        "account-confirm-email/<key>/",
-        VerifyEmailView.as_view(),
-        name="account_confirm_email",
-    ),
 ]
