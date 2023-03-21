@@ -1,7 +1,8 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from authorisation.permissions import IsAdmin, IsSuperStudent, IsSyndic, OwnerOfBuilding, ReadOnlyStudent
+from authorisation.permissions import IsAdmin, IsSuperStudent, IsSyndic, OwnerOfBuilding, ReadOnlyStudent, \
+    ManualFromSyndic
 from base.models import Manual, Building
 from base.serializers import ManualSerializer
 from util.request_response_util import *
@@ -31,8 +32,7 @@ class Default(APIView):
 
 
 class ManualView(APIView):
-    # TODO: Change IsSyndic to the owner of the manual (once that is added to the Manual model)
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | IsSyndic]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ManualFromSyndic]
     serializer_class = ManualSerializer
 
     @extend_schema(responses={200: ManualSerializer, 400: None})
@@ -43,7 +43,11 @@ class ManualView(APIView):
         manual_instances = Manual.objects.filter(id=manual_id)
         if len(manual_instances) != 1:
             return bad_request("Manual")
-        serializer = ManualSerializer(manual_instances[0])
+        manual_instance = manual_instances[0]
+
+        self.check_object_permissions(manual_instance)
+
+        serializer = ManualSerializer(manual_instances)
         return get_success(serializer)
 
     @extend_schema(responses={204: None, 400: None})

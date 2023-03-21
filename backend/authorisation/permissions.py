@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
-from base.models import Building, User, Role
+from base.models import Building, User, Role, Manual
 from util.request_response_util import request_to_dict
 
 SAFE_METHODS = ["GET", "HEAD", "OPTIONS"]
@@ -190,3 +190,13 @@ class CanEditRole(BasePermission):
                 role_instance = Role.objects.filter(id=data["role"])[0]
                 return request.user.role.rank <= role_instance.rank
         return True
+
+
+class ManualFromSyndic(BasePermission):
+    """
+    Checks if the manual belongs to a building from the syndic
+    """
+    message = "You can only view manuals that are linked to one of your buildings"
+
+    def has_object_permission(self, request, view, obj: Manual):
+        return request.user.id == obj.building.syndic_id
