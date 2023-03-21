@@ -4,23 +4,32 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('base', '0002_emailtemplate_emailwhitelist_and_more'),
+        ("base", "0002_emailtemplate_emailwhitelist_and_more"),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='manual',
-            name='unique_manual',
+            model_name="manual",
+            name="unique_manual",
         ),
         migrations.AlterField(
-            model_name='emailwhitelist',
-            name='email',
-            field=models.EmailField(error_messages={'unique': 'This email is already in the whitelist.'}, max_length=254, unique=True, verbose_name='email address'),
+            model_name="emailwhitelist",
+            name="email",
+            field=models.EmailField(
+                error_messages={"unique": "This email is already in the whitelist."},
+                max_length=254,
+                unique=True,
+                verbose_name="email address",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='manual',
-            constraint=models.UniqueConstraint(models.F('building'), models.F('version_number'), name='unique_manual', violation_error_message='The building already has a manual with the same version number'),
+            model_name="manual",
+            constraint=models.UniqueConstraint(
+                models.F("building"),
+                models.F("version_number"),
+                name="unique_manual",
+                violation_error_message="The building already has a manual with the same version number",
+            ),
         ),
     ]
