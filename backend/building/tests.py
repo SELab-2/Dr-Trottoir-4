@@ -83,6 +83,11 @@ class BuildingTests(TestCase):
 
         response1 = client.post(f"{backend_url}/building/", data, follow=True)
         assert response1.status_code == 201
+        for key in data:
+            # alle info zou er in moeten zitten
+            assert key in response1.data
+        # er moet ook een id bij zitten
+        assert "id" in response1.data
         id = response1.data["id"]
         response2 = client.get(f"{backend_url}/building/{id}/", follow=True)
         assert response2.status_code == 200
