@@ -1,7 +1,6 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from base.factories import RegionFactory
 from base.models import User
 
 backend_url = "http://localhost:2002"
@@ -21,9 +20,6 @@ def createUser(is_staff: bool = True) -> User:
     return user
 
 
-rf = RegionFactory
-
-
 class RegionTests(TestCase):
     def test_empty_region_list(self):
         user = createUser()
@@ -38,7 +34,9 @@ class RegionTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data = rf.getRegion()
+        data = {
+            "region": "Gent"
+        }
         response = client.post(f"{backend_url}/region/", data, follow=True)
         assert response.status_code == 201
         for key in data:
@@ -51,7 +49,9 @@ class RegionTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data = rf.getRegion()
+        data = {
+            "region": "Gent"
+        }
         _ = client.post(f"{backend_url}/region/", data, follow=True)
         response = client.post(f"{backend_url}/region/", data, follow=True)
         assert response.status_code == 400
@@ -60,7 +60,9 @@ class RegionTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data1 = rf.getRegion()
+        data1 = {
+            "region": "Gent"
+        }
         response1 = client.post(f"{backend_url}/region/", data1, follow=True)
         assert response1.status_code == 201
         for key in data1:
@@ -87,8 +89,12 @@ class RegionTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data1 = rf.getRegion(region="Brugge")
-        data2 = rf.getRegion(region="Gent")
+        data1 = {
+            "region": "Brugge"
+        }
+        data2 = {
+            "region": "Gent"
+        }
         response1 = client.post(f"{backend_url}/region/", data1, follow=True)
         assert response1.status_code == 201
         for key in data1:
@@ -108,7 +114,9 @@ class RegionTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data = rf.getRegion()
+        data = {
+            "region": "Brugge"
+        }
         response2 = client.patch(f"{backend_url}/region/123434687658/", data, follow=True)
         assert response2.status_code == 400
 
@@ -116,8 +124,12 @@ class RegionTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data1 = rf.getRegion(region="Brugge")
-        data2 = rf.getRegion(region="Gent")
+        data1 = {
+            "region": "Brugge"
+        }
+        data2 = {
+            "region": "Gent"
+        }
         response1 = client.post(f"{backend_url}/region/", data1, follow=True)
         _ = client.post(f"{backend_url}/region/", data2, follow=True)
         assert response1.status_code == 201
@@ -129,9 +141,16 @@ class RegionTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data1 = rf.getRegion()
+        data1 = {
+            "region": "Gent"
+        }
         response1 = client.post(f"{backend_url}/region/", data1, follow=True)
         assert response1.status_code == 201
+        for key in data1:
+            # alle info zou er in moeten zitten
+            assert key in response1.data
+        # er moet ook een id bij zitten
+        assert "id" in response1.data
         id = response1.data["id"]
         response2 = client.delete(f"{backend_url}/region/{id}/", follow=True)
         assert response2.status_code == 204
@@ -151,7 +170,9 @@ class RegionTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data1 = rf.getRegion()
+        data1 = {
+            "region": "Gent"
+        }
         _ = client.post(f"{backend_url}/region/", data1, follow=True)
         response1 = client.post(f"{backend_url}/region/", data1, follow=True)
         assert response1.status_code == 400

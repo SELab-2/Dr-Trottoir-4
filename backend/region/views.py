@@ -19,7 +19,6 @@ class Default(APIView):
             if key in vars(region_instance):
                 setattr(region_instance, key, data[key])
         if r := try_full_clean_and_save(region_instance):
-            print(r.data)
             return r
 
         serializer = RegionSerializer(region_instance)
