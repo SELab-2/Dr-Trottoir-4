@@ -26,7 +26,7 @@ class Default(APIView):
         b = Tour(name=name, region=candidates[0], modified_at=modified_at)
         if r := try_full_clean_and_save(b):
             return r
-        return patch_succes(TourSerializer(b))
+        return post_succes(TourSerializer(b))
 
 
 class TourIndividualView(APIView):
