@@ -4,13 +4,24 @@ import Image from "next/image";
 import filler_logo from "../public/filler_logo.png";
 import Link from "next/link";
 import login from "../lib/login";
-import { FormEvent, useState } from "react";
+import {initialLogin} from "../lib/login";
+import {FormEvent, useEffect, useState} from "react";
 import { useRouter } from "next/router";
 
 export default function Login() {
     const router = useRouter();
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+
+    // try and log in to the application using existing refresh token
+    useEffect(() => {
+        try {
+            initialLogin(router);
+        } catch (error) {
+            console.log("No Refresh token found. Could not log in.");
+        }
+
+    }, [initialLogin]);
 
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
