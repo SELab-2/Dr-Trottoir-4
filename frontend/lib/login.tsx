@@ -23,4 +23,22 @@ const login = async (email: string, password: string, router: NextRouter): Promi
         });
 };
 
+// function to automatically log in if a refresh token is found
+// (will request a new access token)
+export const initialLogin = async(router: NextRouter): Promise<void> => {
+    const request_url: string = `${process.env.NEXT_PUBLIC_API_REFRESH_TOKEN}`;
+
+    api.post(request_url, {}, {
+      headers: {"Content-Type": "application/json"},
+    })
+        .then((response: {status: number}) => {
+          if (response.status == 200) {
+              router.push("/welcome");
+          }
+        })
+        .catch((error) => {
+          console.log("No Refresh token found. Could not log in.");
+        });
+};
+
 export default login;
