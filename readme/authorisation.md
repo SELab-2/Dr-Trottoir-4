@@ -21,8 +21,8 @@
 - `CanDeleteUser` (object): checks if the user has a higher rank than the one he tries to delete
 - `CanEditUser` (object): checks if the user who tries to edit is in fact the user himself or someone with a higher rank
 - `CanEditRole` (object): checks if the user who tries to assign a role, doesn't set a role higher than his own role
-- `ManualFromSyndic` (object): checks if the user that tries to access the manual is in fact the owner of the
-  building for which this manual was uploaded.
+- `ReadOnlyManualFromSyndic` (global + object): checks if the user that tries to access the manual is in fact the owner of the
+  building for which this manual was uploaded and checks if he only tries to read.
 
 ### Action based permissions
 
@@ -69,7 +69,7 @@ For all these views, `IsAuthenticated` is required. Therefor we only mention the
 ### Manual
 
 - `manual/ - [..., IsAdmin | IsSuperStudent | IsSyndic]`
-- `manual/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent | ManualFromSyndic]`
+- `manual/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyManualFromSyndic]`
 - `manual/building/id - [..., IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding]`
 - `manual/all/ - [..., IsAdmin | IsSuperStudent]`
 

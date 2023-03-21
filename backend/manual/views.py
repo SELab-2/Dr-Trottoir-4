@@ -2,7 +2,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from authorisation.permissions import IsAdmin, IsSuperStudent, IsSyndic, OwnerOfBuilding, ReadOnlyStudent, \
-    ManualFromSyndic
+    ReadOnlyManualFromSyndic
 from base.models import Manual, Building
 from base.serializers import ManualSerializer
 from util.request_response_util import *
@@ -32,7 +32,7 @@ class Default(APIView):
 
 
 class ManualView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ManualFromSyndic]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyManualFromSyndic]
     serializer_class = ManualSerializer
 
     @extend_schema(responses={200: ManualSerializer, 400: None})
