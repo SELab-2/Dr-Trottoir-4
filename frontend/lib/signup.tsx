@@ -1,5 +1,6 @@
 import { SignUp } from "@/types.d";
 import login from "@/lib/login";
+import api from "@/pages/api/axios";
 
 const signup = async (
     firstname: string,
@@ -25,20 +26,19 @@ const signup = async (
         return;
     }
 
-    try {
-        // Request without axios because no authentication is needed for this POST request
-        const response = await fetch(host, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(signup_data),
+    // Attempt to signup with axios so authentication tokens get saved in our axios instance
+    api.post(host, signup_data, {
+        headers: { "Content-Type": "application/json" },
+    })
+        .then((response: { status: number }) => {
+            if (response.status == 201) {
+                alert("Succesfully created account");
+                router.push("/welcome");
+            }
+        })
+        .catch((error) => {
+            console.error(error);
         });
-        if (response.status == 201) {
-            alert("Successfully created account");
-            await login(email, password1, router); // instantly log in
-        }
-    } catch (error) {
-        console.error(error);
-    }
 };
 
 export default signup;

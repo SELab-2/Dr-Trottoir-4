@@ -1,5 +1,6 @@
 import { Reset_Password } from "@/types.d";
 import { NextRouter } from "next/router";
+import api from "@/pages/api/axios";
 
 const reset = async (email: string, router: NextRouter): Promise<void> => {
     const host = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_RESET_PASSWORD}`;
@@ -7,21 +8,19 @@ const reset = async (email: string, router: NextRouter): Promise<void> => {
         email: email,
     };
 
-    try {
-        // Request without axios because no authentication is needed for this POST request
-        const response = await fetch(host, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(reset_data),
-        });
 
-        if (response.status == 200) {
-            alert("A password reset e-mail has been sent to the provided e-mail address");
-            await router.push("/login");
-        }
-    } catch (error) {
-        console.error(error);
-    }
+    api.post(host, reset_data, {
+        headers: { "Content-Type": "application/json" },
+    })
+        .then((response: { status: number }) => {
+            if (response.status == 200) {
+                alert("A password reset e-mail has been sent to the provided e-mail address");
+                router.push("/login");
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 };
 
 export default reset;
