@@ -9,6 +9,14 @@
 },
 {
     "model": "sessions.session",
+    "pk": "icpbdr23fsn7moz1gm1jvtk4p7p9uw15",
+    "fields": {
+        "session_data": ".eJxVjMEOwiAQRP-Fs2mKSxfwZn-ELFsIxIYmAifjv9uaHvQ4b2beSzjqLblew9PlRdyERHH5hZ74EcrR0LoeeCDmrZc2fDdnXYf7nkJpmanlrczn60-VqKbdE-XoNavggwc96ckyeqARyKNaFBqyI1sTrdyRMstVIkciYwAtwARavD_qxDwi:1pekHY:T1nBiKPojhdO5TXyl-NRmbf0mmnbG_Y3uuIJVBO__G0",
+        "expire_date": "2023-04-04T22:16:40.721Z"
+    }
+},
+{
+    "model": "sessions.session",
     "pk": "j021p17ab4dax6ex6axkiseb98hrwu47",
     "fields": {
         "session_data": ".eJxVjEEOwiAURO_C2hCk8AF39iLk84FAbGgidGW8u63pQpfz3sy8mMdtFL_19PQ1shuTkl1-YUB6pHYYXJYDcyRatzb4t3Pqzu97Sm1UwlHXNp-rv6uCvew_FoECSCVcSAooAiXtUpbZSpODimYCAqcdOm13JY0Vxlw1iCDiFKNi7w_sujxp:1pZxhm:zSprMzikHaWdPjNCuXbw1np1Z5NGjDr-mfABOH_t0xQ",
@@ -21,6 +29,14 @@
     "fields": {
         "session_data": ".eJxVjM0OwiAQhN-Fs2koPwt40xdpll0aiA1NhJ6M725retDjfN_MvMSEW8_T1tJzKiyuQo_i8gsj0iPVw-CyHHhAonWrffh2Tt2G255S7YWwl7Xez9XfVcaW9x-PQBGUkSEmA8RAyYY0q9krN0fDTgNBsAGD9btSzkvnRgsyStbMRrw_7Ls8aQ:1pZuvb:yMwFJC-JuHYDMGaXc_0E_-cyNrFJ5vQHdHyGCWplruI",
         "expire_date": "2023-03-22T14:38:03.200Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "u9nff810u1xxttz70tut4k3lsrlztc9s",
+    "fields": {
+        "session_data": ".eJxVjMEOwiAQRP-Fs2mKSxfwZn-ELFsIxIYmAifjv9uaHvQ4b2beSzjqLblew9PlRdyERHH5hZ74EcrR0LoeeCDmrZc2fDdnXYf7nkJpmanlrczn60-VqKbdE-XoNavggwc96ckyeqARyKNaFBqyI1sTrdyRMstVIkciYwAtwARavD_qxDwi:1pejqI:QRVpxAj84QMF_yU7aGO78vEdTMu9SxSpmagUWd8HdvE",
+        "expire_date": "2023-04-04T21:48:30.327Z"
     }
 },
 {
@@ -43,56 +59,64 @@
     "fields": {
         "region": "Antwerpen"
     }
-}, {
+},
+{
+    "model": "base.region",
+    "pk": 3,
+    "fields": {
+        "region": "Brugge"
+    }
+},
+{
     "model": "base.role",
     "pk": 1,
     "fields": {
-      "name": "Default",
-      "rank": 2147483647,
-      "description": "The default role"
+        "name": "Default",
+        "rank": 2147483647,
+        "description": "The default role"
     }
-  },
-  {
+},
+{
     "model": "base.role",
     "pk": 2,
     "fields": {
-      "name": "Admin",
-      "rank": 1,
-      "description": "The admin role"
+        "name": "Admin",
+        "rank": 1,
+        "description": "The admin role"
     }
-  },
-  {
+},
+{
     "model": "base.role",
     "pk": 3,
     "fields": {
-      "name": "Superstudent",
-      "rank": 2,
-      "description": "The superstudent role"
+        "name": "Superstudent",
+        "rank": 2,
+        "description": "The superstudent role"
     }
-  },
-  {
+},
+{
     "model": "base.role",
     "pk": 4,
     "fields": {
-      "name": "Student",
-      "rank": 3,
-      "description": "The student role"
+        "name": "Student",
+        "rank": 3,
+        "description": "The student role"
     }
-  },
-  {
+},
+{
     "model": "base.role",
     "pk": 5,
     "fields": {
-      "name": "Syndic",
-      "rank": 3,
-      "description": "The syndic role"
+        "name": "Syndic",
+        "rank": 3,
+        "description": "The syndic role"
     }
-  },
+},
 {
     "model": "base.user",
     "fields": {
         "password": "pbkdf2_sha256$390000$h8HANFi7B7Tdf2C83kS23G$2YBNlmr2Frrf0O5ZAK8oreR3NpRtahdoAK/d/r6pG1A=",
-        "last_login": "2023-03-08T14:26:10Z",
+        "last_login": "2023-03-21T21:17:46.173Z",
         "is_superuser": false,
         "email": "sylvie@test.com",
         "is_staff": false,
@@ -392,7 +416,7 @@
     "model": "base.user",
     "fields": {
         "password": "pbkdf2_sha256$390000$A3PF4gDTzyhxBo0LhwktVK$csGfWiwbiPLWv+XbRlrSRB34wjfVJDZEQErhoyoZv1o=",
-        "last_login": "2023-03-08T14:34:22Z",
+        "last_login": "2023-03-21T22:16:40.718Z",
         "is_superuser": true,
         "email": "adam@test.com",
         "is_staff": true,
@@ -540,13 +564,15 @@
         "postal_code": "2000",
         "street": "Grote Markt",
         "house_number": 1,
+        "bus": null,
         "client_number": "48943513",
         "duration": "00:30:00",
         "syndic": [
             "sylke@test.com"
         ],
         "region": 2,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -557,13 +583,15 @@
         "postal_code": "9000",
         "street": "Veldstraat",
         "house_number": 1,
+        "bus": null,
         "client_number": null,
         "duration": "00:45:00",
         "syndic": [
             "sylvano@test.com"
         ],
         "region": 1,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -574,13 +602,15 @@
         "postal_code": "2000",
         "street": "Universiteitsplein",
         "house_number": 1,
+        "bus": null,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
             "sydney@test.com"
         ],
         "region": 2,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -591,13 +621,15 @@
         "postal_code": "2000",
         "street": "Groenenborgerlaan",
         "house_number": 171,
+        "bus": null,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
             "sydney@test.com"
         ],
         "region": 2,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -608,13 +640,15 @@
         "postal_code": "2000",
         "street": "Middelheimlaan",
         "house_number": 1,
+        "bus": null,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
             "sydney@test.com"
         ],
         "region": 2,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -625,13 +659,15 @@
         "postal_code": "2000",
         "street": "Prinsstraat",
         "house_number": 13,
+        "bus": null,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
             "sydney@test.com"
         ],
         "region": 2,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -642,13 +678,15 @@
         "postal_code": "9000",
         "street": "Krijgslaan",
         "house_number": 281,
+        "bus": null,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
             "sylvian@test.com"
         ],
         "region": 1,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -659,13 +697,15 @@
         "postal_code": "9000",
         "street": "Karel Lodewijk Ledeganckstraat",
         "house_number": 35,
+        "bus": null,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
             "sylvian@test.com"
         ],
         "region": 1,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -676,13 +716,15 @@
         "postal_code": "9000",
         "street": "Tweekerkenstraat",
         "house_number": 2,
+        "bus": null,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
             "sylvian@test.com"
         ],
         "region": 1,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -693,13 +735,15 @@
         "postal_code": "9000",
         "street": "Sint-Pietersnieuwstraat",
         "house_number": 33,
+        "bus": null,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
             "sylvian@test.com"
         ],
         "region": 1,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -710,13 +754,15 @@
         "postal_code": "9000",
         "street": "Veldstraat",
         "house_number": 2,
+        "bus": null,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
             "sylvian@test.com"
         ],
         "region": 1,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -727,13 +773,15 @@
         "postal_code": "9000",
         "street": "Veldstraat",
         "house_number": 3,
+        "bus": null,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
             "sylvian@test.com"
         ],
         "region": 1,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -744,13 +792,15 @@
         "postal_code": "9000",
         "street": "Veldstraat",
         "house_number": 4,
+        "bus": null,
         "client_number": null,
         "duration": "01:00:00",
         "syndic": [
             "sylvano@test.com"
         ],
         "region": 1,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -761,13 +811,15 @@
         "postal_code": "2000",
         "street": "Grote Markt",
         "house_number": 2,
+        "bus": null,
         "client_number": null,
         "duration": "00:00:00",
         "syndic": [
             "sydney@test.com"
         ],
         "region": 2,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -778,13 +830,15 @@
         "postal_code": "2000",
         "street": "Grote Markt",
         "house_number": 3,
+        "bus": null,
         "client_number": null,
         "duration": "00:00:00",
         "syndic": [
             "sydney@test.com"
         ],
         "region": 2,
-        "name": null
+        "name": null,
+        "public_id": null
     }
 },
 {
@@ -795,13 +849,81 @@
         "postal_code": "2000",
         "street": "Grote Markt",
         "house_number": 4,
+        "bus": null,
         "client_number": null,
         "duration": "00:00:00",
         "syndic": [
             "sydney@test.com"
         ],
         "region": 2,
-        "name": null
+        "name": "Markt Antwerpen",
+        "public_id": null
+    }
+},
+{
+    "model": "base.building",
+    "pk": 17,
+    "fields": {
+        "city": "Brugge",
+        "postal_code": "8000",
+        "street": "markt",
+        "house_number": 5,
+        "bus": null,
+        "client_number": null,
+        "duration": "00:00:00",
+        "syndic": [
+            "sydney@test.com"
+        ],
+        "region": null,
+        "name": null,
+        "public_id": null
+    }
+},
+{
+    "model": "base.building",
+    "pk": 18,
+    "fields": {
+        "city": "Brugge",
+        "postal_code": "8000",
+        "street": "steenstraat",
+        "house_number": 6,
+        "bus": null,
+        "client_number": null,
+        "duration": "00:00:00",
+        "syndic": [
+            "sydney@test.com"
+        ],
+        "region": null,
+        "name": null,
+        "public_id": null
+    }
+},
+{
+    "model": "base.building",
+    "pk": 19,
+    "fields": {
+        "city": "Brugge",
+        "postal_code": "8310",
+        "street": "'t Zand",
+        "house_number": 2,
+        "bus": null,
+        "client_number": null,
+        "duration": "00:00:00",
+        "syndic": [
+            "sydney@test.com"
+        ],
+        "region": 3,
+        "name": null,
+        "public_id": null
+    }
+},
+{
+    "model": "base.buildingcomment",
+    "pk": 1,
+    "fields": {
+        "comment": "De containers stonden niet in de kelder, waar ze normaal wel zouden moeten staan.",
+        "date": "2023-03-21T22:57:00Z",
+        "building": 2
     }
 },
 {
@@ -1449,6 +1571,85 @@
     }
 },
 {
+    "model": "base.manual",
+    "pk": 1,
+    "fields": {
+        "building": 2,
+        "version_number": 0,
+        "file": "building_manuals/manual.pdf"
+    }
+},
+{
+    "model": "base.manual",
+    "pk": 2,
+    "fields": {
+        "building": 10,
+        "version_number": 0,
+        "file": "building_manuals/manualXYZ.pdf"
+    }
+},
+{
+    "model": "base.manual",
+    "pk": 3,
+    "fields": {
+        "building": 2,
+        "version_number": 1,
+        "file": "building_manuals/manual_Z9rE7NK.pdf"
+    }
+},
+{
+    "model": "base.manual",
+    "pk": 4,
+    "fields": {
+        "building": 2,
+        "version_number": 2,
+        "file": "building_manuals/manual_ZrabAvF.pdf"
+    }
+},
+{
+    "model": "base.manual",
+    "pk": 5,
+    "fields": {
+        "building": 2,
+        "version_number": 3,
+        "file": "building_manuals/manual_1rTYOnL.pdf"
+    }
+},
+{
+    "model": "base.manual",
+    "pk": 6,
+    "fields": {
+        "building": 7,
+        "version_number": 0,
+        "file": "building_manuals/manual_Lis1No8.pdf"
+    }
+},
+{
+    "model": "base.manual",
+    "pk": 7,
+    "fields": {
+        "building": 1,
+        "version_number": 0,
+        "file": "building_manuals/manual_KGPwTq7.pdf"
+    }
+},
+{
+    "model": "base.emailtemplate",
+    "pk": 1,
+    "fields": {
+        "name": "Containers 404",
+        "template": "Beste,\r\n\r\n\r\nDrTrottoir kon uw containers niet buitenzetten, omdat deze niet op de afgesproken plaats stonden.\r\n\r\nSurf naar de link van uw gebouw om de foto's te raadplegen.\r\n\r\n\r\nMet vriendelijke groeten,\r\nTeam DrTrottoir"
+    }
+},
+{
+    "model": "base.emailtemplate",
+    "pk": 2,
+    "fields": {
+        "name": "Staking IVAGO",
+        "template": "Beste,\r\n\r\n\r\nZoals u wellicht al vernomen hebt, staken de vuilnismannen -en vrouwen van IVAGO.\r\n\r\nDrTrottoir zal dus uitzonderlijk niet langskomen om uw containers buiten te zetten.\r\n\r\n\r\nMet vriendelijke groeten,\r\nDrTrottoir"
+    }
+},
+{
     "model": "token_blacklist.outstandingtoken",
     "pk": 1,
     "fields": {
@@ -1785,6 +1986,84 @@
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY3OTQ5NTc4NCwiaWF0IjoxNjc4Mjg2MTg0LCJqdGkiOiIzOGVhMDc1Nzc1YjI0NjZlYmJhNzVkYzI5NzU1ZDkwNyIsInVzZXJfaWQiOjMwfQ.IS2yXOas30zm5sdmI_AW2lS-T6dgH4SGq1dVdRRHFK8",
         "created_at": "2023-03-08T14:36:24.676Z",
         "expires_at": "2023-03-22T14:36:24Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 28,
+    "fields": {
+        "user": [
+            "sylvie@test.com"
+        ],
+        "jti": "ccdc94390f1d4550bcc2ad0c8f865cd1",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MDU2ODEzNSwiaWF0IjoxNjc5MzU4NTM1LCJqdGkiOiJjY2RjOTQzOTBmMWQ0NTUwYmNjMmFkMGM4Zjg2NWNkMSIsInVzZXJfaWQiOjF9.LenPBPEnciTrlXq1kAmfQXGRLB5FKufpWsjX_UZpaQ8",
+        "created_at": "2023-03-21T00:28:55.421Z",
+        "expires_at": "2023-04-04T00:28:55Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 29,
+    "fields": {
+        "user": [
+            "sylvie@test.com"
+        ],
+        "jti": "c3e5abaa82054f04b5439a23267fc253",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MDY0MzA2NiwiaWF0IjoxNjc5NDMzNDY2LCJqdGkiOiJjM2U1YWJhYTgyMDU0ZjA0YjU0MzlhMjMyNjdmYzI1MyIsInVzZXJfaWQiOjF9.3XQU_aE62t3bmdibCK7WNlnwdjr7x4r_Q5RSX_og1sk",
+        "created_at": "2023-03-21T21:17:46.133Z",
+        "expires_at": "2023-04-04T21:17:46Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 30,
+    "fields": {
+        "user": [
+            "adam@test.com"
+        ],
+        "jti": "df1ee19d62bf4198bb3c8452e25d2d76",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MDY0MzA4MCwiaWF0IjoxNjc5NDMzNDgwLCJqdGkiOiJkZjFlZTE5ZDYyYmY0MTk4YmIzYzg0NTJlMjVkMmQ3NiIsInVzZXJfaWQiOjE2fQ.-eO__dlpMIMmWhQvixeWRmuT9b5kIJBMb-erHLL_XD0",
+        "created_at": "2023-03-21T21:18:00.599Z",
+        "expires_at": "2023-04-04T21:18:00Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 31,
+    "fields": {
+        "user": [
+            "adam@test.com"
+        ],
+        "jti": "d612262953224410813b5a09741ded52",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MDY0MzQ3NiwiaWF0IjoxNjc5NDMzODc2LCJqdGkiOiJkNjEyMjYyOTUzMjI0NDEwODEzYjVhMDk3NDFkZWQ1MiIsInVzZXJfaWQiOjE2fQ.dgwAs6gdTLDBBzFJvinX8UL8IfnV3q4e9uyDp3m21_A",
+        "created_at": "2023-03-21T21:24:36.630Z",
+        "expires_at": "2023-04-04T21:24:36Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 32,
+    "fields": {
+        "user": [
+            "adam@test.com"
+        ],
+        "jti": "b56cac5faf034716b8279e108b191f66",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MDY0MzgzOCwiaWF0IjoxNjc5NDM0MjM4LCJqdGkiOiJiNTZjYWM1ZmFmMDM0NzE2YjgyNzllMTA4YjE5MWY2NiIsInVzZXJfaWQiOjE2fQ.lMPCJFeq6nhiHQKPqe6LAePADl3u0K1yvVUKVvdhHGA",
+        "created_at": "2023-03-21T21:30:38.025Z",
+        "expires_at": "2023-04-04T21:30:38Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 33,
+    "fields": {
+        "user": [
+            "adam@test.com"
+        ],
+        "jti": "ea3f7105db9c4ae9b32d3b0ceecda88d",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MDY0NDkxMCwiaWF0IjoxNjc5NDM1MzEwLCJqdGkiOiJlYTNmNzEwNWRiOWM0YWU5YjMyZDNiMGNlZWNkYTg4ZCIsInVzZXJfaWQiOjE2fQ.2MZq4Ga59WAki1DhEE7zaSSdG3JpyWLM4HVU4hAdatM",
+        "created_at": "2023-03-21T21:48:30.315Z",
+        "expires_at": "2023-04-04T21:48:30Z"
     }
 },
 {
@@ -4501,6 +4780,276 @@
         ],
         "object_id": "18",
         "object_repr": "stef@test.com (ST) bij Karel Lodewijk Ledeganckstraat 35, Gent 9000 op ronde UGent Campussen in regio Gent, index: 4 op 2023-03-08",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 164,
+    "fields": {
+        "action_time": "2023-03-21T22:18:39.554Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "region"
+        ],
+        "object_id": "3",
+        "object_repr": "Brugge",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 165,
+    "fields": {
+        "action_time": "2023-03-21T22:24:05.620Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "manual"
+        ],
+        "object_id": "1",
+        "object_repr": "Manual: manual.pdf (version 0) for Veldstraat 1, Gent 9000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 166,
+    "fields": {
+        "action_time": "2023-03-21T22:32:39.799Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "manual"
+        ],
+        "object_id": "2",
+        "object_repr": "Manual: manualXYZ.pdf (version 0) for Sint-Pietersnieuwstraat 33, Gent 9000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 167,
+    "fields": {
+        "action_time": "2023-03-21T22:34:39.055Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "manual"
+        ],
+        "object_id": "3",
+        "object_repr": "Manual: manual_Z9rE7NK.pdf (version 1) for Veldstraat 1, Gent 9000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 168,
+    "fields": {
+        "action_time": "2023-03-21T22:36:01.119Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "manual"
+        ],
+        "object_id": "4",
+        "object_repr": "Manual: manual_ZrabAvF.pdf (version 2) for Veldstraat 1, Gent 9000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 169,
+    "fields": {
+        "action_time": "2023-03-21T22:37:43.102Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "manual"
+        ],
+        "object_id": "5",
+        "object_repr": "Manual: manual_1rTYOnL.pdf (version 3) for Veldstraat 1, Gent 9000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 170,
+    "fields": {
+        "action_time": "2023-03-21T22:42:00.338Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "manual"
+        ],
+        "object_id": "6",
+        "object_repr": "Manual: manual_Lis1No8.pdf (version 0) for Krijgslaan 281, Gent 9000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 171,
+    "fields": {
+        "action_time": "2023-03-21T22:46:39.905Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "manual"
+        ],
+        "object_id": "7",
+        "object_repr": "Manual: manual_KGPwTq7.pdf (version 0) for Grote Markt 1, Antwerpen 2000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 172,
+    "fields": {
+        "action_time": "2023-03-21T22:47:07.799Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "building"
+        ],
+        "object_id": "17",
+        "object_repr": "markt 5, Brugge 8000",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Street\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 173,
+    "fields": {
+        "action_time": "2023-03-21T22:47:43.442Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "building"
+        ],
+        "object_id": "18",
+        "object_repr": "steenstraat 6, Brugge 8000",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Street\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 174,
+    "fields": {
+        "action_time": "2023-03-21T22:48:57.933Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "building"
+        ],
+        "object_id": "19",
+        "object_repr": "'t Zand 2, Brugge 8310",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 175,
+    "fields": {
+        "action_time": "2023-03-21T22:49:12.262Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "building"
+        ],
+        "object_id": "16",
+        "object_repr": "Grote Markt 4, Antwerpen 2000",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Name\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 176,
+    "fields": {
+        "action_time": "2023-03-21T22:52:05.573Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "emailtemplate"
+        ],
+        "object_id": "1",
+        "object_repr": "EmailTemplate object (1)",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 177,
+    "fields": {
+        "action_time": "2023-03-21T22:54:13.985Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "emailtemplate"
+        ],
+        "object_id": "2",
+        "object_repr": "EmailTemplate object (2)",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 178,
+    "fields": {
+        "action_time": "2023-03-21T22:57:41.059Z",
+        "user": [
+            "adam@test.com"
+        ],
+        "content_type": [
+            "base",
+            "buildingcomment"
+        ],
+        "object_id": "1",
+        "object_repr": "Comment: De containers stonden niet in de kelder, waar ze normaal wel zouden moeten staan. (2023-03-21 23:57:00+01:00) for Veldstraat 1, Gent 9000",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
