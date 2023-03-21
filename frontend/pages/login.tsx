@@ -15,13 +15,8 @@ export default function Login() {
 
     // try and log in to the application using existing refresh token
     useEffect(() => {
-        try {
-            initialLogin(router);
-        } catch (error) {
-            console.log("No Refresh token found. Could not log in.");
-        }
-
-    }, [initialLogin]);
+        initialLogin(router);
+        }, [initialLogin]);
 
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
