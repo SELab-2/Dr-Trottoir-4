@@ -392,7 +392,7 @@ class Manual(models.Model):
     class Meta:
         constraints = [
             UniqueConstraint(
-                "building_id",
+                "building",
                 "version_number",
                 name="unique_manual",
                 violation_error_message="The building already has a manual with the same version number",
@@ -403,6 +403,9 @@ class Manual(models.Model):
 class EmailTemplate(models.Model):
     name = models.CharField(max_length=40)
     template = models.TextField()
+
+    def __str__(self):
+        return f"Manual: {self.name}"
 
     class Meta:
         constraints = [
