@@ -40,7 +40,10 @@ def try_full_clean_and_save(model_instance, rm=False):
 
 def request_to_dict(request_data):
     if request_data:
-        return request_data.data.dict()
+        out = request_data
+        if hasattr(request_data, "dict"):
+            out = out.dict()
+        return out
     return {}
 
 
