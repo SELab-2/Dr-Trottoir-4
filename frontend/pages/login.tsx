@@ -1,7 +1,7 @@
 import BaseHeader from "@/components/header/BaseHeader";
 import styles from "styles/Login.module.css";
 import Image from "next/image";
-import filler_logo from "../public/filler_logo.png";
+import filler_image from "../public/filler_image.png";
 import login from "../lib/login";
 import {FormEvent, useState} from "react";
 import {useRouter} from "next/router";
@@ -29,7 +29,7 @@ export default function Login() {
                         <div className="card">
                             <div className="row g-0">
                                 <div className="col-md-6 col-lg-5 d-none d-md-block">
-                                    <Image src={filler_logo} alt="My App Logo" className={styles.filler_image}/>
+                                    <Image src={filler_image} alt="My App Logo" className={styles.filler_image}/>
                                 </div>
                                 <div className="col-md-6 col-lg-7 d-flex align-items-center">
                                     <div className="card-body p-4 p-lg-5 text-black">
@@ -59,7 +59,7 @@ export default function Login() {
                                             </div>
 
                                             <div className="pt-1 mb-4">
-                                                <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} type="button">Login
+                                                <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} type="submit">Login
                                                 </button>
                                             </div>
 
