@@ -4,8 +4,8 @@ import Image from "next/image";
 import filler_logo from "../public/filler_logo.png";
 import Link from "next/link";
 import login from "../lib/login";
-import {initialLogin} from "../lib/login";
-import {FormEvent, useEffect, useState} from "react";
+import { initialLogin } from "../lib/login";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 export default function Login() {
@@ -16,7 +16,7 @@ export default function Login() {
     // try and log in to the application using existing refresh token
     useEffect(() => {
         initialLogin(router);
-        }, [initialLogin]);
+    }, [initialLogin]);
 
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
