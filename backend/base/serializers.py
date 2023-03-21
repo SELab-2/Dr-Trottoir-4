@@ -35,7 +35,7 @@ class BuildingSerializer(serializers.ModelSerializer):
             "postal_code",
             "street",
             "house_number",
-            "bus"
+            "bus",
             "client_number",
             "duration",
             "syndic",

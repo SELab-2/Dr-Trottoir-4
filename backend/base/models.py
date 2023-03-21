@@ -134,6 +134,11 @@ class Building(models.Model):
         if user.role.name.lower() != "syndic":
             raise ValidationError('Only a user with role "syndic" can own a building.')
 
+        # If a public_id exists, it should be unique
+        if self.public_id:
+            if Building.objects.filter(public_id=self.public_id):
+                raise ValidationError(f"{self.public_id} already exists as public_id of another building")
+
     class Meta:
         constraints = [
             UniqueConstraint(
