@@ -8,7 +8,6 @@ const reset = async (email: string, router: NextRouter): Promise<void> => {
         email: email,
     };
 
-
     api.post(host, reset_data, {
         headers: { "Content-Type": "application/json" },
     })
