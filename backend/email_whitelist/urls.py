@@ -10,6 +10,6 @@ from .views import (
 urlpatterns = [
     path("all/", EmailWhiteListAllView.as_view()),
     path("new_verification_code/<email_whitelist_id>/", EmailWhiteListNewVerificationCode.as_view()),
-    path("<email_whitelist_id>/", EmailWhiteListIndividualView.as_view()),
+    path("<int:email_whitelist_id>/", EmailWhiteListIndividualView.as_view()),
     path("", DefaultEmailWhiteList.as_view()),
 ]
