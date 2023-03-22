@@ -8,7 +8,7 @@ from util.request_response_util import *
 # TODO: when testing this route, add the correct authorization classes
 
 
-def _add_verification_code_if_necessary(data):
+def _add_verification_code_to_req_data(data):
     if "verification_code" not in data:
         data["verification_code"] = get_unique_uuid()
 
@@ -26,7 +26,7 @@ class DefaultEmailWhiteList(APIView):
         """
         data = request_to_dict(request.data)
 
-        _add_verification_code_if_necessary(data)
+        _add_verification_code_to_req_data(data)
 
         email_whitelist_instance = EmailWhitelist()
 
@@ -79,7 +79,7 @@ class EmailWhiteListIndividualView(APIView):
 
         email_whitelist_instance = email_whitelist_instance[0]
         data = request_to_dict(request.data)
-        _add_verification_code_if_necessary(data)
+        _add_verification_code_to_req_data(data)
 
         set_keys_of_instance(email_whitelist_instance)
 

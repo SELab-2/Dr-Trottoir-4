@@ -2373,13 +2373,9 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        verification_code:
-          type: string
-          maxLength: 128
       required:
       - email
       - id
-      - verification_code
     GarbageCollection:
       type: object
       properties:
@@ -2594,9 +2590,6 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        verification_code:
-          type: string
-          maxLength: 128
     PatchedGarbageCollection:
       type: object
       properties:

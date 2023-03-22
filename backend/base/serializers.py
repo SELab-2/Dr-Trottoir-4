@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
 from .models import *
@@ -60,6 +61,7 @@ class EmailTemplateSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
+@extend_schema_serializer(exclude_fields=["verification_code"])
 class EmailWhitelistSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmailWhitelist
