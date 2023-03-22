@@ -57,7 +57,6 @@ THIRD_PARTY_APPS = AUTHENTICATION + [
 
 CREATED_APPS = [
     "authentication",
-    "authorisation",
     "base",
     "building",
     "building_on_tour",
