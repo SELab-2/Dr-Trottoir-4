@@ -44,6 +44,8 @@ class DefaultUser(APIView):
 
     # TODO: in order for this to work, you have to pass a password
     #  In the future, we probably won't use POST this way anymore (if we work with the whitelist method)
+    #  However, an easy workaround would be to add a default value to password (in e.g. `clean`)
+    #     -> probably the easiest way
     @extend_schema(responses={201: UserSerializer, 400: None})
     def post(self, request):
         """

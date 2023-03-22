@@ -1,3 +1,5 @@
+from drf_spectacular.utils import extend_schema
+from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -5,10 +7,8 @@ from base.permissions import ReadOnlyOwnerOfBuilding, IsAdmin, IsSuperStudent, R
 from base.models import Building
 from base.serializers import BuildingSerializer
 from util.request_response_util import *
-from drf_spectacular.utils import extend_schema
 
-# TODO:  we don't actually have to work with 'syndic' key, we can also require 'syndic_id' as parameter in body
-#  however, de automatic documentation might be a bit harder?
+
 TRANSLATE = {"syndic": "syndic_id"}
 
 
@@ -87,6 +87,53 @@ class BuildingIndividualView(APIView):
             return r
 
         return patch_success(BuildingSerializer(building_instance))
+
+
+# The building url you can access without account
+class BuildingPublicView(APIView):
+    serializer_class = BuildingSerializer
+
+    @extend_schema(responses={200: BuildingSerializer, 400: None})
+    def get(self, request, building_public_id):
+        """
+        Get building with the public id
+        """
+        building_instance = Building.objects.filter(public_id=building_public_id)
+
+        if not building_instance:
+            return not_found("Building")
+
+        building_instance = building_instance[0]
+
+        # TODO: should the general public see all data about a building?
+        #  Discuss this when writing tests for building
+        return get_success(BuildingSerializer(building_instance))
+
+
+class BuildingNewPublicId(APIView):
+    serializer_class = BuildingSerializer
+
+    @extend_schema(
+        description="Generate a new unique uuid as public id for the building.",
+        responses={201: BuildingSerializer, 400: None},
+    )
+    def post(self, request, building_id):
+        """
+        Generate a new public_id for the building with given id
+        """
+        building_instance = Building.objects.filter(id=building_id)
+
+        if not building_instance:
+            return bad_request("Building")
+
+        building_instance = building_instance[0]
+
+        building_instance.public_id = get_unique_uuid()
+
+        if r := try_full_clean_and_save(building_instance):
+            return r
+
+        return post_success(BuildingSerializer(building_instance))
 
 
 class AllBuildingsView(APIView):

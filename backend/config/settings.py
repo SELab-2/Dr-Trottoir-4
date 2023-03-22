@@ -55,20 +55,8 @@ THIRD_PARTY_APPS = AUTHENTICATION + [
     "drf_spectacular",
 ]
 
-CREATED_APPS = [
-    "authentication",
-    "base",
-    "building",
-    "building_on_tour",
-    "buildingurl",
-    "garbage_collection",
-    "manual",
-    "picture_building",
-    "region",
-    "student_at_building_on_tour",
-    "tour",
-    "users",
-]
+CREATED_APPS = ["base"]
+
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CREATED_APPS
 
