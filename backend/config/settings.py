@@ -55,7 +55,9 @@ THIRD_PARTY_APPS = AUTHENTICATION + [
     "drf_spectacular",
 ]
 
-CREATED_APPS = ["base"]
+CREATED_APPS = [
+    "base"
+]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CREATED_APPS
 
@@ -63,9 +65,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("dj_rest_auth.jwt_auth.JWTCookieAuthentication",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
@@ -87,10 +87,11 @@ REST_AUTH = {
     "JWT_AUTH_SAMESITE": "Strict",
     "JWT_AUTH_COOKIE": "auth-access-token",
     "JWT_AUTH_REFRESH_COOKIE": "auth-refresh-token",
+    "USER_DETAILS_SERIALIZER": "base.serializers.UserSerializer",
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5 if not DEBUG else 100),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=14),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,

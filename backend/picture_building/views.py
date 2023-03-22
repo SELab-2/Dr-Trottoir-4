@@ -1,6 +1,8 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from base.models import PictureBuilding
+from base.permissions import IsAdmin, IsSuperStudent, IsStudent, ReadOnlyOwnerOfBuilding
+from base.models import PictureBuilding, Building
 from base.serializers import PictureBuildingSerializer
 from util.request_response_util import *
 from drf_spectacular.utils import extend_schema
@@ -9,6 +11,7 @@ TRANSLATE = {"building": "building_id"}
 
 
 class Default(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent]
     serializer_class = PictureBuildingSerializer
 
     @extend_schema(responses={201: PictureBuildingSerializer, 400: None})
@@ -28,6 +31,7 @@ class Default(APIView):
 
 
 class PictureBuildingIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = PictureBuildingSerializer
 
     @extend_schema(responses={200: PictureBuildingSerializer, 400: None})
@@ -35,13 +39,15 @@ class PictureBuildingIndividualView(APIView):
         """
         Get PictureBuilding with given id
         """
-        picture_building_instance = PictureBuilding.objects.filter(
-            id=picture_building_id
-        )
+        picture_building_instance = PictureBuilding.objects.filter(id=picture_building_id)
 
         if len(picture_building_instance) != 1:
             return bad_request("PictureBuilding")
-        serializer = PictureBuildingSerializer(picture_building_instance[0])
+        picture_building_instance = picture_building_instance[0]
+
+        self.check_object_permissions(request, picture_building_instance.building)
+
+        serializer = PictureBuildingSerializer(picture_building_instance)
         return get_success(serializer)
 
     @extend_schema(responses={200: PictureBuildingSerializer, 400: None})
@@ -49,13 +55,12 @@ class PictureBuildingIndividualView(APIView):
         """
         Edit info about PictureBuilding with given id
         """
-        picture_building_instance = PictureBuilding.objects.filter(
-            id=picture_building_id
-        )
+        picture_building_instance = PictureBuilding.objects.filter(id=picture_building_id)
         if not picture_building_instance:
             return bad_request("PictureBuilding")
 
         picture_building_instance = picture_building_instance[0]
+        self.check_object_permissions(request, picture_building_instance)
 
         data = request_to_dict(request.data)
 
@@ -71,30 +76,40 @@ class PictureBuildingIndividualView(APIView):
         """
         delete a pictureBuilding from the database
         """
-        picture_building_instance = PictureBuilding.objects.filter(
-            id=picture_building_id
-        )
+        picture_building_instance = PictureBuilding.objects.filter(id=picture_building_id)
         if len(picture_building_instance) != 1:
             return bad_request("PictureBuilding")
-        picture_building_instance[0].delete()
+        picture_building_instance = picture_building_instance[0]
+
+        self.check_object_permissions(request, picture_building_instance)
+
+        picture_building_instance.delete()
         return delete_success()
 
 
 class PicturesOfBuildingView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent | ReadOnlyOwnerOfBuilding]
+
     serializer_class = PictureBuildingSerializer
 
     def get(self, request, building_id):
         """
         Get all pictures of a building with given id
         """
-        picture_building_instances = PictureBuilding.objects.filter(
-            building_id=building_id
-        )
+        building_instance = Building.objects.filter(building_id=building_id)
+        if not building_instance:
+            return bad_request(building_instance)
+        building_instance = building_instance[0]
+
+        self.check_object_permissions(request, building_instance)
+
+        picture_building_instances = PictureBuilding.objects.filter(building_id=building_id)
         serializer = PictureBuildingSerializer(picture_building_instances, many=True)
         return get_success(serializer)
 
 
 class AllPictureBuildingsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = PictureBuildingSerializer
 
     def get(self, request):

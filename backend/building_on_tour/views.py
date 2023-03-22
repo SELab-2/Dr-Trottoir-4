@@ -1,6 +1,8 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema
 
+from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
 from base.models import BuildingOnTour
 from base.serializers import BuildingTourSerializer
 from util.request_response_util import *
@@ -9,6 +11,7 @@ TRANSLATE = {"building": "building_id", "tour": "tour_id"}
 
 
 class Default(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = BuildingTourSerializer
 
     @extend_schema(responses={201: BuildingTourSerializer, 400: None})
@@ -29,6 +32,7 @@ class Default(APIView):
 
 
 class BuildingTourIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
     serializer_class = BuildingTourSerializer
 
     @extend_schema(responses={200: BuildingTourSerializer, 400: None})
@@ -80,6 +84,7 @@ class BuildingTourIndividualView(APIView):
 
 
 class AllBuildingToursView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
     serializer_class = BuildingTourSerializer
 
     def get(self, request):

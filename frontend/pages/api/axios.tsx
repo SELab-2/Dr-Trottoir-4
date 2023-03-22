@@ -1,44 +1,30 @@
 import axios from "axios";
-import { useRouter } from "next/router";
 
+axios.defaults.withCredentials = true;
 // Instance used to make authenticated requests
 const api = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_BASE_API_URL}`,
-  withCredentials: true,
+    baseURL: `${process.env.NEXT_PUBLIC_BASE_API_URL}`,
+    withCredentials: true,
 });
-
-// Intercept on request and add access tokens to request
-api.interceptors.request.use(
-  (config) => {
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
 
 // Intercept on response and renew refresh token if necessary
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
-    console.error(error.response);
-    if (error.response.status === 401 && !error.config._retry) {
-      error.config._retry = true;
-      try {
-        const request_url: string = `${process.env.NEXT_PUBLIC_API_REFRESH_TOKEN}`;
-        await api.post(request_url);
-        return api.request(error.config);
-      } catch (error) {
-        console.error(error);
-        const router = useRouter();
-        await router.push("/login");
-        throw error;
-      }
+    (response) => {
+        return response;
+    },
+    async (error) => {
+        if (error.response.status === 401 && !error.config._retried) {
+            // Set a flag to only try to retrieve an access token once, otherwise it keeps infinitely looping
+            error.config._retried = true;
+            const request_url: string = `${process.env.NEXT_PUBLIC_API_REFRESH_TOKEN}`;
+            // Wait for the post response, to retrieve a new access token
+            await api.post(request_url, {}, error.config);
+            // Retry the request
+            return api.request(error.config);
+        }
+        // return an error if the response is an error and we already retried
+        return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
 );
 
 export default api;
