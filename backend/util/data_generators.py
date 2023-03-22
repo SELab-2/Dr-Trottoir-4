@@ -3,7 +3,7 @@ import mimetypes
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from base.models import User, Region, Building, Tour, Role
+from base.models import User, Region, Building, Tour, Role, BuildingOnTour
 
 
 def insert_dummy_region():
@@ -41,7 +41,7 @@ def insert_dummy_role(role):
     return r.id
 
 
-def createUser(is_staff: bool = True) -> User:
+def createUser(is_staff: bool = True, withRegion: bool = False) -> User:
     r = Role.objects.get(id=insert_dummy_role("AD"))
     user = User(
         first_name="test",
@@ -50,9 +50,12 @@ def createUser(is_staff: bool = True) -> User:
         is_staff=is_staff,
         is_active=True,
         phone_number="+32485710347",
-        role=r
+        role=r,
     )
     user.save()
+    if withRegion:
+        r_id = insert_dummy_region()
+        user.region.add(Region.objects.get(id=r_id))
     return user
 
 
@@ -83,6 +86,18 @@ def insert_dummy_building(street="Overpoort"):
     )
     b.save()
     return b.id
+
+
+def insert_dummy_building_on_tour():
+    t_id = insert_dummy_tour()
+    b_id = insert_dummy_building()
+    BoT = BuildingOnTour(
+        tour=Tour.objects.get(id=t_id),
+        building=Building.objects.get(id=b_id),
+        index=0
+    )
+    BoT.save()
+    return BoT.id
 
 
 def createMemoryFile(filename: str):
