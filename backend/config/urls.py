@@ -33,8 +33,10 @@ from student_at_building_on_tour import urls as stud_buil_tour_urls
 from tour import urls as tour_urls
 from users import urls as user_urls
 from .settings import MEDIA_URL, MEDIA_ROOT
+from .views import RootDefault
 
 urlpatterns = [
+    path("/", RootDefault.as_view()),
     path("admin/", admin.site.urls),
     path("docs/", SpectacularAPIView.as_view(), name="schema"),
     path("docs/ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
