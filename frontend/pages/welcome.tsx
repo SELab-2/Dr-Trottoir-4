@@ -4,8 +4,8 @@ import soon from "public/coming_soon.png";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { logout} from "@/lib/logout";
-import {getAllUsers} from "@/lib/welcome";
+import { logout } from "@/lib/logout";
+import { getAllUsers } from "@/lib/welcome";
 
 function Welcome() {
     const router = useRouter();
@@ -34,13 +34,16 @@ function Welcome() {
     }
 
     const handleLogout = async () => {
-        logout().then(async res => {
-            if (res.status === 200) {
-                await router.push("/login");
+        logout().then(
+            async (res) => {
+                if (res.status === 200) {
+                    await router.push("/login");
+                }
+            },
+            (err) => {
+                console.error(err);
             }
-        }, err => {
-            console.error(err);
-        })
+        );
     };
 
     return (

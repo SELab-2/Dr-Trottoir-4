@@ -196,6 +196,7 @@ class ReadOnlyManualFromSyndic(BasePermission):
     """
     Checks if the manual belongs to a building from the syndic
     """
+
     message = "You can only view manuals that are linked to one of your buildings"
 
     def has_permission(self, request, view):
