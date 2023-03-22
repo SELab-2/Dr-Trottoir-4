@@ -244,7 +244,7 @@ class BuildingOnTour(models.Model):
         building_region = self.building.region
         if tour_region != building_region:
             raise ValidationError(
-                f"The regions for tour ({tour_region}) en building ({building_region}) " f"are different."
+                f"The regions for tour ({tour_region}) en building ({building_region}) are different."
             )
 
         nr_of_buildings = BuildingOnTour.objects.filter(tour=self.tour).count()
