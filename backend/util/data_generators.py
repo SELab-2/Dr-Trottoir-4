@@ -16,11 +16,11 @@ def insert_dummy_region():
 
 
 def insert_dummy_syndic():
-    o = User.objects.filter(first_name="test")
+    o = User.objects.filter(first_name="test_syn")
     if len(o) == 1:
         return o[0].id
     s = User(
-        first_name="test",
+        first_name="test_syn",
         last_name="test",
         phone_number="0487172529",
         role=Role.objects.get(id=insert_dummy_role("syndic"))
