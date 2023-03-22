@@ -6,7 +6,7 @@ from .views import (
     AllBuildingsView,
     DefaultBuilding,
     BuildingPublicView,
-    BuildingNewPublicId
+    BuildingNewPublicId,
 )
 
 urlpatterns = [
