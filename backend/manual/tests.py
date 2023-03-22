@@ -5,6 +5,8 @@ from util.data_generators import createUser, insert_dummy_building, createMemory
 
 backend_url = "http://localhost:2002"
 
+f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
+
 
 class BuildingTests(TestCase):
     def test_empty_manual_list(self):
@@ -21,7 +23,6 @@ class BuildingTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
         data = {
             "building": b_id,
             "file": f
@@ -39,7 +40,6 @@ class BuildingTests(TestCase):
         client.force_authenticate(user)
 
         b_id = insert_dummy_building()
-        f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
         data = {
             "building": b_id,
             "file": f,
@@ -58,7 +58,6 @@ class BuildingTests(TestCase):
         client.force_authenticate(user=user)
 
         b_id = insert_dummy_building()
-        f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
         data = {
             "building": b_id,
             "file": f,
@@ -94,7 +93,6 @@ class BuildingTests(TestCase):
         client = APIClient()
         client.force_authenticate(user)
         b_id = insert_dummy_building()
-        f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
         data1 = {
             "building": b_id,
             "file": f,
@@ -122,7 +120,6 @@ class BuildingTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
         data = {
             "building": b_id,
             "file": f,
@@ -136,7 +133,6 @@ class BuildingTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
         data1 = {
             "building": b_id,
             "file": f,
@@ -161,7 +157,6 @@ class BuildingTests(TestCase):
         client.force_authenticate(user=user)
 
         b_id = insert_dummy_building()
-        f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
         data = {
             "building": b_id,
             "file": f,
@@ -190,7 +185,6 @@ class BuildingTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
         data = {
             "building": b_id,
             "file": f,
