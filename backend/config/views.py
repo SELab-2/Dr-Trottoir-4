@@ -9,8 +9,10 @@ from drf_spectacular.utils import extend_schema
 class RootDefault(APIView):
     permission_classes = [IsAuthenticated]
 
-    @extend_schema(responses={200: None, 400: None, 403: None, 401: None},
-                   description="If you are logged in, you should see \"Hello from the DrTrottoir API!\".")
+    @extend_schema(
+        responses={200: None, 400: None, 403: None, 401: None},
+        description='If you are logged in, you should see "Hello from the DrTrottoir API!".',
+    )
     def get(self, request):
         return Response(
             {"message", "Hello from the DrTrottoir API!"},
