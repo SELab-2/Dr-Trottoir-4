@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('base', '0003_remove_manual_unique_manual_and_more'),
+        ("base", "0003_remove_manual_unique_manual_and_more"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='EmailWhitelist',
-            new_name='Lobby',
+            old_name="EmailWhitelist",
+            new_name="Lobby",
         ),
     ]

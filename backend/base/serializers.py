@@ -42,7 +42,7 @@ class BuildingSerializer(serializers.ModelSerializer):
             "syndic",
             "region",
             "name",
-            "public_id"
+            "public_id",
         ]
         read_only_fields = ["id"]
 
