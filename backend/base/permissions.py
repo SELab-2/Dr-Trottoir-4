@@ -109,7 +109,7 @@ class ReadOnlyOwnerOfBuilding(BasePermission):
 
 class OwnerAccount(BasePermission):
     """
-    Checks if the user is owns the user account
+    Checks if the user owns the user account
     """
 
     message = "You can only access/edit your own account"
