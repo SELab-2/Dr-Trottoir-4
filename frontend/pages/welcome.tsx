@@ -2,9 +2,10 @@ import BaseHeader from "@/components/header/BaseHeader";
 import styles from "styles/Welcome.module.css";
 import soon from "public/coming_soon.png";
 import Image from "next/image";
-import api from "../pages/api/axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { logout } from "@/lib/logout";
+import { getAllUsers } from "@/lib/welcome";
 
 function Welcome() {
     const router = useRouter();
@@ -17,11 +18,11 @@ function Welcome() {
     }, []);
 
     async function fetchData() {
-        api.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`).then(
-            (info) => {
+        getAllUsers().then(
+            (res) => {
                 // Set loading to false only if the response is valid
                 setLoading(false);
-                setData(info.data);
+                setData(res.data);
             },
             (err) => {
                 console.error(err);
@@ -33,14 +34,16 @@ function Welcome() {
     }
 
     const handleLogout = async () => {
-        try {
-            const response = await api.post(`${process.env.NEXT_PUBLIC_API_LOGOUT}`);
-            if (response.status === 200) {
-                await router.push("/login");
+        logout().then(
+            async (res) => {
+                if (res.status === 200) {
+                    await router.push("/login");
+                }
+            },
+            (err) => {
+                console.error(err);
             }
-        } catch (error) {
-            console.error(error);
-        }
+        );
     };
 
     return (

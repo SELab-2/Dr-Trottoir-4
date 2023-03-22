@@ -2,22 +2,40 @@ import BaseHeader from "@/components/header/BaseHeader";
 import styles from "styles/Login.module.css";
 import Image from "next/image";
 import filler_image from "../public/filler_image.png";
-import login from "../lib/login";
-import {FormEvent, useState} from "react";
-import {useRouter} from "next/router";
+import Link from "next/link";
+import { login, verifyToken } from "@/lib/login";
+import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Login() {
     const router = useRouter();
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
+    // try and log in to the application using existing refresh token
+    useEffect(() => {
+        verifyToken().then(
+            async (res) => {
+                console.log(res);
+                await router.push("/welcome");
+            },
+            (err) => {
+                console.error("Error: token is not valid");
+                console.error(err);
+            }
+        );
+    }, [verifyToken]);
+
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
-        try {
-            await login(username, password, router);
-        } catch (error) {
-            console.error(error);
-        }
+        login(username, password).then(
+            async () => {
+                await router.push("/welcome");
+            },
+            (err) => {
+                console.error(err);
+            }
+        );
     };
 
     return (

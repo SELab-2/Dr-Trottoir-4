@@ -4,6 +4,23 @@ info:
   version: 1.0.0
   description: This is the documentation for the Dr-Trottoir API
 paths:
+  /:
+    get:
+      operationId: root_retrieve
+      description: If you are logged in, you should see "Hello from the DrTrottoir
+        API!"
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          description: No response body
+        '403':
+          description: No response body
+        '401':
+          description: No response body
   /authentication/account-confirm-email/:
     post:
       operationId: authentication_account_confirm_email_create
@@ -83,13 +100,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/Login'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/Login'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/Login'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -100,7 +117,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenRefresh'
+                $ref: '#/components/schemas/Login'
           description: ''
   /authentication/logout/:
     get:
@@ -115,7 +132,6 @@ paths:
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -147,7 +163,6 @@ paths:
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -576,6 +591,153 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Building'
+          description: ''
+        '400':
+          description: No response body
+  /building_comment/:
+    post:
+      operationId: building_comment_create
+      description: Create a new BuildingComment
+      tags:
+      - building_comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildingComment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BuildingComment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuildingComment'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingComment'
+          description: ''
+        '400':
+          description: No response body
+  /building_comment/{building_comment_id}/:
+    get:
+      operationId: building_comment_retrieve
+      description: Get an invividual BuildingComment with given id
+      parameters:
+      - in: path
+        name: building_comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building_comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingComment'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: building_comment_partial_update
+      description: Edit BuildingComment with given id
+      parameters:
+      - in: path
+        name: building_comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building_comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingComment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingComment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingComment'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingComment'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: building_comment_destroy
+      description: Delete a BuildingComment with given id
+      parameters:
+      - in: path
+        name: building_comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building_comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /building_comment/all/:
+    get:
+      operationId: building_comment_all_retrieve
+      description: Get all BuildingComments in database
+      tags:
+      - building_comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingComment'
+          description: ''
+  /building_comment/building/{building_id}/:
+    get:
+      operationId: building_comment_building_retrieve
+      description: Get all BuildingComments of building with given building id
+      parameters:
+      - in: path
+        name: building_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - building_comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingComment'
           description: ''
         '400':
           description: No response body
@@ -1431,6 +1593,129 @@ paths:
               schema:
                 $ref: '#/components/schemas/Region'
           description: ''
+  /role/:
+    post:
+      operationId: role_create
+      description: Create a new role
+      tags:
+      - role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Role'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Role'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
+        '400':
+          description: No response body
+  /role/{role_id}/:
+    get:
+      operationId: role_retrieve
+      description: Get info about a Role with given id
+      parameters:
+      - in: path
+        name: role_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - role
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: role_partial_update
+      description: Edit info about a Role with given id
+      parameters:
+      - in: path
+        name: role_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRole'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRole'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRole'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: role_destroy
+      description: Delete a Role with given id
+      parameters:
+      - in: path
+        name: role_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - role
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /role/all/:
+    get:
+      operationId: role_all_retrieve
+      description: Get all roles
+      tags:
+      - role
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
   /student_at_building_on_tour/:
     post:
       operationId: student_at_building_on_tour_create
@@ -1868,6 +2153,24 @@ components:
       - id
       - postal_code
       - street
+    BuildingComment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        comment:
+          type: string
+        date:
+          type: string
+          format: date-time
+        building:
+          type: integer
+      required:
+      - building
+      - comment
+      - date
+      - id
     BuildingTour:
       type: object
       properties:
@@ -1951,11 +2254,23 @@ components:
         refresh_token:
           type: string
         user:
-          $ref: '#/components/schemas/UserDetails'
+          $ref: '#/components/schemas/User'
       required:
       - access_token
       - refresh_token
       - user
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+      - password
     Manual:
       type: object
       properties:
@@ -2050,6 +2365,19 @@ components:
           type: string
           nullable: true
           maxLength: 100
+    PatchedBuildingComment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        comment:
+          type: string
+        date:
+          type: string
+          format: date-time
+        building:
+          type: integer
     PatchedBuildingTour:
       type: object
       properties:
@@ -2136,6 +2464,22 @@ components:
         region:
           type: string
           maxLength: 40
+    PatchedRole:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 20
+        rank:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        description:
+          type: string
+          nullable: true
     PatchedStudBuildTour:
       type: object
       properties:
@@ -2269,6 +2613,26 @@ components:
           readOnly: true
       required:
       - detail
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 20
+        rank:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        description:
+          type: string
+          nullable: true
+      required:
+      - id
+      - name
+      - rank
     StudBuildTour:
       type: object
       properties:
@@ -2373,30 +2737,6 @@ components:
       - last_name
       - phone_number
       - region
-    UserDetails:
-      type: object
-      description: User model w/o password
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        email:
-          type: string
-          format: email
-          readOnly: true
-          title: Email address
-        first_name:
-          type: string
-          maxLength: 40
-        last_name:
-          type: string
-          maxLength: 40
-      required:
-      - email
-      - first_name
-      - last_name
-      - pk
     VerifyEmail:
       type: object
       properties:

@@ -1,6 +1,7 @@
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from base.permissions import IsAdmin, ReadOnly, IsSuperStudent, IsStudent
 from base.models import Region
 from base.serializers import RegionSerializer
 from util.request_response_util import *
@@ -8,9 +9,8 @@ from drf_spectacular.utils import extend_schema
 
 
 class Default(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = RegionSerializer
-
-    permission_classes = [permissions.IsAuthenticated]
 
     @extend_schema(responses={201: RegionSerializer, 400: None})
     def post(self, request):
@@ -31,9 +31,8 @@ class Default(APIView):
 
 
 class RegionIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | ReadOnly]
     serializer_class = RegionSerializer
-
-    permission_classes = [permissions.IsAuthenticated]
 
     @extend_schema(responses={200: RegionSerializer, 400: None})
     def get(self, request, region_id):
@@ -84,9 +83,8 @@ class RegionIndividualView(APIView):
 
 
 class AllRegionsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent]
     serializer_class = RegionSerializer
-
-    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         """
