@@ -3,7 +3,16 @@ from rest_framework import serializers
 from .models import *
 
 
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ["id", "name", "rank", "description"]
+        read_only_fields = ["id"]
+
+
 class UserSerializer(serializers.ModelSerializer):
+    role = RoleSerializer()
+
     class Meta:
         model = User
         fields = [
@@ -17,13 +26,6 @@ class UserSerializer(serializers.ModelSerializer):
             "role",
         ]
         read_only_fields = ["id", "email"]
-
-
-class RoleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Role
-        fields = ["id", "name", "rank", "description"]
-        read_only_fields = ["id"]
 
 
 class BuildingSerializer(serializers.ModelSerializer):
