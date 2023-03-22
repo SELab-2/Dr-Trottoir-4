@@ -1,3 +1,8 @@
+import io
+import mimetypes
+
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
 from base.models import User, Region, Building, Tour, Role
 
 
@@ -78,3 +83,18 @@ def insert_dummy_building(street="Overpoort"):
     )
     b.save()
     return b.id
+
+
+def createMemoryFile(filename: str):
+    filename = filename.strip()
+    with open(filename, "rb") as file:
+        file_object = io.BytesIO(file.read())
+        file_object.seek(0)
+        file_object.read()
+        size = file_object.tell()
+        file_object.seek(0)
+
+        content_type, charset = mimetypes.guess_type(filename)
+
+        return InMemoryUploadedFile(file=file_object, name=filename, field_name=None, content_type=content_type,
+                                    charset=charset, size=size)
