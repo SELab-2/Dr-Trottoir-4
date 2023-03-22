@@ -1,8 +1,8 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from authorisation.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
-from base.models import Tour, Region
+from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
+from base.models import Tour
 from base.serializers import TourSerializer
 from util.request_response_util import *
 from drf_spectacular.utils import extend_schema

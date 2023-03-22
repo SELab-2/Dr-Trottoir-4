@@ -1,7 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from authorisation.permissions import IsSuperStudent, IsAdmin, ReadOnlyStudent, OwnerOfBuilding, ReadOnlyOwnerOfBuilding
+from base.permissions import IsSuperStudent, IsAdmin, ReadOnlyStudent, ReadOnlyOwnerOfBuilding
 from base.models import GarbageCollection, Building
 from base.serializers import GarbageCollectionSerializer
 from util.request_response_util import *

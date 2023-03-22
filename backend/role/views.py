@@ -1,7 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from authorisation.permissions import IsAdmin, IsSuperStudent
+from base.permissions import IsAdmin, IsSuperStudent
 from base.models import Role
 from base.serializers import RoleSerializer
 from util.request_response_util import *

@@ -1,7 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from authorisation.permissions import IsAdmin, IsSuperStudent, IsSyndic, OwnerOfBuilding, ReadOnlyStudent, \
+from base.permissions import IsAdmin, IsSuperStudent, IsSyndic, OwnerOfBuilding, ReadOnlyStudent, \
     ReadOnlyManualFromSyndic
 from base.models import Manual, Building
 from base.serializers import ManualSerializer

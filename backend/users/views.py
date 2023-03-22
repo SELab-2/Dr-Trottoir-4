@@ -3,7 +3,7 @@ import json
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from authorisation.permissions import (
+from base.permissions import (
     IsAdmin,
     IsSuperStudent,
     OwnerAccount,

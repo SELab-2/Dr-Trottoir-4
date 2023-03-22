@@ -1,8 +1,8 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from authorisation.permissions import IsAdmin, OwnerOfBuilding, OwnerAccount
-from base.models import BuildingURL, Building, User
+from base.permissions import IsAdmin, OwnerOfBuilding, OwnerAccount
+from base.models import BuildingURL, Building
 from base.serializers import BuildingUrlSerializer
 from util.request_response_util import *
 from drf_spectacular.utils import extend_schema
