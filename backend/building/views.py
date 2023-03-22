@@ -115,7 +115,7 @@ class BuildingNewPublicId(APIView):
 
     @extend_schema(
         description="Generate a new unique uuid as public id for the building.",
-        responses={201: BuildingSerializer, 400: None}
+        responses={201: BuildingSerializer, 400: None},
     )
     def post(self, request, building_id):
         """

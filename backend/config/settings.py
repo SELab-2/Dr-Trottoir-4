@@ -55,9 +55,7 @@ THIRD_PARTY_APPS = AUTHENTICATION + [
     "drf_spectacular",
 ]
 
-CREATED_APPS = [
-    "base"
-]
+CREATED_APPS = ["base"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CREATED_APPS
 

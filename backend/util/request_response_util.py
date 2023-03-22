@@ -37,10 +37,7 @@ def bad_request(object_name="Object"):
 
 
 def not_found(object_name="Object"):
-    return Response(
-        {"res", f"{object_name} with given ID does not exists."},
-        status=status.HTTP_400_BAD_REQUEST
-    )
+    return Response({"res", f"{object_name} with given ID does not exists."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def bad_request_relation(object1: str, object2: str):
