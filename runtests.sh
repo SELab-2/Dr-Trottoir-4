@@ -1,0 +1,1 @@
+python backend/manage.py test building building_comment building_on_tour garbage_collection manual region tour --with-coverage --cover-package=building,building_on_tour,garbage_collection,manual,region,tour,building_comment

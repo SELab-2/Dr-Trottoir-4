@@ -50,7 +50,7 @@ class BuildingCommentIndividualView(APIView):
         """
         Delete a BuildingComment with given id
         """
-        building_comment_instance = BuildingComment.objectts.filter(
+        building_comment_instance = BuildingComment.objects.filter(
             id=building_comment_id
         )
 
