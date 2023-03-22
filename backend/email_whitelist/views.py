@@ -17,7 +17,6 @@ class DefaultEmailWhiteList(APIView):
     serializer_class = EmailWhitelistSerializer
 
     @extend_schema(
-        description="If you do not set a verification_code yourself, the backend will provide a safe one for you.",
         responses={201: EmailWhitelistSerializer, 400: None},
     )
     def post(self, request):
