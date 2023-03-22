@@ -7,10 +7,14 @@ from util.request_response_util import *
 
 # TODO: when testing this route, add the correct authorization classes
 
+TRANSLATE = {"role": "role_id"}
+
+_VERIFICATION_CODE = "verification_code"
+
 
 def _add_verification_code_to_req_data(data):
-    if "verification_code" not in data:
-        data["verification_code"] = get_unique_uuid()
+    if _VERIFICATION_CODE not in data:
+        data[_VERIFICATION_CODE] = get_unique_uuid()
 
 
 class DefaultLobby(APIView):
@@ -29,7 +33,7 @@ class DefaultLobby(APIView):
 
         lobby_instance = Lobby()
 
-        set_keys_of_instance(lobby_instance, data)
+        set_keys_of_instance(lobby_instance, data, TRANSLATE)
 
         if r := try_full_clean_and_save(lobby_instance):
             return r
@@ -66,12 +70,37 @@ class LobbyIndividualView(APIView):
 
         return delete_success()
 
+    @extend_schema(responses={204: None, 400: None, 403: None})
+    def patch(self, request, email_whitelist_id):
+        """
+        Patch EmailWhitelist with given id
+        """
+        email_whitelist_instance = Lobby.objects.filter(id=email_whitelist_id)
+
+        if not email_whitelist_instance:
+            return bad_request("EmailWhitelist")
+
+        email_whitelist_instance = email_whitelist_instance[0]
+        data = request_to_dict(request.data)
+
+        if _VERIFICATION_CODE in data:
+            return Response("Not permitted to change the verification code", status=403)
+
+        set_keys_of_instance(email_whitelist_instance, data, TRANSLATE)
+
+        if r := try_full_clean_and_save(email_whitelist_instance):
+            return r
+
+        return patch_success(LobbySerializer(email_whitelist_instance))
+
 
 class LobbyRefreshVerificationCodeView(APIView):
     serializer_class = LobbySerializer
 
     @extend_schema(
-        description="Generate a new token. The body of the request is ignored.", responses={204: None, 400: None}
+        description="Generate a new token. The body of the request is ignored.",
+        request=None,
+        responses={204: None, 400: None}
     )
     def post(self, request, lobby_id):
         """

@@ -65,7 +65,7 @@ class EmailTemplateSerializer(serializers.ModelSerializer):
 class LobbySerializer(serializers.ModelSerializer):
     class Meta:
         model = Lobby
-        fields = ["id", "email", "verification_code"]
+        fields = ["id", "email", "verification_code", "role"]
         read_only_fields = ["id"]
 
 
