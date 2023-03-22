@@ -16,8 +16,9 @@ export const login = (email: string, password: string): Promise<AxiosResponse<an
 };
 
 // function to automatically log in if a refresh token is found
-// (will request a new access token)
 export const verifyToken = (): Promise<AxiosResponse<any, any>> => {
+    // TODO: This is a temporary request to endpoint ALL_USERS, change this endpoint once token/verify/
+    //  or another endpoint is correctly set up
     const verify_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
 
     return api.get(verify_url, {
