@@ -1,14 +1,15 @@
 from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import EmailTemplate
+from base.permissions import IsAdmin, IsSuperStudent
 from base.serializers import EmailTemplateSerializer
 from util.request_response_util import *
 
 
-# TODO: when testing this route, add the correct authorization classes
-
 class DefaultEmailTemplate(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = EmailTemplateSerializer
 
     @extend_schema(responses={201: EmailTemplateSerializer, 400: None})
@@ -29,6 +30,7 @@ class DefaultEmailTemplate(APIView):
 
 
 class EmailTemplateIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = EmailTemplateSerializer
 
     @extend_schema(responses={200: EmailTemplateSerializer, 400: None})
@@ -78,6 +80,7 @@ class EmailTemplateIndividualView(APIView):
 
 
 class EmailTemplateAllView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = EmailTemplateSerializer
 
     def get(self, request):

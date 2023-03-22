@@ -1,11 +1,12 @@
 from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import Lobby
+from base.permissions import IsAdmin, IsSuperStudent
 from base.serializers import LobbySerializer
 from util.request_response_util import *
 
-# TODO: when testing this route, add the correct authorization classes
 
 TRANSLATE = {"role": "role_id"}
 
@@ -18,6 +19,7 @@ def _add_verification_code_to_req_data(data):
 
 
 class DefaultLobby(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = LobbySerializer
 
     @extend_schema(
@@ -42,6 +44,7 @@ class DefaultLobby(APIView):
 
 
 class LobbyIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = LobbySerializer
 
     @extend_schema(responses={200: LobbySerializer, 400: None})
@@ -95,6 +98,7 @@ class LobbyIndividualView(APIView):
 
 
 class LobbyRefreshVerificationCodeView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = LobbySerializer
 
     @extend_schema(
@@ -121,6 +125,7 @@ class LobbyRefreshVerificationCodeView(APIView):
 
 
 class LobbyAllView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = LobbySerializer
 
     def get(self, request):
