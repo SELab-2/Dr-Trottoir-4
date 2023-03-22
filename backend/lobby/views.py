@@ -100,7 +100,7 @@ class LobbyRefreshVerificationCodeView(APIView):
     @extend_schema(
         description="Generate a new token. The body of the request is ignored.",
         request=None,
-        responses={204: None, 400: None}
+        responses={204: None, 400: None},
     )
     def post(self, request, lobby_id):
         """

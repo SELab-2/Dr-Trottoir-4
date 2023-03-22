@@ -5,15 +5,14 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('base', '0004_rename_emailwhitelist_lobby'),
+        ("base", "0004_rename_emailwhitelist_lobby"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='lobby',
-            name='role',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='base.role'),
+            model_name="lobby",
+            name="role",
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to="base.role"),
         ),
     ]
