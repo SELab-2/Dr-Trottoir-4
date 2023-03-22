@@ -56,7 +56,7 @@ class BuildingCommentIndividualView(APIView):
         """
         Delete a BuildingComment with given id
         """
-        building_comment_instance = BuildingComment.objectts.filter(id=building_comment_id)
+        building_comment_instance = BuildingComment.objects.filter(id=building_comment_id)
 
         self.check_object_permissions(request, building_comment_instance.building)
 
