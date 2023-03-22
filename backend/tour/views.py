@@ -1,6 +1,7 @@
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
 from base.models import Tour
 from base.serializers import TourSerializer
 from util.request_response_util import *
@@ -10,7 +11,7 @@ TRANSLATE = {"region": "region_id"}
 
 
 class Default(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = TourSerializer
 
     @extend_schema(responses={201: TourSerializer, 400: None})
@@ -30,6 +31,7 @@ class Default(APIView):
 
 
 class TourIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
     serializer_class = TourSerializer
 
     @extend_schema(responses={200: TourSerializer, 400: None})
@@ -81,6 +83,7 @@ class TourIndividualView(APIView):
 
 
 class AllToursView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = TourSerializer
 
     def get(self, request):

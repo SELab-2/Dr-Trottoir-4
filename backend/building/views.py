@@ -1,6 +1,7 @@
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from base.permissions import ReadOnlyOwnerOfBuilding, IsAdmin, IsSuperStudent, ReadOnlyStudent
 from base.models import Building
 from base.serializers import BuildingSerializer
 from util.request_response_util import *
@@ -12,7 +13,7 @@ TRANSLATE = {"syndic": "syndic_id"}
 
 
 class DefaultBuilding(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = BuildingSerializer
 
     @extend_schema(responses={201: BuildingSerializer, 400: None})
@@ -34,7 +35,7 @@ class DefaultBuilding(APIView):
 
 
 class BuildingIndividualView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = BuildingSerializer
 
     @extend_schema(responses={200: BuildingSerializer, 400: None})
@@ -48,6 +49,7 @@ class BuildingIndividualView(APIView):
             return bad_request(object_name="Building")
 
         building_instance = building_instance[0]
+        self.check_object_permissions(request, building_instance)
         serializer = BuildingSerializer(building_instance)
         return get_success(serializer)
 
@@ -60,6 +62,8 @@ class BuildingIndividualView(APIView):
         if not building_instance:
             return bad_request(object_name="Building")
         building_instance = building_instance[0]
+
+        self.check_object_permissions(request, building_instance)
 
         building_instance.delete()
         return delete_success()
@@ -74,6 +78,7 @@ class BuildingIndividualView(APIView):
             return bad_request(object_name="Building")
 
         building_instance = building_instance[0]
+        self.check_object_permissions(request, building_instance)
         data = request_to_dict(request.data)
 
         set_keys_of_instance(building_instance, data, TRANSLATE)
@@ -85,6 +90,7 @@ class BuildingIndividualView(APIView):
 
 
 class AllBuildingsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = BuildingSerializer
 
     def get(self, request):
@@ -98,6 +104,7 @@ class AllBuildingsView(APIView):
 
 
 class BuildingOwnerView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = BuildingSerializer
 
     @extend_schema(responses={200: BuildingSerializer, 400: None})
@@ -106,6 +113,9 @@ class BuildingOwnerView(APIView):
         Get all buildings owned by syndic with given id
         """
         building_instance = Building.objects.filter(syndic=owner_id)
+
+        for b in building_instance:
+            self.check_object_permissions(request, b)
 
         if not building_instance:
             return bad_request_relation("building", "syndic")

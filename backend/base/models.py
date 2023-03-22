@@ -20,15 +20,11 @@ MAX_INT = 2**31 - 1
 def _check_for_present_keys(instance, keys_iterable):
     for key in keys_iterable:
         if not vars(instance)[key]:
-            raise ValidationError(
-                f"Tried to access {key}, but it was not found in object"
-            )
+            raise ValidationError(f"Tried to access {key}, but it was not found in object")
 
 
 class Region(models.Model):
-    region = models.CharField(
-        max_length=40, unique=True, error_messages={"unique": "Deze regio bestaat al."}
-    )
+    region = models.CharField(max_length=40, unique=True, error_messages={"unique": "Deze regio bestaat al."})
 
     def __str__(self):
         return self.region
@@ -54,9 +50,7 @@ class Role(models.Model):
         if Role.objects.count() != 0 and self.rank != MAX_INT:
             highest_rank = Role.objects.order_by("-rank").first().rank
             if self.rank > highest_rank + 1:
-                raise ValidationError(
-                    f"The maximum rank allowed is {highest_rank + 1}."
-                )
+                raise ValidationError(f"The maximum rank allowed is {highest_rank + 1}.")
 
     class Meta:
         constraints = [
@@ -128,7 +122,7 @@ class Building(models.Model):
                 Lower("city"),
                 Lower("street"),
                 Lower("postal_code"),
-                Lower("house_number"),
+                "house_number",
                 name="address_unique",
                 violation_error_message="A building with this address already exists.",
             ),
@@ -250,15 +244,12 @@ class BuildingOnTour(models.Model):
         building_region = self.building.region
         if tour_region != building_region:
             raise ValidationError(
-                f"The regions for tour ({tour_region}) en building ({building_region}) "
-                f"are different."
+                f"The regions for tour ({tour_region}) en building ({building_region}) are different."
             )
 
         nr_of_buildings = BuildingOnTour.objects.filter(tour=self.tour).count()
         if self.index > nr_of_buildings:
-            raise ValidationError(
-                f"The maximum allowed index for this building is {nr_of_buildings}"
-            )
+            raise ValidationError(f"The maximum allowed index for this building is {nr_of_buildings}")
 
     def __str__(self):
         return f"{self.building} on tour {self.tour}, index: {self.index}"
@@ -281,9 +272,7 @@ class BuildingOnTour(models.Model):
 
 
 class StudentAtBuildingOnTour(models.Model):
-    building_on_tour = models.ForeignKey(
-        BuildingOnTour, on_delete=models.SET_NULL, null=True
-    )
+    building_on_tour = models.ForeignKey(BuildingOnTour, on_delete=models.SET_NULL, null=True)
     date = models.DateField()
     student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
@@ -299,11 +288,7 @@ class StudentAtBuildingOnTour(models.Model):
         if user.role.name.lower() == "syndic":
             raise ValidationError("A syndic can't do tours")
         building_on_tour_region = self.building_on_tour.tour.region
-        if (
-            not self.student.region.all()
-            .filter(region=building_on_tour_region)
-            .exists()
-        ):
+        if not self.student.region.all().filter(region=building_on_tour_region).exists():
             raise ValidationError(
                 f"Student ({user.email}) doesn't do tours in this region ({building_on_tour_region})."
             )
@@ -345,9 +330,7 @@ class PictureBuilding(models.Model):
 
     def clean(self):
         super().clean()
-        _check_for_present_keys(
-            self, {"building_id", "picture", "description", "timestamp"}
-        )
+        _check_for_present_keys(self, {"building_id", "picture", "description", "timestamp"})
 
     class Meta:
         constraints = [
