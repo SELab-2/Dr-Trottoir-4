@@ -1,8 +1,14 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from base.permissions import IsAdmin, IsSuperStudent, IsSyndic, OwnerOfBuilding, ReadOnlyStudent, \
-    ReadOnlyManualFromSyndic
+from base.permissions import (
+    IsAdmin,
+    IsSuperStudent,
+    IsSyndic,
+    OwnerOfBuilding,
+    ReadOnlyStudent,
+    ReadOnlyManualFromSyndic,
+)
 from base.models import Manual, Building
 from base.serializers import ManualSerializer
 from util.request_response_util import *

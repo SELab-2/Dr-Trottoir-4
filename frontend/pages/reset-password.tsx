@@ -13,14 +13,17 @@ export default function ResetPassword() {
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
-        reset(email).then(async res => {
-            if (res.status == 200) {
-                alert("A password reset e-mail has been sent to the provided e-mail address");
-                await router.push("/login");
+        reset(email).then(
+            async (res) => {
+                if (res.status == 200) {
+                    alert("A password reset e-mail has been sent to the provided e-mail address");
+                    await router.push("/login");
+                }
+            },
+            (err) => {
+                console.error(err);
             }
-        }, err => {
-            console.error(err);
-        })
+        );
     };
 
     return (

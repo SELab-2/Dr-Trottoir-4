@@ -1,6 +1,6 @@
-import {SignUp} from "@/types.d";
+import { SignUp } from "@/types.d";
 import api from "@/pages/api/axios";
-import {AxiosResponse} from "axios";
+import { AxiosResponse } from "axios";
 
 const signup = async (
     firstname: string,
@@ -25,7 +25,7 @@ const signup = async (
     }
 
     return api.post(host, JSON.stringify(signup_data), {
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
     });
 };
 
