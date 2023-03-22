@@ -48,7 +48,7 @@ class BuildingTests(TestCase):
         response = client.post(f"{backend_url}/building_comment/", data, follow=True)
         assert response.status_code == 400
 
-    def test_get_building(self):
+    def test_get_comment(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -82,7 +82,7 @@ class BuildingTests(TestCase):
         resp = client.get(f"{backend_url}/building_comment/123456789", follow=True)
         assert resp.status_code == 400  # should be changed to 404
 
-    def test_patch_building(self):
+    def test_patch_comment(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user)
@@ -109,7 +109,7 @@ class BuildingTests(TestCase):
         assert response3.status_code == 200
         assert "id" in response3.data
 
-    def test_patch_invalid_building(self):
+    def test_patch_invalid_comment(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -122,7 +122,7 @@ class BuildingTests(TestCase):
         response2 = client.patch(f"{backend_url}/building_comment/123434687658/", data, follow=True)
         assert response2.status_code == 400
 
-    def test_patch_error_building(self):
+    def test_patch_error_comment(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -144,7 +144,7 @@ class BuildingTests(TestCase):
         response2 = client.patch(f"{backend_url}/building_comment/{id}/", data2, follow=True)
         assert response2.status_code == 400
 
-    def test_remove_building(self):
+    def test_remove_comment(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -164,14 +164,14 @@ class BuildingTests(TestCase):
         # assert response3.status_code == 404
         assert response3.status_code == 400
 
-    def test_remove_nonexistent_building(self):
+    def test_remove_nonexistent_comment(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
         response2 = client.delete(f"{backend_url}/building_comment/123456789/", follow=True)
         assert response2.status_code == 400
 
-    def test_add_existing_building(self):
+    def test_add_existing_comment(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
