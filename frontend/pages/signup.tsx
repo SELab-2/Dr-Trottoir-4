@@ -3,7 +3,7 @@ import React, {FormEvent, useState} from "react";
 import BaseHeader from "@/components/header/BaseHeader";
 import styles from "@/styles/Login.module.css";
 import Image from "next/image";
-import filler_image from "@/public/filler_image.png";
+import fire from "@/public/fire_image.png";
 import signup from "@/lib/signup";
 
 export default function Signup() {
@@ -32,7 +32,7 @@ export default function Signup() {
                         <div className="card">
                             <div className="row g-0">
                                 <div className="col-md-6 col-lg-5 d-none d-md-block">
-                                    <Image src={filler_image} alt="My App Logo" className={styles.filler_image}/>
+                                    <Image src={fire} alt="My App Logo" className={styles.filler_image}/>
                                 </div>
                                 <div className="col-md-6 col-lg-7 d-flex align-items-center">
                                     <div className="card-body p-4 p-lg-5 text-black">

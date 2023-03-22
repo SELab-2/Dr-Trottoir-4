@@ -25,7 +25,7 @@ function Welcome() {
             },
             (err) => {
                 console.error(err);
-                if (err.response.status == 401) {
+                if (!err.response || err.response.status == 401) {
                     router.push("/login"); // Only redirect to login if the status code is 401: unauthorized
                 }
             }
