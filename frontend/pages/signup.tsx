@@ -17,11 +17,14 @@ export default function Signup() {
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
-        try {
-            await signup(firstname, lastname, email, password1, password2, router);
-        } catch (error) {
-            console.error(error);
-        }
+        signup(firstname, lastname, email, password1, password2).then(async res => {
+            if (res.status == 201) {
+                alert("Successfully created account");
+                await router.push("/login");
+            }
+        }, err => {
+            console.error(err);
+        });
     };
 
     return (
