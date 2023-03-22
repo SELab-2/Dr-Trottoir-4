@@ -462,6 +462,276 @@ paths:
           description: ''
         '400':
           description: No response body
+  /building-comment/:
+    post:
+      operationId: building_comment_create
+      description: Create a new BuildingComment
+      tags:
+      - building-comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildingComment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BuildingComment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuildingComment'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingComment'
+          description: ''
+        '400':
+          description: No response body
+  /building-comment/{building_comment_id}/:
+    get:
+      operationId: building_comment_retrieve
+      description: Get an invividual BuildingComment with given id
+      parameters:
+      - in: path
+        name: building_comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building-comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingComment'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: building_comment_partial_update
+      description: Edit BuildingComment with given id
+      parameters:
+      - in: path
+        name: building_comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building-comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingComment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingComment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingComment'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingComment'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: building_comment_destroy
+      description: Delete a BuildingComment with given id
+      parameters:
+      - in: path
+        name: building_comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building-comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /building-comment/all/:
+    get:
+      operationId: building_comment_all_retrieve
+      description: Get all BuildingComments in database
+      tags:
+      - building-comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingComment'
+          description: ''
+  /building-comment/building/{building_id}/:
+    get:
+      operationId: building_comment_building_retrieve
+      description: Get all BuildingComments of building with given building id
+      parameters:
+      - in: path
+        name: building_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - building-comment
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingComment'
+          description: ''
+        '400':
+          description: No response body
+  /building-on-tour/:
+    post:
+      operationId: building_on_tour_create
+      description: Create a new BuildingOnTour with data from post
+      tags:
+      - building-on-tour
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildingTour'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BuildingTour'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuildingTour'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingTour'
+          description: ''
+        '400':
+          description: No response body
+  /building-on-tour/{building_tour_id}/:
+    get:
+      operationId: building_on_tour_retrieve
+      description: Get info about a BuildingOnTour with given id
+      parameters:
+      - in: path
+        name: building_tour_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building-on-tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingTour'
+          description: ''
+        '400':
+          description: No response body
+    patch:
+      operationId: building_on_tour_partial_update
+      description: edit info about a BuildingOnTour with given id
+      parameters:
+      - in: path
+        name: building_tour_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building-on-tour
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingTour'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingTour'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBuildingTour'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingTour'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: building_on_tour_destroy
+      description: delete a BuildingOnTour from the database
+      parameters:
+      - in: path
+        name: building_tour_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - building-on-tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /building-on-tour/all/:
+    get:
+      operationId: building_on_tour_all_retrieve
+      description: Get all buildings on tours
+      tags:
+      - building-on-tour
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingTour'
+          description: ''
   /building/{building_id}/:
     get:
       operationId: building_retrieve
@@ -555,7 +825,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Building'
           description: ''
-  /building/new_public_id/{building_id}/:
+  /building/new-public-id/{building_id}/:
     post:
       operationId: building_new_public_id_create
       description: Generate a new unique uuid as public id for the building.
@@ -639,282 +909,12 @@ paths:
           description: ''
         '400':
           description: No response body
-  /building_comment/:
-    post:
-      operationId: building_comment_create
-      description: Create a new BuildingComment
-      tags:
-      - building_comment
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BuildingComment'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/BuildingComment'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/BuildingComment'
-        required: true
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuildingComment'
-          description: ''
-        '400':
-          description: No response body
-  /building_comment/{building_comment_id}/:
-    get:
-      operationId: building_comment_retrieve
-      description: Get an invividual BuildingComment with given id
-      parameters:
-      - in: path
-        name: building_comment_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - building_comment
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuildingComment'
-          description: ''
-        '400':
-          description: No response body
-    patch:
-      operationId: building_comment_partial_update
-      description: Edit BuildingComment with given id
-      parameters:
-      - in: path
-        name: building_comment_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - building_comment
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedBuildingComment'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedBuildingComment'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedBuildingComment'
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuildingComment'
-          description: ''
-        '400':
-          description: No response body
-    delete:
-      operationId: building_comment_destroy
-      description: Delete a BuildingComment with given id
-      parameters:
-      - in: path
-        name: building_comment_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - building_comment
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          description: No response body
-  /building_comment/all/:
-    get:
-      operationId: building_comment_all_retrieve
-      description: Get all BuildingComments in database
-      tags:
-      - building_comment
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuildingComment'
-          description: ''
-  /building_comment/building/{building_id}/:
-    get:
-      operationId: building_comment_building_retrieve
-      description: Get all BuildingComments of building with given building id
-      parameters:
-      - in: path
-        name: building_id
-        schema:
-          type: string
-        required: true
-      tags:
-      - building_comment
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuildingComment'
-          description: ''
-        '400':
-          description: No response body
-  /building_on_tour/:
-    post:
-      operationId: building_on_tour_create
-      description: Create a new BuildingOnTour with data from post
-      tags:
-      - building_on_tour
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BuildingTour'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/BuildingTour'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/BuildingTour'
-        required: true
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuildingTour'
-          description: ''
-        '400':
-          description: No response body
-  /building_on_tour/{building_tour_id}/:
-    get:
-      operationId: building_on_tour_retrieve
-      description: Get info about a BuildingOnTour with given id
-      parameters:
-      - in: path
-        name: building_tour_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - building_on_tour
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuildingTour'
-          description: ''
-        '400':
-          description: No response body
-    patch:
-      operationId: building_on_tour_partial_update
-      description: edit info about a BuildingOnTour with given id
-      parameters:
-      - in: path
-        name: building_tour_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - building_on_tour
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedBuildingTour'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedBuildingTour'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedBuildingTour'
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuildingTour'
-          description: ''
-        '400':
-          description: No response body
-    delete:
-      operationId: building_on_tour_destroy
-      description: delete a BuildingOnTour from the database
-      parameters:
-      - in: path
-        name: building_tour_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - building_on_tour
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          description: No response body
-  /building_on_tour/all/:
-    get:
-      operationId: building_on_tour_all_retrieve
-      description: Get all buildings on tours
-      tags:
-      - building_on_tour
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuildingTour'
-          description: ''
-  /email_template/:
+  /email-template/:
     post:
       operationId: email_template_create
       description: Create a new EmailTemplate
       tags:
-      - email_template
+      - email-template
       requestBody:
         content:
           application/json:
@@ -939,7 +939,7 @@ paths:
           description: ''
         '400':
           description: No response body
-  /email_template/{email_template_id}/:
+  /email-template/{email_template_id}/:
     get:
       operationId: email_template_retrieve
       description: Get info about an EmailTemplate with given id
@@ -950,7 +950,7 @@ paths:
           type: integer
         required: true
       tags:
-      - email_template
+      - email-template
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -973,7 +973,7 @@ paths:
           type: integer
         required: true
       tags:
-      - email_template
+      - email-template
       requestBody:
         content:
           application/json:
@@ -1003,7 +1003,7 @@ paths:
           type: integer
         required: true
       tags:
-      - email_template
+      - email-template
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1012,12 +1012,12 @@ paths:
           description: No response body
         '400':
           description: No response body
-  /email_template/all/:
+  /email-template/all/:
     get:
       operationId: email_template_all_retrieve
       description: Get all EmailTemplates in the database
       tags:
-      - email_template
+      - email-template
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1028,164 +1028,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmailTemplate'
           description: ''
-  /email_whitelist/:
-    post:
-      operationId: email_whitelist_create
-      description: If you do not set a verification_code yourself, the backend will
-        provide a safe one for you.
-      tags:
-      - lobby
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmailWhitelist'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EmailWhitelist'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EmailWhitelist'
-        required: true
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailWhitelist'
-          description: ''
-        '400':
-          description: No response body
-  /email_whitelist/{email_whitelist_id}/:
-    get:
-      operationId: email_whitelist_retrieve
-      description: Get info about an EmailWhitelist with given id
-      parameters:
-      - in: path
-        name: email_whitelist_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - lobby
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailWhitelist'
-          description: ''
-        '400':
-          description: No response body
-    patch:
-      operationId: email_whitelist_partial_update
-      description: Patch EmailWhitelist with given id
-      parameters:
-      - in: path
-        name: email_whitelist_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - lobby
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedEmailWhitelist'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedEmailWhitelist'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedEmailWhitelist'
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          description: No response body
-    delete:
-      operationId: email_whitelist_destroy
-      description: Patch EmailWhitelist with given id
-      parameters:
-      - in: path
-        name: email_whitelist_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - lobby
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          description: No response body
-  /email_whitelist/all/:
-    get:
-      operationId: email_whitelist_all_retrieve
-      description: Get info about the EmailWhiteList with given id
-      tags:
-      - lobby
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailWhitelist'
-          description: ''
-  /email_whitelist/new_verification_code/{email_whitelist_id}/:
-    post:
-      operationId: email_whitelist_new_verification_code_create
-      description: Generate a new token. The body of the request is ignored.
-      parameters:
-      - in: path
-        name: email_whitelist_id
-        schema:
-          type: string
-        required: true
-      tags:
-      - lobby
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmailWhitelist'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EmailWhitelist'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EmailWhitelist'
-        required: true
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          description: No response body
-  /garbage_collection/:
+  /garbage-collection/:
     post:
       operationId: garbage_collection_create
       description: Create new garbage collection
       tags:
-      - garbage_collection
+      - garbage-collection
       requestBody:
         content:
           application/json:
@@ -1210,7 +1058,7 @@ paths:
           description: ''
         '400':
           description: No response body
-  /garbage_collection/{garbage_collection_id}/:
+  /garbage-collection/{garbage_collection_id}/:
     get:
       operationId: garbage_collection_retrieve
       description: Get info about a garbage collection with given id
@@ -1221,7 +1069,7 @@ paths:
           type: string
         required: true
       tags:
-      - garbage_collection
+      - garbage-collection
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1244,7 +1092,7 @@ paths:
           type: string
         required: true
       tags:
-      - garbage_collection
+      - garbage-collection
       requestBody:
         content:
           application/json:
@@ -1278,7 +1126,7 @@ paths:
           type: string
         required: true
       tags:
-      - garbage_collection
+      - garbage-collection
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1287,12 +1135,12 @@ paths:
           description: No response body
         '400':
           description: No response body
-  /garbage_collection/all/:
+  /garbage-collection/all/:
     get:
       operationId: garbage_collection_all_retrieve
       description: Get all garbage collections
       tags:
-      - garbage_collection
+      - garbage-collection
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1303,7 +1151,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GarbageCollection'
           description: ''
-  /garbage_collection/building/{building_id}/:
+  /garbage-collection/building/{building_id}/:
     get:
       operationId: garbage_collection_building_retrieve
       description: Get info about all garbage collections of a building with given
@@ -1315,7 +1163,7 @@ paths:
           type: string
         required: true
       tags:
-      - garbage_collection
+      - garbage-collection
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1326,6 +1174,127 @@ paths:
               schema:
                 $ref: '#/components/schemas/GarbageCollection'
           description: ''
+  /lobby/:
+    post:
+      operationId: lobby_create
+      description: Create a new whitelisted email
+      tags:
+      - lobby
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lobby'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Lobby'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Lobby'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lobby'
+          description: ''
+        '400':
+          description: No response body
+  /lobby/{email_whitelist_id}/:
+    get:
+      operationId: lobby_retrieve
+      description: Get info about an EmailWhitelist with given id
+      parameters:
+      - in: path
+        name: email_whitelist_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - lobby
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lobby'
+          description: ''
+        '400':
+          description: No response body
+    delete:
+      operationId: lobby_destroy
+      description: Patch EmailWhitelist with given id
+      parameters:
+      - in: path
+        name: email_whitelist_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - lobby
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
+  /lobby/all/:
+    get:
+      operationId: lobby_all_retrieve
+      description: Get info about the EmailWhiteList with given id
+      tags:
+      - lobby
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lobby'
+          description: ''
+  /lobby/new-verification-code/{lobby_id}/:
+    post:
+      operationId: lobby_new_verification_code_create
+      description: Generate a new token. The body of the request is ignored.
+      parameters:
+      - in: path
+        name: lobby_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - lobby
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lobby'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Lobby'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Lobby'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          description: No response body
   /manual/:
     post:
       operationId: manual_create
@@ -1473,12 +1442,12 @@ paths:
           description: ''
         '400':
           description: No response body
-  /picture_building/:
+  /picture-building/:
     post:
       operationId: picture_building_create
       description: Create a new PictureBuilding
       tags:
-      - picture_building
+      - picture-building
       requestBody:
         content:
           application/json:
@@ -1503,7 +1472,7 @@ paths:
           description: ''
         '400':
           description: No response body
-  /picture_building/{picture_building_id}/:
+  /picture-building/{picture_building_id}/:
     get:
       operationId: picture_building_retrieve
       description: Get PictureBuilding with given id
@@ -1514,7 +1483,7 @@ paths:
           type: integer
         required: true
       tags:
-      - picture_building
+      - picture-building
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1537,7 +1506,7 @@ paths:
           type: integer
         required: true
       tags:
-      - picture_building
+      - picture-building
       requestBody:
         content:
           application/json:
@@ -1571,7 +1540,7 @@ paths:
           type: integer
         required: true
       tags:
-      - picture_building
+      - picture-building
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1580,12 +1549,12 @@ paths:
           description: No response body
         '400':
           description: No response body
-  /picture_building/all/:
+  /picture-building/all/:
     get:
       operationId: picture_building_all_retrieve
       description: Get all pictureBuilding
       tags:
-      - picture_building
+      - picture-building
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1596,7 +1565,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PictureBuilding'
           description: ''
-  /picture_building/building/{building_id}/:
+  /picture-building/building/{building_id}/:
     get:
       operationId: picture_building_building_retrieve
       description: Get all pictures of a building with given id
@@ -1607,7 +1576,7 @@ paths:
           type: integer
         required: true
       tags:
-      - picture_building
+      - picture-building
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1864,12 +1833,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Role'
           description: ''
-  /student_at_building_on_tour/:
+  /student-at-building-on-tour/:
     post:
       operationId: student_at_building_on_tour_create
       description: Create a new StudentAtBuildingOnTour
       tags:
-      - student_at_building_on_tour
+      - student-at-building-on-tour
       requestBody:
         content:
           application/json:
@@ -1894,7 +1863,7 @@ paths:
           description: ''
         '400':
           description: No response body
-  /student_at_building_on_tour/{student_at_building_on_tour_id}/:
+  /student-at-building-on-tour/{student_at_building_on_tour_id}/:
     get:
       operationId: student_at_building_on_tour_retrieve
       description: Get an individual StudentAtBuildingOnTour with given id
@@ -1905,7 +1874,7 @@ paths:
           type: integer
         required: true
       tags:
-      - student_at_building_on_tour
+      - student-at-building-on-tour
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1929,7 +1898,7 @@ paths:
           type: integer
         required: true
       tags:
-      - student_at_building_on_tour
+      - student-at-building-on-tour
       requestBody:
         content:
           application/json:
@@ -1963,7 +1932,7 @@ paths:
           type: integer
         required: true
       tags:
-      - student_at_building_on_tour
+      - student-at-building-on-tour
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1972,12 +1941,12 @@ paths:
           description: No response body
         '400':
           description: No response body
-  /student_at_building_on_tour/all/:
+  /student-at-building-on-tour/all/:
     get:
       operationId: student_at_building_on_tour_all_retrieve
       description: Get all StudentAtBuildingOnTours
       tags:
-      - student_at_building_on_tour
+      - student-at-building-on-tour
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1988,7 +1957,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/StudBuildTour'
           description: ''
-  /student_at_building_on_tour/student/{student_id}/:
+  /student-at-building-on-tour/student/{student_id}/:
     get:
       operationId: student_at_building_on_tour_student_retrieve
       description: Get all StudentAtBuildingOnTour for a student with given id
@@ -1999,7 +1968,7 @@ paths:
           type: integer
         required: true
       tags:
-      - student_at_building_on_tour
+      - student-at-building-on-tour
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -2362,20 +2331,6 @@ components:
       - id
       - name
       - template
-    EmailWhitelist:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-      required:
-      - email
-      - id
     GarbageCollection:
       type: object
       properties:
@@ -2426,6 +2381,20 @@ components:
       - access_token
       - refresh_token
       - user
+    Lobby:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+      required:
+      - email
+      - id
     Login:
       type: object
       properties:
@@ -2579,17 +2548,6 @@ components:
           maxLength: 40
         template:
           type: string
-    PatchedEmailWhitelist:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
     PatchedGarbageCollection:
       type: object
       properties:

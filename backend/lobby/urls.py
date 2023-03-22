@@ -9,7 +9,7 @@ from .views import (
 
 urlpatterns = [
     path("all/", LobbyAllView.as_view()),
-    path("new_verification_code/<lobby_id>/", LobbyRefreshVerificationCodeView.as_view()),
+    path("new-verification-code/<lobby_id>/", LobbyRefreshVerificationCodeView.as_view()),
     path("<int:email_whitelist_id>/", LobbyIndividualView.as_view()),
     path("", DefaultLobby.as_view()),
 ]
