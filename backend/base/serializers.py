@@ -62,9 +62,9 @@ class EmailTemplateSerializer(serializers.ModelSerializer):
 
 
 @extend_schema_serializer(exclude_fields=["verification_code"])
-class EmailWhitelistSerializer(serializers.ModelSerializer):
+class LobbySerializer(serializers.ModelSerializer):
     class Meta:
-        model = EmailWhitelist
+        model = Lobby
         fields = ["id", "email", "verification_code"]
         read_only_fields = ["id"]
 

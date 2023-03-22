@@ -89,7 +89,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f"{self.email} ({self.role})"
 
 
-class EmailWhitelist(models.Model):
+class Lobby(models.Model):
     email = models.EmailField(
         _("email address"), unique=True, error_messages={"unique": "This email is already in the whitelist."}
     )

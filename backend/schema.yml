@@ -1034,7 +1034,7 @@ paths:
       description: If you do not set a verification_code yourself, the backend will
         provide a safe one for you.
       tags:
-      - email_whitelist
+      - lobby
       requestBody:
         content:
           application/json:
@@ -1070,7 +1070,7 @@ paths:
           type: integer
         required: true
       tags:
-      - email_whitelist
+      - lobby
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1093,7 +1093,7 @@ paths:
           type: integer
         required: true
       tags:
-      - email_whitelist
+      - lobby
       requestBody:
         content:
           application/json:
@@ -1123,7 +1123,7 @@ paths:
           type: integer
         required: true
       tags:
-      - email_whitelist
+      - lobby
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1137,7 +1137,7 @@ paths:
       operationId: email_whitelist_all_retrieve
       description: Get info about the EmailWhiteList with given id
       tags:
-      - email_whitelist
+      - lobby
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1159,7 +1159,7 @@ paths:
           type: string
         required: true
       tags:
-      - email_whitelist
+      - lobby
       requestBody:
         content:
           application/json:
