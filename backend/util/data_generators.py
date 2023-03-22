@@ -11,6 +11,9 @@ def insert_dummy_region():
 
 
 def insert_dummy_syndic():
+    o = User.objects.filter(first_name="test")
+    if len(o) == 1:
+        return o[0].id
     s = User(
         first_name="test",
         last_name="test",
@@ -59,13 +62,13 @@ def insert_dummy_tour():
     return t.id
 
 
-def insert_dummy_building():
+def insert_dummy_building(street="Overpoort"):
     r_id = insert_dummy_region()
     s_id = insert_dummy_syndic()
     b = Building(
         city="Gent",
         postal_code=9000,
-        street="Overpoort",
+        street=street,
         house_number=10,
         client_number="1234567890abcdef",
         duration="1:00:00",

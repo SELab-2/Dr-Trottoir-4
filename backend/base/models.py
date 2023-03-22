@@ -19,7 +19,7 @@ MAX_INT = 2**31 - 1
 
 def _check_for_present_keys(instance, keys_iterable):
     for key in keys_iterable:
-        if not vars(instance)[key]:
+        if key not in vars(instance):
             raise ValidationError(
                 f"Tried to access {key}, but it was not found in object"
             )
