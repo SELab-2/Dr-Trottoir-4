@@ -120,10 +120,10 @@ class OwnerAccount(BasePermission):
 
 class ReadOnlyOwnerAccount(BasePermission):
     """
-    Checks if the user is owns the user account
+    Checks if the user owns the user account and only tries to read information
     """
 
-    message = "You can only access/edit your own account"
+    message = "You can only access your own account"
 
     def has_object_permission(self, request, view, obj: User):
         if request.method in SAFE_METHODS:
