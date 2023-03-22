@@ -13,7 +13,7 @@ def _add_verification_code_to_req_data(data):
         data["verification_code"] = get_unique_uuid()
 
 
-class DefaultEmailWhiteList(APIView):
+class DefaultLobby(APIView):
     serializer_class = LobbySerializer
 
     @extend_schema(
@@ -27,98 +27,77 @@ class DefaultEmailWhiteList(APIView):
 
         _add_verification_code_to_req_data(data)
 
-        email_whitelist_instance = Lobby()
+        lobby_instance = Lobby()
 
-        set_keys_of_instance(email_whitelist_instance, data)
+        set_keys_of_instance(lobby_instance, data)
 
-        if r := try_full_clean_and_save(email_whitelist_instance):
+        if r := try_full_clean_and_save(lobby_instance):
             return r
 
-        return post_success(LobbySerializer(email_whitelist_instance))
+        return post_success(LobbySerializer(lobby_instance))
 
 
-class EmailWhiteListIndividualView(APIView):
+class LobbyIndividualView(APIView):
     serializer_class = LobbySerializer
 
     @extend_schema(responses={200: LobbySerializer, 400: None})
-    def get(self, request, email_whitelist_id):
+    def get(self, request, lobby_id):
         """
         Get info about an EmailWhitelist with given id
         """
-        email_whitelist_instance = Lobby.objects.filter(id=email_whitelist_id)
+        lobby_instance = Lobby.objects.filter(id=lobby_id)
 
-        if not email_whitelist_instance:
+        if not lobby_instance:
             return bad_request("EmailWhitelist")
 
-        return get_success(LobbySerializer(email_whitelist_instance[0]))
+        return get_success(LobbySerializer(lobby_instance[0]))
 
     @extend_schema(responses={204: None, 400: None})
-    def delete(self, request, email_whitelist_id):
+    def delete(self, request, lobby_id):
         """
         Patch EmailWhitelist with given id
         """
-        email_whitelist_instance = Lobby.objects.filter(id=email_whitelist_id)
+        lobby_instance = Lobby.objects.filter(id=lobby_id)
 
-        if not email_whitelist_instance:
+        if not lobby_instance:
             return bad_request("EmailWhitelist")
 
-        email_whitelist_instance[0].delete()
+        lobby_instance[0].delete()
 
         return delete_success()
 
-    @extend_schema(responses={204: None, 400: None})
-    def patch(self, request, email_whitelist_id):
-        """
-        Patch EmailWhitelist with given id
-        """
-        email_whitelist_instance = Lobby.objects.filter(id=email_whitelist_id)
 
-        if not email_whitelist_instance:
-            return bad_request("EmailWhitelist")
-
-        email_whitelist_instance = email_whitelist_instance[0]
-        data = request_to_dict(request.data)
-        _add_verification_code_to_req_data(data)
-
-        set_keys_of_instance(email_whitelist_instance)
-
-        if r := try_full_clean_and_save(email_whitelist_instance):
-            return r
-
-        return patch_success(LobbySerializer(email_whitelist_instance))
-
-
-class EmailWhiteListNewVerificationCode(APIView):
+class LobbyRefreshVerificationCodeView(APIView):
     serializer_class = LobbySerializer
 
     @extend_schema(
         description="Generate a new token. The body of the request is ignored.", responses={204: None, 400: None}
     )
-    def post(self, request, email_whitelist_id):
+    def post(self, request, lobby_id):
         """
         Do a POST with an empty body on `lobby/new_verification_code/ to generate a new verification code
         """
-        email_whitelist_instance = Lobby.objects.filter(id=email_whitelist_id)
+        lobby_instance = Lobby.objects.filter(id=lobby_id)
 
-        if not email_whitelist_instance:
+        if not lobby_instance:
             return bad_request("EmailWhitelist")
 
-        email_whitelist_instance = email_whitelist_instance[0]
-        email_whitelist_instance.verification_code = get_unique_uuid()
+        lobby_instance = lobby_instance[0]
+        lobby_instance.verification_code = get_unique_uuid()
 
-        if r := try_full_clean_and_save(email_whitelist_instance):
+        if r := try_full_clean_and_save(lobby_instance):
             return r
 
-        return post_success(LobbySerializer(email_whitelist_instance))
+        return post_success(LobbySerializer(lobby_instance))
 
 
-class EmailWhiteListAllView(APIView):
+class LobbyAllView(APIView):
     serializer_class = LobbySerializer
 
     def get(self, request):
         """
         Get info about the EmailWhiteList with given id
         """
-        email_whitelist_instances = Lobby.objects.all()
-        serializer = LobbySerializer(email_whitelist_instances, many=True)
+        lobby_instance = Lobby.objects.all()
+        serializer = LobbySerializer(lobby_instance, many=True)
         return get_success(serializer)

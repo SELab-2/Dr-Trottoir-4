@@ -1,15 +1,15 @@
 from django.urls import path
 
 from .views import (
-    DefaultEmailWhiteList,
-    EmailWhiteListIndividualView,
-    EmailWhiteListAllView,
-    EmailWhiteListNewVerificationCode,
+    DefaultLobby,
+    LobbyIndividualView,
+    LobbyAllView,
+    LobbyRefreshVerificationCodeView,
 )
 
 urlpatterns = [
-    path("all/", EmailWhiteListAllView.as_view()),
-    path("new_verification_code/<email_whitelist_id>/", EmailWhiteListNewVerificationCode.as_view()),
-    path("<int:email_whitelist_id>/", EmailWhiteListIndividualView.as_view()),
-    path("", DefaultEmailWhiteList.as_view()),
+    path("all/", LobbyAllView.as_view()),
+    path("new_verification_code/<lobby_id>/", LobbyRefreshVerificationCodeView.as_view()),
+    path("<int:email_whitelist_id>/", LobbyIndividualView.as_view()),
+    path("", DefaultLobby.as_view()),
 ]
