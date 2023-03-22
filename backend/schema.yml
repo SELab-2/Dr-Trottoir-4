@@ -4,6 +4,23 @@ info:
   version: 1.0.0
   description: This is the documentation for the Dr-Trottoir API
 paths:
+  /:
+    get:
+      operationId: root_retrieve
+      description: If you are logged in, you should see "Hello from the DrTrottoir
+        API!".
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          description: No response body
+        '403':
+          description: No response body
+        '401':
+          description: No response body
   /authentication/account-confirm-email/:
     post:
       operationId: authentication_account_confirm_email_create
@@ -115,7 +132,6 @@ paths:
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -147,7 +163,6 @@ paths:
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -2376,7 +2391,7 @@ components:
         refresh_token:
           type: string
         user:
-          $ref: '#/components/schemas/UserDetails'
+          $ref: '#/components/schemas/User'
       required:
       - access_token
       - refresh_token
@@ -2879,30 +2894,6 @@ components:
       - last_name
       - phone_number
       - region
-    UserDetails:
-      type: object
-      description: User model w/o password
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        email:
-          type: string
-          format: email
-          readOnly: true
-          title: Email address
-        first_name:
-          type: string
-          maxLength: 40
-        last_name:
-          type: string
-          maxLength: 40
-      required:
-      - email
-      - first_name
-      - last_name
-      - pk
     VerifyEmail:
       type: object
       properties:
