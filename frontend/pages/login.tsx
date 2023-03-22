@@ -3,8 +3,7 @@ import styles from "styles/Login.module.css";
 import Image from "next/image";
 import filler_logo from "../public/filler_logo.png";
 import Link from "next/link";
-import login from "../lib/login";
-import {initialLogin} from "../lib/login";
+import {login, verifyToken} from "@/lib/login";
 import {FormEvent, useEffect, useState} from "react";
 import {useRouter} from "next/router";
 
@@ -15,12 +14,14 @@ export default function Login() {
 
     // try and log in to the application using existing refresh token
     useEffect(() => {
-        initialLogin().then(async () => {
+        verifyToken().then(async (res) => {
+            console.log(res);
             await router.push("/welcome");
         }, err => {
+            console.error("Error: token is not valid");
             console.error(err);
         });
-    }, [initialLogin]);
+    }, [verifyToken]);
 
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
