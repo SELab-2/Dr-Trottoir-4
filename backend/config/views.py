@@ -10,7 +10,7 @@ class RootDefault(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(responses={200: None, 400: None, 403: None, 401: None})
-    def get(self):
+    def get(self, request):
         return Response(
             {"message", "Hello from the DrTrottoir API!"},
             status=status.HTTP_200_OK,
