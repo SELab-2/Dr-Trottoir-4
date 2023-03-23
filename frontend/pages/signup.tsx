@@ -3,8 +3,7 @@ import React, { FormEvent, useState } from "react";
 import BaseHeader from "@/components/header/BaseHeader";
 import styles from "@/styles/Login.module.css";
 import Image from "next/image";
-import filler_logo from "@/public/filler_logo.png";
-import Link from "next/link";
+import fire from "@/public/fire_image.png";
 import signup from "@/lib/signup";
 
 export default function Signup() {
@@ -33,88 +32,105 @@ export default function Signup() {
     return (
         <>
             <BaseHeader />
-            <div className={styles.main_container}>
-                <div className={styles.filler_container}>
-                    <Image src={filler_logo} alt="My App Logo" className={styles.filler_image} />
-                </div>
-                <div className={styles.login_container}>
-                    <p className={styles.signup_title}>Signup</p>
-                    <form onSubmit={handleSubmit}>
-                        <label className={styles.text} htmlFor="firstname">
-                            Voornaam:
-                        </label>
-                        <input
-                            type="text"
-                            id="firstname"
-                            name="firstname"
-                            className={styles.input}
-                            value={firstname}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFirstname(e.target.value)}
-                            required
-                        />
+            <div className="container py-5 h-100">
+                <div className="row d-flex justify-content-center align-items-center h-100">
+                    <div className="col col-xl-10">
+                        <div className="card">
+                            <div className="row g-0">
+                                <div className="col-md-6 col-lg-5 d-none d-md-block">
+                                    <Image src={fire} alt="My App Logo" className={styles.filler_image} />
+                                </div>
+                                <div className="col-md-6 col-lg-7 d-flex align-items-center">
+                                    <div className="card-body p-4 p-lg-5 text-black">
+                                        <form onSubmit={handleSubmit}>
+                                            <div className="d-flex align-items-center mb-3 pb-1">
+                                                <i className="fas fa-cubes fa-2x me-3" />
+                                                <span className="h1 fw-bold mb-0">Sign up.</span>
+                                            </div>
 
-                        <label className={styles.text} htmlFor="lastname">
-                            Achternaam:
-                        </label>
-                        <input
-                            type="text"
-                            id="lastname"
-                            name="lastname"
-                            className={styles.input}
-                            value={lastname}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLastname(e.target.value)}
-                            required
-                        />
+                                            <div className="form-outline mb-4">
+                                                <label className="form-label">Voornaam</label>
+                                                <input
+                                                    type="text"
+                                                    className={`form-control form-control-lg ${styles.input}`}
+                                                    value={firstname}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                                        setFirstname(e.target.value)
+                                                    }
+                                                    required
+                                                />
+                                            </div>
 
-                        <label className={styles.text} htmlFor="email">
-                            E-mailadres:
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            className={styles.input}
-                            value={email}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-                            required
-                        />
+                                            <div className="form-outline mb-4">
+                                                <label className="form-label">Achternaam</label>
+                                                <input
+                                                    type="text"
+                                                    className={`form-control form-control-lg ${styles.input}`}
+                                                    value={lastname}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                                        setLastname(e.target.value)
+                                                    }
+                                                    required
+                                                />
+                                            </div>
 
-                        <label className={styles.text} htmlFor="password">
-                            Wachtwoord:
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            className={styles.input}
-                            value={password1}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword1(e.target.value)}
-                            required
-                        />
+                                            <div className="form-outline mb-4">
+                                                <label className="form-label">E-mailadres</label>
+                                                <input
+                                                    type="email"
+                                                    className={`form-control form-control-lg ${styles.input}`}
+                                                    value={email}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                                        setEmail(e.target.value)
+                                                    }
+                                                    required
+                                                />
+                                            </div>
 
-                        <label className={styles.text} htmlFor="confirm_password">
-                            Bevestig wachtwoord:
-                        </label>
-                        <input
-                            type="password"
-                            id="confirm_password"
-                            name="confirm_password"
-                            className={styles.input}
-                            value={password2}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword2(e.target.value)}
-                            required
-                        />
+                                            <div className="form-outline mb-4">
+                                                <label className="form-label">Wachtwoord</label>
+                                                <input
+                                                    type="password"
+                                                    className={`form-control form-control-lg ${styles.input}`}
+                                                    value={password1}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                                        setPassword1(e.target.value)
+                                                    }
+                                                    required
+                                                />
+                                            </div>
 
-                        <button className={styles.button} type="submit">
-                            Sign up
-                        </button>
-                    </form>
-                    <p className={styles.text}>
-                        Already have an account?{" "}
-                        <Link href="/login">
-                            <u>Log in here</u>
-                        </Link>
-                    </p>
+                                            <div className="form-outline mb-4">
+                                                <label className="form-label">Bevestig wachtwoord</label>
+                                                <input
+                                                    type="password"
+                                                    className={`form-control form-control-lg ${styles.input}`}
+                                                    value={password2}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                                        setPassword2(e.target.value)
+                                                    }
+                                                    required
+                                                />
+                                            </div>
+
+                                            <div className="pt-1 mb-4">
+                                                <button
+                                                    className={`btn btn-dark btn-lg btn-block ${styles.button}`}
+                                                    type="submit"
+                                                >
+                                                    Sign up
+                                                </button>
+                                            </div>
+
+                                            <p className="mb-5 pb-lg-2">
+                                                Heb je al een account? <a href="/login">Ga naar login</a>
+                                            </p>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>
