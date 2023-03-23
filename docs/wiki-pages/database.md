@@ -182,7 +182,7 @@ Now if we want to do any operation in SQL, we can do so. The tables that are cre
 For example if we want the rows of our users, we can type:
 
 ```
-drtrottoir=# SELECT * from drtrottoir_user;
+drtrottoir=# SELECT * from base_user;
 ```
 
 To get a list of all tables created by django, you can use the command:
