@@ -14,7 +14,7 @@ class Default(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent]
     serializer_class = PictureBuildingSerializer
 
-    @extend_schema(responses=get_patch_docs(PictureBuildingSerializer))
+    @extend_schema(responses=post_docs(PictureBuildingSerializer))
     def post(self, request):
         """
         Create a new PictureBuilding

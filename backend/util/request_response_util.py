@@ -98,7 +98,7 @@ def post_docs(serializer):
 
 
 def delete_docs(serializer):
-    return {204: serializer, 400: None}
+    return {204: None, 400: None}
 
 
 def get_patch_docs(serializer):

@@ -14,7 +14,7 @@ class DefaultBuildingComment(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding]
     serializer_class = BuildingCommentSerializer
 
-    @extend_schema(responses=get_patch_docs(BuildingCommentSerializer))
+    @extend_schema(responses=post_docs(BuildingCommentSerializer))
     def post(self, request):
         """
         Create a new BuildingComment

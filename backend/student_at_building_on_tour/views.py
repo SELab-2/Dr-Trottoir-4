@@ -14,7 +14,7 @@ class Default(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = StudBuildTourSerializer
 
-    @extend_schema(responses={post_docs(StudBuildTourSerializer)})
+    @extend_schema(responses=post_docs(StudBuildTourSerializer))
     def post(self, request):
         """
         Create a new StudentAtBuildingOnTour
