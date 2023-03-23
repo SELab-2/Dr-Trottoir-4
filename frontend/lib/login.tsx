@@ -1,4 +1,4 @@
-import api from "../pages/api/axios";
+import api from "./api/axios";
 import { Login } from "@/types.d";
 import { AxiosResponse } from "axios";
 

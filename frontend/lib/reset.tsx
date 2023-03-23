@@ -1,5 +1,5 @@
 import { Reset_Password } from "@/types.d";
-import api from "@/pages/api/axios";
+import api from "@/lib/api/axios";
 import { AxiosResponse } from "axios";
 
 const reset = async (email: string): Promise<AxiosResponse<any, any>> => {
