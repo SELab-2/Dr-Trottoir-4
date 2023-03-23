@@ -139,6 +139,8 @@ Please note that not all tables have been filled; below is a list of those that 
     <li>Student at buildings on tours</li>
     <li>Tours</li>
     <li>Users</li>
+    <li>Manual</li>
+    <li>Email templates</li>
 </ul>
 
 There are currently 22 users, all of whom share the same password `drtrottoir123`.
