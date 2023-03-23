@@ -19,13 +19,13 @@ run the following command in the frontend folder:
 npm install next
 ```
 
-Now we are ready to run the full application. We can do this by building it first:
-```bash
-docker-compose build
-```
-Followed by:
+Now we are ready to run the full application. To run the docker container you can use the following command:
 ```bash
 docker-compose up
+```
+Whenever you need to rebuild your containers, just use:
+```bash
+docker-compose build
 ```
 
 To stop the containers, run `docker-compose down` or press `Ctrl+C` if the process is running in the foreground.
