@@ -14,7 +14,7 @@ class Default(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent]
     serializer_class = PictureBuildingSerializer
 
-    @extend_schema(responses={201: PictureBuildingSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(PictureBuildingSerializer))
     def post(self, request):
         """
         Create a new PictureBuilding
@@ -34,7 +34,7 @@ class PictureBuildingIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = PictureBuildingSerializer
 
-    @extend_schema(responses={200: PictureBuildingSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(PictureBuildingSerializer))
     def get(self, request, picture_building_id):
         """
         Get PictureBuilding with given id
@@ -50,7 +50,7 @@ class PictureBuildingIndividualView(APIView):
         serializer = PictureBuildingSerializer(picture_building_instance)
         return get_success(serializer)
 
-    @extend_schema(responses={200: PictureBuildingSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(PictureBuildingSerializer))
     def patch(self, request, picture_building_id):
         """
         Edit info about PictureBuilding with given id
@@ -71,7 +71,7 @@ class PictureBuildingIndividualView(APIView):
 
         return patch_success(PictureBuildingSerializer(picture_building_instance))
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs(PictureBuildingSerializer))
     def delete(self, request, picture_building_id):
         """
         delete a pictureBuilding from the database

@@ -46,7 +46,7 @@ class DefaultUser(APIView):
     #  In the future, we probably won't use POST this way anymore (if we work with the whitelist method)
     #  However, an easy workaround would be to add a default value to password (in e.g. `clean`)
     #     -> probably the easiest way
-    @extend_schema(responses={201: UserSerializer, 400: None})
+    @extend_schema(responses=post_docs(UserSerializer))
     def post(self, request):
         """
         Create a new user
@@ -84,7 +84,7 @@ class UserIndividualView(APIView):
     ]
     serializer_class = UserSerializer
 
-    @extend_schema(responses={200: UserSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(UserSerializer))
     def get(self, request, user_id):
         """
         Get info about user with given id
@@ -100,7 +100,7 @@ class UserIndividualView(APIView):
         serializer = UserSerializer(user_instance)
         return get_success(serializer)
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs(UserSerializer))
     def delete(self, request, user_id):
         """
         Delete user with given id
@@ -118,7 +118,7 @@ class UserIndividualView(APIView):
 
         return delete_success()
 
-    @extend_schema(responses={200: UserSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(UserSerializer))
     def patch(self, request, user_id):
         """
         Edit user with given id

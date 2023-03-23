@@ -14,7 +14,7 @@ class DefaultBuildingComment(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding]
     serializer_class = BuildingCommentSerializer
 
-    @extend_schema(responses={201: BuildingCommentSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(BuildingCommentSerializer))
     def post(self, request):
         """
         Create a new BuildingComment
@@ -37,7 +37,7 @@ class BuildingCommentIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]
     serializer_class = BuildingCommentSerializer
 
-    @extend_schema(responses={200: BuildingCommentSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(BuildingCommentSerializer))
     def get(self, request, building_comment_id):
         """
         Get an invividual BuildingComment with given id
@@ -51,7 +51,7 @@ class BuildingCommentIndividualView(APIView):
 
         return get_success(BuildingCommentSerializer(building_comment_instance[0]))
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs(BuildingCommentSerializer))
     def delete(self, request, building_comment_id):
         """
         Delete a BuildingComment with given id
@@ -66,7 +66,7 @@ class BuildingCommentIndividualView(APIView):
         building_comment_instance[0].delete()
         return delete_success()
 
-    @extend_schema(responses={200: BuildingCommentSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(BuildingCommentSerializer))
     def patch(self, request, building_comment_id):
         """
         Edit BuildingComment with given id
@@ -93,7 +93,7 @@ class BuildingCommentBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]
     serializer_class = BuildingCommentSerializer
 
-    @extend_schema(responses={200: BuildingCommentSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(BuildingCommentSerializer))
     def get(self, request, building_id):
         """
         Get all BuildingComments of building with given building id

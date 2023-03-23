@@ -12,7 +12,7 @@ class DefaultEmailTemplate(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = EmailTemplateSerializer
 
-    @extend_schema(responses={201: EmailTemplateSerializer, 400: None})
+    @extend_schema(responses=post_docs(EmailTemplateSerializer))
     def post(self, request):
         """
         Create a new EmailTemplate
@@ -33,7 +33,7 @@ class EmailTemplateIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = EmailTemplateSerializer
 
-    @extend_schema(responses={200: EmailTemplateSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(EmailTemplateSerializer))
     def get(self, request, email_template_id):
         """
         Get info about an EmailTemplate with given id
@@ -45,7 +45,7 @@ class EmailTemplateIndividualView(APIView):
 
         return get_success(EmailTemplateSerializer(email_template_instance[0]))
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs(EmailTemplateSerializer))
     def delete(self, request, email_template_id):
         """
         Delete EmailTemplate with given id
@@ -58,7 +58,7 @@ class EmailTemplateIndividualView(APIView):
         email_template_instance[0].delete()
         return delete_success()
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=get_patch_docs(EmailTemplateSerializer))
     def patch(self, request, email_template_id):
         """
         Edit EmailTemplate with given id

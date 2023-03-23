@@ -14,7 +14,7 @@ class DefaultGarbageCollection(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = GarbageCollectionSerializer
 
-    @extend_schema(responses={201: GarbageCollectionSerializer, 400: None})
+    @extend_schema(responses=post_docs(GarbageCollectionSerializer))
     def post(self, request):
         """
         Create new garbage collection
@@ -36,7 +36,7 @@ class GarbageCollectionIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
     serializer_class = GarbageCollectionSerializer
 
-    @extend_schema(responses={200: GarbageCollectionSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(GarbageCollectionSerializer))
     def get(self, request, garbage_collection_id):
         """
         Get info about a garbage collection with given id
@@ -47,7 +47,7 @@ class GarbageCollectionIndividualView(APIView):
         serializer = GarbageCollectionSerializer(garbage_collection_instance[0])
         return get_success(serializer)
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs(GarbageCollectionSerializer))
     def delete(self, request, garbage_collection_id):
         """
         Delete garbage collection with given id
@@ -58,7 +58,7 @@ class GarbageCollectionIndividualView(APIView):
         garbage_collection_instance[0].delete()
         return delete_success()
 
-    @extend_schema(responses={200: GarbageCollectionSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(GarbageCollectionSerializer))
     def patch(self, request, garbage_collection_id):
         """
         Edit garbage collection with given id

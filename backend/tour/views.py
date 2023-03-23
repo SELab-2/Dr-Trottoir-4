@@ -14,7 +14,7 @@ class Default(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = TourSerializer
 
-    @extend_schema(responses={201: TourSerializer, 400: None})
+    @extend_schema(responses=post_docs(TourSerializer))
     def post(self, request):
         """
         Create a new tour
@@ -34,7 +34,7 @@ class TourIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
     serializer_class = TourSerializer
 
-    @extend_schema(responses={200: TourSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(TourSerializer))
     def get(self, request, tour_id):
         """
         Get info about a Tour with given id
@@ -48,7 +48,7 @@ class TourIndividualView(APIView):
         serializer = TourSerializer(tour_instance)
         return get_success(serializer)
 
-    @extend_schema(responses={200: TourSerializer, 400: None})
+    @extend_schema(responses=get_patch_docs(TourSerializer))
     def patch(self, request, tour_id):
         """
         Edit a tour with given id
@@ -68,7 +68,7 @@ class TourIndividualView(APIView):
 
         return patch_success(TourSerializer(tour_instance))
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs(TourSerializer))
     def delete(self, request, tour_id):
         """
         Delete a tour with given id
