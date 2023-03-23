@@ -9,7 +9,7 @@ from util.request_response_util import *
 from drf_spectacular.utils import extend_schema
 from datetime import datetime
 
-DESCRIPTION = "Optionally, you can filter by date, by using the keys \"from\" and/or \"to\". When filtering, \"from\" and \"to\" are included in the result. The keys must be in format \"%Y-%m-%d %H:%M:%S\"  or \"%Y-%m-%d\"."
+DESCRIPTION = 'Optionally, you can filter by date, by using the keys "from" and/or "to". When filtering, "from" and "to" are included in the result. The keys must be in format "%Y-%m-%d %H:%M:%S"  or "%Y-%m-%d".'
 
 TRANSLATE = {"building": "building_id"}
 
@@ -19,18 +19,18 @@ def get_pictures_in_range(instances, from_date: str = None, to_date: str = None)
     to_d = None
     if from_date:
         try:
-            from_d = datetime.strptime(from_date, '%Y-%m-%d %H:%M:%S')
+            from_d = datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S")
         except ValueError:
             try:
-                from_d = datetime.strptime(from_date, '%Y-%m-%d')
+                from_d = datetime.strptime(from_date, "%Y-%m-%d")
             except ValueError:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data="Invalid date format")
     if to_date:
         try:
-            to_d = datetime.strptime(to_date, '%Y-%m-%d %H:%M:%S')
+            to_d = datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S")
         except ValueError:
             try:
-                to_d = datetime.strptime(to_date, '%Y-%m-%d')
+                to_d = datetime.strptime(to_date, "%Y-%m-%d")
             except ValueError:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data="Invalid date format")
 
@@ -137,8 +137,9 @@ class PicturesOfBuildingView(APIView):
         self.check_object_permissions(request, building_instance)
 
         picture_building_instances = PictureBuilding.objects.filter(building=building_id)
-        res = get_pictures_in_range(picture_building_instances, from_date=request.data.get("from"),
-                                    to_date=request.data.get("to"))
+        res = get_pictures_in_range(
+            picture_building_instances, from_date=request.data.get("from"), to_date=request.data.get("to")
+        )
 
         if isinstance(res, Response):
             return res
