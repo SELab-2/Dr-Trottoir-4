@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
 from .models import *
@@ -35,11 +36,13 @@ class BuildingSerializer(serializers.ModelSerializer):
             "postal_code",
             "street",
             "house_number",
+            "bus",
             "client_number",
             "duration",
             "syndic",
             "region",
             "name",
+            "public_id",
         ]
         read_only_fields = ["id"]
 
@@ -51,22 +54,32 @@ class BuildingCommentSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
+class EmailTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailTemplate
+        fields = ["id", "name", "template"]
+        read_only_fields = ["id"]
+
+
+@extend_schema_serializer(exclude_fields=["verification_code"])
+class LobbySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lobby
+        fields = ["id", "email", "verification_code", "role"]
+        read_only_fields = ["id"]
+
+
 class PictureBuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = PictureBuilding
         fields = ["id", "building", "picture", "description", "timestamp", "type"]
+        read_only_fields = ["id"]
 
 
 class StudBuildTourSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentAtBuildingOnTour
         fields = ["id", "building_on_tour", "date", "student"]
-
-
-class BuildingUrlSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BuildingURL
-        fields = ["id", "first_name_resident", "last_name_resident", "building"]
         read_only_fields = ["id"]
 
 
@@ -81,21 +94,25 @@ class ManualSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manual
         fields = ["id", "building", "version_number", "file"]
+        read_only_fields = ["id"]
 
 
 class BuildingTourSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuildingOnTour
         fields = ["id", "building", "tour", "index"]
+        read_only_fields = ["id"]
 
 
 class TourSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
         fields = ["id", "name", "region", "modified_at"]
+        read_only_fields = ["id"]
 
 
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Region
         fields = ["id", "region"]
+        read_only_fields = ["id"]

@@ -30,9 +30,7 @@ class Migration(migrations.Migration):
                 ("password", models.CharField(max_length=128, verbose_name="password")),
                 (
                     "last_login",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="last login"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="last login"),
                 ),
                 (
                     "is_superuser",
@@ -45,9 +43,7 @@ class Migration(migrations.Migration):
                 (
                     "email",
                     models.EmailField(
-                        error_messages={
-                            "unique": "A user already exists with this email."
-                        },
+                        error_messages={"unique": "A user already exists with this email."},
                         max_length=254,
                         unique=True,
                         verbose_name="email address",
@@ -59,9 +55,7 @@ class Migration(migrations.Migration):
                 ("last_name", models.CharField(max_length=40)),
                 (
                     "phone_number",
-                    phonenumber_field.modelfields.PhoneNumberField(
-                        max_length=128, region="BE"
-                    ),
+                    phonenumber_field.modelfields.PhoneNumberField(max_length=128, region="BE"),
                 ),
             ],
             options={
@@ -179,9 +173,7 @@ class Migration(migrations.Migration):
                 ("version_number", models.PositiveIntegerField(default=0)),
                 (
                     "file",
-                    models.FileField(
-                        blank=True, null=True, upload_to="building_manuals/"
-                    ),
+                    models.FileField(blank=True, null=True, upload_to="building_manuals/"),
                 ),
             ],
         ),
@@ -199,9 +191,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "picture",
-                    models.ImageField(
-                        blank=True, null=True, upload_to="building_pictures/"
-                    ),
+                    models.ImageField(blank=True, null=True, upload_to="building_pictures/"),
                 ),
                 ("description", models.TextField(blank=True, null=True)),
                 ("timestamp", models.DateTimeField()),
@@ -325,51 +315,37 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="picturebuilding",
             name="building",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="base.building"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.building"),
         ),
         migrations.AddField(
             model_name="manual",
             name="building",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="base.building"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.building"),
         ),
         migrations.AddField(
             model_name="garbagecollection",
             name="building",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="base.building"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.building"),
         ),
         migrations.AddField(
             model_name="buildingurl",
             name="building",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="base.building"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.building"),
         ),
         migrations.AddField(
             model_name="buildingontour",
             name="building",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="base.building"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.building"),
         ),
         migrations.AddField(
             model_name="buildingontour",
             name="tour",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="base.tour"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.tour"),
         ),
         migrations.AddField(
             model_name="buildingcomment",
             name="building",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="base.building"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.building"),
         ),
         migrations.AddField(
             model_name="building",

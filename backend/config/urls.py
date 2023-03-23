@@ -23,7 +23,8 @@ from authentication import urls as authentication_urls
 from building import urls as building_urls
 from building_comment import urls as building_comment_urls
 from building_on_tour import urls as building_on_tour_urls
-from buildingurl import urls as building_url_urls
+from email_template import urls as email_template_urls
+from lobby import urls as email_whitelist_urls
 from garbage_collection import urls as garbage_collection_urls
 from manual import urls as manual_urls
 from picture_building import urls as picture_building_urls
@@ -33,25 +34,26 @@ from student_at_building_on_tour import urls as stud_buil_tour_urls
 from tour import urls as tour_urls
 from users import urls as user_urls
 from .settings import MEDIA_URL, MEDIA_ROOT
+from .views import RootDefault
 
 urlpatterns = [
+    path("", RootDefault.as_view()),
     path("admin/", admin.site.urls),
     path("docs/", SpectacularAPIView.as_view(), name="schema"),
-    path(
-        "docs/ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"
-    ),
+    path("docs/ui/", SpectacularSwaggerView.as_view(url="/api/docs"), name="swagger-ui"),
     path("authentication/", include(authentication_urls)),
     path("manual/", include(manual_urls)),
-    path("picture_building/", include(picture_building_urls)),
+    path("picture-building/", include(picture_building_urls)),
     path("building/", include(building_urls)),
-    path("building_comment/", include(building_comment_urls)),
+    path("building-comment/", include(building_comment_urls)),
+    path("email-template/", include(email_template_urls)),
+    path("lobby/", include(email_whitelist_urls)),
     path("region/", include(region_urls)),
-    path("buildingurl/", include(building_url_urls)),
-    path("garbage_collection/", include(garbage_collection_urls)),
-    path("building_on_tour/", include(building_on_tour_urls)),
+    path("garbage-collection/", include(garbage_collection_urls)),
+    path("building-on-tour/", include(building_on_tour_urls)),
     path("user/", include(user_urls)),
     path("role/", include(role_urls)),
-    path("student_at_building_on_tour/", include(stud_buil_tour_urls)),
+    path("student-at-building-on-tour/", include(stud_buil_tour_urls)),
     path("tour/", include(tour_urls)),
     re_path(r"^$", RedirectView.as_view(url=reverse_lazy("api"), permanent=False)),
 ] + static(MEDIA_URL, document_root=MEDIA_ROOT)

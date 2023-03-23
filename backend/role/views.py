@@ -1,5 +1,7 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from base.permissions import IsAdmin, IsSuperStudent
 from base.models import Role
 from base.serializers import RoleSerializer
 from util.request_response_util import *
@@ -7,6 +9,7 @@ from drf_spectacular.utils import extend_schema
 
 
 class DefaultRoleView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = RoleSerializer
 
     @extend_schema(responses={201: RoleSerializer, 400: None})
@@ -27,6 +30,7 @@ class DefaultRoleView(APIView):
 
 
 class RoleIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = RoleSerializer
 
     @extend_schema(responses={200: RoleSerializer, 400: None})
@@ -78,6 +82,7 @@ class RoleIndividualView(APIView):
 
 
 class AllRolesView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = RoleSerializer
 
     def get(self, request):
