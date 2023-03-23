@@ -71,8 +71,6 @@ This needs to be added to the operations list inside the migration class and the
 docker-compose exec backend python manage.py migrate
 ```
 
-An example of a data migration file is [0002_auto_20230227_1453.py](../backend/base/migrations/0002_auto_20230227_1453.py).
-
 ## Fixtures
 **Fixtures** in django are another useful way to dump data and add the data to our database, and they are our preferred
 method. An example of a fixtures file is [datadump.json](https://github.com/SELab-2/Dr-Trottoir-4/blob/develop/backend/datadump.json).
@@ -112,11 +110,22 @@ and
 docker exec -it <CONTAINER_ID> psql -U django -d postgres -c "CREATE DATABASE drtrottoir;"   
 ```
 
+#### Step 3: Migrate database
+
+```bash
+../migrations.sh
+```
+
 ### Loading the fixture
 To load the data in the database, use the command:
 
 ```bash
 docker-compose exec backend python manage.py loaddata <fixturename>
+```
+
+This means that if you want to load our example fixture, you have to run:
+```bash
+docker-compose exec backend python manage.py loaddata datadump.json
 ```
 
 ### Our example fixture
@@ -144,7 +153,7 @@ The names of these users have been chosen to make it easier to recognize what ro
 Additionally, male names indicate that the user's region is set to `Gent`, whereas female names indicate that a user's
 region is set to `Antwerpen`.
 
-To make logging into the [admin](http://localhost:2002/admin) page easier with these users, there is also an admin/superuser whose email address is set
+To make logging into the [admin](http://localhost/api/adminn) page easier with these users, there is also an admin/superuser whose email address is set
 to `admin@test.com`.
 
 
