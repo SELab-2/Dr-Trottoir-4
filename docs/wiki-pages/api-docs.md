@@ -2,7 +2,7 @@
 We used [drf-spectacular](https://github.com/tfranzel/drf-spectacular#customization-by-using-extend_schema) to automatically
 generate [OpenAPI 3.0/Swagger](https://spec.openapis.org/oas/v3.0.3) compliant documentation for our API. Drf-spectacular
 will automatically update our documentation whenever something changes, so there is no need to run any extra commands or code.
-This makes it a lot easier to maintain our documentation. To access it, head over to http://localhost/api/docs/ui.
+This makes it a lot easier to maintain our documentation. To access our documentation, head over to http://localhost/api/docs/ui.
 
 While it already generates a lot out of the box, it will still be necessary to add/edit some things ourselves.
 This will be covered in the next section.
