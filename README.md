@@ -28,6 +28,11 @@ Whenever you need to rebuild your containers, just use:
 docker-compose build
 ```
 
+Or if you want to build and then run at the same time, use:
+```bash
+docker-compose up --build -d
+```
+
 To stop the containers, run `docker-compose down` or press `Ctrl+C` if the process is running in the foreground.
 Alternatively, you can use the stop button in Docker Desktop.
 
