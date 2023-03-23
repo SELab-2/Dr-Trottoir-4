@@ -14,7 +14,7 @@ Another useful tool worth considering is [Docker Desktop](https://www.docker.com
 provide a GUI with lots of extra features that will make the docker experience more pleasant.
 
 You will also need to install [Node.js and npm](https://nodejs.org/en/download) before proceeding. Once you have those,
-run the following command:
+run the following command in the frontend folder:
 ```bash
 npm install next
 ```

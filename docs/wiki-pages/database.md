@@ -3,6 +3,9 @@ Django ORM, it allows for faster development because the ORM eliminates the need
 advantages such as protection against SQL injection out of the box without needing any extra setup or work. The database
 also becomes easier to modify when needed.
 
+## Overall structure
+For the overall structure of our database, more specifically our EER diagram and logical design, please click [here]().
+
 ## Models
 Django ORM works with models specified in [models.py](https://github.com/SELab-2/Dr-Trottoir-4/blob/develop/backend/base/models.py)
 to generate our database. Every model corresponds to a table in our database, giving us an easy and fast way to add, edit
@@ -71,8 +74,8 @@ docker-compose exec backend python manage.py migrate
 An example of a data migration file is [0002_auto_20230227_1453.py](../backend/base/migrations/0002_auto_20230227_1453.py).
 
 ## Fixtures
-**Fixtures** in django are another useful way to dump data and add the data to our database. 
-An example of a fixtures is [dump-data.json](https://github.com/SELab-2/Dr-Trottoir-4/blob/develop/backend/dumpdata.json).
+**Fixtures** in django are another useful way to dump data and add the data to our database, and they are our preferred
+method. An example of a fixtures file is [datadump.json](https://github.com/SELab-2/Dr-Trottoir-4/blob/develop/backend/datadump.json).
 
 In order to create a data dump of our database file using docker, we can use the command:
 ```bash
@@ -150,6 +153,9 @@ More information about fixtures can be found [here](https://docs.djangoproject.c
 ## Viewing the data
 
 ### Viewing the data in postgres
+This option is mainly meant for whenever you really want to be able to execute SQL and as such, you will probably not need
+it much if at all. We'll still cover it however just in case.
+
 To check whether the data has been correctly inserted into the database, we can log onto the postgres docker container:
 We can do this by first checking our running containers, using the command:
 ```
@@ -182,4 +188,5 @@ drtrottoir=# \dt
 ```
 
 ### Viewing the data on the admin page
-Alternatively, you can head over to the [admin page]() to get a GUI to view 
+Alternatively, you can head over to the [admin page](http://localhost/api/admin) to get a GUI to view the contents of the
+database. You can also easily add, remove and edit entries on the admin page without having to write any SQL code.
