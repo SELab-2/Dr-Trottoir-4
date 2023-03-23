@@ -30,12 +30,12 @@ docker-compose exec backend python manage.py makemigrations
 
 Creates a new migration based on the changes you have made to the model in [models.py](https://github.com/SELab-2/Dr-Trottoir-4/blob/develop/backend/base/models.py).
 
-New migrations that are created have a unique identifier, this identifier is just an autoincremented id. 
+New migrations that are created have a unique identifier, which is just an auto incremented id. 
 
 There are already some migration files in our project, these can be found in the [migrations](https://github.com/SELab-2/Dr-Trottoir-4/tree/develop/backend/base/migrations) folder. 
 
 **Warning**:
-**The filenames and content of these files can never be changed, as this will cause problems for those who already executed these migrations!**
+**The filenames and content of these files must never be changed, as this will cause problems for those who already executed these migrations!**
 > This is because django keeps track of a migration history inside the database, in this table the filename is tracked.
 
 **Instead just create a new migrations on top of the already executed migrations.**
@@ -47,7 +47,8 @@ docker-compose exec backend python manage.py migrate
 ```
 
 ### Data migrations
-We can also use migrations to insert (or remove) data in our database. These are called data migrations, more info can be found [here](https://docs.djangoproject.com/en/4.1/topics/migrations/#data-migrations).
+We can also use migrations to insert (or remove) data in our database. These are called data migrations, more information 
+about them can be found [here](https://docs.djangoproject.com/en/4.1/topics/migrations/#data-migrations).
 We haven't used this in our project however, instead we have opted for fixtures which will be covered in the next section.
 This section about data migrations has only been left in for the sake of completion.
 
@@ -63,7 +64,7 @@ docker-compose exec backend python manage.py migrate
 ```
 
 ## Fixtures
-**Fixtures** in django are another useful way to dump data and add the data to our database, and they are our preferred
+**Fixtures** in Django are another useful way to dump data and add the data to our database, and they are our preferred
 method. An example of a fixtures file is [datadump.json](https://github.com/SELab-2/Dr-Trottoir-4/blob/develop/backend/datadump.json).
 
 In order to create a data dump of our database file using docker, we can use the command:
@@ -196,4 +197,4 @@ make sure you have a superuser to login to the admin page. You can do this by ei
 ```bash
 docker-compose exec backend python manage.py createsuperuser 
 ```
-Or using our provided datadump which already has multiple superusers.
+which makes a new superuser, or by using our provided datadump which already has multiple superusers.
