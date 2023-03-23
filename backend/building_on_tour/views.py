@@ -69,7 +69,7 @@ class BuildingTourIndividualView(APIView):
 
         return patch_success(BuildingTourSerializer(building_on_tour_instance))
 
-    @extend_schema(responses=delete_docs(BuildingTourSerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, building_tour_id):
         """
         delete a BuildingOnTour from the database

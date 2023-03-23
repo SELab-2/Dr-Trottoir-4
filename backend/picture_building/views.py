@@ -71,7 +71,7 @@ class PictureBuildingIndividualView(APIView):
 
         return patch_success(PictureBuildingSerializer(picture_building_instance))
 
-    @extend_schema(responses=delete_docs(PictureBuildingSerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, picture_building_id):
         """
         delete a pictureBuilding from the database

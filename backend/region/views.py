@@ -68,7 +68,7 @@ class RegionIndividualView(APIView):
 
         return patch_success(RegionSerializer(region_instance))
 
-    @extend_schema(responses=delete_docs(RegionSerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, region_id):
         """
         delete a region with given id

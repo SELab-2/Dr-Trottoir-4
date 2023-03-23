@@ -45,7 +45,7 @@ class EmailTemplateIndividualView(APIView):
 
         return get_success(EmailTemplateSerializer(email_template_instance[0]))
 
-    @extend_schema(responses=delete_docs(EmailTemplateSerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, email_template_id):
         """
         Delete EmailTemplate with given id

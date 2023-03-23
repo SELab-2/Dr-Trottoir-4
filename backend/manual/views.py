@@ -56,7 +56,7 @@ class ManualView(APIView):
         serializer = ManualSerializer(manual_instances)
         return get_success(serializer)
 
-    @extend_schema(responses=delete_docs(ManualSerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, manual_id):
         """
         Delete manual with given id

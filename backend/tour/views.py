@@ -68,7 +68,7 @@ class TourIndividualView(APIView):
 
         return patch_success(TourSerializer(tour_instance))
 
-    @extend_schema(responses=delete_docs(TourSerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, tour_id):
         """
         Delete a tour with given id

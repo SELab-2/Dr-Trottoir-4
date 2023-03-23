@@ -90,7 +90,7 @@ class StudentAtBuildingOnTourIndividualView(APIView):
         serializer = StudBuildTourSerializer(stud_tour_building_instance)
         return patch_success(serializer)
 
-    @extend_schema(responses=delete_docs(StudBuildTourSerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, student_at_building_on_tour_id):
         """
         Delete StudentAtBuildingOnTour with given id

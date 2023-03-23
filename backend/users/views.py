@@ -100,11 +100,11 @@ class UserIndividualView(APIView):
         serializer = UserSerializer(user_instance)
         return get_success(serializer)
 
-    @extend_schema(responses=delete_docs(UserSerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, user_id):
         """
         Delete user with given id
-        We don't acutally delete a user, we put the user on inactive mode
+        We don't actually delete a user, we put the user on inactive mode
         """
         user_instance = User.objects.filter(id=user_id)
         if not user_instance:

@@ -53,7 +53,7 @@ class BuildingIndividualView(APIView):
         serializer = BuildingSerializer(building_instance)
         return get_success(serializer)
 
-    @extend_schema(responses=delete_docs(BuildingSerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, building_id):
         """
         Delete building with given id

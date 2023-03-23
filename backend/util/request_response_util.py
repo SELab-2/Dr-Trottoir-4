@@ -97,7 +97,7 @@ def post_docs(serializer):
     return {201: serializer, 400: None}
 
 
-def delete_docs(serializer):
+def delete_docs():
     return {204: None, 400: None}
 
 

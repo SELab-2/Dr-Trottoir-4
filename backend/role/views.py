@@ -46,7 +46,7 @@ class RoleIndividualView(APIView):
         serializer = RoleSerializer(role_instance[0])
         return get_success(serializer)
 
-    @extend_schema(responses=delete_docs(RoleSerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, role_id):
         """
         Delete a Role with given id

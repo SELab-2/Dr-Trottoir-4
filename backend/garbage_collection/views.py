@@ -47,7 +47,7 @@ class GarbageCollectionIndividualView(APIView):
         serializer = GarbageCollectionSerializer(garbage_collection_instance[0])
         return get_success(serializer)
 
-    @extend_schema(responses=delete_docs(GarbageCollectionSerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, garbage_collection_id):
         """
         Delete garbage collection with given id

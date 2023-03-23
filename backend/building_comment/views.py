@@ -51,7 +51,7 @@ class BuildingCommentIndividualView(APIView):
 
         return get_success(BuildingCommentSerializer(building_comment_instance[0]))
 
-    @extend_schema(responses=delete_docs(BuildingCommentSerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, building_comment_id):
         """
         Delete a BuildingComment with given id

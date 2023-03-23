@@ -59,7 +59,7 @@ class LobbyIndividualView(APIView):
 
         return get_success(LobbySerializer(lobby_instance[0]))
 
-    @extend_schema(responses=delete_docs(LobbySerializer))
+    @extend_schema(responses=delete_docs())
     def delete(self, request, lobby_id):
         """
         Patch EmailWhitelist with given id
