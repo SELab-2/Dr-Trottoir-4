@@ -5,7 +5,7 @@ import styles from "@/styles/Login.module.css";
 import Image from "next/image";
 import fire from "@/public/fire_image.png";
 import signup from "@/lib/signup";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 export default function Signup() {
     const { t } = useTranslation();
