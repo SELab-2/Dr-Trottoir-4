@@ -9,12 +9,12 @@ from rest_framework_simplejwt.views import TokenVerifyView
 from authentication.views import (
     LoginViewWithHiddenTokens,
     RefreshViewHiddenTokens,
-    LogoutViewWithBlacklisting,
+    LogoutViewWithBlacklisting, CustomRegisterView,
 )
 
 urlpatterns = [
     # URLs that do not require a session or valid token
-    path("signup/", include("dj_rest_auth.registration.urls")),
+    path("signup/", CustomRegisterView.as_view()),
     path("password/reset/", PasswordResetView.as_view()),
     path(
         "password/reset/confirm/<uidb64>/<token>/",

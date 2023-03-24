@@ -2,19 +2,67 @@ from dj_rest_auth.jwt_auth import (
     unset_jwt_cookies,
     CookieTokenRefreshSerializer,
     set_jwt_access_cookie,
-    set_jwt_refresh_cookie,
+    set_jwt_refresh_cookie, set_jwt_cookies,
 )
+from dj_rest_auth.utils import jwt_encode
 from dj_rest_auth.views import LogoutView, LoginView
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
-from drf_spectacular.utils import extend_schema
 
+from authentication.serializers import CustomRegisterSerializer
+from base.models import Lobby
 from config import settings
+from util.request_response_util import request_to_dict
+
+
+class CustomRegisterView(APIView):
+    serializer_class = CustomRegisterSerializer
+
+    def post(self, request):
+        """
+        Register a new user
+        """
+        data = request_to_dict(request.data)
+
+        # check if there is a lobby entry for this email address
+        lobby_instances = Lobby.objects.filter(email=data.get('email'))
+        if not lobby_instances:
+            return Response(
+                {"res": f"There is no entry in the lobby for email address: {data.get('email')}"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        lobby_instance = lobby_instances[0]
+        # check if the verification code is valid
+        if lobby_instance.verification_code != data.get('verification_code'):
+            return Response(
+                {"res": "Invalid verification code"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        request.data._mutable = True
+        request.data['role'] = lobby_instance.role_id
+        request.data._mutable = False
+
+        # create a user
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save(request)
+        # create an access and refresh token
+        access_token, refresh_token = jwt_encode(user)
+
+        # add the user data to the response
+        response = Response({"res": str(user)}, status=status.HTTP_200_OK)
+        # set the cookie headers
+        set_jwt_cookies(response, access_token, access_token)
+
+        return response
 
 
 class LogoutViewWithBlacklisting(LogoutView):
