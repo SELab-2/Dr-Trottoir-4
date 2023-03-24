@@ -33,11 +33,14 @@ export default function Login() {
                 await router.push("/welcome");
             },
             (err) => {
+                let errors = [];
                 let errorRes = err.response;
                 if (errorRes.status === 400) {
-                    if (errorRes.data.non_field_errors) {
-                        setErrorMessages(errorRes.data.non_field_errors);
+                    let data : [any, string[]][] = Object.entries(errorRes.data);
+                    for (const [_, errorValues] of data) {
+                        errors.push(...errorValues);
                     }
+                    setErrorMessages(errors);
                 } else {
                     console.error(err);
                 }

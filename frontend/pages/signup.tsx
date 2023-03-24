@@ -30,22 +30,10 @@ export default function Signup() {
                 let errorRes = err.response;
                 if (errorRes.status === 400) {
                     let errors = [];
-                    if (errorRes.data.firstname) {
-                        errors.push(...errorRes.data.firstname);
+                    let data : [any, string[]][] = Object.entries(errorRes.data);
+                    for (const [_, errorValues] of data) {
+                        errors.push(...errorValues);
                     }
-                    if (errorRes.data.lastname) {
-                        errors.push(...errorRes.data.lastname);
-                    }
-                    if (errorRes.data.email) {
-                        errors.push(...errorRes.data.email);
-                    }
-                    if (errorRes.data.password1) {
-                        errors.push(...errorRes.data.password1);
-                    }
-                    if (errorRes.data.password2) {
-                        errors.push(...errorRes.data.password2);
-                    }
-                    console.log(errors);
                     setErrorMessages(errors);
                 } else {
                     console.error(err);
