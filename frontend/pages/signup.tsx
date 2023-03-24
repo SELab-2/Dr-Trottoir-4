@@ -72,11 +72,11 @@ export default function Signup() {
 
                                             <div className="help-block mb-4">
                                                 <ul>
-                                                    {
-                                                        errorMessages.map((err, i) => (
-                                                            <li className="has-error text-danger" key={i}>{err}</li>
-                                                        ))
-                                                    }
+                                                    {errorMessages.map((err, i) => (
+                                                        <li className="has-error text-danger" key={i}>
+                                                            {err}
+                                                        </li>
+                                                    ))}
                                                 </ul>
                                             </div>
 
@@ -158,14 +158,18 @@ export default function Signup() {
                                                         e.target.setCustomValidity("");
                                                         setPassword2(e.target.value);
                                                         if (password1 !== e.target.value) {
-                                                            e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
+                                                            e.target.setCustomValidity(
+                                                                "Wachtwoorden zijn niet gelijk."
+                                                            );
                                                         } else {
                                                             e.target.setCustomValidity("");
                                                         }
                                                     }}
                                                     onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                         if (password1 !== e.target.value) {
-                                                            e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
+                                                            e.target.setCustomValidity(
+                                                                "Wachtwoorden zijn niet gelijk."
+                                                            );
                                                         } else {
                                                             e.target.setCustomValidity("");
                                                         }
