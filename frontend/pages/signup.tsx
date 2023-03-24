@@ -43,7 +43,6 @@ export default function Signup() {
                     if (errorRes.data.password2) {
                         errors.push(errorRes.data.password2);
                     }
-                    console.error(errorRes);
                     setErrorMessages(errors);
                 } else {
                     console.error(err);
