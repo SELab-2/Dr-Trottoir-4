@@ -15,9 +15,6 @@ class RootDefault(APIView):
     )
     def get(self, request):
         return Response(
-            {
-                "res": "Hello from the DrTrottoir API!",
-                "id": request.user.id
-            },
+            {"res": "Hello from the DrTrottoir API!", "id": request.user.id},
             status=status.HTTP_200_OK,
         )
