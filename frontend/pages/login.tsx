@@ -3,10 +3,12 @@ import styles from "styles/Login.module.css";
 import Image from "next/image";
 import filler_image from "../public/filler_image.png";
 import { login, verifyToken } from "@/lib/login";
-import React, { FormEvent, useEffect, useState } from "react";
+import React, {FormEvent, useEffect, useState} from "react";
 import { useRouter } from "next/router";
+import { useTranslation } from 'react-i18next';
 
 export default function Login() {
+    const { t } = useTranslation();
     const router = useRouter();
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -66,12 +68,11 @@ export default function Login() {
                                                 <ul>
                                                     {errorMessages.map((err, i) => (
                                                         <li className="has-error text-danger" key={i}>
-                                                            {err}
+                                                            {t(err)}
                                                         </li>
                                                     ))}
                                                 </ul>
                                             </div>
-
                                             <div className="form-outline mb-4">
                                                 <label className="form-label">E-mailadres</label>
                                                 <input
