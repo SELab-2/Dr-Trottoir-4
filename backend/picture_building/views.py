@@ -11,7 +11,9 @@ from datetime import datetime
 
 DESCRIPTION = 'Optionally, you can filter by date, by using the keys "from" and/or "to". When filtering, "from" and "to" are included in the result. The keys must be in format "%Y-%m-%d %H:%M:%S"  or "%Y-%m-%d".'
 
-TYPES_DESCRIPTION = "The possible types are: AA, BI, VE and OP. These stand for aankomst, binnen, vertrek and opmerkingen respectively."
+TYPES_DESCRIPTION = (
+    "The possible types are: AA, BI, VE and OP. These stand for aankomst, binnen, vertrek and opmerkingen respectively."
+)
 
 TRANSLATE = {"building": "building_id"}
 
@@ -48,8 +50,10 @@ class Default(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent]
     serializer_class = PictureBuildingSerializer
 
-    @extend_schema(responses={201: PictureBuildingSerializer, 400: None},
-                   description="Create a new PictureBuilding." + TYPES_DESCRIPTION)
+    @extend_schema(
+        responses={201: PictureBuildingSerializer, 400: None},
+        description="Create a new PictureBuilding." + TYPES_DESCRIPTION,
+    )
     def post(self, request):
         """
         Create a new PictureBuilding
@@ -69,8 +73,10 @@ class PictureBuildingIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = PictureBuildingSerializer
 
-    @extend_schema(responses={200: PictureBuildingSerializer, 400: None},
-                   description="Get PictureBuilding with given id." + TYPES_DESCRIPTION)
+    @extend_schema(
+        responses={200: PictureBuildingSerializer, 400: None},
+        description="Get PictureBuilding with given id." + TYPES_DESCRIPTION,
+    )
     def get(self, request, picture_building_id):
         """
         Get PictureBuilding with given id
@@ -86,8 +92,10 @@ class PictureBuildingIndividualView(APIView):
         serializer = PictureBuildingSerializer(picture_building_instance)
         return get_success(serializer)
 
-    @extend_schema(responses={200: PictureBuildingSerializer, 400: None},
-                   description="Edit info about PictureBuilding with given id." + TYPES_DESCRIPTION)
+    @extend_schema(
+        responses={200: PictureBuildingSerializer, 400: None},
+        description="Edit info about PictureBuilding with given id." + TYPES_DESCRIPTION,
+    )
     def patch(self, request, picture_building_id):
         """
         Edit info about PictureBuilding with given id
@@ -158,43 +166,30 @@ class AllPictureBuildingsView(APIView):
     serializer_class = PictureBuildingSerializer
 
     openapi_schema = {
-        'operationId': 'picture_building_all_retrieve',
-        'description': DESCRIPTION + TYPES_DESCRIPTION,
-        'tags': ['picture-building'],
-        'requestBody': {
-            'content': {
-                'application/json': {
-                    'schema': {
-                        'type': 'object',
-                        'properties': {
-                            'from': {
-                                'type': 'string',
-                                'format': 'date-time'
-                            },
-                            'to': {
-                                'type': 'string',
-                                'format': 'date-time'
-                            }
+        "operationId": "picture_building_all_retrieve",
+        "description": DESCRIPTION + TYPES_DESCRIPTION,
+        "tags": ["picture-building"],
+        "requestBody": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "from": {"type": "string", "format": "date-time"},
+                            "to": {"type": "string", "format": "date-time"},
                         },
-                        'required': ['from', 'to']
+                        "required": ["from", "to"],
                     }
                 }
             }
         },
-        'security': [
-            {'jwtHeaderAuth': []},
-            {'jwtCookieAuth': []}
-        ],
-        'responses': {
-            '200': {
-                'content': {
-                    'application/json': {
-                        'schema': {'$ref': '#/components/schemas/PictureBuilding'}
-                    }
-                },
-                'description': ''
+        "security": [{"jwtHeaderAuth": []}, {"jwtCookieAuth": []}],
+        "responses": {
+            "200": {
+                "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PictureBuilding"}}},
+                "description": "",
             }
-        }
+        },
     }
 
     @extend_schema(operation=openapi_schema)
