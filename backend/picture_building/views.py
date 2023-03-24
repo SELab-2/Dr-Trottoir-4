@@ -1,19 +1,58 @@
+from datetime import datetime
+
 from django.db.models import QuerySet
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from base.permissions import IsAdmin, IsSuperStudent, IsStudent, ReadOnlyOwnerOfBuilding
 from base.models import PictureBuilding, Building
+from base.permissions import IsAdmin, IsSuperStudent, IsStudent, ReadOnlyOwnerOfBuilding
 from base.serializers import PictureBuildingSerializer
 from util.request_response_util import *
-from drf_spectacular.utils import extend_schema
-from datetime import datetime
 
 DESCRIPTION = 'Optionally, you can filter by date, by using the keys "from" and/or "to". When filtering, "from" and "to" are included in the result. The keys must be in format "%Y-%m-%d %H:%M:%S"  or "%Y-%m-%d".'
 
 TYPES_DESCRIPTION = (
-    "The possible types are: AA, BI, VE and OP. These stand for aankomst, binnen, vertrek and opmerkingen respectively."
+    'The possible types are: "AA", "BI", "VE" and "OP". These stand for aankomst, binnen, vertrek and opmerkingen respectively.'
 )
+
+
+# Swagger cannot generate a request body for GET. This is a workaround.
+def _get_open_api_schema(include_400=False):
+    res_200 = {
+        "200": {
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PictureBuilding"}}},
+            "description": ""
+        }
+    }
+
+    res_400 = {
+        "200": res_200["200"],
+        "400": {"description": "No response body"}
+    }
+
+    return {
+        "operationId": "picture_building_all_retrieve",
+        "description": DESCRIPTION + TYPES_DESCRIPTION,
+        "tags": ["picture-building"],
+        "requestBody": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "from": {"type": "string", "format": "date-time"},
+                            "to": {"type": "string", "format": "date-time"},
+                        },
+                        "required": ["from", "to"],
+                    }
+                }
+            }
+        },
+        "security": [{"jwtHeaderAuth": []}, {"jwtCookieAuth": []}],
+        "responses": res_400 if include_400 else res_200
+    }
+
 
 TRANSLATE = {"building": "building_id"}
 
@@ -137,7 +176,7 @@ class PicturesOfBuildingView(APIView):
 
     serializer_class = PictureBuildingSerializer
 
-    @extend_schema(description=DESCRIPTION + TYPES_DESCRIPTION, responses={200: PictureBuildingSerializer, 400: None})
+    @extend_schema(operation=_get_open_api_schema(True))
     def get(self, request, building_id):
         """
         Get all pictures of a building with given id
@@ -165,34 +204,7 @@ class AllPictureBuildingsView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = PictureBuildingSerializer
 
-    openapi_schema = {
-        "operationId": "picture_building_all_retrieve",
-        "description": DESCRIPTION + TYPES_DESCRIPTION,
-        "tags": ["picture-building"],
-        "requestBody": {
-            "content": {
-                "application/json": {
-                    "schema": {
-                        "type": "object",
-                        "properties": {
-                            "from": {"type": "string", "format": "date-time"},
-                            "to": {"type": "string", "format": "date-time"},
-                        },
-                        "required": ["from", "to"],
-                    }
-                }
-            }
-        },
-        "security": [{"jwtHeaderAuth": []}, {"jwtCookieAuth": []}],
-        "responses": {
-            "200": {
-                "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PictureBuilding"}}},
-                "description": "",
-            }
-        },
-    }
-
-    @extend_schema(operation=openapi_schema)
+    @extend_schema(operation=_get_open_api_schema())
     def get(self, request):
         """
         Get all pictureBuilding
