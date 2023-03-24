@@ -6,6 +6,7 @@ from dj_rest_auth.jwt_auth import (
 )
 from dj_rest_auth.utils import jwt_encode
 from dj_rest_auth.views import LogoutView, LoginView
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -25,6 +26,7 @@ from util.request_response_util import request_to_dict
 class CustomRegisterView(APIView):
     serializer_class = CustomRegisterSerializer
 
+    @extend_schema(responses={200: None, 403: None})
     def post(self, request):
         """
         Register a new user
@@ -35,20 +37,14 @@ class CustomRegisterView(APIView):
         lobby_instances = Lobby.objects.filter(email=data.get('email'))
         if not lobby_instances:
             return Response(
-                {
-                    "error": "Unauthorized signup",
-                    "message": f"The given email address {data.get('email')} has no entry in the lobby. You must contact an admin to gain access to the platform."
-                },
+                {"message": f"The given email address {data.get('email')} has no entry in the lobby. You must contact an admin to gain access to the platform."},
                 status=status.HTTP_403_FORBIDDEN
             )
         lobby_instance = lobby_instances[0]
         # check if the verification code is valid
         if lobby_instance.verification_code != data.get('verification_code'):
             return Response(
-                {
-                    "error": "Unauthorized signup",
-                    "message": "Invalid verification code"
-                },
+                {"message": "Invalid verification code"},
                 status=status.HTTP_403_FORBIDDEN
             )
 
@@ -72,39 +68,38 @@ class CustomRegisterView(APIView):
         return response
 
 
-class LogoutViewWithBlacklisting(LogoutView):
+class CustomLogoutView(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = CookieTokenRefreshSerializer
 
     @extend_schema(responses={200: None, 401: None, 500: None})
-    def logout(self, request):
+    def post(self, request):
         response = Response(
-            {"detail": _("Successfully logged out.")},
+            {"message": _("Successfully logged out.")},
             status=status.HTTP_200_OK,
         )
 
         cookie_name = getattr(settings, "JWT_AUTH_REFRESH_COOKIE", None)
-
-        unset_jwt_cookies(response)
-
         try:
             if cookie_name and cookie_name in request.COOKIES:
                 token = RefreshToken(request.COOKIES.get(cookie_name))
                 token.blacklist()
         except KeyError:
-            response.data = {"detail": _("Refresh token was not included in request cookies.")}
+            response.data = {"message": _("Refresh token was not included in request cookies.")}
             response.status_code = status.HTTP_401_UNAUTHORIZED
         except (TokenError, AttributeError, TypeError) as error:
             if hasattr(error, "args"):
                 if "Token is blacklisted" in error.args or "Token is invalid or expired" in error.args:
-                    response.data = {"detail": _(error.args[0])}
+                    response.data = {"message": _(error.args[0])}
                     response.status_code = status.HTTP_401_UNAUTHORIZED
                 else:
-                    response.data = {"detail": _("An error has occurred.")}
+                    response.data = {"message": _("An error has occurred.")}
                     response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             else:
-                response.data = {"detail": _("An error has occurred.")}
+                response.data = {"message": _("An error has occurred.")}
                 response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        unset_jwt_cookies(response)
+
         return response
 
 
