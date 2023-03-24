@@ -30,7 +30,7 @@ export default function Signup() {
                 let errorRes = err.response;
                 if (errorRes.status === 400) {
                     let errors = [];
-                    let data : [any, string[]][] = Object.entries(errorRes.data);
+                    let data: [any, string[]][] = Object.entries(errorRes.data);
                     for (const [_, errorValues] of data) {
                         errors.push(...errorValues);
                     }
