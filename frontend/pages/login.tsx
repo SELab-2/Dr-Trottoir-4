@@ -2,29 +2,31 @@ import BaseHeader from "@/components/header/BaseHeader";
 import styles from "styles/Login.module.css";
 import Image from "next/image";
 import filler_image from "../public/filler_image.png";
-import Link from "next/link";
 import { login, verifyToken } from "@/lib/login";
-import { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 export default function Login() {
     const router = useRouter();
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     // try and log in to the application using existing refresh token
     useEffect(() => {
         verifyToken().then(
-            async (res) => {
-                console.log(res);
+            async () => {
                 await router.push("/welcome");
             },
             (err) => {
-                console.error("Error: token is not valid");
                 console.error(err);
             }
         );
     }, [verifyToken]);
+
+    useEffect(() => {
+        console.log(errorMessages);
+    }, [errorMessages]);
 
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
@@ -33,7 +35,14 @@ export default function Login() {
                 await router.push("/welcome");
             },
             (err) => {
-                console.error(err);
+                let errorRes = err.response;
+                if (errorRes.status === 400) {
+                    if (errorRes.data.non_field_errors) {
+                        setErrorMessages(errorRes.data.non_field_errors);
+                    }
+                } else {
+                    console.error(err);
+                }
             }
         );
     };
@@ -57,12 +66,23 @@ export default function Login() {
                                                 <span className="h1 fw-bold mb-0">Login.</span>
                                             </div>
 
+                                            <div className="help-block mb-4">
+                                                <ul>
+                                                    {errorMessages.map((err, i) => (
+                                                        <li className="has-error text-danger" key={i}>
+                                                            {err}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
                                             <div className="form-outline mb-4">
                                                 <label className="form-label">E-mailadres</label>
                                                 <input
                                                     type="email"
                                                     className={`form-control form-control-lg ${styles.input}`}
                                                     value={username}
+                                                    placeholder="name@example.com"
                                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                                         setUsername(e.target.value)
                                                     }
@@ -75,10 +95,15 @@ export default function Login() {
                                                     type="password"
                                                     className={`form-control form-control-lg ${styles.input}`}
                                                     value={password}
-                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                        setPassword(e.target.value)
-                                                    }
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        setPassword(e.target.value);
+                                                        e.target.setCustomValidity("");
+                                                    }}
+                                                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        e.target.setCustomValidity("Wachtwoord is verplicht.");
+                                                    }}
                                                     required
+                                                    placeholder="Wachtwoord123"
                                                 />
                                             </div>
 
