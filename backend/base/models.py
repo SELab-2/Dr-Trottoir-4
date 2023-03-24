@@ -13,7 +13,7 @@ from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2**31 - 1
+MAX_INT = 2 ** 31 - 1
 
 
 def _check_for_present_keys(instance, keys_iterable):
@@ -81,7 +81,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     region = models.ManyToManyField(Region)
 
     # This is the new role model
-    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
 
     objects = UserManager()
 
@@ -102,8 +102,14 @@ class Lobby(models.Model):
 
     def clean(self):
         _check_for_present_keys(self, {"email"})
-        if User.objects.filter(email=self.email):
-            raise ValidationError("Email already exists in database (the email is already linked to a user)")
+        user = User.objects.filter(email=self.email)
+        if user:
+            user = user[0]
+            is_inactive = not user.is_active
+            addendum = ""
+            if is_inactive:
+                addendum = " This email belongs to an INACTIVE user. Instead of trying to register this user, you can simply reactivate the account."
+            raise ValidationError(f"Email already exists in database for a user (id: {user.id}).{addendum}")
 
 
 class Building(models.Model):
@@ -211,7 +217,7 @@ class GarbageCollection(models.Model):
                 "date",
                 name="garbage_collection_unique",
                 violation_error_message="This type of garbage is already being collected on the same day for this "
-                "building.",
+                                        "building.",
             ),
         ]
 
@@ -385,9 +391,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-            self.version_number == 0
-            or self.version_number > max_version_number + 1
-            or self.version_number in version_numbers
+                self.version_number == 0
+                or self.version_number > max_version_number + 1
+                or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 
