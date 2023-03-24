@@ -34,7 +34,7 @@ class TourIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
     serializer_class = TourSerializer
 
-    @extend_schema(responses=get_patch_docs(TourSerializer))
+    @extend_schema(responses=get_docs(TourSerializer))
     def get(self, request, tour_id):
         """
         Get info about a Tour with given id
@@ -48,7 +48,7 @@ class TourIndividualView(APIView):
         serializer = TourSerializer(tour_instance)
         return get_success(serializer)
 
-    @extend_schema(responses=get_patch_docs(TourSerializer))
+    @extend_schema(responses=patch_docs(TourSerializer))
     def patch(self, request, tour_id):
         """
         Edit a tour with given id

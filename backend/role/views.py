@@ -33,7 +33,7 @@ class RoleIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = RoleSerializer
 
-    @extend_schema(responses=get_patch_docs(RoleSerializer))
+    @extend_schema(responses=get_docs(RoleSerializer))
     def get(self, request, role_id):
         """
         Get info about a Role with given id
@@ -59,7 +59,7 @@ class RoleIndividualView(APIView):
         role_instance[0].delete()
         return delete_success()
 
-    @extend_schema(responses=get_patch_docs(RoleSerializer))
+    @extend_schema(responses=patch_docs(RoleSerializer))
     def patch(self, request, role_id):
         """
         Edit info about a Role with given id

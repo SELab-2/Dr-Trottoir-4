@@ -41,7 +41,7 @@ class ManualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyManualFromSyndic]
     serializer_class = ManualSerializer
 
-    @extend_schema(responses=get_patch_docs(ManualSerializer))
+    @extend_schema(responses=get_docs(ManualSerializer))
     def get(self, request, manual_id):
         """
         Get info about a manual with given id
@@ -67,7 +67,7 @@ class ManualView(APIView):
         manual_instances[0].delete()
         return delete_success()
 
-    @extend_schema(responses=get_patch_docs(ManualSerializer))
+    @extend_schema(responses=patch_docs(ManualSerializer))
     def patch(self, request, manual_id):
         """
         Edit info about a manual with given id
@@ -90,7 +90,7 @@ class ManualBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding]
     serializer_class = ManualSerializer
 
-    @extend_schema(responses=get_patch_docs(ManualSerializer))
+    @extend_schema(responses=get_docs(ManualSerializer))
     def get(self, request, building_id):
         """
         Get all manuals of a building with given id

@@ -34,7 +34,7 @@ class PictureBuildingIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = PictureBuildingSerializer
 
-    @extend_schema(responses=get_patch_docs(PictureBuildingSerializer))
+    @extend_schema(responses=get_docs(PictureBuildingSerializer))
     def get(self, request, picture_building_id):
         """
         Get PictureBuilding with given id
@@ -50,7 +50,7 @@ class PictureBuildingIndividualView(APIView):
         serializer = PictureBuildingSerializer(picture_building_instance)
         return get_success(serializer)
 
-    @extend_schema(responses=get_patch_docs(PictureBuildingSerializer))
+    @extend_schema(responses=patch_docs(PictureBuildingSerializer))
     def patch(self, request, picture_building_id):
         """
         Edit info about PictureBuilding with given id

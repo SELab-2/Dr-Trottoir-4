@@ -101,6 +101,10 @@ def delete_docs():
     return {204: None, 400: None}
 
 
-def get_patch_docs(serializer):
+def get_docs(serializer):
     return {200: serializer, 400: None}
+
+
+def patch_docs(serializer):
+    return get_docs(serializer)
 

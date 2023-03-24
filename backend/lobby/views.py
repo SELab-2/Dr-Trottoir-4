@@ -47,7 +47,7 @@ class LobbyIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = LobbySerializer
 
-    @extend_schema(responses=get_patch_docs(LobbySerializer))
+    @extend_schema(responses=get_docs(LobbySerializer))
     def get(self, request, lobby_id):
         """
         Get info about an EmailWhitelist with given id

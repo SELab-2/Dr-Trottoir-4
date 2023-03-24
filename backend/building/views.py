@@ -38,7 +38,7 @@ class BuildingIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = BuildingSerializer
 
-    @extend_schema(responses=get_patch_docs(BuildingSerializer))
+    @extend_schema(responses=get_docs(BuildingSerializer))
     def get(self, request, building_id):
         """
         Get info about building with given id
@@ -68,7 +68,7 @@ class BuildingIndividualView(APIView):
         building_instance.delete()
         return delete_success()
 
-    @extend_schema(responses=get_patch_docs(BuildingSerializer))
+    @extend_schema(responses=patch_docs(BuildingSerializer))
     def patch(self, request, building_id):
         """
         Edit building with given ID
@@ -93,7 +93,7 @@ class BuildingIndividualView(APIView):
 class BuildingPublicView(APIView):
     serializer_class = BuildingSerializer
 
-    @extend_schema(responses=get_patch_docs(BuildingSerializer))
+    @extend_schema(responses=get_docs(BuildingSerializer))
     def get(self, request, building_public_id):
         """
         Get building with the public id
@@ -154,7 +154,7 @@ class BuildingOwnerView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = BuildingSerializer
 
-    @extend_schema(responses=get_patch_docs(BuildingSerializer))
+    @extend_schema(responses=get_docs(BuildingSerializer))
     def get(self, request, owner_id):
         """
         Get all buildings owned by syndic with given id

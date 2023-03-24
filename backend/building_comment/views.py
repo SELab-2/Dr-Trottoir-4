@@ -37,7 +37,7 @@ class BuildingCommentIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]
     serializer_class = BuildingCommentSerializer
 
-    @extend_schema(responses=get_patch_docs(BuildingCommentSerializer))
+    @extend_schema(responses=get_docs(BuildingCommentSerializer))
     def get(self, request, building_comment_id):
         """
         Get an invividual BuildingComment with given id
@@ -66,7 +66,7 @@ class BuildingCommentIndividualView(APIView):
         building_comment_instance[0].delete()
         return delete_success()
 
-    @extend_schema(responses=get_patch_docs(BuildingCommentSerializer))
+    @extend_schema(responses=patch_docs(BuildingCommentSerializer))
     def patch(self, request, building_comment_id):
         """
         Edit BuildingComment with given id
@@ -93,7 +93,7 @@ class BuildingCommentBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]
     serializer_class = BuildingCommentSerializer
 
-    @extend_schema(responses=get_patch_docs(BuildingCommentSerializer))
+    @extend_schema(responses=get_docs(BuildingCommentSerializer))
     def get(self, request, building_id):
         """
         Get all BuildingComments of building with given building id

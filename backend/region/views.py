@@ -34,7 +34,7 @@ class RegionIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | ReadOnly]
     serializer_class = RegionSerializer
 
-    @extend_schema(responses=get_patch_docs(RegionSerializer))
+    @extend_schema(responses=get_docs(RegionSerializer))
     def get(self, request, region_id):
         """
         Get info about a Region with given id
@@ -47,7 +47,7 @@ class RegionIndividualView(APIView):
         serializer = RegionSerializer(region_instance[0])
         return get_success(serializer)
 
-    @extend_schema(responses=get_patch_docs(RegionSerializer))
+    @extend_schema(responses=patch_docs(RegionSerializer))
     def patch(self, request, region_id):
         """
         Edit Region with given id

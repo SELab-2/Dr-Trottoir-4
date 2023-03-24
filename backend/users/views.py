@@ -84,7 +84,7 @@ class UserIndividualView(APIView):
     ]
     serializer_class = UserSerializer
 
-    @extend_schema(responses=get_patch_docs(UserSerializer))
+    @extend_schema(responses=get_docs(UserSerializer))
     def get(self, request, user_id):
         """
         Get info about user with given id
@@ -118,7 +118,7 @@ class UserIndividualView(APIView):
 
         return delete_success()
 
-    @extend_schema(responses=get_patch_docs(UserSerializer))
+    @extend_schema(responses=patch_docs(UserSerializer))
     def patch(self, request, user_id):
         """
         Edit user with given id
