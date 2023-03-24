@@ -5,8 +5,7 @@ from dj_rest_auth.jwt_auth import (
     set_jwt_refresh_cookie, set_jwt_cookies,
 )
 from dj_rest_auth.utils import jwt_encode
-from dj_rest_auth.views import LogoutView, LoginView
-from django.core.exceptions import ObjectDoesNotExist
+from dj_rest_auth.views import LoginView
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -19,6 +18,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from authentication.serializers import CustomRegisterSerializer
 from base.models import Lobby
+from base.serializers import UserSerializer
 from config import settings
 from util.request_response_util import request_to_dict
 
@@ -37,7 +37,8 @@ class CustomRegisterView(APIView):
         lobby_instances = Lobby.objects.filter(email=data.get('email'))
         if not lobby_instances:
             return Response(
-                {"message": f"The given email address {data.get('email')} has no entry in the lobby. You must contact an admin to gain access to the platform."},
+                {
+                    "message": f"The given email address {data.get('email')} has no entry in the lobby. You must contact an admin to gain access to the platform."},
                 status=status.HTTP_403_FORBIDDEN
             )
         lobby_instance = lobby_instances[0]
@@ -74,7 +75,7 @@ class CustomLogoutView(APIView):
     @extend_schema(responses={200: None, 401: None, 500: None})
     def post(self, request):
         response = Response(
-            {"message": _("Successfully logged out.")},
+            {"message": _("successfully logged out")},
             status=status.HTTP_200_OK,
         )
 
@@ -84,22 +85,33 @@ class CustomLogoutView(APIView):
                 token = RefreshToken(request.COOKIES.get(cookie_name))
                 token.blacklist()
         except KeyError:
-            response.data = {"message": _("Refresh token was not included in request cookies.")}
+            response.data = {"message": _("refresh token was not included in request cookies")}
             response.status_code = status.HTTP_401_UNAUTHORIZED
         except (TokenError, AttributeError, TypeError) as error:
             if hasattr(error, "args"):
                 if "Token is blacklisted" in error.args or "Token is invalid or expired" in error.args:
-                    response.data = {"message": _(error.args[0])}
+                    response.data = {"message": _(error.args[0].lower())}
                     response.status_code = status.HTTP_401_UNAUTHORIZED
                 else:
-                    response.data = {"message": _("An error has occurred.")}
+                    response.data = {"message": _("an error has occurred.")}
                     response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             else:
-                response.data = {"message": _("An error has occurred.")}
+                response.data = {"message": _("an error has occurred.")}
                 response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
         unset_jwt_cookies(response)
 
+        return response
+
+
+class CustomLoginView(LoginView):
+    def get_response(self):
+        data = {
+            "message": "successful login",
+            "user": UserSerializer(self.user).data,
+        }
+        response = Response(data, status=status.HTTP_200_OK)
+        set_jwt_cookies(response, self.access_token, self.refresh_token)
         return response
 
 
@@ -117,14 +129,4 @@ class RefreshViewHiddenTokens(TokenRefreshView):
             response.data["refresh-token-rotation"] = _("success")
             # we don't want this info to be in the body for security reasons (HTTPOnly!)
             del response.data["refresh"]
-        return super().finalize_response(request, response, *args, **kwargs)
-
-
-class LoginViewWithHiddenTokens(LoginView):
-    def finalize_response(self, request, response, *args, **kwargs):
-        if response.status_code == 200 and "access_token" in response.data:
-            response.data["access_token"] = _("set successfully")
-        if response.status_code == 200 and "refresh_token" in response.data:
-            response.data["refresh_token"] = _("set successfully")
-
         return super().finalize_response(request, response, *args, **kwargs)
