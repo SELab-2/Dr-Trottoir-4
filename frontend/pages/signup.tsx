@@ -13,6 +13,7 @@ export default function Signup() {
     const [email, setEmail] = useState<string>("");
     const [password1, setPassword1] = useState<string>("");
     const [password2, setPassword2] = useState<string>("");
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
@@ -24,7 +25,28 @@ export default function Signup() {
                 }
             },
             (err) => {
-                console.error(err);
+                let errorRes = err.response;
+                if (errorRes.status === 400) {
+                    let errors = [];
+                    if (errorRes.data.firstname) {
+                        errors.push(errorRes.data.firstname);
+                    }
+                    if (errorRes.data.lastname) {
+                        errors.push(errorRes.data.lastname);
+                    }
+                    if (errorRes.data.email) {
+                        errors.push(errorRes.data.email);
+                    }
+                    if (errorRes.data.password1) {
+                        errors.push(errorRes.data.password1);
+                    }
+                    if (errorRes.data.password2) {
+                        errors.push(errorRes.data.password2);
+                    }
+                    setErrorMessages(errors);
+                } else {
+                    console.error(err);
+                }
             }
         );
     };
@@ -48,16 +70,31 @@ export default function Signup() {
                                                 <span className="h1 fw-bold mb-0">Sign up.</span>
                                             </div>
 
+                                            <div className="help-block mb-4">
+                                                <ul>
+                                                    {errorMessages.map((err, i) => (
+                                                        <li className="has-error text-danger" key={i}>
+                                                            {err}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
                                             <div className="form-outline mb-4">
                                                 <label className="form-label">Voornaam</label>
                                                 <input
                                                     type="text"
                                                     className={`form-control form-control-lg ${styles.input}`}
                                                     value={firstname}
-                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                        setFirstname(e.target.value)
-                                                    }
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        setFirstname(e.target.value);
+                                                        e.target.setCustomValidity("");
+                                                    }}
+                                                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        e.target.setCustomValidity("Voornaam is verplicht.");
+                                                    }}
                                                     required
+                                                    placeholder="Voornaam"
                                                 />
                                             </div>
 
@@ -67,10 +104,15 @@ export default function Signup() {
                                                     type="text"
                                                     className={`form-control form-control-lg ${styles.input}`}
                                                     value={lastname}
-                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                        setLastname(e.target.value)
-                                                    }
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        setLastname(e.target.value);
+                                                        e.target.setCustomValidity("");
+                                                    }}
+                                                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        e.target.setCustomValidity("Achternaam is verplicht.");
+                                                    }}
                                                     required
+                                                    placeholder="Achternaam"
                                                 />
                                             </div>
 
@@ -80,10 +122,11 @@ export default function Signup() {
                                                     type="email"
                                                     className={`form-control form-control-lg ${styles.input}`}
                                                     value={email}
-                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                        setEmail(e.target.value)
-                                                    }
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        setEmail(e.target.value);
+                                                    }}
                                                     required
+                                                    placeholder="naam@voorbeeld.com"
                                                 />
                                             </div>
 
@@ -93,10 +136,15 @@ export default function Signup() {
                                                     type="password"
                                                     className={`form-control form-control-lg ${styles.input}`}
                                                     value={password1}
-                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                        setPassword1(e.target.value)
-                                                    }
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        setPassword1(e.target.value);
+                                                        e.target.setCustomValidity("");
+                                                    }}
+                                                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        e.target.setCustomValidity("Wachtwoord is verplicht.");
+                                                    }}
                                                     required
+                                                    placeholder="Wachtwoord"
                                                 />
                                             </div>
 
@@ -106,10 +154,28 @@ export default function Signup() {
                                                     type="password"
                                                     className={`form-control form-control-lg ${styles.input}`}
                                                     value={password2}
-                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                        setPassword2(e.target.value)
-                                                    }
+                                                    onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        e.target.setCustomValidity("");
+                                                        setPassword2(e.target.value);
+                                                        if (password1 !== e.target.value) {
+                                                            e.target.setCustomValidity(
+                                                                "Wachtwoorden zijn niet gelijk."
+                                                            );
+                                                        } else {
+                                                            e.target.setCustomValidity("");
+                                                        }
+                                                    }}
+                                                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        if (password1 !== e.target.value) {
+                                                            e.target.setCustomValidity(
+                                                                "Wachtwoorden zijn niet gelijk."
+                                                            );
+                                                        } else {
+                                                            e.target.setCustomValidity("");
+                                                        }
+                                                    }}
                                                     required
+                                                    placeholder="Wachtwoord"
                                                 />
                                             </div>
 
