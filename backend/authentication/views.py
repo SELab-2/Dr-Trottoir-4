@@ -35,17 +35,24 @@ class CustomRegisterView(APIView):
         lobby_instances = Lobby.objects.filter(email=data.get('email'))
         if not lobby_instances:
             return Response(
-                {"res": f"There is no entry in the lobby for email address: {data.get('email')}"},
+                {
+                    "error": "Unauthorized signup",
+                    "message": f"The given email address {data.get('email')} has no entry in the lobby. You must contact an admin to gain access to the platform."
+                },
                 status=status.HTTP_403_FORBIDDEN
             )
         lobby_instance = lobby_instances[0]
         # check if the verification code is valid
         if lobby_instance.verification_code != data.get('verification_code'):
             return Response(
-                {"res": "Invalid verification code"},
+                {
+                    "error": "Unauthorized signup",
+                    "message": "Invalid verification code"
+                },
                 status=status.HTTP_403_FORBIDDEN
             )
 
+        # add the role to the request, as this was already set by an admin
         request.data._mutable = True
         request.data['role'] = lobby_instance.role_id
         request.data._mutable = False
