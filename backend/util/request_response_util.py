@@ -107,4 +107,3 @@ def get_docs(serializer):
 
 def patch_docs(serializer):
     return get_docs(serializer)
-
