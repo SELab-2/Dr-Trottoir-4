@@ -38,7 +38,7 @@ def _get_open_api_schema(include_400=False):
                         "properties": {
                             "from": {"type": "string", "format": "date-time"},
                             "to": {"type": "string", "format": "date-time"},
-                        }
+                        },
                     }
                 }
             }
