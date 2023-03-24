@@ -1,3 +1,7 @@
 {
-  "Unable to log in with provided credentials.": "E-mail of wachtwoord is niet juist."
+  "Unable to log in with provided credentials.": "E-mailadres of wachtwoord is niet juist.",
+  "A user is already registered with this e-mail address.": "Er bestaat al een gebruiker met dit e-mailadres.",
+  "This password is too short. It must contain at least 8 characters.": "Dit wachtwoord is te kort. Een wachtwoord moet minimum 8 karakters lang zijn.",
+  "This password is too common.": "Dit wachtwoord is te eenvoudig.",
+  "This password is entirely numeric.": "Dit wachtwoord bestaat volledig uit cijfers, er moeten ook lettertekens in voorkomen."
 }

@@ -5,8 +5,10 @@ import styles from "@/styles/Login.module.css";
 import Image from "next/image";
 import fire from "@/public/fire_image.png";
 import signup from "@/lib/signup";
+import {useTranslation} from "react-i18next";
 
 export default function Signup() {
+    const { t } = useTranslation();
     const router = useRouter();
     const [firstname, setFirstname] = useState<string>("");
     const [lastname, setLastname] = useState<string>("");
@@ -29,20 +31,21 @@ export default function Signup() {
                 if (errorRes.status === 400) {
                     let errors = [];
                     if (errorRes.data.firstname) {
-                        errors.push(errorRes.data.firstname);
+                        errors.push(...errorRes.data.firstname);
                     }
                     if (errorRes.data.lastname) {
-                        errors.push(errorRes.data.lastname);
+                        errors.push(...errorRes.data.lastname);
                     }
                     if (errorRes.data.email) {
-                        errors.push(errorRes.data.email);
+                        errors.push(...errorRes.data.email);
                     }
                     if (errorRes.data.password1) {
-                        errors.push(errorRes.data.password1);
+                        errors.push(...errorRes.data.password1);
                     }
                     if (errorRes.data.password2) {
-                        errors.push(errorRes.data.password2);
+                        errors.push(...errorRes.data.password2);
                     }
+                    console.log(errors);
                     setErrorMessages(errors);
                 } else {
                     console.error(err);
@@ -74,7 +77,7 @@ export default function Signup() {
                                                 <ul>
                                                     {errorMessages.map((err, i) => (
                                                         <li className="has-error text-danger" key={i}>
-                                                            {err}
+                                                            {t(err)}
                                                         </li>
                                                     ))}
                                                 </ul>
