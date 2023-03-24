@@ -12,9 +12,7 @@ from util.request_response_util import *
 
 DESCRIPTION = 'Optionally, you can filter by date, by using the keys "from" and/or "to". When filtering, "from" and "to" are included in the result. The keys must be in format "%Y-%m-%d %H:%M:%S"  or "%Y-%m-%d".'
 
-TYPES_DESCRIPTION = (
-    'The possible types are: "AA", "BI", "VE" and "OP". These stand for aankomst, binnen, vertrek and opmerkingen respectively.'
-)
+TYPES_DESCRIPTION = 'The possible types are: "AA", "BI", "VE" and "OP". These stand for aankomst, binnen, vertrek and opmerkingen respectively.'
 
 
 # Swagger cannot generate a request body for GET. This is a workaround.
@@ -22,14 +20,11 @@ def _get_open_api_schema(include_400=False):
     res_200 = {
         "200": {
             "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PictureBuilding"}}},
-            "description": ""
+            "description": "",
         }
     }
 
-    res_400 = {
-        "200": res_200["200"],
-        "400": {"description": "No response body"}
-    }
+    res_400 = {"200": res_200["200"], "400": {"description": "No response body"}}
 
     return {
         "operationId": "picture_building_all_retrieve",
@@ -50,7 +45,7 @@ def _get_open_api_schema(include_400=False):
             }
         },
         "security": [{"jwtHeaderAuth": []}, {"jwtCookieAuth": []}],
-        "responses": res_400 if include_400 else res_200
+        "responses": res_400 if include_400 else res_200,
     }
 
 
