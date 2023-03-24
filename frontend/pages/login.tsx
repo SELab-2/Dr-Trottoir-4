@@ -24,10 +24,6 @@ export default function Login() {
         );
     }, [verifyToken]);
 
-    useEffect(() => {
-        console.log(errorMessages);
-    }, [errorMessages]);
-
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
         login(username, password).then(
@@ -82,7 +78,7 @@ export default function Login() {
                                                     type="email"
                                                     className={`form-control form-control-lg ${styles.input}`}
                                                     value={username}
-                                                    placeholder="name@example.com"
+                                                    placeholder="naam@voorbeeld.com"
                                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                                         setUsername(e.target.value)
                                                     }
@@ -103,7 +99,7 @@ export default function Login() {
                                                         e.target.setCustomValidity("Wachtwoord is verplicht.");
                                                     }}
                                                     required
-                                                    placeholder="Wachtwoord123"
+                                                    placeholder="Wachtwoord"
                                                 />
                                             </div>
 

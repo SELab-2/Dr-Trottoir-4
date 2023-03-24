@@ -95,6 +95,7 @@ export default function Signup() {
                                                         e.target.setCustomValidity("Voornaam is verplicht.");
                                                     }}
                                                     required
+                                                    placeholder="Voornaam"
                                                 />
                                             </div>
 
@@ -112,6 +113,7 @@ export default function Signup() {
                                                         e.target.setCustomValidity("Achternaam is verplicht.");
                                                     }}
                                                     required
+                                                    placeholder="Achternaam"
                                                 />
                                             </div>
 
@@ -125,7 +127,7 @@ export default function Signup() {
                                                         setEmail(e.target.value);
                                                     }}
                                                     required
-                                                    placeholder="name@example.com"
+                                                    placeholder="naam@voorbeeld.com"
                                                 />
                                             </div>
 
@@ -143,7 +145,7 @@ export default function Signup() {
                                                         e.target.setCustomValidity("Wachtwoord is verplicht.");
                                                     }}
                                                     required
-                                                    placeholder="Wachtwoord123"
+                                                    placeholder="Wachtwoord"
                                                 />
                                             </div>
 
@@ -170,7 +172,7 @@ export default function Signup() {
                                                         }
                                                     }}
                                                     required
-                                                    placeholder="Wachtwoord123"
+                                                    placeholder="Wachtwoord"
                                                 />
                                             </div>
 
