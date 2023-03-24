@@ -13,7 +13,7 @@ from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2 ** 31 - 1
+MAX_INT = 2**31 - 1
 
 
 def _check_for_present_keys(instance, keys_iterable):
@@ -217,7 +217,7 @@ class GarbageCollection(models.Model):
                 "date",
                 name="garbage_collection_unique",
                 violation_error_message="This type of garbage is already being collected on the same day for this "
-                                        "building.",
+                "building.",
             ),
         ]
 
@@ -391,9 +391,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-                self.version_number == 0
-                or self.version_number > max_version_number + 1
-                or self.version_number in version_numbers
+            self.version_number == 0
+            or self.version_number > max_version_number + 1
+            or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 
