@@ -9,11 +9,17 @@ updates:
     directory: "/frontend"
     schedule:
       interval: "daily"
+    reviewers:
+      - "n00bS-oWn-m3"
     open-pull-requests-limit: 10
+    target-branch: "develop"
     
   - package-ecosystem: "pip"
     directory: "/backend"
     schedule:
       interval: "daily"
+    reviewers:
+      - "n00bS-oWn-m3"
     open-pull-requests-limit: 10
+    target-branch: "develop"
     
