@@ -20,11 +20,7 @@ class TourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         r_id = insert_dummy_region()
-        data = {
-            "name": "Sterre",
-            "region": r_id,
-            "modified_at": "2023-03-08T12:08:29+01:00"
-        }
+        data = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
         resp = client.post(f"{backend_url}/tour/", data, follow=True)
         assert resp.status_code == 201
         for key in data:
@@ -37,11 +33,7 @@ class TourTests(TestCase):
         client.force_authenticate(user)
 
         r_id = insert_dummy_region()
-        data = {
-            "name": "Sterre",
-            "region": r_id,
-            "modified_at": "2023-03-08T12:08:29+01:00"
-        }
+        data = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
         _ = client.post(f"{backend_url}/tour/", data, follow=True)
         response = client.post(f"{backend_url}/tour/", data, follow=True)
         assert response.status_code == 400
@@ -52,11 +44,7 @@ class TourTests(TestCase):
         client.force_authenticate(user=user)
 
         r_id = insert_dummy_region()
-        data = {
-            "name": "Sterre",
-            "region": r_id,
-            "modified_at": "2023-03-08T12:08:29+01:00"
-        }
+        data = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
         response1 = client.post(f"{backend_url}/tour/", data, follow=True)
         assert response1.status_code == 201
         for key in data:
@@ -84,16 +72,8 @@ class TourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user)
         r_id = insert_dummy_region()
-        data1 = {
-            "name": "Sterre",
-            "region": r_id,
-            "modified_at": "2023-03-08T12:08:29+01:00"
-        }
-        data2 = {
-            "name": "Overpoort",
-            "region": r_id,
-            "modified_at": "2023-03-08T12:08:29+01:00"
-        }
+        data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
+        data2 = {"name": "Overpoort", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
         response1 = client.post(f"{backend_url}/tour/", data1, follow=True)
         assert response1.status_code == 201
         for key in data1:
@@ -116,11 +96,7 @@ class TourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         r_id = insert_dummy_region()
-        data = {
-            "name": "Sterre",
-            "region": r_id,
-            "modified_at": "2023-03-08T12:08:29+01:00"
-        }
+        data = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
         response2 = client.patch(f"{backend_url}/tour/123434687658/", data, follow=True)
         assert response2.status_code == 400
 
@@ -129,16 +105,8 @@ class TourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         r_id = insert_dummy_region()
-        data1 = {
-            "name": "Sterre",
-            "region": r_id,
-            "modified_at": "2023-03-08T12:08:29+01:00"
-        }
-        data2 = {
-            "name": "Overpoort",
-            "region": r_id,
-            "modified_at": "2023-03-08T12:08:29+01:00"
-        }
+        data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
+        data2 = {"name": "Overpoort", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
         response1 = client.post(f"{backend_url}/tour/", data1, follow=True)
         _ = client.post(f"{backend_url}/tour/", data2, follow=True)
         assert response1.status_code == 201
@@ -151,11 +119,7 @@ class TourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         r_id = insert_dummy_region()
-        data1 = {
-            "name": "Sterre",
-            "region": r_id,
-            "modified_at": "2023-03-08T12:08:29+01:00"
-        }
+        data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
         response1 = client.post(f"{backend_url}/tour/", data1, follow=True)
         assert response1.status_code == 201
         id = response1.data["id"]
@@ -178,11 +142,7 @@ class TourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         r_id = insert_dummy_region()
-        data1 = {
-            "name": "Sterre",
-            "region": r_id,
-            "modified_at": "2023-03-08T12:08:29+01:00"
-        }
+        data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
         _ = client.post(f"{backend_url}/tour/", data1, follow=True)
         response1 = client.post(f"{backend_url}/tour/", data1, follow=True)
         assert response1.status_code == 400

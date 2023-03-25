@@ -20,11 +20,7 @@ class BuildingCommentTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data = {
-            "comment": "<3 python",
-            "date": "2023-03-08T12:08:29+01:00",
-            "building": b_id
-        }
+        data = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
         resp = client.post(f"{backend_url}/building-comment/", data, follow=True)
         assert resp.status_code == 201
         for key in data:
@@ -37,11 +33,7 @@ class BuildingCommentTests(TestCase):
         client.force_authenticate(user)
 
         b_id = insert_dummy_building()
-        data = {
-            "comment": "<3 python",
-            "date": "2023-03-08T12:08:29+01:00",
-            "building": b_id
-        }
+        data = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
 
         _ = client.post(f"{backend_url}/building-comment/", data, follow=True)
         response = client.post(f"{backend_url}/building-comment/", data, follow=True)
@@ -53,11 +45,7 @@ class BuildingCommentTests(TestCase):
         client.force_authenticate(user=user)
 
         b_id = insert_dummy_building()
-        data = {
-            "comment": "<3 python",
-            "date": "2023-03-08T12:08:29+01:00",
-            "building": b_id
-        }
+        data = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
 
         response1 = client.post(f"{backend_url}/building-comment/", data, follow=True)
         assert response1.status_code == 201
@@ -86,16 +74,8 @@ class BuildingCommentTests(TestCase):
         client = APIClient()
         client.force_authenticate(user)
         b_id = insert_dummy_building()
-        data1 = {
-            "comment": "<3 python",
-            "date": "2023-03-08T12:08:29+01:00",
-            "building": b_id
-        }
-        data2 = {
-            "comment": "<3 python and Typescript",
-            "date": "2023-03-08T12:08:29+01:00",
-            "building": b_id
-        }
+        data1 = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
+        data2 = {"comment": "<3 python and Typescript", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
         response1 = client.post(f"{backend_url}/building-comment/", data1, follow=True)
         assert response1.status_code == 201
         id = response1.data["id"]
@@ -113,11 +93,7 @@ class BuildingCommentTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data = {
-            "comment": "<3 python",
-            "date": "2023-03-08T12:08:29+01:00",
-            "building": b_id
-        }
+        data = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
         response2 = client.patch(f"{backend_url}/building-comment/123434687658/", data, follow=True)
         assert response2.status_code == 400
 
@@ -126,16 +102,8 @@ class BuildingCommentTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data1 = {
-            "comment": "<3 python",
-            "date": "2023-03-08T12:08:29+01:00",
-            "building": b_id
-        }
-        data2 = {
-            "comment": "<3 python and Typescript",
-            "date": "2023-03-08T12:08:29+01:00",
-            "building": b_id
-        }
+        data1 = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
+        data2 = {"comment": "<3 python and Typescript", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
         response1 = client.post(f"{backend_url}/building-comment/", data1, follow=True)
         _ = client.post(f"{backend_url}/building-comment/", data2, follow=True)
         assert response1.status_code == 201
@@ -148,11 +116,7 @@ class BuildingCommentTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data1 = {
-            "comment": "<3 python",
-            "date": "2023-03-08T12:08:29+01:00",
-            "building": b_id
-        }
+        data1 = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
         response1 = client.post(f"{backend_url}/building-comment/", data1, follow=True)
         assert response1.status_code == 201
         id = response1.data["id"]
@@ -175,11 +139,7 @@ class BuildingCommentTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data1 = {
-            "comment": "<3 python",
-            "date": "2023-03-08T12:08:29+01:00",
-            "building": b_id
-        }
+        data1 = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
         _ = client.post(f"{backend_url}/building-comment/", data1, follow=True)
         response1 = client.post(f"{backend_url}/building-comment/", data1, follow=True)
         assert response1.status_code == 400

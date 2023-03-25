@@ -20,11 +20,7 @@ class StudBuildTourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building_on_tour()
-        data = {
-            "building_on_tour": b_id,
-            "date": "2023-03-08",
-            "student": user.id
-        }
+        data = {"building_on_tour": b_id, "date": "2023-03-08", "student": user.id}
         resp = client.post(f"{backend_url}/student-at-building-on-tour/", data, follow=True)
         print(resp.status_code)
         print(resp.data)
@@ -38,11 +34,7 @@ class StudBuildTourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building_on_tour()
-        data = {
-            "building_on_tour": b_id,
-            "date": "2023-03-08",
-            "student": user.id
-        }
+        data = {"building_on_tour": b_id, "date": "2023-03-08", "student": user.id}
 
         _ = client.post(f"{backend_url}/student-at-building-on-tour/", data, follow=True)
         response = client.post(f"{backend_url}/student-at-building-on-tour/", data, follow=True)
@@ -53,11 +45,7 @@ class StudBuildTourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building_on_tour()
-        data = {
-            "building_on_tour": b_id,
-            "date": "2023-03-08",
-            "student": user.id
-        }
+        data = {"building_on_tour": b_id, "date": "2023-03-08", "student": user.id}
 
         response1 = client.post(f"{backend_url}/student-at-building-on-tour/", data, follow=True)
         assert response1.status_code == 201
@@ -86,16 +74,8 @@ class StudBuildTourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building_on_tour()
-        data1 = {
-            "building_on_tour": b_id,
-            "date": "2023-03-08",
-            "student": user.id
-        }
-        data2 = {
-            "building_on_tour": b_id,
-            "date": "2023-03-10",
-            "student": user.id
-        }
+        data1 = {"building_on_tour": b_id, "date": "2023-03-08", "student": user.id}
+        data2 = {"building_on_tour": b_id, "date": "2023-03-10", "student": user.id}
         response1 = client.post(f"{backend_url}/student-at-building-on-tour/", data1, follow=True)
         assert response1.status_code == 201
         id = response1.data["id"]
@@ -113,11 +93,7 @@ class StudBuildTourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building_on_tour()
-        data = {
-            "building_on_tour": b_id,
-            "date": "2023-03-08",
-            "student": user.id
-        }
+        data = {"building_on_tour": b_id, "date": "2023-03-08", "student": user.id}
         response2 = client.patch(f"{backend_url}/student-at-building-on-tour/123434687658/", data, follow=True)
         assert response2.status_code == 400
 
@@ -126,16 +102,8 @@ class StudBuildTourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building_on_tour()
-        data1 = {
-            "building_on_tour": b_id,
-            "date": "2023-03-08",
-            "student": user.id
-        }
-        data2 = {
-            "building_on_tour": b_id,
-            "date": "2023-03-10",
-            "student": user.id
-        }
+        data1 = {"building_on_tour": b_id, "date": "2023-03-08", "student": user.id}
+        data2 = {"building_on_tour": b_id, "date": "2023-03-10", "student": user.id}
         response1 = client.post(f"{backend_url}/student-at-building-on-tour/", data1, follow=True)
         _ = client.post(f"{backend_url}/student-at-building-on-tour/", data2, follow=True)
         assert response1.status_code == 201
@@ -148,11 +116,7 @@ class StudBuildTourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building_on_tour()
-        data1 = {
-            "building_on_tour": b_id,
-            "date": "2023-03-08",
-            "student": user.id
-        }
+        data1 = {"building_on_tour": b_id, "date": "2023-03-08", "student": user.id}
         response1 = client.post(f"{backend_url}/student-at-building-on-tour/", data1, follow=True)
         assert response1.status_code == 201
         id = response1.data["id"]
@@ -175,11 +139,7 @@ class StudBuildTourTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building_on_tour()
-        data = {
-            "building_on_tour": b_id,
-            "date": "2023-03-08",
-            "student": user.id
-        }
+        data = {"building_on_tour": b_id, "date": "2023-03-08", "student": user.id}
         _ = client.post(f"{backend_url}/student-at-building-on-tour/", data, follow=True)
         response1 = client.post(f"{backend_url}/student-at-building-on-tour/", data, follow=True)
         assert response1.status_code == 400
