@@ -107,7 +107,7 @@ class PictureBuildingIndividualView(APIView):
     serializer_class = PictureBuildingSerializer
 
     @extend_schema(
-        responses={get_docs(PictureBuildingSerializer)},
+        responses=get_docs(PictureBuildingSerializer),
         description="Get PictureBuilding with given id." + TYPES_DESCRIPTION,
     )
     def get(self, request, picture_building_id):
