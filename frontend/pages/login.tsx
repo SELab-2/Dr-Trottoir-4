@@ -59,18 +59,16 @@ export default function Login() {
     };
 
     function setAndRoute(id: string, roleId: string) {
-        getUserRole(roleId).then(
-            async (userRole) => {
-                sessionStorage.setItem("id", id);
-                sessionStorage.setItem("role", userRole.data.name);
-                
-                const direction = getSpecificDirection(userRole.data.name, "dashboard");
-                await router.push(direction);
-            },
-            (err) => {
-                console.error(err)
-            }
-        )
+        const role = getUserRole(roleId);
+        
+        sessionStorage.setItem("id", id);
+        sessionStorage.setItem("role", role);
+        
+        const direction = getSpecificDirection(role, "dashboard");
+        router.push(direction);
+        router.reload(); 
+        // TODO the page is reloaded instantly after because otherwise the role isn't set properly yet
+        // However this still flashes the No access screen, so it has to be fixed. Perhaps with loading?
     }
 
     return (

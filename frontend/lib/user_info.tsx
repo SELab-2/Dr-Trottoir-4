@@ -6,10 +6,21 @@ export const getUserInfo = (user_id: string): Promise<AxiosResponse<any, any>> =
     return api.get(request_url);
 }
 
-export const getUserRole = (role_id: string): Promise<AxiosResponse<any,any>> => {
-    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ROLE}${role_id}`;
+export const getUserRole = (role_id: string): string => {
+    // since only admins and superstudents can request the api for their role information,
+    // we have to use a map so `everyone` can access its role name.
+    
+    const userDict = new Map<number, string>([
+        [1, "Default"],
+        [2, "Admin"],
+        [3, "Superstudent"],
+        [4, "Student"],
+        [5, "Syndic"],
+    ]);
+    console.log(userDict);
+    console.log(role_id);
 
-    return api.get(request_url);
+    return userDict.get(parseInt(role_id)) || "Default";
 }
 
 export default getUserInfo;

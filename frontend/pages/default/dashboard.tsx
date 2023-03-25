@@ -10,13 +10,13 @@ export default function StudentDashboard() {
     const router = useRouter();
 
 
-    const handleLogout = async () => {
+    const handleLogout = () => {
         logout().then(
-            async (res) => {
+            (res) => {
                 if (res.status === 200) {
                     sessionStorage.removeItem("id");
                     sessionStorage.removeItem("role");
-                    await router.push("/login");
+                    router.push("/login");
                 }
             },
             (err) => {
@@ -29,8 +29,7 @@ export default function StudentDashboard() {
         <>
             <>
                 <BaseHeader/>
-                <p className={styles.title}>This is the default dashboard, meaning you don't have a role yet.</p>
-                <p className={styles.title}>Nothing to see here.</p>
+                <p className={styles.title}>This is the default dashboard, you don't have a role yet.</p>
                 <Image src={soon} alt="Site coming soon" className={styles.image}/>
                 <button className={styles.button} onClick={handleLogout}>
                     Logout

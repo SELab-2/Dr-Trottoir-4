@@ -12,10 +12,12 @@ export default function App({ Component, pageProps }: AppProps) {
 
     useEffect(() => {
         require("bootstrap/dist/js/bootstrap.bundle.min.js");
-        
-        setRole(sessionStorage.getItem("role") || "Default"); // default role as backup
     }, []);
     
+    useEffect(() => {
+        setRole(sessionStorage.getItem("role") || "Default"); // default role as backup
+    }, []);
+
     console.log(role);
 
     let allowed = true;

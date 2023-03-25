@@ -33,13 +33,13 @@ export default function AdminDashboard() {
         );
     }
 
-    const handleLogout = async () => {
+    const handleLogout = () => {
         logout().then(
-            async (res) => {
+            (res) => {
                 if (res.status === 200) {
                     sessionStorage.removeItem("id");
                     sessionStorage.removeItem("role");
-                    await router.push("/login");
+                    router.push("/login");
                 }
             },
             (err) => {

@@ -10,13 +10,13 @@ export default function StudentDashboard() {
     const router = useRouter();
 
 
-    const handleLogout = async () => {
+    const handleLogout = () => {
         logout().then(
-            async (res) => {
-                sessionStorage.removeItem("id");
-                sessionStorage.removeItem("role");
+            (res) => {
                 if (res.status === 200) {
-                    await router.push("/login");
+                    sessionStorage.removeItem("id");
+                    sessionStorage.removeItem("role");
+                    router.push("/login");
                 }
             },
             (err) => {
