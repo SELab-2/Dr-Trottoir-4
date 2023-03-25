@@ -2,10 +2,11 @@ import BaseHeader from "@/components/header/BaseHeader";
 import styles from "styles/Welcome.module.css";
 import soon from "public/coming_soon.png";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { logout } from "@/lib/logout";
 import { getAllUsers } from "@/lib/welcome";
+import Loading from "@/components/loading";
 
 function Welcome() {
     const router = useRouter();
@@ -14,6 +15,7 @@ function Welcome() {
 
     useEffect(() => {
         setData([]);
+        setLoading(true);
         fetchData();
     }, []);
 
@@ -48,24 +50,26 @@ function Welcome() {
 
     return (
         <>
-            {loading ? (
-                <div>Loading...</div>
-            ) : (
-                <>
-                    <BaseHeader />
-                    <p className={styles.title}>Welcome!</p>
-                    <Image src={soon} alt="Site coming soon" className={styles.image} />
-                    <button className={styles.button} onClick={handleLogout}>
-                        Logout
-                    </button>
-                    <h1 className={styles.text}>Users:</h1>
-                    <ul>
-                        {data.map((item, index) => (
-                            <li key={index}>{JSON.stringify(item)}</li>
-                        ))}
-                    </ul>
-                </>
-            )}
+            <BaseHeader />
+            <div>
+                {loading ? (
+                    <Loading></Loading>
+                ) : (
+                    <div>
+                        <p className={styles.title}>Welcome!</p>
+                        <Image src={soon} alt="Site coming soon" className={styles.image} />
+                        <button className={styles.button} onClick={handleLogout}>
+                            Logout
+                        </button>
+                        <h1 className={styles.text}>Users:</h1>
+                        <ul>
+                            {data.map((item, index) => (
+                                <li key={index}>{JSON.stringify(item)}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
         </>
     );
 }
