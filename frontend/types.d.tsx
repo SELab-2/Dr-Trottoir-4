@@ -15,7 +15,7 @@ export type Reset_Password = {
     email: string;
 };
 
-export type User_Data = {
+export type UserData = {
     user_id: string;
     is_active: boolean;
     email: string;

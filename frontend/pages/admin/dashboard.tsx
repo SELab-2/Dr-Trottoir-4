@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { logout } from "@/lib/logout";
 import { getAllUsers } from "@/lib/welcome";
 
-export default function Welcome() {
+export default function AdminDashboard() {
     const router = useRouter();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true); // prevents preview welcome page before auth check

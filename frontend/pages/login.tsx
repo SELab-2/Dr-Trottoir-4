@@ -5,6 +5,9 @@ import filler_image from "../public/filler_image.png";
 import { login, verifyToken } from "@/lib/login";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import getUserInfo, { getUserRole } from "@/lib/user_info";
+import { AxiosResponse } from "axios";
+import getPageTag from "@/lib/reroute";
 
 export default function Login() {
     const router = useRouter();
@@ -15,8 +18,8 @@ export default function Login() {
     // try and log in to the application using existing refresh token
     useEffect(() => {
         verifyToken().then(
-            async () => {
-                await router.push("/redirect");
+            async (res) => {
+                setUserInfoAndReroute(res);
             },
             (err) => {
                 console.error(err);
@@ -31,8 +34,8 @@ export default function Login() {
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
         login(username, password).then(
-            async () => {
-                await router.push("/redirect");
+            async (res) => {
+                setUserInfoAndReroute(res);
             },
             (err) => {
                 let errorRes = err.response;
@@ -46,6 +49,28 @@ export default function Login() {
             }
         );
     };
+
+    async function setUserInfoAndReroute(res: AxiosResponse<any,any>) {
+        await getUserInfo(res.data.id).then(
+            async (user) => {
+                await getUserRole(user.data.role).then(
+                    (userRole) => {
+                        sessionStorage.setItem("id", res.data.id);
+                        sessionStorage.setItem("role", userRole.data.name);
+                        
+                        const tag = getPageTag(userRole.data.name);
+                        router.push(`${tag}/dashboard`);
+                    },
+                    (err) => {
+                        console.error(err)
+                    }
+                )
+            },
+            (err) => {
+                console.error(err);
+            }
+        )
+    }
 
     return (
         <>
