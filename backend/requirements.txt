@@ -7,7 +7,7 @@ defusedxml==0.7.1
 dj-rest-auth==3.0.0
 Django==4.1.7
 django-allauth==0.52.0
-django-cors-headers==3.13.0
+django-cors-headers==3.14.0
 django-phonenumber-field==7.0.2
 django-random-id-model==0.1.1
 django-rename-app==0.1.5

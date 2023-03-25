@@ -41,7 +41,7 @@ class AllUsersView(APIView):
 
         if not user_instances:
             return Response(
-                {"res": "No users found"},
+                {"message": "No users found"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 

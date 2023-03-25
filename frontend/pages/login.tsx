@@ -5,11 +5,13 @@ import filler_image from "../public/filler_image.png";
 import { login, verifyToken } from "@/lib/login";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
 import getUserInfo, { getUserRole } from "@/lib/user_info";
 import { AxiosResponse } from "axios";
 import getSpecificDirection from "@/lib/reroute";
 
 export default function Login() {
+    const { t } = useTranslation();
     const router = useRouter();
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -20,7 +22,7 @@ export default function Login() {
         verifyToken().then(
             (res) => {
                 const id = res.data.id;
-                getUserInfo(id).then( 
+                getUserInfo(id).then(
                     (user) => {
                         setAndRoute(id, user.data.role);
                     },
@@ -35,10 +37,6 @@ export default function Login() {
         );
     }, [verifyToken]);
 
-    useEffect(() => {
-        console.log(errorMessages);
-    }, [errorMessages]);
-
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
         login(username, password).then(
@@ -46,11 +44,14 @@ export default function Login() {
                 setAndRoute(res.data.user.id, res.data.user.role);
             },
             (err) => {
+                let errors = [];
                 let errorRes = err.response;
                 if (errorRes.status === 400) {
-                    if (errorRes.data.non_field_errors) {
-                        setErrorMessages(errorRes.data.non_field_errors);
+                    let data: [any, string[]][] = Object.entries(errorRes.data);
+                    for (const [_, errorValues] of data) {
+                        errors.push(...errorValues);
                     }
+                    setErrorMessages(errors);
                 } else {
                     console.error(err);
                 }
@@ -60,13 +61,13 @@ export default function Login() {
 
     function setAndRoute(id: string, roleId: string) {
         const role = getUserRole(roleId);
-        
+
         sessionStorage.setItem("id", id);
         sessionStorage.setItem("role", role);
-        
+
         const direction = getSpecificDirection(role, "dashboard");
         router.push(direction);
-        router.reload(); 
+        router.reload();
         // TODO the page is reloaded instantly after because otherwise the role isn't set properly yet
         // However this still flashes the No access screen, so it has to be fixed. Perhaps with loading?
     }
@@ -90,14 +91,38 @@ export default function Login() {
                                                 <span className="h1 fw-bold mb-0">Login.</span>
                                             </div>
 
-                                            <div className="help-block mb-4">
+                                            <div
+                                                className={
+                                                    router.query.createdAccount
+                                                        ? "visible alert alert-success alert-dismissible fade show"
+                                                        : "invisible"
+                                                }
+                                            >
+                                                <strong>Succes!</strong> Uw account werd met succes aangemaakt!
+                                                <button
+                                                    type="button"
+                                                    className="btn-close"
+                                                    data-bs-dismiss="alert"
+                                                ></button>
+                                            </div>
+
+                                            <div
+                                                className={
+                                                    errorMessages.length !== 0
+                                                        ? "visible alert alert-danger alert-dismissible fade show"
+                                                        : "invisible"
+                                                }
+                                            >
                                                 <ul>
                                                     {errorMessages.map((err, i) => (
-                                                        <li className="has-error text-danger" key={i}>
-                                                            {err}
-                                                        </li>
+                                                        <li key={i}>{t(err)}</li>
                                                     ))}
                                                 </ul>
+                                                <button
+                                                    type="button"
+                                                    className="btn-close"
+                                                    data-bs-dismiss="alert"
+                                                ></button>
                                             </div>
 
                                             <div className="form-outline mb-4">
@@ -106,7 +131,7 @@ export default function Login() {
                                                     type="email"
                                                     className={`form-control form-control-lg ${styles.input}`}
                                                     value={username}
-                                                    placeholder="name@example.com"
+                                                    placeholder="naam@voorbeeld.com"
                                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                                         setUsername(e.target.value)
                                                     }
@@ -127,7 +152,7 @@ export default function Login() {
                                                         e.target.setCustomValidity("Wachtwoord is verplicht.");
                                                     }}
                                                     required
-                                                    placeholder="Wachtwoord123"
+                                                    placeholder="Wachtwoord"
                                                 />
                                             </div>
 
