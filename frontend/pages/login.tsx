@@ -69,21 +69,26 @@ export default function Login() {
 
                                             <div className={router.query.createdAccount ?
                                                 "visible alert alert-success alert-dismissible fade show" :
-                                                "invisible alert alert-success alert-dismissible fade show"}>
+                                                "invisible"}>
                                                 <strong>Succes!</strong> Uw account werd met succes aangemaakt!
                                                 <button type="button" className="btn-close"
                                                         data-bs-dismiss="alert"></button>
                                             </div>
 
-                                            <div className="help-block mb-4">
+                                            <div className={errorMessages.length !== 0 ?
+                                                "visible alert alert-danger alert-dismissible fade show" :
+                                                "invisible"}>
                                                 <ul>
                                                     {errorMessages.map((err, i) => (
-                                                        <li className="has-error text-danger" key={i}>
+                                                        <li key={i}>
                                                             {t(err)}
                                                         </li>
                                                     ))}
                                                 </ul>
+                                                <button type="button" className="btn-close"
+                                                        data-bs-dismiss="alert"></button>
                                             </div>
+
                                             <div className="form-outline mb-4">
                                                 <label className="form-label">E-mailadres</label>
                                                 <input

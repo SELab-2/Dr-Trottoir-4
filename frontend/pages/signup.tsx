@@ -6,6 +6,8 @@ import Image from "next/image";
 import fire from "@/public/fire_image.png";
 import signup from "@/lib/signup";
 import {useTranslation} from "react-i18next";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
 export default function Signup() {
     const {t} = useTranslation();
@@ -19,6 +21,7 @@ export default function Signup() {
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
+        setErrorMessages([]);
         signup(firstname, lastname, email, password1, password2).then(
             async (res) => {
                 if (res.status == 201) {
@@ -63,14 +66,18 @@ export default function Signup() {
                                                 <span className="h1 fw-bold mb-0">Sign up.</span>
                                             </div>
 
-                                            <div className="help-block mb-4">
+                                            <div className={errorMessages.length !== 0 ?
+                                                "visible alert alert-danger alert-dismissible fade show" :
+                                                "invisible"}>
                                                 <ul>
                                                     {errorMessages.map((err, i) => (
-                                                        <li className="has-error text-danger" key={i}>
+                                                        <li key={i}>
                                                             {t(err)}
                                                         </li>
                                                     ))}
                                                 </ul>
+                                                <button type="button" className="btn-close"
+                                                        data-bs-dismiss="alert"></button>
                                             </div>
 
                                             <div className="form-outline mb-4">
