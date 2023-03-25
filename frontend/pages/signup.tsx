@@ -85,7 +85,7 @@ export default function Signup() {
                                                     type="button"
                                                     className="btn-close"
                                                     data-bs-dismiss="alert"
-                                                ></button>
+                                                />
                                             </div>
 
                                             <div className="form-outline mb-4">
