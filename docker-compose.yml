@@ -37,6 +37,7 @@ services:
       - ./frontend/lib:/app/frontend/lib
       - ./frontend/public:/app/frontend/public
       - ./frontend/styles:/app/frontend/styles
+      - ./frontend/locales:/app/frontend/locales
 
     depends_on:
       - backend
