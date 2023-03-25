@@ -36,7 +36,7 @@ def insert_dummy_role(role):
     o = Role.objects.filter(name=role)
     if len(o) == 1:
         return o[0].id
-    r = Role(name=role, rank=5, description="testrole")
+    r = Role(name=role, rank=1, description="testrole")
     r.save()
     return r.id
 
