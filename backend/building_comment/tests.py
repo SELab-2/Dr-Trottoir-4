@@ -5,7 +5,7 @@ from base.test_settings import backend_url
 from util.data_generators import createUser, insert_dummy_building
 
 
-class BuildingTests(TestCase):
+class BuildingCommentTests(TestCase):
     def test_empty_comment_list(self):
         user = createUser()
         client = APIClient()

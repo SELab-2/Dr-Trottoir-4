@@ -1,10 +1,8 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from base.models import User
+from base.test_settings import backend_url
 from util.data_generators import createUser
-
-backend_url = "http://localhost:2002"
 
 
 class RegionTests(TestCase):

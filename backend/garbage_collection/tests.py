@@ -1,9 +1,8 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from util.data_generators import createUser, insert_dummy_region, insert_dummy_syndic, insert_dummy_building
-
-backend_url = "http://localhost:2002"
+from base.test_settings import backend_url
+from util.data_generators import createUser, insert_dummy_building
 
 
 class GarbageCollectionTests(TestCase):
@@ -23,7 +22,7 @@ class GarbageCollectionTests(TestCase):
         b_id = insert_dummy_building()
         data = {
             "building": b_id,
-            "date":  "2023-03-08",
+            "date": "2023-03-08",
             "garbage_type": "RES"
         }
         resp = client.post(f"{backend_url}/garbage-collection/", data, follow=True)

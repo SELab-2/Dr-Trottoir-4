@@ -1,9 +1,8 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from util.data_generators import createUser, insert_dummy_building, insert_dummy_building_on_tour
-
-backend_url = "http://localhost:2002"
+from base.test_settings import backend_url
+from util.data_generators import createUser, insert_dummy_building_on_tour
 
 
 class StudBuildTourTests(TestCase):

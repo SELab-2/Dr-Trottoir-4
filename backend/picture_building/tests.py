@@ -6,7 +6,8 @@ from util.data_generators import createUser, insert_dummy_building, createMemory
 
 f = createMemoryFile("backend/picture_building/scrambled1.png")
 
-class BuildingTests(TestCase):
+
+class PictureTests(TestCase):
     def test_empty_picture_list(self):
         user = createUser()
         client = APIClient()
