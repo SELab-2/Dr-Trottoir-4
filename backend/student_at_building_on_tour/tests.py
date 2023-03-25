@@ -6,12 +6,12 @@ from util.data_generators import createUser, insert_dummy_building, insert_dummy
 backend_url = "http://localhost:2002"
 
 
-class BuildingTests(TestCase):
+class StudBuildTourTests(TestCase):
     def test_empty_comment_list(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        resp = client.get(f"{backend_url}/student_at_building_on_tour/all", follow=True)
+        resp = client.get(f"{backend_url}/student-at-building-on-tour/all", follow=True)
         assert resp.status_code == 200
         data = [resp.data[e] for e in resp.data]
         assert len(data) == 0
@@ -26,7 +26,7 @@ class BuildingTests(TestCase):
             "date": "2023-03-08",
             "student": user.id
         }
-        resp = client.post(f"{backend_url}/student_at_building_on_tour/", data, follow=True)
+        resp = client.post(f"{backend_url}/student-at-building-on-tour/", data, follow=True)
         print(resp.status_code)
         print(resp.data)
         assert resp.status_code == 201
@@ -45,8 +45,8 @@ class BuildingTests(TestCase):
             "student": user.id
         }
 
-        _ = client.post(f"{backend_url}/student_at_building_on_tour/", data, follow=True)
-        response = client.post(f"{backend_url}/student_at_building_on_tour/", data, follow=True)
+        _ = client.post(f"{backend_url}/student-at-building-on-tour/", data, follow=True)
+        response = client.post(f"{backend_url}/student-at-building-on-tour/", data, follow=True)
         assert response.status_code == 400
 
     def test_get_comment(self):
@@ -60,7 +60,7 @@ class BuildingTests(TestCase):
             "student": user.id
         }
 
-        response1 = client.post(f"{backend_url}/student_at_building_on_tour/", data, follow=True)
+        response1 = client.post(f"{backend_url}/student-at-building-on-tour/", data, follow=True)
         assert response1.status_code == 201
         for key in data:
             # alle info zou er in moeten zitten
@@ -68,7 +68,7 @@ class BuildingTests(TestCase):
         # er moet ook een id bij zitten
         assert "id" in response1.data
         id = response1.data["id"]
-        response2 = client.get(f"{backend_url}/student_at_building_on_tour/{id}/", follow=True)
+        response2 = client.get(f"{backend_url}/student-at-building-on-tour/{id}/", follow=True)
         assert response2.status_code == 200
         for key in data:
             # alle info zou er in moeten zitten
@@ -79,7 +79,7 @@ class BuildingTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user)
-        resp = client.get(f"{backend_url}/student_at_building_on_tour/123456789", follow=True)
+        resp = client.get(f"{backend_url}/student-at-building-on-tour/123456789", follow=True)
         assert resp.status_code == 400  # should be changed to 404
 
     def test_patch_comment(self):
@@ -97,12 +97,12 @@ class BuildingTests(TestCase):
             "date": "2023-03-10",
             "student": user.id
         }
-        response1 = client.post(f"{backend_url}/student_at_building_on_tour/", data1, follow=True)
+        response1 = client.post(f"{backend_url}/student-at-building-on-tour/", data1, follow=True)
         assert response1.status_code == 201
         id = response1.data["id"]
-        response2 = client.patch(f"{backend_url}/student_at_building_on_tour/{id}/", data2, follow=True)
+        response2 = client.patch(f"{backend_url}/student-at-building-on-tour/{id}/", data2, follow=True)
         assert response2.status_code == 200
-        response3 = client.get(f"{backend_url}/student_at_building_on_tour/{id}/", follow=True)
+        response3 = client.get(f"{backend_url}/student-at-building-on-tour/{id}/", follow=True)
         for key in data2:
             # alle info zou er in moeten zitten
             assert key in response3.data
@@ -119,7 +119,7 @@ class BuildingTests(TestCase):
             "date": "2023-03-08",
             "student": user.id
         }
-        response2 = client.patch(f"{backend_url}/student_at_building_on_tour/123434687658/", data, follow=True)
+        response2 = client.patch(f"{backend_url}/student-at-building-on-tour/123434687658/", data, follow=True)
         assert response2.status_code == 400
 
     def test_patch_error_comment(self):
@@ -137,11 +137,11 @@ class BuildingTests(TestCase):
             "date": "2023-03-10",
             "student": user.id
         }
-        response1 = client.post(f"{backend_url}/student_at_building_on_tour/", data1, follow=True)
-        _ = client.post(f"{backend_url}/student_at_building_on_tour/", data2, follow=True)
+        response1 = client.post(f"{backend_url}/student-at-building-on-tour/", data1, follow=True)
+        _ = client.post(f"{backend_url}/student-at-building-on-tour/", data2, follow=True)
         assert response1.status_code == 201
         id = response1.data["id"]
-        response2 = client.patch(f"{backend_url}/student_at_building_on_tour/{id}/", data2, follow=True)
+        response2 = client.patch(f"{backend_url}/student-at-building-on-tour/{id}/", data2, follow=True)
         assert response2.status_code == 400
 
     def test_remove_comment(self):
@@ -154,12 +154,12 @@ class BuildingTests(TestCase):
             "date": "2023-03-08",
             "student": user.id
         }
-        response1 = client.post(f"{backend_url}/student_at_building_on_tour/", data1, follow=True)
+        response1 = client.post(f"{backend_url}/student-at-building-on-tour/", data1, follow=True)
         assert response1.status_code == 201
         id = response1.data["id"]
-        response2 = client.delete(f"{backend_url}/student_at_building_on_tour/{id}/", follow=True)
+        response2 = client.delete(f"{backend_url}/student-at-building-on-tour/{id}/", follow=True)
         assert response2.status_code == 204
-        response3 = client.get(f"{backend_url}/student_at_building_on_tour/{id}/", follow=True)
+        response3 = client.get(f"{backend_url}/student-at-building-on-tour/{id}/", follow=True)
         # should be 404 I think
         # assert response3.status_code == 404
         assert response3.status_code == 400
@@ -168,7 +168,7 @@ class BuildingTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        response2 = client.delete(f"{backend_url}/student_at_building_on_tour/123456789/", follow=True)
+        response2 = client.delete(f"{backend_url}/student-at-building-on-tour/123456789/", follow=True)
         assert response2.status_code == 400
 
     def test_add_existing_comment(self):
@@ -181,6 +181,6 @@ class BuildingTests(TestCase):
             "date": "2023-03-08",
             "student": user.id
         }
-        _ = client.post(f"{backend_url}/student_at_building_on_tour/", data, follow=True)
-        response1 = client.post(f"{backend_url}/student_at_building_on_tour/", data, follow=True)
+        _ = client.post(f"{backend_url}/student-at-building-on-tour/", data, follow=True)
+        response1 = client.post(f"{backend_url}/student-at-building-on-tour/", data, follow=True)
         assert response1.status_code == 400
