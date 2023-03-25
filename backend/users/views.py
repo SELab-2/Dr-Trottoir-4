@@ -31,14 +31,6 @@ def _include_inactive(request) -> bool:
     return False
 
 
-def _try_adding_region_to_user_instance(user_instance, region_value):
-    try:
-        user_instance.region.add(region_value)
-    except IntegrityError as e:
-        user_instance.delete()
-        return Response(str(e.__cause__), status=status.HTTP_400_BAD_REQUEST)
-
-
 class DefaultUser(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent, CanCreateUser]
     serializer_class = UserSerializer
@@ -140,7 +132,6 @@ class UserIndividualView(APIView):
 
         # Now that we have an ID, we can look at the many-to-many relationship region
         if r := add_regions_to_user(user_instance, data["region"]):
-            user_instance.delete()
             return r
 
         serializer = UserSerializer(user_instance)
