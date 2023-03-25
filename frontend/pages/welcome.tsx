@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { logout } from "@/lib/logout";
 import { getAllUsers } from "@/lib/welcome";
 
-function Welcome() {
+export default function Welcome() {
     const router = useRouter();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true); // prevents preview welcome page before auth check
@@ -52,9 +52,9 @@ function Welcome() {
                 <div>Loading...</div>
             ) : (
                 <>
-                    <BaseHeader />
+                    <BaseHeader/>
                     <p className={styles.title}>Welcome!</p>
-                    <Image src={soon} alt="Site coming soon" className={styles.image} />
+                    <Image src={soon} alt="Site coming soon" className={styles.image}/>
                     <button className={styles.button} onClick={handleLogout}>
                         Logout
                     </button>
@@ -69,5 +69,3 @@ function Welcome() {
         </>
     );
 }
-
-export default Welcome;

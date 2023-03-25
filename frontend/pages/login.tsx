@@ -16,7 +16,7 @@ export default function Login() {
     useEffect(() => {
         verifyToken().then(
             async () => {
-                await router.push("/welcome");
+                await router.push("/redirect");
             },
             (err) => {
                 console.error(err);
@@ -32,7 +32,7 @@ export default function Login() {
         event.preventDefault();
         login(username, password).then(
             async () => {
-                await router.push("/welcome");
+                await router.push("/redirect");
             },
             (err) => {
                 let errorRes = err.response;
