@@ -41,8 +41,8 @@ def insert_dummy_role(role):
     return r.id
 
 
-def createUser(is_staff: bool = True, withRegion: bool = False) -> User:
-    r = Role.objects.get(id=insert_dummy_role("AD"))
+def createUser(name: str = "admin", is_staff: bool = True, withRegion: bool = False) -> User:
+    r = Role.objects.get(id=insert_dummy_role(name))
     user = User(
         first_name="test",
         last_name="test",

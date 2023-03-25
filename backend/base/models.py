@@ -13,7 +13,7 @@ from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2**31 - 1
+MAX_INT = 2 ** 31 - 1
 
 
 class Region(models.Model):
@@ -112,7 +112,7 @@ class Building(models.Model):
     postal_code = models.CharField(max_length=10)
     street = models.CharField(max_length=60)
     house_number = models.PositiveIntegerField()
-    bus = models.CharField(max_length=10, blank=True, null=True)
+    bus = models.CharField(max_length=10, blank=True, null=False, default="No bus")
     client_number = models.CharField(max_length=40, blank=True, null=True)
     duration = models.TimeField(default="00:00")
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
@@ -212,7 +212,7 @@ class GarbageCollection(models.Model):
                 "date",
                 name="garbage_collection_unique",
                 violation_error_message="This type of garbage is already being collected on the same day for this "
-                "building.",
+                                        "building.",
             ),
         ]
 
@@ -386,9 +386,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-            self.version_number == 0
-            or self.version_number > max_version_number + 1
-            or self.version_number in version_numbers
+                self.version_number == 0
+                or self.version_number > max_version_number + 1
+                or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 
