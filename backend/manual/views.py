@@ -51,9 +51,9 @@ class ManualView(APIView):
             return bad_request("Manual")
         manual_instance = manual_instances[0]
 
-        self.check_object_permissions(manual_instance)
+        self.check_object_permissions(request, manual_instance)
 
-        serializer = ManualSerializer(manual_instances)
+        serializer = ManualSerializer(manual_instance)
         return get_success(serializer)
 
     @extend_schema(responses=delete_docs())

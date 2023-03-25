@@ -1,14 +1,14 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 
+from base.test_settings import backend_url
 from util.data_generators import createUser, insert_dummy_building, createMemoryFile
 
-backend_url = "http://localhost:2002"
 
 f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
 
 
-class BuildingTests(TestCase):
+class ManualTests(TestCase):
     def test_empty_manual_list(self):
         user = createUser()
         client = APIClient()
