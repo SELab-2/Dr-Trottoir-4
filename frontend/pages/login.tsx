@@ -5,8 +5,10 @@ import filler_image from "../public/filler_image.png";
 import { login, verifyToken } from "@/lib/login";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
+    const { t } = useTranslation();
     const router = useRouter();
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -31,11 +33,14 @@ export default function Login() {
                 await router.push("/welcome");
             },
             (err) => {
+                let errors = [];
                 let errorRes = err.response;
                 if (errorRes.status === 400) {
-                    if (errorRes.data.non_field_errors) {
-                        setErrorMessages(errorRes.data.non_field_errors);
+                    let data: [any, string[]][] = Object.entries(errorRes.data);
+                    for (const [_, errorValues] of data) {
+                        errors.push(...errorValues);
                     }
+                    setErrorMessages(errors);
                 } else {
                     console.error(err);
                 }
@@ -62,14 +67,38 @@ export default function Login() {
                                                 <span className="h1 fw-bold mb-0">Login.</span>
                                             </div>
 
-                                            <div className="help-block mb-4">
+                                            <div
+                                                className={
+                                                    router.query.createdAccount
+                                                        ? "visible alert alert-success alert-dismissible fade show"
+                                                        : "invisible"
+                                                }
+                                            >
+                                                <strong>Succes!</strong> Uw account werd met succes aangemaakt!
+                                                <button
+                                                    type="button"
+                                                    className="btn-close"
+                                                    data-bs-dismiss="alert"
+                                                ></button>
+                                            </div>
+
+                                            <div
+                                                className={
+                                                    errorMessages.length !== 0
+                                                        ? "visible alert alert-danger alert-dismissible fade show"
+                                                        : "invisible"
+                                                }
+                                            >
                                                 <ul>
                                                     {errorMessages.map((err, i) => (
-                                                        <li className="has-error text-danger" key={i}>
-                                                            {err}
-                                                        </li>
+                                                        <li key={i}>{t(err)}</li>
                                                     ))}
                                                 </ul>
+                                                <button
+                                                    type="button"
+                                                    className="btn-close"
+                                                    data-bs-dismiss="alert"
+                                                ></button>
                                             </div>
 
                                             <div className="form-outline mb-4">
