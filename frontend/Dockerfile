@@ -9,5 +9,5 @@ COPY . /app/frontend/
 
 RUN npm run build
 
-CMD ["npm", "run", "dev"]
+ENTRYPOINT npm run dev
 
