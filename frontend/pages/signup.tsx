@@ -1,14 +1,14 @@
-import { useRouter } from "next/router";
-import React, { FormEvent, useState } from "react";
+import {useRouter} from "next/router";
+import React, {FormEvent, useState} from "react";
 import BaseHeader from "@/components/header/BaseHeader";
 import styles from "@/styles/Login.module.css";
 import Image from "next/image";
 import fire from "@/public/fire_image.png";
 import signup from "@/lib/signup";
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 
 export default function Signup() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const router = useRouter();
     const [firstname, setFirstname] = useState<string>("");
     const [lastname, setLastname] = useState<string>("");
@@ -22,15 +22,17 @@ export default function Signup() {
         signup(firstname, lastname, email, password1, password2).then(
             async (res) => {
                 if (res.status == 201) {
-                    alert("Successfully created account");
-                    await router.push("/login");
+                    await router.push({
+                        pathname: '/login',
+                        query: {createdAccount: true}
+                    }, '/login')
                 }
             },
             (err) => {
                 let errorRes = err.response;
                 if (errorRes.status === 400) {
                     let errors = [];
-                    let data : [any, string[]][] = Object.entries(errorRes.data);
+                    let data: [any, string[]][] = Object.entries(errorRes.data);
                     for (const [_, errorValues] of data) {
                         errors.push(...errorValues);
                     }
@@ -44,20 +46,20 @@ export default function Signup() {
 
     return (
         <>
-            <BaseHeader />
+            <BaseHeader/>
             <div className="container py-5 h-100">
                 <div className="row d-flex justify-content-center align-items-center h-100">
                     <div className="col col-xl-10">
                         <div className="card">
                             <div className="row g-0">
                                 <div className="col-md-6 col-lg-5 d-none d-md-block">
-                                    <Image src={fire} alt="My App Logo" className={styles.filler_image} />
+                                    <Image src={fire} alt="My App Logo" className={styles.filler_image}/>
                                 </div>
                                 <div className="col-md-6 col-lg-7 d-flex align-items-center">
                                     <div className="card-body p-4 p-lg-5 text-black">
                                         <form onSubmit={handleSubmit}>
                                             <div className="d-flex align-items-center mb-3 pb-1">
-                                                <i className="fas fa-cubes fa-2x me-3" />
+                                                <i className="fas fa-cubes fa-2x me-3"/>
                                                 <span className="h1 fw-bold mb-0">Sign up.</span>
                                             </div>
 
