@@ -14,21 +14,9 @@ export default function App({ Component, pageProps }: AppProps) {
         require("bootstrap/dist/js/bootstrap.bundle.min.js");
         
         setRole(sessionStorage.getItem("role") || "Default"); // default role as backup
-        // const roleId = sessionStorage.getItem("role") || "Default"; // default role as backup
-        // fetchUserRole(roleId);
-
     }, []);
+    
     console.log(role);
-    // async function fetchUserRole(roleId: string) {
-    //     getUserRole(roleId).then(
-    //         (res) => {
-    //             setRole(res.data.name);
-    //         },
-    //         (err) => {
-    //             console.error(err);
-    //         }
-    //     )
-    // }
 
     let allowed = true;
 

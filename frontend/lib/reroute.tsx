@@ -1,11 +1,12 @@
-export const getPageTag = (role: string): string => {
-    // const role: string = sessionStorage.getItem("role") || "Default";
+
+export function getSpecificDirection(role: string, direction: string): string {
+    
     let path: string = role.toLowerCase();
     if (role == "Superstudent") {
         path = "admin";
     }
 
-    return path;
+    return `${path}/${direction}`;
 }
 
-export default getPageTag;
+export default getSpecificDirection;

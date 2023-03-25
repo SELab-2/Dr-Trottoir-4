@@ -7,7 +7,7 @@ import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import getUserInfo, { getUserRole } from "@/lib/user_info";
 import { AxiosResponse } from "axios";
-import getPageTag from "@/lib/reroute";
+import getSpecificDirection from "@/lib/reroute";
 
 export default function Login() {
     const router = useRouter();
@@ -22,7 +22,7 @@ export default function Login() {
                 const id = res.data.id;
                 getUserInfo(id).then( 
                     (user) => {
-                        specificRoute(id, user.data.role);
+                        setAndRoute(id, user.data.role);
                     },
                     (err) => {
                         console.error(err);
@@ -43,7 +43,7 @@ export default function Login() {
         event.preventDefault();
         login(username, password).then(
             (res) => {
-                specificRoute(res.data.user.id, res.data.user.role);
+                setAndRoute(res.data.user.id, res.data.user.role);
             },
             (err) => {
                 let errorRes = err.response;
@@ -58,14 +58,14 @@ export default function Login() {
         );
     };
 
-    function specificRoute(id: string, roleId: string) {
+    function setAndRoute(id: string, roleId: string) {
         getUserRole(roleId).then(
-            (userRole) => {
+            async (userRole) => {
                 sessionStorage.setItem("id", id);
                 sessionStorage.setItem("role", userRole.data.name);
                 
-                const tag = getPageTag(userRole.data.name);
-                router.push(`${tag}/dashboard`);
+                const direction = getSpecificDirection(userRole.data.name, "dashboard");
+                await router.push(direction);
             },
             (err) => {
                 console.error(err)

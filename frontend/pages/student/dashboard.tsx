@@ -13,6 +13,8 @@ export default function StudentDashboard() {
     const handleLogout = async () => {
         logout().then(
             async (res) => {
+                sessionStorage.removeItem("id");
+                sessionStorage.removeItem("role");
                 if (res.status === 200) {
                     await router.push("/login");
                 }

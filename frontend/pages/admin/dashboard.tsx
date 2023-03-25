@@ -37,6 +37,8 @@ export default function AdminDashboard() {
         logout().then(
             async (res) => {
                 if (res.status === 200) {
+                    sessionStorage.removeItem("id");
+                    sessionStorage.removeItem("role");
                     await router.push("/login");
                 }
             },
