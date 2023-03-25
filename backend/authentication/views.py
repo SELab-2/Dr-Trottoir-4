@@ -54,7 +54,6 @@ class LogoutViewWithBlacklisting(LogoutView):
 
 
 class RefreshViewHiddenTokens(TokenRefreshView):
-    permission_classes = [IsAuthenticated]
     serializer_class = CookieTokenRefreshSerializer
 
     def finalize_response(self, request, response, *args, **kwargs):

@@ -31,18 +31,18 @@ def set_keys_of_instance(instance, data: dict, translation: dict = {}):
 
 def bad_request(object_name="Object"):
     return Response(
-        {"res", f"{object_name} with given ID does not exist."},
+        {"message": f"{object_name} with given ID does not exist."},
         status=status.HTTP_400_BAD_REQUEST,
     )
 
 
 def not_found(object_name="Object"):
-    return Response({"res", f"{object_name} with given ID does not exists."}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"message": f"{object_name} with given ID does not exists."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def bad_request_relation(object1: str, object2: str):
     return Response(
-        {"res", f"There is no {object1} that is linked to {object2} with given id."},
+        {"message": f"There is no {object1} that is linked to {object2} with given id."},
         status=status.HTTP_400_BAD_REQUEST,
     )
 
@@ -54,11 +54,7 @@ def try_full_clean_and_save(model_instance, rm=False):
         model_instance.save()
     except ValidationError as e:
         error_message = e.message_dict
-    except AttributeError as e:
-        # If body is empty, an attribute error is thrown in the clean function
-        #  if there is not checked whether the fields in self are intialized
-        error_message = str(e) + ". This error could be thrown after you passed an empty body with e.g. a POST request."
-    except (IntegrityError, ObjectDoesNotExist, ValueError) as e:
+    except Exception as e:
         error_message = str(e)
     finally:
         if rm:

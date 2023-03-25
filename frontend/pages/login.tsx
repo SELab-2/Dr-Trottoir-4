@@ -2,25 +2,25 @@ import BaseHeader from "@/components/header/BaseHeader";
 import styles from "styles/Login.module.css";
 import Image from "next/image";
 import filler_image from "../public/filler_image.png";
-import Link from "next/link";
 import { login, verifyToken } from "@/lib/login";
-import { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
+    const { t } = useTranslation();
     const router = useRouter();
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     // try and log in to the application using existing refresh token
     useEffect(() => {
         verifyToken().then(
-            async (res) => {
-                console.log(res);
+            async () => {
                 await router.push("/welcome");
             },
             (err) => {
-                console.error("Error: token is not valid");
                 console.error(err);
             }
         );
@@ -33,7 +33,17 @@ export default function Login() {
                 await router.push("/welcome");
             },
             (err) => {
-                console.error(err);
+                let errors = [];
+                let errorRes = err.response;
+                if (errorRes.status === 400) {
+                    let data: [any, string[]][] = Object.entries(errorRes.data);
+                    for (const [_, errorValues] of data) {
+                        errors.push(...errorValues);
+                    }
+                    setErrorMessages(errors);
+                } else {
+                    console.error(err);
+                }
             }
         );
     };
@@ -57,12 +67,47 @@ export default function Login() {
                                                 <span className="h1 fw-bold mb-0">Login.</span>
                                             </div>
 
+                                            <div
+                                                className={
+                                                    router.query.createdAccount
+                                                        ? "visible alert alert-success alert-dismissible fade show"
+                                                        : "invisible"
+                                                }
+                                            >
+                                                <strong>Succes!</strong> Uw account werd met succes aangemaakt!
+                                                <button
+                                                    type="button"
+                                                    className="btn-close"
+                                                    data-bs-dismiss="alert"
+                                                ></button>
+                                            </div>
+
+                                            <div
+                                                className={
+                                                    errorMessages.length !== 0
+                                                        ? "visible alert alert-danger alert-dismissible fade show"
+                                                        : "invisible"
+                                                }
+                                            >
+                                                <ul>
+                                                    {errorMessages.map((err, i) => (
+                                                        <li key={i}>{t(err)}</li>
+                                                    ))}
+                                                </ul>
+                                                <button
+                                                    type="button"
+                                                    className="btn-close"
+                                                    data-bs-dismiss="alert"
+                                                ></button>
+                                            </div>
+
                                             <div className="form-outline mb-4">
                                                 <label className="form-label">E-mailadres</label>
                                                 <input
                                                     type="email"
                                                     className={`form-control form-control-lg ${styles.input}`}
                                                     value={username}
+                                                    placeholder="naam@voorbeeld.com"
                                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                                         setUsername(e.target.value)
                                                     }
@@ -75,10 +120,15 @@ export default function Login() {
                                                     type="password"
                                                     className={`form-control form-control-lg ${styles.input}`}
                                                     value={password}
-                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                        setPassword(e.target.value)
-                                                    }
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        setPassword(e.target.value);
+                                                        e.target.setCustomValidity("");
+                                                    }}
+                                                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        e.target.setCustomValidity("Wachtwoord is verplicht.");
+                                                    }}
                                                     required
+                                                    placeholder="Wachtwoord"
                                                 />
                                             </div>
 

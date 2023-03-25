@@ -1,5 +1,5 @@
 import { SignUp } from "@/types.d";
-import api from "@/pages/api/axios";
+import api from "@/lib/api/axios";
 import { AxiosResponse } from "axios";
 
 const signup = async (
