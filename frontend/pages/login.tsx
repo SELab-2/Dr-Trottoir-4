@@ -18,8 +18,16 @@ export default function Login() {
     // try and log in to the application using existing refresh token
     useEffect(() => {
         verifyToken().then(
-            async (res) => {
-                setUserInfoAndReroute(res);
+            (res) => {
+                const id = res.data.id;
+                getUserInfo(id).then( 
+                    (user) => {
+                        specificRoute(id, user.data.role);
+                    },
+                    (err) => {
+                        console.error(err);
+                    }
+                )
             },
             (err) => {
                 console.error(err);
@@ -34,8 +42,8 @@ export default function Login() {
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
         login(username, password).then(
-            async (res) => {
-                setUserInfoAndReroute(res);
+            (res) => {
+                specificRoute(res.data.user.id, res.data.user.role);
             },
             (err) => {
                 let errorRes = err.response;
@@ -50,24 +58,17 @@ export default function Login() {
         );
     };
 
-    async function setUserInfoAndReroute(res: AxiosResponse<any,any>) {
-        await getUserInfo(res.data.id).then(
-            async (user) => {
-                await getUserRole(user.data.role).then(
-                    (userRole) => {
-                        sessionStorage.setItem("id", res.data.id);
-                        sessionStorage.setItem("role", userRole.data.name);
-                        
-                        const tag = getPageTag(userRole.data.name);
-                        router.push(`${tag}/dashboard`);
-                    },
-                    (err) => {
-                        console.error(err)
-                    }
-                )
+    function specificRoute(id: string, roleId: string) {
+        getUserRole(roleId).then(
+            (userRole) => {
+                sessionStorage.setItem("id", id);
+                sessionStorage.setItem("role", userRole.data.name);
+                
+                const tag = getPageTag(userRole.data.name);
+                router.push(`${tag}/dashboard`);
             },
             (err) => {
-                console.error(err);
+                console.error(err)
             }
         )
     }

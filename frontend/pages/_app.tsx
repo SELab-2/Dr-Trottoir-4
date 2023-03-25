@@ -3,7 +3,6 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { getUserRole } from "@/lib/user_info";
 import NoAccess from "./no-access";
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -19,7 +18,7 @@ export default function App({ Component, pageProps }: AppProps) {
         // fetchUserRole(roleId);
 
     }, []);
-
+    console.log(role);
     // async function fetchUserRole(roleId: string) {
     //     getUserRole(roleId).then(
     //         (res) => {

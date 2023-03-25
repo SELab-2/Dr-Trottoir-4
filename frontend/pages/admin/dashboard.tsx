@@ -53,7 +53,7 @@ export default function AdminDashboard() {
             ) : (
                 <>
                     <BaseHeader/>
-                    <p className={styles.title}>Welcome!</p>
+                    <p className={styles.title}>Welcome to the Admin Dashboard!</p>
                     <Image src={soon} alt="Site coming soon" className={styles.image}/>
                     <button className={styles.button} onClick={handleLogout}>
                         Logout
