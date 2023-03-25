@@ -1,7 +1,7 @@
 asgiref==3.6.0
 certifi==2022.12.7
 cffi==1.15.1
-charset-normalizer==3.0.1
+charset-normalizer==3.1.0
 cryptography==39.0.2
 defusedxml==0.7.1
 dj-rest-auth==3.0.0
