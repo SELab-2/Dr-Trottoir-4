@@ -87,3 +87,19 @@ def get_success(serializer):
 
 def patch_success(serializer):
     return get_success(serializer)
+
+
+def post_docs(serializer):
+    return {201: serializer, 400: None}
+
+
+def delete_docs():
+    return {204: None, 400: None}
+
+
+def get_docs(serializer):
+    return {200: serializer, 400: None}
+
+
+def patch_docs(serializer):
+    return get_docs(serializer)

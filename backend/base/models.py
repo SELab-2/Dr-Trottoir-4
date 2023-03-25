@@ -75,7 +75,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     region = models.ManyToManyField(Region)
 
     # This is the new role model
-    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
 
     objects = UserManager()
 
@@ -95,8 +95,16 @@ class Lobby(models.Model):
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
 
     def clean(self):
-        if User.objects.filter(email=self.email):
-            raise ValidationError("Email already exists in database (the email is already linked to a user)")
+        super().clean()
+
+        user = User.objects.filter(email=self.email)
+        if User.objects.filter(user):
+            user = user[0]
+            is_inactive = not user.is_active
+            addendum = ""
+            if is_inactive:
+                addendum = " This email belongs to an INACTIVE user. Instead of trying to register this user, you can simply reactivate the account."
+            raise ValidationError(f"Email already exists in database for a user (id: {user.id}).{addendum}")
 
 
 class Building(models.Model):

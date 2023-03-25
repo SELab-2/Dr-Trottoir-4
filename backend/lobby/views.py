@@ -23,7 +23,7 @@ class DefaultLobby(APIView):
     serializer_class = LobbySerializer
 
     @extend_schema(
-        responses={201: LobbySerializer, 400: None},
+        responses=post_docs(LobbySerializer),
     )
     def post(self, request):
         """
@@ -47,7 +47,7 @@ class LobbyIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = LobbySerializer
 
-    @extend_schema(responses={200: LobbySerializer, 400: None})
+    @extend_schema(responses=get_docs(LobbySerializer))
     def get(self, request, lobby_id):
         """
         Get info about an EmailWhitelist with given id
@@ -59,7 +59,7 @@ class LobbyIndividualView(APIView):
 
         return get_success(LobbySerializer(lobby_instance[0]))
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs())
     def delete(self, request, lobby_id):
         """
         Patch EmailWhitelist with given id
@@ -104,7 +104,7 @@ class LobbyRefreshVerificationCodeView(APIView):
     @extend_schema(
         description="Generate a new token. The body of the request is ignored.",
         request=None,
-        responses={204: None, 400: None},
+        responses=post_docs(LobbySerializer),
     )
     def post(self, request, lobby_id):
         """

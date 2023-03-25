@@ -84,7 +84,7 @@ class Default(APIView):
     serializer_class = PictureBuildingSerializer
 
     @extend_schema(
-        responses={201: PictureBuildingSerializer, 400: None},
+        responses=post_docs(PictureBuildingSerializer),
         description="Create a new PictureBuilding." + TYPES_DESCRIPTION,
     )
     def post(self, request):
@@ -107,7 +107,7 @@ class PictureBuildingIndividualView(APIView):
     serializer_class = PictureBuildingSerializer
 
     @extend_schema(
-        responses={200: PictureBuildingSerializer, 400: None},
+        responses=get_docs(PictureBuildingSerializer),
         description="Get PictureBuilding with given id." + TYPES_DESCRIPTION,
     )
     def get(self, request, picture_building_id):
@@ -126,7 +126,7 @@ class PictureBuildingIndividualView(APIView):
         return get_success(serializer)
 
     @extend_schema(
-        responses={200: PictureBuildingSerializer, 400: None},
+        responses=patch_docs(PictureBuildingSerializer),
         description="Edit info about PictureBuilding with given id." + TYPES_DESCRIPTION,
     )
     def patch(self, request, picture_building_id):
@@ -149,7 +149,7 @@ class PictureBuildingIndividualView(APIView):
 
         return patch_success(PictureBuildingSerializer(picture_building_instance))
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs())
     def delete(self, request, picture_building_id):
         """
         delete a pictureBuilding from the database
