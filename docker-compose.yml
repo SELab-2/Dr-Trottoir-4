@@ -32,7 +32,11 @@ services:
       dockerfile: Dockerfile
 
     volumes:
-      - ./frontend:/app/frontend
+      - ./frontend/pages:/app/frontend/pages
+      - ./frontend/components:/app/frontend/components
+      - ./frontend/lib:/app/frontend/lib
+      - ./frontend/public:/app/frontend/public
+      - ./frontend/styles:/app/frontend/styles
 
     depends_on:
       - backend
