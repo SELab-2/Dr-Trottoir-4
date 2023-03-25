@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -7,7 +7,6 @@ from django.db import models
 from django.db.models import UniqueConstraint
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
-from django_random_id_model import RandomIDModel
 from phonenumber_field.modelfields import PhoneNumberField
 
 from users.managers import UserManager
@@ -17,18 +16,8 @@ from users.managers import UserManager
 MAX_INT = 2**31 - 1
 
 
-def _check_for_present_keys(instance, keys_iterable):
-    for key in keys_iterable:
-        if key not in vars(instance):
-            raise ValidationError(
-                f"Tried to access {key}, but it was not found in object"
-            )
-
-
 class Region(models.Model):
-    region = models.CharField(
-        max_length=40, unique=True, error_messages={"unique": "Deze regio bestaat al."}
-    )
+    region = models.CharField(max_length=40, unique=True, error_messages={"unique": "Deze regio bestaat al."})
 
     def __str__(self):
         return self.region
@@ -54,9 +43,7 @@ class Role(models.Model):
         if Role.objects.count() != 0 and self.rank != MAX_INT:
             highest_rank = Role.objects.order_by("-rank").first().rank
             if self.rank > highest_rank + 1:
-                raise ValidationError(
-                    f"The maximum rank allowed is {highest_rank + 1}."
-                )
+                raise ValidationError(f"The maximum rank allowed is {highest_rank + 1}.")
 
     class Meta:
         constraints = [
@@ -88,7 +75,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     region = models.ManyToManyField(Region)
 
     # This is the new role model
-    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
 
     objects = UserManager()
 
@@ -96,16 +83,42 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f"{self.email} ({self.role})"
 
 
+class Lobby(models.Model):
+    email = models.EmailField(
+        _("email address"), unique=True, error_messages={"unique": "This email is already in the whitelist."}
+    )
+    # The verification code, preferably hashed
+    verification_code = models.CharField(
+        max_length=128, unique=True, error_messages={"unique": "This verification code already exists."}
+    )
+
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
+
+    def clean(self):
+        super().clean()
+
+        user = User.objects.filter(email=self.email)
+        if User.objects.filter(user):
+            user = user[0]
+            is_inactive = not user.is_active
+            addendum = ""
+            if is_inactive:
+                addendum = " This email belongs to an INACTIVE user. Instead of trying to register this user, you can simply reactivate the account."
+            raise ValidationError(f"Email already exists in database for a user (id: {user.id}).{addendum}")
+
+
 class Building(models.Model):
     city = models.CharField(max_length=40)
     postal_code = models.CharField(max_length=10)
     street = models.CharField(max_length=60)
-    house_number = models.CharField(max_length=10)
+    house_number = models.PositiveIntegerField()
+    bus = models.CharField(max_length=10, blank=True, null=True)
     client_number = models.CharField(max_length=40, blank=True, null=True)
     duration = models.TimeField(default="00:00")
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
+    public_id = models.CharField(max_length=32, blank=True, null=True)
 
     """
     Only a syndic can own a building, not a student.
@@ -114,13 +127,20 @@ class Building(models.Model):
     def clean(self):
         super().clean()
 
-        # If this is not checked, `self.syndic` will cause an internal server error 500
-        _check_for_present_keys(self, {"syndic_id"})
+        if self.house_number == 0:
+            raise ValidationError("The house number of the building must be positive and not zero.")
 
-        user = self.syndic
+        # With this if, a building is not required to have a syndic. If a syndic should be required, blank has to be False
+        # If this if is removed, an internal server error will be thrown since youll try to access a non existing attribute of type 'NoneType'
+        if self.syndic:
+            user = self.syndic
+            if user.role.name.lower() != "syndic":
+                raise ValidationError('Only a user with role "syndic" can own a building.')
 
-        if user.role.name.lower() != "syndic":
-            raise ValidationError('Only a user with role "syndic" can own a building.')
+        # If a public_id exists, it should be unique
+        if self.public_id:
+            if Building.objects.filter(public_id=self.public_id):
+                raise ValidationError(f"{self.public_id} already exists as public_id of another building")
 
     class Meta:
         constraints = [
@@ -128,7 +148,8 @@ class Building(models.Model):
                 Lower("city"),
                 Lower("street"),
                 Lower("postal_code"),
-                Lower("house_number"),
+                "house_number",
+                Lower("bus"),
                 name="address_unique",
                 violation_error_message="A building with this address already exists.",
             ),
@@ -136,15 +157,6 @@ class Building(models.Model):
 
     def __str__(self):
         return f"{self.street} {self.house_number}, {self.city} {self.postal_code}"
-
-
-class BuildingURL(RandomIDModel):
-    first_name_resident = models.CharField(max_length=40)
-    last_name_resident = models.CharField(max_length=40)
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.first_name_resident} {self.last_name_resident} : {self.id}"
 
 
 class BuildingComment(models.Model):
@@ -213,8 +225,6 @@ class Tour(models.Model):
     def clean(self):
         super().clean()
 
-        _check_for_present_keys(self, {"name", "region_id"})
-
         if not self.modified_at:
             self.modified_at = str(date.today())
 
@@ -233,9 +243,9 @@ class Tour(models.Model):
 
 
 class BuildingOnTour(models.Model):
-    tour = models.ForeignKey(Tour, on_delete=models.CASCADE)
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    index = models.PositiveIntegerField()
+    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, blank=False, null=False)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, blank=False, null=False)
+    index = models.PositiveIntegerField(blank=False, null=False)
 
     """
     The region of a tour and of a building needs to be the same.
@@ -244,21 +254,19 @@ class BuildingOnTour(models.Model):
     def clean(self):
         super().clean()
 
-        _check_for_present_keys(self, {"tour_id", "building_id", "index"})
+        # Check for existence of all the fields we use below
+        # If the if statement fail, django will handle the errors correctly in a consistent way
+        if self.tour_id and self.building_id and self.index:
+            tour_region = self.tour.region
+            building_region = self.building.region
+            if tour_region != building_region:
+                raise ValidationError(
+                    f"The regions for tour ({tour_region}) en building ({building_region}) are different."
+                )
 
-        tour_region = self.tour.region
-        building_region = self.building.region
-        if tour_region != building_region:
-            raise ValidationError(
-                f"The regions for tour ({tour_region}) en building ({building_region}) "
-                f"are different."
-            )
-
-        nr_of_buildings = BuildingOnTour.objects.filter(tour=self.tour).count()
-        if self.index > nr_of_buildings:
-            raise ValidationError(
-                f"The maximum allowed index for this building is {nr_of_buildings}"
-            )
+            nr_of_buildings = BuildingOnTour.objects.filter(tour=self.tour_id).count()
+            if self.index > nr_of_buildings:
+                raise ValidationError(f"The maximum allowed index for this building is {nr_of_buildings}")
 
     def __str__(self):
         return f"{self.building} on tour {self.tour}, index: {self.index}"
@@ -281,9 +289,7 @@ class BuildingOnTour(models.Model):
 
 
 class StudentAtBuildingOnTour(models.Model):
-    building_on_tour = models.ForeignKey(
-        BuildingOnTour, on_delete=models.SET_NULL, null=True
-    )
+    building_on_tour = models.ForeignKey(BuildingOnTour, on_delete=models.SET_NULL, null=True)
     date = models.DateField()
     student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
@@ -294,19 +300,16 @@ class StudentAtBuildingOnTour(models.Model):
 
     def clean(self):
         super().clean()
-        _check_for_present_keys(self, {"student_id", "building_on_tour_id", "date"})
-        user = self.student
-        if user.role.name.lower() == "syndic":
-            raise ValidationError("A syndic can't do tours")
-        building_on_tour_region = self.building_on_tour.tour.region
-        if (
-            not self.student.region.all()
-            .filter(region=building_on_tour_region)
-            .exists()
-        ):
-            raise ValidationError(
-                f"Student ({user.email}) doesn't do tours in this region ({building_on_tour_region})."
-            )
+
+        if self.student_id and self.building_on_tour_id:
+            user = self.student
+            if user.role.name.lower() == "syndic":
+                raise ValidationError("A syndic can't do tours")
+            building_on_tour_region = self.building_on_tour.tour.region
+            if not self.student.region.all().filter(region=building_on_tour_region).exists():
+                raise ValidationError(
+                    f"Student ({user.email}) doesn't do tours in this region ({building_on_tour_region})."
+                )
 
     class Meta:
         constraints = [
@@ -325,9 +328,9 @@ class StudentAtBuildingOnTour(models.Model):
 
 class PictureBuilding(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    picture = models.ImageField(upload_to="building_pictures/", blank=True, null=True)
+    picture = models.ImageField(upload_to="building_pictures/")
     description = models.TextField(blank=True, null=True)
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(blank=True)
 
     AANKOMST = "AA"
     BINNEN = "BI"
@@ -345,9 +348,8 @@ class PictureBuilding(models.Model):
 
     def clean(self):
         super().clean()
-        _check_for_present_keys(
-            self, {"building_id", "picture", "description", "timestamp"}
-        )
+        if not self.timestamp:
+            self.timestamp = datetime.now()
 
     class Meta:
         constraints = [
@@ -368,14 +370,13 @@ class PictureBuilding(models.Model):
 class Manual(models.Model):
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
     version_number = models.PositiveIntegerField(default=0)
-    file = models.FileField(upload_to="building_manuals/", blank=True, null=True)
+    file = models.FileField(upload_to="building_manuals/")
 
     def __str__(self):
         return f"Manual: {str(self.file).split('/')[-1]} (version {self.version_number}) for {self.building}"
 
     def clean(self):
         super().clean()
-        _check_for_present_keys(self, {"building_id", "file"})
         # If no version number is given, the new version number should be the highest + 1
         # If only version numbers 1, 2 and 3 are in the database, a version number of e.g. 3000 is not permitted
 
@@ -394,9 +395,26 @@ class Manual(models.Model):
     class Meta:
         constraints = [
             UniqueConstraint(
-                "building_id",
+                "building",
                 "version_number",
                 name="unique_manual",
                 violation_error_message="The building already has a manual with the same version number",
+            ),
+        ]
+
+
+class EmailTemplate(models.Model):
+    name = models.CharField(max_length=40)
+    template = models.TextField()
+
+    def __str__(self):
+        return f"Manual: {self.name}"
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                "name",
+                name="unique_template_name",
+                violation_error_message="The name for this template already exists.",
             ),
         ]

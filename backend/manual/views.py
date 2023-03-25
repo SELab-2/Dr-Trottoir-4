@@ -1,5 +1,14 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from base.permissions import (
+    IsAdmin,
+    IsSuperStudent,
+    IsSyndic,
+    OwnerOfBuilding,
+    ReadOnlyStudent,
+    ReadOnlyManualFromSyndic,
+)
 from base.models import Manual, Building
 from base.serializers import ManualSerializer
 from util.request_response_util import *
@@ -9,9 +18,10 @@ TRANSLATE = {"building": "building_id"}
 
 
 class Default(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsSyndic]
     serializer_class = ManualSerializer
 
-    @extend_schema(responses={201: ManualSerializer, 400: None})
+    @extend_schema(responses=post_docs(ManualSerializer))
     def post(self, request):
         """
         Create a new manual with data from post
@@ -28,9 +38,10 @@ class Default(APIView):
 
 
 class ManualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyManualFromSyndic]
     serializer_class = ManualSerializer
 
-    @extend_schema(responses={200: ManualSerializer, 400: None})
+    @extend_schema(responses=get_docs(ManualSerializer))
     def get(self, request, manual_id):
         """
         Get info about a manual with given id
@@ -38,10 +49,14 @@ class ManualView(APIView):
         manual_instances = Manual.objects.filter(id=manual_id)
         if len(manual_instances) != 1:
             return bad_request("Manual")
-        serializer = ManualSerializer(manual_instances[0])
+        manual_instance = manual_instances[0]
+
+        self.check_object_permissions(manual_instance)
+
+        serializer = ManualSerializer(manual_instances)
         return get_success(serializer)
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs())
     def delete(self, request, manual_id):
         """
         Delete manual with given id
@@ -52,7 +67,7 @@ class ManualView(APIView):
         manual_instances[0].delete()
         return delete_success()
 
-    @extend_schema(responses={200: ManualSerializer, 400: None})
+    @extend_schema(responses=patch_docs(ManualSerializer))
     def patch(self, request, manual_id):
         """
         Edit info about a manual with given id
@@ -72,9 +87,10 @@ class ManualView(APIView):
 
 
 class ManualBuildingView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding]
     serializer_class = ManualSerializer
 
-    @extend_schema(responses={200: ManualSerializer, 400: None})
+    @extend_schema(responses=get_docs(ManualSerializer))
     def get(self, request, building_id):
         """
         Get all manuals of a building with given id
@@ -88,6 +104,7 @@ class ManualBuildingView(APIView):
 
 
 class ManualsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = ManualSerializer
 
     def get(self, request):
