@@ -20,7 +20,6 @@ export default function Signup() {
         signup(firstname, lastname, email, password1, password2).then(
             async (res) => {
                 if (res.status == 201) {
-                    console.log(res);
                     alert("Successfully created account");
                     await router.push("/login");
                 }

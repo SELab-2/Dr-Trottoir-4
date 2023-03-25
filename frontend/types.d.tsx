@@ -14,14 +14,3 @@ export type SignUp = {
 export type Reset_Password = {
     email: string;
 };
-
-export type UserData = {
-    user_id: string;
-    is_active: boolean;
-    email: string;
-    first_name: string;
-    last_name: string;
-    phone_number: string;
-    region: [];
-    role: string;
-}
