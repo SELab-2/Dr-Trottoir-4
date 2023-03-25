@@ -4,13 +4,12 @@ import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import NoAccess from "./no-access";
-import {I18nextProvider} from 'react-i18next';
-import i18n from '../i18n';
+import { I18nextProvider } from "react-i18next";
+import i18n from "../i18n";
 
 export default function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
     const [role, setRole] = useState<string>("");
-
 
     useEffect(() => {
         require("bootstrap/dist/js/bootstrap.bundle.min.js");
