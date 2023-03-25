@@ -20,8 +20,9 @@ def add_regions_to_user(user_instance, regions_raw):
             raise SyntaxError()
 
     except (SyntaxError, ValueError):
-        return Response({"message": "Invalid syntax. Regions must be a list of id's"},
-                        status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"message": "Invalid syntax. Regions must be a list of id's"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     for region in regions:
         if r := try_adding_region_to_user_instance(user_instance, region):
