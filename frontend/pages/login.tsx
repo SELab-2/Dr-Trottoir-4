@@ -7,6 +7,7 @@ import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import Loading from "@/components/loading";
+import AdminHeader from "@/components/header/AdminHeader";
 
 export default function Login() {
     const { t } = useTranslation();
@@ -57,10 +58,10 @@ export default function Login() {
 
     return (
         <>
-            <BaseHeader />
+            <AdminHeader />
             <div>
                 {loading ? (
-                    <Loading></Loading>
+                    <Loading/>
                 ) : (
                     <div className="container py-5 h-100">
                         <div className="row d-flex justify-content-center align-items-center h-100">
@@ -94,7 +95,7 @@ export default function Login() {
                                                             type="button"
                                                             className="btn-close"
                                                             data-bs-dismiss="alert"
-                                                        ></button>
+                                                        />
                                                     </div>
 
                                                     <div
@@ -113,7 +114,7 @@ export default function Login() {
                                                             type="button"
                                                             className="btn-close"
                                                             data-bs-dismiss="alert"
-                                                        ></button>
+                                                        />
                                                     </div>
 
                                                     <div className="form-outline mb-4">

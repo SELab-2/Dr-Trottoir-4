@@ -1,0 +1,28 @@
+.logo {
+    object-fit: cover;
+    margin-top: auto;
+    margin-left: 30px;
+    margin-bottom: auto;
+}
+
+.text:hover {
+    color: yellow;
+}
+
+.text {
+    margin-right: 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+@media (max-width: 992px) {
+    .text {
+        font-size: 16px;
+        font-weight: bold;
+    }
+}
+
+
+.button:hover {
+    color: transparent;
+}
