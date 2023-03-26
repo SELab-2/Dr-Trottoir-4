@@ -9,7 +9,6 @@ import { logout } from "@/lib/logout";
 export default function StudentDashboard() {
     const router = useRouter();
 
-
     const handleLogout = () => {
         logout().then(
             async (res) => {
@@ -28,10 +27,12 @@ export default function StudentDashboard() {
     return (
         <>
             <>
-                <BaseHeader/>
+                <BaseHeader />
                 <p className={styles.title}>Welcome to the Student Dashboard!</p>
-                <p>https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=32-29&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486</p>
-                <Image src={soon} alt="Site coming soon" className={styles.image}/>
+                <p>
+                    https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=32-29&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
+                </p>
+                <Image src={soon} alt="Site coming soon" className={styles.image} />
                 <button className={styles.button} onClick={handleLogout}>
                     Logout
                 </button>
