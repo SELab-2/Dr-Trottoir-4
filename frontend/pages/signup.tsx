@@ -81,11 +81,7 @@ export default function Signup() {
                                                         <li key={i}>{t(err)}</li>
                                                     ))}
                                                 </ul>
-                                                <button
-                                                    type="button"
-                                                    className="btn-close"
-                                                    data-bs-dismiss="alert"
-                                                />
+                                                <button type="button" className="btn-close" data-bs-dismiss="alert" />
                                             </div>
 
                                             <div className="form-outline mb-4">
