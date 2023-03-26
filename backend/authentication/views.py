@@ -1,11 +1,10 @@
 from dj_rest_auth.jwt_auth import (
     unset_jwt_cookies,
-    CookieTokenRefreshSerializer,
     set_jwt_access_cookie,
     set_jwt_refresh_cookie, set_jwt_cookies,
 )
 from dj_rest_auth.utils import jwt_encode
-from dj_rest_auth.views import LoginView
+from dj_rest_auth.views import LoginView, PasswordChangeView
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -132,9 +131,7 @@ class CustomTokenRefreshView(TokenRefreshView):
         data = dict(serializer.validated_data)
         # construct the response
         response = Response(
-            {
-                "message": _("refresh of tokens successful")
-            },
+            {"message": _("refresh of tokens successful")},
             status=status.HTTP_200_OK
         )
         set_jwt_access_cookie(response, data["access"])
@@ -155,8 +152,20 @@ class CustomTokenVerifyView(TokenVerifyView):
             raise InvalidToken(e.args[0])
 
         return Response(
-            {
-                "message": "refresh token validation successful"
-            },
+            {"message": "refresh token validation successful"},
+            status=status.HTTP_200_OK
+        )
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(responses={200: None, 400: None, 401: None})
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            {"message": _("new password has been saved")},
             status=status.HTTP_200_OK
         )
