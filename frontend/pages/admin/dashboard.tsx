@@ -7,8 +7,9 @@ import { useRouter } from "next/router";
 import { getAllUsers } from "@/lib/welcome";
 import Loading from "@/components/loading";
 import LogoutButton from "@/components/logoutbutton";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
-export default function AdminDashboard() {
+function AdminDashboard() {
     const router = useRouter();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true); // prevents preview welcome page before auth check
@@ -54,3 +55,5 @@ export default function AdminDashboard() {
         </>
     );
 }
+
+export default withAuthorisation(AdminDashboard, ["Admin", "Superstudent"]);
