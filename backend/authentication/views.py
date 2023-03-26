@@ -14,9 +14,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-from authentication.serializers import CustomRegisterSerializer, CustomRefreshSerializer
+from authentication.serializers import CustomRegisterSerializer, CustomTokenRefreshSerializer, \
+    CustomTokenVerifySerializer
 from base.models import Lobby
 from base.serializers import UserSerializer
 from config import settings
@@ -115,9 +116,10 @@ class CustomLoginView(LoginView):
         return response
 
 
-class CustomRefreshView(TokenRefreshView):
-    serializer_class = CustomRefreshSerializer
+class CustomTokenRefreshView(TokenRefreshView):
+    serializer_class = CustomTokenRefreshSerializer
 
+    @extend_schema(responses={200: None, 401: None})
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
 
@@ -138,3 +140,23 @@ class CustomRefreshView(TokenRefreshView):
         set_jwt_access_cookie(response, data["access"])
         set_jwt_refresh_cookie(response, data["refresh"])
         return response
+
+
+class CustomTokenVerifyView(TokenVerifyView):
+    serializer_class = CustomTokenVerifySerializer
+
+    @extend_schema(responses={200: None, 401: None})
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        return Response(
+            {
+                "message": "refresh token validation successful"
+            },
+            status=status.HTTP_200_OK
+        )

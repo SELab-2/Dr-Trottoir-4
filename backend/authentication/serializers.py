@@ -1,5 +1,7 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.translation import gettext_lazy as _
 
@@ -29,7 +31,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.save()
 
 
-class CustomRefreshSerializer(Serializer):
+class CustomTokenRefreshSerializer(Serializer):
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
 
@@ -43,7 +45,7 @@ class CustomRefreshSerializer(Serializer):
         cookie_name = settings.REST_AUTH["JWT_AUTH_REFRESH_COOKIE"]
         if not cookie_name or cookie_name not in request.COOKIES:
             from rest_framework_simplejwt.exceptions import InvalidToken
-            raise InvalidToken(_('No valid refresh token found.'))
+            raise InvalidToken(_("no valid refresh token found"))
 
         # get the refresh token
         refresh = RefreshToken(request.COOKIES.get(cookie_name))
@@ -63,3 +65,30 @@ class CustomRefreshSerializer(Serializer):
             refresh.set_iat()
 
         return {"access": str(refresh.access_token), "refresh": str(refresh)}
+
+
+class CustomTokenVerifySerializer(Serializer):
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        return super().create(validated_data)
+
+    def validate(self, incoming_data):
+        # extract the request
+        request = self.context['request']
+        # get the cookie name of the refresh token
+        cookie_name = settings.REST_AUTH["JWT_AUTH_REFRESH_COOKIE"]
+        if not cookie_name or cookie_name not in request.COOKIES:
+            from rest_framework_simplejwt.exceptions import InvalidToken
+            raise InvalidToken(_("no valid refresh token found"))
+
+        # get the refresh token
+        refresh = RefreshToken(request.COOKIES.get(cookie_name))
+
+        if settings.SIMPLE_JWT["BLACKLIST_AFTER_ROTATION"]:
+            jti = refresh.get(settings.SIMPLE_JWT["JTI_CLAIM"])
+            if BlacklistedToken.objects.filter(token__jti=jti).exists():
+                raise ValidationError("token is blacklisted")
+
+        return {}
