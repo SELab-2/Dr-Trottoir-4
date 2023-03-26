@@ -12,11 +12,11 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from authentication.serializers import CustomRegisterSerializer
+from authentication.serializers import CustomRegisterSerializer, CustomRefreshSerializer
 from base.models import Lobby
 from base.serializers import UserSerializer
 from config import settings
@@ -107,7 +107,7 @@ class CustomLogoutView(APIView):
 class CustomLoginView(LoginView):
     def get_response(self):
         data = {
-            "message": "successful login",
+            "message": _("successful login"),
             "user": UserSerializer(self.user).data,
         }
         response = Response(data, status=status.HTTP_200_OK)
@@ -115,18 +115,26 @@ class CustomLoginView(LoginView):
         return response
 
 
-class RefreshViewHiddenTokens(TokenRefreshView):
-    serializer_class = CookieTokenRefreshSerializer
+class CustomRefreshView(TokenRefreshView):
+    serializer_class = CustomRefreshSerializer
 
-    def finalize_response(self, request, response, *args, **kwargs):
-        if response.status_code == 200 and "access" in response.data:
-            set_jwt_access_cookie(response, response.data["access"])
-            response.data["access-token-refresh"] = _("success")
-            # we don't want this info to be in the body for security reasons (HTTPOnly!)
-            del response.data["access"]
-        if response.status_code == 200 and "refresh" in response.data:
-            set_jwt_refresh_cookie(response, response.data["refresh"])
-            response.data["refresh-token-rotation"] = _("success")
-            # we don't want this info to be in the body for security reasons (HTTPOnly!)
-            del response.data["refresh"]
-        return super().finalize_response(request, response, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        # get new access and refresh token
+        data = dict(serializer.validated_data)
+        # construct the response
+        response = Response(
+            {
+                "message": _("refresh of tokens successful")
+            },
+            status=status.HTTP_200_OK
+        )
+        set_jwt_access_cookie(response, data["access"])
+        set_jwt_refresh_cookie(response, data["refresh"])
+        return response

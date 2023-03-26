@@ -1,10 +1,20 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
+from rest_framework.serializers import Serializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.utils.translation import gettext_lazy as _
 
 from base.models import User
+from config import settings
 from util.request_response_util import request_to_dict
 
 
 class CustomRegisterSerializer(RegisterSerializer):
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        return super().create(validated_data)
 
     def custom_signup(self, request, user: User):
         data = request_to_dict(request.data)
@@ -17,3 +27,39 @@ class CustomRegisterSerializer(RegisterSerializer):
             # TODO: change this to the same util function as used in user view
             user.region = data.get('region')
         user.save()
+
+
+class CustomRefreshSerializer(Serializer):
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        return super().create(validated_data)
+
+    def validate(self, incoming_data):
+        # extract the request
+        request = self.context['request']
+        # get the cookie name of the refresh token
+        cookie_name = settings.REST_AUTH["JWT_AUTH_REFRESH_COOKIE"]
+        if not cookie_name or cookie_name not in request.COOKIES:
+            from rest_framework_simplejwt.exceptions import InvalidToken
+            raise InvalidToken(_('No valid refresh token found.'))
+
+        # get the refresh token
+        refresh = RefreshToken(request.COOKIES.get(cookie_name))
+        # rotate the token if needed
+        if settings.SIMPLE_JWT["ROTATE_REFRESH_TOKENS"]:
+            if settings.SIMPLE_JWT["BLACKLIST_AFTER_ROTATION"]:
+                try:
+                    # attempt to blacklist the given refresh token
+                    refresh.blacklist()
+                except AttributeError:
+                    # if blacklist app not installed, `blacklist` method will
+                    # not be present
+                    pass
+
+            refresh.set_jti()
+            refresh.set_exp()
+            refresh.set_iat()
+
+        return {"access": str(refresh.access_token), "refresh": str(refresh)}
