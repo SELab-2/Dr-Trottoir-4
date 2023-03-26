@@ -2,10 +2,11 @@ import BaseHeader from "@/components/header/BaseHeader";
 import styles from "styles/Welcome.module.css";
 import soon from "public/coming_soon.png";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { logout } from "@/lib/logout";
 import { getAllUsers } from "@/lib/welcome";
+import Loading from "@/components/loading";
 
 export default function AdminDashboard() {
     const router = useRouter();
@@ -14,6 +15,7 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         setData([]);
+        setLoading(true);
         getAllUsers().then(
             (res) => {
                 // Set loading to false only if the response is valid
@@ -46,24 +48,26 @@ export default function AdminDashboard() {
 
     return (
         <>
-            {loading ? (
-                <div>Loading...</div>
-            ) : (
-                <>
-                    <BaseHeader/>
-                    <p className={styles.title}>Welcome to the Admin Dashboard!</p>
-                    <Image src={soon} alt="Site coming soon" className={styles.image}/>
-                    <button className={styles.button} onClick={handleLogout}>
-                        Logout
-                    </button>
-                    <h1 className={styles.text}>Users:</h1>
-                    <ul>
-                        {data.map((item, index) => (
-                            <li key={index}>{JSON.stringify(item)}</li>
-                        ))}
-                    </ul>
-                </>
-            )}
+            <BaseHeader />
+            <div>
+                {loading ? (
+                    <Loading></Loading>
+                ) : (
+                    <div>
+                        <p className={styles.title}>Welcome to the Admin Dashboard!</p>
+                        <Image src={soon} alt="Site coming soon" className={styles.image} />
+                        <button className={styles.button} onClick={handleLogout}>
+                            Logout
+                        </button>
+                        <h1 className={styles.text}>Users:</h1>
+                        <ul>
+                            {data.map((item, index) => (
+                                <li key={index}>{JSON.stringify(item)}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
         </>
     );
 }
