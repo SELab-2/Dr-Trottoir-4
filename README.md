@@ -13,17 +13,11 @@ install [Docker](https://docs.docker.com/get-docker/) and [docker-compose](https
 Another useful tool worth considering is [Docker Desktop](https://www.docker.com/products/docker-desktop/). This will
 provide a GUI with lots of extra features that will make the docker experience more pleasant.
 
-You will also need to install [Node.js and npm](https://nodejs.org/en/download) before proceeding. Once you have those,
-run the following command in the frontend folder:
-```bash
-npm install next
-```
-
-Now we are ready to run the full application. To run the docker container you can use the following command:
+To run the docker container you can use the following command:
 ```bash
 docker-compose up
 ```
-Whenever you need to rebuild your containers, just use:
+Whenever you need to rebuild your containers, use:
 ```bash
 docker-compose build
 ```
