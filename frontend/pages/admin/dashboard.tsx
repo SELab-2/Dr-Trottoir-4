@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { getAllUsers } from "@/lib/welcome";
 import Loading from "@/components/loading";
 import LogoutButton from "@/components/logoutbutton";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
 function AdminDashboard() {
     const router = useRouter();
@@ -42,7 +42,7 @@ function AdminDashboard() {
                     <div>
                         <p className={styles.title}>Welcome to the Admin Dashboard!</p>
                         <Image src={soon} alt="Site coming soon" className={styles.image} />
-                        <LogoutButton/>
+                        <LogoutButton />
                         <h1 className={styles.text}>Users:</h1>
                         <ul>
                             {data.map((item, index) => (
