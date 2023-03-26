@@ -8,7 +8,7 @@ import { logout } from "@/lib/logout";
 import { getAllUsers } from "@/lib/welcome";
 import Loading from "@/components/loading";
 
-function Welcome() {
+export default function AdminDashboard() {
     const router = useRouter();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true); // prevents preview welcome page before auth check
@@ -16,29 +16,27 @@ function Welcome() {
     useEffect(() => {
         setData([]);
         setLoading(true);
-        fetchData();
-    }, []);
-
-    async function fetchData() {
         getAllUsers().then(
             (res) => {
                 // Set loading to false only if the response is valid
                 setLoading(false);
                 setData(res.data);
             },
-            (err) => {
+            async (err) => {
                 console.error(err);
                 if (!err.response || err.response.status == 401) {
-                    router.push("/login"); // Only redirect to login if the status code is 401: unauthorized
+                    await router.push("/login"); // Only redirect to login if the status code is 401: unauthorized
                 }
             }
         );
-    }
+    }, []);
 
-    const handleLogout = async () => {
+    const handleLogout = () => {
         logout().then(
             async (res) => {
                 if (res.status === 200) {
+                    sessionStorage.removeItem("id");
+                    sessionStorage.removeItem("role");
                     await router.push("/login");
                 }
             },
@@ -56,7 +54,7 @@ function Welcome() {
                     <Loading></Loading>
                 ) : (
                     <div>
-                        <p className={styles.title}>Welcome!</p>
+                        <p className={styles.title}>Welcome to the Admin Dashboard!</p>
                         <Image src={soon} alt="Site coming soon" className={styles.image} />
                         <button className={styles.button} onClick={handleLogout}>
                             Logout
@@ -73,5 +71,3 @@ function Welcome() {
         </>
     );
 }
-
-export default Welcome;

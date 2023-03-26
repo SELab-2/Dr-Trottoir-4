@@ -6,6 +6,8 @@ import { login, verifyToken } from "@/lib/login";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
+import getUserInfo, { getUserRole } from "@/lib/user_info";
+import getSpecificDirection from "@/lib/reroute";
 import Loading from "@/components/loading";
 
 export default function Login() {
@@ -19,8 +21,16 @@ export default function Login() {
     // try and log in to the application using existing refresh token
     useEffect(() => {
         verifyToken().then(
-            async () => {
-                await router.push("/welcome");
+            (res) => {
+                const id = res.data.id;
+                getUserInfo(id).then(
+                    async (user) => {
+                        await setAndRoute(id, user.data.role);
+                    },
+                    (err) => {
+                        console.error(err);
+                    }
+                );
             },
             (err) => {
                 setLoading(false);
@@ -36,8 +46,8 @@ export default function Login() {
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
         login(username, password).then(
-            async () => {
-                await router.push("/welcome");
+            async (res) => {
+                await setAndRoute(res.data.user.id, res.data.user.role);
             },
             (err) => {
                 let errors = [];
@@ -54,6 +64,16 @@ export default function Login() {
             }
         );
     };
+
+    async function setAndRoute(id: string, roleId: string) {
+        const role = getUserRole(roleId);
+
+        sessionStorage.setItem("id", id);
+        sessionStorage.setItem("role", role);
+
+        const direction = getSpecificDirection(role, "dashboard");
+        await router.push(direction);
+    }
 
     return (
         <>
