@@ -55,6 +55,8 @@ export default function ResetPassword() {
                                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                                         setEmail(e.target.value)
                                                     }
+                                                    required
+                                                    placeholder="naam@voorbeeld.com"
                                                 />
                                             </div>
 

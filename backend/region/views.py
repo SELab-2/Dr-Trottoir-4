@@ -12,7 +12,7 @@ class Default(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = RegionSerializer
 
-    @extend_schema(responses={201: RegionSerializer, 400: None})
+    @extend_schema(responses=post_docs(RegionSerializer))
     def post(self, request):
         """
         Create a new region
@@ -34,7 +34,7 @@ class RegionIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | ReadOnly]
     serializer_class = RegionSerializer
 
-    @extend_schema(responses={200: RegionSerializer, 400: None})
+    @extend_schema(responses=get_docs(RegionSerializer))
     def get(self, request, region_id):
         """
         Get info about a Region with given id
@@ -47,7 +47,7 @@ class RegionIndividualView(APIView):
         serializer = RegionSerializer(region_instance[0])
         return get_success(serializer)
 
-    @extend_schema(responses={200: RegionSerializer, 400: None})
+    @extend_schema(responses=patch_docs(RegionSerializer))
     def patch(self, request, region_id):
         """
         Edit Region with given id
@@ -68,7 +68,7 @@ class RegionIndividualView(APIView):
 
         return patch_success(RegionSerializer(region_instance))
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs())
     def delete(self, request, region_id):
         """
         delete a region with given id

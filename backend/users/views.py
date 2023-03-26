@@ -1,8 +1,8 @@
-import json
-
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from base.models import User
 from base.permissions import (
     IsAdmin,
     IsSuperStudent,
@@ -12,12 +12,13 @@ from base.permissions import (
     CanDeleteUser,
     CanCreateUser,
 )
-from base.models import User
 from base.serializers import UserSerializer
+from users.user_utils import add_regions_to_user
 from util.request_response_util import *
-from drf_spectacular.utils import extend_schema
 
 TRANSLATE = {"role": "role_id"}
+
+DESCRIPTION = "For region, pass a list of id's. For example: [1, 2, 3]"
 
 
 # In GET, you only get active users
@@ -30,14 +31,6 @@ def _include_inactive(request) -> bool:
     return False
 
 
-def _try_adding_region_to_user_instance(user_instance, region_value):
-    try:
-        user_instance.region.add(region_value)
-    except IntegrityError as e:
-        user_instance.delete()
-        return Response(str(e.__cause__), status=status.HTTP_400_BAD_REQUEST)
-
-
 class DefaultUser(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent, CanCreateUser]
     serializer_class = UserSerializer
@@ -46,7 +39,8 @@ class DefaultUser(APIView):
     #  In the future, we probably won't use POST this way anymore (if we work with the whitelist method)
     #  However, an easy workaround would be to add a default value to password (in e.g. `clean`)
     #     -> probably the easiest way
-    @extend_schema(responses={201: UserSerializer, 400: None})
+
+    @extend_schema(responses=post_docs(UserSerializer))
     def post(self, request):
         """
         Create a new user
@@ -64,11 +58,9 @@ class DefaultUser(APIView):
 
         # Now that we have an ID, we can look at the many-to-many relationship region
 
-        if "region" in data.keys():
-            region_dict = json.loads(data["region"])
-            for value in region_dict.values():
-                if r := _try_adding_region_to_user_instance(user_instance, value):
-                    return r
+        if r := add_regions_to_user(user_instance, data["region"]):
+            user_instance.delete()
+            return r
 
         serializer = UserSerializer(user_instance)
         return post_success(serializer)
@@ -84,7 +76,7 @@ class UserIndividualView(APIView):
     ]
     serializer_class = UserSerializer
 
-    @extend_schema(responses={200: UserSerializer, 400: None})
+    @extend_schema(responses=get_docs(UserSerializer))
     def get(self, request, user_id):
         """
         Get info about user with given id
@@ -100,11 +92,11 @@ class UserIndividualView(APIView):
         serializer = UserSerializer(user_instance)
         return get_success(serializer)
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs())
     def delete(self, request, user_id):
         """
         Delete user with given id
-        We don't acutally delete a user, we put the user on inactive mode
+        We don't actually delete a user, we put the user on inactive mode
         """
         user_instance = User.objects.filter(id=user_id)
         if not user_instance:
@@ -118,7 +110,8 @@ class UserIndividualView(APIView):
 
         return delete_success()
 
-    @extend_schema(responses={200: UserSerializer, 400: None})
+
+    @extend_schema(responses=patch_docs(UserSerializer))
     def patch(self, request, user_id):
         """
         Edit user with given id
@@ -140,12 +133,8 @@ class UserIndividualView(APIView):
             return r
 
         # Now that we have an ID, we can look at the many-to-many relationship region
-        if "region" in data.keys():
-            region_dict = json.loads(data["region"])
-            user_instance.region.clear()
-            for value in region_dict.values():
-                if r := _try_adding_region_to_user_instance(user_instance, value):
-                    return r
+        if r := add_regions_to_user(user_instance, data["region"]):
+            return r
 
         serializer = UserSerializer(user_instance)
         return patch_success(serializer)
