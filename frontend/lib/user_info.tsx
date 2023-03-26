@@ -17,8 +17,6 @@ export const getUserRole = (role_id: string): string => {
         [4, "Student"],
         [5, "Syndic"],
     ]);
-    console.log(userDict);
-    console.log(role_id);
 
     return userDict.get(parseInt(role_id)) || "Default";
 }

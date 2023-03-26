@@ -12,11 +12,11 @@ export default function StudentDashboard() {
 
     const handleLogout = () => {
         logout().then(
-            (res) => {
+            async (res) => {
                 if (res.status === 200) {
                     sessionStorage.removeItem("id");
                     sessionStorage.removeItem("role");
-                    router.push("/login");
+                    await router.push("/login");
                 }
             },
             (err) => {

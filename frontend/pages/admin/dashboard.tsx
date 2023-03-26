@@ -14,32 +14,28 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         setData([]);
-        fetchData();
-    }, []);
-
-    async function fetchData() {
         getAllUsers().then(
             (res) => {
                 // Set loading to false only if the response is valid
                 setLoading(false);
                 setData(res.data);
             },
-            (err) => {
+            async (err) => {
                 console.error(err);
                 if (!err.response || err.response.status == 401) {
-                    router.push("/login"); // Only redirect to login if the status code is 401: unauthorized
+                    await router.push("/login"); // Only redirect to login if the status code is 401: unauthorized
                 }
             }
         );
-    }
+    }, []);
 
     const handleLogout = () => {
         logout().then(
-            (res) => {
+            async (res) => {
                 if (res.status === 200) {
                     sessionStorage.removeItem("id");
                     sessionStorage.removeItem("role");
-                    router.push("/login");
+                    await router.push("/login");
                 }
             },
             (err) => {

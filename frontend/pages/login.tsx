@@ -23,8 +23,8 @@ export default function Login() {
             (res) => {
                 const id = res.data.id;
                 getUserInfo(id).then(
-                    (user) => {
-                        setAndRoute(id, user.data.role);
+                    async (user) => {
+                        await setAndRoute(id, user.data.role);
                     },
                     (err) => {
                         console.error(err);
@@ -40,8 +40,8 @@ export default function Login() {
     const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault();
         login(username, password).then(
-            (res) => {
-                setAndRoute(res.data.user.id, res.data.user.role);
+            async (res) => {
+                await setAndRoute(res.data.user.id, res.data.user.role);
             },
             (err) => {
                 let errors = [];
@@ -59,17 +59,14 @@ export default function Login() {
         );
     };
 
-    function setAndRoute(id: string, roleId: string) {
+    async function setAndRoute(id: string, roleId: string) {
         const role = getUserRole(roleId);
 
         sessionStorage.setItem("id", id);
         sessionStorage.setItem("role", role);
 
         const direction = getSpecificDirection(role, "dashboard");
-        router.push(direction);
-        router.reload();
-        // TODO the page is reloaded instantly after because otherwise the role isn't set properly yet
-        // However this still flashes the No access screen, so it has to be fixed. Perhaps with loading?
+        await router.push(direction);
     }
 
     return (

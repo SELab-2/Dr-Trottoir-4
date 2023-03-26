@@ -2,7 +2,6 @@ import BaseHeader from "@/components/header/BaseHeader";
 import styles from "styles/Welcome.module.css";
 import soon from "public/coming_soon.png";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { logout } from "@/lib/logout";
 
@@ -12,11 +11,11 @@ export default function SyndicDashboard() {
 
     const handleLogout = () => {
         logout().then(
-            (res) => {
+            async (res) => {
                 if (res.status === 200) {
                     sessionStorage.removeItem("id");
                     sessionStorage.removeItem("role");
-                    router.push("/login");
+                    await router.push("/login");
                 }
             },
             (err) => {
