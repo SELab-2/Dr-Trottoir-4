@@ -21,7 +21,6 @@ from base.models import Lobby
 from base.serializers import UserSerializer
 from config import settings
 from util.request_response_util import request_to_dict
-from django.core.mail import send_mail
 
 
 class CustomRegisterView(APIView):
