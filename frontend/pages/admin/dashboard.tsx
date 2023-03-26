@@ -4,9 +4,9 @@ import soon from "public/coming_soon.png";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { logout } from "@/lib/logout";
 import { getAllUsers } from "@/lib/welcome";
 import Loading from "@/components/loading";
+import LogoutButton from "@/components/logoutbutton";
 
 export default function AdminDashboard() {
     const router = useRouter();
@@ -31,21 +31,6 @@ export default function AdminDashboard() {
         );
     }, []);
 
-    const handleLogout = () => {
-        logout().then(
-            async (res) => {
-                if (res.status === 200) {
-                    sessionStorage.removeItem("id");
-                    sessionStorage.removeItem("role");
-                    await router.push("/login");
-                }
-            },
-            (err) => {
-                console.error(err);
-            }
-        );
-    };
-
     return (
         <>
             <BaseHeader />
@@ -56,9 +41,7 @@ export default function AdminDashboard() {
                     <div>
                         <p className={styles.title}>Welcome to the Admin Dashboard!</p>
                         <Image src={soon} alt="Site coming soon" className={styles.image} />
-                        <button className={styles.button} onClick={handleLogout}>
-                            Logout
-                        </button>
+                        <LogoutButton/>
                         <h1 className={styles.text}>Users:</h1>
                         <ul>
                             {data.map((item, index) => (
