@@ -14,7 +14,7 @@ class Default(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = BuildingTourSerializer
 
-    @extend_schema(responses={201: BuildingTourSerializer, 400: None})
+    @extend_schema(responses=post_docs(BuildingTourSerializer))
     def post(self, request):
         """
         Create a new BuildingOnTour with data from post
@@ -35,7 +35,7 @@ class BuildingTourIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
     serializer_class = BuildingTourSerializer
 
-    @extend_schema(responses={200: BuildingTourSerializer, 400: None})
+    @extend_schema(responses=get_docs(BuildingTourSerializer))
     def get(self, request, building_tour_id):
         """
         Get info about a BuildingOnTour with given id
@@ -48,7 +48,7 @@ class BuildingTourIndividualView(APIView):
         serializer = BuildingTourSerializer(building_on_tour_instance[0])
         return get_success(serializer)
 
-    @extend_schema(responses={200: BuildingTourSerializer, 400: None})
+    @extend_schema(responses=patch_docs(BuildingTourSerializer))
     def patch(self, request, building_tour_id):
         """
         edit info about a BuildingOnTour with given id
@@ -69,7 +69,7 @@ class BuildingTourIndividualView(APIView):
 
         return patch_success(BuildingTourSerializer(building_on_tour_instance))
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs())
     def delete(self, request, building_tour_id):
         """
         delete a BuildingOnTour from the database

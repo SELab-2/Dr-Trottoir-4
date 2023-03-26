@@ -39,7 +39,8 @@ class DefaultUser(APIView):
     #  In the future, we probably won't use POST this way anymore (if we work with the whitelist method)
     #  However, an easy workaround would be to add a default value to password (in e.g. `clean`)
     #     -> probably the easiest way
-    @extend_schema(description=DESCRIPTION, responses={201: UserSerializer, 400: None})
+
+    @extend_schema(responses=post_docs(UserSerializer))
     def post(self, request):
         """
         Create a new user
@@ -75,7 +76,7 @@ class UserIndividualView(APIView):
     ]
     serializer_class = UserSerializer
 
-    @extend_schema(responses={200: UserSerializer, 400: None})
+    @extend_schema(responses=get_docs(UserSerializer))
     def get(self, request, user_id):
         """
         Get info about user with given id
@@ -91,11 +92,11 @@ class UserIndividualView(APIView):
         serializer = UserSerializer(user_instance)
         return get_success(serializer)
 
-    @extend_schema(responses={204: None, 400: None})
+    @extend_schema(responses=delete_docs())
     def delete(self, request, user_id):
         """
         Delete user with given id
-        We don't acutally delete a user, we put the user on inactive mode
+        We don't actually delete a user, we put the user on inactive mode
         """
         user_instance = User.objects.filter(id=user_id)
         if not user_instance:
@@ -109,7 +110,8 @@ class UserIndividualView(APIView):
 
         return delete_success()
 
-    @extend_schema(description=DESCRIPTION, responses={200: UserSerializer, 400: None})
+
+    @extend_schema(responses=patch_docs(UserSerializer))
     def patch(self, request, user_id):
         """
         Edit user with given id
