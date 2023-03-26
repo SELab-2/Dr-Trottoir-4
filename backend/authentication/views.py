@@ -21,6 +21,7 @@ from base.models import Lobby
 from base.serializers import UserSerializer
 from config import settings
 from util.request_response_util import request_to_dict
+from django.core.mail import send_mail
 
 
 class CustomRegisterView(APIView):
@@ -33,25 +34,27 @@ class CustomRegisterView(APIView):
         """
         data = request_to_dict(request.data)
 
+        required_keys = ["email", "verification_code"]
+
         # check if there is a lobby entry for this email address
         lobby_instances = Lobby.objects.filter(email=data.get('email'))
         if not lobby_instances:
             return Response(
                 {
-                    "message": f"The given email address {data.get('email')} has no entry in the lobby. You must contact an admin to gain access to the platform."},
+                    "message": f"{data.get('email')} has no entry in the lobby, you must contact an admin to gain access to the platform"},
                 status=status.HTTP_403_FORBIDDEN
             )
         lobby_instance = lobby_instances[0]
         # check if the verification code is valid
-        if lobby_instance.verification_code != data.get('verification_code'):
+        if lobby_instance.verification_code != data.get("verification_code"):
             return Response(
-                {"message": "Invalid verification code"},
+                {"message": "invalid verification code"},
                 status=status.HTTP_403_FORBIDDEN
             )
 
         # add the role to the request, as this was already set by an admin
         request.data._mutable = True
-        request.data['role'] = lobby_instance.role_id
+        request.data["role"] = lobby_instance.role_id
         request.data._mutable = False
 
         # create a user
@@ -62,10 +65,21 @@ class CustomRegisterView(APIView):
         access_token, refresh_token = jwt_encode(user)
 
         # add the user data to the response
-        response = Response({"res": str(user)}, status=status.HTTP_200_OK)
+        response = Response({"user": user}, status=status.HTTP_200_OK)
         # set the cookie headers
         set_jwt_cookies(response, access_token, access_token)
 
+        return response
+
+
+class CustomLoginView(LoginView):
+    def get_response(self):
+        data = {
+            "message": _("successful login"),
+            "user": UserSerializer(self.user).data,
+        }
+        response = Response(data, status=status.HTTP_200_OK)
+        set_jwt_cookies(response, self.access_token, self.refresh_token)
         return response
 
 
@@ -101,17 +115,6 @@ class CustomLogoutView(APIView):
 
         unset_jwt_cookies(response)
 
-        return response
-
-
-class CustomLoginView(LoginView):
-    def get_response(self):
-        data = {
-            "message": _("successful login"),
-            "user": UserSerializer(self.user).data,
-        }
-        response = Response(data, status=status.HTTP_200_OK)
-        set_jwt_cookies(response, self.access_token, self.refresh_token)
         return response
 
 

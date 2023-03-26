@@ -1,16 +1,15 @@
 from dj_rest_auth.views import (
     PasswordResetView,
     PasswordResetConfirmView,
-    PasswordChangeView,
 )
 from django.urls import path
-from rest_framework_simplejwt.views import TokenVerifyView
-from rest_framework_simplejwt.serializers import TokenVerifySerializer
 
 from authentication.views import (
     CustomLogoutView, CustomRegisterView, CustomLoginView, CustomTokenRefreshView, CustomTokenVerifyView,
     CustomPasswordChangeView,
 )
+
+from dj_rest_auth.serializers import PasswordResetSerializer
 
 urlpatterns = [
     # URLs that do not require a session or valid token
@@ -19,6 +18,7 @@ urlpatterns = [
     path(
         "password/reset/confirm/<uidb64>/<token>/",
         PasswordResetConfirmView.as_view(),
+        name="password_reset_confirm"
     ),
     path("login/", CustomLoginView.as_view()),
     path("token/verify/", CustomTokenVerifyView.as_view()),
