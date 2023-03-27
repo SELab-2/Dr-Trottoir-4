@@ -1,10 +1,13 @@
+from dj_rest_auth import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
+from dj_rest_auth.serializers import PasswordResetSerializer
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.translation import gettext_lazy as _
 
+from authentication.forms import CustomAllAuthPasswordResetForm
 from base.models import User
 from config import settings
 from users.user_utils import add_regions_to_user
@@ -92,3 +95,13 @@ class CustomTokenVerifySerializer(Serializer):
                 raise ValidationError("token is blacklisted")
 
         return {}
+
+
+class CustomPasswordResetSerializer(PasswordResetSerializer):
+    def validate_email(self, value):
+        # use the custom reset form
+        self.reset_form = CustomAllAuthPasswordResetForm(data=self.initial_data)
+        if not self.reset_form.is_valid():
+            raise serializers.ValidationError(self.reset_form.errors)
+
+        return value

@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -32,6 +33,7 @@ DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
+    "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
@@ -85,6 +87,8 @@ REST_AUTH = {
     "JWT_AUTH_COOKIE": "auth-access-token",
     "JWT_AUTH_REFRESH_COOKIE": "auth-refresh-token",
     "USER_DETAILS_SERIALIZER": "base.serializers.UserSerializer",
+    "PASSWORD_RESET_SERIALIZER": "authentication.serializers.CustomPasswordResetSerializer",
+    "PASSWORD_RESET_USE_SITES_DOMAIN": True
 }
 
 SIMPLE_JWT = {
@@ -109,7 +113,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = None
 LOGIN_URL = "http://localhost/api/authentication/login"
 
-SITE_ID = 1
+SITE_ID = 2 if DEBUG else 3
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -143,7 +147,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

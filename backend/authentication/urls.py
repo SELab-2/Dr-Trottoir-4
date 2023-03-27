@@ -5,16 +5,16 @@ from dj_rest_auth.views import (
 from django.urls import path
 
 from authentication.views import (
-    CustomLogoutView, CustomRegisterView, CustomLoginView, CustomTokenRefreshView, CustomTokenVerifyView,
-    CustomPasswordChangeView,
+    CustomSignupView, CustomLoginView, CustomTokenVerifyView, CustomTokenRefreshView,
+    CustomLogoutView, CustomPasswordChangeView,
 )
 
 from dj_rest_auth.serializers import PasswordResetSerializer
 
 urlpatterns = [
     # URLs that do not require a session or valid token
-    path("signup/", CustomRegisterView.as_view()),
-    path("password/reset/", PasswordResetView.as_view()),
+    path("signup/", CustomSignupView.as_view()),
+    path("password/reset/", PasswordResetView.as_view(), name="password_reset"),
     path(
         "password/reset/confirm/<uidb64>/<token>/",
         PasswordResetConfirmView.as_view(),
