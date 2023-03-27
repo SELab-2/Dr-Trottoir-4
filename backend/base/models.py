@@ -97,9 +97,9 @@ class Lobby(models.Model):
     def clean(self):
         super().clean()
 
-        user = User.objects.filter(email=self.email)
-        if user and User.objects.filter(user):
-            user = user[0]
+        users = User.objects.filter(email=self.email)
+        if users:
+            user = users[0]
             is_inactive = not user.is_active
             addendum = ""
             if is_inactive:
