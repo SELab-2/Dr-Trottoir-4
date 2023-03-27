@@ -17,7 +17,7 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from authentication.serializers import CustomRegisterSerializer, CustomTokenRefreshSerializer, \
     CustomTokenVerifySerializer
-from base.models import Lobby, User
+from base.models import Lobby
 from base.serializers import UserSerializer
 from config import settings
 from util.request_response_util import request_to_dict
@@ -64,9 +64,12 @@ class CustomSignupView(APIView):
                 status=status.HTTP_403_FORBIDDEN
             )
         # add the role to the request, as this was already set by an admin
-        request.data._mutable = True
-        request.data["role"] = lobby_instance.role_id
-        request.data._mutable = False
+        if hasattr(request.data, "dict"):
+            request.data._mutable = True
+            request.data["role"] = lobby_instance.role_id
+            request.data._mutable = False
+        else:
+            request.data["role"] = lobby_instance.role_id
 
         # create a user
         serializer = self.serializer_class(data=request.data)
