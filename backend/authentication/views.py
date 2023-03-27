@@ -17,13 +17,13 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from authentication.serializers import CustomRegisterSerializer, CustomTokenRefreshSerializer, \
     CustomTokenVerifySerializer
-from base.models import Lobby
+from base.models import Lobby, User
 from base.serializers import UserSerializer
 from config import settings
 from util.request_response_util import request_to_dict
 
 
-class CustomRegisterView(APIView):
+class CustomSignupView(APIView):
     serializer_class = CustomRegisterSerializer
 
     @extend_schema(responses={200: None, 403: None})
@@ -33,8 +33,21 @@ class CustomRegisterView(APIView):
         """
         data = request_to_dict(request.data)
 
-        required_keys = ["email", "verification_code"]
-
+        required_keys = [
+            "email",
+            "verification_code",
+            "password1",
+            "password2",
+            "phone_number",
+            "first_name",
+            "last_name"
+        ]
+        missing_keys = [k for k in required_keys if k not in data.keys()]
+        if missing_keys:
+            return Response(
+                {k: ["This field is required."] for k in missing_keys},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         # check if there is a lobby entry for this email address
         lobby_instances = Lobby.objects.filter(email=data.get('email'))
         if not lobby_instances:
@@ -50,7 +63,6 @@ class CustomRegisterView(APIView):
                 {"message": "invalid verification code"},
                 status=status.HTTP_403_FORBIDDEN
             )
-
         # add the role to the request, as this was already set by an admin
         request.data._mutable = True
         request.data["role"] = lobby_instance.role_id
@@ -59,12 +71,13 @@ class CustomRegisterView(APIView):
         # create a user
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         user = serializer.save(request)
         # create an access and refresh token
         access_token, refresh_token = jwt_encode(user)
 
         # add the user data to the response
-        response = Response({"user": user}, status=status.HTTP_200_OK)
+        response = Response(UserSerializer(user).data, status=status.HTTP_200_OK)
         # set the cookie headers
         set_jwt_cookies(response, access_token, access_token)
 
