@@ -4,7 +4,7 @@ import { verifyToken } from "@/lib/login";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import getUserInfo from "@/lib/user_info";
-import {getRoleDirection} from "@/lib/reroute";
+import { getRoleDirection } from "@/lib/reroute";
 import Loading from "@/components/loading";
 import LoginForm from "@/components/loginform";
 import setSessionStorage from "@/lib/storage";
@@ -37,17 +37,10 @@ export default function Login() {
         );
     }, [verifyToken]);
 
-
     return (
         <>
             <BaseHeader />
-            <div>
-                {loading ? (
-                    <Loading />
-                ) : (
-                    <LoginForm />
-                )}
-            </div>
+            <div>{loading ? <Loading /> : <LoginForm />}</div>
         </>
     );
 }
