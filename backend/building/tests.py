@@ -137,7 +137,7 @@ class BuildingTests(TestCase):
         assert response2.status_code == 200
         response3 = client.get(f"{backend_url}/building/{id}/", follow=True)
         for key in data2:
-            # alle info zou er in moeten zitten
+            # all data should be present
             assert key in response3.data
         assert response3.status_code == 200
         assert "id" in response3.data
