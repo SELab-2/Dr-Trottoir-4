@@ -27,7 +27,7 @@ class PictureTests(TestCase):
             "picture": f,
             "description": "kinda noisy",
             "timestamp": "2023-03-08T12:08:29+01:00",
-            "type": "AA"
+            "type": "AA",
         }
         resp = client.post(f"{backend_url}/picture-building/", data, follow=True)
         assert resp.status_code == 201
@@ -46,7 +46,7 @@ class PictureTests(TestCase):
             "picture": f,
             "description": "kinda noisy",
             "timestamp": "2023-03-08T12:08:29+01:00",
-            "type": "AA"
+            "type": "AA",
         }
 
         r1 = client.post(f"{backend_url}/picture-building/", data, follow=True)
@@ -67,7 +67,7 @@ class PictureTests(TestCase):
             "picture": f,
             "description": "kinda noisy",
             "timestamp": "2023-03-08T12:08:29+01:00",
-            "type": "AA"
+            "type": "AA",
         }
 
         response1 = client.post(f"{backend_url}/picture-building/", data, follow=True)
@@ -99,14 +99,14 @@ class PictureTests(TestCase):
             "picture": f,
             "description": "kinda noisy",
             "timestamp": "2023-03-08T12:08:29+01:00",
-            "type": "AA"
+            "type": "AA",
         }
         data2 = {
             "building": b_id,
             "picture": f,
             "description": "kinda noisy",
             "timestamp": "2023-03-08T12:08:29+01:00",
-            "type": "AA"
+            "type": "AA",
         }
         response1 = client.post(f"{backend_url}/picture-building/", data1, follow=True)
         assert response1.status_code == 201
@@ -129,7 +129,7 @@ class PictureTests(TestCase):
             "picture": f,
             "description": "kinda noisy",
             "timestamp": "2023-03-08T12:08:29+01:00",
-            "type": "AA"
+            "type": "AA",
         }
         response2 = client.patch(f"{backend_url}/picture-building/123434687658/", data, follow=True)
         assert response2.status_code == 404
@@ -144,14 +144,14 @@ class PictureTests(TestCase):
             "picture": f,
             "description": "kinda noisy",
             "timestamp": "2023-03-08T12:08:29+01:00",
-            "type": "AA"
+            "type": "AA",
         }
         data2 = {
             "building": b_id,
             "picture": f,
             "description": "kinda noisy",
             "timestamp": "2023-03-08T12:08:29+01:00",
-            "type": "AA"
+            "type": "AA",
         }
         response1 = client.post(f"{backend_url}/picture-building/", data1, follow=True)
         _ = client.post(f"{backend_url}/picture-building/", data2, follow=True)
@@ -172,7 +172,7 @@ class PictureTests(TestCase):
             "picture": f,
             "description": "kinda noisy",
             "timestamp": "2023-03-08T12:08:29+01:00",
-            "type": "AA"
+            "type": "AA",
         }
 
         response1 = client.post(f"{backend_url}/picture-building/", data, follow=True)
@@ -200,7 +200,7 @@ class PictureTests(TestCase):
             "picture": f,
             "description": "kinda noisy",
             "timestamp": "2023-03-08T12:08:29+01:00",
-            "type": "AA"
+            "type": "AA",
         }
         _ = client.post(f"{backend_url}/picture-building/", data, follow=True)
         response1 = client.post(f"{backend_url}/picture-building/", data, follow=True)

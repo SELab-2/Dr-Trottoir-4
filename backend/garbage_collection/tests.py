@@ -20,11 +20,7 @@ class GarbageCollectionTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data = {
-            "building": b_id,
-            "date": "2023-03-08",
-            "garbage_type": "RES"
-        }
+        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
         resp = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
         assert resp.status_code == 201
         for key in data:
@@ -37,11 +33,7 @@ class GarbageCollectionTests(TestCase):
         client.force_authenticate(user)
 
         b_id = insert_dummy_building()
-        data = {
-            "building": b_id,
-            "date": "2023-03-08",
-            "garbage_type": "RES"
-        }
+        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
 
         _ = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
         response = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
@@ -53,11 +45,7 @@ class GarbageCollectionTests(TestCase):
         client.force_authenticate(user=user)
 
         b_id = insert_dummy_building()
-        data = {
-            "building": b_id,
-            "date": "2023-03-08",
-            "garbage_type": "RES"
-        }
+        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
 
         response1 = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
         assert response1.status_code == 201
@@ -86,16 +74,8 @@ class GarbageCollectionTests(TestCase):
         client = APIClient()
         client.force_authenticate(user)
         b_id = insert_dummy_building()
-        data1 = {
-            "building": b_id,
-            "date": "2023-03-08",
-            "garbage_type": "RES"
-        }
-        data2 = {
-            "building": b_id,
-            "date": "2023-03-08",
-            "garbage_type": "PMD"
-        }
+        data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
+        data2 = {"building": b_id, "date": "2023-03-08", "garbage_type": "PMD"}
         response1 = client.post(f"{backend_url}/garbage-collection/", data1, follow=True)
         assert response1.status_code == 201
         id = response1.data["id"]
@@ -113,11 +93,7 @@ class GarbageCollectionTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data = {
-            "building": b_id,
-            "date": "2023-03-08",
-            "garbage_type": "RES"
-        }
+        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
         response2 = client.patch(f"{backend_url}/garbage-collection/123434687658/", data, follow=True)
         assert response2.status_code == 404
 
@@ -126,16 +102,8 @@ class GarbageCollectionTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data1 = {
-            "building": b_id,
-            "date": "2023-03-08",
-            "garbage_type": "RES"
-        }
-        data2 = {
-            "building": b_id,
-            "date": "2023-03-08",
-            "garbage_type": "PMD"
-        }
+        data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
+        data2 = {"building": b_id, "date": "2023-03-08", "garbage_type": "PMD"}
         response1 = client.post(f"{backend_url}/garbage-collection/", data1, follow=True)
         _ = client.post(f"{backend_url}/garbage-collection/", data2, follow=True)
         assert response1.status_code == 201
@@ -149,11 +117,7 @@ class GarbageCollectionTests(TestCase):
         client.force_authenticate(user=user)
 
         b_id = insert_dummy_building()
-        data = {
-            "building": b_id,
-            "date": "2023-03-08",
-            "garbage_type": "RES"
-        }
+        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
 
         response1 = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
         assert response1.status_code == 201
@@ -175,11 +139,7 @@ class GarbageCollectionTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data = {
-            "building": b_id,
-            "date": "2023-03-08",
-            "garbage_type": "RES"
-        }
+        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
         _ = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
         response1 = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
         assert response1.status_code == 400

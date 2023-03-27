@@ -20,11 +20,7 @@ class RoleTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data = {
-            "name": "Test",
-            "rank": 2,
-            "description": "testRole"
-        }
+        data = {"name": "Test", "rank": 2, "description": "testRole"}
         response = client.post(f"{backend_url}/role/", data, follow=True)
         print(response.data)
         assert response.status_code == 201
@@ -36,11 +32,7 @@ class RoleTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data = {
-            "name": "Test",
-            "rank": 2,
-            "description": "testRole"
-        }
+        data = {"name": "Test", "rank": 2, "description": "testRole"}
         _ = client.post(f"{backend_url}/role/", data, follow=True)
         response = client.post(f"{backend_url}/role/", data, follow=True)
         assert response.status_code == 400
@@ -49,11 +41,7 @@ class RoleTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data1 = {
-            "name": "Test",
-            "rank": 2,
-            "description": "testRole"
-        }
+        data1 = {"name": "Test", "rank": 2, "description": "testRole"}
         response1 = client.post(f"{backend_url}/role/", data1, follow=True)
         assert response1.status_code == 201
         for key in data1:
@@ -77,16 +65,8 @@ class RoleTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data1 = {
-            "name": "Test",
-            "rank": 2,
-            "description": "testRole"
-        }
-        data2 = {
-            "name": "Test",
-            "rank": 3,
-            "description": "testRole"
-        }
+        data1 = {"name": "Test", "rank": 2, "description": "testRole"}
+        data2 = {"name": "Test", "rank": 3, "description": "testRole"}
         response1 = client.post(f"{backend_url}/role/", data1, follow=True)
         assert response1.status_code == 201
         for key in data1:
@@ -104,11 +84,7 @@ class RoleTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data = {
-            "name": "Test",
-            "rank": 2,
-            "description": "testRole"
-        }
+        data = {"name": "Test", "rank": 2, "description": "testRole"}
         response2 = client.patch(f"{backend_url}/role/123434687658/", data, follow=True)
         assert response2.status_code == 404
 
@@ -116,16 +92,8 @@ class RoleTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data1 = {
-            "name": "Test",
-            "rank": 2,
-            "description": "testRole"
-        }
-        data2 = {
-            "name": "Test2",
-            "rank": 2,
-            "description": "testRole"
-        }
+        data1 = {"name": "Test", "rank": 2, "description": "testRole"}
+        data2 = {"name": "Test2", "rank": 2, "description": "testRole"}
         response1 = client.post(f"{backend_url}/role/", data1, follow=True)
         _ = client.post(f"{backend_url}/role/", data2, follow=True)
         assert response1.status_code == 201
@@ -137,11 +105,7 @@ class RoleTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data1 = {
-            "name": "Test",
-            "rank": 2,
-            "description": "testRole"
-        }
+        data1 = {"name": "Test", "rank": 2, "description": "testRole"}
         response1 = client.post(f"{backend_url}/role/", data1, follow=True)
         assert response1.status_code == 201
         for key in data1:
@@ -164,11 +128,7 @@ class RoleTests(TestCase):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
-        data1 = {
-            "name": "Test",
-            "rank": 2,
-            "description": "testRole"
-        }
+        data1 = {"name": "Test", "rank": 2, "description": "testRole"}
         _ = client.post(f"{backend_url}/role/", data1, follow=True)
         response1 = client.post(f"{backend_url}/role/", data1, follow=True)
         assert response1.status_code == 400
