@@ -16,7 +16,7 @@ export const withAuthorisation = (WrappedComponent: any, allowedRoles: string[])
             if (storedRole) {
                 setRole(storedRole);
             } else {
-                router.push("/no-access").then((_) => {
+                router.push("/login").then((_) => {
                     console.error("No access");
                 });
             }
@@ -24,7 +24,7 @@ export const withAuthorisation = (WrappedComponent: any, allowedRoles: string[])
 
         useEffect(() => {
             if (role && !allowedRoles.includes(role)) {
-                router.push("/no-access").then((_) => {
+                router.replace("/no-access").then((_) => {
                     console.error("No access");
                 });
             }
