@@ -1,9 +1,9 @@
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.db import IntegrityError
-from rest_framework import status
-from rest_framework.response import Response
 import uuid
 from typing import Callable
+
+from django.core.exceptions import ValidationError
+from rest_framework import status
+from rest_framework.response import Response
 
 
 def get_unique_uuid(lookup_func: Callable[[str], bool] = None):
