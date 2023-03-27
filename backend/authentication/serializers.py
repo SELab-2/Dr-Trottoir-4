@@ -1,11 +1,11 @@
 from dj_rest_auth import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from dj_rest_auth.serializers import PasswordResetSerializer
+from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.utils.translation import gettext_lazy as _
 
 from authentication.forms import CustomAllAuthPasswordResetForm
 from base.models import User

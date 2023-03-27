@@ -9,8 +9,6 @@ from authentication.views import (
     CustomLogoutView, CustomPasswordChangeView,
 )
 
-from dj_rest_auth.serializers import PasswordResetSerializer
-
 urlpatterns = [
     # URLs that do not require a session or valid token
     path("signup/", CustomSignupView.as_view()),

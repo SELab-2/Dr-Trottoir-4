@@ -1,13 +1,11 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from base.permissions import ReadOnlyOwnerOfBuilding, IsAdmin, IsSuperStudent, ReadOnlyStudent
 from base.models import Building
+from base.permissions import ReadOnlyOwnerOfBuilding, IsAdmin, IsSuperStudent, ReadOnlyStudent
 from base.serializers import BuildingSerializer
 from util.request_response_util import *
-
 
 TRANSLATE = {"syndic": "syndic_id"}
 

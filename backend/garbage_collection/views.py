@@ -1,11 +1,11 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from base.permissions import IsSuperStudent, IsAdmin, ReadOnlyStudent, ReadOnlyOwnerOfBuilding
 from base.models import GarbageCollection, Building
+from base.permissions import IsSuperStudent, IsAdmin, ReadOnlyStudent, ReadOnlyOwnerOfBuilding
 from base.serializers import GarbageCollectionSerializer
 from util.request_response_util import *
-from drf_spectacular.utils import extend_schema
 
 TRANSLATE = {"building": "building_id"}
 
