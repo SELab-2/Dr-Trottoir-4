@@ -117,7 +117,7 @@ class PictureBuildingIndividualView(APIView):
         picture_building_instance = PictureBuilding.objects.filter(id=picture_building_id)
 
         if len(picture_building_instance) != 1:
-            return bad_request("PictureBuilding")
+            return not_found("PictureBuilding")
         picture_building_instance = picture_building_instance[0]
 
         self.check_object_permissions(request, picture_building_instance.building)
@@ -135,7 +135,7 @@ class PictureBuildingIndividualView(APIView):
         """
         picture_building_instance = PictureBuilding.objects.filter(id=picture_building_id)
         if not picture_building_instance:
-            return bad_request("PictureBuilding")
+            return not_found("PictureBuilding")
 
         picture_building_instance = picture_building_instance[0]
         self.check_object_permissions(request, picture_building_instance)
@@ -156,7 +156,7 @@ class PictureBuildingIndividualView(APIView):
         """
         picture_building_instance = PictureBuilding.objects.filter(id=picture_building_id)
         if len(picture_building_instance) != 1:
-            return bad_request("PictureBuilding")
+            return not_found("PictureBuilding")
         picture_building_instance = picture_building_instance[0]
 
         self.check_object_permissions(request, picture_building_instance)
@@ -177,7 +177,7 @@ class PicturesOfBuildingView(APIView):
         """
         building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
-            return bad_request(building_instance)
+            return not_found("building")
         building_instance = building_instance[0]
 
         self.check_object_permissions(request, building_instance)

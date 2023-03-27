@@ -73,15 +73,12 @@ class PictureTests(TestCase):
         response1 = client.post(f"{backend_url}/picture-building/", data, follow=True)
         assert response1.status_code == 201
         for key in data:
-            # alle info zou er in moeten zitten
             assert key in response1.data
-        # er moet ook een id bij zitten
         assert "id" in response1.data
         id = response1.data["id"]
         response2 = client.get(f"{backend_url}/picture-building/{id}/", follow=True)
         assert response2.status_code == 200
         for key in data:
-            # alle info zou er in moeten zitten
             assert key in response2.data
         assert "id" in response2.data
 
@@ -90,7 +87,7 @@ class PictureTests(TestCase):
         client = APIClient()
         client.force_authenticate(user)
         resp = client.get(f"{backend_url}/picture-building/123456789", follow=True)
-        assert resp.status_code == 400  # should be changed to 404
+        assert resp.status_code == 404
 
     def test_patch_picture(self):
         user = createUser()
@@ -118,7 +115,6 @@ class PictureTests(TestCase):
         assert response2.status_code == 200
         response3 = client.get(f"{backend_url}/picture-building/{id}/", follow=True)
         for key in data2:
-            # alle info zou er in moeten zitten
             assert key in response3.data
         assert response3.status_code == 200
         assert "id" in response3.data
@@ -136,7 +132,7 @@ class PictureTests(TestCase):
             "type": "AA"
         }
         response2 = client.patch(f"{backend_url}/picture-building/123434687658/", data, follow=True)
-        assert response2.status_code == 400
+        assert response2.status_code == 404
 
     def test_patch_error_picture(self):
         user = createUser()
@@ -185,16 +181,14 @@ class PictureTests(TestCase):
         response2 = client.delete(f"{backend_url}/picture-building/{id}/", follow=True)
         assert response2.status_code == 204
         response3 = client.get(f"{backend_url}/picture-building/{id}/", follow=True)
-        # should be 404 I think
-        # assert response3.status_code == 404
-        assert response3.status_code == 400
+        assert response3.status_code == 404
 
     def test_remove_nonexistent_picture(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
         response2 = client.delete(f"{backend_url}/picture-building/123456789/", follow=True)
-        assert response2.status_code == 400
+        assert response2.status_code == 404
 
     def test_add_existing_picture(self):
         user = createUser()

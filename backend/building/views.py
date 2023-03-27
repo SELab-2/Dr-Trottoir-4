@@ -46,7 +46,7 @@ class BuildingIndividualView(APIView):
         building_instance = Building.objects.filter(id=building_id)
 
         if not building_instance:
-            return bad_request(object_name="Building")
+            return not_found(object_name="Building")
 
         building_instance = building_instance[0]
         self.check_object_permissions(request, building_instance)
@@ -60,7 +60,7 @@ class BuildingIndividualView(APIView):
         """
         building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
-            return bad_request(object_name="Building")
+            return not_found(object_name="Building")
         building_instance = building_instance[0]
 
         self.check_object_permissions(request, building_instance)
@@ -75,7 +75,7 @@ class BuildingIndividualView(APIView):
         """
         building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
-            return bad_request(object_name="Building")
+            return not_found(object_name="Building")
 
         building_instance = building_instance[0]
         self.check_object_permissions(request, building_instance)
@@ -124,7 +124,7 @@ class BuildingNewPublicId(APIView):
         building_instance = Building.objects.filter(id=building_id)
 
         if not building_instance:
-            return bad_request("Building")
+            return not_found("Building")
 
         building_instance = building_instance[0]
 

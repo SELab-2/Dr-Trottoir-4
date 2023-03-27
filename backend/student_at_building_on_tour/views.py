@@ -58,7 +58,7 @@ class StudentAtBuildingOnTourIndividualView(APIView):
         stud_tour_building_instance = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
 
         if len(stud_tour_building_instance) != 1:
-            return bad_request("StudentAtBuildingOnTour")
+            return not_found("StudentAtBuildingOnTour")
         stud_tour_building_instance = stud_tour_building_instance[0]
 
         self.check_object_permissions(request, stud_tour_building_instance.student)
@@ -74,7 +74,7 @@ class StudentAtBuildingOnTourIndividualView(APIView):
         stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
 
         if len(stud_tour_building_instances) != 1:
-            return bad_request("StudentAtBuildingOnTour")
+            return not_found("StudentAtBuildingOnTour")
 
         stud_tour_building_instance = stud_tour_building_instances[0]
 
@@ -97,7 +97,7 @@ class StudentAtBuildingOnTourIndividualView(APIView):
         """
         stud_tour_building_instances = StudentAtBuildingOnTour.objects.filter(id=student_at_building_on_tour_id)
         if len(stud_tour_building_instances) != 1:
-            return bad_request("StudentAtBuildingOnTour")
+            return not_found("StudentAtBuildingOnTour")
         stud_tour_building_instance = stud_tour_building_instances[0]
 
         self.check_object_permissions(request, stud_tour_building_instance.student)

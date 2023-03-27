@@ -25,9 +25,7 @@ class RegionTests(TestCase):
         response = client.post(f"{backend_url}/region/", data, follow=True)
         assert response.status_code == 201
         for key in data:
-            # alle info zou er in moeten zitten
             assert key in response.data
-        # er moet ook een id bij zitten
         assert "id" in response.data
 
     def test_insert_dupe_region(self):
@@ -51,9 +49,7 @@ class RegionTests(TestCase):
         response1 = client.post(f"{backend_url}/region/", data1, follow=True)
         assert response1.status_code == 201
         for key in data1:
-            # alle info zou er in moeten zitten
             assert key in response1.data
-        # er moet ook een id bij zitten
         assert "id" in response1.data
         id = response1.data["id"]
         response2 = client.get(f"{backend_url}/region/{id}/", follow=True)
@@ -66,9 +62,7 @@ class RegionTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         response1 = client.get(f"{backend_url}/region/123654897", follow=True)
-        # should be 404 I think
-        # assert response1.status_code == 404
-        assert response1.status_code == 400
+        assert response1.status_code == 404
 
     def test_patch_region(self):
         user = createUser()
@@ -83,9 +77,7 @@ class RegionTests(TestCase):
         response1 = client.post(f"{backend_url}/region/", data1, follow=True)
         assert response1.status_code == 201
         for key in data1:
-            # alle info zou er in moeten zitten
             assert key in response1.data
-        # er moet ook een id bij zitten
         assert "id" in response1.data
         id = response1.data["id"]
         response2 = client.patch(f"{backend_url}/region/{id}/", data2, follow=True)
@@ -103,7 +95,7 @@ class RegionTests(TestCase):
             "region": "Brugge"
         }
         response2 = client.patch(f"{backend_url}/region/123434687658/", data, follow=True)
-        assert response2.status_code == 400
+        assert response2.status_code == 404
 
     def test_patch_error_region(self):
         user = createUser()
@@ -132,24 +124,20 @@ class RegionTests(TestCase):
         response1 = client.post(f"{backend_url}/region/", data1, follow=True)
         assert response1.status_code == 201
         for key in data1:
-            # alle info zou er in moeten zitten
             assert key in response1.data
-        # er moet ook een id bij zitten
         assert "id" in response1.data
         id = response1.data["id"]
         response2 = client.delete(f"{backend_url}/region/{id}/", follow=True)
         assert response2.status_code == 204
         response3 = client.get(f"{backend_url}/region/{id}/", follow=True)
-        # should be 404 I think
-        # assert response3.status_code == 404
-        assert response3.status_code == 400
+        assert response3.status_code == 404
 
     def test_remove_non_existent_region(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
         response2 = client.delete(f"{backend_url}/region/123456789/", follow=True)
-        assert response2.status_code == 400
+        assert response2.status_code == 404
 
     def test_add_existing_region(self):
         user = createUser()

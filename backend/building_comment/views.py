@@ -45,7 +45,7 @@ class BuildingCommentIndividualView(APIView):
         building_comment_instances = BuildingComment.objects.filter(id=building_comment_id)
 
         if not building_comment_instances:
-            return bad_request("BuildingComment")
+            return not_found("BuildingComment")
 
         building_comment_instance = building_comment_instances[0]
 
@@ -60,7 +60,7 @@ class BuildingCommentIndividualView(APIView):
         building_comment_instances = BuildingComment.objects.filter(id=building_comment_id)
 
         if not building_comment_instances:
-            return bad_request("BuildingComment")
+            return not_found("BuildingComment")
 
         building_comment_instance = building_comment_instances[0]
 
@@ -77,7 +77,7 @@ class BuildingCommentIndividualView(APIView):
         building_comment_instance = BuildingComment.objects.filter(id=building_comment_id)
 
         if not building_comment_instance:
-            return bad_request("BuildingComment")
+            return not_found("BuildingComment")
 
         building_comment_instance = building_comment_instance[0]
         self.check_object_permissions(request, building_comment_instance.building)
