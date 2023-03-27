@@ -1,3 +1,4 @@
+import {getUserRole} from "@/lib/user_info";
 
 export function getSpecificDirection(role: string, direction: string): string {
     
@@ -7,6 +8,11 @@ export function getSpecificDirection(role: string, direction: string): string {
     }
 
     return `${path}/${direction}`;
+}
+
+export function getRoleDirection(roleId : string, direction : string) : string {
+    const role : string = getUserRole(roleId);
+    return getSpecificDirection(role, direction);
 }
 
 export default getSpecificDirection;
