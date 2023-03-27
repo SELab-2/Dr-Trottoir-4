@@ -10,9 +10,6 @@ export default function NoAccess() {
         <>
             <BaseHeader/>
             <p className={styles.title}>Deze pagina bestaat niet of je hebt geen toegang.</p>
-            <button className={`btn btn-dark btn-lg btn-block`} onClick={() => router.back()}>
-                Go back
-            </button>
             <Link href="/login">Go to login</Link>
         </>
     );
