@@ -1,9 +1,9 @@
 import Image from "next/image";
 import fire from "@/public/fire_image.png";
 import styles from "@/styles/Login.module.css";
-import React, {FormEvent, useState} from "react";
-import {useTranslation} from "react-i18next";
-import {useRouter} from "next/router";
+import React, { FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useRouter } from "next/router";
 import signup from "@/lib/signup";
 
 function SignupForm() {
@@ -157,18 +157,14 @@ function SignupForm() {
                                                     e.target.setCustomValidity("");
                                                     setPassword2(e.target.value);
                                                     if (password1 !== e.target.value) {
-                                                        e.target.setCustomValidity(
-                                                            "Wachtwoorden zijn niet gelijk."
-                                                        );
+                                                        e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
                                                     } else {
                                                         e.target.setCustomValidity("");
                                                     }
                                                 }}
                                                 onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     if (password1 !== e.target.value) {
-                                                        e.target.setCustomValidity(
-                                                            "Wachtwoorden zijn niet gelijk."
-                                                        );
+                                                        e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
                                                     } else {
                                                         e.target.setCustomValidity("");
                                                     }

@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "@/styles/Welcome.module.css";
-import {logout} from "@/lib/logout";
-import {useRouter} from "next/router";
+import { logout } from "@/lib/logout";
+import { useRouter } from "next/router";
 
 function LogoutButton() {
     const router = useRouter();
@@ -21,10 +21,9 @@ function LogoutButton() {
     };
 
     return (
-        <button
-            className={`btn btn-dark btn-lg btn-block ${styles.button}`}
-            onClick={handleLogout}
-        >Logout</button>
+        <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} onClick={handleLogout}>
+            Logout
+        </button>
     );
 }
 

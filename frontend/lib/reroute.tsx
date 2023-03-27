@@ -1,7 +1,6 @@
-import {getUserRole} from "@/lib/user_info";
+import { getUserRole } from "@/lib/user_info";
 
 export function getSpecificDirection(role: string, direction: string): string {
-    
     let path: string = role.toLowerCase();
     if (role == "Superstudent") {
         path = "admin";
@@ -10,8 +9,8 @@ export function getSpecificDirection(role: string, direction: string): string {
     return `${path}/${direction}`;
 }
 
-export function getRoleDirection(roleId : string, direction : string) : string {
-    const role : string = getUserRole(roleId);
+export function getRoleDirection(roleId: string, direction: string): string {
+    const role: string = getUserRole(roleId);
     return getSpecificDirection(role, direction);
 }
 

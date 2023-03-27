@@ -110,7 +110,6 @@ class UserIndividualView(APIView):
 
         return delete_success()
 
-
     @extend_schema(responses=patch_docs(UserSerializer))
     def patch(self, request, user_id):
         """

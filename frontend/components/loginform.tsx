@@ -1,12 +1,12 @@
 import Image from "next/image";
 import filler_image from "@/public/filler_image.png";
 import styles from "@/styles/Login.module.css";
-import React, {FormEvent, useState} from "react";
-import {useTranslation} from "react-i18next";
-import {useRouter} from "next/router";
+import React, { FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useRouter } from "next/router";
 import login from "@/lib/login";
 import setSessionStorage from "@/lib/storage";
-import {getRoleDirection} from "@/lib/reroute";
+import { getRoleDirection } from "@/lib/reroute";
 
 function LoginForm() {
     const { t } = useTranslation();
@@ -19,7 +19,7 @@ function LoginForm() {
         event.preventDefault();
         login(username, password).then(
             async (res) => {
-                const roleId = res.data.user.role
+                const roleId = res.data.user.role;
                 setSessionStorage(roleId, res.data.user.id);
                 const direction = getRoleDirection(roleId, "dashboard");
                 await router.push(direction);
@@ -47,11 +47,7 @@ function LoginForm() {
                     <div className="card">
                         <div className="row g-0">
                             <div className="col-md-6 col-lg-5 d-none d-md-block">
-                                <Image
-                                    src={filler_image}
-                                    alt="My App Logo"
-                                    className={styles.filler_image}
-                                />
+                                <Image src={filler_image} alt="My App Logo" className={styles.filler_image} />
                             </div>
                             <div className="col-md-6 col-lg-7 d-flex align-items-center">
                                 <div className="card-body p-4 p-lg-5 text-black">
@@ -139,8 +135,7 @@ function LoginForm() {
                                             Wachtwoord vergeten?
                                         </a>
                                         <p className="mb-5 pb-lg-2">
-                                            Heb je nog geen account?{" "}
-                                            <a href="/signup">Registreer je hier!</a>
+                                            Heb je nog geen account? <a href="/signup">Registreer je hier!</a>
                                         </p>
                                     </form>
                                 </div>
