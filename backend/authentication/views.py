@@ -82,7 +82,7 @@ class CustomSignupView(APIView):
         # add the user data to the response
         response = Response(UserSerializer(user).data, status=status.HTTP_200_OK)
         # set the cookie headers
-        set_jwt_cookies(response, access_token, access_token)
+        set_jwt_cookies(response, access_token, refresh_token)
 
         return response
 
