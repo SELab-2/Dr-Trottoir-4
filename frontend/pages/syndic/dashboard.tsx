@@ -1,8 +1,8 @@
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import router from "next/router";
-import {BuildingInterface, getBuildingsFromOwner} from "@/lib/building";
-import {useEffect, useState} from "react";
-import {AxiosResponse} from "axios";
+import { BuildingInterface, getBuildingsFromOwner } from "@/lib/building";
+import { useEffect, useState } from "react";
+import { AxiosResponse } from "axios";
 
 function SyndicDashboard() {
     const [id, setId] = useState("");
@@ -59,7 +59,7 @@ function SyndicDashboard() {
                                 e.preventDefault();
                                 router.push({
                                     pathname: "building",
-                                    query: {id: building.id},
+                                    query: { id: building.id },
                                 });
                             }}
                         >

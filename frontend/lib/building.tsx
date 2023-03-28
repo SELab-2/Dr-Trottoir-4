@@ -2,18 +2,18 @@ import api from "@/lib/api/axios";
 import { AxiosResponse } from "axios";
 
 export interface BuildingInterface {
-    "id": number;
-    "syndic_id": number;
-    "name": string;
-    "city": string;
-    "postal_code": string;
-    "street": string;
-    "house_number": number;
-    "bus": string;
-    "region_id": number;
-    "duration": string;
-    "client_id": number;
-    "public_id": string;
+    id: number;
+    syndic_id: number;
+    name: string;
+    city: string;
+    postal_code: string;
+    street: string;
+    house_number: number;
+    bus: string;
+    region_id: number;
+    duration: string;
+    client_id: number;
+    public_id: string;
 }
 
 export const getBuildingsFromOwner = async (ownerId: string): Promise<AxiosResponse<any>> => {
@@ -29,7 +29,6 @@ export const getBuildingInfo = async (buildingId: string | undefined): Promise<A
 export const patchBuildingInfo = async (buildingId: string | undefined, data: BuildingInterface | Object) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
 
-
-    console.log(`De te patchen data is ${data}`)
-    return await api.patch(request_url, data );
-}
+    console.log(`De te patchen data is ${data}`);
+    return await api.patch(request_url, data);
+};
