@@ -15,29 +15,29 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from authentication.serializers import CustomTokenRefreshSerializer, \
-    CustomTokenVerifySerializer, SignupSerializer
+    CustomTokenVerifySerializer, CustomSignUpSerializer
 from base.models import Lobby
 from base.serializers import UserSerializer
 from config import settings
 from util.request_response_util import post_success, post_docs
 
 
-class SignupView(APIView):
-    @extend_schema(post_docs(SignupSerializer))
+class CustomSignUpView(APIView):
+    @extend_schema(post_docs(CustomSignUpSerializer))
     def post(self, request):
         """
         Register a new user
         """
         # validate signup
-        signup = SignupSerializer(data=request.data)
+        signup = CustomSignUpSerializer(data=request.data)
         signup.is_valid(raise_exception=True)
         # create new user
-        user = UserSerializer(signup.save(signup.validated_data))
+        user = signup.save()
         # delete the lobby entry with the user email
-        lobby_instance = Lobby.objects.filter(email=user.data['email'])
+        lobby_instance = Lobby.objects.filter(email=user.email)
         lobby_instance.delete()
 
-        return post_success(user)
+        return post_success(UserSerializer(user))
 
 
 class CustomLoginView(LoginView):

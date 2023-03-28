@@ -17,7 +17,7 @@ from users.views import TRANSLATE
 from util.request_response_util import set_keys_of_instance, try_full_clean_and_save
 
 
-class SignupSerializer(Serializer):
+class CustomSignUpSerializer(Serializer):
     email = serializers.EmailField(required=True)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
@@ -64,11 +64,10 @@ class SignupSerializer(Serializer):
 
         return data
 
-    def save(self, data):
-
+    def create(self, validated_data):
         user_instance = User()
 
-        set_keys_of_instance(user_instance, data, TRANSLATE)
+        set_keys_of_instance(user_instance, validated_data, TRANSLATE)
 
         if r := try_full_clean_and_save(user_instance):
             raise auth_serializers.ValidationError(
@@ -78,6 +77,12 @@ class SignupSerializer(Serializer):
         user_instance.save()
 
         return user_instance
+
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get("first_name", instance.first_name)
+        instance.last_name = validated_data.get("last_name", instance.last_name)
+        instance.phone_number = validated_data.get("phone_number", instance.phone_number)
+        return instance
 
 
 class CustomTokenRefreshSerializer(Serializer):
@@ -143,23 +148,3 @@ class CustomPasswordResetSerializer(PasswordResetSerializer):
             raise serializers.ValidationError(self.reset_form.errors)
 
         return value
-
-
-class LobbyVerificationSerializer(Serializer):
-    email = serializers.EmailField()
-    verification_code = serializers.CharField()
-
-    def validate_email(self, email):
-        lobby_instances = Lobby.objects.filter(email=email)
-        if not lobby_instances:
-            raise auth_serializers.ValidationError(
-                f"{email} has no entry in the lobby, you must contact an admin to gain access to the platform",
-                code='no_entry_in_lobby'
-            )
-        return email
-
-    def validate_verification_code(self, code):
-        lobby_instance = Lobby.objects.filter(verification_code=code).first()
-        if lobby_instance and lobby_instance.verification_code != code:
-            raise auth_serializers.ValidationError("invalid verification code", code='invalid_verification_code')
-        return code

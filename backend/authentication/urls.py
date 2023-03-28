@@ -9,12 +9,12 @@ from authentication.views import (
     CustomTokenVerifyView,
     CustomTokenRefreshView,
     CustomLogoutView,
-    CustomPasswordChangeView, SignupView,
+    CustomPasswordChangeView, CustomSignUpView,
 )
 
 urlpatterns = [
     # URLs that do not require a session or valid token
-    path("signup/", SignupView.as_view()),
+    path("signup/", CustomSignUpView.as_view()),
     path("password/reset/", PasswordResetView.as_view(), name="password_reset"),
     path("password/reset/confirm/<uidb64>/<token>/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
     path("login/", CustomLoginView.as_view()),
