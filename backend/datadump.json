@@ -1,6 +1,7 @@
 [
 {
     "model": "sites.site",
+    "pk": 1,
     "fields": {
         "domain": "localhost",
         "name": "localhost"
@@ -8,6 +9,7 @@
 },
 {
     "model": "sites.site",
+    "pk": 2,
     "fields": {
         "domain": "sel2-4.ugent.be",
         "name": "sel2-4.ugent.be"
