@@ -103,8 +103,6 @@ class BuildingPublicView(APIView):
 
         building_instance = building_instance[0]
 
-        # TODO: should the general public see all data about a building?
-        #  Discuss this when writing tests for building
         return get_success(BuildingSerializer(building_instance))
 
 
