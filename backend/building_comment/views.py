@@ -1,11 +1,11 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from base.permissions import IsAdmin, IsSuperStudent, OwnerOfBuilding, ReadOnlyStudent
 from base.models import BuildingComment
+from base.permissions import IsAdmin, IsSuperStudent, OwnerOfBuilding, ReadOnlyStudent
 from base.serializers import BuildingCommentSerializer
 from util.request_response_util import *
-from drf_spectacular.utils import extend_schema
 
 TRANSLATE = {"building": "building_id"}
 
@@ -23,9 +23,9 @@ class DefaultBuildingComment(APIView):
 
         building_comment_instance = BuildingComment()
 
-        self.check_object_permissions(request, building_comment_instance.building)
-
         set_keys_of_instance(building_comment_instance, data, TRANSLATE)
+
+        self.check_object_permissions(request, building_comment_instance.building)
 
         if r := try_full_clean_and_save(building_comment_instance):
             return r
@@ -42,28 +42,31 @@ class BuildingCommentIndividualView(APIView):
         """
         Get an invividual BuildingComment with given id
         """
-        building_comment_instance = BuildingComment.objects.filter(id=building_comment_id)
+        building_comment_instances = BuildingComment.objects.filter(id=building_comment_id)
+
+        if not building_comment_instances:
+            return not_found("BuildingComment")
+
+        building_comment_instance = building_comment_instances[0]
 
         self.check_object_permissions(request, building_comment_instance.building)
-
-        if not building_comment_instance:
-            return bad_request("BuildingComment")
-
-        return get_success(BuildingCommentSerializer(building_comment_instance[0]))
+        return get_success(BuildingCommentSerializer(building_comment_instance))
 
     @extend_schema(responses=delete_docs())
     def delete(self, request, building_comment_id):
         """
         Delete a BuildingComment with given id
         """
-        building_comment_instance = BuildingComment.objects.filter(id=building_comment_id)
+        building_comment_instances = BuildingComment.objects.filter(id=building_comment_id)
+
+        if not building_comment_instances:
+            return not_found("BuildingComment")
+
+        building_comment_instance = building_comment_instances[0]
 
         self.check_object_permissions(request, building_comment_instance.building)
 
-        if not building_comment_instance:
-            return bad_request("BuildingComment")
-
-        building_comment_instance[0].delete()
+        building_comment_instance.delete()
         return delete_success()
 
     @extend_schema(responses=patch_docs(BuildingCommentSerializer))
@@ -74,7 +77,7 @@ class BuildingCommentIndividualView(APIView):
         building_comment_instance = BuildingComment.objects.filter(id=building_comment_id)
 
         if not building_comment_instance:
-            return bad_request("BuildingComment")
+            return not_found("BuildingComment")
 
         building_comment_instance = building_comment_instance[0]
         self.check_object_permissions(request, building_comment_instance.building)

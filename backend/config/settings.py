@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import collections
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -36,6 +38,7 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    'django_nose',
 ]
 
 AUTHENTICATION = [
@@ -67,6 +70,14 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("dj_rest_auth.jwt_auth.JWTCookieAuthentication",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+# drf-spectacular settings
+# hack to make nose run
+# this is needed because a lib was updated
+# https://stackoverflow.com/a/70641487
+collections.Callable = collections.abc.Callable
+# Use nose to run all tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # drf-spectacular settings
 SPECTACULAR_SETTINGS = {
@@ -163,14 +174,16 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "drtrottoir",
-        "USER": "django",
-        "PASSWORD": "password",
-        # 'HOST': 'localhost', # If you want to run using python manage.py runserver
-        "HOST": "web",  # If you want to use `docker-compose up`
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'drtrottoir',
+        'USER': 'django',
+        'PASSWORD': 'password',
+        # since testing is run outside the docker, we need a localhost db
+        # the postgres docker port is exposed to it should be used as well
+        # this 'hack' is just to fix the name resolving of 'web'
+        'HOST': 'localhost' if "test" in sys.argv else "web",
+        'PORT': '5432',
     }
 }
 
