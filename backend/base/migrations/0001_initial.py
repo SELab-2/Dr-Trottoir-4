@@ -8,245 +8,389 @@ import phonenumber_field.modelfields
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
+        ("auth", "0012_alter_user_first_name_max_length"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
-                ('email', models.EmailField(error_messages={'unique': 'A user already exists with this email.'}, max_length=254, unique=True, verbose_name='email address')),
-                ('is_staff', models.BooleanField(default=False)),
-                ('is_active', models.BooleanField(default=True)),
-                ('first_name', models.CharField(max_length=40)),
-                ('last_name', models.CharField(max_length=40)),
-                ('phone_number', phonenumber_field.modelfields.PhoneNumberField(max_length=128, region='BE')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
+                ("last_login", models.DateTimeField(blank=True, null=True, verbose_name="last login")),
+                (
+                    "is_superuser",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates that this user has all permissions without explicitly assigning them.",
+                        verbose_name="superuser status",
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        error_messages={"unique": "A user already exists with this email."},
+                        max_length=254,
+                        unique=True,
+                        verbose_name="email address",
+                    ),
+                ),
+                ("is_staff", models.BooleanField(default=False)),
+                ("is_active", models.BooleanField(default=True)),
+                ("first_name", models.CharField(max_length=40)),
+                ("last_name", models.CharField(max_length=40)),
+                ("phone_number", phonenumber_field.modelfields.PhoneNumberField(max_length=128, region="BE")),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='Building',
+            name="Building",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('city', models.CharField(max_length=40)),
-                ('postal_code', models.CharField(max_length=10)),
-                ('street', models.CharField(max_length=60)),
-                ('house_number', models.PositiveIntegerField()),
-                ('bus', models.CharField(blank=True, default='No bus', max_length=10)),
-                ('client_number', models.CharField(blank=True, max_length=40, null=True)),
-                ('duration', models.TimeField(default='00:00')),
-                ('name', models.CharField(blank=True, max_length=100, null=True)),
-                ('public_id', models.CharField(blank=True, max_length=32, null=True)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("city", models.CharField(max_length=40)),
+                ("postal_code", models.CharField(max_length=10)),
+                ("street", models.CharField(max_length=60)),
+                ("house_number", models.PositiveIntegerField()),
+                ("bus", models.CharField(blank=True, default="No bus", max_length=10)),
+                ("client_number", models.CharField(blank=True, max_length=40, null=True)),
+                ("duration", models.TimeField(default="00:00")),
+                ("name", models.CharField(blank=True, max_length=100, null=True)),
+                ("public_id", models.CharField(blank=True, max_length=32, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='BuildingComment',
+            name="BuildingComment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('comment', models.TextField()),
-                ('date', models.DateTimeField()),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("comment", models.TextField()),
+                ("date", models.DateTimeField()),
             ],
         ),
         migrations.CreateModel(
-            name='BuildingOnTour',
+            name="BuildingOnTour",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('index', models.PositiveIntegerField()),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("index", models.PositiveIntegerField()),
             ],
         ),
         migrations.CreateModel(
-            name='EmailTemplate',
+            name="EmailTemplate",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=40)),
-                ('template', models.TextField()),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=40)),
+                ("template", models.TextField()),
             ],
         ),
         migrations.CreateModel(
-            name='GarbageCollection',
+            name="GarbageCollection",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField()),
-                ('garbage_type', models.CharField(choices=[('GFT', 'GFT'), ('GLS', 'Glas'), ('GRF', 'Grof vuil'), ('KER', 'Kerstbomen'), ('PAP', 'Papier'), ('PMD', 'PMD'), ('RES', 'Restafval')], max_length=3)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("date", models.DateField()),
+                (
+                    "garbage_type",
+                    models.CharField(
+                        choices=[
+                            ("GFT", "GFT"),
+                            ("GLS", "Glas"),
+                            ("GRF", "Grof vuil"),
+                            ("KER", "Kerstbomen"),
+                            ("PAP", "Papier"),
+                            ("PMD", "PMD"),
+                            ("RES", "Restafval"),
+                        ],
+                        max_length=3,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Lobby',
+            name="Lobby",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email', models.EmailField(error_messages={'unique': 'This email is already in the whitelist.'}, max_length=254, unique=True, verbose_name='email address')),
-                ('verification_code', models.CharField(error_messages={'unique': 'This verification code already exists.'}, max_length=128, unique=True)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "email",
+                    models.EmailField(
+                        error_messages={"unique": "This email is already in the whitelist."},
+                        max_length=254,
+                        unique=True,
+                        verbose_name="email address",
+                    ),
+                ),
+                (
+                    "verification_code",
+                    models.CharField(
+                        error_messages={"unique": "This verification code already exists."}, max_length=128, unique=True
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Manual',
+            name="Manual",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version_number', models.PositiveIntegerField(default=0)),
-                ('file', models.FileField(upload_to='building_manuals/')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("version_number", models.PositiveIntegerField(default=0)),
+                ("file", models.FileField(upload_to="building_manuals/")),
             ],
         ),
         migrations.CreateModel(
-            name='PictureBuilding',
+            name="PictureBuilding",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('picture', models.ImageField(upload_to='building_pictures/')),
-                ('description', models.TextField(blank=True, null=True)),
-                ('timestamp', models.DateTimeField(blank=True)),
-                ('type', models.CharField(choices=[('AA', 'Aankomst'), ('BI', 'Binnen'), ('VE', 'Vertrek'), ('OP', 'Opmerking')], max_length=2)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("picture", models.ImageField(upload_to="building_pictures/")),
+                ("description", models.TextField(blank=True, null=True)),
+                ("timestamp", models.DateTimeField(blank=True)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[("AA", "Aankomst"), ("BI", "Binnen"), ("VE", "Vertrek"), ("OP", "Opmerking")],
+                        max_length=2,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Region',
+            name="Region",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('region', models.CharField(error_messages={'unique': 'Deze regio bestaat al.'}, max_length=40, unique=True)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "region",
+                    models.CharField(error_messages={"unique": "Deze regio bestaat al."}, max_length=40, unique=True),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Role',
+            name="Role",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20)),
-                ('rank', models.PositiveIntegerField()),
-                ('description', models.TextField(blank=True, null=True)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=20)),
+                ("rank", models.PositiveIntegerField()),
+                ("description", models.TextField(blank=True, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Tour',
+            name="Tour",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=40)),
-                ('modified_at', models.DateTimeField(blank=True, null=True)),
-                ('region', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='base.region')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=40)),
+                ("modified_at", models.DateTimeField(blank=True, null=True)),
+                (
+                    "region",
+                    models.ForeignKey(
+                        blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to="base.region"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='StudentAtBuildingOnTour',
+            name="StudentAtBuildingOnTour",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField()),
-                ('building_on_tour', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='base.buildingontour')),
-                ('student', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("date", models.DateField()),
+                (
+                    "building_on_tour",
+                    models.ForeignKey(
+                        null=True, on_delete=django.db.models.deletion.SET_NULL, to="base.buildingontour"
+                    ),
+                ),
+                (
+                    "student",
+                    models.ForeignKey(
+                        null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL
+                    ),
+                ),
             ],
         ),
         migrations.AddConstraint(
-            model_name='role',
-            constraint=models.UniqueConstraint(django.db.models.functions.text.Lower('name'), name='role_unique', violation_error_message='This role name already exists.'),
+            model_name="role",
+            constraint=models.UniqueConstraint(
+                django.db.models.functions.text.Lower("name"),
+                name="role_unique",
+                violation_error_message="This role name already exists.",
+            ),
         ),
         migrations.AddField(
-            model_name='picturebuilding',
-            name='building',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.building'),
+            model_name="picturebuilding",
+            name="building",
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.building"),
         ),
         migrations.AddField(
-            model_name='manual',
-            name='building',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.building'),
+            model_name="manual",
+            name="building",
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.building"),
         ),
         migrations.AddField(
-            model_name='lobby',
-            name='role',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='base.role'),
+            model_name="lobby",
+            name="role",
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to="base.role"),
         ),
         migrations.AddField(
-            model_name='garbagecollection',
-            name='building',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.building'),
+            model_name="garbagecollection",
+            name="building",
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.building"),
         ),
         migrations.AddConstraint(
-            model_name='emailtemplate',
-            constraint=models.UniqueConstraint(models.F('name'), name='unique_template_name', violation_error_message='The name for this template already exists.'),
+            model_name="emailtemplate",
+            constraint=models.UniqueConstraint(
+                models.F("name"),
+                name="unique_template_name",
+                violation_error_message="The name for this template already exists.",
+            ),
         ),
         migrations.AddField(
-            model_name='buildingontour',
-            name='building',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.building'),
+            model_name="buildingontour",
+            name="building",
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.building"),
         ),
         migrations.AddField(
-            model_name='buildingontour',
-            name='tour',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.tour'),
+            model_name="buildingontour",
+            name="tour",
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.tour"),
         ),
         migrations.AddField(
-            model_name='buildingcomment',
-            name='building',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.building'),
+            model_name="buildingcomment",
+            name="building",
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="base.building"),
         ),
         migrations.AddField(
-            model_name='building',
-            name='region',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='base.region'),
+            model_name="building",
+            name="region",
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to="base.region"
+            ),
         ),
         migrations.AddField(
-            model_name='building',
-            name='syndic',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            model_name="building",
+            name="syndic",
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='groups',
-            field=models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups'),
+            model_name="user",
+            name="groups",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="The groups this user belongs to. A user will get all permissions granted to each of their groups.",
+                related_name="user_set",
+                related_query_name="user",
+                to="auth.group",
+                verbose_name="groups",
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='region',
-            field=models.ManyToManyField(to='base.region'),
+            model_name="user",
+            name="region",
+            field=models.ManyToManyField(to="base.region"),
         ),
         migrations.AddField(
-            model_name='user',
-            name='role',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='base.role'),
+            model_name="user",
+            name="role",
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to="base.role"),
         ),
         migrations.AddField(
-            model_name='user',
-            name='user_permissions',
-            field=models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.permission', verbose_name='user permissions'),
+            model_name="user",
+            name="user_permissions",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Specific permissions for this user.",
+                related_name="user_set",
+                related_query_name="user",
+                to="auth.permission",
+                verbose_name="user permissions",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='tour',
-            constraint=models.UniqueConstraint(django.db.models.functions.text.Lower('name'), models.F('region'), name='unique_tour', violation_error_message='There is already a tour with the same name in the region.'),
+            model_name="tour",
+            constraint=models.UniqueConstraint(
+                django.db.models.functions.text.Lower("name"),
+                models.F("region"),
+                name="unique_tour",
+                violation_error_message="There is already a tour with the same name in the region.",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='studentatbuildingontour',
-            constraint=models.UniqueConstraint(models.F('building_on_tour'), models.F('date'), models.F('student'), name='unique_student_at_building_on_tour', violation_error_message='The student is already assigned to this tour on this date.'),
+            model_name="studentatbuildingontour",
+            constraint=models.UniqueConstraint(
+                models.F("building_on_tour"),
+                models.F("date"),
+                models.F("student"),
+                name="unique_student_at_building_on_tour",
+                violation_error_message="The student is already assigned to this tour on this date.",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='picturebuilding',
-            constraint=models.UniqueConstraint(models.F('building'), django.db.models.functions.text.Lower('picture'), django.db.models.functions.text.Lower('description'), models.F('timestamp'), name='unique_picture_building', violation_error_message='The building already has the upload.'),
+            model_name="picturebuilding",
+            constraint=models.UniqueConstraint(
+                models.F("building"),
+                django.db.models.functions.text.Lower("picture"),
+                django.db.models.functions.text.Lower("description"),
+                models.F("timestamp"),
+                name="unique_picture_building",
+                violation_error_message="The building already has the upload.",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='manual',
-            constraint=models.UniqueConstraint(models.F('building'), models.F('version_number'), name='unique_manual', violation_error_message='The building already has a manual with the same version number'),
+            model_name="manual",
+            constraint=models.UniqueConstraint(
+                models.F("building"),
+                models.F("version_number"),
+                name="unique_manual",
+                violation_error_message="The building already has a manual with the same version number",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='garbagecollection',
-            constraint=models.UniqueConstraint(models.F('building'), django.db.models.functions.text.Lower('garbage_type'), models.F('date'), name='garbage_collection_unique', violation_error_message='This type of garbage is already being collected on the same day for this building.'),
+            model_name="garbagecollection",
+            constraint=models.UniqueConstraint(
+                models.F("building"),
+                django.db.models.functions.text.Lower("garbage_type"),
+                models.F("date"),
+                name="garbage_collection_unique",
+                violation_error_message="This type of garbage is already being collected on the same day for this building.",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='buildingontour',
-            constraint=models.UniqueConstraint(models.F('index'), models.F('tour'), name='unique_index_on_tour', violation_error_message='The tour has already a building on this index.'),
+            model_name="buildingontour",
+            constraint=models.UniqueConstraint(
+                models.F("index"),
+                models.F("tour"),
+                name="unique_index_on_tour",
+                violation_error_message="The tour has already a building on this index.",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='buildingontour',
-            constraint=models.UniqueConstraint(models.F('building'), models.F('tour'), name='unique_building_on_tour', violation_error_message='This building is already on this tour.'),
+            model_name="buildingontour",
+            constraint=models.UniqueConstraint(
+                models.F("building"),
+                models.F("tour"),
+                name="unique_building_on_tour",
+                violation_error_message="This building is already on this tour.",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='buildingcomment',
-            constraint=models.UniqueConstraint(models.F('building'), django.db.models.functions.text.Lower('comment'), models.F('date'), name='building_comment_unique', violation_error_message='This comment already exists, and was posted at the exact same time.'),
+            model_name="buildingcomment",
+            constraint=models.UniqueConstraint(
+                models.F("building"),
+                django.db.models.functions.text.Lower("comment"),
+                models.F("date"),
+                name="building_comment_unique",
+                violation_error_message="This comment already exists, and was posted at the exact same time.",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='building',
-            constraint=models.UniqueConstraint(django.db.models.functions.text.Lower('city'), django.db.models.functions.text.Lower('street'), django.db.models.functions.text.Lower('postal_code'), models.F('house_number'), django.db.models.functions.text.Lower('bus'), name='address_unique', violation_error_message='A building with this address already exists.'),
+            model_name="building",
+            constraint=models.UniqueConstraint(
+                django.db.models.functions.text.Lower("city"),
+                django.db.models.functions.text.Lower("street"),
+                django.db.models.functions.text.Lower("postal_code"),
+                models.F("house_number"),
+                django.db.models.functions.text.Lower("bus"),
+                name="address_unique",
+                violation_error_message="A building with this address already exists.",
+            ),
         ),
     ]
