@@ -3,7 +3,6 @@ from dj_rest_auth.jwt_auth import (
     set_jwt_access_cookie,
     set_jwt_refresh_cookie, set_jwt_cookies,
 )
-from dj_rest_auth.utils import jwt_encode
 from dj_rest_auth.views import LoginView, PasswordChangeView
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
@@ -15,76 +14,30 @@ from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-from authentication.serializers import CustomRegisterSerializer, CustomTokenRefreshSerializer, \
-    CustomTokenVerifySerializer
+from authentication.serializers import CustomTokenRefreshSerializer, \
+    CustomTokenVerifySerializer, SignupSerializer
 from base.models import Lobby
 from base.serializers import UserSerializer
 from config import settings
-from util.request_response_util import request_to_dict
+from util.request_response_util import post_success, post_docs
 
 
-class CustomSignupView(APIView):
-    serializer_class = CustomRegisterSerializer
-
-    @extend_schema(responses={200: None, 403: None})
+class SignupView(APIView):
+    @extend_schema(post_docs(SignupSerializer))
     def post(self, request):
         """
         Register a new user
         """
-        data = request_to_dict(request.data)
+        # validate signup
+        signup = SignupSerializer(data=request.data)
+        signup.is_valid(raise_exception=True)
+        # create new user
+        user = UserSerializer(signup.save(signup.validated_data))
+        # delete the lobby entry with the user email
+        lobby_instance = Lobby.objects.filter(email=user.data['email'])
+        lobby_instance.delete()
 
-        required_keys = [
-            "email",
-            "verification_code",
-            "password1",
-            "password2",
-            "phone_number",
-            "first_name",
-            "last_name"
-        ]
-        missing_keys = [k for k in required_keys if k not in data.keys()]
-        if missing_keys:
-            return Response(
-                {k: ["This field is required."] for k in missing_keys},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        # check if there is a lobby entry for this email address
-        lobby_instances = Lobby.objects.filter(email=data.get('email'))
-        if not lobby_instances:
-            return Response(
-                {
-                    "message": f"{data.get('email')} has no entry in the lobby, you must contact an admin to gain access to the platform"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-        lobby_instance = lobby_instances[0]
-        # check if the verification code is valid
-        if lobby_instance.verification_code != data.get("verification_code"):
-            return Response(
-                {"message": "invalid verification code"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-        # add the role to the request, as this was already set by an admin
-        if hasattr(request.data, "dict"):
-            request.data._mutable = True
-            request.data["role"] = lobby_instance.role_id
-            request.data._mutable = False
-        else:
-            request.data["role"] = lobby_instance.role_id
-
-        # create a user
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        user = serializer.save(request)
-        # create an access and refresh token
-        access_token, refresh_token = jwt_encode(user)
-
-        # add the user data to the response
-        response = Response(UserSerializer(user).data, status=status.HTTP_200_OK)
-        # set the cookie headers
-        set_jwt_cookies(response, access_token, refresh_token)
-
-        return response
+        return post_success(user)
 
 
 class CustomLoginView(LoginView):

@@ -1,44 +1,86 @@
-from dj_rest_auth import serializers
-from dj_rest_auth.registration.serializers import RegisterSerializer
+from allauth.account.adapter import get_adapter
+from allauth.utils import email_address_exists
+from dj_rest_auth import serializers as auth_serializers
 from dj_rest_auth.serializers import PasswordResetSerializer
 from django.utils.translation import gettext_lazy as _
+from phonenumber_field.serializerfields import PhoneNumberField
+from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from authentication.forms import CustomAllAuthPasswordResetForm
-from base.models import User
+from base.models import User, Lobby
 from config import settings
-from users.user_utils import add_regions_to_user
-from util.request_response_util import request_to_dict
+from users.views import TRANSLATE
+from util.request_response_util import set_keys_of_instance, try_full_clean_and_save
 
 
-class CustomRegisterSerializer(RegisterSerializer):
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
+class SignupSerializer(Serializer):
+    email = serializers.EmailField(required=True)
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    phone_number = PhoneNumberField(required=True)
+    password1 = serializers.CharField(required=True, write_only=True)
+    password2 = serializers.CharField(required=True, write_only=True)
+    verification_code = serializers.CharField(required=True, write_only=True)
 
-    def create(self, validated_data):
-        return super().create(validated_data)
+    def validate_password1(self, password):
+        return get_adapter().clean_password(password)
 
-    def custom_signup(self, request, user: User):
-        data = request_to_dict(request.data)
-        user.first_name = data.get("first_name")
-        user.last_name = data.get("last_name")
-        user.phone_number = data.get("phone_number")
-        user.role_id = data.get("role")
-        raw_regions = data.get("region")
-        if raw_regions:
-            add_regions_to_user(user, raw_regions)
-        user.save()
+    def validate_email(self, email):
+        email = get_adapter().clean_email(email)
+        if email and email_address_exists(email):
+            raise serializers.ValidationError(
+                _("a user is already registered with this e-mail address"),
+            )
+        return email
+
+    def validate(self, data):
+        # check if the email address is in the lobby
+        lobby_instance = Lobby.objects.filter(email=data["email"]).first()
+        if not lobby_instance:
+            raise auth_serializers.ValidationError({
+                "email":
+                    _(f"{data['email']} has no entry in the lobby, you must contact an admin to gain access to the platform"),
+            })
+        # check if the verification code is valid
+        if lobby_instance.verification_code != data["verification_code"]:
+            raise auth_serializers.ValidationError({
+                "verification_code":
+                    _(f"invalid verification code")
+            })
+        # add role to the validated data
+        data["role"] = lobby_instance.role_id
+        # check if passwords match
+        if data["password1"] != data["password2"]:
+            raise serializers.ValidationError({
+                "message":
+                    _("the two password fields didn't match.")
+            })
+        # add password to the validated data
+        data["password"] = data["password1"]
+
+        return data
+
+    def save(self, data):
+
+        user_instance = User()
+
+        set_keys_of_instance(user_instance, data, TRANSLATE)
+
+        if r := try_full_clean_and_save(user_instance):
+            raise auth_serializers.ValidationError(
+                r.data
+            )
+
+        user_instance.save()
+
+        return user_instance
 
 
 class CustomTokenRefreshSerializer(Serializer):
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
-
-    def create(self, validated_data):
-        return super().create(validated_data)
 
     def validate(self, incoming_data):
         # extract the request
@@ -71,11 +113,6 @@ class CustomTokenRefreshSerializer(Serializer):
 
 
 class CustomTokenVerifySerializer(Serializer):
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
-
-    def create(self, validated_data):
-        return super().create(validated_data)
 
     def validate(self, incoming_data):
         # extract the request
@@ -106,3 +143,23 @@ class CustomPasswordResetSerializer(PasswordResetSerializer):
             raise serializers.ValidationError(self.reset_form.errors)
 
         return value
+
+
+class LobbyVerificationSerializer(Serializer):
+    email = serializers.EmailField()
+    verification_code = serializers.CharField()
+
+    def validate_email(self, email):
+        lobby_instances = Lobby.objects.filter(email=email)
+        if not lobby_instances:
+            raise auth_serializers.ValidationError(
+                f"{email} has no entry in the lobby, you must contact an admin to gain access to the platform",
+                code='no_entry_in_lobby'
+            )
+        return email
+
+    def validate_verification_code(self, code):
+        lobby_instance = Lobby.objects.filter(verification_code=code).first()
+        if lobby_instance and lobby_instance.verification_code != code:
+            raise auth_serializers.ValidationError("invalid verification code", code='invalid_verification_code')
+        return code
