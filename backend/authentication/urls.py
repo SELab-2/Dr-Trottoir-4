@@ -9,7 +9,8 @@ from authentication.views import (
     CustomTokenVerifyView,
     CustomTokenRefreshView,
     CustomLogoutView,
-    CustomPasswordChangeView, CustomSignUpView,
+    CustomPasswordChangeView,
+    CustomSignUpView,
 )
 
 urlpatterns = [

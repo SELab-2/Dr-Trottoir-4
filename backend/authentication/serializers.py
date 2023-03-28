@@ -41,24 +41,21 @@ class CustomSignUpSerializer(Serializer):
         # check if the email address is in the lobby
         lobby_instance = Lobby.objects.filter(email=data["email"]).first()
         if not lobby_instance:
-            raise auth_serializers.ValidationError({
-                "email":
-                    _(f"{data['email']} has no entry in the lobby, you must contact an admin to gain access to the platform"),
-            })
+            raise auth_serializers.ValidationError(
+                {
+                    "email": _(
+                        f"{data['email']} has no entry in the lobby, you must contact an admin to gain access to the platform"
+                    ),
+                }
+            )
         # check if the verification code is valid
         if lobby_instance.verification_code != data["verification_code"]:
-            raise auth_serializers.ValidationError({
-                "verification_code":
-                    _(f"invalid verification code")
-            })
+            raise auth_serializers.ValidationError({"verification_code": _(f"invalid verification code")})
         # add role to the validated data
         data["role"] = lobby_instance.role_id
         # check if passwords match
         if data["password1"] != data["password2"]:
-            raise serializers.ValidationError({
-                "message":
-                    _("the two password fields didn't match.")
-            })
+            raise serializers.ValidationError({"message": _("the two password fields didn't match.")})
         # add password to the validated data
         data["password"] = data["password1"]
 
@@ -70,9 +67,7 @@ class CustomSignUpSerializer(Serializer):
         set_keys_of_instance(user_instance, validated_data, TRANSLATE)
 
         if r := try_full_clean_and_save(user_instance):
-            raise auth_serializers.ValidationError(
-                r.data
-            )
+            raise auth_serializers.ValidationError(r.data)
 
         user_instance.save()
 
@@ -86,7 +81,6 @@ class CustomSignUpSerializer(Serializer):
 
 
 class CustomTokenRefreshSerializer(Serializer):
-
     def validate(self, incoming_data):
         # extract the request
         request = self.context["request"]
@@ -118,7 +112,6 @@ class CustomTokenRefreshSerializer(Serializer):
 
 
 class CustomTokenVerifySerializer(Serializer):
-
     def validate(self, incoming_data):
         # extract the request
         request = self.context["request"]

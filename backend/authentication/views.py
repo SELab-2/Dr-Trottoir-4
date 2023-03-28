@@ -1,7 +1,8 @@
 from dj_rest_auth.jwt_auth import (
     unset_jwt_cookies,
     set_jwt_access_cookie,
-    set_jwt_refresh_cookie, set_jwt_cookies,
+    set_jwt_refresh_cookie,
+    set_jwt_cookies,
 )
 from dj_rest_auth.views import LoginView, PasswordChangeView
 from django.utils.translation import gettext_lazy as _
@@ -14,8 +15,7 @@ from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-from authentication.serializers import CustomTokenRefreshSerializer, \
-    CustomTokenVerifySerializer, CustomSignUpSerializer
+from authentication.serializers import CustomTokenRefreshSerializer, CustomTokenVerifySerializer, CustomSignUpSerializer
 from base.models import Lobby
 from base.serializers import UserSerializer
 from config import settings
@@ -101,10 +101,7 @@ class CustomTokenRefreshView(TokenRefreshView):
         # get new access and refresh token
         data = dict(serializer.validated_data)
         # construct the response
-        response = Response(
-            {"message": _("refresh of tokens successful")},
-            status=status.HTTP_200_OK
-        )
+        response = Response({"message": _("refresh of tokens successful")}, status=status.HTTP_200_OK)
         set_jwt_access_cookie(response, data["access"])
         set_jwt_refresh_cookie(response, data["refresh"])
         return response
@@ -122,10 +119,7 @@ class CustomTokenVerifyView(TokenVerifyView):
         except TokenError as e:
             raise InvalidToken(e.args[0])
 
-        return Response(
-            {"message": "refresh token validation successful"},
-            status=status.HTTP_200_OK
-        )
+        return Response({"message": "refresh token validation successful"}, status=status.HTTP_200_OK)
 
 
 class CustomPasswordChangeView(PasswordChangeView):
@@ -136,7 +130,4 @@ class CustomPasswordChangeView(PasswordChangeView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(
-            {"message": _("new password has been saved")},
-            status=status.HTTP_200_OK
-        )
+        return Response({"message": _("new password has been saved")}, status=status.HTTP_200_OK)
