@@ -111,6 +111,7 @@ class OwnerWithLimitedPatch(BasePermission):
     """
     Checks if the syndic patches
     """
+
     message = "You can only patch the building public id and the name of the building that you own"
 
     def has_permission(self, request, view):
