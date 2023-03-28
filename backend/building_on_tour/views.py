@@ -43,7 +43,7 @@ class BuildingTourIndividualView(APIView):
         building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id)
 
         if not building_on_tour_instance:
-            return bad_request("BuildingOnTour")
+            return not_found("BuildingOnTour")
 
         serializer = BuildingTourSerializer(building_on_tour_instance[0])
         return get_success(serializer)
@@ -56,7 +56,7 @@ class BuildingTourIndividualView(APIView):
         building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id)
 
         if not building_on_tour_instance:
-            return bad_request("BuildingOnTour")
+            return not_found("BuildingOnTour")
 
         building_on_tour_instance = building_on_tour_instance[0]
 
@@ -77,7 +77,7 @@ class BuildingTourIndividualView(APIView):
         building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id)
 
         if not building_on_tour_instance:
-            return bad_request("BuildingOnTour")
+            return not_found("BuildingOnTour")
 
         building_on_tour_instance[0].delete()
         return delete_success()
