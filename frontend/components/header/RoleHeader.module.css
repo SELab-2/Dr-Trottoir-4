@@ -26,3 +26,19 @@
 .button:hover {
     color: transparent;
 }
+
+.grid {
+        display: grid;
+        grid-template-rows: auto auto;
+        grid-template-columns: 1fr;
+}
+
+.toplevel {
+    grid-template-columns: auto auto;
+}
+
+.input {
+    max-width: 350px;
+    padding: 5px;
+    margin: 5px;
+}
