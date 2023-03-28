@@ -6,7 +6,7 @@ import person from "@/public/icons/person.svg";
 import menu from "@/public/icons/menu.svg";
 
 
-const AdminHeader = () => {
+const SyndicHeader = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
@@ -16,21 +16,6 @@ const AdminHeader = () => {
                         <li className="nav-item">
                             <a className={`nav-link ${styles.text}`} href="#">
                                 Dashboard
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a className={`nav-link ${styles.text}`} href="#">
-                                Data
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a className={`nav-link ${styles.text}`} href="#">
-                                Communicatie
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a className={`nav-link ${styles.text}`} href="#">
-                                Analyse
                             </a>
                         </li>
                     </ul>
@@ -86,4 +71,4 @@ const AdminHeader = () => {
     );
 };
 
-export default AdminHeader;
+export default SyndicHeader;
