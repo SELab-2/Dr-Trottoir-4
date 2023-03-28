@@ -123,7 +123,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = None
 LOGIN_URL = "http://localhost/api/authentication/login"
 
-SITE_ID = 2 if DEBUG else 3
+SITE_ID = 1 if DEBUG else 2
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
