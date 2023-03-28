@@ -1,7 +1,6 @@
 import api from "./api/axios";
 import {Login} from "@/types.d";
 import {AxiosResponse} from "axios";
-import * as process from "process";
 
 export const login = (email: string, password: string): Promise<AxiosResponse<any, any>> => {
     const host: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_LOGIN}`;
