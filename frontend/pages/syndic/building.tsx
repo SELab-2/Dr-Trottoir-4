@@ -1,7 +1,7 @@
 import BaseHeader from "@/components/header/BaseHeader";
 import {BuildingInterface, getBuildingInfo, patchBuildingInfo} from "@/lib/building";
 import {useRouter} from "next/router";
-import {useEffect, useState} from "react";
+import {ChangeEvent, MouseEventHandler, useEffect, useState} from "react";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import {AxiosResponse} from "axios";
 import styles from "@/styles/Welcome.module.css";
@@ -28,12 +28,12 @@ function SyndicBuilding() {
     const [editBuilding, setEditBuilding] = useState(false);
     const [errorText, setErrorText] = useState("");
 
-    const [formData, setFormData] = useState({
-        name: null,
-        public_id: null
+    const [formData, setFormData] = useState<Object>({
+        name: "",
+        public_id: ""
     })
 
-    const handleInputChange = (event) => {
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const name = event.target.name;
         const value = event.target.value;
 
@@ -47,12 +47,12 @@ function SyndicBuilding() {
         console.log(`handleInputChange is dus gedaan, nu is formData ${JSON.stringify(formData)}`)
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async (event: MouseEventHandler<HTMLButtonElement>) => {
+        //event.preventDefault();
 
         console.log(`In handleSubmit ${JSON.stringify(formData)}`)
 
-        let toSend = {}
+        let toSend: Object = {}
         for (const [key, value] of Object.entries(formData)) {
             if (value) {
                 toSend[key] = value;

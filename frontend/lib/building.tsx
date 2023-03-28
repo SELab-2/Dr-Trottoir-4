@@ -26,7 +26,7 @@ export const getBuildingInfo = async (buildingId: string | undefined): Promise<A
     return await api.get(request_url);
 };
 
-export const patchBuildingInfo = async (buildingId, data) => {
+export const patchBuildingInfo = async (buildingId: string | undefined, data: BuildingInterface | Object) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
 
 
