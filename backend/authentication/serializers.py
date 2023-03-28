@@ -1,17 +1,21 @@
 from allauth.account.adapter import get_adapter
 from allauth.utils import email_address_exists
 from dj_rest_auth import serializers as auth_serializers
-from dj_rest_auth.serializers import PasswordResetSerializer
+from dj_rest_auth.jwt_auth import unset_jwt_cookies
+from dj_rest_auth.serializers import PasswordResetSerializer, LoginSerializer
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.serializerfields import PhoneNumberField
-from rest_framework import serializers
+from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
 from rest_framework.serializers import Serializer
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from authentication.forms import CustomAllAuthPasswordResetForm
 from base.models import User, Lobby
+from base.serializers import UserSerializer
 from config import settings
 from users.views import TRANSLATE
 from util.request_response_util import set_keys_of_instance, try_full_clean_and_save
@@ -141,3 +145,42 @@ class CustomPasswordResetSerializer(PasswordResetSerializer):
             raise serializers.ValidationError(self.reset_form.errors)
 
         return value
+
+
+class CustomLoginResponseSerializer(LoginSerializer):
+    message = serializers.CharField()
+    user = UserSerializer()
+
+
+class CustomLogoutSerializer(serializers.Serializer):
+    message = serializers.CharField()
+
+    def logout_user(self, request):
+        response = Response(
+            {"message": _("successfully logged out")},
+            status=status.HTTP_200_OK,
+        )
+
+        cookie_name = getattr(settings, "JWT_AUTH_REFRESH_COOKIE", None)
+        try:
+            if cookie_name and cookie_name in request.COOKIES:
+                token = RefreshToken(request.COOKIES.get(cookie_name))
+                token.blacklist()
+        except KeyError:
+            response.data = {"message": _("refresh token was not included in request cookies")}
+            response.status_code = status.HTTP_401_UNAUTHORIZED
+        except (TokenError, AttributeError, TypeError) as error:
+            if hasattr(error, "args"):
+                if "Token is blacklisted" in error.args or "Token is invalid or expired" in error.args:
+                    response.data = {"message": _(error.args[0].lower())}
+                    response.status_code = status.HTTP_401_UNAUTHORIZED
+                else:
+                    response.data = {"message": _("an error has occurred.")}
+                    response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+            else:
+                response.data = {"message": _("an error has occurred.")}
+                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        unset_jwt_cookies(response)
+
+        return response
