@@ -5,19 +5,19 @@ from dj_rest_auth.views import (
 from django.urls import path
 
 from authentication.views import (
-    CustomSignupView, CustomLoginView, CustomTokenVerifyView, CustomTokenRefreshView,
-    CustomLogoutView, CustomPasswordChangeView,
+    CustomSignupView,
+    CustomLoginView,
+    CustomTokenVerifyView,
+    CustomTokenRefreshView,
+    CustomLogoutView,
+    CustomPasswordChangeView,
 )
 
 urlpatterns = [
     # URLs that do not require a session or valid token
     path("signup/", CustomSignupView.as_view()),
     path("password/reset/", PasswordResetView.as_view(), name="password_reset"),
-    path(
-        "password/reset/confirm/<uidb64>/<token>/",
-        PasswordResetConfirmView.as_view(),
-        name="password_reset_confirm"
-    ),
+    path("password/reset/confirm/<uidb64>/<token>/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
     path("login/", CustomLoginView.as_view()),
     path("token/verify/", CustomTokenVerifyView.as_view()),
     path("token/refresh/", CustomTokenRefreshView.as_view()),

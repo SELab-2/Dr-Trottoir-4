@@ -15,7 +15,6 @@ from util.request_response_util import request_to_dict
 
 
 class CustomRegisterSerializer(RegisterSerializer):
-
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
 
@@ -24,11 +23,11 @@ class CustomRegisterSerializer(RegisterSerializer):
 
     def custom_signup(self, request, user: User):
         data = request_to_dict(request.data)
-        user.first_name = data.get('first_name')
-        user.last_name = data.get('last_name')
-        user.phone_number = data.get('phone_number')
-        user.role_id = data.get('role')
-        raw_regions = data.get('region')
+        user.first_name = data.get("first_name")
+        user.last_name = data.get("last_name")
+        user.phone_number = data.get("phone_number")
+        user.role_id = data.get("role")
+        raw_regions = data.get("region")
         if raw_regions:
             add_regions_to_user(user, raw_regions)
         user.save()
@@ -43,11 +42,12 @@ class CustomTokenRefreshSerializer(Serializer):
 
     def validate(self, incoming_data):
         # extract the request
-        request = self.context['request']
+        request = self.context["request"]
         # get the cookie name of the refresh token
         cookie_name = settings.REST_AUTH["JWT_AUTH_REFRESH_COOKIE"]
         if not cookie_name or cookie_name not in request.COOKIES:
             from rest_framework_simplejwt.exceptions import InvalidToken
+
             raise InvalidToken(_("no valid refresh token found"))
 
         # get the refresh token
@@ -79,11 +79,12 @@ class CustomTokenVerifySerializer(Serializer):
 
     def validate(self, incoming_data):
         # extract the request
-        request = self.context['request']
+        request = self.context["request"]
         # get the cookie name of the refresh token
         cookie_name = settings.REST_AUTH["JWT_AUTH_REFRESH_COOKIE"]
         if not cookie_name or cookie_name not in request.COOKIES:
             from rest_framework_simplejwt.exceptions import InvalidToken
+
             raise InvalidToken(_("no valid refresh token found"))
 
         # get the refresh token
