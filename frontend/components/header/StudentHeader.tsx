@@ -3,38 +3,13 @@ import styles from "@/components/header/RoleHeader.module.css";
 import Image from "next/image";
 import logo from "@/public/logo.png";
 import person from "@/public/icons/person.svg";
-import menu from "@/public/icons/menu.svg";
 
 
-const AdminHeader = () => {
+const StudentHeader = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div className="container-fluid">
+            <div className="container-fluid text-center">
                 <Image src={logo} alt="My App Logo" width={120} height={30}/>
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li className="nav-item">
-                            <a className={`nav-link ${styles.text}`} href="#">
-                                Dashboard
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a className={`nav-link ${styles.text}`} href="#">
-                                Data
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a className={`nav-link ${styles.text}`} href="#">
-                                Communicatie
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a className={`nav-link ${styles.text}`} href="#">
-                                Analyse
-                            </a>
-                        </li>
-                    </ul>
-                </div>
                 <div className="ms-auto">
                     <a
                         className="nav-link dropdown-toggle"
@@ -70,20 +45,9 @@ const AdminHeader = () => {
                         </li>
                     </ul>
                 </div>
-                <button
-                    className={`navbar-toggler ${styles.button}`}
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <Image src={menu} alt="My App Menu"/>
-                </button>
             </div>
         </nav>
     );
 };
 
-export default AdminHeader;
+export default StudentHeader;
