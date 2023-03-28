@@ -38,7 +38,7 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-    'django_nose',
+    "django_nose",
 ]
 
 AUTHENTICATION = [
@@ -75,7 +75,7 @@ REST_FRAMEWORK = {
 # https://stackoverflow.com/a/70641487
 collections.Callable = collections.abc.Callable
 # Use nose to run all tests
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 
 # drf-spectacular settings
 SPECTACULAR_SETTINGS = {
@@ -98,7 +98,7 @@ REST_AUTH = {
     "JWT_AUTH_REFRESH_COOKIE": "auth-refresh-token",
     "USER_DETAILS_SERIALIZER": "base.serializers.UserSerializer",
     "PASSWORD_RESET_SERIALIZER": "authentication.serializers.CustomPasswordResetSerializer",
-    "PASSWORD_RESET_USE_SITES_DOMAIN": True
+    "PASSWORD_RESET_USE_SITES_DOMAIN": True,
 }
 
 SIMPLE_JWT = {
@@ -176,16 +176,16 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'drtrottoir',
-        'USER': 'django',
-        'PASSWORD': 'password',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "drtrottoir",
+        "USER": "django",
+        "PASSWORD": "password",
         # since testing is run outside the docker, we need a localhost db
         # the postgres docker port is exposed to it should be used as well
         # this 'hack' is just to fix the name resolving of 'web'
-        'HOST': 'localhost' if "test" in sys.argv else "web",
-        'PORT': '5432',
+        "HOST": "localhost" if "test" in sys.argv else "web",
+        "PORT": "5432",
     }
 }
 
