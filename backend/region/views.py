@@ -42,7 +42,7 @@ class RegionIndividualView(APIView):
         region_instance = Region.objects.filter(id=region_id)
 
         if len(region_instance) != 1:
-            return bad_request(object_name="Region")
+            return not_found(object_name="Region")
 
         serializer = RegionSerializer(region_instance[0])
         return get_success(serializer)
@@ -55,7 +55,7 @@ class RegionIndividualView(APIView):
         region_instances = Region.objects.filter(id=region_id)
 
         if len(region_instances) != 1:
-            return bad_request(object_name="Region")
+            return not_found(object_name="Region")
 
         region_instance = region_instances[0]
 
@@ -76,7 +76,7 @@ class RegionIndividualView(APIView):
         region_instances = Region.objects.filter(id=region_id)
 
         if len(region_instances) != 1:
-            return bad_request(object_name="Region")
+            return not_found(object_name="Region")
 
         region_instances[0].delete()
         return delete_success()

@@ -41,7 +41,7 @@ class RoleIndividualView(APIView):
         role_instance = Role.objects.filter(id=role_id)
 
         if not role_instance:
-            return bad_request("Role")
+            return not_found("Role")
 
         serializer = RoleSerializer(role_instance[0])
         return get_success(serializer)
@@ -54,7 +54,7 @@ class RoleIndividualView(APIView):
         role_instance = Role.objects.filter(id=role_id)
 
         if not role_instance:
-            return bad_request("Role")
+            return not_found("Role")
 
         role_instance[0].delete()
         return delete_success()
@@ -67,7 +67,7 @@ class RoleIndividualView(APIView):
         role_instance = Role.objects.filter(id=role_id)
 
         if not role_instance:
-            return bad_request("Role")
+            return not_found("Role")
 
         role_instance = role_instance[0]
 

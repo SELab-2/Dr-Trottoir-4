@@ -42,7 +42,7 @@ class TourIndividualView(APIView):
         tour_instances = Tour.objects.filter(id=tour_id)
 
         if not tour_instances:
-            return bad_request(object_name="Tour")
+            return not_found(object_name="Tour")
 
         tour_instance = tour_instances[0]
         serializer = TourSerializer(tour_instance)
@@ -57,7 +57,7 @@ class TourIndividualView(APIView):
         data = request_to_dict(request.data)
 
         if not tour_instance:
-            return bad_request(object_name="Tour")
+            return not_found(object_name="Tour")
 
         tour_instance = tour_instance[0]
 
@@ -76,7 +76,7 @@ class TourIndividualView(APIView):
         tour_instances = Tour.objects.filter(id=tour_id)
 
         if not tour_instances:
-            return bad_request(object_name="Tour")
+            return not_found(object_name="Tour")
 
         tour_instances[0].delete()
         return delete_success()

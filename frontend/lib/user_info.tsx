@@ -1,4 +1,4 @@
-import {AxiosResponse} from "axios";
+import { AxiosResponse } from "axios";
 import api from "@/lib/api/axios";
 import * as process from "process";
 
@@ -9,7 +9,7 @@ export const getCurrentUser = (): Promise<AxiosResponse<any, any>> => {
 export const getUserInfo = (user_id: string): Promise<AxiosResponse<any, any>> => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}${user_id}`;
     return api.get(request_url);
-}
+};
 
 export const getUserRole = (role_id: string): string => {
     // since only admins and superstudents can request the api for their role information,
@@ -24,6 +24,6 @@ export const getUserRole = (role_id: string): string => {
     ]);
 
     return userDict.get(parseInt(role_id)) || "Default";
-}
+};
 
 export default getUserInfo;

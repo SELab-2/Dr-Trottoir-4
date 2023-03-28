@@ -29,15 +29,18 @@ def set_keys_of_instance(instance, data: dict, translation: dict = {}):
     return instance
 
 
-def bad_request(object_name="Object"):
+def not_found(object_name="Object"):
     return Response(
-        {"message": f"{object_name} with given ID does not exist."},
-        status=status.HTTP_400_BAD_REQUEST,
+        {"message": f"{object_name} was not found"},
+        status=status.HTTP_404_NOT_FOUND
     )
 
 
-def not_found(object_name="Object"):
-    return Response({"message": f"{object_name} with given ID does not exists."}, status=status.HTTP_400_BAD_REQUEST)
+def bad_request(object_name="Object"):
+    return Response(
+        {"message": f"bad input for {object_name}"},
+        status=status.HTTP_400_BAD_REQUEST
+    )
 
 
 def bad_request_relation(object1: str, object2: str):

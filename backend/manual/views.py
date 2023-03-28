@@ -48,12 +48,12 @@ class ManualView(APIView):
         """
         manual_instances = Manual.objects.filter(id=manual_id)
         if len(manual_instances) != 1:
-            return bad_request("Manual")
+            return not_found("Manual")
         manual_instance = manual_instances[0]
 
-        self.check_object_permissions(manual_instance)
+        self.check_object_permissions(request, manual_instance)
 
-        serializer = ManualSerializer(manual_instances)
+        serializer = ManualSerializer(manual_instance)
         return get_success(serializer)
 
     @extend_schema(responses=delete_docs())
@@ -63,7 +63,7 @@ class ManualView(APIView):
         """
         manual_instances = Manual.objects.filter(id=manual_id)
         if len(manual_instances) != 1:
-            return bad_request("Manual")
+            return not_found("Manual")
         manual_instances[0].delete()
         return delete_success()
 
@@ -74,7 +74,7 @@ class ManualView(APIView):
         """
         manual_instances = Manual.objects.filter(id=manual_id)
         if len(manual_instances) != 1:
-            return bad_request("Manual")
+            return not_found("Manual")
         manual_instance = manual_instances[0]
         data = request_to_dict(request.data)
 
@@ -96,7 +96,7 @@ class ManualBuildingView(APIView):
         Get all manuals of a building with given id
         """
         if not Building.objects.filter(id=building_id):
-            return bad_request("Building")
+            return not_found("Building")
 
         manual_instances = Manual.objects.filter(building_id=building_id)
         serializer = ManualSerializer(manual_instances, many=True)

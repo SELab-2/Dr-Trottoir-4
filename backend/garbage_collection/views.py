@@ -43,7 +43,7 @@ class GarbageCollectionIndividualView(APIView):
         """
         garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
         if not garbage_collection_instance:
-            return bad_request("GarbageCollection")
+            return not_found("GarbageCollection")
         serializer = GarbageCollectionSerializer(garbage_collection_instance[0])
         return get_success(serializer)
 
@@ -54,7 +54,7 @@ class GarbageCollectionIndividualView(APIView):
         """
         garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
         if not garbage_collection_instance:
-            return bad_request("GarbageCollection")
+            return not_found("GarbageCollection")
         garbage_collection_instance[0].delete()
         return delete_success()
 
@@ -65,7 +65,7 @@ class GarbageCollectionIndividualView(APIView):
         """
         garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
         if not garbage_collection_instance:
-            return bad_request("GarbageCollection")
+            return not_found("GarbageCollection")
 
         garbage_collection_instance = garbage_collection_instance[0]
         data = request_to_dict(request.data)
@@ -92,8 +92,8 @@ class GarbageCollectionIndividualBuildingView(APIView):
         Get info about all garbage collections of a building with given id
         """
         building_instance = Building.objects.filter(building_id=building_id)
-        if not (building_instance):
-            bad_request(building_instance)
+        if not building_instance:
+            return not_found("building")
         self.check_object_permissions(request, building_instance[0])
 
         garbage_collection_instances = GarbageCollection.objects.filter(building=building_id)
