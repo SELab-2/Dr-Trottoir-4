@@ -1,11 +1,19 @@
-import React from "react";
+import React, {ReactNode} from "react";
 import styles from "@/components/header/RoleHeader.module.css";
 import Image from "next/image";
 import logo from "@/public/logo.png";
 import person from "@/public/icons/person.svg";
 import menu from "@/public/icons/menu.svg";
+import Template3Filters from "@/components/filters/Template3Filters";
+import Template2Filters from "@/components/filters/Template2Filters";
 
-const AdminFilterHeader = () => {
+type MyComponentVariations = typeof Template3Filters | typeof Template2Filters;
+
+interface AdminFilterHeaderProps {
+  children: React.ReactElement<MyComponentVariations>;
+}
+
+const AdminFilterHeader = ({ children }: AdminFilterHeaderProps) => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className={`container-fluid w-100 d-grid ${styles.grid}`}>
@@ -116,9 +124,7 @@ const AdminFilterHeader = () => {
                     </div>
                 </div>
                 <div className="row">
-                    <input type="text" className={`form-control ${styles.input}`} placeholder="Filter field 1"/>
-                    <input type="text" className={`form-control ${styles.input}`} placeholder="Filter field 2"/>
-                    <input type="text" className={`form-control ${styles.input}`} placeholder="Filter field 3"/>
+                    {children}
                 </div>
             </div>
         </nav>
