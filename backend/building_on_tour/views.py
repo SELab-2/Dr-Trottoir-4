@@ -1,9 +1,9 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema
 
-from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
 from base.models import BuildingOnTour
+from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
 from base.serializers import BuildingTourSerializer
 from util.request_response_util import *
 
@@ -81,6 +81,20 @@ class BuildingTourIndividualView(APIView):
 
         building_on_tour_instance[0].delete()
         return delete_success()
+
+
+class AllBuilingsOnTourInTourView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
+    serializer_class = BuildingTourSerializer
+
+    @extend_schema(responses=get_docs(BuildingTourSerializer))
+    def get(self, request, tour_id):
+        """
+        Get all BuildingsOnTour with given tour id
+        """
+        building_on_tour_instances = BuildingOnTour.objects.filter(tour_id=tour_id)
+        serializer = BuildingTourSerializer(building_on_tour_instances, many=True)
+        return get_success(serializer)
 
 
 class AllBuildingToursView(APIView):
