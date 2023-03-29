@@ -110,7 +110,7 @@ function SyndicDashboard() {
             <p>Bus: {building?.bus}</p>
             <p>Client id: {building?.client_id}</p>
             <p>Duration: {"" + building?.duration}</p>
-            <p>Region: {building?.region_id}</p>
+            <p>Region: {building?.region}</p>
             <p>Public id: {building?.public_id}</p>
 
             <p>

@@ -2,7 +2,7 @@ import BaseHeader from "@/components/header/BaseHeader";
 import { BuildingInterface, getBuildingsFromOwner } from "@/lib/building";
 import router from "next/router";
 import { useEffect, useState } from "react";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/with-authorisation";
 import SyndicDashboard from "@/pages/syndic/dashboard";
 import { AxiosResponse } from "axios";
 
