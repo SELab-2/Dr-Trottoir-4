@@ -13,6 +13,9 @@ updates:
       - "n00bS-oWn-m3"
     open-pull-requests-limit: 10
     target-branch: "develop"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     
   - package-ecosystem: "pip"
     directory: "/backend"
