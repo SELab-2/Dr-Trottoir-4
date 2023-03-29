@@ -56,7 +56,7 @@ const AdminFilterHeader = () => {
                                     />
                                 </a>
                                 <ul
-                                    className={`dropdown-menu dropdown-menu-end ${styles.profile}`}
+                                    className="dropdown-menu dropdown-menu-end position-absolute"
                                     aria-labelledby="navbarDropdown1"
                                 >
                                     <li>
