@@ -8,54 +8,40 @@ import menu from "@/public/icons/menu.svg";
 const AdminFilterHeader = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div className={`container-fluid w-100 d-grid grid-rows-2 ${styles.grid}`}>
-                <div className="row align-items-center">
-                    <div className="col-auto">
-                        <Image className={styles.logo} src={logo} alt="My App Logo" width={120} height={30}/>
-                    </div>
+            <div className={`container-fluid w-100 d-grid ${styles.grid}`}>
+                <div className="row align-items-center d-flex">
                     <div className="col">
                         <div className="d-flex">
-                            <div className="collapse navbar-collapse" id="navbarNav">
-                            <ul className="navbar-nav ms-auto mb-2 mb-lg-0 order-last">
-                                <li className="nav-item">
-                                    <a className={`nav-link ${styles.text}`} href="#">
-                                        Dashboard
-                                    </a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className={`nav-link ${styles.text}`} href="#">
-                                        Data
-                                    </a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className={`nav-link ${styles.text}`} href="#">
-                                        Communicatie
-                                    </a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className={`nav-link ${styles.text}`} href="#">
-                                        Analyse
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                            <div className="navbar-header">
-                        <button
-                            className={`navbar-toggler ${styles.button}`}
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#navbarNav"
-                            aria-controls="navbarNav"
-                            aria-expanded="false"
-                            aria-label="Toggle navigation"
-                        >
-                            <Image src={menu} alt="My App Menu"/>
-                        </button>
-                    </div>
-                        <ul className="navbar-nav ms-auto">
-                            <li className="nav-item">
+                            <a className="navbar-brand" href="#">
+                                <Image src={logo} alt="My App Logo" width={120} height={30}/>
+                            </a>
+                            <div className={`navbar-collapse ${styles.navigation_links_top}`}>
+                                <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+                                    <li className="nav-item">
+                                        <a className={`nav-link ${styles.text}`} href="#">
+                                            Dashboard
+                                        </a>
+                                    </li>
+                                    <li className="nav-item">
+                                        <a className={`nav-link ${styles.text}`} href="#">
+                                            Data
+                                        </a>
+                                    </li>
+                                    <li className="nav-item">
+                                        <a className={`nav-link ${styles.text}`} href="#">
+                                            Communicatie
+                                        </a>
+                                    </li>
+                                    <li className="nav-item">
+                                        <a className={`nav-link ${styles.text}`} href="#">
+                                            Analyse
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="navbar-nav ms-auto position-relative">
                                 <a
-                                    className="nav-link dropdown-toggle"
+                                    className="nav-link"
                                     href="#"
                                     id="navbarDropdown1"
                                     role="button"
@@ -70,7 +56,7 @@ const AdminFilterHeader = () => {
                                     />
                                 </a>
                                 <ul
-                                    className="dropdown-menu dropdown-menu-en dropdown-menu-end"
+                                    className={`dropdown-menu dropdown-menu-end ${styles.profile}`}
                                     aria-labelledby="navbarDropdown1"
                                 >
                                     <li>
@@ -87,25 +73,55 @@ const AdminFilterHeader = () => {
                                         </a>
                                     </li>
                                 </ul>
-                            </li>
-                        </ul>
+                            </div>
+                            <div className="navbar-nav">
+                                <a
+                                    className={`nav-link ${styles.menuIcon}`}
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#navbarSupportedContent"
+                                    aria-controls="navbarSupportedContent"
+                                    aria-expanded="false"
+                                    aria-label="Toggle navigation"
+                                >
+                                    <Image src={menu} alt="My App Menu" height={24}/>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div className={`row ${styles.navigation_links_bottom}`}>
+                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+                            <li className="nav-item">
+                                <a className={`nav-link ${styles.text}`} href="#">
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li className="nav-item">
+                                <a className={`nav-link ${styles.text}`} href="#">
+                                    Data
+                                </a>
+                            </li>
+                            <li className="nav-item">
+                                <a className={`nav-link ${styles.text}`} href="#">
+                                    Communicatie
+                                </a>
+                            </li>
+                            <li className="nav-item">
+                                <a className={`nav-link ${styles.text}`} href="#">
+                                    Analyse
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
                 <div className="row">
-                    <div className="col-12 col-lg-3">
-                        <input type="text" className={`form-control ${styles.input}`} placeholder="Filter field 1"/>
-                    </div>
-                    <div className="col-12 col-lg-3">
-                        <input type="text" className={`form-control ${styles.input}`} placeholder="Filter field 2"/>
-                    </div>
-                    <div className="col-12 col-lg-3">
-                        <input type="text" className={`form-control ${styles.input}`} placeholder="Filter field 3"/>
-                    </div>
+                    <input type="text" className={`form-control ${styles.input}`} placeholder="Filter field 1"/>
+                    <input type="text" className={`form-control ${styles.input}`} placeholder="Filter field 2"/>
+                    <input type="text" className={`form-control ${styles.input}`} placeholder="Filter field 3"/>
                 </div>
             </div>
         </nav>
-
     );
 };
 
