@@ -1,18 +1,17 @@
 import BaseHeader from "@/components/header/BaseHeader";
-import {BuildingInterface, getBuildingInfo} from "@/lib/building";
-import {useRouter} from "next/router";
-import React, {useEffect, useState} from "react";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {AxiosResponse} from "axios";
+import { BuildingInterface, getBuildingInfo } from "@/lib/building";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { AxiosResponse } from "axios";
 import styles from "@/styles/Welcome.module.css";
-import {TiPencil} from "react-icons/ti";
+import { TiPencil } from "react-icons/ti";
 import Image from "next/image";
 import soon from "@/public/coming_soon.png";
 import LogoutButton from "@/components/logoutbutton";
 import PatchBuildingSyndicModal from "@/components/syndic/PatchBuildingSyndicModal";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DashboardQuery extends ParsedUrlQuery {
     id?: string;
@@ -24,7 +23,6 @@ function SyndicBuilding() {
 
     const [building, setBuilding] = useState<BuildingInterface | null>(null);
     const [editBuilding, setEditBuilding] = useState(false);
-
 
     async function fetchBuilding() {
         getBuildingInfo(query.id)
@@ -44,7 +42,8 @@ function SyndicBuilding() {
     }, [query.id]);
 
     function get_building_key(key: string) {
-        if (building) { // @ts-ignore
+        if (building) {
+            // @ts-ignore
             return building[key] || "/";
         }
         return "/";
@@ -52,7 +51,7 @@ function SyndicBuilding() {
 
     return (
         <>
-            <BaseHeader/>
+            <BaseHeader />
 
             <div>
                 <a
@@ -76,7 +75,6 @@ function SyndicBuilding() {
                 building={building}
                 setBuilding={setBuilding}
             />
-
 
             <h1>
                 Gebouw{" "}
@@ -102,7 +100,7 @@ function SyndicBuilding() {
                 https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1310&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
             </p>
 
-            <LogoutButton/>
+            <LogoutButton />
         </>
     );
 }

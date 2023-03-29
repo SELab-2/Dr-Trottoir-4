@@ -1,23 +1,19 @@
-import React, {ChangeEvent, MouseEventHandler, useState} from "react";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {Button, Form, Modal} from "react-bootstrap";
-import {BuildingInterface, generateNewPublicId, patchBuildingInfo} from "@/lib/building";
+import React, { ChangeEvent, MouseEventHandler, useState } from "react";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { Button, Form, Modal } from "react-bootstrap";
+import { BuildingInterface, generateNewPublicId, patchBuildingInfo } from "@/lib/building";
 
 function PatchBuildingSyndicModal({
-                                      show,
-                                      closeModal,
-                                      building,
-                                      setBuilding
-                                  }: {
-                                      show: boolean,
-                                      closeModal: () => void,
-                                      building: BuildingInterface | null,
-                                      setBuilding: (x: any) => void
-
-                                  }
-) {
-
-
+    show,
+    closeModal,
+    building,
+    setBuilding,
+}: {
+    show: boolean;
+    closeModal: () => void;
+    building: BuildingInterface | null;
+    setBuilding: (x: any) => void;
+}) {
     const [formData, setFormData] = useState<Object>({
         name: "",
         public_id: "",
@@ -26,17 +22,17 @@ function PatchBuildingSyndicModal({
     const [errorText, setErrorText] = useState("");
 
     const newPublicId = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
-        event?.preventDefault()
+        event?.preventDefault();
 
         generateNewPublicId("" + building?.id)
-            .then(res => {
-                setBuilding(res.data)
+            .then((res) => {
+                setBuilding(res.data);
             })
-            .catch(error => {
+            .catch((error) => {
                 //TODO: generieke functie nodig voor error messages
-                console.error(error)
-            })
-    }
+                console.error(error);
+            });
+    };
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -51,7 +47,6 @@ function PatchBuildingSyndicModal({
 
         console.log(`handleInputChange is dus gedaan, nu is formData ${JSON.stringify(formData)}`);
     };
-
 
     const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
@@ -78,7 +73,6 @@ function PatchBuildingSyndicModal({
                 console.log(error);
             });
     };
-
 
     return (
         <>
@@ -121,7 +115,7 @@ function PatchBuildingSyndicModal({
                         </Form.Group>
 
                         {/*TODO: below line should probably a custom component with a state boolean*/}
-                        <div style={{background: "red"}}>{errorText}</div>
+                        <div style={{ background: "red" }}>{errorText}</div>
 
                         <Button
                             variant="danger"
@@ -143,4 +137,3 @@ function PatchBuildingSyndicModal({
 }
 
 export default PatchBuildingSyndicModal; //withAuthorisation(PatchBuildingSyndicModal, ["Syndic"]);
-
