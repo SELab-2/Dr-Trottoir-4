@@ -1,17 +1,18 @@
 import BaseHeader from "@/components/header/BaseHeader";
-import { BuildingInterface, getBuildingInfo, patchBuildingInfo } from "@/lib/building";
-import { useRouter } from "next/router";
-import { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { AxiosResponse } from "axios";
+import {BuildingInterface, getBuildingInfo} from "@/lib/building";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {AxiosResponse} from "axios";
 import styles from "@/styles/Welcome.module.css";
-import { Button, Form, Modal } from "react-bootstrap";
-import { TiPencil } from "react-icons/ti";
+import {TiPencil} from "react-icons/ti";
 import Image from "next/image";
 import soon from "@/public/coming_soon.png";
 import LogoutButton from "@/components/logoutbutton";
+import PatchBuildingSyndicModal from "@/components/syndic/PatchBuildingSyndicModal";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DashboardQuery extends ParsedUrlQuery {
     id?: string;
@@ -23,51 +24,7 @@ function SyndicBuilding() {
 
     const [building, setBuilding] = useState<BuildingInterface | null>(null);
     const [editBuilding, setEditBuilding] = useState(false);
-    const [errorText, setErrorText] = useState("");
 
-    const [formData, setFormData] = useState<Object>({
-        name: "",
-        public_id: "",
-    });
-
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const name = event.target.name;
-        const value = event.target.value;
-
-        console.log(event.target);
-        console.log(`extracted name en value zijn ${name} en ${value}`);
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-
-        console.log(`handleInputChange is dus gedaan, nu is formData ${JSON.stringify(formData)}`);
-    };
-
-    const handleSubmit = async (event: MouseEventHandler<HTMLButtonElement>) => {
-        //event.preventDefault();
-
-        console.log(`In handleSubmit ${JSON.stringify(formData)}`);
-
-        let toSend: Object = {};
-        for (const [key, value] of Object.entries(formData)) {
-            if (value) {
-                toSend[key] = value;
-            }
-        }
-
-        patchBuildingInfo(query.id, formData)
-            .then((res) => {
-                setEditBuilding(false);
-                setBuilding(res.data);
-            })
-            .catch((error) => {
-                console.log("We hebben een error");
-                setErrorText(error.response.data.detail);
-                console.log(error.response.data.detail);
-                console.log(error);
-            });
-    };
 
     async function fetchBuilding() {
         getBuildingInfo(query.id)
@@ -75,8 +32,7 @@ function SyndicBuilding() {
                 setBuilding(buildings.data);
             })
             .catch((error) => {
-                console.log("We hebben een error");
-                console.log(error);
+                console.error(error);
             });
     }
 
@@ -88,17 +44,19 @@ function SyndicBuilding() {
     }, [query.id]);
 
     function get_building_key(key: string) {
-        if (building) return building[key] || "/";
+        if (building) { // @ts-ignore
+            return building[key] || "/";
+        }
         return "/";
     }
 
     return (
         <>
-            <BaseHeader />
+            <BaseHeader/>
 
             <div>
                 <a
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                         e.preventDefault();
                         router.push("/syndic/dashboard");
                     }}
@@ -112,62 +70,13 @@ function SyndicBuilding() {
 
             <h1 className={styles.title}>Welcome to the Syndic Dashboard!</h1>
 
-            <Modal show={editBuilding} onHide={() => setEditBuilding(false)}>
-                <Modal.Header closeButton>Bewerk gebouw</Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group className="mb-3" controlId="formPatchBuilding">
-                            <Form.Group controlId={"name"}>
-                                <Form.Label>Naam</Form.Label>
-                                <Form.Control
-                                    name="name"
-                                    defaultValue={building?.name}
-                                    onChange={handleInputChange}
-                                    placeholder="Vul de naam van het gebouw in"
-                                />
-                            </Form.Group>
+            <PatchBuildingSyndicModal
+                show={editBuilding}
+                closeModal={() => setEditBuilding(false)}
+                building={building}
+                setBuilding={setBuilding}
+            />
 
-                            <Form.Label>Public id</Form.Label>
-                            <Form.Group controlId="public_id">
-                                <Form.Control
-                                    name="public_id"
-                                    defaultValue={building?.public_id}
-                                    onChange={handleInputChange}
-                                    placeholder="vul het public id van het gebouw in"
-                                />
-                                <Button variant={"success"} size={"sm"}>
-                                    Willekeurig
-                                </Button>
-                            </Form.Group>
-                            <Form.Text className="text-muted">
-                                De inwoners van uw gebouw kunnen info over vuilnisophaling zien op de link{" "}
-                                <a
-                                    href={`${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_OWNER_BUILDING}${building?.public_id}`}
-                                >
-                                    `${process.env.NEXT_PUBLIC_BASE_API_URL}$
-                                    {process.env.NEXT_PUBLIC_API_OWNER_BUILDING}${building?.public_id}`
-                                </a>
-                            </Form.Text>
-                        </Form.Group>
-
-                        {/*TODO: below line should probably a custom component with a state boolean*/}
-                        <div style={{ background: "red" }}>{errorText}</div>
-
-                        <Button
-                            variant="danger"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                setEditBuilding(false);
-                            }}
-                        >
-                            Annuleer
-                        </Button>
-                        <Button variant="primary" type="submit" onClick={handleSubmit}>
-                            Opslaan (TODO: PATCH request)
-                        </Button>
-                    </Form>
-                </Modal.Body>
-            </Modal>
 
             <h1>
                 Gebouw{" "}
@@ -192,8 +101,8 @@ function SyndicBuilding() {
             <p>
                 https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1310&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
             </p>
-            <Image src={soon} alt="Site coming soon" className={styles.image} />
-            <LogoutButton />
+
+            <LogoutButton/>
         </>
     );
 }
