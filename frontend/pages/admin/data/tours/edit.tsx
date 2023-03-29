@@ -17,6 +17,7 @@ export default function AdminDataToursEdit() {
     const query : DataToursEditQuery = router.query as DataToursEditQuery;
     const [tour, setTour] = useState<Tour>();
     const [region, setRegion] = useState<Region>();
+    const [allBuildings, setAllBuildings] = useState<Building>()
 
     useEffect(() => {
         if (! query.tour) {
