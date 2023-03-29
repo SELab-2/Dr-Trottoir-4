@@ -93,7 +93,8 @@ class AllBuildingsOnTourView(APIView):
         """
         building_on_tour_instances = BuildingOnTour.objects.filter(tour_id=tour_id)
         building_instances = Building.objects.filter(
-            id__in=building_on_tour_instances.values_list("building_id", flat=True))
+            id__in=building_on_tour_instances.values_list("building_id", flat=True)
+        )
 
         serializer = BuildingSerializer(building_instances, many=True)
         return get_success(serializer)
