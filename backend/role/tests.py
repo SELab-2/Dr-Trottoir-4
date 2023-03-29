@@ -61,7 +61,7 @@ class RoleTests(TestCase):
         response1 = client.get(f"{backend_url}/role/123654897", follow=True)
         assert response1.status_code == 404
 
-    def test_patch_region(self):
+    def test_patch_role(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -80,7 +80,7 @@ class RoleTests(TestCase):
         assert response3.data["rank"] == 3
         assert "id" in response3.data
 
-    def test_patch_invalid_region(self):
+    def test_patch_invalid_role(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -88,7 +88,7 @@ class RoleTests(TestCase):
         response2 = client.patch(f"{backend_url}/role/123434687658/", data, follow=True)
         assert response2.status_code == 404
 
-    def test_patch_error_region(self):
+    def test_patch_error_role(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -101,7 +101,7 @@ class RoleTests(TestCase):
         response2 = client.patch(f"{backend_url}/role/{id}/", data2, follow=True)
         assert response2.status_code == 400
 
-    def test_remove_region(self):
+    def test_remove_role(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -117,14 +117,14 @@ class RoleTests(TestCase):
         response3 = client.get(f"{backend_url}/role/{id}/", follow=True)
         assert response3.status_code == 404
 
-    def test_remove_non_existent_region(self):
+    def test_remove_non_existent_role(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
         response2 = client.delete(f"{backend_url}/role/123456789/", follow=True)
         assert response2.status_code == 404
 
-    def test_add_existing_region(self):
+    def test_add_existing_role(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
