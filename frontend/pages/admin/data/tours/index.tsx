@@ -139,6 +139,7 @@ function AdminDataTours() {
                 tourViews.splice(i, 1);
             }
             setTourViews([...tourViews]);
+            // All buildingOnTour references need to stay in the db
         }, err => {
             console.error(err);
         });
@@ -156,6 +157,8 @@ function AdminDataTours() {
                         header: 'Acties',
                     },
                 }}
+                enablePagination={false}
+                enableBottomToolbar={false}
                 columns={columns}
                 data={tourViews}
                 state={{ isLoading: loading }}

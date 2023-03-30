@@ -17,3 +17,10 @@ export async function getAllBuildingsOnTourWithTourID(tourID : number) : Promise
     const request_url : string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_BUILDINGS_ON_TOUR_ID}${tourID}`;
     return await api.get(request_url);
 }
+
+export async function postBuildingOnTour(tour : number, building : number, index : number) {
+    const post_url : string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING_ON_TOUR}`;
+    return await api.post(post_url, JSON.stringify({tour, building, index}), {
+        headers: { "Content-Type": "application/json" },
+    });
+}

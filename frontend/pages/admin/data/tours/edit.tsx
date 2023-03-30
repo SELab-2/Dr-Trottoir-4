@@ -4,13 +4,14 @@ import {useRouter} from "next/router";
 import {deleteTour, getTour, postTour, Tour} from "@/lib/tour";
 import {getAllRegions, getRegion, Region} from "@/lib/region";
 import {BuildingInterface, getAllBuildings} from "@/lib/building";
-import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
+import {BuildingOnTour, getAllBuildingsOnTourWithTourID, postBuildingOnTour} from "@/lib/building-on-tour";
 import MaterialReactTable, {MRT_ColumnDef, MRT_Row} from "material-react-table";
 import {Box, Tooltip} from "@mui/material";
 import {Button} from "react-bootstrap";
 import SaveIcon from '@mui/icons-material/Save';
 import {withAuthorisation} from "@/components/with-authorisation";
 import {Delete} from "@mui/icons-material";
+import {useTranslation} from "react-i18next";
 
 
 interface ParsedUrlQuery {
@@ -46,6 +47,7 @@ type BuildingNotOnTourView = {
  * @constructor
  */
 function AdminDataToursEdit() {
+    const { t } = useTranslation();
     const router = useRouter();
     const query: DataToursEditQuery = router.query as DataToursEditQuery;
     const [tour, setTour] = useState<Tour>();
@@ -60,7 +62,7 @@ function AdminDataToursEdit() {
 
     const [possibleRegions, setPossibleRegions] = useState<Region[]>([]);
     const [selectedRegion, setSelectedRegion] = useState<string>("");
-    const [regionGiven, setRegionGiven] = useState<boolean>(true);
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const columnsBuildingOnTourView = useMemo<MRT_ColumnDef<BuildingOnTourView>[]>(
         () => [
@@ -281,15 +283,40 @@ function AdminDataToursEdit() {
             // patch tour && maybe post/patch buildingOnTours buildingOnTour.tour must become null if they are being removed
         } else {
             if (!selectedRegion) {
-                setRegionGiven(false);
+                errorMessages.push("Een ronde moet een regio hebben.");
+                setErrorMessages([...errorMessages]);
                 return;
             }
-            postTour(tourName, new Date(Date.now())).then(res => {
+            setErrorMessages([]);
+            const region: Region = possibleRegions.find((r: Region) => r.region === selectedRegion)!;
+            postTour(tourName, new Date(Date.now()), region.id).then(res => {
                 const resTour: Tour = res.data;
-                console.log(res);
+                Promise.all(
+                    buildingsOnTourView.map((b : BuildingOnTourView, index : number) =>
+                        postBuildingOnTour(resTour.id, b.buildingId, index)
+                    )
+                ).then(_ => {
+                    router.push("/admin/data/tours/").then();
+                }, err => {
+                    let errorRes = err.response;
+                    if (errorRes) {
+                        let data: [any, string[]][] = Object.entries(errorRes.data);
+                        for (const [_, errorValues] of data) {
+                            errorMessages.push(...errorValues);
+                        }
+                        setErrorMessages([...errorMessages]);
+                    }
+                });
             }, err => {
-                console.error(err);
-            })
+                let errorRes = err.response;
+                if (errorRes) {
+                    let data: [any, string[]][] = Object.entries(errorRes.data);
+                    for (const [_, errorValues] of data) {
+                        errorMessages.push(...errorValues);
+                    }
+                    setErrorMessages([...errorMessages]);
+                }
+            });
         }
     }
 
@@ -309,10 +336,13 @@ function AdminDataToursEdit() {
             <>
                 <BaseHeader/>
                 {
-                    (!regionGiven) && (
+                    (errorMessages.length > 0) && (
                         <div className={"visible alert alert-danger alert-dismissible fade show"}>
                             <ul>
-                                <li>Een ronde moet een regio hebben</li>
+                                {
+                                    errorMessages.map((err : string, index : number) =>
+                                        (<li key={index}>{t(err)}</li>))
+                                }
                             </ul>
                             <button type="button" className="btn-close" data-bs-dismiss="alert"/>
                         </div>

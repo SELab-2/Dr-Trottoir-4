@@ -33,7 +33,7 @@ function SignupForm() {
             },
             (err) => {
                 let errorRes = err.response;
-                if (errorRes.status === 400) {
+                if (errorRes && errorRes.status === 400) {
                     let errors = [];
                     let data: [any, string[]][] = Object.entries(errorRes.data);
                     for (const [_, errorValues] of data) {
@@ -63,21 +63,18 @@ function SignupForm() {
                                             <i className="fas fa-cubes fa-2x me-3" />
                                             <span className="h1 fw-bold mb-0">Sign up.</span>
                                         </div>
-
-                                        <div
-                                            className={
-                                                errorMessages.length !== 0
-                                                    ? "visible alert alert-danger alert-dismissible fade show"
-                                                    : "invisible"
-                                            }
-                                        >
-                                            <ul>
-                                                {errorMessages.map((err, i) => (
-                                                    <li key={i}>{t(err)}</li>
-                                                ))}
-                                            </ul>
-                                            <button type="button" className="btn-close" data-bs-dismiss="alert" />
-                                        </div>
+                                        {
+                                            (errorMessages.length !== 0) && (
+                                                <div className={"visible alert alert-danger alert-dismissible fade show"}>
+                                                    <ul>
+                                                        {errorMessages.map((err, i) => (
+                                                            <li key={i}>{t(err)}</li>
+                                                        ))}
+                                                    </ul>
+                                                    <button type="button" className="btn-close" data-bs-dismiss="alert" />
+                                                </div>
+                                            )
+                                        }
 
                                         <div className="form-outline mb-4">
                                             <label className="form-label">Voornaam</label>
