@@ -166,7 +166,7 @@ function AdminDataTours() {
                 // Don't show the tour_id
                 enableHiding={false}
                 initialState={{ columnVisibility: { tour_id: false } }}
-                renderRowActions={({ row, table }) => (
+                renderRowActions={({ row }) => (
                     <Box sx={{ display: 'flex', gap: '1rem' }}>
                         <Tooltip arrow placement="left" title="Pas aan">
                             <IconButton onClick={() => {

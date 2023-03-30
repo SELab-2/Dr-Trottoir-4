@@ -1,10 +1,15 @@
 import BaseHeader from "@/components/header/BaseHeader";
 import React, {useEffect, useMemo, useState} from "react";
 import {useRouter} from "next/router";
-import {deleteTour, getTour, postTour, Tour} from "@/lib/tour";
+import {deleteTour, getTour, patchTour, postTour, Tour} from "@/lib/tour";
 import {getAllRegions, getRegion, Region} from "@/lib/region";
 import {BuildingInterface, getAllBuildings} from "@/lib/building";
-import {BuildingOnTour, getAllBuildingsOnTourWithTourID, postBuildingOnTour} from "@/lib/building-on-tour";
+import {
+    BuildingOnTour, deleteBuildingOnTour,
+    getAllBuildingsOnTourWithTourID,
+    patchBuildingOnTour,
+    postBuildingOnTour
+} from "@/lib/building-on-tour";
 import MaterialReactTable, {MRT_ColumnDef, MRT_Row} from "material-react-table";
 import {Box, Tooltip} from "@mui/material";
 import {Button} from "react-bootstrap";
@@ -47,7 +52,7 @@ type BuildingNotOnTourView = {
  * @constructor
  */
 function AdminDataToursEdit() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const router = useRouter();
     const query: DataToursEditQuery = router.query as DataToursEditQuery;
     const [tour, setTour] = useState<Tour>();
@@ -95,7 +100,9 @@ function AdminDataToursEdit() {
                 header: 'ID',
             },
             {
-                accessorKey: 'index', //normal accessorKey
+                //accessorFn function that combines multiple data together
+                accessorFn: (row) => row.index + 1,
+                id: 'index',
                 header: 'Index',
             },
         ],
@@ -249,7 +256,7 @@ function AdminDataToursEdit() {
     }
 
     function addToBuildingOnTour(buildingNotOnTour: BuildingNotOnTourView) {
-        const index: number = buildingsOnTourView.length + 1;
+        const index: number = buildingsOnTourView.length;
         const bot: BuildingOnTourView = {...buildingNotOnTour, index: index};
         const i = buildingsNotOnTourView.indexOf(buildingNotOnTour);
         if (i > -1) {
@@ -261,9 +268,9 @@ function AdminDataToursEdit() {
     }
 
     function removeFromBuildingOnTour(buildingOnTourView: BuildingOnTourView) {
-        const removeIndex: number = buildingOnTourView.index - 1;
+        const removeIndex: number = buildingOnTourView.index;
         buildingsOnTourView.splice(removeIndex, 1);
-        buildingsOnTourView.forEach((b: BuildingOnTourView, index: number) => b.index = index + 1);
+        buildingsOnTourView.forEach((b: BuildingOnTourView, index: number) => b.index = index);
         setBuildingsOnTourView([...buildingsOnTourView]);
         const buildingNotOnTourView: BuildingNotOnTourView = {
             buildingName: buildingOnTourView.buildingName,
@@ -278,35 +285,69 @@ function AdminDataToursEdit() {
         setBuildingsNotOnTourView([...buildingsNotOnTourView]);
     }
 
-    function saveTour() {
-        if (tour) {
+    async function saveTour() {
+        if (tour) { // PATCH tour & delete/patch/post buildingsOnTours
+            // get all buildingsonTour that where already in the list (PATCH)
+            const alreadyExistBuildingsOnTourViews: BuildingOnTourView[] = buildingsOnTourView.filter((bot: BuildingOnTourView) =>
+                buildingsOnTour.some((b: BuildingOnTour) =>
+                    b.building === bot.buildingId && b.index != bot.index
+                ));
+            const p = await Promise.all(alreadyExistBuildingsOnTourViews.map((bot: BuildingOnTourView) => {
+                const b: BuildingOnTour = buildingsOnTour.find((b: BuildingOnTour) => bot.buildingId === b.building)!; // not undefined
+                return patchBuildingOnTour(b.id, {index: bot.index});
+            }));
+
+            // Get removed buildingOnTours from list
+            // TODO: do a delete of a building that was removed from a tour request once the database is ready
+            const removedBuildingsOnTour: BuildingOnTour[] = buildingsOnTour.filter((bot: BuildingOnTour) =>
+                buildingsNotOnTourView.some((b: BuildingNotOnTourView) =>
+                    bot.building === b.buildingId
+                ));
+            await Promise.all(removedBuildingsOnTour.map((bot: BuildingOnTour) => {
+                return deleteBuildingOnTour(bot.id);
+                //return patchBuildingOnTour(bot.id, {tour : null}); TODO: change this once db is ready
+            }));
+
+            // Get new buildingOnTours in the list (POST)
+            const nonExistentBuildingsOnTourViews: BuildingOnTourView[] = buildingsOnTourView.filter((bot: BuildingOnTourView) =>
+                !buildingsOnTour.some((b: BuildingOnTour) =>
+                    b.building === bot.buildingId
+                ));
+            await Promise.all(nonExistentBuildingsOnTourViews.map((bot: BuildingOnTourView) => {
+                return postBuildingOnTour(tour.id, bot.buildingId, bot.index);
+            }));
+
             // patch tour && maybe post/patch buildingOnTours buildingOnTour.tour must become null if they are being removed
+            patchTour(tour.id, {name: tourName}, new Date(Date.now())).then(_ => {}, err => {
+                console.error(err);
+            });
+            getAllBuildingsOnTourWithTourID(tour.id).then(res => {
+                const allBuildingsOnTour: BuildingOnTour[] = res.data;
+                setBuildingsOnTour(allBuildingsOnTour);
+            }, err => {
+                console.error(err);
+            });
         } else {
-            if (!selectedRegion) {
-                errorMessages.push("Een ronde moet een regio hebben.");
-                setErrorMessages([...errorMessages]);
-                return;
-            }
-            setErrorMessages([]);
-            const region: Region = possibleRegions.find((r: Region) => r.region === selectedRegion)!;
-            postTour(tourName, new Date(Date.now()), region.id).then(res => {
-                const resTour: Tour = res.data;
-                Promise.all(
-                    buildingsOnTourView.map((b : BuildingOnTourView, index : number) =>
-                        postBuildingOnTour(resTour.id, b.buildingId, index)
-                    )
-                ).then(_ => {
-                    router.push("/admin/data/tours/").then();
-                }, err => {
-                    let errorRes = err.response;
-                    if (errorRes) {
-                        let data: [any, string[]][] = Object.entries(errorRes.data);
-                        for (const [_, errorValues] of data) {
-                            errorMessages.push(...errorValues);
-                        }
-                        setErrorMessages([...errorMessages]);
-                    }
-                });
+            createTour(); // POST, create a new tour
+        }
+    }
+
+    function createTour() {
+        if (!selectedRegion) {
+            errorMessages.push("Een ronde moet een regio hebben.");
+            setErrorMessages([...errorMessages]);
+            return;
+        }
+        setErrorMessages([]);
+        const region: Region = possibleRegions.find((r: Region) => r.region === selectedRegion)!;
+        postTour(tourName, new Date(Date.now()), region.id).then(res => {
+            const resTour: Tour = res.data;
+            Promise.all(
+                buildingsOnTourView.map((b: BuildingOnTourView, index: number) =>
+                    postBuildingOnTour(resTour.id, b.buildingId, index)
+                )
+            ).then(_ => {
+                router.push("/admin/data/tours/").then();
             }, err => {
                 let errorRes = err.response;
                 if (errorRes) {
@@ -317,7 +358,16 @@ function AdminDataToursEdit() {
                     setErrorMessages([...errorMessages]);
                 }
             });
-        }
+        }, err => {
+            let errorRes = err.response;
+            if (errorRes) {
+                let data: [any, string[]][] = Object.entries(errorRes.data);
+                for (const [_, errorValues] of data) {
+                    errorMessages.push(...errorValues);
+                }
+                setErrorMessages([...errorMessages]);
+            }
+        });
     }
 
     function removeTour() {
@@ -340,7 +390,7 @@ function AdminDataToursEdit() {
                         <div className={"visible alert alert-danger alert-dismissible fade show"}>
                             <ul>
                                 {
-                                    errorMessages.map((err : string, index : number) =>
+                                    errorMessages.map((err: string, index: number) =>
                                         (<li key={index}>{t(err)}</li>))
                                 }
                             </ul>
@@ -377,12 +427,12 @@ function AdminDataToursEdit() {
                                     0,
                                     buildingsOnTourView.splice(draggingRow.index, 1)[0],
                                 );
-                                buildingsOnTourView.forEach((view: BuildingOnTourView, index) => view.index = index + 1);
+                                buildingsOnTourView.forEach((view: BuildingOnTourView, index) => view.index = index);
                                 setBuildingsOnTourView([...buildingsOnTourView]);
                             }
                         },
                     })}
-                    renderRowActions={({row, table}) => (
+                    renderRowActions={({row}) => (
                         <Box sx={{display: 'flex', gap: '1rem'}}>
                             <Tooltip arrow placement="left" title="Verwijder van ronde">
                                 <Button variant="warning" onClick={() => {
@@ -400,25 +450,31 @@ function AdminDataToursEdit() {
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                     setTourName(e.target.value);
                                 }}></input>
-                            <label className={!tour ? "visible" : "invisible"}>Selecteer een regio:</label>
-                            <select
-                                className={!tour ? "visible" : "invisible"}
-                                defaultValue={""}
-                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedRegion(e.target.value)}>
-                                <option disabled value={""}></option>
-                                {
-                                    possibleRegions.map((regio: Region, index: number) =>
-                                        (<option value={regio.region} key={index}>{regio.region}</option>))
-                                }
-                            </select>
-                            <label
-                                className={tour ? "visible" : "invisible"}>{region ? `Regio: ${region.region}` : ""}</label>
-                            <label
-                                className={tour ? "visible" : "invisible"}>{tour ? `Laatste aanpassing: ${(new Date(tour.modified_at)).toLocaleString()}` : ""}</label>
+                            {
+                                (!tour) && (
+                                    <>
+                                        <label>Selecteer een regio:</label>
+                                        <select defaultValue={""}
+                                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                                                    setSelectedRegion(e.target.value)}>
+                                            <option disabled value={""}></option>
+                                            {possibleRegions.map((regio: Region, index: number) => (
+                                                <option value={regio.region} key={index}>{regio.region}</option>))}
+                                        </select>
+                                    </>
+                                )
+                            }
+                            {
+                                (tour) && (
+                                    <>
+                                        <label>{region ? `Regio: ${region.region}` : ""}</label>
+                                        <label>{`Laatste aanpassing: ${(new Date(tour.modified_at)).toLocaleString()}`}</label>
+                                    </>
+                                )
+                            }
                             <Tooltip title="Sla op">
                                 <SaveIcon onClick={() => {
-                                    console.log("Sla op");// TODO: IMPLEMENT PATCH, POST
-                                    saveTour();
+                                    saveTour().then();
                                 }}/>
                             </Tooltip>
                             <Tooltip title="Verwijder ronde">
@@ -448,7 +504,7 @@ function AdminDataToursEdit() {
                     // Don't show the tour_id
                     enableHiding={false}
                     initialState={{columnVisibility: {buildingId: false}}}
-                    renderRowActions={({row, table}) => (
+                    renderRowActions={({row}) => (
                         <Box sx={{display: 'flex', gap: '1rem'}}>
                             <Tooltip arrow placement="left" title="Voeg toe aan ronde">
                                 <Button variant="warning" onClick={() => {

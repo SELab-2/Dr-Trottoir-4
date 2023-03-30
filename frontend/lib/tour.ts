@@ -31,3 +31,12 @@ export async function postTour(tourName : string, modifiedAt : Date, region : nu
         }
     );
 }
+
+export async function patchTour(tourId : number, data : Object, modifiedAt : Date) : Promise<AxiosResponse<any>> {
+    const post_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_TOUR}${tourId}`;
+    return await api.patch(post_url, JSON.stringify({...data, modified_at : modifiedAt}),
+        {
+            headers: { "Content-Type": "application/json" },
+        }
+    );
+}

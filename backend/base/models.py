@@ -269,18 +269,12 @@ class BuildingOnTour(models.Model):
 
     class Meta:
         constraints = [
-            UniqueConstraint(
-                "index",
-                "tour",
-                name="unique_index_on_tour",
-                violation_error_message="The tour has already a building on this index.",
-            ),
-            UniqueConstraint(
+           UniqueConstraint(
                 "building",
                 "tour",
                 name="unique_building_on_tour",
                 violation_error_message="This building is already on this tour.",
-            ),
+            )
         ]
 
 
