@@ -1,11 +1,11 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from base.models import Tour, BuildingOnTour, Building
 from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
-from base.models import Tour
-from base.serializers import TourSerializer
+from base.serializers import TourSerializer, BuildingTourSerializer, BuildingSerializer
 from util.request_response_util import *
-from drf_spectacular.utils import extend_schema
 
 TRANSLATE = {"region": "region_id"}
 
@@ -82,10 +82,29 @@ class TourIndividualView(APIView):
         return delete_success()
 
 
+class AllBuildingsOnTourView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
+    serializer_class = BuildingSerializer
+
+    @extend_schema(responses=get_docs(BuildingSerializer))
+    def get(self, request, tour_id):
+        """
+        Get all buildings on a tour with given id
+        """
+        building_on_tour_instances = BuildingOnTour.objects.filter(tour_id=tour_id)
+        building_instances = Building.objects.filter(
+            id__in=building_on_tour_instances.values_list("building_id", flat=True)
+        )
+
+        serializer = BuildingSerializer(building_instances, many=True)
+        return get_success(serializer)
+
+
 class AllToursView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = TourSerializer
 
+    @extend_schema(responses=get_docs(TourSerializer))
     def get(self, request):
         """
         Get all tours
