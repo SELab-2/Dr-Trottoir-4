@@ -1,7 +1,7 @@
 import BaseHeader from "@/components/header/BaseHeader";
 import React, {useEffect, useMemo, useState} from "react";
 import {useRouter} from "next/router";
-import {getTour, Tour} from "@/lib/tour";
+import {deleteTour, getTour, Tour} from "@/lib/tour";
 import {getAllRegions, getRegion, Region} from "@/lib/region";
 import {BuildingInterface, getAllBuildings} from "@/lib/building";
 import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
@@ -276,6 +276,17 @@ function AdminDataToursEdit() {
         setBuildingsNotOnTourView([...buildingsNotOnTourView]);
     }
 
+    function removeTour() {
+        if (!tour) {
+            return;
+        }
+        deleteTour(tour.id).then(async _ => {
+            await router.push("/admin/data/tours/");
+        }, err => {
+            console.error(err);
+        });
+    }
+
     return (
         <>
             <>
@@ -332,9 +343,9 @@ function AdminDataToursEdit() {
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                     setTourName(e.target.value);
                                 }}></input>
-                            <label className={!router.query.tour ? "visible" : "invisible"}>Selecteer een regio:</label>
+                            <label className={!tour ? "visible" : "invisible"}>Selecteer een regio:</label>
                             <select
-                                className={!router.query.tour ? "visible" : "invisible"}
+                                className={!tour ? "visible" : "invisible"}
                                 defaultValue={""}
                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedRegion(e.target.value)}>
                                 <option disabled value={""}></option>
@@ -344,17 +355,17 @@ function AdminDataToursEdit() {
                                 }
                             </select>
                             <label
-                                className={router.query.tour ? "visible" : "invisible"}>{region ? `Regio: ${region.region}` : ""}</label>
+                                className={tour ? "visible" : "invisible"}>{region ? `Regio: ${region.region}` : ""}</label>
                             <label
-                                className={router.query.tour ? "visible" : "invisible"}>{tour ? `Laatste aanpassing: ${(new Date(tour.modified_at)).toLocaleString()}` : ""}</label>
+                                className={tour ? "visible" : "invisible"}>{tour ? `Laatste aanpassing: ${(new Date(tour.modified_at)).toLocaleString()}` : ""}</label>
                             <Tooltip title="Sla op">
                                 <SaveIcon onClick={() => {
                                     console.log("Sla op");// TODO: IMPLEMENT PATCH, POST
                                 }}/>
                             </Tooltip>
                             <Tooltip title="Verwijder ronde">
-                                <Delete className={router.query.tour ? "visible" : "invisible"} onClick={() => {
-                                    console.log("Delete");// TODO: IMPLEMENT DELETE
+                                <Delete className={tour ? "visible" : "invisible"} onClick={() => {
+                                    removeTour();
                                 }}/>
                             </Tooltip>
                         </Box>

@@ -1,6 +1,6 @@
 import BaseHeader from "@/components/header/BaseHeader";
 import React, {useEffect, useMemo, useState} from "react";
-import {getAllTours, Tour} from "@/lib/tour";
+import {deleteTour, getAllTours, Tour} from "@/lib/tour";
 import {Region, getAllRegions} from "@/lib/region";
 import {withAuthorisation} from "@/components/with-authorisation";
 import {useRouter} from "next/router";
@@ -132,6 +132,18 @@ function AdminDataTours() {
             });
     }
 
+    function removeTour(tourView : TourView) {
+        deleteTour(tourView.tour_id).then(_ => {
+            const i = tourViews.indexOf(tourView);
+            if (i  > -1) {
+                tourViews.splice(i, 1);
+            }
+            setTourViews([...tourViews]);
+        }, err => {
+            console.error(err);
+        });
+    }
+
     return (
         <>
             <BaseHeader></BaseHeader>
@@ -162,7 +174,10 @@ function AdminDataTours() {
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
-                            <IconButton onClick={() => console.log("Delete")}>
+                            <IconButton onClick={() => {
+                                const tourView : TourView = row.original;
+                                removeTour(tourView);
+                            }}>
                                 <Delete />
                             </IconButton>
                         </Tooltip>
