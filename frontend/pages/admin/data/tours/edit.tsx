@@ -1,7 +1,7 @@
 import BaseHeader from "@/components/header/BaseHeader";
 import React, {useEffect, useMemo, useState} from "react";
 import {useRouter} from "next/router";
-import {deleteTour, getTour, Tour} from "@/lib/tour";
+import {deleteTour, getTour, postTour, Tour} from "@/lib/tour";
 import {getAllRegions, getRegion, Region} from "@/lib/region";
 import {BuildingInterface, getAllBuildings} from "@/lib/building";
 import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
@@ -60,7 +60,7 @@ function AdminDataToursEdit() {
 
     const [possibleRegions, setPossibleRegions] = useState<Region[]>([]);
     const [selectedRegion, setSelectedRegion] = useState<string>("");
-
+    const [regionGiven, setRegionGiven] = useState<boolean>(true);
 
     const columnsBuildingOnTourView = useMemo<MRT_ColumnDef<BuildingOnTourView>[]>(
         () => [
@@ -276,6 +276,23 @@ function AdminDataToursEdit() {
         setBuildingsNotOnTourView([...buildingsNotOnTourView]);
     }
 
+    function saveTour() {
+        if (tour) {
+            // patch tour && maybe post/patch buildingOnTours buildingOnTour.tour must become null if they are being removed
+        } else {
+            if (!selectedRegion) {
+                setRegionGiven(false);
+                return;
+            }
+            postTour(tourName, new Date(Date.now())).then(res => {
+                const resTour: Tour = res.data;
+                console.log(res);
+            }, err => {
+                console.error(err);
+            })
+        }
+    }
+
     function removeTour() {
         if (!tour) {
             return;
@@ -291,6 +308,16 @@ function AdminDataToursEdit() {
         <>
             <>
                 <BaseHeader/>
+                {
+                    (!regionGiven) && (
+                        <div className={"visible alert alert-danger alert-dismissible fade show"}>
+                            <ul>
+                                <li>Een ronde moet een regio hebben</li>
+                            </ul>
+                            <button type="button" className="btn-close" data-bs-dismiss="alert"/>
+                        </div>
+                    )
+                }
                 <MaterialReactTable
                     columns={columnsBuildingOnTourView}
                     data={buildingsOnTourView}
@@ -361,6 +388,7 @@ function AdminDataToursEdit() {
                             <Tooltip title="Sla op">
                                 <SaveIcon onClick={() => {
                                     console.log("Sla op");// TODO: IMPLEMENT PATCH, POST
+                                    saveTour();
                                 }}/>
                             </Tooltip>
                             <Tooltip title="Verwijder ronde">

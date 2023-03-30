@@ -22,3 +22,12 @@ export async function deleteTour(tourId : number) : Promise<AxiosResponse<any>> 
     const delete_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_TOUR}${tourId}`;
     return await api.delete(delete_url);
 }
+
+export async function postTour(tourName : string, modifiedAt : Date) : Promise<AxiosResponse<any>> {
+    const post_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_TOUR}`;
+    return await api.post(post_url, JSON.stringify({name : tourName, modified_at : modifiedAt}),
+        {
+            headers: { "Content-Type": "application/json" },
+        }
+    );
+}
