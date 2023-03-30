@@ -30,3 +30,7 @@ export async function getAllBuildings() : Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_BUILDINGS}`;
     return await api.get(request_url);
 }
+
+export function getAddress(building : BuildingInterface) : string {
+    return `${building.street} ${building.house_number} ${building.bus ? building.bus : ""}, ${building.city} ${building.postal_code}`;
+}
