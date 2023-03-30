@@ -175,7 +175,7 @@ function AdminDataTours() {
                         <ol>
                             {
                                 getBuildings(tourView.tour_id).map((b : BuildingInterface) => (
-                                   <li>{getAddress(b)}</li>
+                                   <li key={b.id}>{getAddress(b)}</li>
                                 ))
                             }
                         </ol>);
