@@ -2,12 +2,13 @@ import BaseHeader from "@/components/header/BaseHeader";
 import React, {useEffect, useMemo, useState} from "react";
 import {useRouter} from "next/router";
 import {getTour, Tour} from "@/lib/tour";
-import {getRegion, Region} from "@/lib/region";
+import {getAllRegions, getRegion, Region} from "@/lib/region";
 import {BuildingInterface, getAllBuildings} from "@/lib/building";
 import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
 import MaterialReactTable, {MRT_ColumnDef, MRT_Row} from "material-react-table";
 import {Box, Tooltip} from "@mui/material";
 import {Button} from "react-bootstrap";
+import SaveIcon from '@mui/icons-material/Save';
 import {withAuthorisation} from "@/components/with-authorisation";
 
 
@@ -48,13 +49,16 @@ function AdminDataToursEdit() {
     const query: DataToursEditQuery = router.query as DataToursEditQuery;
     const [tour, setTour] = useState<Tour>();
     const [region, setRegion] = useState<Region>();
-    const [allBuildingsInRegion, setAllBuildingsInRegionInRegion] = useState<BuildingInterface[]>([]);
+    const [allBuildingsInRegion, setAllBuildingsInRegion] = useState<BuildingInterface[]>([]);
     const [buildingsOnTour, setBuildingsOnTour] = useState<BuildingOnTour[]>([]);
 
     const [buildingsOnTourView, setBuildingsOnTourView] = useState<BuildingOnTourView[]>([]);
     const [buildingsNotOnTourView, setBuildingsNotOnTourView] = useState<BuildingNotOnTourView[]>([]);
     const [tourName, setTourName] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    const [possibleRegions, setPossibleRegions] = useState<Region[]>([]);
+    const [selectedRegion, setSelectedRegion] = useState<string>("");
 
 
     const columnsBuildingOnTourView = useMemo<MRT_ColumnDef<BuildingOnTourView>[]>(
@@ -131,13 +135,19 @@ function AdminDataToursEdit() {
 
     useEffect(() => {
         if (!query.tour) {
+            getAllRegions().then(res => {
+                setPossibleRegions(res.data);
+            }, err => {
+                console.error(err);
+            });
             return;
+        } else {
+            getTour(query.tour).then(res => {
+                setTour(res.data);
+            }, err => {
+                console.error(err);
+            });
         }
-        getTour(query.tour).then(res => {
-            setTour(res.data);
-        }, err => {
-            console.error(err);
-        });
     }, [router.isReady]);
 
     useEffect(() => {
@@ -155,7 +165,7 @@ function AdminDataToursEdit() {
         getAllBuildings().then(res => {
             const allBuildings: BuildingInterface[] = res.data;
             const buildingsInRegion = allBuildings.filter((building: BuildingInterface) => tour.region === building.region);
-            setAllBuildingsInRegionInRegion(buildingsInRegion);
+            setAllBuildingsInRegion(buildingsInRegion);
         }, err => {
             console.error(err);
         });
@@ -173,6 +183,25 @@ function AdminDataToursEdit() {
         getBuildingsOnTourView();
         getBuildingsNotOnTourView();
     }, [allBuildingsInRegion, buildingsOnTour]);
+
+    useEffect(() => {
+        if (!possibleRegions || possibleRegions.length == 0 || !selectedRegion) {
+            return;
+        }
+        const region: Region | undefined = possibleRegions.find((r: Region) => r.region === selectedRegion);
+        if (!region) {
+            return;
+        }
+        setBuildingsOnTourView([]);
+        getAllBuildings().then(res => {
+            const allBuildings: BuildingInterface[] = res.data;
+            const buildingsInRegion = allBuildings.filter((building: BuildingInterface) => region.id === building.region);
+            setIsLoading(false);
+            setAllBuildingsInRegion(buildingsInRegion);
+        }, err => {
+            console.error(err);
+        });
+    }, [selectedRegion]);
 
     /**
      * Get the buildings in the region that are not on the tour.
@@ -267,7 +296,7 @@ function AdminDataToursEdit() {
                     enableHiding={false}
                     enableBottomToolbar={false}
                     initialState={{columnVisibility: {buildingId: false}}}
-                    state={{ isLoading: isLoading }}
+                    state={{isLoading: isLoading}}
                     autoResetPageIndex={false}
                     enableRowOrdering
                     muiTableBodyRowDragHandleProps={({table}) => ({
@@ -300,10 +329,28 @@ function AdminDataToursEdit() {
                             <input
                                 value={tourName}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                setTourName(e.target.value);
-                            }}></input>
-                            <label>{region ? `Regio: ${region.region}` : ""}</label>
-                            <label>{tour ? `Laatste aanpassing: ${(new Date(tour.modified_at)).toLocaleString()}`: ""}</label>
+                                    setTourName(e.target.value);
+                                }}></input>
+                            <label className={! router.query.tour ? "visible" : "invisible"}>Selecteer een regio:</label>
+                            <select
+                                className={! router.query.tour ? "visible" : "invisible"}
+                                defaultValue={""}
+                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedRegion(e.target.value)}>
+                                <option disabled value={""}></option>
+                                {
+                                    possibleRegions.map((regio: Region, index: number) =>
+                                        (<option value={regio.region} key={index}>{regio.region}</option>))
+                                }
+                            </select>
+                            <label
+                                className={router.query.tour ? "visible" : "invisible"}>{region ? `Regio: ${region.region}` : ""}</label>
+                            <label
+                                className={router.query.tour ? "visible" : "invisible"}>{tour ? `Laatste aanpassing: ${(new Date(tour.modified_at)).toLocaleString()}` : ""}</label>
+                                <Tooltip title="Sla op">
+                                    <SaveIcon onClick={() => {
+                                        console.log("Sla op");// TODO: IMPLEMENT PATCH, POST
+                                    }}/>
+                                </Tooltip>
                         </Box>
                     )}
                 />
@@ -322,7 +369,7 @@ function AdminDataToursEdit() {
                     }}
                     enablePagination={false}
                     enableEditing
-                    state={{ isLoading: isLoading }}
+                    state={{isLoading: isLoading}}
                     // Don't show the tour_id
                     enableHiding={false}
                     initialState={{columnVisibility: {buildingId: false}}}
