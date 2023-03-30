@@ -10,6 +10,7 @@ import {Box, Tooltip} from "@mui/material";
 import {Button} from "react-bootstrap";
 import SaveIcon from '@mui/icons-material/Save';
 import {withAuthorisation} from "@/components/with-authorisation";
+import {Delete} from "@mui/icons-material";
 
 
 interface ParsedUrlQuery {
@@ -331,9 +332,9 @@ function AdminDataToursEdit() {
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                     setTourName(e.target.value);
                                 }}></input>
-                            <label className={! router.query.tour ? "visible" : "invisible"}>Selecteer een regio:</label>
+                            <label className={!router.query.tour ? "visible" : "invisible"}>Selecteer een regio:</label>
                             <select
-                                className={! router.query.tour ? "visible" : "invisible"}
+                                className={!router.query.tour ? "visible" : "invisible"}
                                 defaultValue={""}
                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedRegion(e.target.value)}>
                                 <option disabled value={""}></option>
@@ -346,11 +347,16 @@ function AdminDataToursEdit() {
                                 className={router.query.tour ? "visible" : "invisible"}>{region ? `Regio: ${region.region}` : ""}</label>
                             <label
                                 className={router.query.tour ? "visible" : "invisible"}>{tour ? `Laatste aanpassing: ${(new Date(tour.modified_at)).toLocaleString()}` : ""}</label>
-                                <Tooltip title="Sla op">
-                                    <SaveIcon onClick={() => {
-                                        console.log("Sla op");// TODO: IMPLEMENT PATCH, POST
-                                    }}/>
-                                </Tooltip>
+                            <Tooltip title="Sla op">
+                                <SaveIcon onClick={() => {
+                                    console.log("Sla op");// TODO: IMPLEMENT PATCH, POST
+                                }}/>
+                            </Tooltip>
+                            <Tooltip title="Verwijder ronde">
+                                <Delete className={router.query.tour ? "visible" : "invisible"} onClick={() => {
+                                    console.log("Delete");// TODO: IMPLEMENT DELETE
+                                }}/>
+                            </Tooltip>
                         </Box>
                     )}
                 />
