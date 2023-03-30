@@ -4,7 +4,7 @@ import {useRouter} from "next/router";
 import {getTour, Tour} from "@/lib/tour";
 import {getRegion, Region} from "@/lib/region";
 import {BuildingInterface, getAllBuildings} from "@/lib/building";
-import {BuildingOnTour, getAllBuildingsOnTour} from "@/lib/building-on-tour";
+import {BuildingOnTour, getAllBuildingsOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
 import Building from "@/pages/syndic/building";
 
 
@@ -14,25 +14,43 @@ interface DataToursEditQuery extends ParsedUrlQuery {
     tour?: number;
 }
 
+type BuildingOnTourView = {
+    buildingName : string,
+    city : string,
+    postalCode : string,
+    street : string,
+    houseNumber : number,
+    bus : string,
+    buildingId : number,
+    index : number,
+}
+
+type BuildingNotOnTourView = {
+    buildingName : string,
+    city : string,
+    postalCode : string,
+    street : string,
+    houseNumber : number,
+    bus : string,
+    buildingId : number,
+}
 
 export default function AdminDataToursEdit() {
     const router = useRouter();
     const query : DataToursEditQuery = router.query as DataToursEditQuery;
     const [tour, setTour] = useState<Tour>();
     const [region, setRegion] = useState<Region>();
-    const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
+    const [allBuildingsInRegion, setAllBuildingsInRegionInRegion] = useState<BuildingInterface[]>([]);
     const [buildingsOnTour, setBuildingsOnTour] = useState<BuildingOnTour[]>([]);
-    const [allBuildingsNotOnTour, setAllBuildingsNotOnTour] = useState<BuildingInterface[]>([]);
 
-    useEffect(() => {
+    const [buildingsOnTourView, setBuildingsOnTourView] = useState<BuildingOnTourView[]>([]);
+    const [buildingsNotOnTourView, setBuildingsNotOnTourView] = useState<BuildingNotOnTourView[]>([]);
 
-    }, []);
 
     useEffect(() => {
         if (! query.tour) {
             return;
         }
-
         getTour(query.tour).then(res => {
             setTour(res.data);
         }, err => {
@@ -53,35 +71,58 @@ export default function AdminDataToursEdit() {
         getAllBuildings().then(res => {
             const allBuildings : BuildingInterface[] = res.data;
             const buildingsInRegion = allBuildings.filter((building : BuildingInterface) => tour.region === building.region);
-            setAllBuildings(buildingsInRegion);
+            setAllBuildingsInRegionInRegion(buildingsInRegion);
         }, err => {
             console.error(err);
         });
 
-        getAllBuildingsOnTour().then(res => {
+        getAllBuildingsOnTourWithTourID(tour.id).then(res => {
            const allBuildingsOnTour : BuildingOnTour[] = res.data;
-           allBuildingsOnTour.sort((a, b) => (a.index < b.index) ? -1 : 1);
-           setBuildingsOnTour(allBuildingsOnTour.filter((buildingOnTour : BuildingOnTour) => buildingOnTour.tour === tour.id));
-
+           setBuildingsOnTour(allBuildingsOnTour);
         }, err => {
             console.error(err);
         });
     }, [tour]);
 
     useEffect(() => {
-        const allBuildingsNotOnTour = allBuildings.filter((building : BuildingInterface) =>
+        getBuildingsOnTourView();
+        getBuildingsNotOnTourView();
+    }, [allBuildingsInRegion, buildingsOnTour]);
 
+    function getBuildingsOnTourView() {
+        let botV : BuildingOnTourView[] = buildingsOnTour.map((buildingOnTour : BuildingOnTour) => {
+            const building : BuildingInterface = allBuildingsInRegion.find((building : BuildingInterface) => buildingOnTour.building === building.id)!; // This will not be undefined hence '!'
+            return {
+                buildingName : building?.name,
+                city : building?.city,
+                postalCode : building?.postal_code,
+                street : building?.street,
+                houseNumber : building?.house_number,
+                bus : building?.bus,
+                buildingId : building?.id,
+                index : buildingOnTour.index,
+            };
+        });
+        botV.sort((a : BuildingOnTourView, b : BuildingOnTourView) => a.index < b.index ? -1 : 1);
+        setBuildingsOnTourView(botV);
+    }
+
+    function getBuildingsNotOnTourView() {
+        const allBuildingsNotOnTour = allBuildingsInRegion.filter((building : BuildingInterface) =>
             ! buildingsOnTour.some((buildingOnTour : BuildingOnTour) => building.id === buildingOnTour.building)
         );
-        setAllBuildingsNotOnTour(allBuildingsNotOnTour);
-    }, [allBuildings,buildingsOnTour]);
-
-    function getBuildingFromBuildingOnTour(buildingOnTour : BuildingOnTour) {
-        const building : BuildingInterface | undefined = allBuildings.find((building : BuildingInterface) => buildingOnTour.building === building.id);
-        if (!building) {
-            return;
-        }
-        return building;
+        const bnotV : BuildingNotOnTourView[] = allBuildingsNotOnTour.map((building : BuildingInterface) => {
+           return {
+               buildingName : building.name,
+               city : building.city,
+               postalCode : building.postal_code,
+               street : building.street,
+               houseNumber : building.house_number,
+               bus : building.bus,
+               buildingId : building.id,
+           };
+        });
+        setBuildingsNotOnTourView(bnotV);
     }
 
     return (
@@ -94,10 +135,9 @@ export default function AdminDataToursEdit() {
                 <div>Gebouwen: </div>
                 <ol>
                     {
-                        buildingsOnTour.map((buildingOnTour : BuildingOnTour, index : number) => {
-                            const building = getBuildingFromBuildingOnTour(buildingOnTour);
+                        buildingsOnTourView.map((view : BuildingOnTourView, index : number) => {
                             return (
-                                <li key={index}>{building?.city} {building?.postal_code}, {building?.street} {building?.house_number}</li>
+                                <li key={index}>{view.street} {view.houseNumber}</li>
                             );
                         })
                     }
@@ -105,8 +145,8 @@ export default function AdminDataToursEdit() {
                 <div>Mogelijke toevoegingen:</div>
                 <ul>
                     {
-                        allBuildingsNotOnTour.map((building : BuildingInterface, index : number) => (
-                            <li key={index}>{building.city} {building.postal_code}, {building.street} {building.house_number}</li>
+                        buildingsNotOnTourView.map((view : BuildingNotOnTourView, index : number) => (
+                            <li key={index}>{view.street} {view.houseNumber}</li>
                         ))
                     }
                 </ul>

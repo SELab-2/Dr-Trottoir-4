@@ -7,7 +7,7 @@ export interface BuildingInterface {
     postal_code: string;
     street: string;
     house_number: number;
-    bus: number;
+    bus: string;
     client_id: number;
     duration: Date;
     syndic_id: number;

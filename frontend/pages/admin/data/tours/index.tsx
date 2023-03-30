@@ -10,9 +10,8 @@ import MaterialReactTable, {
 import {Box, IconButton, Tooltip} from "@mui/material";
 import {Button} from "react-bootstrap";
 import {Delete, Edit} from "@mui/icons-material";
-import {BuildingOnTour, getAllBuildingsOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
+import {BuildingOnTour, getAllBuildingsOnTour} from "@/lib/building-on-tour";
 import {BuildingInterface, getAddress, getAllBuildings} from "@/lib/building";
-import Building from "@/pages/syndic/building";
 
 type TourView = {
     name: string,
