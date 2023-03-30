@@ -1,11 +1,15 @@
 import BaseHeader from "@/components/header/BaseHeader";
-import {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {useRouter} from "next/router";
 import {getTour, Tour} from "@/lib/tour";
 import {getRegion, Region} from "@/lib/region";
-import {BuildingInterface, getAllBuildings} from "@/lib/building";
+import {BuildingInterface, getAddress, getAllBuildings} from "@/lib/building";
 import {BuildingOnTour, getAllBuildingsOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
 import Building from "@/pages/syndic/building";
+import MaterialReactTable, {MRT_ColumnDef, MRT_Row} from "material-react-table";
+import {Box, IconButton, Tooltip} from "@mui/material";
+import {Delete, Edit} from "@mui/icons-material";
+import {Button} from "react-bootstrap";
 
 
 interface ParsedUrlQuery {}
@@ -46,6 +50,77 @@ export default function AdminDataToursEdit() {
     const [buildingsOnTourView, setBuildingsOnTourView] = useState<BuildingOnTourView[]>([]);
     const [buildingsNotOnTourView, setBuildingsNotOnTourView] = useState<BuildingNotOnTourView[]>([]);
 
+    const columnsBuildingOnTourView = useMemo<MRT_ColumnDef<BuildingOnTourView>[]>(
+        () => [
+            {
+                accessorKey: 'buildingName', //access nested data with dot notation
+                header: 'Naam',
+            },
+            {
+                accessorKey: 'city',
+                header: 'Stad',
+            },
+            {
+                accessorKey: 'postalCode', //normal accessorKey
+                header: 'Postcode',
+            },
+            {
+                accessorKey: 'street', //normal accessorKey
+                header: 'Straat',
+            },
+            {
+                accessorKey: 'houseNumber', //normal accessorKey
+                header: 'Nummer',
+            },
+            {
+                accessorKey: 'bus', //normal accessorKey
+                header: 'Bus',
+            },
+            {
+                accessorKey: 'buildingId', //normal accessorKey
+                header: 'ID',
+            },
+            {
+                accessorKey: 'index', //normal accessorKey
+                header: 'Index',
+            },
+        ],
+        [],
+    );
+
+    const columnsBuildingNotOnTourView = useMemo<MRT_ColumnDef<BuildingNotOnTourView>[]>(
+        () => [
+            {
+                accessorKey: 'buildingName', //access nested data with dot notation
+                header: 'Naam',
+            },
+            {
+                accessorKey: 'city',
+                header: 'Stad',
+            },
+            {
+                accessorKey: 'postalCode', //normal accessorKey
+                header: 'Postcode',
+            },
+            {
+                accessorKey: 'street', //normal accessorKey
+                header: 'Straat',
+            },
+            {
+                accessorKey: 'houseNumber', //normal accessorKey
+                header: 'Nummer',
+            },
+            {
+                accessorKey: 'bus', //normal accessorKey
+                header: 'Bus',
+            },
+            {
+                accessorKey: 'buildingId', //normal accessorKey
+                header: 'ID',
+            },
+        ],
+        [],
+    );
 
     useEffect(() => {
         if (! query.tour) {
@@ -100,7 +175,7 @@ export default function AdminDataToursEdit() {
                 houseNumber : building?.house_number,
                 bus : building?.bus,
                 buildingId : building?.id,
-                index : buildingOnTour.index,
+                index : buildingOnTour.index + 1,
             };
         });
         botV.sort((a : BuildingOnTourView, b : BuildingOnTourView) => a.index < b.index ? -1 : 1);
@@ -133,23 +208,57 @@ export default function AdminDataToursEdit() {
                 <p>Tour : {tour?.name}</p>
                 <p>Regio : {region?.region}</p>
                 <div>Gebouwen: </div>
-                <ol>
-                    {
-                        buildingsOnTourView.map((view : BuildingOnTourView, index : number) => {
-                            return (
-                                <li key={index}>{view.street} {view.houseNumber}</li>
-                            );
-                        })
-                    }
-                </ol>
+                <MaterialReactTable
+                    autoResetPageIndex={false}
+                    columns={columnsBuildingOnTourView}
+                    data={buildingsOnTourView}
+                    enableRowOrdering
+                    enableSorting={false}
+                    enableHiding={false}
+                    initialState={{ columnVisibility: { buildingId: false } }}
+                    muiTableBodyRowDragHandleProps={({ table }) => ({
+                        onDragEnd: () => {
+                            const { draggingRow, hoveredRow } = table.getState();
+                            if (hoveredRow && draggingRow) {
+                                buildingsOnTourView.splice(
+                                    (hoveredRow as MRT_Row<BuildingOnTourView>).index,
+                                    0,
+                                    buildingsOnTourView.splice(draggingRow.index, 1)[0],
+                                );
+                                buildingsOnTourView.forEach((view : BuildingOnTourView, index) => view.index = index + 1);
+                                setBuildingsOnTourView([...buildingsOnTourView]);
+                            }
+                        },
+                    })}
+                />
                 <div>Mogelijke toevoegingen:</div>
-                <ul>
-                    {
-                        buildingsNotOnTourView.map((view : BuildingNotOnTourView, index : number) => (
-                            <li key={index}>{view.street} {view.houseNumber}</li>
-                        ))
-                    }
-                </ul>
+                <MaterialReactTable
+                    displayColumnDefOptions={{
+                        'mrt-row-actions': {
+                            muiTableHeadCellProps: {
+                                align: 'center',
+                            },
+                            header: 'Acties',
+                        },
+                    }}
+                    columns={columnsBuildingNotOnTourView}
+                    data={buildingsNotOnTourView}
+                    enableEditing
+                    // Don't show the tour_id
+                    enableHiding={false}
+                    initialState={{ columnVisibility: { buildingId: false } }}
+                    renderRowActions={({ row, table }) => (
+                        <Box sx={{ display: 'flex', gap: '1rem' }}>
+                            <Tooltip arrow placement="left" title="Pas aan">
+                                <IconButton onClick={() => {
+                                    console.log("Add to active buildings")
+                                }}>
+                                    <Edit />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                    )}
+                />
                 <p>
                     https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=115-606&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
                 </p>
