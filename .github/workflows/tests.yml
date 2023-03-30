@@ -1,0 +1,23 @@
+name: Test Code Base
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  test:
+    name: Test Code Base
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Run Docker Tests
+        uses: cloudposse/github-action-docker-compose-test-run@0.1.2
+        with:
+          file: test-docker-compose.yml
+          service: test-backend
+          command: python3 backend/manage.py test building role building_comment building_on_tour garbage_collection manual region tour picture_building student_at_building_on_tour --with-coverage --cover-package=building,building_on_tour,garbage_collection,manual,region,tour,building_comment,picture_building,student_at_building_on_tour,role
+        
