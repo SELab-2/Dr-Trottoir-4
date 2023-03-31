@@ -17,6 +17,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import {withAuthorisation} from "@/components/with-authorisation";
 import {Delete} from "@mui/icons-material";
 import {useTranslation} from "react-i18next";
+import {getAndSetErrors} from "@/lib/error";
 
 
 interface ParsedUrlQuery {
@@ -338,12 +339,8 @@ function AdminDataToursEdit() {
                 setTour(res.data);
             }, err => {
                 let errorRes = err.response;
-                if (errorRes) {
-                    let data: [any, string[]][] = Object.entries(errorRes.data);
-                    for (const [_, errorValues] of data) {
-                        errorMessages.push(...errorValues);
-                    }
-                    setErrorMessages([...errorMessages]);
+                if (errorRes && errorRes.status === 400) {
+                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
                 }
             });
             getAllBuildingsOnTourWithTourID(tour.id).then(res => {
@@ -419,7 +416,7 @@ function AdminDataToursEdit() {
                                         (<li key={index}>{t(err)}</li>))
                                 }
                             </ul>
-                            <button type="button" className="btn-close" data-bs-dismiss="alert"/>
+                            <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
                         </div>
                     )
                 }
