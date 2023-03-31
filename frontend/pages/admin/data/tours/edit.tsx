@@ -255,6 +255,10 @@ function AdminDataToursEdit() {
         setBuildingsNotOnTourView(bnotV);
     }
 
+    /**
+     * This adds a building from the buildingNotOnTour table to the buildingOnTour table
+     * @param buildingNotOnTour a building that needs to be added to the buildings on the tour table
+     */
     function addToBuildingOnTour(buildingNotOnTour: BuildingNotOnTourView) {
         const index: number = buildingsOnTourView.length;
         const bot: BuildingOnTourView = {...buildingNotOnTour, index: index};
@@ -267,6 +271,10 @@ function AdminDataToursEdit() {
         setBuildingsOnTourView([...buildingsOnTourView]);
     }
 
+    /**
+     * This removes a building from the buildingOnTour table to the buildingNotOnTour table
+     * @param buildingOnTourView a building that needs to be removed from the buildings on tour table
+     */
     function removeFromBuildingOnTour(buildingOnTourView: BuildingOnTourView) {
         const removeIndex: number = buildingOnTourView.index;
         buildingsOnTourView.splice(removeIndex, 1);
@@ -285,15 +293,22 @@ function AdminDataToursEdit() {
         setBuildingsNotOnTourView([...buildingsNotOnTourView]);
     }
 
+    /**
+     * Saves a tour, either a patch/post of a tour and post/patch/delete of buildingOntour
+     */
     async function saveTour() {
         setErrorMessages([]);
+        if (tourName === "") {
+            setErrorMessages(["De naam van een tour mag niet leeg zijn."]);
+            return;
+        }
         if (tour) { // PATCH tour & delete/patch/post buildingsOnTours
             // get all buildingsonTour that where already in the list (PATCH)
             const alreadyExistBuildingsOnTourViews: BuildingOnTourView[] = buildingsOnTourView.filter((bot: BuildingOnTourView) =>
                 buildingsOnTour.some((b: BuildingOnTour) =>
                     b.building === bot.buildingId && b.index != bot.index
                 ));
-            const p = await Promise.all(alreadyExistBuildingsOnTourViews.map((bot: BuildingOnTourView) => {
+            await Promise.all(alreadyExistBuildingsOnTourViews.map((bot: BuildingOnTourView) => {
                 const b: BuildingOnTour = buildingsOnTour.find((b: BuildingOnTour) => bot.buildingId === b.building)!; // not undefined
                 return patchBuildingOnTour(b.id, {index: bot.index});
             }));
@@ -343,12 +358,12 @@ function AdminDataToursEdit() {
     }
 
     function createTour() {
+        setErrorMessages([]);
         if (!selectedRegion) {
             errorMessages.push("Een ronde moet een regio hebben.");
             setErrorMessages([...errorMessages]);
             return;
         }
-        setErrorMessages([]);
         const region: Region = possibleRegions.find((r: Region) => r.region === selectedRegion)!;
         postTour(tourName, new Date(Date.now()), region.id).then(res => {
             const resTour: Tour = res.data;

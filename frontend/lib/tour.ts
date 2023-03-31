@@ -18,6 +18,11 @@ export async function getTour(tourId: number) : Promise<AxiosResponse<any>> {
     return await api.get(request_url);
 }
 
+export async function getBuildingsOfTour(tourId : number) : Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_TOUR}${tourId}/buildings/`;
+    return await api.get(request_url);
+}
+
 export async function deleteTour(tourId : number) : Promise<AxiosResponse<any>> {
     const delete_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_TOUR}${tourId}`;
     return await api.delete(delete_url);
