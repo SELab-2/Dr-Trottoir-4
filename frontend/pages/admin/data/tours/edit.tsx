@@ -286,6 +286,7 @@ function AdminDataToursEdit() {
     }
 
     async function saveTour() {
+        setErrorMessages([]);
         if (tour) { // PATCH tour & delete/patch/post buildingsOnTours
             // get all buildingsonTour that where already in the list (PATCH)
             const alreadyExistBuildingsOnTourViews: BuildingOnTourView[] = buildingsOnTourView.filter((bot: BuildingOnTourView) =>
@@ -318,8 +319,17 @@ function AdminDataToursEdit() {
             }));
 
             // patch tour && maybe post/patch buildingOnTours buildingOnTour.tour must become null if they are being removed
-            patchTour(tour.id, {name: tourName}, new Date(Date.now())).then(_ => {}, err => {
-                console.error(err);
+            patchTour(tour.id, {name: tourName}, new Date(Date.now())).then(res => {
+                setTour(res.data);
+            }, err => {
+                let errorRes = err.response;
+                if (errorRes) {
+                    let data: [any, string[]][] = Object.entries(errorRes.data);
+                    for (const [_, errorValues] of data) {
+                        errorMessages.push(...errorValues);
+                    }
+                    setErrorMessages([...errorMessages]);
+                }
             });
             getAllBuildingsOnTourWithTourID(tour.id).then(res => {
                 const allBuildingsOnTour: BuildingOnTour[] = res.data;
