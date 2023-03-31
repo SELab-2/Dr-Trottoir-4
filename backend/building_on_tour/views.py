@@ -83,6 +83,20 @@ class BuildingTourIndividualView(APIView):
         return delete_success()
 
 
+class AllBuilingsOnTourInTourView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
+    serializer_class = BuildingTourSerializer
+
+    @extend_schema(responses=get_docs(BuildingTourSerializer))
+    def get(self, request, tour_id):
+        """
+        Get all BuildingsOnTour with given tour id
+        """
+        building_on_tour_instances = BuildingOnTour.objects.filter(tour_id=tour_id)
+        serializer = BuildingTourSerializer(building_on_tour_instances, many=True)
+        return get_success(serializer)
+
+
 class AllBuildingToursView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
     serializer_class = BuildingTourSerializer

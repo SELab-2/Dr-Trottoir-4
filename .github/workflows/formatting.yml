@@ -10,6 +10,8 @@ jobs:
   format:
     name: Format Code Base
     runs-on: ubuntu-latest
+    # don't format the Dependabot PR's, for security reasons (can't access secrets.GITHUB_TOKEN)
+    if: ${{ github.actor != 'dependabot[bot]' }} 
 
     steps:
       - name: Checkout code

@@ -3,7 +3,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import Building
-from base.permissions import ReadOnlyOwnerOfBuilding, IsAdmin, IsSuperStudent, ReadOnlyStudent
+from base.permissions import (
+    ReadOnlyOwnerOfBuilding,
+    IsAdmin,
+    IsSuperStudent,
+    ReadOnlyStudent,
+    OwnerOfBuilding,
+    OwnerWithLimitedPatch,
+)
 from base.serializers import BuildingSerializer
 from util.request_response_util import *
 
@@ -33,7 +40,7 @@ class DefaultBuilding(APIView):
 
 
 class BuildingIndividualView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerWithLimitedPatch]
     serializer_class = BuildingSerializer
 
     @extend_schema(responses=get_docs(BuildingSerializer))
@@ -108,6 +115,7 @@ class BuildingPublicView(APIView):
 
 class BuildingNewPublicId(APIView):
     serializer_class = BuildingSerializer
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding]
 
     @extend_schema(
         description="Generate a new unique uuid as public id for the building.",
@@ -123,6 +131,8 @@ class BuildingNewPublicId(APIView):
             return not_found("Building")
 
         building_instance = building_instance[0]
+
+        self.check_object_permissions(request, building_instance)
 
         building_instance.public_id = get_unique_uuid()
 

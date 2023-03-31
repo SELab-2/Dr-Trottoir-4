@@ -108,6 +108,31 @@ class ReadOnlyOwnerOfBuilding(BasePermission):
         return False
 
 
+class OwnerWithLimitedPatch(BasePermission):
+    """
+    Checks if the syndic patches
+    """
+
+    message = "You can only patch the building public id and the name of the building that you own"
+
+    def has_permission(self, request, view):
+        return request.user.role.name.lower() == "syndic"
+
+    def has_object_permission(self, request, view, obj: Building):
+        if request.method in SAFE_METHODS:
+            return True
+
+        if request.method == "PATCH":
+            data = request_to_dict(request.data)
+            print(data.keys())
+            for k in data.keys():
+                if k not in ["public_id", "name"]:
+                    return False
+            return True
+        else:
+            return False
+
+
 class OwnerAccount(BasePermission):
     """
     Checks if the user owns the user account
