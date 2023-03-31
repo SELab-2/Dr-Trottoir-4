@@ -13,18 +13,20 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-from authentication.serializers import CustomTokenRefreshSerializer, CustomTokenVerifySerializer, \
-    CustomSignUpSerializer, CustomLogoutSerializer, CustomLoginResponseSerializer
+from authentication.serializers import (
+    CustomTokenRefreshSerializer,
+    CustomTokenVerifySerializer,
+    CustomSignUpSerializer,
+    CustomLogoutSerializer,
+    CustomLoginResponseSerializer,
+)
 from base.models import Lobby
 from base.serializers import UserSerializer
 from util.request_response_util import post_success
 
 
 class CustomSignUpView(APIView):
-    @extend_schema(
-        request={None: CustomSignUpSerializer},
-        responses={200: UserSerializer}
-    )
+    @extend_schema(request={None: CustomSignUpSerializer}, responses={200: UserSerializer})
     def post(self, request):
         """
         Register a new user
@@ -42,16 +44,17 @@ class CustomSignUpView(APIView):
 
 
 class CustomLoginView(LoginView):
-
     @extend_schema(responses={200: CustomLoginResponseSerializer})
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
     def get_response(self):
-        serializer = CustomLoginResponseSerializer(data={
-            "message": _("successful login"),
-            "user": UserSerializer(self.user).data,
-        })
+        serializer = CustomLoginResponseSerializer(
+            data={
+                "message": _("successful login"),
+                "user": UserSerializer(self.user).data,
+            }
+        )
         response = Response(serializer.data, status=status.HTTP_200_OK)
         set_jwt_cookies(response, self.access_token, self.refresh_token)
         return response
