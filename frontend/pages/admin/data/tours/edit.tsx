@@ -372,22 +372,14 @@ function AdminDataToursEdit() {
                 router.push("/admin/data/tours/").then();
             }, err => {
                 let errorRes = err.response;
-                if (errorRes) {
-                    let data: [any, string[]][] = Object.entries(errorRes.data);
-                    for (const [_, errorValues] of data) {
-                        errorMessages.push(...errorValues);
-                    }
-                    setErrorMessages([...errorMessages]);
+                if (errorRes && errorRes.status === 400) {
+                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
                 }
             });
         }, err => {
             let errorRes = err.response;
-            if (errorRes) {
-                let data: [any, string[]][] = Object.entries(errorRes.data);
-                for (const [_, errorValues] of data) {
-                    errorMessages.push(...errorValues);
-                }
-                setErrorMessages([...errorMessages]);
+            if (errorRes && errorRes.status === 400) {
+                getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
             }
         });
     }
