@@ -37,7 +37,7 @@ export default function AdminCommunication() {
         getAllEmailTemplates().then(res => {
             const emailTemplates : EmailTemplate[] = res.data;
             setAllTemplates(emailTemplates);
-            setSelectedTemplate({id: allTemplates[0].id, name: allTemplates[0].name});
+            setSelectedTemplate({id: emailTemplates[0].id, name: emailTemplates[0].name});
         }, err => {
             console.error(err);
         });
@@ -45,7 +45,7 @@ export default function AdminCommunication() {
         getAllBuildingComments().then(res => {
             const buildingComments : BuildingComment[] = res.data;
             setAllComments(buildingComments);
-            setSelectedComment({id: allComments[0], name: allComments[0].comment});
+            setSelectedComment({id: buildingComments[0], name: buildingComments[0].comment});
         }, err => {
             console.error(err);
         });
@@ -61,36 +61,18 @@ export default function AdminCommunication() {
                 <BaseHeader />
                 <p className={styles.title}>Communicatie extern</p>
                 <Combobox value={selectedTemplate} onChange={setSelectedTemplate}>
-                    <div>
-                        <div>
-                        <Combobox.Input
-                            displayValue={(template: EmailTemplate) => template.name}
-                            onChange={(event) => setTemplateQuery(event.target.value)}
-                        />
-                        <Combobox.Button>
-
-                        </Combobox.Button>
-                        </div>
-                        <Transition
-                            as={Fragment}
-                            leave="transition ease-in duration-100"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                            afterLeave={() => setTemplateQuery("")}
-                            >
-                                <Combobox.Options>
-                                    
-                                </Combobox.Options>
-                        </Transition>
-                    </div>
-                    
-                </Combobox>
-                <h1 className={styles.text}>Templates:</h1>
-                    <ul>
-                        {allTemplates.map((item, index) => (
-                            <li key={index}>{JSON.stringify(item)}</li>
+                    <Combobox.Input
+                        displayValue={(template: EmailTemplate) => template.name}
+                        onChange={(event) => setTemplateQuery(event.target.value)}
+                    /><h1 className={styles.text}>Templates:</h1>
+                    <Combobox.Options>
+                        {filteredTemplates.map((template) => (
+                            <Combobox.Option key={template.name} value={template.name}>
+                                {template.name}
+                            </Combobox.Option>
                         ))}
-                    </ul>
+                    </Combobox.Options>
+                </Combobox>
             </>
         </>
     );
