@@ -144,6 +144,9 @@ function AdminDataToursEdit() {
         [],
     );
 
+    /**
+     * Check if a tour is present in the router query
+     */
     useEffect(() => {
         if (!query.tour) {
             getAllRegions().then(res => {
@@ -172,7 +175,7 @@ function AdminDataToursEdit() {
         }, err => {
             console.error(err);
         });
-
+        // Get all the buildings in a region TODO: wait for this endpoint and change this
         getAllBuildings().then(res => {
             const allBuildings: BuildingInterface[] = res.data;
             const buildingsInRegion = allBuildings.filter((building: BuildingInterface) => tour.region === building.region);
@@ -180,7 +183,7 @@ function AdminDataToursEdit() {
         }, err => {
             console.error(err);
         });
-
+        // Get all the buildingOnTour objects of a tour
         getAllBuildingsOnTourWithTourID(tour.id).then(res => {
             const allBuildingsOnTour: BuildingOnTour[] = res.data;
             setBuildingsOnTour(allBuildingsOnTour);
@@ -189,21 +192,27 @@ function AdminDataToursEdit() {
         });
     }, [tour]);
 
+    /**
+     * Set the buildings in the correct table (on tour / not on tour but in region)
+     */
     useEffect(() => {
         setIsLoading(false);
         getBuildingsOnTourView();
         getBuildingsNotOnTourView();
     }, [allBuildingsInRegion, buildingsOnTour]);
 
+
     useEffect(() => {
         if (!possibleRegions || possibleRegions.length == 0 || !selectedRegion) {
             return;
         }
+        // Get the selected region
         const region: Region | undefined = possibleRegions.find((r: Region) => r.region === selectedRegion);
         if (!region) {
             return;
         }
         setBuildingsOnTourView([]);
+        // Get all the buildings in a region when a region is selected
         getAllBuildings().then(res => {
             const allBuildings: BuildingInterface[] = res.data;
             const buildingsInRegion = allBuildings.filter((building: BuildingInterface) => region.id === building.region);
