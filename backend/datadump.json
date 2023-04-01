@@ -40,6 +40,14 @@
     }
 },
 {
+    "model": "sessions.session",
+    "pk": "vi0mcac2q2xamblpgc684mc9e7pa3taw",
+    "fields": {
+        "session_data": ".eJxVjEEOwiAURO_C2hCk8AF39iLk84FAbGgidGW8u63pQpfz3sy8mMdtFL_19PQ1shtTil1-YUB6pHYYXJYDcyRatzb4t3Pqzu97Sm1UwlHXNp-rv6uCvew_FoECSCVcSAooAiXtUpbZSpODimYCAqcdOm13JY0Vxlw1iCDiFKNi7w_vSDxt:1piaoS:yGQZ1-RBbvBElxeXrdlH2KidLSh-zOVQfL1IfzgOppc",
+        "expire_date": "2023-04-15T12:58:32.537Z"
+    }
+},
+{
     "model": "sites.site",
     "fields": {
         "domain": "example.com",
@@ -539,7 +547,7 @@
     "model": "base.user",
     "fields": {
         "password": "pbkdf2_sha256$390000$XIix7oaPLNdNBRo3mwywn1$kL4TIo2RxnAnLOfG95pfoc39X2/JQHADOTfd1oC9erg=",
-        "last_login": "2023-03-08T17:35:58.934Z",
+        "last_login": "2023-04-01T12:58:32.530Z",
         "is_superuser": true,
         "email": "admin@test.com",
         "is_staff": true,
@@ -1395,179 +1403,330 @@
     }
 },
 {
-    "model": "base.studentatbuildingontour",
+    "model": "base.studentontour",
+    "pk": 1,
+    "fields": {
+        "tour": 1,
+        "date": "2023-04-01",
+        "student": [
+            "stijn@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentontour",
+    "pk": 2,
+    "fields": {
+        "tour": 3,
+        "date": "2023-04-01",
+        "student": [
+            "stef@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentontour",
     "pk": 3,
     "fields": {
-        "building_on_tour": 1,
-        "date": "2023-03-09",
+        "tour": 1,
+        "date": "2023-04-18",
         "student": [
-            "stella@test.com"
+            "steven@test.com"
         ]
     }
 },
 {
-    "model": "base.studentatbuildingontour",
+    "model": "base.studentontour",
     "pk": 4,
     "fields": {
-        "building_on_tour": 15,
-        "date": "2023-03-09",
+        "tour": 1,
+        "date": "2023-04-11",
         "student": [
-            "stella@test.com"
+            "stephan@test.com"
         ]
     }
 },
 {
-    "model": "base.studentatbuildingontour",
+    "model": "base.studentontour",
     "pk": 5,
     "fields": {
-        "building_on_tour": 14,
-        "date": "2023-03-09",
+        "tour": 1,
+        "date": "2023-04-11",
         "student": [
-            "stella@test.com"
+            "sten@test.com"
         ]
     }
 },
 {
-    "model": "base.studentatbuildingontour",
+    "model": "base.studentontour",
     "pk": 6,
     "fields": {
-        "building_on_tour": 16,
-        "date": "2023-03-09",
+        "tour": 1,
+        "date": "2023-04-24",
+        "student": [
+            "stijn@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentontour",
+    "pk": 7,
+    "fields": {
+        "tour": 1,
+        "date": "2023-04-27",
+        "student": [
+            "steven@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentontour",
+    "pk": 8,
+    "fields": {
+        "tour": 1,
+        "date": "2023-04-22",
+        "student": [
+            "sten@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentontour",
+    "pk": 9,
+    "fields": {
+        "tour": 1,
+        "date": "2023-04-17",
+        "student": [
+            "stijn@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentontour",
+    "pk": 10,
+    "fields": {
+        "tour": 2,
+        "date": "2023-04-10",
         "student": [
             "stella@test.com"
         ]
     }
 },
 {
-    "model": "base.studentatbuildingontour",
-    "pk": 7,
-    "fields": {
-        "building_on_tour": 2,
-        "date": "2023-03-09",
-        "student": [
-            "stijn@test.com"
-        ]
-    }
-},
-{
-    "model": "base.studentatbuildingontour",
-    "pk": 8,
-    "fields": {
-        "building_on_tour": 11,
-        "date": "2023-03-09",
-        "student": [
-            "stijn@test.com"
-        ]
-    }
-},
-{
-    "model": "base.studentatbuildingontour",
-    "pk": 9,
-    "fields": {
-        "building_on_tour": 12,
-        "date": "2023-03-09",
-        "student": [
-            "stijn@test.com"
-        ]
-    }
-},
-{
-    "model": "base.studentatbuildingontour",
-    "pk": 10,
-    "fields": {
-        "building_on_tour": 13,
-        "date": "2023-03-09",
-        "student": [
-            "stijn@test.com"
-        ]
-    }
-},
-{
-    "model": "base.studentatbuildingontour",
+    "model": "base.studentontour",
     "pk": 11,
     "fields": {
-        "building_on_tour": 3,
-        "date": "2023-03-08",
+        "tour": 4,
+        "date": "2023-04-19",
         "student": [
-            "stacey@test.com"
+            "stefanie@test.com"
         ]
     }
 },
 {
-    "model": "base.studentatbuildingontour",
+    "model": "base.studentontour",
     "pk": 12,
     "fields": {
-        "building_on_tour": 4,
-        "date": "2023-03-08",
+        "tour": 2,
+        "date": "2023-04-19",
         "student": [
             "stacey@test.com"
         ]
     }
 },
 {
-    "model": "base.studentatbuildingontour",
+    "model": "base.studentontour",
     "pk": 13,
     "fields": {
-        "building_on_tour": 5,
-        "date": "2023-03-08",
+        "tour": 2,
+        "date": "2023-04-18",
         "student": [
-            "stacey@test.com"
+            "stefanie@test.com"
         ]
     }
 },
 {
-    "model": "base.studentatbuildingontour",
+    "model": "base.studentontour",
     "pk": 14,
     "fields": {
-        "building_on_tour": 6,
-        "date": "2023-03-08",
+        "tour": 4,
+        "date": "2023-04-26",
+        "student": [
+            "stella@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentontour",
+    "pk": 15,
+    "fields": {
+        "tour": 4,
+        "date": "2023-04-10",
         "student": [
             "stacey@test.com"
         ]
     }
 },
 {
-    "model": "base.studentatbuildingontour",
-    "pk": 15,
-    "fields": {
-        "building_on_tour": 7,
-        "date": "2023-03-08",
-        "student": [
-            "stef@test.com"
-        ]
-    }
-},
-{
-    "model": "base.studentatbuildingontour",
+    "model": "base.studentontour",
     "pk": 16,
     "fields": {
-        "building_on_tour": 8,
-        "date": "2023-03-08",
+        "tour": 1,
+        "date": "2023-04-04",
         "student": [
-            "stef@test.com"
+            "stanford@test.com"
         ]
     }
 },
 {
-    "model": "base.studentatbuildingontour",
+    "model": "base.studentontour",
     "pk": 17,
     "fields": {
-        "building_on_tour": 9,
-        "date": "2023-03-08",
+        "tour": 4,
+        "date": "2023-04-16",
         "student": [
-            "stef@test.com"
+            "sterre@test.com"
         ]
     }
 },
 {
-    "model": "base.studentatbuildingontour",
-    "pk": 18,
+    "model": "base.remarkatbuilding",
+    "pk": 1,
     "fields": {
-        "building_on_tour": 10,
-        "date": "2023-03-08",
-        "student": [
-            "stef@test.com"
-        ]
+        "building_on_tour": 2,
+        "timestamp": "2023-04-01T13:05:57Z",
+        "remark": "hellow!",
+        "type": "AA"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 2,
+    "fields": {
+        "building_on_tour": 4,
+        "timestamp": "2023-04-16T22:00:00Z",
+        "remark": "Zijde gij nie de dochter van Hilde? Van hilde?!",
+        "type": "VE"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 3,
+    "fields": {
+        "building_on_tour": 9,
+        "timestamp": "2023-04-12T13:06:56Z",
+        "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
+        "type": "OP"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 4,
+    "fields": {
+        "building_on_tour": 2,
+        "timestamp": "2023-04-01T13:07:48Z",
+        "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
+        "type": "BI"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 5,
+    "fields": {
+        "building_on_tour": 7,
+        "timestamp": "2023-04-12T04:00:00Z",
+        "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
+        "type": "VE"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 6,
+    "fields": {
+        "building_on_tour": 8,
+        "timestamp": "2023-04-21T13:08:24Z",
+        "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
+        "type": "AA"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 7,
+    "fields": {
+        "building_on_tour": 11,
+        "timestamp": "2023-04-12T13:08:46Z",
+        "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
+        "type": "AA"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 8,
+    "fields": {
+        "building_on_tour": 15,
+        "timestamp": "2023-04-10T13:08:55Z",
+        "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
+        "type": "OP"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 9,
+    "fields": {
+        "building_on_tour": 8,
+        "timestamp": "2023-04-17T10:00:00Z",
+        "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
+        "type": "BI"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 10,
+    "fields": {
+        "building_on_tour": 14,
+        "timestamp": "2023-04-01T13:09:29Z",
+        "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
+        "type": "OP"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 11,
+    "fields": {
+        "building_on_tour": 13,
+        "timestamp": "2023-04-20T13:09:48Z",
+        "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
+        "type": "AA"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 12,
+    "fields": {
+        "building_on_tour": 6,
+        "timestamp": "2023-04-20T13:10:14Z",
+        "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
+        "type": "BI"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 13,
+    "fields": {
+        "building_on_tour": 16,
+        "timestamp": "2023-04-05T13:10:29Z",
+        "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
+        "type": "OP"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 14,
+    "fields": {
+        "building_on_tour": 5,
+        "timestamp": "2023-04-13T10:00:00Z",
+        "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
+        "type": "VE"
     }
 },
 {
@@ -4408,204 +4567,6 @@
 },
 {
     "model": "admin.logentry",
-    "pk": 143,
-    "fields": {
-        "action_time": "2023-03-09T12:33:52.307Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "2",
-        "object_repr": "None bij Grote Markt 1, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 1 op 2023-03-08",
-        "action_flag": 3,
-        "change_message": ""
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 144,
-    "fields": {
-        "action_time": "2023-03-09T12:33:52.342Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "1",
-        "object_repr": "None bij Veldstraat 1, Gent 9000 op ronde Centrum in regio Gent, index: 1 op 2023-03-08",
-        "action_flag": 3,
-        "change_message": ""
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 145,
-    "fields": {
-        "action_time": "2023-03-09T12:34:17.008Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "3",
-        "object_repr": "stella@test.com (ST) bij Grote Markt 1, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 1 op 2023-03-09",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 146,
-    "fields": {
-        "action_time": "2023-03-09T12:34:49.451Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "4",
-        "object_repr": "stefanie@test.com (ST) bij Grote Markt 3, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 3 op 2023-03-09",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 147,
-    "fields": {
-        "action_time": "2023-03-09T12:35:13.899Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "4",
-        "object_repr": "stella@test.com (ST) bij Grote Markt 3, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 3 op 2023-03-09",
-        "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Student\"]}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 148,
-    "fields": {
-        "action_time": "2023-03-09T12:35:35.405Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "5",
-        "object_repr": "stella@test.com (ST) bij Grote Markt 2, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 2 op 2023-03-09",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 149,
-    "fields": {
-        "action_time": "2023-03-09T12:35:44.530Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "6",
-        "object_repr": "stella@test.com (ST) bij Grote Markt 4, Antwerpen 2000 op ronde Grote Markt in regio Antwerpen, index: 4 op 2023-03-09",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 150,
-    "fields": {
-        "action_time": "2023-03-09T12:36:00.017Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "7",
-        "object_repr": "stijn@test.com (ST) bij Veldstraat 1, Gent 9000 op ronde Centrum in regio Gent, index: 1 op 2023-03-09",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 151,
-    "fields": {
-        "action_time": "2023-03-09T12:36:07.204Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "8",
-        "object_repr": "stijn@test.com (ST) bij Veldstraat 2, Gent 9000 op ronde Centrum in regio Gent, index: 2 op 2023-03-09",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 152,
-    "fields": {
-        "action_time": "2023-03-09T12:36:25.455Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "9",
-        "object_repr": "stijn@test.com (ST) bij Veldstraat 3, Gent 9000 op ronde Centrum in regio Gent, index: 3 op 2023-03-09",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 153,
-    "fields": {
-        "action_time": "2023-03-09T12:36:33.904Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "10",
-        "object_repr": "stijn@test.com (ST) bij Veldstraat 4, Gent 9000 op ronde Centrum in regio Gent, index: 4 op 2023-03-09",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
     "pk": 154,
     "fields": {
         "action_time": "2023-03-09T12:36:55.073Z",
@@ -4620,168 +4581,6 @@
         "object_repr": "PMD op 2023-03-09 voor Grote Markt 1, Antwerpen 2000",
         "action_flag": 2,
         "change_message": "[{\"changed\": {\"fields\": [\"Date\"]}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 155,
-    "fields": {
-        "action_time": "2023-03-09T12:37:38.045Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "11",
-        "object_repr": "stacey@test.com (ST) bij Universiteitsplein 1, Antwerpen 2000 op ronde UAntwerpen Campussen in regio Antwerpen, index: 1 op 2023-03-08",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 156,
-    "fields": {
-        "action_time": "2023-03-09T12:37:48.452Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "12",
-        "object_repr": "stacey@test.com (ST) bij Groenenborgerlaan 171, Antwerpen 2000 op ronde UAntwerpen Campussen in regio Antwerpen, index: 2 op 2023-03-08",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 157,
-    "fields": {
-        "action_time": "2023-03-09T12:38:01.522Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "13",
-        "object_repr": "stacey@test.com (ST) bij Groenenborgerlaan 171, Antwerpen 2000 op ronde UAntwerpen Campussen in regio Antwerpen, index: 2 op 2023-03-08",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 158,
-    "fields": {
-        "action_time": "2023-03-09T12:41:07.229Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "13",
-        "object_repr": "stacey@test.com (ST) bij Middelheimlaan 1, Antwerpen 2000 op ronde UAntwerpen Campussen in regio Antwerpen, index: 3 op 2023-03-08",
-        "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"Building on tour\"]}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 159,
-    "fields": {
-        "action_time": "2023-03-09T12:41:50.298Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "14",
-        "object_repr": "stacey@test.com (ST) bij Prinsstraat 13, Antwerpen 2000 op ronde UAntwerpen Campussen in regio Antwerpen, index: 4 op 2023-03-08",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 160,
-    "fields": {
-        "action_time": "2023-03-09T12:42:53.582Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "15",
-        "object_repr": "stef@test.com (ST) bij Krijgslaan 281, Gent 9000 op ronde UGent Campussen in regio Gent, index: 1 op 2023-03-08",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 161,
-    "fields": {
-        "action_time": "2023-03-09T12:43:03.669Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "16",
-        "object_repr": "stef@test.com (ST) bij Sint-Pietersnieuwstraat 33, Gent 9000 op ronde UGent Campussen in regio Gent, index: 2 op 2023-03-08",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 162,
-    "fields": {
-        "action_time": "2023-03-09T12:43:21.870Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "17",
-        "object_repr": "stef@test.com (ST) bij Tweekerkenstraat 2, Gent 9000 op ronde UGent Campussen in regio Gent, index: 3 op 2023-03-08",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
-    }
-},
-{
-    "model": "admin.logentry",
-    "pk": 163,
-    "fields": {
-        "action_time": "2023-03-09T12:43:31.322Z",
-        "user": [
-            "admin@test.com"
-        ],
-        "content_type": [
-            "base",
-            "studentatbuildingontour"
-        ],
-        "object_id": "18",
-        "object_repr": "stef@test.com (ST) bij Karel Lodewijk Ledeganckstraat 35, Gent 9000 op ronde UGent Campussen in regio Gent, index: 4 op 2023-03-08",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
     }
 },
 {
@@ -5050,6 +4849,564 @@
         ],
         "object_id": "1",
         "object_repr": "Comment: De containers stonden niet in de kelder, waar ze normaal wel zouden moeten staan. (2023-03-21 23:57:00+01:00) for Veldstraat 1, Gent 9000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 179,
+    "fields": {
+        "action_time": "2023-04-01T12:58:51.201Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "1",
+        "object_repr": "stijn@test.com (Student (rank: 3)) at Tour Centrum in region Gent on 2023-04-01",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 180,
+    "fields": {
+        "action_time": "2023-04-01T12:59:01.377Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "2",
+        "object_repr": "stef@test.com (Student (rank: 3)) at Tour UGent Campussen in region Gent on 2023-04-01",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 181,
+    "fields": {
+        "action_time": "2023-04-01T12:59:15.584Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "3",
+        "object_repr": "steven@test.com (Student (rank: 3)) at Tour Centrum in region Gent on 2023-04-18",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 182,
+    "fields": {
+        "action_time": "2023-04-01T12:59:29.614Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "4",
+        "object_repr": "stephan@test.com (Student (rank: 3)) at Tour Centrum in region Gent on 2023-04-11",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 183,
+    "fields": {
+        "action_time": "2023-04-01T12:59:49.127Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "5",
+        "object_repr": "sten@test.com (Student (rank: 3)) at Tour Centrum in region Gent on 2023-04-11",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 184,
+    "fields": {
+        "action_time": "2023-04-01T13:00:04.262Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "6",
+        "object_repr": "stijn@test.com (Student (rank: 3)) at Tour Centrum in region Gent on 2023-04-24",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 185,
+    "fields": {
+        "action_time": "2023-04-01T13:01:08.211Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "7",
+        "object_repr": "steven@test.com (Student (rank: 3)) at Tour Centrum in region Gent on 2023-04-27",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 186,
+    "fields": {
+        "action_time": "2023-04-01T13:01:20.487Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "8",
+        "object_repr": "sten@test.com (Student (rank: 3)) at Tour Centrum in region Gent on 2023-04-22",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 187,
+    "fields": {
+        "action_time": "2023-04-01T13:01:34.284Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "9",
+        "object_repr": "stijn@test.com (Student (rank: 3)) at Tour Centrum in region Gent on 2023-04-17",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 188,
+    "fields": {
+        "action_time": "2023-04-01T13:01:54.436Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "10",
+        "object_repr": "stella@test.com (Student (rank: 3)) at Tour Grote Markt in region Antwerpen on 2023-04-10",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 189,
+    "fields": {
+        "action_time": "2023-04-01T13:02:04.221Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "11",
+        "object_repr": "stefanie@test.com (Student (rank: 3)) at Tour UAntwerpen Campussen in region Antwerpen on 2023-04-19",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 190,
+    "fields": {
+        "action_time": "2023-04-01T13:02:35.265Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "12",
+        "object_repr": "stacey@test.com (Student (rank: 3)) at Tour Grote Markt in region Antwerpen on 2023-04-19",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 191,
+    "fields": {
+        "action_time": "2023-04-01T13:02:53.286Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "13",
+        "object_repr": "stefanie@test.com (Student (rank: 3)) at Tour Grote Markt in region Antwerpen on 2023-04-18",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 192,
+    "fields": {
+        "action_time": "2023-04-01T13:04:14.573Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "14",
+        "object_repr": "stella@test.com (Student (rank: 3)) at Tour UAntwerpen Campussen in region Antwerpen on 2023-04-26",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 193,
+    "fields": {
+        "action_time": "2023-04-01T13:04:39.964Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "15",
+        "object_repr": "stacey@test.com (Student (rank: 3)) at Tour UAntwerpen Campussen in region Antwerpen on 2023-04-10",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 194,
+    "fields": {
+        "action_time": "2023-04-01T13:05:11.380Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "16",
+        "object_repr": "stanford@test.com (Student (rank: 3)) at Tour Centrum in region Gent on 2023-04-04",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 195,
+    "fields": {
+        "action_time": "2023-04-01T13:05:27.691Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "17",
+        "object_repr": "sterre@test.com (Student (rank: 3)) at Tour UAntwerpen Campussen in region Antwerpen on 2023-04-16",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 196,
+    "fields": {
+        "action_time": "2023-04-01T13:06:08.144Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "1",
+        "object_repr": "AA for Veldstraat 1, Gent 9000 on tour Tour Centrum in region Gent, index: 1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 197,
+    "fields": {
+        "action_time": "2023-04-01T13:06:32.588Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "2",
+        "object_repr": "VE for Groenenborgerlaan 171, Antwerpen 2000 on tour Tour UAntwerpen Campussen in region Antwerpen, index: 2",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 198,
+    "fields": {
+        "action_time": "2023-04-01T13:07:35.410Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "3",
+        "object_repr": "OP for Tweekerkenstraat 2, Gent 9000 on tour Tour UGent Campussen in region Gent, index: 3",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 199,
+    "fields": {
+        "action_time": "2023-04-01T13:07:58.217Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "4",
+        "object_repr": "BI for Veldstraat 1, Gent 9000 on tour Tour Centrum in region Gent, index: 1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 200,
+    "fields": {
+        "action_time": "2023-04-01T13:08:15.802Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "5",
+        "object_repr": "VE for Krijgslaan 281, Gent 9000 on tour Tour UGent Campussen in region Gent, index: 1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 201,
+    "fields": {
+        "action_time": "2023-04-01T13:08:28.528Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "6",
+        "object_repr": "AA for Sint-Pietersnieuwstraat 33, Gent 9000 on tour Tour UGent Campussen in region Gent, index: 2",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 202,
+    "fields": {
+        "action_time": "2023-04-01T13:08:47.842Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "7",
+        "object_repr": "AA for Veldstraat 2, Gent 9000 on tour Tour Centrum in region Gent, index: 2",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 203,
+    "fields": {
+        "action_time": "2023-04-01T13:08:59.242Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "8",
+        "object_repr": "OP for Grote Markt 3, Antwerpen 2000 on tour Tour Grote Markt in region Antwerpen, index: 3",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 204,
+    "fields": {
+        "action_time": "2023-04-01T13:09:21.365Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "9",
+        "object_repr": "BI for Sint-Pietersnieuwstraat 33, Gent 9000 on tour Tour UGent Campussen in region Gent, index: 2",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 205,
+    "fields": {
+        "action_time": "2023-04-01T13:09:34.640Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "10",
+        "object_repr": "OP for Grote Markt 2, Antwerpen 2000 on tour Tour Grote Markt in region Antwerpen, index: 2",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 206,
+    "fields": {
+        "action_time": "2023-04-01T13:09:53.946Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "11",
+        "object_repr": "AA for Veldstraat 4, Gent 9000 on tour Tour Centrum in region Gent, index: 4",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 207,
+    "fields": {
+        "action_time": "2023-04-01T13:10:16.570Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "12",
+        "object_repr": "BI for Prinsstraat 13, Antwerpen 2000 on tour Tour UAntwerpen Campussen in region Antwerpen, index: 4",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 208,
+    "fields": {
+        "action_time": "2023-04-01T13:10:35.670Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "13",
+        "object_repr": "OP for Grote Markt 4, Antwerpen 2000 on tour Tour Grote Markt in region Antwerpen, index: 4",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 209,
+    "fields": {
+        "action_time": "2023-04-01T13:10:58.506Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "14",
+        "object_repr": "VE for Middelheimlaan 1, Antwerpen 2000 on tour Tour UAntwerpen Campussen in region Antwerpen, index: 3",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
