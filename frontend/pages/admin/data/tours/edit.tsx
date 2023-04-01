@@ -18,6 +18,7 @@ import {Delete} from "@mui/icons-material";
 import {useTranslation} from "react-i18next";
 import {getAndSetErrors} from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
+import styles from "@/styles/Login.module.css";
 
 
 interface ParsedUrlQuery {
@@ -49,7 +50,7 @@ type BuildingNotOnTourView = {
 }
 
 /**
- * TODO: implement delete, post & patch
+ * https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=115-606&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
  * @constructor
  */
 function AdminDataToursEdit() {
@@ -404,149 +405,145 @@ function AdminDataToursEdit() {
 
     return (
         <>
-            <>
-                <AdminHeader/>
-                {
-                    (errorMessages.length > 0) && (
-                        <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                            <ul>
-                                {
-                                    errorMessages.map((err: string, index: number) =>
-                                        (<li key={index}>{t(err)}</li>))
-                                }
-                            </ul>
-                            <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
-                        </div>
-                    )
-                }
-                <MaterialReactTable
-                    columns={columnsBuildingOnTourView}
-                    data={buildingsOnTourView}
-                    displayColumnDefOptions={{
-                        'mrt-row-actions': {
-                            muiTableHeadCellProps: {
-                                align: 'center',
-                            },
-                            header: 'Acties',
-                        },
-                    }}
-                    enablePagination={false}
-                    enableEditing
-                    // Don't show the tour_id
-                    enableHiding={false}
-                    enableBottomToolbar={false}
-                    initialState={{columnVisibility: {buildingId: false, index : false}}}
-                    state={{isLoading: isLoading}}
-                    autoResetPageIndex={false}
-                    enableRowNumbers
-                    enableRowOrdering
-                    muiTableBodyRowDragHandleProps={({table}) => ({
-                        onDragEnd: () => {
-                            const {draggingRow, hoveredRow} = table.getState();
-                            if (hoveredRow && draggingRow) {
-                                buildingsOnTourView.splice(
-                                    (hoveredRow as MRT_Row<BuildingOnTourView>).index,
-                                    0,
-                                    buildingsOnTourView.splice(draggingRow.index, 1)[0],
-                                );
-                                buildingsOnTourView.forEach((view: BuildingOnTourView, index) => view.index = index);
-                                setBuildingsOnTourView([...buildingsOnTourView]);
-                            }
-                        },
-                    })}
-                    renderRowActions={({row}) => (
-                        <Box sx={{display: 'flex', gap: '1rem'}}>
-                            <Tooltip arrow placement="left" title="Verwijder van ronde">
-                                <Button variant="warning" onClick={() => {
-                                    const buildingOnTourView: BuildingOnTourView = row.original;
-                                    removeFromBuildingOnTour(buildingOnTourView);
-                                }}>-</Button>
-                            </Tooltip>
-                        </Box>
-                    )}
-                    renderTopToolbarCustomActions={() => (
-                        <Box sx={{display: 'flex', gap: '1rem'}}>
-                            <label>Ronde: </label>
-                            <input
-                                value={tourName}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                    setTourName(e.target.value);
-                                }}></input>
+            <AdminHeader/>
+            {
+                (errorMessages.length > 0) && (
+                    <div className={"visible alert alert-danger alert-dismissible fade show"}>
+                        <ul>
                             {
-                                (!tour) && (
-                                    <>
-                                        <label>Selecteer een regio:</label>
-                                        <select defaultValue={""}
-                                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                                                    setSelectedRegion(e.target.value)}>
-                                            <option disabled value={""}></option>
-                                            {possibleRegions.map((regio: Region, index: number) => (
-                                                <option value={regio.region} key={index}>{regio.region}</option>))}
-                                        </select>
-                                    </>
-                                )
+                                errorMessages.map((err: string, index: number) =>
+                                    (<li key={index}>{t(err)}</li>))
                             }
-                            {
-                                (tour) && (
-                                    <>
-                                        <label>{region ? `Regio: ${region.region}` : ""}</label>
-                                        <label>{`Laatste aanpassing: ${(new Date(tour.modified_at)).toLocaleString()}`}</label>
-                                    </>
-                                )
-                            }
-                            <Tooltip title="Sla op">
-                                <SaveIcon onClick={() => {
-                                    saveTour().then();
-                                }}/>
-                            </Tooltip>
-                            <Tooltip title="Verwijder ronde">
-                                <Delete className={tour ? "visible" : "invisible"} onClick={() => {
-                                    removeTour();
-                                }}/>
-                            </Tooltip>
-                        </Box>
-                    )}
-                />
+                        </ul>
+                        <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
+                    </div>
+                )
+            }
+            <MaterialReactTable
+                columns={columnsBuildingOnTourView}
+                data={buildingsOnTourView}
+                displayColumnDefOptions={{
+                    'mrt-row-actions': {
+                        muiTableHeadCellProps: {
+                            align: 'center',
+                        },
+                        header: 'Acties',
+                    },
+                }}
+                enablePagination={false}
+                enableEditing
+                // Don't show the tour_id
+                enableHiding={false}
+                enableBottomToolbar={false}
+                initialState={{columnVisibility: {buildingId: false, index: false}}}
+                state={{isLoading: isLoading}}
+                autoResetPageIndex={false}
+                enableRowNumbers
+                enableRowOrdering
+                muiTableBodyRowDragHandleProps={({table}) => ({
+                    onDragEnd: () => {
+                        const {draggingRow, hoveredRow} = table.getState();
+                        if (hoveredRow && draggingRow) {
+                            buildingsOnTourView.splice(
+                                (hoveredRow as MRT_Row<BuildingOnTourView>).index,
+                                0,
+                                buildingsOnTourView.splice(draggingRow.index, 1)[0],
+                            );
+                            buildingsOnTourView.forEach((view: BuildingOnTourView, index) => view.index = index);
+                            setBuildingsOnTourView([...buildingsOnTourView]);
+                        }
+                    },
+                })}
+                renderRowActions={({row}) => (
+                    <Box sx={{display: 'flex', gap: '1rem'}}>
+                        <Tooltip arrow placement="left" title="Verwijder van ronde">
+                            <Button variant="warning" onClick={() => {
+                                const buildingOnTourView: BuildingOnTourView = row.original;
+                                removeFromBuildingOnTour(buildingOnTourView);
+                            }}>-</Button>
+                        </Tooltip>
+                    </Box>
+                )}
+                renderTopToolbarCustomActions={() => (
+                    <Box sx={{display: 'flex', gap: '1rem'}}>
+                        <label className="form-label">Ronde: </label>
+                        <input
+                            className={`form-control form-control-lg ${styles.input}`}
+                            value={tourName}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                setTourName(e.target.value);
+                            }}></input>
+                        {
+                            (!tour) && (
+                                <>
+                                    <label className="form-label">Selecteer een regio:</label>
+                                    <select defaultValue={""}
+                                            className="form-control"
+                                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                                                setSelectedRegion(e.target.value)}>
+                                        <option disabled value={""}></option>
+                                        {possibleRegions.map((regio: Region, index: number) => (
+                                            <option value={regio.region} key={index}>{regio.region}</option>))}
+                                    </select>
+                                </>
+                            )
+                        }
+                        {
+                            (tour) && (
+                                <>
+                                    <label className="form-label">{region ? `Regio: ${region.region}` : ""}</label>
+                                    <label className="form-label">{`Laatste aanpassing: ${(new Date(tour.modified_at)).toLocaleString()}`}</label>
+                                </>
+                            )
+                        }
+                        <Tooltip title="Sla op">
+                            <SaveIcon onClick={() => {
+                                saveTour().then();
+                            }}/>
+                        </Tooltip>
+                        <Tooltip title="Verwijder ronde">
+                            <Delete className={tour ? "visible" : "invisible"} onClick={() => {
+                                removeTour();
+                            }}/>
+                        </Tooltip>
+                    </Box>
+                )}
+            />
 
-                <MaterialReactTable
-                    columns={columnsBuildingNotOnTourView}
-                    data={buildingsNotOnTourView}
-                    enableBottomToolbar={false}
-                    displayColumnDefOptions={{
-                        'mrt-row-actions': {
-                            muiTableHeadCellProps: {
-                                align: 'center',
-                            },
-                            header: 'Acties',
+            <MaterialReactTable
+                columns={columnsBuildingNotOnTourView}
+                data={buildingsNotOnTourView}
+                enableBottomToolbar={false}
+                displayColumnDefOptions={{
+                    'mrt-row-actions': {
+                        muiTableHeadCellProps: {
+                            align: 'center',
                         },
-                    }}
-                    enablePagination={false}
-                    enableEditing
-                    state={{isLoading: isLoading}}
-                    // Don't show the tour_id
-                    enableHiding={false}
-                    initialState={{columnVisibility: {buildingId: false}}}
-                    renderRowActions={({row}) => (
-                        <Box sx={{display: 'flex', gap: '1rem'}}>
-                            <Tooltip arrow placement="left" title="Voeg toe aan ronde">
-                                <Button variant="warning" onClick={() => {
-                                    const bnot: BuildingNotOnTourView = row.original;
-                                    addToBuildingOnTour(bnot);
-                                }}>+</Button>
-                            </Tooltip>
-                        </Box>
-                    )}
-                    renderTopToolbarCustomActions={() => (
-                        <Box sx={{display: 'flex', gap: '1rem'}}>
-                            <label>Gebouwen niet op deze ronde (regio {region?.region})</label>
-                        </Box>
-                    )}
-                />
-                <AdminHeader />
-                <p>
-                    https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=115-606&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
-                </p>
-            </>
+                        header: 'Acties',
+                    },
+                }}
+                enablePagination={false}
+                enableEditing
+                state={{isLoading: isLoading}}
+                // Don't show the tour_id
+                enableHiding={false}
+                initialState={{columnVisibility: {buildingId: false}}}
+                renderRowActions={({row}) => (
+                    <Box sx={{display: 'flex', gap: '1rem'}}>
+                        <Tooltip arrow placement="left" title="Voeg toe aan ronde">
+                            <Button variant="warning" onClick={() => {
+                                const bnot: BuildingNotOnTourView = row.original;
+                                addToBuildingOnTour(bnot);
+                            }}>+</Button>
+                        </Tooltip>
+                    </Box>
+                )}
+                renderTopToolbarCustomActions={() => (
+                    <Box sx={{display: 'flex', gap: '1rem'}}>
+                        <label className="form-label">Gebouwen niet op deze ronde (regio {region?.region})</label>
+                    </Box>
+                )}
+            />
         </>
     );
 }
