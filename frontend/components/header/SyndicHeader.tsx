@@ -4,17 +4,20 @@ import Image from "next/image";
 import logo from "@/public/logo.png";
 import person from "@/public/icons/person.svg";
 import menu from "@/public/icons/menu.svg";
+import Link from "next/link";
 
 
 const SyndicHeader = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
-                <Image src={logo} alt="My App Logo" width={120} height={30}/>
+                <Link href="/syndic/dashboard">
+                    <Image src={logo} alt="My App Logo" width={120} height={30}/>
+                </Link>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <a className={`nav-link ${styles.text}`} href="#">
+                            <a className={`nav-link ${styles.text}`} href="/syndic/dashboard">
                                 Dashboard
                             </a>
                         </li>
@@ -41,9 +44,9 @@ const SyndicHeader = () => {
                         aria-labelledby="navbarDropdown1"
                     >
                         <li>
-                            <a className="dropdown-item" href="#">
+                            <Link className="dropdown-item" href="#">
                                 Bewerk account
-                            </a>
+                            </Link>
                         </li>
                         <li>
                             <hr className="dropdown-divider"/>

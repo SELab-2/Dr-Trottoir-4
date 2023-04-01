@@ -1,4 +1,4 @@
-import React, {ReactNode} from "react";
+import React from "react";
 import styles from "@/components/header/RoleHeader.module.css";
 import Image from "next/image";
 import logo from "@/public/logo.png";
@@ -6,44 +6,45 @@ import person from "@/public/icons/person.svg";
 import menu from "@/public/icons/menu.svg";
 import Template3Filters from "@/components/filters/Template3Filters";
 import Template2Filters from "@/components/filters/Template2Filters";
+import Link from "next/link";
 
 type MyComponentVariations = typeof Template3Filters | typeof Template2Filters;
 
 interface AdminFilterHeaderProps {
-  children: React.ReactElement<MyComponentVariations>;
+    children: React.ReactElement<MyComponentVariations>;
 }
 
-const AdminFilterHeader = ({ children }: AdminFilterHeaderProps) => {
+const AdminFilterHeader = ({children}: AdminFilterHeaderProps) => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className={`container-fluid w-100 d-grid ${styles.grid}`}>
                 <div className="row align-items-center d-flex">
                     <div className="col">
                         <div className="d-flex">
-                            <a className="navbar-brand" href="#">
+                            <Link className="navbar-brand" href="/admin/dashboard">
                                 <Image src={logo} alt="My App Logo" width={120} height={30}/>
-                            </a>
+                            </Link>
                             <div className={`navbar-collapse ${styles.navigation_links_top}`}>
                                 <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                                     <li className="nav-item">
-                                        <a className={`nav-link ${styles.text}`} href="#">
+                                        <Link className={`nav-link ${styles.text}`} href="/admin/dashboard">
                                             Dashboard
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <a className={`nav-link ${styles.text}`} href="#">
+                                        <Link className={`nav-link ${styles.text}`} href="/admin/data/users">
                                             Data
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <a className={`nav-link ${styles.text}`} href="#">
+                                        <Link className={`nav-link ${styles.text}`} href="/admin/communication">
                                             Communicatie
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <a className={`nav-link ${styles.text}`} href="#">
+                                        <Link className={`nav-link ${styles.text}`} href="/admin/analysis">
                                             Analyse
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
@@ -101,24 +102,24 @@ const AdminFilterHeader = ({ children }: AdminFilterHeaderProps) => {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <a className={`nav-link ${styles.text}`} href="#">
+                                <Link className={`nav-link ${styles.text}`} href="/admin/dashboard">
                                     Dashboard
-                                </a>
+                                </Link>
                             </li>
                             <li className="nav-item">
-                                <a className={`nav-link ${styles.text}`} href="#">
+                                <Link className={`nav-link ${styles.text}`} href="/admin/data/users">
                                     Data
-                                </a>
+                                </Link>
                             </li>
                             <li className="nav-item">
-                                <a className={`nav-link ${styles.text}`} href="#">
+                                <Link className={`nav-link ${styles.text}`} href="/admin/communication">
                                     Communicatie
-                                </a>
+                                </Link>
                             </li>
                             <li className="nav-item">
-                                <a className={`nav-link ${styles.text}`} href="#">
+                                <Link className={`nav-link ${styles.text}`} href="/admin/analysis">
                                     Analyse
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>

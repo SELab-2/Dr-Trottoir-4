@@ -1,4 +1,4 @@
-import BaseHeader from "@/components/header/BaseHeader";
+import SyndicHeader from "@/components/header/SyndicHeader";
 import { BuildingInterface, getBuildingInfo } from "@/lib/building";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -51,7 +51,7 @@ function SyndicBuilding() {
 
     return (
         <>
-            <BaseHeader />
+            <SyndicHeader />
 
             <div>
                 <a

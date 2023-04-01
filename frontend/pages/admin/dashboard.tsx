@@ -1,4 +1,4 @@
-import BaseHeader from "@/components/header/BaseHeader";
+import AdminHeader from "@/components/header/AdminHeader";
 import styles from "styles/Welcome.module.css";
 import soon from "public/coming_soon.png";
 import Image from "next/image";
@@ -34,7 +34,7 @@ function AdminDashboard() {
 
     return (
         <>
-            <BaseHeader />
+            <AdminHeader />
             <div>
                 {loading ? (
                     <Loading></Loading>

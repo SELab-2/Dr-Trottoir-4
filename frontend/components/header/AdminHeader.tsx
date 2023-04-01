@@ -4,39 +4,42 @@ import Image from "next/image";
 import logo from "@/public/logo.png";
 import person from "@/public/icons/person.svg";
 import menu from "@/public/icons/menu.svg";
+import Link from "next/link";
 
 
 const AdminHeader = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
-                <Image src={logo} alt="My App Logo" width={120} height={30}/>
+                <Link href="/admin/dashboard">
+                    <Image src={logo} alt="My App Logo" width={120} height={30}/>
+                </Link>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <a className={`nav-link ${styles.text}`} href="#">
+                            <Link className={`nav-link ${styles.text}`} href="/admin/dashboard">
                                 Dashboard
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav-item">
-                            <a className={`nav-link ${styles.text}`} href="#">
+                            <Link className={`nav-link ${styles.text}`} href="/admin/data/users">
                                 Data
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav-item">
-                            <a className={`nav-link ${styles.text}`} href="#">
+                            <Link className={`nav-link ${styles.text}`} href="/admin/communication">
                                 Communicatie
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav-item">
-                            <a className={`nav-link ${styles.text}`} href="#">
+                            <Link className={`nav-link ${styles.text}`} href="/admin/analysis">
                                 Analyse
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </div>
                 <div className="ms-auto">
-                    <a
+                    <Link
                         className="nav-link dropdown-toggle"
                         href="#"
                         id="navbarDropdown1"
@@ -50,15 +53,15 @@ const AdminHeader = () => {
                             className={`rounded-circle ${styles.person}`}
                             height={24}
                         />
-                    </a>
+                    </Link>
                     <ul
                         className="dropdown-menu dropdown-menu-en dropdown-menu-end"
                         aria-labelledby="navbarDropdown1"
                     >
                         <li>
-                            <a className="dropdown-item" href="#">
+                            <Link className="dropdown-item" href="#">
                                 Bewerk account
-                            </a>
+                            </Link>
                         </li>
                         <li>
                             <hr className="dropdown-divider"/>
