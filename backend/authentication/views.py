@@ -3,6 +3,7 @@ from dj_rest_auth.jwt_auth import (
     set_jwt_refresh_cookie,
     set_jwt_cookies,
 )
+from dj_rest_auth.utils import jwt_encode
 from dj_rest_auth.views import LoginView, PasswordChangeView
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
@@ -25,7 +26,7 @@ from util.request_response_util import post_success
 
 
 class CustomSignUpView(APIView):
-    @extend_schema(request={None: CustomSignUpSerializer}, responses={200: UserSerializer})
+    @extend_schema(request={None: CustomSignUpSerializer}, responses={201: UserSerializer})
     def post(self, request):
         """
         Register a new user
@@ -34,12 +35,14 @@ class CustomSignUpView(APIView):
         signup = CustomSignUpSerializer(data=request.data)
         signup.is_valid(raise_exception=True)
         # create new user
-        user = signup.save()
+        user = signup.save(request)
         # delete the lobby entry with the user email
         lobby_instance = Lobby.objects.filter(email=user.email)
         lobby_instance.delete()
-
-        return post_success(UserSerializer(user))
+        # create the response
+        response = Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+        set_jwt_cookies(*jwt_encode(user))
+        return response
 
 
 class CustomLoginView(LoginView):

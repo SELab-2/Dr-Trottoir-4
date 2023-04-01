@@ -1,4 +1,5 @@
 from allauth.account.adapter import get_adapter
+from allauth.account.utils import setup_user_email
 from allauth.utils import email_address_exists
 from dj_rest_auth import serializers as auth_serializers
 from dj_rest_auth.jwt_auth import unset_jwt_cookies
@@ -72,6 +73,8 @@ class CustomSignUpSerializer(Serializer):
         if r := try_full_clean_and_save(user_instance):
             raise auth_serializers.ValidationError(r.data)
 
+        user_instance.set_password(validated_data["password"])
+
         user_instance.save()
 
         return user_instance
@@ -81,6 +84,11 @@ class CustomSignUpSerializer(Serializer):
         instance.last_name = validated_data.get("last_name", instance.last_name)
         instance.phone_number = validated_data.get("phone_number", instance.phone_number)
         return instance
+
+    def save(self, request):
+        user = self.create(self.validated_data)
+        setup_user_email(request, user, [])
+        return user
 
 
 class CustomTokenRefreshSerializer(Serializer):

@@ -1,7 +1,6 @@
 from dj_rest_auth.views import (
     PasswordResetView,
-    PasswordResetConfirmView,
-)
+    PasswordResetConfirmView, )
 from django.urls import path
 
 from authentication.views import (
