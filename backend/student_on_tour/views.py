@@ -53,7 +53,7 @@ class StudentOnTourIndividualView(APIView):
     @extend_schema(responses=get_docs(StudOnTourSerializer))
     def get(self, request, student_on_tour_id):
         """
-        Get an individual StudentAtBuildingOnTour with given id
+        Get an individual StudentOnTour with given id
         """
         stud_tour_instances = StudentOnTour.objects.filter(id=student_on_tour_id)
 
@@ -69,7 +69,7 @@ class StudentOnTourIndividualView(APIView):
     @extend_schema(responses=patch_docs(StudOnTourSerializer))
     def patch(self, request, student_on_tour_id):
         """
-        Edit info about an individual StudentAtBuildingOnTour with given id
+        Edit info about an individual StudentOnTour with given id
         """
         stud_tour_instances = StudentOnTour.objects.filter(id=student_on_tour_id)
 
@@ -93,7 +93,7 @@ class StudentOnTourIndividualView(APIView):
     @extend_schema(responses=delete_docs())
     def delete(self, request, student_on_tour_id):
         """
-        Delete StudentAtBuildingOnTour with given id
+        Delete StudentOnTour with given id
         """
         stud_tour_instances = StudentOnTour.objects.filter(id=student_on_tour_id)
         if len(stud_tour_instances) != 1:
@@ -112,7 +112,7 @@ class AllView(APIView):
 
     def get(self, request):
         """
-        Get all StudentAtBuildingOnTours
+        Get all StudentOnTours
         """
         stud_tour_building_instance = StudentOnTour.objects.all()
 
