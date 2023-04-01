@@ -1,4 +1,3 @@
-import BaseHeader from "@/components/header/BaseHeader";
 import React, {useEffect, useMemo, useState} from "react";
 import {useRouter} from "next/router";
 import {deleteTour, getTour, patchTour, postTour, Tour} from "@/lib/tour";
@@ -14,10 +13,11 @@ import MaterialReactTable, {MRT_ColumnDef, MRT_Row} from "material-react-table";
 import {Box, Tooltip} from "@mui/material";
 import {Button} from "react-bootstrap";
 import SaveIcon from '@mui/icons-material/Save';
-import {withAuthorisation} from "@/components/with-authorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import {Delete} from "@mui/icons-material";
 import {useTranslation} from "react-i18next";
 import {getAndSetErrors} from "@/lib/error";
+import AdminHeader from "@/components/header/adminHeader";
 
 
 interface ParsedUrlQuery {
@@ -405,7 +405,7 @@ function AdminDataToursEdit() {
     return (
         <>
             <>
-                <BaseHeader/>
+                <AdminHeader/>
                 {
                     (errorMessages.length > 0) && (
                         <div className={"visible alert alert-danger alert-dismissible fade show"}>
@@ -542,6 +542,7 @@ function AdminDataToursEdit() {
                         </Box>
                     )}
                 />
+                <AdminHeader />
                 <p>
                     https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=115-606&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
                 </p>

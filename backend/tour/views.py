@@ -84,9 +84,9 @@ class TourIndividualView(APIView):
 
 class AllBuildingsOnTourView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
-    serializer_class = TourSerializer
+    serializer_class = BuildingSerializer
 
-    @extend_schema(responses=get_docs(TourSerializer))
+    @extend_schema(responses=get_docs(BuildingSerializer))
     def get(self, request, tour_id):
         """
         Get all buildings on a tour with given id

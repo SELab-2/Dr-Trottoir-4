@@ -1,4 +1,4 @@
-import BaseHeader from "@/components/header/BaseHeader";
+import BaseHeader from "@/components/header/baseHeader";
 
 import { verifyToken } from "@/lib/login";
 import React, { useEffect, useState } from "react";
@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import getUserInfo from "@/lib/user_info";
 import { getRoleDirection } from "@/lib/reroute";
 import Loading from "@/components/loading";
-import LoginForm from "@/components/loginform";
+import LoginForm from "@/components/loginForm";
 import setSessionStorage from "@/lib/storage";
 import Image from "next/image";
 import filler_image from "@/public/filler_image.png";

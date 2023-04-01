@@ -1,8 +1,8 @@
-import BaseHeader from "@/components/header/BaseHeader";
+import AdminHeader from "@/components/header/adminHeader";
 import React, {useEffect, useMemo, useState} from "react";
 import {deleteTour, getAllTours, getBuildingsOfTour, Tour} from "@/lib/tour";
 import {Region, getAllRegions} from "@/lib/region";
-import {withAuthorisation} from "@/components/with-authorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import {useRouter} from "next/router";
 import MaterialReactTable, {
     type MRT_ColumnDef,
@@ -11,7 +11,6 @@ import {Box, IconButton, Tooltip} from "@mui/material";
 import {Button} from "react-bootstrap";
 import {Delete, Edit} from "@mui/icons-material";
 import {BuildingInterface, getAddress} from "@/lib/building";
-import Loading from "@/components/loading";
 
 type TourView = {
     name: string,
@@ -133,7 +132,7 @@ function AdminDataTours() {
 
     return (
         <>
-            <BaseHeader></BaseHeader>
+            <AdminHeader/>
             <MaterialReactTable
                 displayColumnDefOptions={{
                     'mrt-row-actions': {
@@ -192,20 +191,20 @@ function AdminDataTours() {
                     );
                 }}
                 renderTopToolbarCustomActions={() => (
-                <Button
-                    onClick={() => router.push(`${router.pathname}/edit`)}
-                    variant="warning"
-                >
-                    Maak nieuwe ronde aan
-                </Button>
-            )}
-                />
+                    <Button
+                        onClick={() => router.push(`${router.pathname}/edit`)}
+                        variant="warning"
+                    >
+                        Maak nieuwe ronde aan
+                    </Button>
+                )}
+            />
             <p>
                 https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=68-429&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
             </p>
-            </>
-            );
-            }
+        </>
+    );
+}
 
 
-            export default withAuthorisation(AdminDataTours, ["Admin", "Superstudent"]);
+export default withAuthorisation(AdminDataTours, ["Admin", "Superstudent"]);

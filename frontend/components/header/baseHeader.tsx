@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import logo from "../../public/logo.png";
-import styles from "./BaseHeader.module.css";
+import styles from "./baseHeader.module.css";
 
 const BaseHeader = () => {
     return (
