@@ -79,6 +79,9 @@ const AdminFilterHeader = ({children}: AdminFilterHeaderProps) => {
                                     </li>
                                     <li>
                                         <Logout/>
+                                        <a className="dropdown-item" href="#">
+                                            Log out
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
