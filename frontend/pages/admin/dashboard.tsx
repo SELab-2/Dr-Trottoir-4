@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getAllUsers } from "@/lib/welcome";
 import Loading from "@/components/loading";
-import LogoutButton from "@/components/logoutbutton";
 import { withAuthorisation } from "@/components/withAuthorisation";
 
 function AdminDashboard() {
@@ -45,7 +44,6 @@ function AdminDashboard() {
                             https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=7-111&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
                         </p>
                         <Image src={soon} alt="Site coming soon" className={styles.image} />
-                        <LogoutButton />
                         <h1 className={styles.text}>Users:</h1>
                         <ul>
                             {data.map((item, index) => (

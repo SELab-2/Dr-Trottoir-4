@@ -7,6 +7,7 @@ import menu from "@/public/icons/menu.svg";
 import Template3Filters from "@/components/filters/Template3Filters";
 import Template2Filters from "@/components/filters/Template2Filters";
 import Link from "next/link";
+import Logout from "@/components/logout";
 
 type MyComponentVariations = typeof Template3Filters | typeof Template2Filters;
 
@@ -77,9 +78,7 @@ const AdminFilterHeader = ({children}: AdminFilterHeaderProps) => {
                                         <hr className="dropdown-divider"/>
                                     </li>
                                     <li>
-                                        <a className="dropdown-item" href="#">
-                                            Log out
-                                        </a>
+                                        <Logout/>
                                     </li>
                                 </ul>
                             </div>

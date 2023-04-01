@@ -5,6 +5,7 @@ import logo from "@/public/logo.png";
 import person from "@/public/icons/person.svg";
 import menu from "@/public/icons/menu.svg";
 import Link from "next/link";
+import Logout from "@/components/logout";
 
 
 const SyndicHeader = () => {
@@ -52,9 +53,7 @@ const SyndicHeader = () => {
                             <hr className="dropdown-divider"/>
                         </li>
                         <li>
-                            <a className="dropdown-item" href="#">
-                                Log out
-                            </a>
+                            <Logout/>
                         </li>
                     </ul>
                 </div>
