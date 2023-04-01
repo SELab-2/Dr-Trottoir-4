@@ -100,12 +100,6 @@ function AdminDataToursEdit() {
                 accessorKey: 'buildingId', //normal accessorKey
                 header: 'ID',
             },
-            {
-                //accessorFn function that combines multiple data together
-                accessorFn: (row) => row.index + 1,
-                id: 'index',
-                header: 'Index',
-            },
         ],
         [],
     );
@@ -363,6 +357,7 @@ function AdminDataToursEdit() {
         }
     }
 
+    // Function to create a new tour & post this new tour
     function createTour() {
         setErrorMessages([]);
         if (!selectedRegion) {
@@ -393,6 +388,9 @@ function AdminDataToursEdit() {
         });
     }
 
+    /**
+     * Remove a tour
+     */
     function removeTour() {
         if (!tour) {
             return;
@@ -437,9 +435,10 @@ function AdminDataToursEdit() {
                     // Don't show the tour_id
                     enableHiding={false}
                     enableBottomToolbar={false}
-                    initialState={{columnVisibility: {buildingId: false}}}
+                    initialState={{columnVisibility: {buildingId: false, index : false}}}
                     state={{isLoading: isLoading}}
                     autoResetPageIndex={false}
+                    enableRowNumbers
                     enableRowOrdering
                     muiTableBodyRowDragHandleProps={({table}) => ({
                         onDragEnd: () => {
