@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { getAllUsers } from "@/lib/welcome";
 import Loading from "@/components/loading";
 import LogoutButton from "@/components/logoutbutton";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/with-authorisation";
 
 function AdminDashboard() {
     const router = useRouter();

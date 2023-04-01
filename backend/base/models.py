@@ -264,27 +264,17 @@ class BuildingOnTour(models.Model):
                     f"The regions for tour ({tour_region}) en building ({building_region}) are different."
                 )
 
-            nr_of_buildings = BuildingOnTour.objects.filter(tour=self.tour_id).count()
-            if self.index > nr_of_buildings:
-                raise ValidationError(f"The maximum allowed index for this building is {nr_of_buildings}")
-
     def __str__(self):
         return f"{self.building} on tour {self.tour}, index: {self.index}"
 
     class Meta:
         constraints = [
-            UniqueConstraint(
-                "index",
-                "tour",
-                name="unique_index_on_tour",
-                violation_error_message="The tour has already a building on this index.",
-            ),
-            UniqueConstraint(
+           UniqueConstraint(
                 "building",
                 "tour",
                 name="unique_building_on_tour",
                 violation_error_message="This building is already on this tour.",
-            ),
+            )
         ]
 
 

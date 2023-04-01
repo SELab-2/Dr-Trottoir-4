@@ -2,12 +2,10 @@ import BaseHeader from "@/components/header/BaseHeader";
 import { BuildingInterface, getBuildingInfo } from "@/lib/building";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/with-authorisation";
 import { AxiosResponse } from "axios";
 import styles from "@/styles/Welcome.module.css";
 import { TiPencil } from "react-icons/ti";
-import Image from "next/image";
-import soon from "@/public/coming_soon.png";
 import LogoutButton from "@/components/logoutbutton";
 import PatchBuildingSyndicModal from "@/components/syndic/PatchBuildingSyndicModal";
 
