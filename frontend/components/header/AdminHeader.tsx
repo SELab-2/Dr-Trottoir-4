@@ -70,17 +70,16 @@ const AdminHeader = () => {
                         </li>
                     </ul>
                 </div>
-                <button
-                    className={`navbar-toggler ${styles.button}`}
-                    type="button"
+                <a
+                    className={`nav-link ${styles.menuIcon}`}
                     data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent"
                     aria-expanded="false"
                     aria-label="Toggle navigation"
                 >
-                    <Image src={menu} alt="My App Menu"/>
-                </button>
+                    <Image src={menu} alt="My App Menu" height={24}/>
+                </a>
             </div>
         </nav>
     );
