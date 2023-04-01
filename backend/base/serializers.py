@@ -69,17 +69,24 @@ class LobbySerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
-class PictureBuildingSerializer(serializers.ModelSerializer):
+class RemarkAtBuildingSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PictureBuilding
-        fields = ["id", "building", "picture", "description", "timestamp", "type"]
+        model = RemarkAtBuilding
+        fields = ["id", "building_on_tour", "timestamp", "remark"]
         read_only_fields = ["id"]
 
 
-class StudBuildTourSerializer(serializers.ModelSerializer):
+class PictureOfRemarkSerializer(serializers.ModelSerializer):
     class Meta:
-        model = StudentAtBuildingOnTour
-        fields = ["id", "building_on_tour", "date", "student"]
+        model = PictureOfRemark
+        fields = ["id", "picture", "remark_at_building"]
+        read_only_fields = ["id"]
+
+
+class StudOnTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentOnTour
+        fields = ["id", "tour", "date", "student"]
         read_only_fields = ["id"]
 
 

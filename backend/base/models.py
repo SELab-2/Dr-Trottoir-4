@@ -288,8 +288,13 @@ class BuildingOnTour(models.Model):
         ]
 
 
-class StudentAtBuildingOnTour(models.Model):
-    building_on_tour = models.ForeignKey(BuildingOnTour, on_delete=models.SET_NULL, null=True)
+"""
+Links student to tours on a date
+"""
+
+
+class StudentOnTour(models.Model):
+    tour = models.ForeignKey(Tour, on_delete=models.SET_NULL, null=True)
     date = models.DateField()
     student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
@@ -301,42 +306,40 @@ class StudentAtBuildingOnTour(models.Model):
     def clean(self):
         super().clean()
 
-        if self.student_id and self.building_on_tour_id:
+        if self.student_id and self.tour_id:
             user = self.student
             if user.role.name.lower() == "syndic":
                 raise ValidationError("A syndic can't do tours")
-            building_on_tour_region = self.building_on_tour.tour.region
-            if not self.student.region.all().filter(region=building_on_tour_region).exists():
+            tour_region = self.tour.region
+            if not self.student.region.all().filter(region=tour_region).exists():
                 raise ValidationError(
-                    f"Student ({user.email}) doesn't do tours in this region ({building_on_tour_region})."
+                    f"Student ({user.email}) doesn't do tours in this region ({tour_region})."
                 )
 
     class Meta:
         constraints = [
             UniqueConstraint(
-                "building_on_tour",
+                "tour",
                 "date",
                 "student",
-                name="unique_student_at_building_on_tour",
+                name="unique_student_on_tour",
                 violation_error_message="The student is already assigned to this tour on this date.",
             ),
         ]
 
     def __str__(self):
-        return f"{self.student} at {self.building_on_tour} on {self.date}"
+        return f"{self.student} at {self.tour} on {self.date}"
 
 
-class PictureBuilding(models.Model):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    picture = models.ImageField(upload_to="building_pictures/")
-    description = models.TextField(blank=True, null=True)
+class RemarkAtBuilding(models.Model):
+    building_on_tour = models.ForeignKey(BuildingOnTour, on_delete=models.SET_NULL, null=True)
     timestamp = models.DateTimeField(blank=True)
+    remark = models.TextField(blank=True, null=True)
 
     AANKOMST = "AA"
     BINNEN = "BI"
     VERTREK = "VE"
     OPMERKING = "OP"
-
     TYPE = [
         (AANKOMST, "Aankomst"),
         (BINNEN, "Binnen"),
@@ -351,20 +354,34 @@ class PictureBuilding(models.Model):
         if not self.timestamp:
             self.timestamp = datetime.now()
 
+    def __str__(self):
+        return f"{self.type} for {self.building_on_tour}"
+
     class Meta:
         constraints = [
             UniqueConstraint(
-                "building",
-                Lower("picture"),
-                Lower("description"),
+                Lower("remark"),
+                "building_on_tour",
                 "timestamp",
-                name="unique_picture_building",
-                violation_error_message="The building already has the upload.",
+                name="unique_remark_for_building",
+                violation_error_message="This remark was already uploaded to this building.",
             ),
         ]
 
-    def __str__(self):
-        return f"{self.type} = {str(self.picture).split('/')[-1]} at {self.building} ({self.timestamp}): {self.description}"
+
+class PictureOfRemark(models.Model):
+    picture = models.ImageField(upload_to="building_pictures/")
+    remark_at_building = models.ForeignKey(RemarkAtBuilding, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                Lower("picture"),
+                "remark_at_building",
+                name="unique_picture_with_remark",
+                violation_error_message="The building already has this upload.",
+            ),
+        ]
 
 
 class Manual(models.Model):

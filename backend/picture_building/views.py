@@ -1,4 +1,4 @@
-from datetime import datetime
+'''from datetime import datetime
 
 from django.db.models import QuerySet
 from drf_spectacular.utils import extend_schema
@@ -213,4 +213,4 @@ class AllPictureBuildingsView(APIView):
             return res
 
         serializer = PictureBuildingSerializer(res, many=True)
-        return get_success(serializer)
+        return get_success(serializer)'''
