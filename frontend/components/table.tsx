@@ -1,0 +1,3 @@
+function ReactTable(data, columns) {
+
+}
