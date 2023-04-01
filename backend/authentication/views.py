@@ -18,7 +18,6 @@ from authentication.serializers import (
     CustomTokenVerifySerializer,
     CustomSignUpSerializer,
     CustomLogoutSerializer,
-    CustomLoginResponseSerializer,
 )
 from base.models import Lobby
 from base.serializers import UserSerializer

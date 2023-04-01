@@ -2,7 +2,7 @@ from allauth.account.adapter import get_adapter
 from allauth.utils import email_address_exists
 from dj_rest_auth import serializers as auth_serializers
 from dj_rest_auth.jwt_auth import unset_jwt_cookies
-from dj_rest_auth.serializers import PasswordResetSerializer, LoginSerializer
+from dj_rest_auth.serializers import PasswordResetSerializer
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers, status
@@ -15,7 +15,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from authentication.forms import CustomAllAuthPasswordResetForm
 from base.models import User, Lobby
-from base.serializers import UserSerializer
 from config import settings
 from users.views import TRANSLATE
 from util.request_response_util import set_keys_of_instance, try_full_clean_and_save
