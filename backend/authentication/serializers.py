@@ -147,11 +147,6 @@ class CustomPasswordResetSerializer(PasswordResetSerializer):
         return value
 
 
-class CustomLoginResponseSerializer(LoginSerializer):
-    message = serializers.CharField()
-    user = UserSerializer()
-
-
 class CustomLogoutSerializer(serializers.Serializer):
     message = serializers.CharField()
 

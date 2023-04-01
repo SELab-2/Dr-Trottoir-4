@@ -44,18 +44,12 @@ class CustomSignUpView(APIView):
 
 
 class CustomLoginView(LoginView):
-    @extend_schema(responses={200: CustomLoginResponseSerializer})
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
     def get_response(self):
-        serializer = CustomLoginResponseSerializer(
-            data={
-                "message": _("successful login"),
-                "user": UserSerializer(self.user).data,
-            }
-        )
-        response = Response(serializer.data, status=status.HTTP_200_OK)
+        data = {
+            "message": "successful login",
+            "user": UserSerializer(self.user).data,
+        }
+        response = Response(data, status=status.HTTP_200_OK)
         set_jwt_cookies(response, self.access_token, self.refresh_token)
         return response
 
