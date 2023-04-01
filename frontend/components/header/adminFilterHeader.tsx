@@ -1,11 +1,11 @@
 import React from "react";
-import styles from "@/components/header/RoleHeader.module.css";
+import styles from "@/components/header/roleHeader.module.css";
 import Image from "next/image";
 import logo from "@/public/logo.png";
 import person from "@/public/icons/person.svg";
 import menu from "@/public/icons/menu.svg";
-import Template3Filters from "@/components/filters/Template3Filters";
-import Template2Filters from "@/components/filters/Template2Filters";
+import Template3Filters from "@/components/filters/template3Filters";
+import Template2Filters from "@/components/filters/template2Filters";
 import Link from "next/link";
 import Logout from "@/components/logout";
 

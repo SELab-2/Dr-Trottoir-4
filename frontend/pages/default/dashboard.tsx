@@ -1,9 +1,9 @@
-import BaseHeader from "@/components/header/BaseHeader";
+import BaseHeader from "@/components/header/baseHeader";
 import styles from "styles/Welcome.module.css";
 import soon from "public/coming_soon.png";
 import Image from "next/image";
 import { withAuthorisation } from "@/components/withAuthorisation";
-import DefaultHeader from "@/components/header/StudentHeader";
+import DefaultHeader from "@/components/header/studentHeader";
 
 function DefaultDashboard() {
     return (

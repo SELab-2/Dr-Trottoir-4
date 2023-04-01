@@ -1,4 +1,4 @@
-import AdminHeader from "@/components/header/AdminHeader";
+import AdminHeader from "@/components/header/adminHeader";
 import styles from "styles/Welcome.module.css";
 import soon from "public/coming_soon.png";
 import Image from "next/image";

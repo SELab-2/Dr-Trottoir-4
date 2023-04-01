@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "@/components/header/RoleHeader.module.css";
+import styles from "@/components/header/roleHeader.module.css";
 import Image from "next/image";
 import logo from "@/public/logo.png";
 import person from "@/public/icons/person.svg";

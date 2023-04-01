@@ -1,4 +1,4 @@
-import StudentHeader from "@/components/header/StudentHeader";
+import StudentHeader from "@/components/header/studentHeader";
 
 export default function StudentSchedule() {
     return (

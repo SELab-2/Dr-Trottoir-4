@@ -1,4 +1,4 @@
-import StudentHeader from "@/components/header/StudentHeader";
+import StudentHeader from "@/components/header/studentHeader";
 import styles from "styles/Welcome.module.css";
 import soon from "public/coming_soon.png";
 import Image from "next/image";

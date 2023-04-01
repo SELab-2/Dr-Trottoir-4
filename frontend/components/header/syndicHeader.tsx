@@ -1,19 +1,29 @@
 import React from "react";
-import styles from "@/components/header/RoleHeader.module.css";
+import styles from "@/components/header/roleHeader.module.css";
 import Image from "next/image";
 import logo from "@/public/logo.png";
 import person from "@/public/icons/person.svg";
+import menu from "@/public/icons/menu.svg";
 import Link from "next/link";
 import Logout from "@/components/logout";
 
 
-const StudentHeader = () => {
+const SyndicHeader = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div className="container-fluid text-center">
-                <Link href="/default/dashboard">
+            <div className="container-fluid">
+                <Link href="/syndic/dashboard">
                     <Image src={logo} alt="My App Logo" width={120} height={30}/>
                 </Link>
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li className="nav-item">
+                            <a className={`nav-link ${styles.text}`} href="/syndic/dashboard">
+                                Dashboard
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 <div className="ms-auto">
                     <a
                         className="nav-link dropdown-toggle"
@@ -47,9 +57,20 @@ const StudentHeader = () => {
                         </li>
                     </ul>
                 </div>
+                <button
+                    className={`navbar-toggler ${styles.button}`}
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <Image src={menu} alt="My App Menu"/>
+                </button>
             </div>
         </nav>
     );
 };
 
-export default StudentHeader;
+export default SyndicHeader;

@@ -1,4 +1,4 @@
-import SyndicHeader from "@/components/header/SyndicHeader";
+import SyndicHeader from "@/components/header/syndicHeader";
 import { BuildingInterface, getBuildingInfo } from "@/lib/building";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";

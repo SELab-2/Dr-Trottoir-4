@@ -3,7 +3,7 @@ import router from "next/router";
 import { BuildingInterface, getBuildingsFromOwner } from "@/lib/building";
 import { useEffect, useState } from "react";
 import { AxiosResponse } from "axios";
-import SyndicHeader from "@/components/header/SyndicHeader";
+import SyndicHeader from "@/components/header/syndicHeader";
 
 function SyndicDashboard() {
     const [id, setId] = useState("");

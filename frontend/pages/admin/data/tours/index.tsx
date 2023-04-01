@@ -1,4 +1,4 @@
-import AdminHeader from "@/components/header/AdminHeader";
+import AdminHeader from "@/components/header/adminHeader";
 
 export default function AdminDataTours() {
     return (
