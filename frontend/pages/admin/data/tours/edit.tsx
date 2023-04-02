@@ -370,23 +370,14 @@ function AdminDataToursEdit() {
 
             // patch tour && maybe post/patch buildingOnTours buildingOnTour.tour must become null if they are being removed
             patchTour(tour.id, { name: tourName }, new Date(Date.now())).then(
-                (res) => {
-                    setTour(res.data);
+                async (_) => {
+                    await router.push("/admin/data/tours/");
                 },
                 (err) => {
                     let errorRes = err.response;
                     if (errorRes && errorRes.status === 400) {
                         getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
                     }
-                }
-            );
-            getAllBuildingsOnTourWithTourID(tour.id).then(
-                (res) => {
-                    const allBuildingsOnTour: BuildingOnTour[] = res.data;
-                    setBuildingsOnTour(allBuildingsOnTour);
-                },
-                (err) => {
-                    console.error(err);
                 }
             );
         } else {

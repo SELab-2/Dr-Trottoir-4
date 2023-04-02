@@ -18,7 +18,9 @@ type TourView = {
 };
 
 // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=68-429&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
-function AdminDataTours() {
+function AdminDataTours({data, cookie} : any) {
+    console.log(data);
+    console.log(cookie);
     const router = useRouter();
     const [allTours, setAllTours] = useState<Tour[]>([]);
     const [regions, setRegions] = useState<Region[]>([]);
