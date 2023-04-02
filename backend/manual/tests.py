@@ -23,10 +23,7 @@ class ManualTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data = {
-            "building": b_id,
-            "file": f
-        }
+        data = {"building": b_id, "file": f}
         resp = client.post(f"{backend_url}/manual/", data, follow=True)
         assert resp.status_code == 201
         for key in data:
@@ -40,11 +37,7 @@ class ManualTests(TestCase):
         client.force_authenticate(user)
 
         b_id = insert_dummy_building()
-        data = {
-            "building": b_id,
-            "file": f,
-            "version_number": 0
-        }
+        data = {"building": b_id, "file": f, "version_number": 0}
 
         _ = client.post(f"{backend_url}/manual/", data, follow=True)
         response = client.post(f"{backend_url}/manual/", data, follow=True)
@@ -58,11 +51,7 @@ class ManualTests(TestCase):
         client.force_authenticate(user=user)
 
         b_id = insert_dummy_building()
-        data = {
-            "building": b_id,
-            "file": f,
-            "version_number": 0
-        }
+        data = {"building": b_id, "file": f, "version_number": 0}
 
         response1 = client.post(f"{backend_url}/manual/", data, follow=True)
         assert response1.status_code == 201
@@ -93,16 +82,8 @@ class ManualTests(TestCase):
         client = APIClient()
         client.force_authenticate(user)
         b_id = insert_dummy_building()
-        data1 = {
-            "building": b_id,
-            "file": f,
-            "version_number": 0
-        }
-        data2 = {
-            "building": b_id,
-            "file": f,
-            "version_number": 1
-        }
+        data1 = {"building": b_id, "file": f, "version_number": 0}
+        data2 = {"building": b_id, "file": f, "version_number": 1}
         response1 = client.post(f"{backend_url}/manual/", data1, follow=True)
         assert response1.status_code == 201
         id = response1.data["id"]
@@ -120,11 +101,7 @@ class ManualTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data = {
-            "building": b_id,
-            "file": f,
-            "version_number": 0
-        }
+        data = {"building": b_id, "file": f, "version_number": 0}
         response2 = client.patch(f"{backend_url}/manual/123434687658/", data, follow=True)
         assert response2.status_code == 404
 
@@ -133,16 +110,8 @@ class ManualTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data1 = {
-            "building": b_id,
-            "file": f,
-            "version_number": 0
-        }
-        data2 = {
-            "building": b_id,
-            "file": f,
-            "version_number": 1
-        }
+        data1 = {"building": b_id, "file": f, "version_number": 0}
+        data2 = {"building": b_id, "file": f, "version_number": 1}
         response1 = client.post(f"{backend_url}/manual/", data1, follow=True)
         _ = client.post(f"{backend_url}/manual/", data2, follow=True)
         assert response1.status_code == 201
@@ -157,11 +126,7 @@ class ManualTests(TestCase):
         client.force_authenticate(user=user)
 
         b_id = insert_dummy_building()
-        data = {
-            "building": b_id,
-            "file": f,
-            "version_number": 0
-        }
+        data = {"building": b_id, "file": f, "version_number": 0}
 
         response1 = client.post(f"{backend_url}/manual/", data, follow=True)
         assert response1.status_code == 201
@@ -183,11 +148,7 @@ class ManualTests(TestCase):
         client = APIClient()
         client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data = {
-            "building": b_id,
-            "file": f,
-            "version_number": 0
-        }
+        data = {"building": b_id, "file": f, "version_number": 0}
         _ = client.post(f"{backend_url}/manual/", data, follow=True)
         response1 = client.post(f"{backend_url}/manual/", data, follow=True)
         # should be 201 because it's resolved internally
