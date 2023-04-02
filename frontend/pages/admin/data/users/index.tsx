@@ -45,7 +45,8 @@ function AdminDataUsers() {
                 editable:"never"
             },
             {
-                accessorKey: "role",
+                accessorFn: (userView) => t(userView.role),
+                id: "role",
                 header: "Rol",
             },
             {
@@ -237,7 +238,7 @@ function AdminDataUsers() {
                                         }}>
                                     {
                                         allRoles.map((role: Role) => (
-                                            <option value={t(role.name) as string} key={role.name}>{t(role.name)}</option>))
+                                            <option value={role.name} key={role.name}>{t(role.name)}</option>))
                                     }
                                 </select>
                             </div>
