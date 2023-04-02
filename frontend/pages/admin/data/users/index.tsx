@@ -46,7 +46,7 @@ function AdminDataUsers() {
             },
             {
                 accessorFn: (userView) => t(userView.role),
-                id: "role",
+                id : "translatedRole",
                 header: "Rol",
             },
             {
@@ -109,7 +109,7 @@ function AdminDataUsers() {
                 email: user.email,
                 first_name: user.first_name,
                 last_name: user.last_name,
-                role: t(getUserRole(user.role.toString())),
+                role: getUserRole(user.role.toString()),
                 phone_number: user.phone_number,
                 userId: user.id,
                 isActive: user.is_active
@@ -195,7 +195,7 @@ function AdminDataUsers() {
                                        value={selectedUser ? selectedUser.first_name : ""}
                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                            if (selectedUser) {
-                                               selectedUser.first_name = e.target.value
+                                               selectedUser.first_name = e.target.value;
                                            }
                                        }}/>
                             </div>
@@ -205,7 +205,7 @@ function AdminDataUsers() {
                                        value={selectedUser ? selectedUser.last_name : ""}
                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                            if (selectedUser) {
-                                               selectedUser.last_name = e.target.value
+                                               selectedUser.last_name = e.target.value;
                                            }
                                        }}/>
                             </div>
@@ -223,7 +223,7 @@ function AdminDataUsers() {
                                        value={selectedUser ? selectedUser.phone_number : ""}
                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                            if (selectedUser) {
-                                               selectedUser.phone_number = e.target.value
+                                               selectedUser.phone_number = e.target.value;
                                            }
                                        }}/>
                             </div>
@@ -233,7 +233,7 @@ function AdminDataUsers() {
                                         value={selectedUser ? selectedUser.role : "Default"}
                                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                             if (selectedUser) {
-                                                selectedUser.role = e.target.value
+                                                selectedUser.role = e.target.value;
                                             }
                                         }}>
                                     {
