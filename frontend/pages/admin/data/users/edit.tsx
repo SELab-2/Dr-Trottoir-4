@@ -1,6 +1,6 @@
-import {useEffect, useState} from "react";
-import {getUserInfo} from "@/lib/user";
-import {useRouter} from "next/router";
+import { useEffect, useState } from "react";
+import { getUserInfo } from "@/lib/user";
+import { useRouter } from "next/router";
 
 interface ParsedUrlQuery {}
 
@@ -14,12 +14,12 @@ export default function AdminUserEdit() {
     const [userData, setUserData] = useState<Object>();
 
     useEffect(() => {
-        if (! query.user) {
+        if (!query.user) {
             return;
         }
-        getUserInfo(query.user.toString()).then(res => {
+        getUserInfo(query.user.toString()).then((res) => {
             setUserData(res.data);
-        })
+        });
     }, [router.isReady]);
 
     return <p>{JSON.stringify(userData)}</p>;
