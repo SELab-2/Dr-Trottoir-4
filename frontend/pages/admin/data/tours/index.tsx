@@ -9,7 +9,7 @@ import { Box, IconButton, Tooltip } from "@mui/material";
 import { Button } from "react-bootstrap";
 import { Delete, Edit } from "@mui/icons-material";
 import { BuildingInterface, getAddress } from "@/lib/building";
-import {TourView} from "@/types.d";
+import {TourView} from "@/types";
 
 // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=68-429&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
 function AdminDataTours() {

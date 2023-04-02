@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next";
 import { getAndSetErrors } from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
-import {BuildingNotOnTourView, BuildingOnTourView} from "@/types.d";
+import {BuildingNotOnTourView, BuildingOnTourView} from "@/types";
 
 interface ParsedUrlQuery {}
 
