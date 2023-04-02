@@ -20,33 +20,13 @@ import { useTranslation } from "react-i18next";
 import { getAndSetErrors } from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
+import {BuildingNotOnTourView, BuildingOnTourView} from "@/types.d";
 
 interface ParsedUrlQuery {}
 
 interface DataToursEditQuery extends ParsedUrlQuery {
     tour?: number;
 }
-
-type BuildingOnTourView = {
-    buildingName: string;
-    city: string;
-    postalCode: string;
-    street: string;
-    houseNumber: number;
-    bus: string;
-    buildingId: number;
-    index: number;
-};
-
-type BuildingNotOnTourView = {
-    buildingName: string;
-    city: string;
-    postalCode: string;
-    street: string;
-    houseNumber: number;
-    bus: string;
-    buildingId: number;
-};
 
 /**
  * https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=115-606&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
