@@ -2,7 +2,7 @@ import AdminHeader from "@/components/header/adminHeader";
 import React, {useEffect, useMemo, useState} from "react";
 import {deleteUser, getAllUsers, getUserRole, User} from "@/lib/user";
 import {getAllRegions, Region} from "@/lib/region";
-import { UserView } from "@/types";
+import {UserView} from "@/types";
 import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
 import {Box, IconButton, Tooltip} from "@mui/material";
 import {Delete, Edit, Check, Clear} from "@mui/icons-material";
@@ -55,8 +55,8 @@ function AdminDataUsers() {
                 accessorFn: (userView) => {
                     return userView.isActive ? (<Check/>) : (<Clear/>)
                 },
-                id: 'isActive',
-                header: 'Bestaat',
+                id: "isActive",
+                header: "Bestaat",
             },
         ],
         []
