@@ -24,8 +24,8 @@ from building import urls as building_urls
 from building_comment import urls as building_comment_urls
 from building_on_tour import urls as building_on_tour_urls
 from email_template import urls as email_template_urls
-from lobby import urls as email_whitelist_urls
 from garbage_collection import urls as garbage_collection_urls
+from lobby import urls as email_whitelist_urls
 from manual import urls as manual_urls
 from picture_building import urls as picture_building_urls
 from region import urls as region_urls
