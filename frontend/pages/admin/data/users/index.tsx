@@ -11,6 +11,8 @@ import {useTranslation} from "react-i18next";
 import {Button, Modal} from "react-bootstrap";
 import {getAndSetErrors} from "@/lib/error";
 import {withAuthorisation} from "@/components/withAuthorisation";
+import styles from "@/styles/Login.module.css";
+import {getAllRoles, Role} from "@/lib/role";
 
 function AdminDataUsers() {
     const {t} = useTranslation();
@@ -18,9 +20,11 @@ function AdminDataUsers() {
     const [allUsers, setAllUsers] = useState<User[]>([]);
     const [allUserViews, setAllUserViews] = useState<UserView[]>([]);
     const [allRegions, setAllRegions] = useState<Region[]>([]);
+    const [allRoles, setAllRoles] = useState<Role[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [showModal, setShowModal] = useState<boolean>(false);
-    const [userToRemove, setUserToRemove] = useState<UserView | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const [showEditModal, setShowEditModal] = useState<boolean>(false);
+    const [selectedUser, setSelectedUser] = useState<UserView | null>(null);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [successfulRemove, setSuccessfulRemove] = useState<boolean>(false);
     const [inactiveUsers, setInactiveUsers] = useState<boolean>(false);
@@ -38,6 +42,7 @@ function AdminDataUsers() {
             {
                 accessorKey: "email",
                 header: "E-mail",
+                editable:"never"
             },
             {
                 accessorKey: "role",
@@ -49,7 +54,8 @@ function AdminDataUsers() {
             },
             {
                 accessorKey: "userId",
-                header: "userId"
+                header: "userId",
+                editable:"never"
             },
             {
                 accessorFn: (userView) => {
@@ -73,6 +79,10 @@ function AdminDataUsers() {
                 console.error(err);
             }
         );
+        getAllRoles().then(res => {
+            const roles: Role[] = res.data;
+            setAllRoles(roles);
+        });
         setLoading(false);
     }, []);
 
@@ -112,10 +122,10 @@ function AdminDataUsers() {
      * Remove a user, show errors if necessary
      */
     function removeUser() {
-        if (!userToRemove) {
+        if (!selectedUser) {
             return;
         }
-        deleteUser(userToRemove?.userId).then(() => {
+        deleteUser(selectedUser?.userId).then(() => {
             setSuccessfulRemove(true);
         }, err => {
             let errorRes = err.response;
@@ -140,39 +150,127 @@ function AdminDataUsers() {
         });
     }
 
+    // TODO
+    function editUser() {
+
+    }
+
     return (
         <>
             <AdminHeader/>
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                <Modal.Header>
+                    <Modal.Title>Verwijder gebruiker:</Modal.Title>
+                </Modal.Header>
                 <Modal.Body>Bent u zeker dat u
-                    gebruiker {userToRemove?.first_name} {userToRemove?.last_name} ({userToRemove?.email}) wil
+                    gebruiker {selectedUser?.first_name} {selectedUser?.last_name} ({selectedUser?.email}) wil
                     verwijderen?</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" className="btn-light" onClick={() => {
-                        setUserToRemove(null);
-                        setShowModal(false);
+                        setSelectedUser(null);
+                        setShowDeleteModal(false);
                     }}>
                         Annuleer
                     </Button>
                     <Button variant="primary" className="btn-dark" onClick={async () => {
                         removeUser();
-                        setShowModal(false);
+                        setShowDeleteModal(false);
                     }}>
                         Verwijder
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+            <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+                <Modal.Header>
+                    <Modal.Title>Pas gebruiker aan:</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="card-body p-4 p-lg-5 text-black">
+                        <form>
+                            <div className="form-outline mb-4">
+                                <label className="form-label">Voornaam</label>
+                                <input type="text" className={`form-control form-control-lg ${styles.input}`} id="firstName"
+                                       value={selectedUser ? selectedUser.first_name : ""}
+                                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                           if (selectedUser) {
+                                               selectedUser.first_name = e.target.value
+                                           }
+                                       }}/>
+                            </div>
+                            <div className="form-outline mb-4">
+                                <label className="form-label">Achternaam</label>
+                                <input type="text" className={`form-control form-control-lg ${styles.input}`} id="lastName"
+                                       value={selectedUser ? selectedUser.last_name : ""}
+                                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                           if (selectedUser) {
+                                               selectedUser.last_name = e.target.value
+                                           }
+                                       }}/>
+                            </div>
+                            <div className="form-outline mb-4">
+                                <label className="form-label">Email:</label>
+                                <input type="text" readOnly className={`form-control form-control-lg ${styles.input}`}
+                                       id="email"
+                                       value={selectedUser ? selectedUser.email : ""}
+                                        onChange={() => {}}
+                                />
+                            </div>
+                            <div className="form-outline mb-4">
+                                <label className="form-label">Telefoon:</label>
+                                <input type="text" className={`form-control form-control-lg ${styles.input}`} id="phoneNumber"
+                                       value={selectedUser ? selectedUser.phone_number : ""}
+                                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                           if (selectedUser) {
+                                               selectedUser.phone_number = e.target.value
+                                           }
+                                       }}/>
+                            </div>
+                            <div className="form-outline mb-4">
+                                <label className="form-label">Rol:</label>
+                                <select className={`form-control form-control-lg ${styles.input}`}
+                                        value={selectedUser ? selectedUser.role : "Default"}
+                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                            if (selectedUser) {
+                                                selectedUser.role = e.target.value
+                                            }
+                                        }}>
+                                    {
+                                        allRoles.map((role: Role) => (
+                                            <option value={t(role.name) as string} key={role.name}>{t(role.name)}</option>))
+                                    }
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" className="btn-light" onClick={() => {
+                        setSelectedUser(null);
+                        setShowEditModal(false);
+                    }}>
+                        Annuleer
+                    </Button>
+                    <Button variant="primary" className="btn-dark" onClick={async () => {
+                        removeUser();
+                        setShowEditModal(false);
+                    }}>
+                        Pas aan
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
             {
                 (successfulRemove) && (
                     <div className={"visible alert alert-success alert-dismissible fade show"}>
-                        <strong>Succes!</strong> De gebruiker ({userToRemove?.first_name} {userToRemove?.last_name}) werd
+                        <strong>Succes!</strong> De gebruiker ({selectedUser?.first_name} {selectedUser?.last_name}) werd
                         met succes verwijderd!
                         <button
                             type="button"
                             className="btn-close"
                             onClick={() => {
                                 setSuccessfulRemove(false);
-                                setUserToRemove(null);
+                                setSelectedUser(null);
                             }}
                         ></button>
                     </div>
@@ -208,6 +306,7 @@ function AdminDataUsers() {
                 columns={columns}
                 data={allUserViews}
                 state={{isLoading: loading}}
+                editingMode="modal" //default
                 enableEditing
                 enableRowNumbers
                 enableHiding={false}
@@ -227,7 +326,8 @@ function AdminDataUsers() {
                         <Tooltip arrow placement="left" title="Pas aan">
                             <IconButton onClick={() => {
                                 const user: UserView = row.original;
-                                routeToUserEditView(user).then();
+                                setSelectedUser(user);
+                                setShowEditModal(true);
                             }}>
                                 <Edit/>
                             </IconButton>
@@ -235,8 +335,8 @@ function AdminDataUsers() {
                         <Tooltip arrow placement="right" title="Verwijder">
                             <IconButton onClick={() => {
                                 const user: UserView = row.original;
-                                setUserToRemove(user);
-                                setShowModal(true);
+                                setSelectedUser(user);
+                                setShowDeleteModal(true);
                             }}>
                                 <Delete/>
                             </IconButton>
