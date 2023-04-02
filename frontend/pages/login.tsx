@@ -3,7 +3,7 @@ import BaseHeader from "@/components/header/baseHeader";
 import { verifyToken } from "@/lib/login";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import getUserInfo from "@/lib/user_info";
+import { getUserInfo } from "@/lib/user";
 import { getRoleDirection } from "@/lib/reroute";
 import Loading from "@/components/loading";
 import LoginForm from "@/components/loginForm";

@@ -42,3 +42,12 @@ export type BuildingNotOnTourView = {
     bus: string;
     buildingId: number;
 };
+
+export type UserView = {
+    email : string;
+    first_name : string;
+    last_name : string;
+    role : string;
+    phone_number : string;
+    userId : number;
+}

@@ -4,7 +4,7 @@ import soon from "public/coming_soon.png";
 import Image from "next/image";
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/router";
-import {getAllUsers} from "@/lib/welcome";
+import {getAllUsers} from "@/lib/user";
 import Loading from "@/components/loading";
 import {withAuthorisation} from "@/components/withAuthorisation";
 
