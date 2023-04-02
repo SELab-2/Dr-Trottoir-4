@@ -2,10 +2,10 @@ import AdminHeader from "@/components/header/adminHeader";
 import React, {useEffect, useMemo, useState} from "react";
 import {deleteUser, getAllUsers, getUserRole, User} from "@/lib/user";
 import {getAllRegions, Region} from "@/lib/region";
-import {TourView, UserView} from "@/types";
+import { UserView } from "@/types";
 import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
 import {Box, IconButton, Tooltip} from "@mui/material";
-import {Delete, Edit} from "@mui/icons-material";
+import {Delete, Edit, Check, Clear} from "@mui/icons-material";
 import {useRouter} from "next/router";
 import {useTranslation} from "react-i18next";
 import {Button, Modal} from "react-bootstrap";
@@ -23,6 +23,7 @@ function AdminDataUsers() {
     const [userToRemove, setUserToRemove] = useState<UserView | null>(null);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [successfulRemove, setSuccessfulRemove] = useState<boolean>(false);
+    const [inactiveUsers, setInactiveUsers] = useState<boolean>(false);
 
     const columns = useMemo<MRT_ColumnDef<UserView>[]>(
         () => [
@@ -47,16 +48,22 @@ function AdminDataUsers() {
                 header: "Telefoonnummer",
             },
             {
-                accessorKey:"userId",
+                accessorKey: "userId",
                 header: "userId"
-            }
+            },
+            {
+                accessorFn: (userView) => {
+                    return userView.isActive ? (<Check/>) : (<Clear/>)
+                },
+                id: 'isActive',
+                header: 'Bestaat',
+            },
         ],
         []
     );
 
     // Get users & regions on refresh
     useEffect(() => {
-        getUsers();
         getAllRegions().then(
             (res) => {
                 let regions: Region[] = res.data;
@@ -69,10 +76,15 @@ function AdminDataUsers() {
         setLoading(false);
     }, []);
 
+    useEffect(() => {
+        getUsers();
+    }, [inactiveUsers])
+
     // Get all the users
     function getUsers() {
-        getAllUsers().then(res => {
+        getAllUsers(inactiveUsers).then(res => {
             const users: User[] = res.data;
+            console.log(res.data);
             setAllUsers(users);
         }, err => {
             console.error(err);
@@ -88,7 +100,8 @@ function AdminDataUsers() {
                 last_name: user.last_name,
                 role: t(getUserRole(user.role.toString())),
                 phone_number: user.phone_number,
-                userId : user.id,
+                userId: user.id,
+                isActive: user.is_active
             }
             return userView;
         });
@@ -109,7 +122,7 @@ function AdminDataUsers() {
             if (errorRes && errorRes.status === 400) {
                 getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
             } else if (errorRes && errorRes.status === 403) {
-                const errorData : [any, string][] = Object.entries(errorRes.data);
+                const errorData: [any, string][] = Object.entries(errorRes.data);
                 setErrorMessages(errorData.map(val => val[1]));
             } else {
                 console.error(err);
@@ -131,7 +144,9 @@ function AdminDataUsers() {
         <>
             <AdminHeader/>
             <Modal show={showModal} onHide={() => setShowModal(false)}>
-                <Modal.Body>Bent u zeker dat u gebruiker {userToRemove?.first_name} {userToRemove?.last_name} ({userToRemove?.email}) wil verwijderen?</Modal.Body>
+                <Modal.Body>Bent u zeker dat u
+                    gebruiker {userToRemove?.first_name} {userToRemove?.last_name} ({userToRemove?.email}) wil
+                    verwijderen?</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" className="btn-light" onClick={() => {
                         setUserToRemove(null);
@@ -150,7 +165,8 @@ function AdminDataUsers() {
             {
                 (successfulRemove) && (
                     <div className={"visible alert alert-success alert-dismissible fade show"}>
-                        <strong>Succes!</strong> De gebruiker ({userToRemove?.first_name} {userToRemove?.last_name}) werd met succes verwijderd!
+                        <strong>Succes!</strong> De gebruiker ({userToRemove?.first_name} {userToRemove?.last_name}) werd
+                        met succes verwijderd!
                         <button
                             type="button"
                             className="btn-close"
@@ -196,11 +212,21 @@ function AdminDataUsers() {
                 enableRowNumbers
                 enableHiding={false}
                 initialState={{columnVisibility: {userId: false}}}
+                renderTopToolbarCustomActions={() => (
+                    <div className="form-check form-switch">
+                        <input className="form-check-input" type="checkbox" id="switchCheckbox" checked={inactiveUsers}
+                               onChange={() => {
+                                   setInactiveUsers(!inactiveUsers);
+                               }}/>
+                        <label className="form-check-label" htmlFor="switchCheckbox">Inclusief inactieve
+                            gebruikers</label>
+                    </div>
+                )}
                 renderRowActions={({row}) => (
                     <Box sx={{display: "flex", gap: "1rem"}}>
                         <Tooltip arrow placement="left" title="Pas aan">
                             <IconButton onClick={() => {
-                                const user : UserView = row.original;
+                                const user: UserView = row.original;
                                 routeToUserEditView(user).then();
                             }}>
                                 <Edit/>
@@ -208,7 +234,7 @@ function AdminDataUsers() {
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
                             <IconButton onClick={() => {
-                                const user : UserView = row.original;
+                                const user: UserView = row.original;
                                 setUserToRemove(user);
                                 setShowModal(true);
                             }}>

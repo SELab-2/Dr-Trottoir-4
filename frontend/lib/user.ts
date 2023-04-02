@@ -32,9 +32,12 @@ export const getUserRole = (role_id: string): string => {
     return userDict.get(parseInt(role_id)) || "Default";
 };
 
-export async function getAllUsers() : Promise<AxiosResponse<any, any>> {
+export async function getAllUsers(includeInactiveUser : boolean = false) : Promise<AxiosResponse<any, any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
-    return await api.get(request_url);
+    return await api.get(request_url, {
+        params: {
+            include_inactive: includeInactiveUser
+        }});
 }
 
 export async function deleteUser(userId : number) : Promise<AxiosResponse<any, any>> {
