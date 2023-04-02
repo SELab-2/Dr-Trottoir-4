@@ -36,3 +36,8 @@ export async function getAllUsers() : Promise<AxiosResponse<any, any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
     return await api.get(request_url);
 }
+
+export async function deleteUser(userId : number) : Promise<AxiosResponse<any, any>> {
+    const delete_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}${userId}`;
+    return await api.delete(delete_url);
+}
