@@ -184,7 +184,8 @@ DATABASES = {
         # since testing is run outside the docker, we need a localhost db
         # the postgres docker port is exposed to it should be used as well
         # this 'hack' is just to fix the name resolving of 'web'
-        "HOST": "localhost" if "test" in sys.argv else "web",
+        # "HOST": "localhost" if "test" in sys.argv else "web",
+        "HOST": "web",
         "PORT": "5432",
     }
 }

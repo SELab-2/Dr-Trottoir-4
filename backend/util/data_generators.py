@@ -33,7 +33,7 @@ roles = {}
 
 
 def insert_dummy_role(role):
-    o = Role.objects.filter(name=role)
+    o = Role.objects.filter(name=role.lower())
     if len(o) == 1:
         return o[0].id
     r = Role(name=role, rank=1, description="testrole")
@@ -41,17 +41,22 @@ def insert_dummy_role(role):
     return r.id
 
 
+email_counter = 0
+
+
 def createUser(name: str = "admin", is_staff: bool = True, withRegion: bool = False) -> User:
+    global email_counter
     r = Role.objects.get(id=insert_dummy_role(name))
     user = User(
         first_name="test",
         last_name="test",
-        email="test@test.com",
+        email=f"test_{email_counter}@test.com",
         is_staff=is_staff,
         is_active=True,
         phone_number="+32485710347",
         role=r,
     )
+    email_counter += 1
     user.save()
     if withRegion:
         r_id = insert_dummy_region()
