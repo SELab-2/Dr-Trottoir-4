@@ -5,7 +5,7 @@ from base.test_settings import backend_url
 from util.data_generators import createUser, insert_dummy_building, createMemoryFile
 
 
-f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
+f = createMemoryFile("./manual/lorem-ipsum.pdf")
 
 
 class ManualTests(TestCase):
