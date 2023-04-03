@@ -29,9 +29,6 @@ def insert_dummy_syndic():
     return s.id
 
 
-roles = {}
-
-
 def insert_dummy_role(role):
     o = Role.objects.filter(name=role.lower())
     if len(o) == 1:

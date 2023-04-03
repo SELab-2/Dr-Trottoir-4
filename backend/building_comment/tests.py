@@ -1,7 +1,8 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from base.test_settings import backend_url
+from base.models import Building
+from base.test_settings import backend_url, roles
 from util.data_generators import createUser, insert_dummy_building
 
 
@@ -141,3 +142,139 @@ class BuildingCommentTests(TestCase):
         _ = client.post(f"{backend_url}/building-comment/", data1, follow=True)
         response1 = client.post(f"{backend_url}/building-comment/", data1, follow=True)
         assert response1.status_code == 400
+
+
+class AuthorizationTests(TestCase):
+    def test_building_comment_list(self):
+        codes = {
+            "Default": 403,
+            "Admin": 200,
+            "Superstudent": 200,
+            "Student": 403,
+            "Syndic": 403
+        }
+        for role in roles:
+            user = createUser(role)
+            client = APIClient()
+            client.force_authenticate(user=user)
+            resp = client.get(f"{backend_url}/building-comment/all")
+            assert resp.status_code == codes[role]
+
+    def test_insert_building_comment(self):
+        codes = {
+            "Default": 403,
+            "Admin": 201,
+            "Superstudent": 201,
+            "Student": 403,
+            "Syndic": 403
+        }
+        number = 1
+        b_id = insert_dummy_building()
+        for role in roles:
+            user = createUser(role)
+            client = APIClient()
+            client.force_authenticate(user=user)
+            data = {"comment": f"<3 python - {number}", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
+            number += 1
+            resp = client.post(f"{backend_url}/building-comment/", data, follow=True)
+            assert resp.status_code == codes[role]
+
+    def test_get_building_comment(self):
+        codes = {
+            "Default": 403,
+            "Admin": 200,
+            "Superstudent": 200,
+            "Student": 200,
+            "Syndic": 403
+        }
+        adminUser = createUser()
+        adminClient = APIClient()
+        adminClient.force_authenticate(user=adminUser)
+        b_id = insert_dummy_building()
+        data = {"comment": f"<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
+
+        response1 = adminClient.post(f"{backend_url}/building-comment/", data, follow=True)
+        id = response1.data["id"]
+        assert response1.status_code == 201
+        for role in roles:
+            user = createUser(role)
+            client = APIClient()
+            client.force_authenticate(user=user)
+            response2 = client.get(f"{backend_url}/building-comment/{id}/", follow=True)
+            if response2.status_code != codes[role]:
+                print(f"role: {role}\tcode: {response2.status_code} (expected {codes[role]})")
+            assert response2.status_code == codes[role]
+        # testing special case when syndic is owner of building
+        building = Building.objects.filter(id=b_id)[0]  # there should only be 1
+        user = building.syndic
+        client = APIClient()
+        client.force_authenticate(user=user)
+        response2 = client.get(f"{backend_url}/building-comment/{id}/", follow=True)
+        assert response2.status_code == 200
+
+    def test_patch_building_comment(self):
+        codes = {
+            "Default": 403,
+            "Admin": 200,
+            "Superstudent": 200,
+            "Student": 403,
+            "Syndic": 403
+        }
+        adminUser = createUser()
+        adminClient = APIClient()
+        adminClient.force_authenticate(user=adminUser)
+        b_id = insert_dummy_building()
+        data1 = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
+        data2 = {"comment": "<3 python and Typescript", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
+
+        response1 = adminClient.post(f"{backend_url}/building-comment/", data1, follow=True)
+        id = response1.data["id"]
+        assert response1.status_code == 201
+        for role in roles:
+            user = createUser(role)
+            client = APIClient()
+            client.force_authenticate(user)
+            response2 = client.patch(f"{backend_url}/building-comment/{id}/", data2, follow=True)
+            if response2.status_code != codes[role]:
+                print(f"role: {role}\tcode: {response2.status_code} (expected {codes[role]})")
+            assert response2.status_code == codes[role]
+        # testing special case when syndic is owner of building
+        # patch shouldn't be allowed either way
+        building = Building.objects.filter(id=b_id)[0]  # there should only be 1
+        user = building.syndic
+        client = APIClient()
+        client.force_authenticate(user=user)
+        response2 = client.patch(f"{backend_url}/building-comment/{id}/", data2, follow=True)
+        print(response2.data)
+        print(response2.status_code)
+        if response2.status_code != codes[role]:
+            print(f"role: owner\tcode: {response2.status_code} (expected {codes[role]})")
+        assert response2.status_code == 200
+
+    def test_remove_building_comment(self):
+        codes = {
+            "Default": 403,
+            "Admin": 204,
+            "Superstudent": 204,
+            "Student": 403,
+            "Syndic": 403
+        }
+        adminUser = createUser()
+        adminClient = APIClient()
+        adminClient.force_authenticate(user=adminUser)
+        b_id = insert_dummy_building()
+        data = {"comment": f"<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
+
+        exists = False
+        for role in roles:
+            if not exists:
+                # building toevoegen als admin
+                response1 = adminClient.post(f"{backend_url}/building-comment/", data, follow=True)
+                id = response1.data["id"]
+            # proberen verwijderen als `role`
+            user = createUser(role)
+            client = APIClient()
+            client.force_authenticate(user)
+            response2 = client.delete(f"{backend_url}/building-comment/{id}/", follow=True)
+            assert response2.status_code == codes[role]
+            exists = codes[role] != 204
