@@ -1,22 +1,12 @@
 import AdminHeader from "@/components/header/adminHeader";
 import React, {useEffect, useMemo, useState} from "react";
-import {deleteBuilding, getAllBuildings, BuildingInterface} from "@/lib/building";
+import {BuildingInterface, deleteBuilding, getAddress, getAllBuildings} from "@/lib/building";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import {useRouter} from "next/router";
 import MaterialReactTable, {type MRT_ColumnDef} from "material-react-table";
-import {
-    Box,
-    IconButton,
-    Tooltip,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    DialogActions
-} from "@mui/material";
+import {Box, IconButton, Tooltip} from "@mui/material";
 import {Button} from "react-bootstrap";
 import {Delete, Edit} from "@mui/icons-material";
-import {getAddress} from "@/lib/building";
 import {BuildingView} from "@/types";
 import {getUserInfo} from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
@@ -70,11 +60,19 @@ function AdminDataBuildings() {
                 const buildings: BuildingInterface[] = (await getAllBuildings()).data;
                 const buildingViews: BuildingView[] = [];
 
-                for (const building of buildings) {
-                    // Get syndic email using your request
-                    const res = await getUserInfo(building.syndic.toString());
-                    const syndicEmail: string = res.data.email;
+                let cache: Record<string, string> = {}
 
+                for (const building of buildings) {
+                    const s = building.syndic.toString()
+                    let syndicEmail: string
+                    if (s in cache) {
+                        syndicEmail = cache[s]
+                    } else {
+                        // Get syndic email using your request
+                        const res = await getUserInfo(building.syndic.toString());
+                        syndicEmail = res.data.email;
+                        cache[s] = syndicEmail
+                    }
                     const buildingView: BuildingView = {
                         name: building.name,
                         address: getAddress(building),
@@ -84,7 +82,6 @@ function AdminDataBuildings() {
 
                     buildingViews.push(buildingView);
                 }
-                console.log(buildingViews);
                 setBuildingViews(buildingViews);
             } catch (err) {
                 console.error(err);
