@@ -424,8 +424,6 @@ class AuthorizationTests(TestCase):
             if not exists:
                 # building toevoegen als admin
                 response1 = adminClient.post(f"{backend_url}/building/", data1, follow=True)
-                print(response1.status_code)
-                print(response1.data)
                 id = response1.data["id"]
             # proberen verwijderen als `role`
             user = createUser(role)
