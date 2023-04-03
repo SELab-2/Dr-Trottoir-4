@@ -130,7 +130,7 @@ export function UserEditModal({
                         </div>
                         <div className="form-outline mb-4">
                             <label className="form-label">Rol:</label>
-                            <select className={`form-control form-control-lg ${styles.input}`}
+                            <select className={`form-select form-control form-control-lg ${styles.input}`}
                                     value={selectedUser ? selectedUser.role : "Default"}
                                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                         setSelectedUser((prevState: UserView | null) => (prevState ? {
