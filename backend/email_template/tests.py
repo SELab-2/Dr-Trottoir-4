@@ -199,8 +199,6 @@ class BuildingOnTourAuthorizationTests(TestCase):
         adminUser = createUser()
         adminClient = APIClient()
         adminClient.force_authenticate(user=adminUser)
-        t_id = insert_dummy_tour()
-        b_id = insert_dummy_building()
         for role in roles:
             user = createUser(role)
             client = APIClient()
