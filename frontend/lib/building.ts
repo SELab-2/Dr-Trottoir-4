@@ -26,6 +26,15 @@ export const getBuildingInfo = async (buildingId: string | undefined): Promise<A
     return await api.get(request_url);
 };
 
+export async function getAllBuildings() : Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_BUILDINGS}`;
+    return await api.get(request_url);
+}
+
+export function getAddress(building : BuildingInterface) : string {
+    return `${building.street} ${building.house_number} ${building.bus ? building.bus : ""}, ${building.city} ${building.postal_code}`;
+}
+
 export const patchBuildingInfo = async (buildingId: string | undefined, data: BuildingInterface | Object) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
     return await api.patch(request_url, data);
@@ -34,12 +43,4 @@ export const patchBuildingInfo = async (buildingId: string | undefined, data: Bu
 export const generateNewPublicId = async (buildingId: string | undefined) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_NEW_PUBLIC_ID_BUILDING}${buildingId}`;
     return await api.post(request_url)
-}
-export async function getAllBuildings() : Promise<AxiosResponse<any>> {
-    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_BUILDINGS}`;
-    return await api.get(request_url);
-}
-
-export function getAddress(building : BuildingInterface) : string {
-    return `${building.street} ${building.house_number} ${building.bus ? building.bus : ""}, ${building.city} ${building.postal_code}`;
 }

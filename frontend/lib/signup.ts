@@ -1,4 +1,4 @@
-import { SignUp } from "@/types.d";
+import { SignUp } from "@/types";
 import api from "@/lib/api/axios";
 import { AxiosResponse } from "axios";
 

@@ -1,9 +1,9 @@
 import React from "react";
-import BaseHeader from "@/components/header/BaseHeader";
-import SignupForm from "@/components/signupform";
+import BaseHeader from "@/components/header/baseHeader";
 import Image from "next/image";
 import fire from "@/public/fire_image.png";
 import styles from "@/styles/Login.module.css";
+import SignupForm from "@/components/signupForm";
 
 export default function Signup() {
     return (

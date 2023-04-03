@@ -1,5 +1,5 @@
 import api from "./api/axios";
-import { Login } from "@/types.d";
+import { Login } from "@/types";
 import { AxiosResponse } from "axios";
 
 export const login = (email: string, password: string): Promise<AxiosResponse<any, any>> => {
