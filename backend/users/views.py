@@ -135,7 +135,7 @@ class UserIndividualView(APIView):
             return r
 
         # Now that we have an ID, we can look at the many-to-many relationship region
-        if r := add_regions_to_user(user_instance, data["region"]):
+        if data.get("region") and (r := add_regions_to_user(user_instance, data["region"])):
             return r
 
         serializer = UserSerializer(user_instance)
