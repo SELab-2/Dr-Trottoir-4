@@ -8,6 +8,8 @@ from base.permissions import (
     IsAdmin,
     IsSuperStudent,
     ReadOnlyStudent,
+    OwnerWithLimitedPatch,
+    OwnerOfBuilding,
 )
 from base.serializers import BuildingSerializer
 from util.request_response_util import *
