@@ -401,7 +401,7 @@ class EmailTemplate(models.Model):
     template = models.TextField()
 
     def __str__(self):
-        return f"Manual: {self.name}"
+        return f"Email Template: {self.name}"
 
     class Meta:
         constraints = [
