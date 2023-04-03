@@ -1,5 +1,3 @@
-import Image from "next/image";
-import fire from "@/public/fire_image.png";
 import styles from "@/styles/Login.module.css";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
