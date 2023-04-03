@@ -2,7 +2,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema
 
-from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount
+from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount, IsStudent
 from base.models import StudentOnTour
 from base.serializers import StudOnTourSerializer
 from util.request_response_util import *
@@ -31,7 +31,7 @@ class Default(APIView):
 
 
 class TourPerStudentView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerAccount]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | (IsStudent & OwnerAccount)]
     serializer_class = StudOnTourSerializer
 
     def get(self, request, student_id):
@@ -47,7 +47,7 @@ class TourPerStudentView(APIView):
 
 
 class StudentOnTourIndividualView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyOwnerAccount]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | (IsStudent & ReadOnlyOwnerAccount)]
     serializer_class = StudOnTourSerializer
 
     @extend_schema(responses=get_docs(StudOnTourSerializer))
