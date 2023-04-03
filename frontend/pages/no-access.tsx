@@ -1,4 +1,4 @@
-import BaseHeader from "@/components/header/BaseHeader";
+import BaseHeader from "@/components/header/baseHeader";
 import styles from "styles/Welcome.module.css";
 import React from "react";
 import Link from "next/link";

@@ -5,7 +5,7 @@ import * as process from "process";
 export const getCurrentUser = (): Promise<AxiosResponse<any, any>> => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}`;
     return api.get(request_url);
-}
+};
 export const getUserInfo = (user_id: string): Promise<AxiosResponse<any, any>> => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}${user_id}`;
     return api.get(request_url);

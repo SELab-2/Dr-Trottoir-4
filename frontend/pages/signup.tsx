@@ -1,6 +1,6 @@
 import React from "react";
-import BaseHeader from "@/components/header/BaseHeader";
-import SignupForm from "@/components/signupform";
+import BaseHeader from "@/components/header/baseHeader";
+import SignupForm from "@/components/signupForm";
 
 export default function Signup() {
     return (
