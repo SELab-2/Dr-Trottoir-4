@@ -78,10 +78,7 @@ collections.Callable = collections.abc.Callable
 TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 
 
-NOSE_ARGS = [
-    '--cover-xml',
-    '--cover-xml-file=./coverage.xml'
-]
+NOSE_ARGS = ["--cover-xml", "--cover-xml-file=./coverage.xml"]
 
 # drf-spectacular settings
 SPECTACULAR_SETTINGS = {
