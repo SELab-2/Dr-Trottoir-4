@@ -1,18 +1,18 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, {useEffect, useMemo, useState} from "react";
-import {deleteUser, getAllUsers, getUserRole, patchUser, User} from "@/lib/user";
-import {getAllRegions, Region} from "@/lib/region";
-import {UserView} from "@/types";
-import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {Delete, Edit, Check, Clear} from "@mui/icons-material";
-import {useTranslation} from "react-i18next";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {UserEditModal} from "@/components/admin/userEditModal";
-import {UserDeleteModal} from "@/components/admin/userDeleteModal";
+import React, { useEffect, useMemo, useState } from "react";
+import { deleteUser, getAllUsers, getUserRole, patchUser, User } from "@/lib/user";
+import { getAllRegions, Region } from "@/lib/region";
+import { UserView } from "@/types";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { Delete, Edit, Check, Clear } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { UserEditModal } from "@/components/admin/userEditModal";
+import { UserDeleteModal } from "@/components/admin/userDeleteModal";
 
 function AdminDataUsers() {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [allUsers, setAllUsers] = useState<User[]>([]);
     const [allUserViews, setAllUserViews] = useState<UserView[]>([]);
     const [allRegions, setAllRegions] = useState<Region[]>([]);
@@ -35,7 +35,7 @@ function AdminDataUsers() {
             {
                 accessorKey: "email",
                 header: "E-mail",
-                editable: "never"
+                editable: "never",
             },
             {
                 accessorFn: (userView) => t(userView.role),
@@ -49,11 +49,11 @@ function AdminDataUsers() {
             {
                 accessorKey: "userId",
                 header: "userId",
-                editable: "never"
+                editable: "never",
             },
             {
                 accessorFn: (userView) => {
-                    return userView.isActive ? (<Check/>) : (<Clear/>)
+                    return userView.isActive ? <Check /> : <Clear />;
                 },
                 id: "isActive",
                 header: "Bestaat",
@@ -82,12 +82,15 @@ function AdminDataUsers() {
 
     // Get all the users
     function getUsers() {
-        getAllUsers(inactiveUsers).then(res => {
-            const users: User[] = res.data;
-            setAllUsers(users);
-        }, err => {
-            console.error(err);
-        });
+        getAllUsers(inactiveUsers).then(
+            (res) => {
+                const users: User[] = res.data;
+                setAllUsers(users);
+            },
+            (err) => {
+                console.error(err);
+            }
+        );
     }
 
     // Once retrieved all the users & regions, set the userViews for the table
@@ -100,8 +103,8 @@ function AdminDataUsers() {
                 role: getUserRole(user.role.toString()),
                 phone_number: user.phone_number,
                 userId: user.id,
-                isActive: user.is_active
-            }
+                isActive: user.is_active,
+            };
             return userView;
         });
         setAllUserViews(userViews);
@@ -119,11 +122,19 @@ function AdminDataUsers() {
 
     return (
         <>
-            <AdminHeader/>
-            <UserDeleteModal show={showDeleteModal} closeModal={closeRemoveModal} selectedUser={selectedUser}
-                             setSelectedUser={setSelectedUser}/>
-            <UserEditModal show={showEditModal} closeModal={closeEditModal} selectedUser={selectedUser}
-                           setSelectedUser={setSelectedUser}/>
+            <AdminHeader />
+            <UserDeleteModal
+                show={showDeleteModal}
+                closeModal={closeRemoveModal}
+                selectedUser={selectedUser}
+                setSelectedUser={setSelectedUser}
+            />
+            <UserEditModal
+                show={showEditModal}
+                closeModal={closeEditModal}
+                selectedUser={selectedUser}
+                setSelectedUser={setSelectedUser}
+            />
             <MaterialReactTable
                 displayColumnDefOptions={{
                     "mrt-row-actions": {
@@ -137,40 +148,50 @@ function AdminDataUsers() {
                 enableBottomToolbar={false}
                 columns={columns}
                 data={allUserViews}
-                state={{isLoading: loading}}
+                state={{ isLoading: loading }}
                 editingMode="modal" //default
                 enableEditing
                 enableRowNumbers
                 enableHiding={false}
-                initialState={{columnVisibility: {userId: false}}}
+                initialState={{ columnVisibility: { userId: false } }}
                 renderTopToolbarCustomActions={() => (
                     <div className="form-check form-switch">
-                        <input className="form-check-input" type="checkbox" id="switchCheckbox" checked={inactiveUsers}
-                               onChange={() => {
-                                   setInactiveUsers(!inactiveUsers);
-                               }}/>
-                        <label className="form-check-label" htmlFor="switchCheckbox">Inclusief inactieve
-                            gebruikers</label>
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="switchCheckbox"
+                            checked={inactiveUsers}
+                            onChange={() => {
+                                setInactiveUsers(!inactiveUsers);
+                            }}
+                        />
+                        <label className="form-check-label" htmlFor="switchCheckbox">
+                            Inclusief inactieve gebruikers
+                        </label>
                     </div>
                 )}
-                renderRowActions={({row}) => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                renderRowActions={({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Tooltip arrow placement="left" title="Pas aan">
-                            <IconButton onClick={() => {
-                                const user: UserView = row.original;
-                                setSelectedUser(user);
-                                setShowEditModal(true);
-                            }}>
-                                <Edit/>
+                            <IconButton
+                                onClick={() => {
+                                    const user: UserView = row.original;
+                                    setSelectedUser(user);
+                                    setShowEditModal(true);
+                                }}
+                            >
+                                <Edit />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
-                            <IconButton onClick={() => {
-                                const user: UserView = row.original;
-                                setSelectedUser(user);
-                                setShowDeleteModal(true);
-                            }}>
-                                <Delete/>
+                            <IconButton
+                                onClick={() => {
+                                    const user: UserView = row.original;
+                                    setSelectedUser(user);
+                                    setShowDeleteModal(true);
+                                }}
+                            >
+                                <Delete />
                             </IconButton>
                         </Tooltip>
                     </Box>
