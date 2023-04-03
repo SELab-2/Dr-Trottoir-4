@@ -14,10 +14,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       
-      - name: Run Docker Tests
-        uses: cloudposse/github-action-docker-compose-test-run@0.1.2
-        with:
-          file: docker-compose.yml
-          service: backend
-          command: runtests.sh
+      - name: Build Docker
+        run: docker-compose up -d --build
+
+      - name: Run Tests
+        run: docker-compose exec backend python manage.py test building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py picture_building/tests.py student_at_building_on_tour/tests.py --with-coverage --cover-package=building,building_on_tour,garbage_collection,manual,region,tour,building_comment,picture_building,student_at_building_on_tour,role
+
+      - name: Clean up
+        if: always()
+        run: |
+          docker-compose down --rmi all
+          docker-compose rm -sfv
+
+      # - name: Run Docker Tests
+      #   uses: cloudposse/github-action-docker-compose-test-run@0.1.2
+      #   with:
+      #     file: docker-compose.yml
+      #     service: backend
+      #     command: runtests.sh
         
