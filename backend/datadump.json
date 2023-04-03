@@ -1593,7 +1593,8 @@
     "model": "base.remarkatbuilding",
     "pk": 1,
     "fields": {
-        "building_on_tour": 2,
+        "student_on_tour": 1,
+        "building": 2,
         "timestamp": "2023-04-01T13:05:57Z",
         "remark": "hellow!",
         "type": "AA"
@@ -1603,7 +1604,8 @@
     "model": "base.remarkatbuilding",
     "pk": 2,
     "fields": {
-        "building_on_tour": 4,
+        "student_on_tour": 2,
+        "building": 3,
         "timestamp": "2023-04-16T22:00:00Z",
         "remark": "Zijde gij nie de dochter van Hilde? Van hilde?!",
         "type": "VE"
@@ -1613,7 +1615,8 @@
     "model": "base.remarkatbuilding",
     "pk": 3,
     "fields": {
-        "building_on_tour": 9,
+        "student_on_tour": 5,
+        "building": 3,
         "timestamp": "2023-04-12T13:06:56Z",
         "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
         "type": "OP"
@@ -1623,7 +1626,8 @@
     "model": "base.remarkatbuilding",
     "pk": 4,
     "fields": {
-        "building_on_tour": 2,
+        "student_on_tour": 6,
+        "building": 4,
         "timestamp": "2023-04-01T13:07:48Z",
         "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
         "type": "BI"
@@ -1633,7 +1637,8 @@
     "model": "base.remarkatbuilding",
     "pk": 5,
     "fields": {
-        "building_on_tour": 7,
+        "student_on_tour": 1,
+        "building": 7,
         "timestamp": "2023-04-12T04:00:00Z",
         "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
         "type": "VE"
@@ -1643,7 +1648,8 @@
     "model": "base.remarkatbuilding",
     "pk": 6,
     "fields": {
-        "building_on_tour": 8,
+        "student_on_tour": 3,
+        "building": 8,
         "timestamp": "2023-04-21T13:08:24Z",
         "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
         "type": "AA"
@@ -1653,7 +1659,8 @@
     "model": "base.remarkatbuilding",
     "pk": 7,
     "fields": {
-        "building_on_tour": 11,
+        "student_on_tour": 1,
+        "building": 7,
         "timestamp": "2023-04-12T13:08:46Z",
         "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
         "type": "AA"
@@ -1663,7 +1670,8 @@
     "model": "base.remarkatbuilding",
     "pk": 8,
     "fields": {
-        "building_on_tour": 15,
+        "student_on_tour": 3,
+        "building": 2,
         "timestamp": "2023-04-10T13:08:55Z",
         "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
         "type": "OP"
@@ -1673,7 +1681,8 @@
     "model": "base.remarkatbuilding",
     "pk": 9,
     "fields": {
-        "building_on_tour": 8,
+        "student_on_tour": 6,
+        "building": 3,
         "timestamp": "2023-04-17T10:00:00Z",
         "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
         "type": "BI"
@@ -1683,7 +1692,8 @@
     "model": "base.remarkatbuilding",
     "pk": 10,
     "fields": {
-        "building_on_tour": 14,
+        "student_on_tour": 8,
+        "building": 5,
         "timestamp": "2023-04-01T13:09:29Z",
         "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
         "type": "OP"
@@ -1693,7 +1703,8 @@
     "model": "base.remarkatbuilding",
     "pk": 11,
     "fields": {
-        "building_on_tour": 13,
+        "student_on_tour": 1,
+        "building": 6,
         "timestamp": "2023-04-20T13:09:48Z",
         "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
         "type": "AA"
@@ -1703,7 +1714,8 @@
     "model": "base.remarkatbuilding",
     "pk": 12,
     "fields": {
-        "building_on_tour": 6,
+        "student_on_tour": 4,
+        "building": 7,
         "timestamp": "2023-04-20T13:10:14Z",
         "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
         "type": "BI"
@@ -1713,7 +1725,8 @@
     "model": "base.remarkatbuilding",
     "pk": 13,
     "fields": {
-        "building_on_tour": 16,
+        "student_on_tour": 5,
+        "building": 3,
         "timestamp": "2023-04-05T13:10:29Z",
         "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
         "type": "OP"
@@ -1723,7 +1736,8 @@
     "model": "base.remarkatbuilding",
     "pk": 14,
     "fields": {
-        "building_on_tour": 5,
+        "student_on_tour": 7,
+        "building": 2,
         "timestamp": "2023-04-13T10:00:00Z",
         "remark": "https://www.youtube.com/watch?v=U1_2WsaSSwo&ab_channel",
         "type": "VE"
