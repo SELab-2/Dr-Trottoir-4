@@ -82,24 +82,6 @@ function AdminDataBuildings() {
         fetchBuildingData().then();
     }, [allBuildings]);
 
-    // useEffect(() => {
-    //     const buildingViews: Promise<BuildingView>[] = allBuildings.map(async (building: BuildingInterface) => {
-    //         const res = await getUserInfo(building.syndic_id.toString())
-    //         const buildingView: BuildingView = {
-    //             name: building.name,
-    //             address: getAddress(building),
-    //             building_id: building.id,
-    //             syndic_mail: res.data.email
-    //         };
-    //         return buildingView;
-    //     });
-    //     buildingViews.map( (promise) => {
-    //         promise.then
-    //     })
-    //     setBuildingViews(buildingViews);
-    // }, [allBuildings]);
-
-
     useEffect(() => {
         setLoading(false);
     }, [buildingViews]);
