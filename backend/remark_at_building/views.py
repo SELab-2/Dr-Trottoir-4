@@ -6,7 +6,7 @@ from base.models import RemarkAtBuilding
 from base.permissions import IsSuperStudent, IsAdmin, IsStudent, OwnerAccount
 from base.serializers import RemarkAtBuildingSerializer
 from util.request_response_util import post_docs, request_to_dict, set_keys_of_instance, try_full_clean_and_save, \
-    not_found, get_success
+    not_found, get_success, delete_success, delete_docs, patch_success, patch_docs
 
 TRANSLATE = {
     "student_on_tour": "student_on_tour_id",
@@ -44,10 +44,9 @@ class RemarkAtBuildingIndividualView(APIView):
     @extend_schema(responses=get_success(serializer_class))
     def get(self, request, remark_at_building_id):
         """
-        Get info about a remark at building with a given id
+        Get info about a remark at building with given id
         """
-        remark_at_building_instance = RemarkAtBuilding.objects.filter(
-            id=remark_at_building_id).first()
+        remark_at_building_instance = RemarkAtBuilding.objects.filter(id=remark_at_building_id).first()
 
         if not remark_at_building_instance:
             return not_found(object_name="RemarkAtBuilding")
@@ -55,6 +54,40 @@ class RemarkAtBuildingIndividualView(APIView):
         self.check_object_permissions(request, remark_at_building_instance.student_on_tour.student)
 
         return get_success(self.serializer_class(remark_at_building_instance))
+
+    @extend_schema(responses=delete_docs())
+    def delete(self, request, remark_at_building_id):
+        """
+        Delete remark at building with given id
+        """
+        remark_at_building_instance = RemarkAtBuilding.objects.filter(id=remark_at_building_id).first()
+        if not remark_at_building_instance:
+            return not_found(object_name="RemarkAtBuilding")
+
+        self.check_object_permissions(request, remark_at_building_instance.student_on_tour.student)
+
+        remark_at_building_instance.delete()
+        return delete_success()
+
+    @extend_schema(responses=patch_docs(serializer_class))
+    def patch(self, request, remark_at_building_id):
+        """
+        Edit building with given ID
+        """
+        remark_at_building_instance = RemarkAtBuilding.objects.filter(id=remark_at_building_id).first()
+        if not remark_at_building_instance:
+            return not_found(object_name="RemarkAtBuilding")
+
+        self.check_object_permissions(request, remark_at_building_instance.student_on_tour.student)
+
+        data = request_to_dict(request.data)
+
+        set_keys_of_instance(remark_at_building_instance, data, TRANSLATE)
+
+        if r := try_full_clean_and_save(remark_at_building_instance):
+            return r
+
+        return patch_success(self.serializer_class(remark_at_building_instance))
 
 
 class AllRemarkAtBuilding(APIView):
