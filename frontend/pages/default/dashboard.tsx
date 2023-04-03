@@ -1,4 +1,3 @@
-import BaseHeader from "@/components/header/baseHeader";
 import styles from "styles/Welcome.module.css";
 import soon from "public/coming_soon.png";
 import Image from "next/image";
