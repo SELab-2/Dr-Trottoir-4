@@ -6,13 +6,12 @@ import person from "@/public/icons/person.svg";
 import Link from "next/link";
 import Logout from "@/components/logout";
 
-
 const StudentHeader = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid text-center">
                 <Link href="/student/dashboard">
-                    <Image src={logo} alt="My App Logo" width={120} height={30}/>
+                    <Image src={logo} alt="My App Logo" width={120} height={30} />
                 </Link>
                 <div className="ms-auto">
                     <a
@@ -30,20 +29,17 @@ const StudentHeader = () => {
                             height={24}
                         />
                     </a>
-                    <ul
-                        className="dropdown-menu dropdown-menu-en dropdown-menu-end"
-                        aria-labelledby="navbarDropdown1"
-                    >
+                    <ul className="dropdown-menu dropdown-menu-en dropdown-menu-end" aria-labelledby="navbarDropdown1">
                         <li>
                             <Link className="dropdown-item" href="#">
                                 Bewerk account
                             </Link>
                         </li>
                         <li>
-                            <hr className="dropdown-divider"/>
+                            <hr className="dropdown-divider" />
                         </li>
                         <li>
-                            <Logout/>
+                            <Logout />
                         </li>
                     </ul>
                 </div>
