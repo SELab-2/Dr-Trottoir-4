@@ -52,3 +52,15 @@ class PictureOfRemarkIndividualView(APIView):
         self.check_object_permissions(request, picture_of_remark.student_on_tour.student)
 
         return get_success(self.serializer_class(picture_of_remark))
+
+
+class AllPictureOfRemark(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = PictureOfRemarkSerializer
+
+    def get(self, request):
+        """
+        Get all pictures from each remark
+        """
+        picture_of_remark_instances = PictureOfRemark.objects.all()
+        return get_success(self.serializer_class(picture_of_remark_instances, many=True))
