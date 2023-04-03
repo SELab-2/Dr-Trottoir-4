@@ -156,7 +156,7 @@ class BuildingOnTourTests(TestCase):
         print(response2.data)
         assert response2.status_code == 400
 
-    def test_remove_tour(self):
+    def test_remove__building_on_tour(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
@@ -175,14 +175,14 @@ class BuildingOnTourTests(TestCase):
         response3 = client.get(f"{backend_url}/building-on-tour/{id}/", follow=True)
         assert response3.status_code == 404
 
-    def test_remove_nonexistent_tour(self):
+    def test_remove_nonexistent_building_on_tour(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)
         response2 = client.delete(f"{backend_url}/building-on-tour/123456789/", follow=True)
         assert response2.status_code == 404
 
-    def test_add_existing_region(self):
+    def test_add_existing_building_on_tour(self):
         user = createUser()
         client = APIClient()
         client.force_authenticate(user=user)

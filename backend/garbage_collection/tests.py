@@ -145,7 +145,7 @@ class GarbageCollectionTests(TestCase):
         assert response1.status_code == 400
 
 
-class BuildingOnTourAuthorizationTests(TestCase):
+class GarbageCollectionAuthorizationTests(TestCase):
 
     def test_garbage_collection_list(self):
         codes = {
