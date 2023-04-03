@@ -10,7 +10,7 @@ import { Delete, Edit } from "@mui/icons-material";
 import { getAddress } from "@/lib/building";
 import { BuildingView } from "@/types";
 import {getUserInfo} from "@/lib/user";
-import ConfirmationDialog from "@/components/confirmationDialog";
+import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 
 function AdminDataBuildings() {
     const router = useRouter();
@@ -163,7 +163,7 @@ function AdminDataBuildings() {
             />
             <>
               {/* Other components */}
-              <ConfirmationDialog
+              <DeleteConfirmationDialog
                 open={deleteDialogOpen}
                 title="Verwijder Gebouw"
                 description="Weet u zeker dat u dit gebouw wilt verwijderen?"

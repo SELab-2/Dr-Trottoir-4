@@ -50,3 +50,13 @@ export const deleteBuilding = async (buildingId: number | undefined) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
     return await api.delete(request_url);
 };
+
+export async function postBuilding(tourName : string, modifiedAt : Date, region : number) : Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}`;
+    return await api.post(request_url, JSON.stringify({name : tourName, modified_at : modifiedAt, region}),
+        {
+            headers: { "Content-Type": "application/json" },
+        }
+    );
+}
+
