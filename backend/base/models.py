@@ -23,13 +23,6 @@ class Region(models.Model):
         return self.region
 
 
-# Catches the post_save signal (in signals.py) and creates a user token if not yet created
-# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-# def create_auth_token(sender, instance=None, created=False, **kwargs):
-#     if created:
-#         Token.objects.create(user=instance)
-
-
 class Role(models.Model):
     name = models.CharField(max_length=20)
     rank = models.PositiveIntegerField()
@@ -97,9 +90,9 @@ class Lobby(models.Model):
     def clean(self):
         super().clean()
 
-        user = User.objects.filter(email=self.email)
-        if User.objects.filter(user):
-            user = user[0]
+        users = User.objects.filter(email=self.email)
+        if users:
+            user = users[0]
             is_inactive = not user.is_active
             addendum = ""
             if is_inactive:

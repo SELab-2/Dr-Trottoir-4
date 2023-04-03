@@ -1,18 +1,16 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from base.models import Building
 from base.permissions import (
     ReadOnlyOwnerOfBuilding,
     IsAdmin,
     IsSuperStudent,
     ReadOnlyStudent,
-    IsSyndic,
     OwnerOfBuilding,
     OwnerWithLimitedPatch,
 )
-from base.models import Building
 from base.serializers import BuildingSerializer
 from util.request_response_util import *
 
@@ -112,8 +110,6 @@ class BuildingPublicView(APIView):
 
         building_instance = building_instance[0]
 
-        # TODO: should the general public see all data about a building?
-        #  Discuss this when writing tests for building
         return get_success(BuildingSerializer(building_instance))
 
 

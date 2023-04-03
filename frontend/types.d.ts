@@ -6,9 +6,11 @@ export type Login = {
 export type SignUp = {
     first_name: string;
     last_name: string;
+    phone_number: phone_number,
     email: string;
     password1: string;
     password2: string;
+    verification_code: verification_code,
 };
 
 export type Reset_Password = {
