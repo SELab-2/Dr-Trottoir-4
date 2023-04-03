@@ -253,7 +253,6 @@ class BuildingTests(TestCase):
 
 
 class AuthorizationTests(TestCase):
-    roles = ["Default", "Admin", "Superstudent", "Student", "Syndic"]
 
     def test_building_list(self):
         codes = {
@@ -331,8 +330,6 @@ class AuthorizationTests(TestCase):
         assert response1.status_code == 201
         for role in roles:
             user = createUser(role)
-            if role == "Syndic":
-                print(user.id)
             client = APIClient()
             client.force_authenticate(user=user)
             response2 = client.get(f"{backend_url}/building/{id}/", follow=True)
