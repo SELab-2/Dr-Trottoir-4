@@ -210,7 +210,7 @@ class ManualAuthorizationTests(TestCase):
             resp = client.get(f"{backend_url}/manual/all")
             assert resp.status_code == codes[role]
 
-    def test_insert_lobby(self):
+    def test_insert_manual(self):
         codes = {
             "Default": 403,
             "Admin": 201,
@@ -238,7 +238,7 @@ class ManualAuthorizationTests(TestCase):
                 id = resp.data["id"]
                 adminClient.delete(f"{backend_url}/manual/{id}/", follow=True)
 
-    def test_get_lobby(self):
+    def test_get_manual(self):
         codes = {
             "Default": 403,
             "Admin": 200,
@@ -270,7 +270,7 @@ class ManualAuthorizationTests(TestCase):
                 print(f"role: {role}\tcode: {response2.status_code} (expected {codes[role]})")
             assert response2.status_code == codes[role]
 
-    def test_patch_lobby(self):
+    def test_patch_manual(self):
         codes = {
             "Default": 403,
             "Admin": 200,
@@ -303,7 +303,7 @@ class ManualAuthorizationTests(TestCase):
             response2 = client.patch(f"{backend_url}/manual/{id}/", data2, follow=True)
             assert response2.status_code == codes[role]
 
-    def test_remove_lobby(self):
+    def test_remove_manual(self):
         codes = {
             "Default": 403,
             "Admin": 204,
