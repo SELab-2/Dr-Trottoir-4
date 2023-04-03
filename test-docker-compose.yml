@@ -1,4 +1,0 @@
-services:
-  test-backend:
-    container_name: "test-backend"
-    
