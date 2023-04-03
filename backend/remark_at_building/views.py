@@ -55,3 +55,15 @@ class RemarkAtBuildingIndividualView(APIView):
         self.check_object_permissions(request, remark_at_building_instance.student_on_tour.student)
 
         return get_success(self.serializer_class(remark_at_building_instance))
+
+
+class AllRemarkAtBuilding(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = RemarkAtBuildingSerializer
+
+    def get(self, request):
+        """
+        Get all remarks for each building
+        """
+        remark_at_building_instances = RemarkAtBuilding.objects.all()
+        return get_success(self.serializer_class(remark_at_building_instances, many=True))
