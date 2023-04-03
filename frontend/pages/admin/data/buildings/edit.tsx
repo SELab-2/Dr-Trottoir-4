@@ -2,7 +2,7 @@ import React, {useEffect, useState, ChangeEvent} from "react";
 import {useRouter} from "next/router";
 import {Button, Form, Dropdown, InputGroup} from "react-bootstrap";
 import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
-import {Region, getAllRegions} from "@/lib/region";
+import {Region, getAllRegions, getRegion} from "@/lib/region";
 import {User, getUserInfo, getAllUsers} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
 import {withAuthorisation} from "@/components/withAuthorisation";
@@ -27,7 +27,7 @@ export default function AdminDataBuildingsEdit() {
 
     useEffect(() => {
         if (router.query.building) {
-            getBuildingInfo(Number(router.query.building)).then(res => {
+            getBuildingInfo(Number(router.query.building)).then(async res => {
                 console.log(res.data);
                 setStreet(res.data.street);
                 setHouseNumber(res.data.house_number);
@@ -35,6 +35,8 @@ export default function AdminDataBuildingsEdit() {
                 setPostalCode(res.data.postal_code);
                 setCity(res.data.city)
                 setName(res.data.name ? res.data.name : "");
+                const region = await getRegion(res.data.region);
+                setRegion(region.data.region)
                 return true;
             });
         }
