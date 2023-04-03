@@ -1,80 +1,113 @@
 from dj_rest_auth.jwt_auth import (
-    unset_jwt_cookies,
-    CookieTokenRefreshSerializer,
     set_jwt_access_cookie,
     set_jwt_refresh_cookie,
+    set_jwt_cookies,
 )
-from dj_rest_auth.views import LogoutView, LoginView
+from dj_rest_auth.utils import jwt_encode
+from dj_rest_auth.views import LoginView, PasswordChangeView
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenRefreshView
-from drf_spectacular.utils import extend_schema
+from rest_framework.views import APIView
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-from config import settings
+from authentication.serializers import (
+    CustomTokenRefreshSerializer,
+    CustomTokenVerifySerializer,
+    CustomSignUpSerializer,
+    CustomLogoutSerializer,
+)
+from base.models import Lobby
+from base.serializers import UserSerializer
+from util.request_response_util import post_success
 
 
-class LogoutViewWithBlacklisting(LogoutView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = CookieTokenRefreshSerializer
-
-    @extend_schema(responses={200: None, 401: None, 500: None})
-    def logout(self, request):
-        response = Response(
-            {"detail": _("Successfully logged out.")},
-            status=status.HTTP_200_OK,
-        )
-
-        cookie_name = getattr(settings, "JWT_AUTH_REFRESH_COOKIE", None)
-
-        unset_jwt_cookies(response)
-
-        try:
-            if cookie_name and cookie_name in request.COOKIES:
-                token = RefreshToken(request.COOKIES.get(cookie_name))
-                token.blacklist()
-        except KeyError:
-            response.data = {"detail": _("Refresh token was not included in request cookies.")}
-            response.status_code = status.HTTP_401_UNAUTHORIZED
-        except (TokenError, AttributeError, TypeError) as error:
-            if hasattr(error, "args"):
-                if "Token is blacklisted" in error.args or "Token is invalid or expired" in error.args:
-                    response.data = {"detail": _(error.args[0])}
-                    response.status_code = status.HTTP_401_UNAUTHORIZED
-                else:
-                    response.data = {"detail": _("An error has occurred.")}
-                    response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-            else:
-                response.data = {"detail": _("An error has occurred.")}
-                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+class CustomSignUpView(APIView):
+    @extend_schema(request={None: CustomSignUpSerializer}, responses={201: UserSerializer})
+    def post(self, request):
+        """
+        Register a new user
+        """
+        # validate signup
+        signup = CustomSignUpSerializer(data=request.data)
+        signup.is_valid(raise_exception=True)
+        # create new user
+        user = signup.save(request)
+        # delete the lobby entry with the user email
+        lobby_instance = Lobby.objects.filter(email=user.email)
+        lobby_instance.delete()
+        # create the response
+        response = Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+        set_jwt_cookies(*jwt_encode(user))
         return response
 
 
-class RefreshViewHiddenTokens(TokenRefreshView):
-    serializer_class = CookieTokenRefreshSerializer
-
-    def finalize_response(self, request, response, *args, **kwargs):
-        if response.status_code == 200 and "access" in response.data:
-            set_jwt_access_cookie(response, response.data["access"])
-            response.data["access-token-refresh"] = _("success")
-            # we don't want this info to be in the body for security reasons (HTTPOnly!)
-            del response.data["access"]
-        if response.status_code == 200 and "refresh" in response.data:
-            set_jwt_refresh_cookie(response, response.data["refresh"])
-            response.data["refresh-token-rotation"] = _("success")
-            # we don't want this info to be in the body for security reasons (HTTPOnly!)
-            del response.data["refresh"]
-        return super().finalize_response(request, response, *args, **kwargs)
+class CustomLoginView(LoginView):
+    def get_response(self):
+        data = {
+            "message": "successful login",
+            "user": UserSerializer(self.user).data,
+        }
+        response = Response(data, status=status.HTTP_200_OK)
+        set_jwt_cookies(response, self.access_token, self.refresh_token)
+        return response
 
 
-class LoginViewWithHiddenTokens(LoginView):
-    def finalize_response(self, request, response, *args, **kwargs):
-        if response.status_code == 200 and "access_token" in response.data:
-            response.data["access_token"] = _("set successfully")
-        if response.status_code == 200 and "refresh_token" in response.data:
-            response.data["refresh_token"] = _("set successfully")
+class CustomLogoutView(APIView):
+    permission_classes = [IsAuthenticated]
 
-        return super().finalize_response(request, response, *args, **kwargs)
+    @extend_schema(responses={200: CustomLogoutSerializer, 401: CustomLogoutSerializer, 500: CustomLogoutSerializer})
+    def post(self, request):
+        serializer = CustomLogoutSerializer()
+        response = serializer.logout_user(request)
+        return response
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    serializer_class = CustomTokenRefreshSerializer
+
+    @extend_schema(responses={200: None, 401: None})
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        # get new access and refresh token
+        data = dict(serializer.validated_data)
+        # construct the response
+        response = Response({"message": _("refresh of tokens successful")}, status=status.HTTP_200_OK)
+        set_jwt_access_cookie(response, data["access"])
+        set_jwt_refresh_cookie(response, data["refresh"])
+        return response
+
+
+class CustomTokenVerifyView(TokenVerifyView):
+    serializer_class = CustomTokenVerifySerializer
+
+    @extend_schema(responses={200: None, 401: None})
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        return Response({"message": "refresh token validation successful"}, status=status.HTTP_200_OK)
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(responses={200: None, 400: None, 401: None})
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"message": _("new password has been saved")}, status=status.HTTP_200_OK)

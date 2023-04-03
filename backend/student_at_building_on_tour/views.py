@@ -1,9 +1,9 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema
 
-from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount
 from base.models import StudentAtBuildingOnTour
+from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount
 from base.serializers import StudBuildTourSerializer
 from util.request_response_util import *
 

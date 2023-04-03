@@ -1,4 +1,5 @@
 from rest_framework.permissions import BasePermission
+
 from base.models import Building, User, Role, Manual
 from util.request_response_util import request_to_dict
 
