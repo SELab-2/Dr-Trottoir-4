@@ -1,10 +1,9 @@
 name: Test Code Base
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
-      - develop
+      - '**'
 
 jobs:
   test:
@@ -20,6 +19,14 @@ jobs:
 
       - name: Run Tests
         run: docker-compose exec -t backend python manage.py test building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py picture_building/tests.py student_at_building_on_tour/tests.py --with-coverage --cover-package=building,building_on_tour,garbage_collection,manual,region,tour,building_comment,picture_building,student_at_building_on_tour,role
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2.6.1
+        if: always()
+        with:
+          files: |
+            coverage.xml
+          
 
       - name: Clean up
         if: always()
