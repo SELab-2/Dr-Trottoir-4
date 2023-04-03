@@ -52,7 +52,7 @@ const AdminHeader = () => {
                             className={`rounded-circle ${styles.person}`}
                             height={24}
                         />
-                    </Link>
+                    </a>
                     <ul className="dropdown-menu dropdown-menu-en dropdown-menu-end" aria-labelledby="navbarDropdown1">
                         <li>
                             <a className="dropdown-item">

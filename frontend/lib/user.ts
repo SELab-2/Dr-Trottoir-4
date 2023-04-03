@@ -39,11 +39,11 @@ export const getUserRole = (role_id: string): string => {
 
 export async function getAllUsers(includeInactiveUser : boolean = false) : Promise<AxiosResponse<any, any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
-    console.log("Get inactiveUsers: " + includeInactiveUser);
     return await api.get(request_url, {
-        data: {
-            include_inactive: includeInactiveUser
-        }});
+        params : {
+            "include-inactive":includeInactiveUser
+        }
+    });
 }
 
 export async function deleteUser(userId : number) : Promise<AxiosResponse<any, any>> {

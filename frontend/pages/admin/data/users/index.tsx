@@ -6,13 +6,8 @@ import {UserView} from "@/types";
 import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
 import {Box, IconButton, Tooltip} from "@mui/material";
 import {Delete, Edit, Check, Clear} from "@mui/icons-material";
-import {useRouter} from "next/router";
 import {useTranslation} from "react-i18next";
-import {Button, Modal} from "react-bootstrap";
-import {getAndSetErrors} from "@/lib/error";
 import {withAuthorisation} from "@/components/withAuthorisation";
-import styles from "@/styles/Login.module.css";
-import {getAllRoles, Role} from "@/lib/role";
 import {UserEditModal} from "@/components/admin/userEditModal";
 import {UserDeleteModal} from "@/components/admin/userDeleteModal";
 
@@ -83,13 +78,12 @@ function AdminDataUsers() {
 
     useEffect(() => {
         getUsers();
-    }, [inactiveUsers])
+    }, [inactiveUsers]);
 
     // Get all the users
     function getUsers() {
         getAllUsers(inactiveUsers).then(res => {
             const users: User[] = res.data;
-            console.log(res.data);
             setAllUsers(users);
         }, err => {
             console.error(err);
