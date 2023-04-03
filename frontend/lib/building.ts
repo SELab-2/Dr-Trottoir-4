@@ -22,7 +22,7 @@ export const getBuildingsFromOwner = async (ownerId: string): Promise<AxiosRespo
     return await api.get(request_url);
 };
 
-export const getBuildingInfo = async (buildingId: string | undefined): Promise<AxiosResponse<any>> => {
+export const getBuildingInfo = async (buildingId: number): Promise<AxiosResponse<any>> => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
     return await api.get(request_url);
 };
