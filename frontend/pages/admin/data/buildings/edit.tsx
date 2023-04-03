@@ -53,7 +53,7 @@ const [name, setName] = useState("");
         </Form.Group>
 
           <Form.Group controlId="postalCode">
-          <Form.Label>Postcode</Form.Label
+          <Form.Label>Postcode</Form.Label>
           <Form.Control
             type="text"
             value={postalCode}
