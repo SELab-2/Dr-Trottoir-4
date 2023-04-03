@@ -1,14 +1,23 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, { useEffect, useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {deleteBuilding, getAllBuildings, BuildingInterface} from "@/lib/building";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { useRouter } from "next/router";
-import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
-import { Box, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
-import { Button } from "react-bootstrap";
-import { Delete, Edit } from "@mui/icons-material";
-import { getAddress } from "@/lib/building";
-import { BuildingView } from "@/types";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {useRouter} from "next/router";
+import MaterialReactTable, {type MRT_ColumnDef} from "material-react-table";
+import {
+    Box,
+    IconButton,
+    Tooltip,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions
+} from "@mui/material";
+import {Button} from "react-bootstrap";
+import {Delete, Edit} from "@mui/icons-material";
+import {getAddress} from "@/lib/building";
+import {BuildingView} from "@/types";
 import {getUserInfo} from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 
@@ -56,31 +65,32 @@ function AdminDataBuildings() {
 
 
     useEffect(() => {
-    async function fetchBuildingData() {
-        try {
-            const buildings: BuildingInterface[] = (await getAllBuildings()).data;
-            const buildingViews: BuildingView[] = [];
+        async function fetchBuildingData() {
+            try {
+                const buildings: BuildingInterface[] = (await getAllBuildings()).data;
+                const buildingViews: BuildingView[] = [];
 
-            for (const building of buildings) {
-                // Get syndic email using your request
-                const res = await getUserInfo(building.syndic.toString());
-                const syndicEmail : string = res.data.email;
+                for (const building of buildings) {
+                    // Get syndic email using your request
+                    const res = await getUserInfo(building.syndic.toString());
+                    const syndicEmail: string = res.data.email;
 
-                const buildingView: BuildingView = {
-                    name: building.name,
-                    address: getAddress(building),
-                    building_id: building.id,
-                    syndic_email: syndicEmail,
-                };
+                    const buildingView: BuildingView = {
+                        name: building.name,
+                        address: getAddress(building),
+                        building_id: building.id,
+                        syndic_email: syndicEmail,
+                    };
 
-                buildingViews.push(buildingView);
+                    buildingViews.push(buildingView);
+                }
+                console.log(buildingViews);
+                setBuildingViews(buildingViews);
+            } catch (err) {
+                console.error(err);
             }
-            console.log(buildingViews);
-            setBuildingViews(buildingViews);
-        } catch (err) {
-            console.error(err);
         }
-    }
+
         fetchBuildingData().then();
     }, [allBuildings]);
 
@@ -91,7 +101,7 @@ function AdminDataBuildings() {
     async function routeToEditView(buildingView: BuildingView) {
         await router.push({
             pathname: `${router.pathname}/edit`,
-            query: { building: buildingView.building_id },
+            query: {building: buildingView.building_id},
         });
     }
 
@@ -112,7 +122,7 @@ function AdminDataBuildings() {
 
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             <MaterialReactTable
                 displayColumnDefOptions={{
                     "mrt-row-actions": {
@@ -126,12 +136,12 @@ function AdminDataBuildings() {
                 enableBottomToolbar={false}
                 columns={columns}
                 data={buildingViews}
-                state={{ isLoading: loading }}
+                state={{isLoading: loading}}
                 enableEditing
                 enableHiding={false}
-                initialState={{ columnVisibility: { building_id: false } }}
-                renderRowActions={({ row }) => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                initialState={{columnVisibility: {building_id: false}}}
+                renderRowActions={({row}) => (
+                    <Box sx={{display: "flex", gap: "1rem"}}>
                         <Tooltip arrow placement="left" title="Pas aan">
                             <IconButton
                                 onClick={() => {
@@ -139,7 +149,7 @@ function AdminDataBuildings() {
                                     routeToEditView(buildingView).then();
                                 }}
                             >
-                                <Edit />
+                                <Edit/>
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -150,7 +160,7 @@ function AdminDataBuildings() {
                                     setDeleteDialogOpen(true);
                                 }}
                             >
-                                <Delete />
+                                <Delete/>
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -162,21 +172,21 @@ function AdminDataBuildings() {
                 )}
             />
             <>
-              {/* Other components */}
-              <DeleteConfirmationDialog
-                open={deleteDialogOpen}
-                title="Verwijder Gebouw"
-                description="Weet u zeker dat u dit gebouw wilt verwijderen?"
-                handleClose={() => setDeleteDialogOpen(false)}
-                handleConfirm={() => {
-                  if (selectedBuilding) {
-                    removeBuilding(selectedBuilding);
-                  }
-                  setDeleteDialogOpen(false);
-                }}
-                confirmButtonText="Verwijderen"
-                cancelButtonText="Annuleren"
-              />
+                {/* Other components */}
+                <DeleteConfirmationDialog
+                    open={deleteDialogOpen}
+                    title="Verwijder Gebouw"
+                    description="Weet u zeker dat u dit gebouw wilt verwijderen?"
+                    handleClose={() => setDeleteDialogOpen(false)}
+                    handleConfirm={() => {
+                        if (selectedBuilding) {
+                            removeBuilding(selectedBuilding);
+                        }
+                        setDeleteDialogOpen(false);
+                    }}
+                    confirmButtonText="Verwijderen"
+                    cancelButtonText="Annuleren"
+                />
             </>
         </>
     );

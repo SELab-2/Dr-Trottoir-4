@@ -22,7 +22,7 @@ function SyndicBuilding() {
     const [editBuilding, setEditBuilding] = useState(false);
 
     async function fetchBuilding() {
-        getBuildingInfo(query.id)
+        getBuildingInfo(Number(query.id))
             .then((buildings: AxiosResponse<any>) => {
                 setBuilding(buildings.data);
             })
