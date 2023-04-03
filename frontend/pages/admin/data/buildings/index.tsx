@@ -1,6 +1,6 @@
 import AdminHeader from "@/components/header/adminHeader";
 import React, { useEffect, useMemo, useState } from "react";
-import {deleteBuilding, getAllBuildings, BuildingInterface, getSyndic, getSyndicId} from "@/lib/building";
+import {deleteBuilding, getAllBuildings, BuildingInterface} from "@/lib/building";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useRouter } from "next/router";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
@@ -10,7 +10,6 @@ import { Delete, Edit } from "@mui/icons-material";
 import { getAddress } from "@/lib/building";
 import { BuildingView } from "@/types";
 import {getUserInfo} from "@/lib/user";
-import {User} from "@/lib/user";
 
 function AdminDataBuildings() {
     const router = useRouter();

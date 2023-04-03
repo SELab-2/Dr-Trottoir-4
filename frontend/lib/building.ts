@@ -36,11 +36,6 @@ export function getAddress(building : BuildingInterface) : string {
     return `${building.street} ${building.house_number} ${building.bus ? building.bus : ""}, ${building.postal_code} ${building.city}`;
 }
 
-export const getSyndic = async (syndicId: number | undefined) => {
-    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}${syndicId}`;
-    return await api.get(request_url);
-};
-
 export const patchBuildingInfo = async (buildingId: string | undefined, data: BuildingInterface | Object) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
     return await api.patch(request_url, data);
