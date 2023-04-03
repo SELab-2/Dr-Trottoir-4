@@ -56,5 +56,9 @@ services:
     volumes:
       - ./backend:/app/backend
 
+    mem_limit: 512m
+    mem_reservation: 128m
+    cpus: 0.5
+
     depends_on:
       - web
