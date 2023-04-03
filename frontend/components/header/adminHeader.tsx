@@ -7,13 +7,12 @@ import menu from "@/public/icons/menu.svg";
 import Link from "next/link";
 import Logout from "@/components/logout";
 
-
 const AdminHeader = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
                 <Link href="/admin/dashboard">
-                    <Image src={logo} alt="My App Logo" width={120} height={30}/>
+                    <Image src={logo} alt="My App Logo" width={120} height={30} />
                 </Link>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -53,21 +52,18 @@ const AdminHeader = () => {
                             className={`rounded-circle ${styles.person}`}
                             height={24}
                         />
-                    </a>
-                    <ul
-                        className="dropdown-menu dropdown-menu-en dropdown-menu-end"
-                        aria-labelledby="navbarDropdown1"
-                    >
+                    </Link>
+                    <ul className="dropdown-menu dropdown-menu-en dropdown-menu-end" aria-labelledby="navbarDropdown1">
                         <li>
                             <a className="dropdown-item">
                                 Bewerk account
                             </a>
                         </li>
                         <li>
-                            <hr className="dropdown-divider"/>
+                            <hr className="dropdown-divider" />
                         </li>
                         <li>
-                            <Logout/>
+                            <Logout />
                         </li>
                     </ul>
                 </div>
@@ -79,7 +75,7 @@ const AdminHeader = () => {
                     aria-expanded="false"
                     aria-label="Toggle navigation"
                 >
-                    <Image src={menu} alt="My App Menu" height={24}/>
+                    <Image src={menu} alt="My App Menu" height={24} />
                 </a>
             </div>
         </nav>

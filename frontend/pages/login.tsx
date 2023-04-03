@@ -1,9 +1,6 @@
 import BaseHeader from "@/components/header/baseHeader";
-
-import { verifyToken } from "@/lib/login";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { getUserInfo } from "@/lib/user";
 import { getRoleDirection } from "@/lib/reroute";
 import Loading from "@/components/loading";
 import LoginForm from "@/components/loginForm";
@@ -11,6 +8,7 @@ import setSessionStorage from "@/lib/storage";
 import Image from "next/image";
 import filler_image from "@/public/filler_image.png";
 import styles from "@/styles/Login.module.css";
+import {getCurrentUser} from "@/lib/user";
 
 export default function Login() {
     const router = useRouter();
@@ -18,27 +16,20 @@ export default function Login() {
 
     // try and log in to the application using existing refresh token
     useEffect(() => {
-        verifyToken().then(
-            (res) => {
-                const id = res.data.id;
-                getUserInfo(id).then(
-                    async (info) => {
-                        const roleId = info.data.role;
-                        setSessionStorage(roleId, info.data.id);
-                        const direction = getRoleDirection(roleId, "dashboard");
-                        await router.push(direction);
-                    },
-                    (err) => {
-                        console.error(err);
-                    }
-                );
+        getCurrentUser().then(
+            async (res) => {
+                const user = res.data;
+                const roleId = user.role;
+                setSessionStorage(roleId, user.id);
+                const direction = getRoleDirection(roleId, "dashboard");
+                await router.push(direction);
             },
             (err) => {
                 setLoading(false);
                 console.error(err);
             }
         );
-    }, [verifyToken]);
+    }, [getCurrentUser]);
 
     return (
         <>

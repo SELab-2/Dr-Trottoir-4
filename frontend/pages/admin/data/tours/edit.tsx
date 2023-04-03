@@ -581,4 +581,4 @@ function AdminDataToursEdit() {
     );
 }
 
-export default withAuthorisation(AdminDataToursEdit, ["Admin", "Student"]);
+export default withAuthorisation(AdminDataToursEdit, ["Admin", "SuperStudent"]);

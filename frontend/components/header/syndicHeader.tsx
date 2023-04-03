@@ -7,13 +7,12 @@ import menu from "@/public/icons/menu.svg";
 import Link from "next/link";
 import Logout from "@/components/logout";
 
-
 const SyndicHeader = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
                 <Link href="/syndic/dashboard">
-                    <Image src={logo} alt="My App Logo" width={120} height={30}/>
+                    <Image src={logo} alt="My App Logo" width={120} height={30} />
                 </Link>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -40,20 +39,17 @@ const SyndicHeader = () => {
                             height={24}
                         />
                     </a>
-                    <ul
-                        className="dropdown-menu dropdown-menu-en dropdown-menu-end"
-                        aria-labelledby="navbarDropdown1"
-                    >
+                    <ul className="dropdown-menu dropdown-menu-en dropdown-menu-end" aria-labelledby="navbarDropdown1">
                         <li>
                             <Link className="dropdown-item" href="#">
                                 Bewerk account
                             </Link>
                         </li>
                         <li>
-                            <hr className="dropdown-divider"/>
+                            <hr className="dropdown-divider" />
                         </li>
                         <li>
-                            <Logout/>
+                            <Logout />
                         </li>
                     </ul>
                 </div>
@@ -66,7 +62,7 @@ const SyndicHeader = () => {
                     aria-expanded="false"
                     aria-label="Toggle navigation"
                 >
-                    <Image src={menu} alt="My App Menu"/>
+                    <Image src={menu} alt="My App Menu" />
                 </button>
             </div>
         </nav>
