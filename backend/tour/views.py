@@ -1,10 +1,11 @@
+from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import Tour, BuildingOnTour, Building
 from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
-from base.serializers import TourSerializer, BuildingTourSerializer, BuildingSerializer
+from base.serializers import TourSerializer, BuildingSerializer
 from util.request_response_util import *
 
 TRANSLATE = {"region": "region_id"}

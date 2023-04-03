@@ -1,4 +1,4 @@
-import BaseHeader from "@/components/header/BaseHeader";
+import AdminHeader from "@/components/header/adminHeader";
 import { BuildingComment, getAllBuildingComments } from "@/lib/building-comment";
 import { EmailTemplate, getAllEmailTemplates } from "@/lib/communication";
 import { Fragment, useEffect, useState } from "react";
@@ -58,7 +58,7 @@ export default function AdminCommunication() {
     return (
         <>
             <>
-                <BaseHeader />
+                <AdminHeader />
                 <p className={styles.title}>Communicatie extern</p>
                 <Combobox value={selectedTemplate} onChange={setSelectedTemplate}>
                     <Combobox.Input
