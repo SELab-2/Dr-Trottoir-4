@@ -2,11 +2,12 @@ import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete, {AutocompleteChangeReason, AutocompleteRenderInputParams} from "@mui/material/Autocomplete";
 import {AxiosResponse} from "axios/index";
+import {Button, Form, Dropdown, InputGroup} from "react-bootstrap";
 
 interface Props {
     value: string;
     label: string;
-    fetchOptions: () =>Promise<AxiosResponse<any>>;
+    fetchOptions: () => Promise<AxiosResponse<any>>;
     onChange: (value: string) => void;
     mapping: (value: any) => any; //this is any because it has to be generic
 }
@@ -35,26 +36,27 @@ const AutocompleteComponent: React.FC<Props> = ({value, label, fetchOptions, onC
     }, [fetchOptions]);
 
     return (
-        <Autocomplete
+        <>
+            <Form.Label> {label} </Form.Label><Autocomplete
             value={value}
             inputValue={inputValue}
             onChange={(
                 e: React.SyntheticEvent,
-                newValue: string | null,
+                newValue: string | null
             ) => {
                 onChange(newValue ?? "");
             }}
             onInputChange={(
                 e: React.SyntheticEvent,
-                newInputValue: string,
+                newInputValue: string
             ) => {
                 setInputValue(newInputValue);
             }}
             options={options}
             renderInput={(params: AutocompleteRenderInputParams) => (
-                <TextField {...params} label={label} variant="outlined" fullWidth/>
-            )}
-        />
+                <TextField {...params} variant="outlined" fullWidth/>
+            )}/>
+        </>
     );
 };
 

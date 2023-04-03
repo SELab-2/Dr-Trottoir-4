@@ -8,6 +8,7 @@ import AdminHeader from "@/components/header/adminHeader";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
+import PDFUploader from "@/components/pdfUploader";
 
 
 export default function AdminDataBuildingsEdit() {
@@ -20,6 +21,7 @@ export default function AdminDataBuildingsEdit() {
     const [clientId, setClientId] = useState("");
     const [region, setRegion] = useState("");
     const [syndic, setSyndic] = useState("");
+    const [manual, setManual] = useState<File | null>(null);
 
     const router = useRouter();
 
@@ -119,10 +121,10 @@ export default function AdminDataBuildingsEdit() {
             </Form>
             <RegionAutocomplete value={region} onChange={setRegion}></RegionAutocomplete>
             <SyndicAutoCompleteComponent value={syndic} onChange={setSyndic}></SyndicAutoCompleteComponent>
-
-            <Button variant="primary" type="submit">
+            <PDFUploader onUpload={setManual}></PDFUploader>
+            <button type="submit">
                 Opslaan
-            </Button>
+            </button>
         </>
     );
 }
