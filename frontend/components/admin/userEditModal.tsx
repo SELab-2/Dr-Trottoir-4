@@ -22,7 +22,7 @@ export function UserEditModal({
     const [allRoles, setAllRoles] = useState<Role[]>([]);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-    useEffect( () => {
+    useEffect(() => {
         getAllRoles().then(res => {
             const roles: Role[] = res.data;
             setAllRoles(roles);
@@ -38,9 +38,10 @@ export function UserEditModal({
         const roleId: number = role.id;
         patchUser(selectedUser.userId, {
             role: roleId, first_name: selectedUser.first_name,
-            last_name: selectedUser.last_name, phone_number: selectedUser.phone_number
+            last_name: selectedUser.last_name, phone_number: selectedUser.phone_number, is_active: selectedUser.isActive
         }).then((_) => {
             setSelectedUser(null);
+            setErrorMessages([]);
             closeModal();
         }, err => {
             let errorRes = err.response;
@@ -143,12 +144,30 @@ export function UserEditModal({
                                 }
                             </select>
                         </div>
+                        <div className="form-check form-switch">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id="switchCheckbox"
+                                checked={selectedUser ? selectedUser.isActive : false}
+                                onChange={() => {
+                                    setSelectedUser((prevState: UserView | null) => (prevState ? {
+                                        ...prevState,
+                                        isActive: !prevState.isActive,
+                                    } : null))
+                                }}
+                            />
+                            <label className="form-check-label" htmlFor="switchCheckbox">
+                                Actief
+                            </label>
+                        </div>
                     </form>
                 </div>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" className="btn-light" onClick={() => {
                     setSelectedUser(null);
+                    setErrorMessages([]);
                     closeModal();
                 }}>
                     Annuleer

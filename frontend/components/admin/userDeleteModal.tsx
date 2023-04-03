@@ -29,6 +29,7 @@ export function UserDeleteModal(
             return;
         }
         deleteUser(selectedUser?.userId).then(() => {
+            setErrorMessages([]);
             closeModal();
         }, err => {
             let errorRes = err.response;
@@ -70,6 +71,7 @@ export function UserDeleteModal(
             <Modal.Footer>
                 <Button variant="secondary" className="btn-light" onClick={() => {
                     setSelectedUser(null);
+                    setErrorMessages([]);
                     closeModal();
                 }}>
                     Annuleer

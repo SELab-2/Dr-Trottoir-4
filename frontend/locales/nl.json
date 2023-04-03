@@ -7,5 +7,6 @@
   "There is already a tour with the same name in the region.": "Er bestaat al een ronde met deze naam in deze regio.",
   "Syndic": "Syndicus",
   "You don't have the right permissions to delete this user": "U hebt niet de machtigingen om deze gebruiker te verwijderen.",
-  "You don't have the right permissions to edit this user": "U hebt niet de machtigingen om deze gebruiker aan te passen."
+  "You don't have the right permissions to edit this user": "U hebt niet de machtigingen om deze gebruiker aan te passen.",
+  "You can't assign a role to yourself or assign a role that is higher than your own": "Het is niet mogelijk om uzelf een rol te geven of een rol te geven die hoger is dan uw eigen rol."
 }
