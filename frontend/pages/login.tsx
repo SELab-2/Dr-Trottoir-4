@@ -1,10 +1,10 @@
 import BaseHeader from "@/components/header/baseHeader";
 
-import {verifyToken} from "@/lib/login";
-import React, {useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import getUserInfo, {getCurrentUser} from "@/lib/user_info";
-import {getRoleDirection} from "@/lib/reroute";
+import { verifyToken } from "@/lib/login";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import getUserInfo, { getCurrentUser } from "@/lib/user_info";
+import { getRoleDirection } from "@/lib/reroute";
 import Loading from "@/components/loading";
 import LoginForm from "@/components/loginForm";
 import setSessionStorage from "@/lib/storage";
@@ -27,13 +27,13 @@ export default function Login() {
                 setLoading(false);
                 console.error(err);
             }
-        )
+        );
     }, [getCurrentUser]);
 
     return (
         <>
-            <BaseHeader/>
-            <div>{loading ? <Loading/> : <LoginForm/>}</div>
+            <BaseHeader />
+            <div>{loading ? <Loading /> : <LoginForm />}</div>
         </>
     );
 }

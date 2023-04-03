@@ -12,11 +12,10 @@ from config import settings
 class CustomAllAuthPasswordResetForm(AllAuthPasswordResetForm):
     def save(self, request, **kwargs):
         current_site = get_current_site(request)
-        email = self.cleaned_data['email']
-        token_generator = kwargs.get('token_generator', default_token_generator)
+        email = self.cleaned_data["email"]
+        token_generator = kwargs.get("token_generator", default_token_generator)
 
         for user in self.users:
-
             temp_key = token_generator.make_token(user)
 
             # save it to the password reset model
@@ -25,7 +24,7 @@ class CustomAllAuthPasswordResetForm(AllAuthPasswordResetForm):
 
             # send the password reset email
             path = reverse(
-                'password_reset_confirm',
+                "password_reset_confirm",
                 args=[user_pk_to_url_str(user), temp_key],
             )
 
@@ -36,13 +35,11 @@ class CustomAllAuthPasswordResetForm(AllAuthPasswordResetForm):
 
             url = url.replace("%3F", "?")
             context = {
-                'current_site': current_site,
-                'user': user,
-                'first_name': user.first_name,
-                'password_reset_url': url,
-                'request': request,
+                "current_site": current_site,
+                "user": user,
+                "first_name": user.first_name,
+                "password_reset_url": url,
+                "request": request,
             }
-            get_adapter(request).send_mail(
-                'account/email/password_reset_key', email, context
-            )
-        return self.cleaned_data['email']
+            get_adapter(request).send_mail("account/email/password_reset_key", email, context)
+        return self.cleaned_data["email"]

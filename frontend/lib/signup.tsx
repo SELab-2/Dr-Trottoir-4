@@ -1,6 +1,6 @@
-import {SignUp} from "@/types.d";
+import { SignUp } from "@/types.d";
 import api from "@/lib/api/axios";
-import {AxiosResponse} from "axios";
+import { AxiosResponse } from "axios";
 
 const signup = async (
     firstname: string,
@@ -9,7 +9,7 @@ const signup = async (
     email: string,
     password1: string,
     password2: string,
-    verification_code: string,
+    verification_code: string
 ): Promise<AxiosResponse<any, any>> => {
     const host = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_SIGNUP}`;
     const signup_data: SignUp = {
@@ -29,7 +29,7 @@ const signup = async (
     }
 
     return api.post(host, JSON.stringify(signup_data), {
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
     });
 };
 
