@@ -356,7 +356,7 @@ class RemarkAtBuilding(models.Model):
             self.timestamp = datetime.now()
 
     def __str__(self):
-        return f"{self.type} for {self.building_on_tour}"
+        return f"{self.type} for {self.building}"
 
     class Meta:
         constraints = [
