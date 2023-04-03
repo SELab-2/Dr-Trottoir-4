@@ -4,18 +4,21 @@ import {deleteBuilding, getAllBuildings, BuildingInterface} from "@/lib/building
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useRouter } from "next/router";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
-import { Box, IconButton, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 import { Button } from "react-bootstrap";
 import { Delete, Edit } from "@mui/icons-material";
 import { getAddress } from "@/lib/building";
 import { BuildingView } from "@/types";
 import {getUserInfo} from "@/lib/user";
+import ConfirmationDialog from "@/components/confirmationDialog";
 
 function AdminDataBuildings() {
     const router = useRouter();
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [buildingViews, setBuildingViews] = useState<BuildingView[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [selectedBuilding, setSelectedBuilding] = useState<BuildingView | null>(null);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
     const columns = useMemo<MRT_ColumnDef<BuildingView>[]>(
         () => [
@@ -143,7 +146,8 @@ function AdminDataBuildings() {
                             <IconButton
                                 onClick={() => {
                                     const buildingView: BuildingView = row.original;
-                                    removeBuilding(buildingView);
+                                    setSelectedBuilding(buildingView);
+                                    setDeleteDialogOpen(true);
                                 }}
                             >
                                 <Delete />
@@ -157,6 +161,23 @@ function AdminDataBuildings() {
                     </Button>
                 )}
             />
+            <>
+              {/* Other components */}
+              <ConfirmationDialog
+                open={deleteDialogOpen}
+                title="Verwijder Gebouw"
+                description="Weet u zeker dat u dit gebouw wilt verwijderen?"
+                handleClose={() => setDeleteDialogOpen(false)}
+                handleConfirm={() => {
+                  if (selectedBuilding) {
+                    removeBuilding(selectedBuilding);
+                  }
+                  setDeleteDialogOpen(false);
+                }}
+                confirmButtonText="Verwijderen"
+                cancelButtonText="Annuleren"
+              />
+            </>
         </>
     );
 }
