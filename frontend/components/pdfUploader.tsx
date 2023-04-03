@@ -31,7 +31,7 @@ const PDFUploader: React.FC<Props> = ({onUpload}) => {
         <div>
             <Form.Group controlId="manual">
 
-                <Form.Label>Handleiding (PDF)</Form.Label>
+                <Form.Label>Handleiding PDF (optioneel)</Form.Label>
                 <br/>
                 <label htmlFor="pdf-upload" className={styles.customFileUpload}>
                     {selectedFile ? selectedFile.name : "Kies een bestand"}
