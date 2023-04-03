@@ -2,86 +2,88 @@
 
 /* Reset default margin, padding, and border for all elements */
 * {
-  margin: 0;
-  padding: 0;
-  border: none;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-sizing: border-box;
 }
 
 /* Define font and font size for the whole document */
 body {
-  font-family: Arial, sans-serif;
-  font-size: 16px;
+    font-family: Helvetica, sans-serif;
+    font-size: 16px;
 }
 
 /* Button Styles */
 
 /* Style for all buttons */
 button {
-  min-width: 150px;
-  max-width: 250px;
-  height: 40px;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 16px;
-  background-color: #1D1D1D;
-  color: white;
-  border: transparent;
+    height: 50px;
+    width: 150px;
+    margin: 5px;
+    outline: 0;
+    cursor: pointer;
+    border: 2px solid #000;
+    border-radius: 5px;
+    color: #fff;
+    background: #000;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 24px;
+    padding: 5px 10px;
+    text-align: center;
+    transition: ease-in 0.2s;
 }
 
 /* Style for buttons when hovering */
 button:hover {
-  min-width: 150px;
-  max-width: 250px;
-  height: 40px;
-  border: solid #1D1D1D 1px;
-  color: #1D1D1D;
-  background-color: transparent;
-  transition: ease-in 0.2s;
+    color: #000;
+    background: rgb(255, 218, 87);
 }
 
 /* Link Styles */
 
 /* Style for all links */
 a {
-  color: dodgerblue;
-  text-decoration: none;
+    color: dodgerblue;
+    text-decoration: none;
 }
 
 /* Style for links when hovering */
 a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 /* Input Styles */
 
 /* Style for all inputs */
 input {
-  min-width: 250px;
-  max-width: 350px;
-  height: 40px;
-  background-color: #E8F0FC;
-  overflow: hidden;
-  padding: 10px 5px;
-  margin: 5px;
-  border: solid #1D1D1D 1px;
-  border-radius: 5px;
-  font-size: 14px;
+    min-width: 250px;
+    max-width: 350px;
+    height: 40px;
+    background-color: #E8F0FC;
+    overflow: hidden;
+    padding: 10px 5px;
+    margin: 5px;
+    border: solid #1D1D1D 1px;
+    border-radius: 5px;
+    font-size: 14px;
 }
 
 input:focus {
-  border: none;
-  outline: none;
-  box-shadow: 0 0 0 0.1rem lightgray;
+    border: none;
+    outline: none;
+    box-shadow: 0 0 0 0.1rem lightgray;
 }
 
 /* Icon Styles */
 
 /* Style for all icons */
 .icon {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  background-repeat: no-repeat;
-  background-size: 100%;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-size: 100%;
 }
