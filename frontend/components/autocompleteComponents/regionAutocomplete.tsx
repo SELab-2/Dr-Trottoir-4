@@ -1,8 +1,6 @@
-import React, {useState, useEffect} from "react";
-import TextField from "@mui/material/TextField";
-import Autocomplete, {AutocompleteChangeReason} from "@mui/material/Autocomplete";
+import React from "react";
 import {getAllRegions, Region} from "@/lib/region";
-import AutocompleteComponent from "@/components/AutocompleteComponent";
+import AutocompleteComponent from "@/components/autocompleteComponents/autocompleteComponent";
 
 interface Props {
     value: string;

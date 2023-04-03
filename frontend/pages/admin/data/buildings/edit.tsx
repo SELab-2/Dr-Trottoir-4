@@ -6,7 +6,7 @@ import {Region, getAllRegions} from "@/lib/region";
 import {User, getUserInfo, getAllUsers} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
 import {withAuthorisation} from "@/components/withAuthorisation";
-import RegionAutocomplete from "@/components/regionAutocomplete";
+import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 
 
 export default function AdminDataBuildingsEdit() {
