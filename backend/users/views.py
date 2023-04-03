@@ -32,13 +32,16 @@ def _include_inactive(request) -> bool:
 
 
 class DefaultUser(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent, CanCreateUser]
+    permission_classes = [IsAuthenticated, CanCreateUser]
     serializer_class = UserSerializer
 
-    # TODO: in order for this to work, you have to pass a password
-    #  In the future, we probably won't use POST this way anymore (if we work with the whitelist method)
-    #  However, an easy workaround would be to add a default value to password (in e.g. `clean`)
-    #     -> probably the easiest way
+    @extend_schema(responses=get_docs(UserSerializer))
+    def get(self, request):
+        """
+        Get the current user info
+        """
+        serializer = UserSerializer(request.user)
+        return get_success(serializer)
 
     @extend_schema(responses=post_docs(UserSerializer))
     def post(self, request):
