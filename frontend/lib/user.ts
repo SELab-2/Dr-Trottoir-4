@@ -45,3 +45,10 @@ export async function deleteUser(userId : number) : Promise<AxiosResponse<any, a
     const delete_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}${userId}`;
     return await api.delete(delete_url);
 }
+
+export async function patchUser(userId: number, data : Object) : Promise<AxiosResponse<any, any>> {
+    const patchUrl: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}${userId}`;
+    return await api.patch(patchUrl, JSON.stringify(data), {
+        headers: { "Content-Type": "application/json" },
+    });
+}

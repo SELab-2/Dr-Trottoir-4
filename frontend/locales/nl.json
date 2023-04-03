@@ -6,5 +6,6 @@
   "This password is entirely numeric.": "Dit wachtwoord bestaat volledig uit cijfers, er moeten ook lettertekens in voorkomen.",
   "There is already a tour with the same name in the region.": "Er bestaat al een ronde met deze naam in deze regio.",
   "Syndic": "Syndicus",
-  "You don't have the right permissions to delete this user": "U hebt niet de machtigingen om deze gebruiker te verwijderen."
+  "You don't have the right permissions to delete this user": "U hebt niet de machtigingen om deze gebruiker te verwijderen.",
+  "You don't have the right permissions to edit this user": "U hebt niet de machtigingen om deze gebruiker aan te passen."
 }
