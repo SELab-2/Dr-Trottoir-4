@@ -2,13 +2,13 @@ import BaseHeader from "@/components/header/baseHeader";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getRoleDirection } from "@/lib/reroute";
-import {getCurrentUser} from "@/lib/user";
 import Loading from "@/components/loading";
 import LoginForm from "@/components/loginForm";
 import setSessionStorage from "@/lib/storage";
 import Image from "next/image";
 import filler_image from "@/public/filler_image.png";
 import styles from "@/styles/Login.module.css";
+import {getCurrentUser} from "@/lib/user";
 
 export default function Login() {
     const router = useRouter();
@@ -28,7 +28,7 @@ export default function Login() {
                 setLoading(false);
                 console.error(err);
             }
-        )
+        );
     }, [getCurrentUser]);
 
     return (

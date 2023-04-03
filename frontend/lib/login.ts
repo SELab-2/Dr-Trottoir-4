@@ -11,7 +11,7 @@ export const login = (email: string, password: string): Promise<AxiosResponse<an
 
     // Attempt to login with axios so authentication tokens get saved in our axios instance
     return api.post(host, JSON.stringify(login_data), {
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
     });
 };
 
