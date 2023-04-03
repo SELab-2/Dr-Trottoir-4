@@ -1,9 +1,9 @@
 import api from "@/lib/api/axios";
 import { AxiosResponse } from "axios";
+import {User} from "@/lib/user";
 
 export interface BuildingInterface {
     id: number;
-    syndic_id: number;
     city: string;
     postal_code: string;
     street: string;
@@ -33,8 +33,13 @@ export async function getAllBuildings() : Promise<AxiosResponse<any>> {
 }
 
 export function getAddress(building : BuildingInterface) : string {
-    return `${building.street} ${building.house_number} ${building.bus ? building.bus : ""}, ${building.city} ${building.postal_code}`;
+    return `${building.street} ${building.house_number} ${building.bus ? building.bus : ""}, ${building.postal_code} ${building.city}`;
 }
+
+export const getSyndic = async (syndicId: number | undefined) => {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}${syndicId}`;
+    return await api.get(request_url);
+};
 
 export const patchBuildingInfo = async (buildingId: string | undefined, data: BuildingInterface | Object) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
@@ -45,3 +50,8 @@ export const generateNewPublicId = async (buildingId: string | undefined) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_NEW_PUBLIC_ID_BUILDING}${buildingId}`;
     return await api.post(request_url)
 }
+
+export const deleteBuilding = async (buildingId: number | undefined) => {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
+    return await api.delete(request_url);
+};
