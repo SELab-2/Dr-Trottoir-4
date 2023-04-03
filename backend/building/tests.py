@@ -252,7 +252,7 @@ class BuildingTests(TestCase):
         assert response1.status_code == 400
 
 
-class AuthorizationTests(TestCase):
+class BuildingAuthorizationTests(TestCase):
 
     def test_building_list(self):
         codes = {

@@ -144,7 +144,7 @@ class BuildingCommentTests(TestCase):
         assert response1.status_code == 400
 
 
-class AuthorizationTests(TestCase):
+class BuildingCommentAuthorizationTests(TestCase):
     def test_building_comment_list(self):
         codes = {
             "Default": 403,
