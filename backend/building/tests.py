@@ -2,7 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 from base.models import User
-from base.test_settings import backend_url
+from base.test_settings import backend_url, roles
 from util.data_generators import createUser, insert_dummy_region, insert_dummy_syndic
 
 
@@ -263,7 +263,7 @@ class AuthorizationTests(TestCase):
             "Student": 403,
             "Syndic": 403
         }
-        for role in self.roles:
+        for role in roles:
             user = createUser(role)
             client = APIClient()
             client.force_authenticate(user=user)
@@ -279,7 +279,7 @@ class AuthorizationTests(TestCase):
             "Syndic": 403
         }
         number = 1
-        for role in self.roles:
+        for role in roles:
             user = createUser(role)
             client = APIClient()
             client.force_authenticate(user=user)
@@ -329,7 +329,7 @@ class AuthorizationTests(TestCase):
         response1 = adminClient.post(f"{backend_url}/building/", data, follow=True)
         id = response1.data["id"]
         assert response1.status_code == 201
-        for role in self.roles:
+        for role in roles:
             user = createUser(role)
             if role == "Syndic":
                 print(user.id)
@@ -384,7 +384,7 @@ class AuthorizationTests(TestCase):
         }
         response1 = adminClient.post(f"{backend_url}/building/", data1, follow=True)
         id = response1.data["id"]
-        for role in self.roles:
+        for role in roles:
             user = createUser(role)
             client = APIClient()
             client.force_authenticate(user)
@@ -423,7 +423,7 @@ class AuthorizationTests(TestCase):
             "name": "CB"
         }
         exists = False
-        for role in self.roles:
+        for role in roles:
             if not exists:
                 # building toevoegen als admin
                 response1 = adminClient.post(f"{backend_url}/building/", data1, follow=True)
