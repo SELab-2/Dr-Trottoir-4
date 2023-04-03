@@ -1,13 +1,8 @@
 import React from "react";
 import {getAllRegions, Region} from "@/lib/region";
-import AutocompleteComponent from "@/components/autocompleteComponents/autocompleteComponent";
+import AutocompleteComponent, {GenericProps} from "@/components/autocompleteComponents/autocompleteComponent";
 
-interface Props {
-    value: string;
-    onChange: (value: string) => void;
-}
-
-const RegionAutocomplete: React.FC<Props> = ({value, onChange}) => {
+const RegionAutocomplete: React.FC<GenericProps> = ({value, onChange}) => {
 
     return (
         <AutocompleteComponent

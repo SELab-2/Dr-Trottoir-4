@@ -11,6 +11,11 @@ interface Props {
     mapping: (value: any) => any; //this is any because it has to be generic
 }
 
+export interface GenericProps {
+    value: string;
+    onChange: (value: string) => void;
+}
+
 const AutocompleteComponent: React.FC<Props> = ({value, label, fetchOptions, onChange, mapping}) => {
     const [inputValue, setInputValue] = useState("");
     const [options, setOptions] = useState<string[]>([]);

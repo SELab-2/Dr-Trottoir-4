@@ -3,10 +3,11 @@ import {useRouter} from "next/router";
 import {Button, Form, Dropdown, InputGroup} from "react-bootstrap";
 import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
 import {Region, getAllRegions, getRegion} from "@/lib/region";
-import {User, getUserInfo, getAllUsers} from "@/lib/user";
+import {User, getUserInfo, getAllUsers, userSearchString} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
+import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
 
 
 export default function AdminDataBuildingsEdit() {
@@ -17,8 +18,10 @@ export default function AdminDataBuildingsEdit() {
     const [postalCode, setPostalCode] = useState("");
     const [street, setStreet] = useState("");
     const [clientId, setClientId] = useState("");
-    const router = useRouter();
     const [region, setRegion] = useState("");
+    const [syndic, setSyndic] = useState("");
+
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -37,6 +40,8 @@ export default function AdminDataBuildingsEdit() {
                 setName(res.data.name ? res.data.name : "");
                 const region = await getRegion(res.data.region);
                 setRegion(region.data.region)
+                const syndic = await getUserInfo(res.data.syndic);
+                setSyndic(userSearchString(syndic.data))
                 return true;
             });
         }
@@ -113,6 +118,7 @@ export default function AdminDataBuildingsEdit() {
 
             </Form>
             <RegionAutocomplete value={region} onChange={setRegion}></RegionAutocomplete>
+            <SyndicAutoCompleteComponent value={syndic} onChange={setSyndic}></SyndicAutoCompleteComponent>
 
             <Button variant="primary" type="submit">
                 Opslaan

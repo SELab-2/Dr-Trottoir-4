@@ -13,6 +13,10 @@ export interface User {
     role : number
 }
 
+export function userSearchString(user: User){
+    return `${user.first_name} ${user.last_name} (${user.email})`
+}
+
 export const getCurrentUser = (): Promise<AxiosResponse<any, any>> => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}`;
     return api.get(request_url);
