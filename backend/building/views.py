@@ -9,7 +9,7 @@ from base.permissions import (
     IsSuperStudent,
     ReadOnlyStudent,
     OwnerWithLimitedPatch,
-    OwnerOfBuilding
+    OwnerOfBuilding,
 )
 from base.serializers import BuildingSerializer
 from util.request_response_util import *
