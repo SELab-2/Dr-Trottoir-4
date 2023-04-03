@@ -77,6 +77,9 @@ collections.Callable = collections.abc.Callable
 # Use nose to run all tests
 TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 
+
+NOSE_ARGS = ["--cover-xml", "--cover-xml-file=./coverage.xml"]
+
 # drf-spectacular settings
 SPECTACULAR_SETTINGS = {
     "TITLE": "Dr-Trottoir API",
