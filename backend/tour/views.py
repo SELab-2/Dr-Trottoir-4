@@ -37,7 +37,7 @@ class BuildingSwapView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = TourSerializer
 
-    description = 'Note that buildingID should also be an integer'
+    description = "Note that buildingID should also be an integer"
 
     @extend_schema(
         description="POST body consists of a list of building_id - index pairs that will be assigned to this tour. "
@@ -45,24 +45,21 @@ class BuildingSwapView(APIView):
         "added to the tour (no BuildingOnTour entry existed), a new entry will be created. If buildings that "
         "were originally on the tour are left out, they will be removed.",
         request=BuildingSwapRequestSerializer,
-        responses={
-            200: SuccessSerializer,
-            400: None
-        },
+        responses={200: SuccessSerializer, 400: None},
         examples=[
             OpenApiExample(
-                'Swapping 2 buildings',
+                "Swapping 2 buildings",
                 value={"buildingID1": 0, "buildingID2": 1},
                 description=description,
-                request_only=True
+                request_only=True,
             ),
             OpenApiExample(
-                'Swapping more than 2 buildings',
+                "Swapping more than 2 buildings",
                 value={"buildingID1": 5, "buildingID2": 6, "buildingID3": 9, "buildingID4": 17},
                 description=description,
-                request_only=True
-            )
-        ]
+                request_only=True,
+            ),
+        ],
     )
     def post(self, request, tour_id):
         data = request_to_dict(request.data)
