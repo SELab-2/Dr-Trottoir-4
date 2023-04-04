@@ -4,7 +4,8 @@ from datetime import date, datetime
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from base.models import User, Region, Building, Tour, Role, BuildingOnTour, StudentOnTour, RemarkAtBuilding
+from base.models import User, Region, Building, Tour, Role, BuildingOnTour, StudentOnTour, RemarkAtBuilding, \
+    PictureOfRemark
 
 
 def insert_dummy_region():
@@ -132,6 +133,15 @@ def insert_dummy_remark_at_building():
     )
     RaB.save()
     return RaB.id
+
+
+def insert_dummy_picture_of_remark(picture):
+    PoR = PictureOfRemark(
+        picture=picture,
+        remark_at_building=insert_dummy_remark_at_building()
+    )
+    PoR.save()
+    return PoR.save()
 
 
 def createMemoryFile(filename: str):
