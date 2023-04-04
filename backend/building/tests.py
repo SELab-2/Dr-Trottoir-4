@@ -9,7 +9,7 @@ class BuildingTests(BaseTest):
         super().__init__(methodName)
 
     def test_empty_building_list(self):
-        self.empty_list("building/all/")
+        self.empty_list("building/")
 
     def test_insert_building(self):
         r_id = insert_dummy_region()
@@ -46,7 +46,6 @@ class BuildingTests(BaseTest):
     def test_get_building(self):
         b_id = insert_dummy_building()
         data = BuildingSerializer(Building.objects.get(id=b_id)).data
-        print(data)
         self.get(f"building/{b_id}", data)
 
     def test_get_non_existing(self):

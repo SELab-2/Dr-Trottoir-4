@@ -89,7 +89,7 @@ class OwnerOfBuilding(BasePermission):
         return request.user.role.name.lower() == "syndic"
 
     def has_object_permission(self, request, view, obj: Building):
-        return request.user.id == obj.syndic_id
+        return request.user.id == obj.syndic.id
 
 
 class ReadOnlyOwnerOfBuilding(BasePermission):
@@ -104,7 +104,7 @@ class ReadOnlyOwnerOfBuilding(BasePermission):
 
     def has_object_permission(self, request, view, obj: Building):
         if request.method in SAFE_METHODS:
-            return request.user.id == obj.syndic_id
+            return request.user.id == obj.syndic.id
         return False
 
 

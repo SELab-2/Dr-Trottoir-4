@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import BuildingComment
-from base.permissions import IsAdmin, IsSuperStudent, OwnerOfBuilding, ReadOnlyStudent
+from base.permissions import IsAdmin, IsSuperStudent, OwnerOfBuilding, ReadOnlyStudent, ReadOnlyOwnerOfBuilding
 from base.serializers import BuildingCommentSerializer
 from util.request_response_util import *
 
@@ -34,7 +34,7 @@ class DefaultBuildingComment(APIView):
 
 
 class BuildingCommentIndividualView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyOwnerOfBuilding | ReadOnlyStudent]
     serializer_class = BuildingCommentSerializer
 
     @extend_schema(responses=get_docs(BuildingCommentSerializer))

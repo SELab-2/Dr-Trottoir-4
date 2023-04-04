@@ -21,7 +21,7 @@ class BaseTest(TestCase):
         self.client = get_authenticated_client()
 
     def empty_list(self, url):
-        resp = self.client.get(backend_url + "/" + url, follow=True)
+        resp = self.client.get(backend_url + "/" + url + "all/", follow=True)
         assert resp.status_code == 200
         data = [resp.data[e] for e in resp.data]
         assert len(data) == 0
