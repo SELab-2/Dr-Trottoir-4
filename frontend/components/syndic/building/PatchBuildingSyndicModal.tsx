@@ -1,24 +1,23 @@
-import React, {ChangeEvent, MouseEventHandler, useEffect, useState} from "react";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {Button, Form, Modal} from "react-bootstrap";
-import {BuildingInterface, generateNewPublicId, getNewPublicId, patchBuildingInfo} from "@/lib/building";
+import React, { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { Button, Form, Modal } from "react-bootstrap";
+import { BuildingInterface, generateNewPublicId, getNewPublicId, patchBuildingInfo } from "@/lib/building";
 import build from "next/dist/build";
 
 function PatchBuildingSyndicModal({
-                                      show,
-                                      closeModal,
-                                      building,
-                                      setBuilding,
-                                  }: {
+    show,
+    closeModal,
+    building,
+    setBuilding,
+}: {
     show: boolean;
     closeModal: () => void;
     building: BuildingInterface | null;
     setBuilding: (x: any) => void;
 }) {
-
     interface formData {
-        name: string,
-        public_id: string
+        name: string;
+        public_id: string;
     }
 
     const [formData, setFormData] = useState<formData>({
@@ -27,19 +26,17 @@ function PatchBuildingSyndicModal({
     });
     const [errorText, setErrorText] = useState("");
 
-
     useEffect(() => {
         setFormData({
             name: building ? building.name : "",
-            public_id: building ? building.public_id : ""
+            public_id: building ? building.public_id : "",
         });
     }, [building]);
-
 
     const newPublicId = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-        console.log(`Building id is ${building?.id}`)
+        console.log(`Building id is ${building?.id}`);
 
         getNewPublicId()
             .then((res) => {
@@ -72,8 +69,8 @@ function PatchBuildingSyndicModal({
     const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-        console.log("form data")
-        console.log(formData)
+        console.log("form data");
+        console.log(formData);
 
         console.log(`In handleSubmit ${JSON.stringify(formData)}`);
 
@@ -85,9 +82,7 @@ function PatchBuildingSyndicModal({
             }
         }
 
-
-        if (Object.keys(toSend).length === 0)
-            return
+        if (Object.keys(toSend).length === 0) return;
 
         patchBuildingInfo("" + building?.id, toSend)
             .then((res) => {
@@ -144,7 +139,7 @@ function PatchBuildingSyndicModal({
                         </Form.Group>
 
                         {/*TODO: below line should probably a custom component with a state boolean*/}
-                        <div style={{background: "red"}}>{errorText}</div>
+                        <div style={{ background: "red" }}>{errorText}</div>
 
                         <Button
                             variant="danger"

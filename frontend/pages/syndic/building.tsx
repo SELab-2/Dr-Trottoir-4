@@ -1,19 +1,18 @@
-import {BuildingInterface, getBuildingInfo} from "@/lib/building";
-import {useRouter} from "next/router";
-import React, {useEffect, useState} from "react";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {AxiosResponse} from "axios";
+import { BuildingInterface, getBuildingInfo } from "@/lib/building";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { AxiosResponse } from "axios";
 import styles from "@/styles/Welcome.module.css";
-import {TiPencil} from "react-icons/ti";
+import { TiPencil } from "react-icons/ti";
 import PatchBuildingSyndicModal from "@/components/syndic/building/PatchBuildingSyndicModal";
 import SyndicHeader from "@/components/header/syndicHeader";
-import {getRegion} from "@/lib/region";
+import { getRegion } from "@/lib/region";
 import SyndicFooter from "@/components/footer/syndicFooter";
 import BuildingSyndicInfo from "@/components/syndic/building/BuildingInfo";
 import LatestCollections from "@/components/syndic/building/LatestCollections";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DashboardQuery extends ParsedUrlQuery {
     id?: string;
@@ -25,7 +24,6 @@ function SyndicBuilding() {
 
     // @ts-ignore
     const [building, setBuilding] = useState<BuildingInterface>(null);
-
 
     async function fetchBuilding() {
         getBuildingInfo(query.id)
@@ -44,10 +42,9 @@ function SyndicBuilding() {
         fetchBuilding();
     }, [query.id]);
 
-
     return (
         <>
-            <SyndicHeader/>
+            <SyndicHeader />
 
             <div>
                 <a
@@ -65,16 +62,14 @@ function SyndicBuilding() {
 
             <h1 className={styles.title}>Welcome to the Syndic Dashboard!</h1>
 
-            <details open={true} >
+            <details open={true}>
                 <summary>Building info</summary>
-                <BuildingSyndicInfo building={building} setBuilding={setBuilding}/>
+                <BuildingSyndicInfo building={building} setBuilding={setBuilding} />
             </details>
 
-
-            <details open={true} >
+            <details open={true}>
                 <summary>Recente ophalingen</summary>
-                <LatestCollections building={building ? building.id : 0}/>
-
+                <LatestCollections building={building ? building.id : 0} />
             </details>
 
             <p>
