@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {verifyToken} from "@/lib/authentication";
+import setSessionStorage from "@/lib/storage";
+import {getRoleDirection} from "@/lib/reroute";
+import {getCurrentUser, getUserRole, User} from "@/lib/user";
 
 /**
  * This wraps a component where authorisation is required
@@ -12,14 +16,29 @@ export const withAuthorisation = (WrappedComponent: any, allowedRoles: string[])
         const [role, setRole] = useState("");
 
         useEffect(() => {
-            const storedRole = sessionStorage.getItem("role"); // Get the role stored in sessionStorage
-            if (storedRole) {
-                setRole(storedRole);
-            } else {
+            // Verify if there is a valid token
+            verifyToken().then(() => {
+                const storedRole = sessionStorage.getItem("role");
+                // If the role was saved in sessionStorage, set the role
+                if (storedRole) {
+                    setRole(storedRole);
+                } else {
+                    // If not, set the current user by doing a request
+                    getCurrentUser().then(
+                        async (res) => {
+                            const user: User = res.data;
+                            setSessionStorage(user.role.toString(), user.id.toString());
+                            setRole(getUserRole(user.role.toString()));
+                        }, (err) => {
+                            console.error(err);
+                        }
+                    );
+                }
+            }, err => {
                 router.push("/login").then((_) => {
-                    console.error("No access");
+                    console.error(err);
                 });
-            }
+            });
         }, []);
 
         useEffect(() => {
@@ -30,10 +49,12 @@ export const withAuthorisation = (WrappedComponent: any, allowedRoles: string[])
             }
         }, [role]);
 
-        if (allowedRoles.includes(role)) {
-            return <WrappedComponent {...props} />;
-        } else {
-            return null;
-        }
+        return (
+            <>
+                {
+                    allowedRoles.includes(role) ? <WrappedComponent {...props}/> : null
+                }
+            </>
+        );
     };
 };
