@@ -18,7 +18,7 @@ jobs:
         run: docker-compose up -d --build
 
       - name: Run Tests
-        run: docker-compose exec -T backend python manage.py test building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py picture_building/tests.py student_at_building_on_tour/tests.py --with-coverage --cover-package=building,building_on_tour,garbage_collection,manual,region,tour,building_comment,picture_building,student_at_building_on_tour,role
+        run: docker-compose exec -t backend python manage.py test building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py picture_building/tests.py student_at_building_on_tour/tests.py --with-coverage --cover-package=building,building_on_tour,garbage_collection,manual,region,tour,building_comment,picture_building,student_at_building_on_tour,role
 
       - name: Copy file to local machine
         run: docker compose cp backend:/app/backend/coverage.xml coverage.xml
