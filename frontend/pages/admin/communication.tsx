@@ -20,15 +20,20 @@ export default function AdminCommunication() {
         option.name.toLowerCase().includes(templateQuery.toLowerCase()))
     : allTemplates;
 
+    const filteredComments = commentQuery.trim()
+    ? allComments.filter(option => 
+        option.comment.toLowerCase().includes(commentQuery.toLowerCase()))
+    : allComments;
+
     const handleSelectTemplate = (eventKey: string | null) => {
         setSelectedTemplate(eventKey ? eventKey : "");
         setTemplateQuery("");
     }
 
-    const filteredComments = commentQuery.trim()
-    ? allComments.filter(option => 
-        option.comment.toLowerCase().includes(commentQuery.toLowerCase()))
-    : allComments;
+    const handleSelectComment = (eventKey: string | null) => {
+        setSelectedComment(eventKey ? eventKey : "");
+        setCommentQuery("");
+    }
 
 
     useEffect(() => {
@@ -57,7 +62,7 @@ export default function AdminCommunication() {
             <>
                 <AdminHeader/>
                 <p className={styles.title}>Communicatie extern</p>
-
+                <p>Kies een template:</p>
 
                 <DropdownButton
                     variant="secondary"
@@ -67,16 +72,45 @@ export default function AdminCommunication() {
                     <>
                         <FormControl
                             autoFocus
-                            placeholder="Search..."
+                            placeholder="Zoeken..."
                             onChange={e => setTemplateQuery(e.target.value)}
                             value={templateQuery}
                         />
                         <Dropdown.Divider />
-                        {filteredTemplates.map((option: EmailTemplate) => (
+                        {filteredTemplates.length > 0 ? (
+                        filteredTemplates.map((option: EmailTemplate) => (
                             <Dropdown.Item key={option.name} eventKey={option.name}>
                                 {option.name}
                             </Dropdown.Item>
-                        ))}
+                        ))
+                        ) : (
+                            <Dropdown.Item disabled>Geen overeenkomende opties gevonden.</Dropdown.Item>
+                        )}
+                    </>
+                </DropdownButton>
+
+                <DropdownButton
+                    variant="secondary"
+                    title={selectedComment || 'Kies Opmerking'}
+                    onSelect={handleSelectComment}
+                >
+                    <>
+                        <FormControl
+                            autoFocus
+                            placeholder="Zoeken..."
+                            onChange={e => setCommentQuery(e.target.value)}
+                            value={commentQuery}
+                        />
+                        <Dropdown.Divider />
+                        {filteredComments.length > 0 ? (
+                            filteredComments.map((option: BuildingComment) => (
+                                <Dropdown.Item key={option.comment} eventKey={option.comment}>
+                                    {option.comment}
+                                </Dropdown.Item>
+                            ))
+                        ) : (
+                            <Dropdown.Item disabled>Geen overeenkomende opties gevonden.</Dropdown.Item>
+                        )}
                     </>
                 </DropdownButton>
             </>
