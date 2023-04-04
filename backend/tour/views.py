@@ -1,12 +1,13 @@
 from queue import PriorityQueue
 
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
+from drf_spectacular.types import OpenApiTypes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import Tour, BuildingOnTour, Building
 from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
-from base.serializers import TourSerializer, BuildingSerializer
+from base.serializers import TourSerializer, BuildingSerializer, SuccessSerializer, BuildingSwapRequestSerializer
 from util.request_response_util import *
 
 TRANSLATE = {"region": "region_id"}
@@ -36,7 +37,17 @@ class BuildingSwapView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = TourSerializer
 
-    @extend_schema(responses=post_docs(TourSerializer))
+    @extend_schema(
+        description="POST body consists of a list of building_id - index pairs that will be assigned to this tour. "
+                    "This enables the frontend to restructure a tour in 1 request instead of multiple. If a building is "
+                    "added to the tour (no BuildingOnTour entry existed), a new entry will be created. If buildings that "
+                    "were originally on the tour are left out, they will be removed.",
+        request=BuildingSwapRequestSerializer,
+        responses={
+            200: SuccessSerializer,
+            400: None
+        }
+    )
     def post(self, request, tour_id):
         data = request_to_dict(request.data)
         print(data)
