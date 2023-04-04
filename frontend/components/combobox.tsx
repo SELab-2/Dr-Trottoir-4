@@ -20,11 +20,14 @@ const Combobox = ({options, selectedOption, onSelect}: ComboboxProps) => {
         onSelect(eventKey ? eventKey : "");
         setSearchTerm('');
     }
+
     
     return (
         <DropdownButton
           variant="secondary"
-          title={selectedOption || 'Kies'}
+          title={selectedOption.length > 18 
+            ? (selectedOption.slice(0,15) + '...')
+            : (selectedOption || 'Kies')}
           onSelect={handleSelect}
         >
           <>

@@ -3,7 +3,7 @@ import { BuildingComment, getAllBuildingComments } from "@/lib/building-comment"
 import { EmailTemplate, getAllEmailTemplates } from "@/lib/communication";
 import { useEffect, useState } from "react";
 import styles from 'styles/Welcome.module.css';
-import { Dropdown, DropdownButton, FormControl } from "react-bootstrap";
+import { Dropdown, DropdownButton, FloatingLabel, Form, FormControl } from "react-bootstrap";
 import Combobox from "@/components/combobox";
 
 
@@ -49,8 +49,8 @@ export default function AdminCommunication() {
             <>
                 <AdminHeader/>
                 <p className={styles.title}>Communicatie extern</p>
-                <p>Kies een template:</p>
-
+                <p className={styles.text}>Kies een template:</p>
+                <div style={{ display: 'flex' }}>
                 <Combobox
                     options={allTemplates.map((option: EmailTemplate) => option.name)}
                     selectedOption={selectedTemplate}
@@ -62,6 +62,21 @@ export default function AdminCommunication() {
                     selectedOption={selectedComment}
                     onSelect={handleSelectComment}
                 />
+                </div>
+                <div>
+                <FloatingLabel
+                    controlId="floatingTextarea"
+                    label="Email"
+                    className="mb-3"
+                >
+                    <Form.Control 
+                    as="textarea" 
+                    placeholder="Write your email here"
+                    style={{ height: '400px' }} 
+                    />
+                </FloatingLabel>
+
+                </div>
             </>
         </>
     );
