@@ -1,4 +1,5 @@
-from rest_framework.permissions import IsAuthenticated
+from queue import PriorityQueue
+
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -29,6 +30,60 @@ class Default(APIView):
             return r
 
         return post_success(TourSerializer(tour_instance))
+
+
+class BuildingSwapView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = TourSerializer
+
+    def post(self, request, tour_id):
+        data = request_to_dict(request.data)
+        tours = Tour.objects.filter(id=tour_id)
+        if len(tours) != 1:
+            return not_found("Tour")
+        tour = tours[0]
+        numberOfItems = len(BuildingOnTour.objects.filter(tour=tour))
+        minimum_index = None
+        maximum_index = -1
+        q = PriorityQueue()
+        collisionMap = {}
+        for b_id, i in data.items():
+            index = int(i)
+            if minimum_index is None or index < minimum_index:
+                minimum_index = index
+            if index > maximum_index:
+                maximum_index = index
+            collisions = BuildingOnTour.objects.filter(tour=tour, index=index)
+            if len(collisions) != 1:
+                # it should exist, since we can only reuse indices
+                return not_found("BuildingOnTour")
+            collision = collisions[0]
+            collisionMap[index] = collision.building.id
+            q.put((index, b_id))
+        new_temp = maximum_index
+        if len(data.items()) > numberOfItems or maximum_index > len(data.items()):
+            return bad_request("Swap")
+        while not q.empty():
+            index, b_id = q.get()
+            candidates = BuildingOnTour.objects.filter(tour=tour, building=b_id)
+            if len(candidates) != 1:
+                return not_found("BuildingOnTour")
+            collision_id = collisionMap[index]
+            # one exists since it is in the collision map
+            collision = BuildingOnTour.objects.filter(tour=tour, building=collision_id)[0]
+            candidate = candidates[0]
+            if collision.index == index:
+                # later on the temp index will be overwritten with the new index from the request
+                collision.index = new_temp + 1
+                collision.save()
+            candidate.index = index
+            candidate.save()
+            new_temp += 1
+        dummy = type("", (), {})()
+        dummy.data = {
+            "data": "succesfully swapped the buildings"
+        }
+        return post_success(serializer=dummy)
 
 
 class TourIndividualView(APIView):
