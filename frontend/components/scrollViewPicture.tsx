@@ -25,21 +25,20 @@ const PhotoSelector = ({ photos, onSelectionChange }: PhotoSelectorProps) => {
 
   return (
     <Container>
-      <Row xs={2} md={3} lg={4} className="g-4">
-        {photos.map((photo) => (
-          <Col key={photo}>
-            <div
-              className={`p-2 border rounded ${
-                isSelected(photo) ? "border-primary" : ""
-              }`}
-              onClick={() => toggleSelection(photo)}
-            >
-              <Image src={photo} thumbnail fluid />
-            </div>
-          </Col>
-        ))}
-      </Row>
-      <button onClick={handleSelectionChange}>Save Selection</button>
+        <div style={{display: "inline-block", margin: "10px", cursor: "pointer", maxHeight:'300px', overflowY: 'scroll'}}>
+            <Row  lg={1} >
+                {photos.map((photo) => (
+                <Col key={photo}>
+                    <div style={{ border: isSelected(photo) ? '3px solid blue' : 'none' }}
+                    onClick={() => toggleSelection(photo)}
+                    >
+                    <Image src={photo} thumbnail fluid />
+                    </div>
+                </Col>
+                ))}
+            </Row>
+      </div>
+      <button onClick={handleSelectionChange}>Voeg toe</button>
     </Container>
   );
 };

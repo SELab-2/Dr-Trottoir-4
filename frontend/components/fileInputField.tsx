@@ -29,7 +29,7 @@ function FileInputField(props: FileInputFieldProps) {
         <div>
         <Form onSubmit={handleSubmit}>
             <Form.Group>
-            <Form.Label>Upload photos</Form.Label>
+            <Form.Label>Voeg bestand toe</Form.Label>
             <Form.Control type="file" multiple onChange={handleFileChange} value={undefined} />
             </Form.Group>
             <Button type="submit">Upload</Button>

@@ -54,22 +54,7 @@ export default function AdminCommunication() {
     const handlePictureSelectionChange = (selectedPhotos: string[]) => {
         setSelectedPictures(selectedPhotos);
     }
-
-    const photos = [
-        "https://picsum.photos/id/1015/200/300",
-        "https://picsum.photos/id/1025/200/300",
-        "https://picsum.photos/id/1035/200/300",
-        "https://picsum.photos/id/1045/200/300",
-        "https://picsum.photos/id/1055/200/300",
-        "https://picsum.photos/id/1065/200/300",
-        "https://picsum.photos/id/1075/200/300",
-        "https://picsum.photos/id/1085/200/300",
-        "https://picsum.photos/id/1095/200/300",
-      ];
-
-    const handleUpload = (files: FileList) => {
-        console.log(files);
-    }
+    
 
     const handleEditTemplate = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setTemplateText(event.target.value);
@@ -94,7 +79,6 @@ export default function AdminCommunication() {
 
     useEffect(() => {
         setLoading(false);
-        //console.log(allComments);
     }, [allTemplates, allComments, selectedTemplate, selectedComment]);
 
 
@@ -105,51 +89,44 @@ export default function AdminCommunication() {
                 <p className={styles.title}>Communicatie extern</p>
                 <p className={styles.text}>Kies een template:</p>
                 <div style={{ display: 'flex' }}>
-                <Combobox
-                    options={allTemplates.map((option: EmailTemplate) => option.name)}
-                    selectedOption={selectedTemplate}
-                    onSelect={handleSelectTemplate}
-                />
+                    <Combobox
+                        options={allTemplates.map((option: EmailTemplate) => option.name)}
+                        selectedOption={selectedTemplate}
+                        onSelect={handleSelectTemplate}
+                    />
 
-                <Combobox
-                    options={allComments.map((option: BuildingComment) => option.comment)}
-                    selectedOption={selectedComment}
-                    onSelect={handleSelectComment}
-                />
+                    <Combobox
+                        options={allComments.map((option: BuildingComment) => option.comment)}
+                        selectedOption={selectedComment}
+                        onSelect={handleSelectComment}
+                    />
                 </div>
                 <div style={{ display: 'flex' }}>
-                <FloatingLabel
-                    controlId="floatingTextarea"
-                    label="Email"
-                    className="mb-3"
-                    style={{ width: "80%" }}
-                >
-                    <Form.Control 
-                    as="textarea" 
-                    placeholder="Write your email here"
-                    style={{ height: '400px' }} 
-                    value={templateText}
-                    onChange={handleEditTemplate}
+                    <FloatingLabel
+                        controlId="floatingTextarea"
+                        label="Email"
+                        className="mb-3"
+                        style={{ width: "70%" }}
+                    >
+                        <Form.Control 
+                        as="textarea" 
+                        placeholder="Schrijf je email hier"
+                        style={{ height: '400px' }} 
+                        value={templateText}
+                        onChange={handleEditTemplate}
+                        />
+                    </FloatingLabel>
+                    <div style={{ width: "30%" }}>
+                    <label className={styles.text}>Eventuele foto's opmerking:</label>
+                    <PhotoSelector
+                        photos={allPictures.length > 0 ? (
+                            allPictures.map(e => e.picture)
+                        ) : (
+                            ["https://www.pulsecarshalton.co.uk/wp-content/uploads/2016/08/jk-placeholder-image.jpg"]
+                        )}
+                        onSelectionChange={handlePictureSelectionChange}
                     />
-                </FloatingLabel>
-                <FileInputField onUpload={handleUpload}/>
-                </div>
-                <div>
-                <h1>Photo Selector</h1>
-                <PhotoSelector
-                    photos={photos}
-                    onSelectionChange={handlePictureSelectionChange}
-                />
-                <div>
-                    <h2>Selected Photos:</h2>
-                    <ul>
-                    {selectedPictures.map((photo) => (
-                        <li key={photo}>
-                        <img src={photo} alt="Selected" />
-                        </li>
-                    ))}
-                    </ul>
-                </div>
+                    </div>
                 </div>
             </>
         </>
