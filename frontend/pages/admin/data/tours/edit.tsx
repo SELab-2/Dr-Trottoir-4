@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import { deleteTour, getTour, patchTour, postTour, Tour } from "@/lib/tour";
+import {deleteTour, getTour, patchTour, postTour, swapBuildingsOnTour, Tour} from "@/lib/tour";
 import { getAllRegions, getRegion, Region } from "@/lib/region";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import {
@@ -311,47 +311,25 @@ function AdminDataToursEdit() {
             return;
         }
         if (tour) {
-            // PATCH tour & delete/patch/post buildingsOnTours
-            // get all buildingsonTour that where already in the list (PATCH)
-            const alreadyExistBuildingsOnTourViews: BuildingOnTourView[] = buildingsOnTourView.filter(
-                (bot: BuildingOnTourView) =>
-                    buildingsOnTour.some((b: BuildingOnTour) => b.building === bot.buildingId && b.index != bot.index)
-            );
-            await Promise.all(
-                alreadyExistBuildingsOnTourViews.map((bot: BuildingOnTourView) => {
-                    const b: BuildingOnTour = buildingsOnTour.find(
-                        (b: BuildingOnTour) => bot.buildingId === b.building
-                    )!; // not undefined
-                    return patchBuildingOnTour(b.id, { index: bot.index });
-                })
-            );
-
-            // Get removed buildingOnTours from list
-            // TODO: do a delete of a building that was removed from a tour request once the database is ready
-            const removedBuildingsOnTour: BuildingOnTour[] = buildingsOnTour.filter((bot: BuildingOnTour) =>
-                buildingsNotOnTourView.some((b: BuildingNotOnTourView) => bot.building === b.buildingId)
-            );
-            await Promise.all(
-                removedBuildingsOnTour.map((bot: BuildingOnTour) => {
-                    return deleteBuildingOnTour(bot.id);
-                    //return patchBuildingOnTour(bot.id, {tour : null}); TODO: change this once db is ready
-                })
-            );
-
-            // Get new buildingOnTours in the list (POST)
-            const nonExistentBuildingsOnTourViews: BuildingOnTourView[] = buildingsOnTourView.filter(
-                (bot: BuildingOnTourView) => !buildingsOnTour.some((b: BuildingOnTour) => b.building === bot.buildingId)
-            );
-            await Promise.all(
-                nonExistentBuildingsOnTourViews.map((bot: BuildingOnTourView) => {
-                    return postBuildingOnTour(tour.id, bot.buildingId, bot.index);
-                })
-            );
-
-            // patch tour && maybe post/patch buildingOnTours buildingOnTour.tour must become null if they are being removed
             patchTour(tour.id, { name: tourName }, new Date(Date.now())).then(
                 async (_) => {
                     await router.push("/admin/data/tours/");
+                    const buildingIndices: { [b: number]: number } = {};
+                    let i = 0;
+                    for (const botv of buildingsOnTourView) {
+                        buildingIndices[botv.buildingId] = i;
+                        i ++;
+                    }
+                    swapBuildingsOnTour(tour.id, buildingIndices).then(
+                        (_) => {
+                            router.push("/admin/data/tours/").then();
+                        },
+                        (err) => {
+                            let errorRes = err.response;
+                            if (errorRes && errorRes.status === 400) {
+                                getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
+                            }
+                        });
                 },
                 (err) => {
                     let errorRes = err.response;
@@ -377,11 +355,13 @@ function AdminDataToursEdit() {
         postTour(tourName, new Date(Date.now()), region.id).then(
             (res) => {
                 const resTour: Tour = res.data;
-                Promise.all(
-                    buildingsOnTourView.map((b: BuildingOnTourView, index: number) =>
-                        postBuildingOnTour(resTour.id, b.buildingId, index)
-                    )
-                ).then(
+                const buildingIndices: { [b: number]: number } = {};
+                let i = 0;
+                for (const botv of buildingsOnTourView) {
+                    buildingIndices[botv.buildingId] = i;
+                    i ++;
+                }
+                swapBuildingsOnTour(resTour.id, buildingIndices).then(
                     (_) => {
                         router.push("/admin/data/tours/").then();
                     },
@@ -392,8 +372,7 @@ function AdminDataToursEdit() {
                         }
                     }
                 );
-            },
-            (err) => {
+            }, (err) => {
                 let errorRes = err.response;
                 if (errorRes && errorRes.status === 400) {
                     getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
