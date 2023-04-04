@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import {deleteTour, getTour, patchTour, postTour, swapBuildingsOnTour, Tour} from "@/lib/tour";
+import { deleteTour, getTour, patchTour, postTour, swapBuildingsOnTour, Tour } from "@/lib/tour";
 import { getAllRegions, getRegion, Region } from "@/lib/region";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import {
@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next";
 import { getAndSetErrors } from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
-import {BuildingNotOnTourView, BuildingOnTourView} from "@/types";
+import { BuildingNotOnTourView, BuildingOnTourView } from "@/types";
 
 interface ParsedUrlQuery {}
 
@@ -318,7 +318,7 @@ function AdminDataToursEdit() {
                     let i = 0;
                     for (const botv of buildingsOnTourView) {
                         buildingIndices[botv.buildingId] = i;
-                        i ++;
+                        i++;
                     }
                     swapBuildingsOnTour(tour.id, buildingIndices).then(
                         (_) => {
@@ -329,7 +329,8 @@ function AdminDataToursEdit() {
                             if (errorRes && errorRes.status === 400) {
                                 getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
                             }
-                        });
+                        }
+                    );
                 },
                 (err) => {
                     let errorRes = err.response;
@@ -359,7 +360,7 @@ function AdminDataToursEdit() {
                 let i = 0;
                 for (const botv of buildingsOnTourView) {
                     buildingIndices[botv.buildingId] = i;
-                    i ++;
+                    i++;
                 }
                 swapBuildingsOnTour(resTour.id, buildingIndices).then(
                     (_) => {
@@ -372,7 +373,8 @@ function AdminDataToursEdit() {
                         }
                     }
                 );
-            }, (err) => {
+            },
+            (err) => {
                 let errorRes = err.response;
                 if (errorRes && errorRes.status === 400) {
                     getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
