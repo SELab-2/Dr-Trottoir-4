@@ -14,7 +14,7 @@ from base.permissions import (
 from base.serializers import BuildingSerializer
 from util.request_response_util import *
 
-TRANSLATE = {"syndic": "syndic_id"}
+TRANSLATE = {"syndic": "syndic_id", "region": "region_id"}
 
 
 class DefaultBuilding(APIView):
