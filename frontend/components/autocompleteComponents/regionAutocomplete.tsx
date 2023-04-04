@@ -7,7 +7,7 @@ const RegionAutocomplete: React.FC<GenericProps> = ({value, onChange, setObjectI
     return (
         <AutocompleteComponent
             value={value}
-            label={`Region${required ? "*" : ""}`}
+            label={`Regio${required ? "*" : ""}`}
             fetchOptions={getAllRegions}
             onChange={onChange}
             mapping={(region: Region) => region.region}

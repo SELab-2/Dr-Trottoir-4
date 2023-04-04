@@ -1,6 +1,6 @@
 import React, {useEffect, useState, ChangeEvent, FormEvent, MouseEventHandler} from "react";
 import {useRouter} from "next/router";
-import {Button, Form, Dropdown, InputGroup} from "react-bootstrap";
+import {Form, Alert} from "react-bootstrap";
 import {
     BuildingPostInterface,
     getBuildingInfo,
@@ -8,17 +8,17 @@ import {
     patchBuilding,
     postBuilding
 } from "@/lib/building";
-import {Region, getAllRegions, getRegion} from "@/lib/region";
-import {User, getUserInfo, getAllUsers, userSearchString} from "@/lib/user";
+import {getRegion} from "@/lib/region";
+import {getUserInfo, userSearchString} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
-import DurationInput from "@/components/DurationInput";
 
 function AdminDataBuildingsEdit() {
+    const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
     const [name, setName] = useState("");
     const [city, setCity] = useState("");
     const [houseNumber, setHouseNumber] = useState("");
@@ -36,12 +36,14 @@ function AdminDataBuildingsEdit() {
     const [validated, setValidated] = useState(false);
     const [formErrors, setFormErrors] = useState(false);
     const [durationInMinutes, setDurationInMinutes] = useState(0);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     const router = useRouter();
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const form = document.getElementById("buildingForm") as HTMLFormElement;
-
+        setErrorMessage(requiredFieldsNotFilledMessage);
         if (form.checkValidity()) {
             setFormErrors(false);
             const building = {
@@ -57,12 +59,20 @@ function AdminDataBuildingsEdit() {
                 region: regionId,
                 public_id: public_id,
             };
-            console.log("postpatch");
-            if (router.query.building) {
-                patchBuilding(building, Number(router.query.building)).then(res => console.log(res));
-            } else {
-                postBuilding(building).then();
+            try {
+                if (router.query.building) {
+                    const res = await patchBuilding(building, Number(router.query.building));
+                } else {
+                    const res = await postBuilding(building);
+                }
+                setShowConfirmation(true);
+            } catch (error: any) {
+                setShowConfirmation(false);
+                console.error('An error occurred:', error.request.responseText);
+                setErrorMessage(error.request.responseText);
+                setFormErrors(true);
             }
+
         } else {
             setFormErrors(true);
         }
@@ -73,6 +83,7 @@ function AdminDataBuildingsEdit() {
     };
 
     useEffect(() => {
+        setErrorMessage(requiredFieldsNotFilledMessage);
         if (router.query.building) {
             getBuildingInfo(Number(router.query.building)).then(async res => {
                 setStreet(res.data.street);
@@ -98,9 +109,14 @@ function AdminDataBuildingsEdit() {
         <>
             <AdminHeader/>
             <div className={styles.container}>
+                {showConfirmation && (
+                    <Alert variant="success" onClose={() => setShowConfirmation(false)} dismissible>
+                        De informatie voor dit gebouw is opgeslagen!
+                    </Alert>
+                )}
                 {formErrors && (
                     <div className="alert alert-danger" role="alert">
-                        Gelieve alle verplichte velden (*) in te vullen.
+                        {errorMessage}
                     </div>
                 )}
                 <Form id="buildingForm" className={styles.form} noValidate validated={validated}>

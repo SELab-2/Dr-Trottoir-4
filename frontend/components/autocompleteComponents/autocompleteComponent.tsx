@@ -72,7 +72,7 @@ const AutocompleteComponent: React.FC<Props> = ({
             inputValue={inputValue}
             onChange={(
                 e: React.SyntheticEvent,
-                newValue: string | null
+                newValue: any
             ) => {
                 if (newValue) {
                     setObjectId(getIdBySearchTerm(options, searchField, searchTermHandler(newValue)));
