@@ -5,5 +5,7 @@
   "This password is too common.": "Dit wachtwoord is te eenvoudig.",
   "This password is entirely numeric.": "Dit wachtwoord bestaat volledig uit cijfers, er moeten ook lettertekens in voorkomen.",
   "There is already a tour with the same name in the region.": "Er bestaat al een ronde met deze naam in deze regio.",
-  "Syndic": "Syndicus"
+  "Syndic": "Syndicus",
+  "The phone number entered is not valid": "Het telefoonnummer is niet geldig.",
+  "The name for this template already exists.": "Er bestaat al een template met deze naam."
 }

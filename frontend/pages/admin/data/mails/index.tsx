@@ -6,12 +6,16 @@ import {Box, IconButton, Tooltip} from "@mui/material";
 import {Delete, Edit, Email} from "@mui/icons-material";
 import {Button} from "react-bootstrap";
 import {useRouter} from "next/router";
+import EditEmailModal from "@/components/editEmailModal";
 
 export default function AdminDataMails() {
 
     const router = useRouter();
     const [emailTemplates, setEmailTemplates] = useState<Emailtemplate[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [selectedTemplate, setSelectedTemplate] = useState<Emailtemplate | null>(null);
+    const [showEditModal, setShowEditModal] = useState<boolean>(false);
+    const [editMail, setEditMail] = useState<boolean>(false);
 
     const columns = useMemo<MRT_ColumnDef<Emailtemplate>[]>(
         () => [
@@ -24,86 +28,97 @@ export default function AdminDataMails() {
     );
 
     useEffect(() => {
+        getMails();
+    }, []);
+
+    function getMails() {
         getAllMailTemplates().then(res => {
-            const templates : Emailtemplate[] = res.data;
+            const templates: Emailtemplate[] = res.data;
             setEmailTemplates(templates);
             setLoading(false);
         }, err => {
             console.error(err);
         })
-    }, []);
+    }
+
+    function closeEditModal() {
+        setSelectedTemplate(null);
+        setShowEditModal(false);
+        getMails();
+    }
 
     return (
         <>
-            <>
-                <AdminHeader />
-                <MaterialReactTable
-                    displayColumnDefOptions={{
-                        "mrt-row-actions": {
-                            muiTableHeadCellProps: {
-                                align: "center",
-                                size:"small"
-                            },
-                            header: "Acties",
+            <AdminHeader/>
+            <EditEmailModal show={showEditModal} hideModal={closeEditModal} setEmail={setSelectedTemplate}
+                            selectedEmail={selectedTemplate} edit={editMail}/>
+            <MaterialReactTable
+                displayColumnDefOptions={{
+                    "mrt-row-actions": {
+                        muiTableHeadCellProps: {
+                            align: "center",
+                            size: "small"
                         },
-                    }}
-                    enablePagination={false}
-                    enableBottomToolbar={false}
-                    columns={columns}
-                    data={emailTemplates}
-                    state={{ isLoading: loading }}
-                    enableEditing
-                    renderRowActions={({ row }) => (
-                        <Box>
-                            <Tooltip arrow placement="left" title="Pas aan">
-                                <IconButton
-                                    onClick={() => {
-                                        const emailtemplate: Emailtemplate = row.original;
-                                    }}
-                                >
-                                    <Edit />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip arrow placement="right" title="Verwijder">
-                                <IconButton
-                                    onClick={() => {
-                                        const emailtemplate: Emailtemplate = row.original;
-                                    }}
-                                >
-                                    <Delete />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip arrow placement="right" title="Verstuur mail">
-                                <IconButton
-                                    onClick={() => {
-                                        const emailtemplate: Emailtemplate = row.original;
-                                    }}
-                                >
-                                    <Email />
-                                </IconButton>
-                            </Tooltip>
-                        </Box>
-                    )}
-                    renderDetailPanel={({ row }) => {
-                        const emailtemplate: Emailtemplate = row.original;
-                        return (
-                            <pre>
-                                {
-                                    emailtemplate.template
-                                }
-                            </pre>
-                        );
-                    }}
-                    renderTopToolbarCustomActions={() => (
-                        <Button onClick={() => router.push(`${router.pathname}/edit`)} variant="warning">
-                            Maak nieuwe mail template aan
-                        </Button>
-                    )}
-                />
-                <p>
-                    https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=115-393&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
-                </p>
-            </>
+                        header: "Acties",
+                    },
+                }}
+                enablePagination={false}
+                enableBottomToolbar={false}
+                columns={columns}
+                data={emailTemplates}
+                state={{isLoading: loading}}
+                enableEditing
+                renderRowActions={({row}) => (
+                    <Box>
+                        <Tooltip arrow placement="right" title="Pas aan">
+                            <IconButton
+                                onClick={() => {
+                                    const emailtemplate: Emailtemplate = row.original;
+                                    setSelectedTemplate(emailtemplate);
+                                    setEditMail(true);
+                                    setShowEditModal(true);
+                                }}
+                            >
+                                <Edit/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verwijder">
+                            <IconButton
+                                onClick={() => {
+                                    const emailtemplate: Emailtemplate = row.original;
+                                    setSelectedTemplate(emailtemplate);
+                                }}
+                            >
+                                <Delete/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verstuur mail">
+                            <IconButton
+                                onClick={() => {
+                                    const emailtemplate: Emailtemplate = row.original;
+                                    setSelectedTemplate(emailtemplate);
+                                }}
+                            >
+                                <Email/>
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                )}
+                renderDetailPanel={({row}) => {
+                    const emailtemplate: Emailtemplate = row.original;
+                    return (
+                        <pre>{emailtemplate.template}</pre>
+                    );
+                }}
+                renderTopToolbarCustomActions={() => (
+                    <Button onClick={() => {
+                        setShowEditModal(true);
+                        setEditMail(false);
+                    }} variant="warning">
+                        Maak nieuwe mail template aan
+                    </Button>
+                )}
+            />
         </>
     );
 }
