@@ -102,7 +102,7 @@ function AdminDataBuildingsEdit() {
             <div className={styles.container}>
                 {formErrors && (
                     <div className="alert alert-danger" role="alert">
-                        Gelieve alle verplichte velden in te vullen.
+                        Gelieve alle verplichte velden (*) in te vullen.
                     </div>
                 )}
                 <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
@@ -199,7 +199,6 @@ function AdminDataBuildingsEdit() {
                                                  required={true}></SyndicAutoCompleteComponent>
                     <PDFUploader onUpload={setManual}></PDFUploader>
                 </Form>
-                <p className="text-danger mt-2">* Alle velden gemarkeerd met * zijn verplicht.</p>
                 <button onClick={handleSubmit} type="button">
                     Opslaan
                 </button>
