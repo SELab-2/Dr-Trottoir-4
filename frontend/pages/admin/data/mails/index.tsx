@@ -6,7 +6,8 @@ import {Box, IconButton, Tooltip} from "@mui/material";
 import {Delete, Edit, Email} from "@mui/icons-material";
 import {Button} from "react-bootstrap";
 import {useRouter} from "next/router";
-import EditEmailModal from "@/components/editEmailModal";
+import EditEmailModal from "@/components/admin/editEmailModal";
+import {DeleteEmailModal} from "@/components/admin/deleteEmailModal";
 
 export default function AdminDataMails() {
 
@@ -16,6 +17,7 @@ export default function AdminDataMails() {
     const [selectedTemplate, setSelectedTemplate] = useState<Emailtemplate | null>(null);
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
     const [editMail, setEditMail] = useState<boolean>(false);
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
     const columns = useMemo<MRT_ColumnDef<Emailtemplate>[]>(
         () => [
@@ -41,17 +43,27 @@ export default function AdminDataMails() {
         })
     }
 
-    function closeEditModal() {
+    function closeModal() {
         setSelectedTemplate(null);
         setShowEditModal(false);
+        setShowDeleteModal(false);
         getMails();
+    }
+
+    async function routeToCommunication(mailTemplate : Emailtemplate) {
+        await router.push({
+            pathname: `/admin/communication`,
+            query: {template: mailTemplate.id},
+        });
     }
 
     return (
         <>
             <AdminHeader/>
-            <EditEmailModal show={showEditModal} hideModal={closeEditModal} setEmail={setSelectedTemplate}
+            <EditEmailModal show={showEditModal} hideModal={closeModal} setEmail={setSelectedTemplate}
                             selectedEmail={selectedTemplate} edit={editMail}/>
+            <DeleteEmailModal show={showDeleteModal} closeModal={closeModal} selectedMail={selectedTemplate}
+                              setMail={setSelectedTemplate}/>
             <MaterialReactTable
                 displayColumnDefOptions={{
                     "mrt-row-actions": {
@@ -87,6 +99,7 @@ export default function AdminDataMails() {
                                 onClick={() => {
                                     const emailtemplate: Emailtemplate = row.original;
                                     setSelectedTemplate(emailtemplate);
+                                    setShowDeleteModal(true);
                                 }}
                             >
                                 <Delete/>
@@ -96,7 +109,7 @@ export default function AdminDataMails() {
                             <IconButton
                                 onClick={() => {
                                     const emailtemplate: Emailtemplate = row.original;
-                                    setSelectedTemplate(emailtemplate);
+                                    routeToCommunication(emailtemplate).then();
                                 }}
                             >
                                 <Email/>
