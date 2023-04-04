@@ -151,7 +151,7 @@ class BaseAuthTest(TestCase):
         for role in roles:
             if not exists:
                 instance_id = create()
-            # proberen verwijderen als `role`
+            # try to remove as `role`
             client = get_authenticated_client(role)
             response2 = client.delete(backend_url + "/" + url + f"{instance_id}/", follow=True)
             assert response2.status_code == codes[role]
