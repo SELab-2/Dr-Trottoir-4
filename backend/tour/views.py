@@ -40,10 +40,10 @@ class BuildingSwapView(APIView):
 
     @extend_schema(
         description="POST body consists of a list of building_id - index pairs that will be assigned to this tour. "
-                    "This enables the frontend to restructure a tour in 1 request instead of multiple. If a building is "
-                    "added to the tour (no BuildingOnTour entry existed before), a new entry will be created. If buildings that "
-                    "were originally on the tour are left out, they will be removed from the tour."
-                    "The indices that should be used in the request start at 0 and should be incremented 1 at a time.",
+        "This enables the frontend to restructure a tour in 1 request instead of multiple. If a building is "
+        "added to the tour (no BuildingOnTour entry existed before), a new entry will be created. If buildings that "
+        "were originally on the tour are left out, they will be removed from the tour."
+        "The indices that should be used in the request start at 0 and should be incremented 1 at a time.",
         request=BuildingSwapRequestSerializer,
         responses={200: SuccessSerializer, 400: None},
         examples=[
