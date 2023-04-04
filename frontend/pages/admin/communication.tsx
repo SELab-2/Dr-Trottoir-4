@@ -20,26 +20,21 @@ export default function AdminCommunication() {
         option.name.toLowerCase().includes(templateQuery.toLowerCase()))
     : allTemplates;
 
-    const handleSelect = (eventKey: string | null) => {
+    const handleSelectTemplate = (eventKey: string | null) => {
         setSelectedTemplate(eventKey ? eventKey : "");
         setTemplateQuery("");
     }
 
-    const filteredComments = 
-        commentQuery === "" 
-            ? allComments
-            : allComments.filter((comment) => {
-                comment.comment
-                    .toLowerCase()
-                    .replace(/\s+/g, "")
-                    .includes(commentQuery.toLowerCase().replace(/\s+/g, ""));
-            });
+    const filteredComments = commentQuery.trim()
+    ? allComments.filter(option => 
+        option.comment.toLowerCase().includes(commentQuery.toLowerCase()))
+    : allComments;
+
 
     useEffect(() => {
         getAllEmailTemplates().then(res => {
             const emailTemplates : EmailTemplate[] = res.data;
             setAllTemplates(emailTemplates);
-            // setSelectedTemplate(emailTemplates[0].name);
         }, err => {
             console.error(err);
         });
@@ -47,7 +42,6 @@ export default function AdminCommunication() {
         getAllBuildingComments().then(res => {
             const buildingComments : BuildingComment[] = res.data;
             setAllComments(buildingComments);
-            // setSelectedComment(buildingComments[0].comment);
         }, err => {
             console.error(err);
         });
@@ -68,7 +62,7 @@ export default function AdminCommunication() {
                 <DropdownButton
                     variant="secondary"
                     title={selectedTemplate || 'Kies template'}
-                    onSelect={handleSelect}
+                    onSelect={handleSelectTemplate}
                 >
                     <>
                         <FormControl
