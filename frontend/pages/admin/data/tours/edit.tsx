@@ -20,7 +20,8 @@ import { useTranslation } from "react-i18next";
 import { getAndSetErrors } from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
-import { BuildingNotOnTourView, BuildingOnTourView } from "@/types";
+import {BuildingNotOnTourView, BuildingOnTourView, TourView} from "@/types";
+import {TourDeleteModal} from "@/components/admin/tourDeleteModal";
 
 interface ParsedUrlQuery {}
 
@@ -49,6 +50,9 @@ function AdminDataToursEdit() {
     const [possibleRegions, setPossibleRegions] = useState<Region[]>([]);
     const [selectedRegion, setSelectedRegion] = useState<string>("");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
+    const [tourView, setTourView] = useState<TourView | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
     const columnsBuildingOnTourView = useMemo<MRT_ColumnDef<BuildingOnTourView>[]>(
         () => [
@@ -135,7 +139,9 @@ function AdminDataToursEdit() {
         } else {
             getTour(query.tour).then(
                 (res) => {
-                    setTour(res.data);
+                    const r : Tour = res.data;
+                    setTour(r);
+                    setTourView({name : r.name, region: "", tour_id: Number(query.tour), last_modified: ""})
                 },
                 (err) => {
                     console.error(err);
@@ -313,24 +319,27 @@ function AdminDataToursEdit() {
         if (tour) {
             patchTour(tour.id, { name: tourName }, new Date(Date.now())).then(
                 async (_) => {
-                    await router.push("/admin/data/tours/");
-                    const buildingIndices: { [b: number]: number } = {};
-                    let i = 0;
-                    for (const botv of buildingsOnTourView) {
-                        buildingIndices[botv.buildingId] = i;
-                        i++;
-                    }
-                    swapBuildingsOnTour(tour.id, buildingIndices).then(
-                        (_) => {
-                            router.push("/admin/data/tours/").then();
-                        },
-                        (err) => {
-                            let errorRes = err.response;
-                            if (errorRes && errorRes.status === 400) {
-                                getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                            }
+                    if (buildingsOnTourView.length >  0) {
+                        const buildingIndices: { [b: number]: number } = {};
+                        let i = 0;
+                        for (const botv of buildingsOnTourView) {
+                            buildingIndices[botv.buildingId] = i;
+                            i++;
                         }
-                    );
+                        swapBuildingsOnTour(tour.id, buildingIndices).then(
+                            (_) => {
+                                router.push("/admin/data/tours/").then();
+                            },
+                            (err) => {
+                                let errorRes = err.response;
+                                if (errorRes && errorRes.status === 400) {
+                                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
+                                }
+                            }
+                        );
+                    } else {
+                        router.push("/admin/data/tours/").then();
+                    }
                 },
                 (err) => {
                     let errorRes = err.response;
@@ -355,24 +364,28 @@ function AdminDataToursEdit() {
         const region: Region = possibleRegions.find((r: Region) => r.region === selectedRegion)!;
         postTour(tourName, new Date(Date.now()), region.id).then(
             (res) => {
-                const resTour: Tour = res.data;
-                const buildingIndices: { [b: number]: number } = {};
-                let i = 0;
-                for (const botv of buildingsOnTourView) {
-                    buildingIndices[botv.buildingId] = i;
-                    i++;
-                }
-                swapBuildingsOnTour(resTour.id, buildingIndices).then(
-                    (_) => {
-                        router.push("/admin/data/tours/").then();
-                    },
-                    (err) => {
-                        let errorRes = err.response;
-                        if (errorRes && errorRes.status === 400) {
-                            getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                        }
+                if (buildingsOnTourView.length >  0) {
+                    const resTour: Tour = res.data;
+                    const buildingIndices: { [b: number]: number } = {};
+                    let i = 0;
+                    for (const botv of buildingsOnTourView) {
+                        buildingIndices[botv.buildingId] = i;
+                        i++;
                     }
-                );
+                    swapBuildingsOnTour(resTour.id, buildingIndices).then(
+                        (_) => {
+                            router.push("/admin/data/tours/").then();
+                        },
+                        (err) => {
+                            let errorRes = err.response;
+                            if (errorRes && errorRes.status === 400) {
+                                getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
+                            }
+                        }
+                    );
+                } else {
+                    router.push("/admin/data/tours/").then();
+                }
             },
             (err) => {
                 let errorRes = err.response;
@@ -392,7 +405,6 @@ function AdminDataToursEdit() {
         }
         deleteTour(tour.id).then(
             async (_) => {
-                await router.push("/admin/data/tours/");
             },
             (err) => {
                 console.error(err);
@@ -400,9 +412,19 @@ function AdminDataToursEdit() {
         );
     }
 
+    function closeAndRouteDeleteModal() {
+        setShowDeleteModal(false);
+        router.push("/admin/data/tours/").then();
+    }
+
+    function closeModal() {
+        setShowDeleteModal(false);
+    }
+
     return (
         <>
             <AdminHeader />
+            <TourDeleteModal closeModal={closeModal} show={showDeleteModal} selectedTour={tourView} setSelectedTour={setTourView} onDelete={closeAndRouteDeleteModal}/>
             {errorMessages.length > 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>
                     <ul>
@@ -478,7 +500,7 @@ function AdminDataToursEdit() {
                                 <label className="form-label">Selecteer een regio:</label>
                                 <select
                                     defaultValue={""}
-                                    className="form-control"
+                                    className={`form-select form-control form-control-lg ${styles.input}`}
                                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                                         setSelectedRegion(e.target.value)
                                     }
@@ -507,14 +529,17 @@ function AdminDataToursEdit() {
                                 }}
                             />
                         </Tooltip>
-                        <Tooltip title="Verwijder ronde">
-                            <Delete
-                                className={tour ? "visible" : "invisible"}
-                                onClick={() => {
-                                    removeTour();
-                                }}
-                            />
-                        </Tooltip>
+                        {
+                            (tour) && (
+                                <Tooltip title="Verwijder ronde">
+                                    <Delete
+                                        onClick={() => {
+                                            setShowDeleteModal(true);
+                                        }}
+                                    />
+                                </Tooltip>
+                            )
+                        }
                     </Box>
                 )}
             />

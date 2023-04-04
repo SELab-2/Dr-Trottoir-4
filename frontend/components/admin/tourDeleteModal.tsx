@@ -1,37 +1,36 @@
-import {Button, Modal} from "react-bootstrap";
-import React, {useState} from "react";
-import {UserView} from "@/types";
-import {deleteUser} from "@/lib/user";
-import {getAndSetErrors} from "@/lib/error";
+import {TourView, UserView} from "@/types";
 import {useTranslation} from "react-i18next";
+import {deleteTour} from "@/lib/tour";
+import {getAndSetErrors} from "@/lib/error";
+import React, {useState} from "react";
+import {Button, Modal} from "react-bootstrap";
 
-export function UserDeleteModal(
+export function TourDeleteModal(
     {
         show,
         closeModal,
-        selectedUser,
-        setSelectedUser
+        onDelete,
+        selectedTour,
+        setSelectedTour
     }: {
         show: boolean,
         closeModal: () => void,
-        selectedUser: UserView | null,
-        setSelectedUser: (x: |any) => void
+        onDelete : () => void,
+        selectedTour: TourView | null,
+        setSelectedTour: (x: |any) => void
     }
 ) {
     const {t} = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-    /**
-     * Remove a user, show errors if necessary
-     */
-    function removeUser() {
-        if (!selectedUser) {
+    function removeTour() {
+        if (!selectedTour) {
             return;
         }
-        deleteUser(selectedUser?.userId).then(() => {
-            setErrorMessages([]);
-            closeModal();
-        }, err => {
+        deleteTour(selectedTour.tour_id).then(_ => {
+                setErrorMessages([]);
+                onDelete();
+            }, (err) => {
             let errorRes = err.response;
             if (errorRes && errorRes.status === 400) {
                 getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
@@ -41,13 +40,14 @@ export function UserDeleteModal(
             } else {
                 console.error(err);
             }
-        });
+            }
+        );
     }
 
     return (
         <Modal show={show} onHide={closeModal}>
             <Modal.Header>
-                <Modal.Title>Verwijder gebruiker</Modal.Title>
+                <Modal.Title>Verwijder ronde</Modal.Title>
             </Modal.Header>
             {
                 (errorMessages.length !== 0) && (
@@ -66,22 +66,23 @@ export function UserDeleteModal(
                 )
             }
             <Modal.Body>Bent u zeker dat u
-                gebruiker {selectedUser?.first_name} {selectedUser?.last_name} ({selectedUser?.email}) wil
+                ronde {selectedTour?.name} wil
                 verwijderen?</Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" className="btn-light" onClick={() => {
-                    setSelectedUser(null);
+                    setSelectedTour(null);
                     setErrorMessages([]);
                     closeModal();
                 }}>
                     Annuleer
                 </Button>
                 <Button variant="primary" className="btn-dark" onClick={async () => {
-                    removeUser();
+                    removeTour();
                 }}>
                     Verwijder
                 </Button>
             </Modal.Footer>
         </Modal>
     );
+
 }
