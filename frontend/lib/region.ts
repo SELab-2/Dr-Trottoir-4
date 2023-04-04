@@ -6,6 +6,12 @@ export interface RegionInterface {
     region: number;
 }
 
+// @Simon, verwijder onderstaande interface, build docker en fix errors
+export interface Region {
+    id: number,
+    region : string
+}
+
 export async function getAllRegions(): Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_REGIONS}`;
     return await api.get(request_url);
