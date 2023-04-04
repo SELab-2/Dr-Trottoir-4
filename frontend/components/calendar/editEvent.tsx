@@ -5,11 +5,9 @@ import Button from 'react-bootstrap/Button';
 function EditEventModal(data : any) {
   const {event, isOpen, onClose, onSave} = data
   const [title, setTitle] = useState(event.title);
-  const [start, setStart] = useState(event.start);
-  const [end, setEnd] = useState(event.end);
 
   const handleSave = () => {
-    onSave({ title, start, end });
+    onSave(title);
     onClose();
   };
 
@@ -27,24 +25,6 @@ function EditEventModal(data : any) {
               className="form-control"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label>Start</label>
-            <input
-              type="datetime-local"
-              className="form-control"
-              value={start.toISOString().substring(0, 16)}
-              onChange={(e) => setStart(new Date(e.target.value))}
-            />
-          </div>
-          <div className="form-group">
-            <label>End</label>
-            <input
-              type="datetime-local"
-              className="form-control"
-              value={end.toISOString().substring(0, 16)}
-              onChange={(e) => setEnd(new Date(e.target.value))}
             />
           </div>
         </form>

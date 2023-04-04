@@ -55,15 +55,13 @@ const MyCalendar: FC = () => {
         setPopupIsOpen(false);
     };
 
-    const handleEventSave = (data: any) => {
-        const {title, start, end} = data;
+    const handleEventSave = (title : string) => {
         setEvents(currentEvents => {
             return currentEvents.map(currentEvent => {
                 if (currentEvent === selectedEvent) {
                     return {
                         ...currentEvent,
-                        start: new Date(start),
-                        end: new Date(end),
+                        title: title
                     };
                 }
                 return currentEvent;
