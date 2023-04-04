@@ -48,7 +48,7 @@ class BuildingSwapView(APIView):
         q = PriorityQueue()
         collisionMap = {}
         for b_id, i in data.items():
-            index = int(i)
+            index = int(i) + 1
             if minimum_index is None or index < minimum_index:
                 minimum_index = index
             if index > maximum_index:
