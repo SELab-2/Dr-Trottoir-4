@@ -62,9 +62,7 @@ class BuildingSwapView(APIView):
                 return r
 
         dummy = type("", (), {})()
-        dummy.data = {
-            "data": "success"
-        }
+        dummy.data = {"data": "success"}
         return post_success(serializer=dummy)
 
 
