@@ -115,6 +115,8 @@ class RemarksAtBuildingView(APIView):
         Get all remarks on a specific building
         """
         remark_at_building_instances = RemarkAtBuilding.objects.filter(building_id=building_id)
+        if not remark_at_building_instances:
+            return not_found("RemarkAtBuilding")
 
         for r in remark_at_building_instances:
             self.check_object_permissions(request, r.building)

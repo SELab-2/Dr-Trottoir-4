@@ -6,7 +6,7 @@ from base.models import PictureOfRemark, StudentOnTour
 from base.permissions import IsAdmin, IsSuperStudent, IsStudent, OwnerAccount
 from base.serializers import PictureOfRemarkSerializer
 from util.request_response_util import post_docs, request_to_dict, set_keys_of_instance, try_full_clean_and_save, \
-    get_success, not_found, delete_docs, delete_success, patch_docs, patch_success
+    get_success, not_found, delete_docs, delete_success, patch_docs, patch_success, get_docs
 
 TRANSLATE = {"remark_at_building": "remark_at_building_id"}
 
@@ -98,3 +98,22 @@ class AllPictureOfRemark(APIView):
         """
         picture_of_remark_instances = PictureOfRemark.objects.all()
         return get_success(self.serializer_class(picture_of_remark_instances, many=True))
+
+
+class PicturesOfRemarkView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | (IsStudent & OwnerAccount)]
+    serializer_class = PictureOfRemarkSerializer
+
+    @extend_schema(responses=get_docs(serializer_class))
+    def get(self, request, remark_id):
+        """
+        Get all pictures on a specific remark
+        """
+        pic_of_remark_instances = PictureOfRemark.objects.filter(remark_id=remark_id)
+        if not pic_of_remark_instances:
+            return not_found("PictureOfRemark")
+
+        for r in pic_of_remark_instances:
+            self.check_object_permissions(request, r.remark_at_building.student_on_tour.student)
+
+        return get_success(self.serializer_class(pic_of_remark_instances, many=True))
