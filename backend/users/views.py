@@ -1,6 +1,8 @@
+from django.http import JsonResponse
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from django.utils.translation import gettext_lazy as _
 
 from base.models import User
 from base.permissions import (
@@ -21,24 +23,17 @@ TRANSLATE = {"role": "role_id"}
 DESCRIPTION = "For region, pass a list of id's. For example: [1, 2, 3]"
 
 
-# In GET, you only get active users
-# Except when you explicitly pass a parameter 'include_inactive' to the body of the request and set it as true
-# If you
-def _include_inactive(request) -> bool:
-    data = request_to_dict(request.data)
-    if "include_inactive" in data:
-        return data["include_inactive"]
-    return False
-
-
 class DefaultUser(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent, CanCreateUser]
+    permission_classes = [IsAuthenticated, CanCreateUser]
     serializer_class = UserSerializer
 
-    # TODO: in order for this to work, you have to pass a password
-    #  In the future, we probably won't use POST this way anymore (if we work with the whitelist method)
-    #  However, an easy workaround would be to add a default value to password (in e.g. `clean`)
-    #     -> probably the easiest way
+    @extend_schema(responses=get_docs(UserSerializer))
+    def get(self, request):
+        """
+        Get the current user info
+        """
+        serializer = UserSerializer(request.user)
+        return get_success(serializer)
 
     @extend_schema(responses=post_docs(UserSerializer))
     def post(self, request):
@@ -132,7 +127,7 @@ class UserIndividualView(APIView):
             return r
 
         # Now that we have an ID, we can look at the many-to-many relationship region
-        if r := add_regions_to_user(user_instance, data["region"]):
+        if data.get("region") and (r := add_regions_to_user(user_instance, data["region"])):
             return r
 
         serializer = UserSerializer(user_instance)
@@ -147,9 +142,11 @@ class AllUsersView(APIView):
         """
         Get all users
         """
-        if _include_inactive(request):
+        include_inactive = request.GET.get('include-inactive', 'false')
+        if include_inactive.lower() == 'true':
             user_instances = User.objects.all()
         else:
             user_instances = User.objects.filter(is_active=True)
+
         serializer = UserSerializer(user_instances, many=True)
         return get_success(serializer)

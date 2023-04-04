@@ -1,4 +1,3 @@
-import BaseHeader from "@/components/header/BaseHeader";
 import {BuildingInterface, getBuildingInfo} from "@/lib/building";
 import {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
@@ -6,8 +5,9 @@ import {withAuthorisation} from "@/components/withAuthorisation";
 import {AxiosResponse} from "axios";
 import styles from "@/styles/Welcome.module.css";
 import {TiPencil} from "react-icons/ti";
-import LogoutButton from "@/components/logoutbutton";
 import PatchBuildingSyndicModal from "@/components/syndic/PatchBuildingSyndicModal";
+import SyndicHeader from "@/components/header/syndicHeader";
+import BaseHeader from "@/components/header/baseHeader";
 
 interface ParsedUrlQuery {
 }
@@ -50,7 +50,8 @@ function SyndicBuilding() {
 
     return (
         <>
-            <BaseHeader/>
+            <SyndicHeader />
+
                 <div>
                     <a
                         onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -64,6 +65,19 @@ function SyndicBuilding() {
                 </div>
 
                 {JSON.stringify(building)}
+
+
+            <div>
+                <a
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                        e.preventDefault();
+                        router.push("/syndic/dashboard");
+                    }}
+                >
+                    {" "}
+                    ⮌ Terug naar het overzicht
+                </a>
+            </div>
 
                 <h1 className={styles.title}>Welcome to the Syndic Dashboard!</h1>
 
@@ -100,7 +114,9 @@ function SyndicBuilding() {
                 https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1310&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
             </p>
 
-            <LogoutButton/>
+
+
+
         </>
     );
 }

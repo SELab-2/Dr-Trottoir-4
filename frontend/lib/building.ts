@@ -3,16 +3,16 @@ import { AxiosResponse } from "axios";
 
 export interface BuildingInterface {
     id: number;
-    syndic_id: number;
+    syndic: number;
     name: string;
     city: string;
     postal_code: string;
     street: string;
     house_number: number;
     bus: string;
-    region_id: number;
-    duration: string;
     client_id: number;
+    duration: Date;
+    region: number;
     public_id: string;
 }
 
@@ -25,6 +25,15 @@ export const getBuildingInfo = async (buildingId: string | undefined): Promise<A
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
     return await api.get(request_url);
 };
+
+export async function getAllBuildings() : Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_BUILDINGS}`;
+    return await api.get(request_url);
+}
+
+export function getAddress(building : BuildingInterface) : string {
+    return `${building.street} ${building.house_number} ${building.bus ? building.bus : ""}, ${building.city} ${building.postal_code}`;
+}
 
 export const patchBuildingInfo = async (buildingId: string | undefined, data: BuildingInterface | Object) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
