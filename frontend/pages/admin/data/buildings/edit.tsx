@@ -9,9 +9,9 @@ import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
 import PDFUploader from "@/components/pdfUploader";
+import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 
-
-export default function AdminDataBuildingsEdit() {
+function AdminDataBuildingsEdit() {
     const [name, setName] = useState("");
     const [city, setCity] = useState("");
     const [houseNumber, setHouseNumber] = useState("");
@@ -28,6 +28,10 @@ export default function AdminDataBuildingsEdit() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // Handle form submission logic
+    };
+
+    const goBack = () => {
+        router.back();
     };
 
     useEffect(() => {
@@ -52,79 +56,86 @@ export default function AdminDataBuildingsEdit() {
     return (
         <>
             <AdminHeader/>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="buildingName">
-                    <Form.Label>Gebouw naam</Form.Label>
-                    <Form.Control
-                        type="text"
-                        value={name}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-                    />
-                </Form.Group>
+            <div className={styles.container}>
+                <Form className={styles.form} onSubmit={handleSubmit}>
+                    <Form.Group controlId="buildingName">
+                        <Form.Label>Gebouw naam</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={name}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                        />
+                    </Form.Group>
 
-                <Form.Group controlId="postalCode">
-                    <Form.Label>Postcode</Form.Label>
-                    <Form.Control
-                        type="text"
-                        value={postalCode}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setPostalCode(e.target.value)}
-                    />
-                </Form.Group>
+                    <Form.Group controlId="postalCode">
+                        <Form.Label>Postcode</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={postalCode}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setPostalCode(e.target.value)}
+                        />
+                    </Form.Group>
 
-                <Form.Group controlId="city">
-                    <Form.Label>Gemeente</Form.Label>
-                    <Form.Control
-                        type="text"
-                        value={city}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setCity(e.target.value)}
-                    />
-                </Form.Group>
+                    <Form.Group controlId="city">
+                        <Form.Label>Gemeente</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={city}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setCity(e.target.value)}
+                        />
+                    </Form.Group>
 
-                <Form.Group controlId="street">
-                    <Form.Label>Straat</Form.Label>
-                    <Form.Control
-                        type="text"
-                        value={street}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setStreet(e.target.value)}
-                    />
-                </Form.Group>
+                    <Form.Group controlId="street">
+                        <Form.Label>Straat</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={street}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setStreet(e.target.value)}
+                        />
+                    </Form.Group>
 
-                <Form.Group controlId="houseNumber">
-                    <Form.Label>Huisnummer</Form.Label>
-                    <Form.Control
-                        type="text"
-                        value={houseNumber}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setHouseNumber(e.target.value)}
-                    />
-                </Form.Group>
+                    <Form.Group controlId="houseNumber">
+                        <Form.Label>Huisnummer</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={houseNumber}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setHouseNumber(e.target.value)}
+                        />
+                    </Form.Group>
 
-                <Form.Group controlId="busNumber">
-                    <Form.Label>Busnummer (optioneel)</Form.Label>
-                    <Form.Control
-                        type="text"
-                        value={busNumber}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setBusNumber(e.target.value)}
-                    />
-                </Form.Group>
+                    <Form.Group controlId="busNumber">
+                        <Form.Label>Busnummer (optioneel)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={busNumber}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setBusNumber(e.target.value)}
+                        />
+                    </Form.Group>
 
-                <Form.Group controlId="clientId">
-                    <Form.Label>Klantennummer afvalophaaldienst (optioneel)</Form.Label>
-                    <Form.Control
-                        type="text"
-                        value={clientId}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setClientId(e.target.value)}
-                    />
-                </Form.Group>
+                    <Form.Group controlId="clientId">
+                        <Form.Label>Klantennummer afvalophaaldienst (optioneel)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={clientId}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setClientId(e.target.value)}
+                        />
+                    </Form.Group>
 
-                {/* Add other form fields and components */}
+                    {/* Add other form fields and components */}
 
-            </Form>
-            <RegionAutocomplete value={region} onChange={setRegion}></RegionAutocomplete>
-            <SyndicAutoCompleteComponent value={syndic} onChange={setSyndic}></SyndicAutoCompleteComponent>
-            <PDFUploader onUpload={setManual}></PDFUploader>
-            <button type="submit">
-                Opslaan
-            </button>
+                </Form>
+                <RegionAutocomplete value={region} onChange={setRegion}></RegionAutocomplete>
+                <SyndicAutoCompleteComponent value={syndic} onChange={setSyndic}></SyndicAutoCompleteComponent>
+                <PDFUploader onUpload={setManual}></PDFUploader>
+                <button type="submit">
+                    Opslaan
+                </button>
+                <button onClick={goBack} className="ml-2">
+                    Terug
+                </button>
+            </div>
         </>
     );
 }
+
+export default withAuthorisation(AdminDataBuildingsEdit, ["Admin", "Superstudent"]);

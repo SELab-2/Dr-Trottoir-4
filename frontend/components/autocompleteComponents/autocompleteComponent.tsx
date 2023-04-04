@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
-import Autocomplete, {AutocompleteChangeReason, AutocompleteRenderInputParams} from "@mui/material/Autocomplete";
+import Autocomplete, {AutocompleteRenderInputParams} from "@mui/material/Autocomplete";
 import {AxiosResponse} from "axios/index";
 import {Button, Form, Dropdown, InputGroup} from "react-bootstrap";
+import {styled} from "@mui/system";
+
 
 interface Props {
     value: string;
@@ -25,7 +27,7 @@ const AutocompleteComponent: React.FC<Props> = ({value, label, fetchOptions, onC
         async function fetch() {
             try {
                 const res = await fetchOptions();
-                const availableOptions = res.data.map(mapping)
+                const availableOptions = res.data.map(mapping);
                 setOptions(availableOptions);
             } catch (err) {
                 console.error(err);
