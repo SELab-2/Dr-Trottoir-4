@@ -21,12 +21,6 @@ const PDFUploader: React.FC<Props> = ({onUpload}) => {
         }
     };
 
-    const handleUploadClick = () => {
-        if (selectedFile) {
-            onUpload(selectedFile);
-        }
-    };
-
     return (
         <div>
             <Form.Group controlId="manual">

@@ -2,7 +2,7 @@ import React from "react";
 import {getAllRegions, Region} from "@/lib/region";
 import AutocompleteComponent, {GenericProps} from "@/components/autocompleteComponents/autocompleteComponent";
 
-const RegionAutocomplete: React.FC<GenericProps> = ({value, onChange}) => {
+const RegionAutocomplete: React.FC<GenericProps> = ({value, onChange, setObject}) => {
 
     return (
         <AutocompleteComponent
@@ -10,7 +10,11 @@ const RegionAutocomplete: React.FC<GenericProps> = ({value, onChange}) => {
             label="Regio"
             fetchOptions={getAllRegions}
             onChange={onChange}
-            mapping={(region: Region) => region.region}/>
+            mapping={(region: Region) => region.region}
+            searchField={"region"}
+            searchTermHandler={value => value}
+            setObject={setObject}
+        />
     );
 };
 

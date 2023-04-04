@@ -13,6 +13,12 @@ export interface User {
     role : number
 }
 
+export function extractEmailFromString(text: string): string | null {
+  const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+  const match = text.match(emailRegex);
+  return match ? match[0] : null;
+}
+
 export function userSearchString(user: User){
     return `${user.first_name} ${user.last_name} (${user.email})`
 }

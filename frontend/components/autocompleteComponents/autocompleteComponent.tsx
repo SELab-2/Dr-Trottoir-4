@@ -3,23 +3,46 @@ import TextField from "@mui/material/TextField";
 import Autocomplete, {AutocompleteRenderInputParams} from "@mui/material/Autocomplete";
 import {AxiosResponse} from "axios/index";
 import {Button, Form, Dropdown, InputGroup} from "react-bootstrap";
-import {styled} from "@mui/system";
 
+
+//A lot of typings here are any to make the AutocompleteComponentGeneric
 
 interface Props {
     value: string;
     label: string;
     fetchOptions: () => Promise<AxiosResponse<any>>;
     onChange: (value: string) => void;
-    mapping: (value: any) => any; //this is any because it has to be generic
+    mapping: (value: any) => any;
+    searchField: string;
+    // a function that takes the displayed input value and extract the search term from it
+    searchTermHandler: (value: string) => string | null;
+    setObject: (value: any) => void;
 }
 
 export interface GenericProps {
-    value: string;
-    onChange: (value: string) => void;
+    value: any;
+    onChange: (value: any) => void;
+    setObject: (value: any) => void;
 }
 
-const AutocompleteComponent: React.FC<Props> = ({value, label, fetchOptions, onChange, mapping}) => {
+function getIdBySearchTerm(arr: any[], field: string, searchTerm: string | null) {
+    if (searchTerm) {
+        const foundObj = arr.find((obj) => obj[field].toLowerCase() === searchTerm.toLowerCase());
+        return foundObj ? foundObj.id : null;
+    }
+    return null;
+}
+
+const AutocompleteComponent: React.FC<Props> = ({
+                                                    value,
+                                                    label,
+                                                    fetchOptions,
+                                                    onChange,
+                                                    mapping,
+                                                    searchField,
+                                                    searchTermHandler,
+                                                    setObject
+                                                }) => {
     const [inputValue, setInputValue] = useState("");
     const [options, setOptions] = useState<string[]>([]);
 
@@ -27,7 +50,7 @@ const AutocompleteComponent: React.FC<Props> = ({value, label, fetchOptions, onC
         async function fetch() {
             try {
                 const res = await fetchOptions();
-                const availableOptions = res.data.map(mapping);
+                const availableOptions = res.data;
                 setOptions(availableOptions);
             } catch (err) {
                 console.error(err);
@@ -37,16 +60,21 @@ const AutocompleteComponent: React.FC<Props> = ({value, label, fetchOptions, onC
         fetch().then();
     }, [fetchOptions]);
 
+
     return (
         <>
             <Form.Label> {label} </Form.Label><Autocomplete
+            // getOptionSelected={(option: { toString: () => any; }, value: { toString: () => any; }) => option.toString() === value.toString()}
             value={value}
             inputValue={inputValue}
             onChange={(
                 e: React.SyntheticEvent,
                 newValue: string | null
             ) => {
-                onChange(newValue ?? "");
+                if (newValue) {
+                    setObject(getIdBySearchTerm(options, searchField, searchTermHandler(newValue)));
+                    onChange(newValue ?? "");
+                }
             }}
             onInputChange={(
                 e: React.SyntheticEvent,
@@ -54,7 +82,7 @@ const AutocompleteComponent: React.FC<Props> = ({value, label, fetchOptions, onC
             ) => {
                 setInputValue(newInputValue);
             }}
-            options={options}
+            options={options.map(mapping)}
             renderInput={(params: AutocompleteRenderInputParams) => (
                 <TextField {...params} variant="outlined" fullWidth/>
             )}/>

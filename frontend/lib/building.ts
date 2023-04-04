@@ -17,6 +17,20 @@ export interface BuildingInterface {
     public_id: string;
 }
 
+export interface BuildingPostInterface {
+    syndic: string;
+    name: string;
+    city: string;
+    postal_code: string;
+    street: string;
+    house_number: string;
+    bus: string;
+    client_id: string;
+    duration: string;
+    region: string;
+    public_id: string;
+}
+
 export const getBuildingsFromOwner = async (ownerId: string): Promise<AxiosResponse<any>> => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_OWNER_BUILDING}${ownerId}`;
     return await api.get(request_url);
@@ -51,9 +65,9 @@ export const deleteBuilding = async (buildingId: number | undefined) => {
     return await api.delete(request_url);
 };
 
-export async function postBuilding(tourName : string, modifiedAt : Date, region : number) : Promise<AxiosResponse<any>> {
+export async function postBuilding(building: BuildingPostInterface) : Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}`;
-    return await api.post(request_url, JSON.stringify({name : tourName, modified_at : modifiedAt, region}),
+    return await api.post(request_url, JSON.stringify(building),
         {
             headers: { "Content-Type": "application/json" },
         }
