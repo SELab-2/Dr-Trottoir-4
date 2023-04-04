@@ -8,6 +8,7 @@ import {TiPencil} from "react-icons/ti";
 import PatchBuildingSyndicModal from "@/components/syndic/PatchBuildingSyndicModal";
 import SyndicHeader from "@/components/header/syndicHeader";
 import {getRegion} from "@/lib/region";
+import SyndicFooter from "@/components/footer/syndicFooter";
 
 interface ParsedUrlQuery {
 }
@@ -129,7 +130,7 @@ function SyndicBuilding() {
                 https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1310&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
             </p>
 
-
+            <SyndicFooter />
         </>
     );
 }
