@@ -124,7 +124,6 @@ class OwnerWithLimitedPatch(BasePermission):
 
         if request.method == "PATCH":
             data = request_to_dict(request.data)
-            print(data.keys())
             for k in data.keys():
                 if k not in ["public_id", "name"]:
                     return False

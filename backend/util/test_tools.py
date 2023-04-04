@@ -1,12 +1,13 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from base.test_settings import backend_url
+from base.models import User
+from base.test_settings import backend_url, roles
 from util.data_generators import createUser
 
 
-def get_authenticated_client():
-    user = createUser()
+def get_authenticated_client(role="admin"):
+    user = createUser(role)
     client = APIClient()
     client.force_authenticate(user=user)
     return client
@@ -88,3 +89,70 @@ class BaseTest(TestCase):
         _ = self.client.post(backend_url + "/" + url, self.data1, follow=True)
         response1 = self.client.post(backend_url + "/" + url, self.data1, follow=True)
         assert response1.status_code == 400
+
+
+class BaseAuthTest(TestCase):
+    data1 = None
+
+    def list_view(self, url, codes):
+        for role in roles:
+            client = get_authenticated_client(role)
+            resp = client.get(backend_url + "/" + url + "all/")
+            assert resp.status_code == codes[role]
+
+    def insert_view(self, url, codes):
+        adminClient = get_authenticated_client()
+        for role in roles:
+            client = get_authenticated_client(role)
+            resp = client.post(backend_url + "/" + url, self.data1, follow=True)
+            assert resp.status_code == codes[role]
+            if resp.status_code == 201:
+                print(resp.data)
+                result_id = resp.data["id"]
+                _ = adminClient.delete(backend_url + "/" + url + str(result_id))
+
+    def get_view(self, url, codes, special=[]):
+        for role in roles:
+            client = get_authenticated_client(role)
+            response2 = client.get(backend_url + "/" + url, follow=True)
+            if response2.status_code != codes[role]:
+                print(f"role: {role}\tcode: {response2.status_code} (expected {codes[role]})")
+            assert response2.status_code == codes[role]
+        for user_id, result in special:
+            user = User.objects.filter(id=user_id).first()  # there should only be 1
+            if not User:
+                raise ValueError("user not valid")
+            client = APIClient()
+            client.force_authenticate(user=user)
+            response2 = client.get(backend_url + "/" + url, follow=True)
+            assert response2.status_code == result
+
+    def patch_view(self, url, codes, special=[]):
+        for role in roles:
+            client = get_authenticated_client(role)
+            response2 = client.patch(backend_url + "/" + url, self.data1, follow=True)
+            if response2.status_code != codes[role]:
+                print(f"role: {role}\tcode: {response2.status_code} (expected {codes[role]})")
+            assert response2.status_code == codes[role]
+        for user_id, result in special:
+            user = User.objects.filter(id=user_id).first()  # there should only be 1
+            if not User:
+                raise ValueError("user not valid")
+            client = APIClient()
+            client.force_authenticate(user=user)
+            response2 = client.patch(backend_url + "/" + url, self.data1, follow=True)
+            if response2.status_code != result:
+                print(f"failed special case for user with role {user.role.name}\t got {response2.status_code} (expected {result})")
+            assert response2.status_code == result
+
+    def remove_view(self, url, codes, create):
+        exists = False
+        instance_id = -1
+        for role in roles:
+            if not exists:
+                instance_id = create()
+            # proberen verwijderen als `role`
+            client = get_authenticated_client(role)
+            response2 = client.delete(backend_url + "/" + url + f"{instance_id}/", follow=True)
+            assert response2.status_code == codes[role]
+            exists = codes[role] != 204
