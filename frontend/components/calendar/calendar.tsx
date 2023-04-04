@@ -39,21 +39,23 @@ const MyCalendar: FC = () => {
         },
     ])
 
-    const onEventResize: withDragAndDropProps['onEventResize'] = data => {
-        const {start, end} = data
-
+    const onEventChange: withDragAndDropProps['onEventResize'] = data => {
+        const {event, start, end} = data;
         setEvents(currentEvents => {
-            const firstEvent = {
-                start: new Date(start),
-                end: new Date(end),
-            }
-            return [...currentEvents, firstEvent]
-        })
-    }
+            const updatedEvents = currentEvents.map(currentEvent => {
+                if (currentEvent === event) { // or however you uniquely identify the event
+                    return {
+                        ...currentEvent,
+                        start: new Date(start),
+                        end: new Date(end),
+                    };
+                }
+                return currentEvent;
+            });
+            return updatedEvents;
+        });
+    };
 
-    const onEventDrop: withDragAndDropProps['onEventDrop'] = data => {
-        console.log(data)
-    }
 
     return (
         <DnDCalendar
@@ -62,8 +64,8 @@ const MyCalendar: FC = () => {
             defaultView='week'
             events={events}
             localizer={localizer}
-            onEventDrop={onEventDrop}
-            onEventResize={onEventResize}
+            onEventDrop={onEventChange}
+            onEventResize={onEventChange}
             resizable
             style={{height: '100vh'}}
         />
