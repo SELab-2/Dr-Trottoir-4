@@ -1,19 +1,20 @@
 import BaseHeader from "@/components/header/baseHeader";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { getRoleDirection } from "@/lib/reroute";
-import Loading from "@/components/loading";
-import LoginForm from "@/components/loginForm";
+import React, {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {getRoleDirection} from "@/lib/reroute";
 import setSessionStorage from "@/lib/storage";
-import Image from "next/image";
-import filler_image from "@/public/filler_image.png";
-import styles from "@/styles/Login.module.css";
 import {getCurrentUser} from "@/lib/user";
 import MyCalendar from "@/components/calendar/calendar";
 
 export default function Login() {
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(true);
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+    console.log(sidebarOpen)
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
 
     // try and log in to the application using existing refresh token
     useEffect(() => {
@@ -34,28 +35,32 @@ export default function Login() {
 
     return (
         <>
-            <BaseHeader />
-            <MyCalendar/>
-            {/*<div>{loading ? <Loading /> : (
-                <div className="container py-5 h-100">
-                    <div className="row d-flex justify-content-center align-items-center h-100">
-                        <div className="col col-xl-10">
-                            <div className="card">
-                                <div className="row g-0">
-                                    <div className="col-md-6 col-lg-5 d-none d-md-block">
-                                        <Image src={filler_image} alt="My App Logo" className={styles.filler_image}/>
-                                    </div>
-                                    <div className="col-md-6 col-lg-7 d-flex align-items-center">
-                                        <div className="card-body p-4 p-lg-5 text-black">
-                                            <LoginForm/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <BaseHeader/>
+            <div className="container-fluid">
+                <div className="row">
+                    <div className={`col-md-2 ${sidebarOpen ? "" : "d-none"} bg-light sidebar`}>
+                        <div className="sidebar-sticky">
+                            <ul className="nav flex-column">
+                                <li className="nav-item">
+                                    <button className="btn btn-primary btn-block mb-2">Button 1</button>
+                                </li>
+                                <li className="nav-item">
+                                    <button className="btn btn-primary btn-block mb-2">Button 2</button>
+                                </li>
+                                <li className="nav-item">
+                                    <button className="btn btn-primary btn-block mb-2">Button 3</button>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+                    <div className={`col-md-10 ${sidebarOpen ? "" : "col-md-12"}`}>
+                        <button className="btn btn-primary mb-3" onClick={toggleSidebar}>
+                            {sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+                        </button>
+                        <MyCalendar/>
+                    </div>
                 </div>
-            )}</div>*/}
+            </div>
         </>
     );
 }
