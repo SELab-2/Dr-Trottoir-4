@@ -39,9 +39,9 @@ class BuildingSwapView(APIView):
 
     @extend_schema(
         description="POST body consists of a list of building_id - index pairs that will be assigned to this tour. "
-                    "This enables the frontend to restructure a tour in 1 request instead of multiple. If a building is "
-                    "added to the tour (no BuildingOnTour entry existed), a new entry will be created. If buildings that "
-                    "were originally on the tour are left out, they will be removed.",
+        "This enables the frontend to restructure a tour in 1 request instead of multiple. If a building is "
+        "added to the tour (no BuildingOnTour entry existed), a new entry will be created. If buildings that "
+        "were originally on the tour are left out, they will be removed.",
         request=BuildingSwapRequestSerializer,
         responses={
             200: SuccessSerializer,
@@ -87,9 +87,7 @@ class BuildingSwapView(APIView):
                 return r
 
         dummy = type("", (), {})()
-        dummy.data = {
-            "data": "success"
-        }
+        dummy.data = {"data": "success"}
         return post_success(serializer=dummy)
 
 
