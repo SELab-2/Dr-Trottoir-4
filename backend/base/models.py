@@ -332,7 +332,8 @@ class StudentOnTour(models.Model):
 
 
 class RemarkAtBuilding(models.Model):
-    building_on_tour = models.ForeignKey(BuildingOnTour, on_delete=models.SET_NULL, null=True)
+    student_on_tour = models.ForeignKey(StudentOnTour, on_delete=models.SET_NULL, null=True)
+    building = models.ForeignKey(Building, on_delete=models.SET_NULL, null=True)
     timestamp = models.DateTimeField(blank=True)
     remark = models.TextField(blank=True, null=True)
 
@@ -355,16 +356,17 @@ class RemarkAtBuilding(models.Model):
             self.timestamp = datetime.now()
 
     def __str__(self):
-        return f"{self.type} for {self.building_on_tour}"
+        return f"{self.type} for {self.building}"
 
     class Meta:
         constraints = [
             UniqueConstraint(
                 Lower("remark"),
-                "building_on_tour",
+                "building",
+                "student_on_tour",
                 "timestamp",
                 name="unique_remark_for_building",
-                violation_error_message="This remark was already uploaded to this building.",
+                violation_error_message="This remark was already uploaded to this building by this student on the tour.",
             ),
         ]
 
