@@ -1,9 +1,9 @@
-import {useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import {verifyToken} from "@/lib/authentication";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { verifyToken } from "@/lib/authentication";
 import setSessionStorage from "@/lib/storage";
-import {getRoleDirection} from "@/lib/reroute";
-import {getCurrentUser, getUserRole, User} from "@/lib/user";
+import { getRoleDirection } from "@/lib/reroute";
+import { getCurrentUser, getUserRole, User } from "@/lib/user";
 
 /**
  * This wraps a component where authorisation is required
@@ -17,28 +17,32 @@ export const withAuthorisation = (WrappedComponent: any, allowedRoles: string[])
 
         useEffect(() => {
             // Verify if there is a valid token
-            verifyToken().then(() => {
-                const storedRole = sessionStorage.getItem("role");
-                // If the role was saved in sessionStorage, set the role
-                if (storedRole) {
-                    setRole(storedRole);
-                } else {
-                    // If not, set the current user by doing a request
-                    getCurrentUser().then(
-                        async (res) => {
-                            const user: User = res.data;
-                            setSessionStorage(user.role.toString(), user.id.toString());
-                            setRole(getUserRole(user.role.toString()));
-                        }, (err) => {
-                            console.error(err);
-                        }
-                    );
+            verifyToken().then(
+                () => {
+                    const storedRole = sessionStorage.getItem("role");
+                    // If the role was saved in sessionStorage, set the role
+                    if (storedRole) {
+                        setRole(storedRole);
+                    } else {
+                        // If not, set the current user by doing a request
+                        getCurrentUser().then(
+                            async (res) => {
+                                const user: User = res.data;
+                                setSessionStorage(user.role.toString(), user.id.toString());
+                                setRole(getUserRole(user.role.toString()));
+                            },
+                            (err) => {
+                                console.error(err);
+                            }
+                        );
+                    }
+                },
+                (err) => {
+                    router.push("/login").then((_) => {
+                        console.error(err);
+                    });
                 }
-            }, err => {
-                router.push("/login").then((_) => {
-                    console.error(err);
-                });
-            });
+            );
         }, []);
 
         useEffect(() => {
@@ -49,12 +53,6 @@ export const withAuthorisation = (WrappedComponent: any, allowedRoles: string[])
             }
         }, [role]);
 
-        return (
-            <>
-                {
-                    allowedRoles.includes(role) ? <WrappedComponent {...props}/> : null
-                }
-            </>
-        );
+        return <>{allowedRoles.includes(role) ? <WrappedComponent {...props} /> : null}</>;
     };
 };
