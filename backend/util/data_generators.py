@@ -31,7 +31,7 @@ def insert_test_user(first_name: str = "test_student",
                      phone_number="+32467240957",
                      role: str = "admin",
                      ) -> int:
-    o = User.objects.filter(first_name).first()
+    o = User.objects.filter(first_name=first_name).first()
     if o:
         return o.id
     s = User(
