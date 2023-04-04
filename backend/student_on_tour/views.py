@@ -52,11 +52,12 @@ class TourPerStudentView(APIView):
         id_holder = type("", (), {})()
         id_holder.id = student_id
         self.check_object_permissions(request, id_holder)
-        student_on_tour_instances = StudentOnTour.objects.filter(
-            student_id=student_id,
-            date__gte=start_date,
-            date__lte=end_date
-        )
+
+        student_on_tour_instances = StudentOnTour.objects.filter(student_id=student_id)
+        if start_date:
+            student_on_tour_instances.filter(date__gte=start_date)
+        if end_date:
+            student_on_tour_instances.filter(date__lte=end_date)
         serializer = StudOnTourSerializer(student_on_tour_instances, many=True)
         return get_success(serializer)
 
