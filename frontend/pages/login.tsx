@@ -9,6 +9,7 @@ import Image from "next/image";
 import filler_image from "@/public/filler_image.png";
 import styles from "@/styles/Login.module.css";
 import {getCurrentUser} from "@/lib/user";
+import MyCalendar from "@/components/calendar/calendar";
 
 export default function Login() {
     const router = useRouter();
@@ -34,7 +35,8 @@ export default function Login() {
     return (
         <>
             <BaseHeader />
-            <div>{loading ? <Loading /> : (
+            <MyCalendar/>
+            {/*<div>{loading ? <Loading /> : (
                 <div className="container py-5 h-100">
                     <div className="row d-flex justify-content-center align-items-center h-100">
                         <div className="col col-xl-10">
@@ -53,7 +55,7 @@ export default function Login() {
                         </div>
                     </div>
                 </div>
-            )}</div>
+            )}</div>*/}
         </>
     );
 }
