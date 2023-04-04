@@ -36,6 +36,7 @@ class BuildingSwapView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = TourSerializer
 
+    @extend_schema(responses=post_docs(TourSerializer))
     def post(self, request, tour_id):
         data = request_to_dict(request.data)
         print(data)
