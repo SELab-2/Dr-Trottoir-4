@@ -197,7 +197,7 @@ function AdminDataBuildingsEdit() {
                                                  onChange={setSyndic}
                                                  setObjectId={setSyndicId}
                                                  required={true}></SyndicAutoCompleteComponent>
-                    <PDFUploader onUpload={setManual}></PDFUploader>
+                    {!router.query.building && <PDFUploader onUpload={setManual}></PDFUploader>}
                 </Form>
                 <button onClick={handleSubmit} type="button">
                     Opslaan

@@ -8,7 +8,7 @@ const SyndicAutocomplete: React.FC<GenericProps> = ({value, onChange, setObjectI
     return (
         <AutocompleteComponent
             value={value}
-            label={`Syndicus${required ?? "*"}`}
+            label={`Syndicus${required ? "*" : ""}`}
             fetchOptions={getAllUsers} ///TODO change this to getAllSyndics once the endpoint for it exists
             onChange={onChange}
             mapping={(user: User) => userSearchString(user)}
