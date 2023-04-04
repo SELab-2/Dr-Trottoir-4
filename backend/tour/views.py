@@ -37,6 +37,8 @@ class BuildingSwapView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = TourSerializer
 
+    description = 'Note that buildingID should also be an integer'
+
     @extend_schema(
         description="POST body consists of a list of building_id - index pairs that will be assigned to this tour. "
         "This enables the frontend to restructure a tour in 1 request instead of multiple. If a building is "
