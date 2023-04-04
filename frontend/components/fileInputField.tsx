@@ -6,21 +6,21 @@ interface FileInputFieldProps {
 }
 
 function FileInputField(props: FileInputFieldProps) {
-    const onUpload = props;
-    const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
+    const { onUpload } = props;
+    const [selectedFiles, setSelectedFiles] = useState<FileList | undefined>();
 
     function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
         const files = event.target.files;
         if (files)
-            setSelectedFiles(event.target.files);
+            setSelectedFiles(files);
     }
 
-    function handleSubmit(event: React.ChangeEvent<HTMLInputElement>) {
+    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         if (selectedFiles) {
             onUpload(selectedFiles);
-            setSelectedFiles(null);
+            setSelectedFiles(undefined);
         }
     }
 
@@ -30,7 +30,7 @@ function FileInputField(props: FileInputFieldProps) {
         <Form onSubmit={handleSubmit}>
             <Form.Group>
             <Form.Label>Upload photos</Form.Label>
-            <Form.Control type="file" multiple onChange={handleFileChange} value={selectedFiles} />
+            <Form.Control type="file" multiple onChange={handleFileChange} value={undefined} />
             </Form.Group>
             <Button type="submit">Upload</Button>
         </Form>
@@ -38,4 +38,4 @@ function FileInputField(props: FileInputFieldProps) {
     );
 }
 
-export default MyComponent;
+export default FileInputField;
