@@ -7,7 +7,7 @@ import styles from "@/styles/Welcome.module.css";
 import {TiPencil} from "react-icons/ti";
 import PatchBuildingSyndicModal from "@/components/syndic/PatchBuildingSyndicModal";
 import SyndicHeader from "@/components/header/syndicHeader";
-import BaseHeader from "@/components/header/baseHeader";
+import {getRegion} from "@/lib/region";
 
 interface ParsedUrlQuery {
 }
@@ -21,6 +21,8 @@ function SyndicBuilding() {
     const query = router.query as DashboardQuery;
 
     const [building, setBuilding] = useState<BuildingInterface | null>(null);
+    const [regionName, setRegionName] = useState("/")
+
     const [editBuilding, setEditBuilding] = useState(false);
 
     async function fetchBuilding() {
@@ -40,6 +42,12 @@ function SyndicBuilding() {
         fetchBuilding();
     }, [query.id]);
 
+    useEffect(() => {
+        if (building) {
+            get_region_name("region");
+        }
+    }, [building]);
+
     function get_building_key(key: string) {
         if (building) {
             // @ts-ignore
@@ -48,24 +56,28 @@ function SyndicBuilding() {
         return "/";
     }
 
+
+    async function get_region_name(key: string) {
+        const region_id = get_building_key(key);
+
+        if (isNaN(region_id)) {
+            setRegionName("/");
+        }
+
+        try {
+            const region = await getRegion(region_id);
+            const regionName = region.data.region;
+            setRegionName(regionName);
+        } catch (error) {
+            console.error(error);
+            setRegionName("/");
+        }
+    }
+
+
     return (
         <>
-            <SyndicHeader />
-
-                <div>
-                    <a
-                        onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                            e.preventDefault();
-                            router.push("/syndic/dashboard");
-                        }}
-                    >
-                        {" "}
-                        ⮌ Terug naar het overzicht
-                    </a>
-                </div>
-
-                {JSON.stringify(building)}
-
+            <SyndicHeader/>
 
             <div>
                 <a
@@ -79,9 +91,11 @@ function SyndicBuilding() {
                 </a>
             </div>
 
-                <h1 className={styles.title}>Welcome to the Syndic Dashboard!</h1>
+            {JSON.stringify(building)}
 
-            <details>
+            <h1 className={styles.title}>Welcome to the Syndic Dashboard!</h1>
+
+            <details open={true}>
                 <PatchBuildingSyndicModal
                     show={editBuilding}
                     closeModal={() => setEditBuilding(false)}
@@ -98,13 +112,14 @@ function SyndicBuilding() {
                         }}
                     ></TiPencil>
                 </h1>
+                <p>ID: {get_building_key("id")} </p>
                 <p>Naam: {get_building_key("name")}</p>
                 <p>Stad: {get_building_key("city")}</p>
                 <p>Postcode: {get_building_key("postal_code")}</p>
                 <p>Straat: {get_building_key("street")}</p>
                 <p>Nr: {get_building_key("house_number")}</p>
                 <p>Bus: {get_building_key("bus")}</p>
-                <p>Region (todo): {get_building_key("region_id")}</p>
+                <p>Region: {regionName}  </p>
                 <p>Werktijd: {get_building_key("duration")}</p>
                 <p>Client id: {get_building_key("client_id")}</p>
                 <p>Public id: {get_building_key("public_id")}</p>
@@ -113,8 +128,6 @@ function SyndicBuilding() {
             <p>
                 https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1310&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
             </p>
-
-
 
 
         </>
