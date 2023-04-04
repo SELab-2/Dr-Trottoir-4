@@ -76,11 +76,18 @@ export async function postBuilding(building: BuildingPostInterface) : Promise<Ax
 
 export async function patchBuilding(building: BuildingPostInterface, id: Number) : Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${id}`;
-    console.log(building);
     return await api.patch(request_url, JSON.stringify(building),
         {
             headers: { "Content-Type": "application/json" },
         }
     );
+}
+
+export function getDurationFromMinutes(durationInMinutes: number){
+    return `${Math.floor(durationInMinutes / 60)
+        .toString()
+        .padStart(2, "0")}:${(durationInMinutes % 60)
+        .toString()
+        .padStart(2, "0")}`
 }
 

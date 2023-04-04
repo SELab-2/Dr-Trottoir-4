@@ -23,6 +23,7 @@ export interface GenericProps {
     value: any;
     onChange: (value: any) => void;
     setObjectId: (value: any) => void;
+    required: boolean;
 }
 
 function getIdBySearchTerm(arr: any[], field: string, searchTerm: string | null) {

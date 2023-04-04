@@ -1,7 +1,13 @@
 import React, {useEffect, useState, ChangeEvent, FormEvent, MouseEventHandler} from "react";
 import {useRouter} from "next/router";
 import {Button, Form, Dropdown, InputGroup} from "react-bootstrap";
-import {BuildingPostInterface, getBuildingInfo, patchBuilding, postBuilding} from "@/lib/building";
+import {
+    BuildingPostInterface,
+    getBuildingInfo,
+    getDurationFromMinutes,
+    patchBuilding,
+    postBuilding
+} from "@/lib/building";
 import {Region, getAllRegions, getRegion} from "@/lib/region";
 import {User, getUserInfo, getAllUsers, userSearchString} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
@@ -10,6 +16,7 @@ import RegionAutocomplete from "@/components/autocompleteComponents/regionAutoco
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
+import DurationInput from "@/components/DurationInput";
 
 function AdminDataBuildingsEdit() {
     const [name, setName] = useState("");
@@ -26,28 +33,41 @@ function AdminDataBuildingsEdit() {
     const [manual, setManual] = useState<File | null>(null);
     const [duration, setDuration] = useState("00:00");
     const [public_id, setPublicId] = useState("");
+    const [validated, setValidated] = useState(false);
+    const [formErrors, setFormErrors] = useState(false);
+    const [durationInMinutes, setDurationInMinutes] = useState(0);
 
     const router = useRouter();
 
     const handleSubmit = () => {
-        const building = {
-                syndic: syndicId,
-                name: name,
-                city: city,
-                postal_code: postalCode,
-                street: street,
-                house_number: houseNumber,
-                bus: busNumber,
-                client_number: clientNumber,
-                duration: duration,
-                region: regionId,
-                public_id: public_id,
-            };
-        if (router.query.building) {
-            patchBuilding(building, Number(router.query.building)).then();
+        const form = document.getElementById("buildingForm") as HTMLFormElement;
+        console.log(form.checkValidity());
+        if (!form.checkValidity()) {
+            setFormErrors(true);
         } else {
-            postBuilding(building).then();
+            setFormErrors(false);
         }
+        // if (form.checkValidity()) {
+        //     const building = {
+        //         syndic: syndicId,
+        //         name: name,
+        //         city: city,
+        //         postal_code: postalCode,
+        //         street: street,
+        //         house_number: houseNumber,
+        //         bus: busNumber,
+        //         client_number: clientNumber,
+        //         duration: getDurationFromMinutes(durationInMinutes),
+        //         region: regionId,
+        //         public_id: public_id,
+        //     };
+        //     console.log("postpatch");
+        //     if (router.query.building) {
+        //         patchBuilding(building, Number(router.query.building)).then(res => console.log(res));
+        //     } else {
+        //         postBuilding(building).then();
+        //     }
+        // }
     };
 
     const goBack = () => {
@@ -80,7 +100,12 @@ function AdminDataBuildingsEdit() {
         <>
             <AdminHeader/>
             <div className={styles.container}>
-                <Form className={styles.form} onSubmit={handleSubmit}>
+                {formErrors && (
+                    <div className="alert alert-danger" role="alert">
+                        Gelieve alle verplichte velden in te vullen.
+                    </div>
+                )}
+                <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
                     <Form.Group controlId="buildingName">
                         <Form.Label>Gebouw naam</Form.Label>
                         <Form.Control
@@ -91,43 +116,50 @@ function AdminDataBuildingsEdit() {
                     </Form.Group>
 
                     <Form.Group controlId="postalCode">
-                        <Form.Label>Postcode</Form.Label>
+                        <Form.Label>Postcode*</Form.Label>
                         <Form.Control
                             type="text"
                             value={postalCode}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => setPostalCode(e.target.value)}
+                            required
                         />
+                        <Form.Control.Feedback type="invalid">
+                            Please provide a postal code.
+                        </Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group controlId="city">
-                        <Form.Label>Gemeente</Form.Label>
+                        <Form.Label>Gemeente*</Form.Label>
                         <Form.Control
                             type="text"
                             value={city}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => setCity(e.target.value)}
+                            required
                         />
                     </Form.Group>
 
                     <Form.Group controlId="street">
-                        <Form.Label>Straat</Form.Label>
+                        <Form.Label>Straat*</Form.Label>
                         <Form.Control
                             type="text"
                             value={street}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => setStreet(e.target.value)}
+                            required
                         />
                     </Form.Group>
 
                     <Form.Group controlId="houseNumber">
-                        <Form.Label>Huisnummer</Form.Label>
+                        <Form.Label>Huisnummer*</Form.Label>
                         <Form.Control
                             type="text"
                             value={houseNumber}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => setHouseNumber(e.target.value)}
+                            required
                         />
                     </Form.Group>
 
                     <Form.Group controlId="busNumber">
-                        <Form.Label>Busnummer (optioneel)</Form.Label>
+                        <Form.Label>Busnummer</Form.Label>
                         <Form.Control
                             type="text"
                             value={busNumber}
@@ -136,7 +168,7 @@ function AdminDataBuildingsEdit() {
                     </Form.Group>
 
                     <Form.Group controlId="clientId">
-                        <Form.Label>Klantennummer afvalophaaldienst (optioneel)</Form.Label>
+                        <Form.Label>Klantennummer afvalophaaldienst</Form.Label>
                         <Form.Control
                             type="text"
                             value={clientNumber}
@@ -144,43 +176,31 @@ function AdminDataBuildingsEdit() {
                         />
                     </Form.Group>
 
-
                     <Form.Group controlId="duration">
-                        <Form.Label>Duration (HH:MM)</Form.Label>
-                        <InputGroup>
-                            <Form.Select
-                                value={duration.split(':')[0]}
-                                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                                    setDuration(`${e.target.value}:${duration.split(':')[1]}`);
-                                }}
-                            >
-                                {Array.from({length: 24}, (_, i) => (
-                                    <option key={i} value={i.toString().padStart(2, '0')}>
-                                        {i.toString().padStart(2, '0')}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                            <Form.Select
-                                value={duration.split(':')[1]}
-                                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                                    setDuration(`${duration.split(':')[0]}:${e.target.value}`);
-                                }}
-                            >
-                                {Array.from({length: 60}, (_, i) => (
-                                    <option key={i} value={i.toString().padStart(2, '0')}>
-                                        {i.toString().padStart(2, '0')}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                        </InputGroup>
+                        <Form.Label>Duur van een ronde (in minuten)*</Form.Label>
+                        <Form.Control
+                            type="number"
+                            min="0"
+                            value={durationInMinutes}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                setDurationInMinutes(
+                                    e.target.value === "" ? 0 : parseInt(e.target.value)
+                                )
+                            }
+                        />
                     </Form.Group>
-
+                    <RegionAutocomplete value={region}
+                                        onChange={setRegion}
+                                        setObjectId={setRegionId}
+                                        required={true}></RegionAutocomplete>
+                    <SyndicAutoCompleteComponent value={syndic}
+                                                 onChange={setSyndic}
+                                                 setObjectId={setSyndicId}
+                                                 required={true}></SyndicAutoCompleteComponent>
+                    <PDFUploader onUpload={setManual}></PDFUploader>
                 </Form>
-                <RegionAutocomplete value={region} onChange={setRegion} setObjectId={setRegionId}></RegionAutocomplete>
-                <SyndicAutoCompleteComponent value={syndic} onChange={setSyndic}
-                                             setObjectId={setSyndicId}></SyndicAutoCompleteComponent>
-                <PDFUploader onUpload={setManual}></PDFUploader>
-                <button onClick={handleSubmit} type="submit">
+                <p className="text-danger mt-2">* Alle velden gemarkeerd met * zijn verplicht.</p>
+                <button onClick={handleSubmit} type="button">
                     Opslaan
                 </button>
                 <button onClick={goBack} className="ml-2">
