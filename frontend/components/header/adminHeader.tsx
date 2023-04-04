@@ -22,28 +22,43 @@ const AdminHeader = () => {
                             </Link>
                         </li>
                         <li className="position-relative">
-                            <a className={`nav-link dropdown-toggle ${styles.text}`}
-                                  id="navbarDropdownData"
-                                  role="button"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false">
+                            <a
+                                className={`nav-link dropdown-toggle ${styles.text}`}
+                                id="navbarDropdownData"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
                                 Data
                             </a>
-                            <ul className="dropdown-menu dropdown-menu-en dropdown-menu-end" aria-labelledby="navbarDropdownData">
+                            <ul
+                                className="dropdown-menu dropdown-menu-en dropdown-menu-end"
+                                aria-labelledby="navbarDropdownData"
+                            >
                                 <li>
-                                    <Link className="dropdown-item" href="/admin/data/users">Gebruikers</Link>
+                                    <Link className="dropdown-item" href="/admin/data/users">
+                                        Gebruikers
+                                    </Link>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item" href="/admin/data/schedules">Planning</Link>
+                                    <Link className="dropdown-item" href="/admin/data/schedules">
+                                        Planning
+                                    </Link>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item" href="/admin/data/tours">Rondes</Link>
+                                    <Link className="dropdown-item" href="/admin/data/tours">
+                                        Rondes
+                                    </Link>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item" href="/admin/data/buildings">Gebouwen</Link>
+                                    <Link className="dropdown-item" href="/admin/data/buildings">
+                                        Gebouwen
+                                    </Link>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item" href="/admin/data/mails">Mails</Link>
+                                    <Link className="dropdown-item" href="/admin/data/mails">
+                                        Mails
+                                    </Link>
                                 </li>
                             </ul>
                         </li>
