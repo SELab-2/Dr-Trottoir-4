@@ -1,10 +1,12 @@
 import AdminHeader from "@/components/header/adminHeader";
 import { BuildingComment, getAllBuildingComments } from "@/lib/building-comment";
-import { EmailTemplate, getAllEmailTemplates } from "@/lib/communication";
-import { useEffect, useState } from "react";
+import { EmailTemplate, getAllEmailTemplates } from "@/lib/email-template";
+import { useEffect, useState, ChangeEvent } from "react";
 import styles from 'styles/Welcome.module.css';
 import { Dropdown, DropdownButton, FloatingLabel, Form, FormControl } from "react-bootstrap";
 import Combobox from "@/components/combobox";
+import FileInputField from "@/components/fileInputField";
+import { getAllPicturesOfBuilding, PictureBuilding } from "@/lib/picture-building";
 
 
 export default function AdminCommunication() {
@@ -13,13 +15,46 @@ export default function AdminCommunication() {
     const [allComments, setAllComments] = useState<BuildingComment[]>([]);
     const [selectedTemplate, setSelectedTemplate] = useState("");
     const [selectedComment, setSelectedComment] = useState("");
+    const [selectedBuilding, setSelectedBuilding] = useState(-1);
+    const [allPictures, setAllPictures] = useState<PictureBuilding[]>([]);
+    const [templateText, setTemplateText] = useState("");
 
     const handleSelectTemplate = (eventKey: string | null) => {
         setSelectedTemplate(eventKey ? eventKey : "");
+        if (eventKey) {
+            const currentTemplate = allTemplates.find(e => e.name.startsWith(eventKey));
+            if (currentTemplate) {
+                setTemplateText(currentTemplate.template);
+            }
+        }
+        
     }
 
     const handleSelectComment = (eventKey: string | null) => {
+        setSelectedBuilding(-1);
+
         setSelectedComment(eventKey ? eventKey : "");
+        if (eventKey) {
+            const currentComment = allComments.find(e => e.comment.startsWith(eventKey));
+            if (currentComment) {
+                setSelectedBuilding(currentComment.building);
+                getAllPicturesOfBuilding(currentComment.building).then(res => {
+                    const buildingPictures : PictureBuilding[] = res.data;
+                    setAllPictures(buildingPictures);
+                    console.log(buildingPictures);
+                }, err => {
+                    console.error(err);
+                });
+            }
+        }
+    }
+
+    const handleUpload = (files: FileList) => {
+        console.log(files);
+    }
+
+    const handleEditTemplate = (event: ChangeEvent<HTMLTextAreaElement>) => {
+        setTemplateText(event.target.value);
     }
 
 
@@ -41,6 +76,7 @@ export default function AdminCommunication() {
 
     useEffect(() => {
         setLoading(false);
+        //console.log(allComments);
     }, [allTemplates, allComments, selectedTemplate, selectedComment]);
 
 
@@ -63,19 +99,22 @@ export default function AdminCommunication() {
                     onSelect={handleSelectComment}
                 />
                 </div>
-                <div>
+                <div style={{ display: 'flex' }}>
                 <FloatingLabel
                     controlId="floatingTextarea"
                     label="Email"
                     className="mb-3"
+                    style={{ width: "80%" }}
                 >
                     <Form.Control 
                     as="textarea" 
                     placeholder="Write your email here"
                     style={{ height: '400px' }} 
+                    value={templateText}
+                    onChange={handleEditTemplate}
                     />
                 </FloatingLabel>
-
+                <FileInputField onUpload={handleUpload}/>
                 </div>
             </>
         </>
