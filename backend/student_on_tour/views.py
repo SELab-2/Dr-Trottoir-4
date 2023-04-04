@@ -38,6 +38,12 @@ class TourPerStudentView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | (IsStudent & OwnerAccount)]
     serializer_class = StudOnTourSerializer
 
+    @extend_schema(
+        parameters=param_docs({
+            "start date": ("Filter by start date", False, OpenApiTypes.DATE),
+            "end date": ("Filter by end date", False, OpenApiTypes.DATE),
+        })
+    )
     def get(self, request, student_id):
         """
         Get all StudentOnTour for a student with given id
