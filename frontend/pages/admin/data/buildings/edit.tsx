@@ -41,33 +41,31 @@ function AdminDataBuildingsEdit() {
 
     const handleSubmit = () => {
         const form = document.getElementById("buildingForm") as HTMLFormElement;
-        console.log(form.checkValidity());
-        if (!form.checkValidity()) {
-            setFormErrors(true);
-        } else {
+
+        if (form.checkValidity()) {
             setFormErrors(false);
+            const building = {
+                syndic: syndicId,
+                name: name,
+                city: city,
+                postal_code: postalCode,
+                street: street,
+                house_number: houseNumber,
+                bus: busNumber,
+                client_number: clientNumber,
+                duration: getDurationFromMinutes(durationInMinutes),
+                region: regionId,
+                public_id: public_id,
+            };
+            console.log("postpatch");
+            if (router.query.building) {
+                patchBuilding(building, Number(router.query.building)).then(res => console.log(res));
+            } else {
+                postBuilding(building).then();
+            }
+        } else {
+            setFormErrors(true);
         }
-        // if (form.checkValidity()) {
-        //     const building = {
-        //         syndic: syndicId,
-        //         name: name,
-        //         city: city,
-        //         postal_code: postalCode,
-        //         street: street,
-        //         house_number: houseNumber,
-        //         bus: busNumber,
-        //         client_number: clientNumber,
-        //         duration: getDurationFromMinutes(durationInMinutes),
-        //         region: regionId,
-        //         public_id: public_id,
-        //     };
-        //     console.log("postpatch");
-        //     if (router.query.building) {
-        //         patchBuilding(building, Number(router.query.building)).then(res => console.log(res));
-        //     } else {
-        //         postBuilding(building).then();
-        //     }
-        // }
     };
 
     const goBack = () => {
