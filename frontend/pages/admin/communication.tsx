@@ -7,6 +7,7 @@ import { Dropdown, DropdownButton, FloatingLabel, Form, FormControl } from "reac
 import Combobox from "@/components/combobox";
 import FileInputField from "@/components/fileInputField";
 import { getAllPicturesOfBuilding, PictureBuilding } from "@/lib/picture-building";
+import PhotoSelector from "@/components/scrollViewPicture";
 
 
 export default function AdminCommunication() {
@@ -18,6 +19,7 @@ export default function AdminCommunication() {
     const [selectedBuilding, setSelectedBuilding] = useState(-1);
     const [allPictures, setAllPictures] = useState<PictureBuilding[]>([]);
     const [templateText, setTemplateText] = useState("");
+    const [selectedPictures, setSelectedPictures] = useState<string[]>([]);
 
     const handleSelectTemplate = (eventKey: string | null) => {
         setSelectedTemplate(eventKey ? eventKey : "");
@@ -48,6 +50,22 @@ export default function AdminCommunication() {
             }
         }
     }
+
+    const handlePictureSelectionChange = (selectedPhotos: string[]) => {
+        setSelectedPictures(selectedPhotos);
+    }
+
+    const photos = [
+        "https://picsum.photos/id/1015/200/300",
+        "https://picsum.photos/id/1025/200/300",
+        "https://picsum.photos/id/1035/200/300",
+        "https://picsum.photos/id/1045/200/300",
+        "https://picsum.photos/id/1055/200/300",
+        "https://picsum.photos/id/1065/200/300",
+        "https://picsum.photos/id/1075/200/300",
+        "https://picsum.photos/id/1085/200/300",
+        "https://picsum.photos/id/1095/200/300",
+      ];
 
     const handleUpload = (files: FileList) => {
         console.log(files);
@@ -115,6 +133,23 @@ export default function AdminCommunication() {
                     />
                 </FloatingLabel>
                 <FileInputField onUpload={handleUpload}/>
+                </div>
+                <div>
+                <h1>Photo Selector</h1>
+                <PhotoSelector
+                    photos={photos}
+                    onSelectionChange={handlePictureSelectionChange}
+                />
+                <div>
+                    <h2>Selected Photos:</h2>
+                    <ul>
+                    {selectedPictures.map((photo) => (
+                        <li key={photo}>
+                        <img src={photo} alt="Selected" />
+                        </li>
+                    ))}
+                    </ul>
+                </div>
                 </div>
             </>
         </>
