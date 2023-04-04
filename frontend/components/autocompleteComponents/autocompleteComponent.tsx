@@ -65,7 +65,9 @@ const AutocompleteComponent: React.FC<Props> = ({
     return (
         <>
             <Form.Label> {label} </Form.Label><Autocomplete
-            // getOptionSelected={(option: { toString: () => any; }, value: { toString: () => any; }) => option.toString() === value.toString()}
+            //our option and value are different but without this line it will give warnings as the default
+            //implementations checks whether options === value
+            isOptionEqualToValue={(option: { toString: () => any; }, value: { toString: () => any; }) => true}
             value={value}
             inputValue={inputValue}
             onChange={(
