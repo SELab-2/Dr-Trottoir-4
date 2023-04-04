@@ -2,8 +2,10 @@ import AdminHeader from "@/components/header/adminHeader";
 import { BuildingComment, getAllBuildingComments } from "@/lib/building-comment";
 import { EmailTemplate, getAllEmailTemplates } from "@/lib/communication";
 import { Fragment, useEffect, useState } from "react";
-import styles from "styles/Welcome.module.css";
-import { Combobox, Transition } from '@headlessui/react'
+import styles from 'styles/Welcome.module.css';
+import cbstyles from 'styles/Combobox.module.css';
+import { Combobox, Transition } from '@headlessui/react';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
 export default function AdminCommunication() {
     const [loading, setLoading] = useState(true);
@@ -20,8 +22,7 @@ export default function AdminCommunication() {
             : allTemplates.filter((template) => {
                 template.name
                     .toLowerCase()
-                    .replace(/\s+/g, "")
-                    .includes(templateQuery.toLowerCase().replace(/\s+/g, ""));
+                    .includes(templateQuery.toLowerCase());
             });
     const filteredComments = 
         commentQuery === "" 
@@ -49,29 +50,76 @@ export default function AdminCommunication() {
         }, err => {
             console.error(err);
         });
-
-
-
     }, []);
+
+    useEffect(() => {
+        setLoading(false);
+    }, [allTemplates, allComments, selectedTemplate, selectedComment]);
 
 
     return (
         <>
             <>
-                <AdminHeader />
+                <AdminHeader/>
                 <p className={styles.title}>Communicatie extern</p>
+
                 <Combobox value={selectedTemplate} onChange={setSelectedTemplate}>
-                    <Combobox.Input
-                        displayValue={(template: EmailTemplate) => template.name}
+                    <div className={cbstyles.comboboxContainer}>
+                        <Combobox.Input
+                        className={cbstyles.comboboxInput}
+                        displayValue={(t: EmailTemplate) => t.name}
                         onChange={(event) => setTemplateQuery(event.target.value)}
-                    /><h1 className={styles.text}>Templates:</h1>
-                    <Combobox.Options>
-                        {filteredTemplates.map((template) => (
-                            <Combobox.Option key={template.name} value={template.name}>
-                                {template.name}
+                        />
+                        <Combobox.Button className={cbstyles.comboboxButton}>
+                            <ChevronUpDownIcon className={cbstyles.comboboxButtonIcon}
+                                aria-hidden="true"
+                            />
+                        </Combobox.Button>
+                    </div>
+                    <Transition
+                        as={Fragment}
+                        leave="transition ease-in duration-100"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                        afterLeave={() => setTemplateQuery('')}
+                    >
+                        <Combobox.Options className={cbstyles.comboboxOptions}>
+                        {filteredTemplates.length === 0 && templateQuery !== '' ? (
+                            <div>
+                            Nothing found.
+                            </div>
+                        ) : (
+                            filteredTemplates.map((t) => (
+                            <Combobox.Option
+                                key={t.id}
+                                className={cbstyles.comboboxOption}
+                                value={t}
+                            >
+                                {({ selected, active }) => (
+                                <>
+                                    <span
+                                    className={`block truncate ${
+                                        selected ? 'font-medium' : 'font-normal'
+                                    }`}
+                                    >
+                                    {t.name}
+                                    </span>
+                                    {selected ? (
+                                    <span
+                                        className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                        active ? 'text-white' : 'text-teal-600'
+                                        }`}
+                                    >
+                                        <CheckIcon className="h-5 w-5" aria-hidden="true" />    
+                                    </span>
+                                    ) : null}
+                                </>
+                                )}
                             </Combobox.Option>
-                        ))}
-                    </Combobox.Options>
+                            ))
+                        )}
+                        </Combobox.Options>
+                    </Transition>
                 </Combobox>
             </>
         </>

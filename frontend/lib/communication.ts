@@ -8,11 +8,11 @@ export interface EmailTemplate {
 }
 
 export async function getAllEmailTemplates() : Promise<AxiosResponse<any>> {
-    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_TEMPLATES}`;
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_EMAIL_TEMPLATES}`;
     return await api.get(request_url);
 }
 
 export async function getEmailTemplateWithID(id: number) : Promise<AxiosResponse<any>> {
-    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_TEMPLATE}${id}`;
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_EMAIL_TEMPLATE}${id}`;
     return await api.get(request_url);
 }
