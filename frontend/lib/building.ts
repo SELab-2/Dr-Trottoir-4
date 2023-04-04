@@ -25,7 +25,7 @@ export interface BuildingPostInterface {
     street: string;
     house_number: string;
     bus: string;
-    client_id: string;
+    client_number: string;
     duration: string;
     region: string;
     public_id: string;
@@ -76,6 +76,7 @@ export async function postBuilding(building: BuildingPostInterface) : Promise<Ax
 
 export async function patchBuilding(building: BuildingPostInterface, id: Number) : Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${id}`;
+    console.log(building);
     return await api.patch(request_url, JSON.stringify(building),
         {
             headers: { "Content-Type": "application/json" },

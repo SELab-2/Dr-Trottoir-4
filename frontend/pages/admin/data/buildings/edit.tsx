@@ -18,13 +18,14 @@ function AdminDataBuildingsEdit() {
     const [busNumber, setBusNumber] = useState("");
     const [postalCode, setPostalCode] = useState("");
     const [street, setStreet] = useState("");
-    const [clientId, setClientId] = useState("");
+    const [clientNumber, setClientNumber] = useState("");
     const [region, setRegion] = useState(""); //used for displaying the correct data
-    const [regionId, setRegionId] = useState({} as Region); //used for collecting the right id to post/patch
+    const [regionId, setRegionId] = useState(""); //used for collecting the right id to post/patch
     const [syndic, setSyndic] = useState(""); //used for displaying the correct data
-    const [syndicId, setSyndicId] = useState({} as User); //used for collecting the right id to post/patch
+    const [syndicId, setSyndicId] = useState(""); //used for collecting the right id to post/patch
     const [manual, setManual] = useState<File | null>(null);
-    const [duration, setDuration] = useState("");
+    const [duration, setDuration] = useState("00:00");
+    const [public_id, setPublicId] = useState("");
 
     const router = useRouter();
 
@@ -37,13 +38,13 @@ function AdminDataBuildingsEdit() {
                 street: street,
                 house_number: houseNumber,
                 bus: busNumber,
-                client_id: clientId,
+                client_number: clientNumber,
                 duration: duration,
                 region: regionId,
-                public_id: "",
-            }
+                public_id: public_id,
+            };
         if (router.query.building) {
-            patchBuilding(building, Number(router.query.building)).then()
+            patchBuilding(building, Number(router.query.building)).then();
         } else {
             postBuilding(building).then();
         }
@@ -60,15 +61,16 @@ function AdminDataBuildingsEdit() {
                 setHouseNumber(res.data.house_number);
                 setBusNumber(res.data.bus ? res.data.bus : "");
                 setPostalCode(res.data.postal_code);
-                setCity(res.data.city)
+                setCity(res.data.city);
                 setName(res.data.name ? res.data.name : "");
                 setDuration(res.data.duration);
+                setPublicId(res.data.public_id ?? "");
                 const region = await getRegion(res.data.region);
-                setRegion(region.data.region)
-                setRegionId(region.data)
+                setRegion(region.data.region);
+                setRegionId(region.data.id);
                 const syndic = await getUserInfo(res.data.syndic);
-                setSyndic(userSearchString(syndic.data))
-                setSyndicId(syndic.data)
+                setSyndic(userSearchString(syndic.data));
+                setSyndicId(syndic.data.id);
                 return true;
             });
         }
@@ -137,8 +139,8 @@ function AdminDataBuildingsEdit() {
                         <Form.Label>Klantennummer afvalophaaldienst (optioneel)</Form.Label>
                         <Form.Control
                             type="text"
-                            value={clientId}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setClientId(e.target.value)}
+                            value={clientNumber}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setClientNumber(e.target.value)}
                         />
                     </Form.Group>
 
