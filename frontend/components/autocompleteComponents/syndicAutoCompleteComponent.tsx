@@ -3,7 +3,7 @@ import {getAllUsers, User, userSearchString} from "@/lib/user";
 import AutocompleteComponent, {GenericProps} from "@/components/autocompleteComponents/autocompleteComponent";
 import {extractEmailFromString} from "@/lib/user";
 
-const SyndicAutocomplete: React.FC<GenericProps> = ({value, onChange, setObject}) => {
+const SyndicAutocomplete: React.FC<GenericProps> = ({value, onChange, setObjectId}) => {
 
     return (
         <AutocompleteComponent
@@ -14,7 +14,7 @@ const SyndicAutocomplete: React.FC<GenericProps> = ({value, onChange, setObject}
             mapping={(user: User) => userSearchString(user)}
             searchField={"email"}
             searchTermHandler={extractEmailFromString}
-            setObject={setObject}
+            setObjectId={setObjectId}
         />
     );
 };

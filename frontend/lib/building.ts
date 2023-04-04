@@ -74,3 +74,12 @@ export async function postBuilding(building: BuildingPostInterface) : Promise<Ax
     );
 }
 
+export async function patchBuilding(building: BuildingPostInterface, id: Number) : Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${id}`;
+    return await api.patch(request_url, JSON.stringify(building),
+        {
+            headers: { "Content-Type": "application/json" },
+        }
+    );
+}
+

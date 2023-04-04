@@ -16,13 +16,13 @@ interface Props {
     searchField: string;
     // a function that takes the displayed input value and extract the search term from it
     searchTermHandler: (value: string) => string | null;
-    setObject: (value: any) => void;
+    setObjectId: (value: any) => void;
 }
 
 export interface GenericProps {
     value: any;
     onChange: (value: any) => void;
-    setObject: (value: any) => void;
+    setObjectId: (value: any) => void;
 }
 
 function getIdBySearchTerm(arr: any[], field: string, searchTerm: string | null) {
@@ -41,7 +41,7 @@ const AutocompleteComponent: React.FC<Props> = ({
                                                     mapping,
                                                     searchField,
                                                     searchTermHandler,
-                                                    setObject
+                                                    setObjectId
                                                 }) => {
     const [inputValue, setInputValue] = useState("");
     const [options, setOptions] = useState<string[]>([]);
@@ -72,7 +72,7 @@ const AutocompleteComponent: React.FC<Props> = ({
                 newValue: string | null
             ) => {
                 if (newValue) {
-                    setObject(getIdBySearchTerm(options, searchField, searchTermHandler(newValue)));
+                    setObjectId(getIdBySearchTerm(options, searchField, searchTermHandler(newValue)));
                     onChange(newValue ?? "");
                 }
             }}
