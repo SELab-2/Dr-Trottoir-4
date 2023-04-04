@@ -10,6 +10,7 @@ import SyndicHeader from "@/components/header/syndicHeader";
 import {getRegion} from "@/lib/region";
 import SyndicFooter from "@/components/footer/syndicFooter";
 import BuildingSyndicInfo from "@/components/syndic/building/BuildingInfo";
+import LatestCollections from "@/components/syndic/building/LatestCollections";
 
 interface ParsedUrlQuery {
 }
@@ -72,7 +73,7 @@ function SyndicBuilding() {
 
             <details open={true} >
                 <summary>Recente ophalingen</summary>
-                <h1>Recente ophalingen</h1>
+                <LatestCollections building={building ? building.id : 0}/>
 
             </details>
 

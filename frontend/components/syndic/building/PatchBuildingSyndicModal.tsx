@@ -79,7 +79,8 @@ function PatchBuildingSyndicModal({
 
         let toSend: any = {};
         for (const [key, value] of Object.entries(formData)) {
-            if (value && (building[key] != value)) {
+            // @ts-ignore
+            if (value && (!building || building[key] != value)) {
                 toSend[key] = value;
             }
         }
