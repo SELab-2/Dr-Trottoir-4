@@ -10,6 +10,7 @@ import nlBE from 'date-fns/locale/nl-BE'
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import EditEventModal from "@/components/calendar/editEvent";
+import CustomDisplay from "@/components/calendar/customEvent";
 
 const messages = {
     allDay: 'Hele dag',
@@ -27,16 +28,22 @@ const messages = {
 
 const MyCalendar: FC = () => {
 
-    const [events, setEvents] = useState<Event[]>([
+    interface MyEvent extends Event {
+        student: string
+    }
+
+    const [events, setEvents] = useState<MyEvent[]>([
         {
-            title: 'Verjaardag',
-            start: new Date(2023, 3, 6, 12, 0),
-            end: new Date(2023, 3, 6, 13, 0),
+            title: 'Antwerpen',
+            start: new Date('2023-04-06T10:00:00'),
+            end: new Date('2023-04-06T12:00:00'),
+            student: 'Emma'
         },
         {
-            title: 'Vergadering',
-            start: new Date(2023, 3, 8, 9, 0),
-            end: new Date(2023, 3, 8, 11, 0),
+            title: 'Gent',
+            start: new Date('2023-04-06T12:00:00'),
+            end: new Date('2023-04-06T13:00:00'),
+            student: 'Emma',
         },
     ])
 
@@ -55,32 +62,20 @@ const MyCalendar: FC = () => {
         setPopupIsOpen(false);
     };
 
-    const handleEventSave = (title : string) => {
+    const handleEventSave = ({ title, student }: { title: string, student: string }) => {
         setEvents(currentEvents => {
             return currentEvents.map(currentEvent => {
                 if (currentEvent === selectedEvent) {
                     return {
                         ...currentEvent,
-                        title: title
+                        title: title,
+                        student: student
                     };
                 }
                 return currentEvent;
             });
         });
     }
-
-
-    /*const onEventCreate: withDragAndDropProps['onSelectSlot'] = (data: any) => {
-        const title = prompt('Enter event title')
-        if (title) { // If the user entered a title
-            const newEvent: Event = {
-                title,
-                start: data.start,
-                end: data.end,
-            }
-            setEvents(currentEvents => [...currentEvents, newEvent])
-        }
-    }*/
 
 
     const onEventChange: withDragAndDropProps['onEventResize'] = data => {
@@ -107,11 +102,11 @@ const MyCalendar: FC = () => {
                 culture={'nl-BE'}
                 defaultView='week'
                 events={events}
+                components={{ event: CustomDisplay }}
                 localizer={localizer}
                 onEventDrop={onEventChange}
                 onEventResize={onEventChange}
                 selectable
-                //onSelectSlot={onEventCreate}
                 onSelectEvent={onEventSelection}
                 resizable
                 style={{height: '100vh'}}
