@@ -9,6 +9,7 @@ import nlBE from 'date-fns/locale/nl-BE'
 
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+import EditEventModal from "@/components/calendar/editEvent";
 
 const messages = {
     allDay: 'Hele dag',
@@ -39,11 +40,26 @@ const MyCalendar: FC = () => {
         },
     ])
 
-    const onEventChange: withDragAndDropProps['onEventResize'] = data => {
-        const {event, start, end} = data;
+    const [popupIsOpen, setPopupIsOpen] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+
+
+    const onEventSelection = (e: Event) => {
+        console.log(e, "Event data");
+        setSelectedEvent(e);
+        setPopupIsOpen(true);
+    };
+
+    const handlePopupClose = () => {
+        setSelectedEvent(null);
+        setPopupIsOpen(false);
+    };
+
+    const handleEventSave = (data: any) => {
+        const {title, start, end} = data;
         setEvents(currentEvents => {
-            const updatedEvents = currentEvents.map(currentEvent => {
-                if (currentEvent === event) { // or however you uniquely identify the event
+            return currentEvents.map(currentEvent => {
+                if (currentEvent === selectedEvent) {
                     return {
                         ...currentEvent,
                         start: new Date(start),
@@ -52,23 +68,65 @@ const MyCalendar: FC = () => {
                 }
                 return currentEvent;
             });
-            return updatedEvents;
+        });
+    }
+
+
+    /*const onEventCreate: withDragAndDropProps['onSelectSlot'] = (data: any) => {
+        const title = prompt('Enter event title')
+        if (title) { // If the user entered a title
+            const newEvent: Event = {
+                title,
+                start: data.start,
+                end: data.end,
+            }
+            setEvents(currentEvents => [...currentEvents, newEvent])
+        }
+    }*/
+
+
+    const onEventChange: withDragAndDropProps['onEventResize'] = data => {
+        const {event, start, end} = data;
+        setEvents(currentEvents => {
+            return currentEvents.map(currentEvent => {
+                if (currentEvent === event) {
+                    return {
+                        ...currentEvent,
+                        start: new Date(start),
+                        end: new Date(end),
+                    };
+                }
+                return currentEvent;
+            });
         });
     };
 
 
     return (
-        <DnDCalendar
-            messages={messages}
-            culture={'nl-BE'}
-            defaultView='week'
-            events={events}
-            localizer={localizer}
-            onEventDrop={onEventChange}
-            onEventResize={onEventChange}
-            resizable
-            style={{height: '100vh'}}
-        />
+        <div>
+            <DnDCalendar
+                messages={messages}
+                culture={'nl-BE'}
+                defaultView='week'
+                events={events}
+                localizer={localizer}
+                onEventDrop={onEventChange}
+                onEventResize={onEventChange}
+                selectable
+                //onSelectSlot={onEventCreate}
+                onSelectEvent={onEventSelection}
+                resizable
+                style={{height: '100vh'}}
+            />
+            {selectedEvent && (
+                <EditEventModal
+                    event={selectedEvent}
+                    isOpen={popupIsOpen}
+                    onClose={handlePopupClose}
+                    onSave={handleEventSave}
+                />
+            )}
+        </div>
     )
 }
 
@@ -83,7 +141,7 @@ const localizer = dateFnsLocalizer({
     getDay,
     locales,
 })
-//@ts-ignore
+
 const DnDCalendar = withDragAndDrop(Calendar)
 
 export default MyCalendar
