@@ -1,7 +1,6 @@
 from queue import PriorityQueue
 
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiExample
-from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiExample
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -37,26 +36,27 @@ class BuildingSwapView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = TourSerializer
 
-    description = "Note that buildingID should also be an integer"
+    description = "Note that buildingID should also be an integer."
 
     @extend_schema(
         description="POST body consists of a list of building_id - index pairs that will be assigned to this tour. "
-        "This enables the frontend to restructure a tour in 1 request instead of multiple. If a building is "
-        "added to the tour (no BuildingOnTour entry existed), a new entry will be created. If buildings that "
-        "were originally on the tour are left out, they will be removed.",
+                    "This enables the frontend to restructure a tour in 1 request instead of multiple. If a building is "
+                    "added to the tour (no BuildingOnTour entry existed before), a new entry will be created. If buildings that "
+                    "were originally on the tour are left out, they will be removed from the tour."
+                    "The indices that should be used in the request start at 0 and should be incremented 1 at a time.",
         request=BuildingSwapRequestSerializer,
         responses={200: SuccessSerializer, 400: None},
         examples=[
             OpenApiExample(
-                "Swapping 2 buildings",
+                "Set 2 buildings on the tour",
                 value={"buildingID1": 0, "buildingID2": 1},
                 description=description,
                 request_only=True,
             ),
             OpenApiExample(
-                "Swapping more than 2 buildings",
-                value={"buildingID1": 5, "buildingID2": 6, "buildingID3": 9, "buildingID4": 17},
-                description=description,
+                "Reorder more than 2 buildings",
+                value={"buildingID1": 1, "buildingID2": 3, "buildingID3": 2, "buildingID4": 0},
+                description=description + " The new order of buildings will be [4,1,3,2]",
                 request_only=True,
             ),
         ],
