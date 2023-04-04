@@ -1,10 +1,29 @@
 import uuid
+from datetime import datetime
 from typing import Callable
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, BadRequest
 from rest_framework import status
 from rest_framework.response import Response
 from drf_spectacular.utils import OpenApiParameter
+
+
+def get_id_param(request, name):
+    param = request.GET.get(name, None)
+    if param:
+        if not param.isdigit():
+            raise BadRequest(f'The query parameter {name} should be an integer')
+    return param
+
+
+def get_date_param(request, name):
+    param = request.GET.get(name, None)
+    if param:
+        try:
+            param = datetime.strptime(param, '%Y-%m-%d')
+        except ValueError:
+            raise BadRequest(f"The date parameter {name} hasn't the appropriate form (=YYYY-MM-DD).")
+    return param
 
 
 def get_unique_uuid(lookup_func: Callable[[str], bool] = None):
