@@ -1,4 +1,5 @@
-from rest_framework.permissions import IsAuthenticated
+from queue import PriorityQueue
+
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -29,6 +30,40 @@ class Default(APIView):
             return r
 
         return post_success(TourSerializer(tour_instance))
+
+
+class BuildingSwapView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = TourSerializer
+
+    def post(self, request, tour_id):
+        data = request_to_dict(request.data)
+        print(data)
+        tour = Tour.objects.filter(id=tour_id).first()
+        if not tour:
+            return not_found("Tour")
+        items = BuildingOnTour.objects.filter(tour=tour)
+        items.delete()
+        q = PriorityQueue()
+        max_index = -1
+        for b_id, i in data.items():
+            index = int(i) + 1
+            if index < 0:
+                return bad_request("Index")
+            if index > max_index:
+                max_index = index
+            q.put((index, b_id))
+        if len(data.items()) > max_index:
+            return bad_request("Index")
+        while not q.empty():
+            index, b_id = q.get()
+            instance = BuildingOnTour(index=index, building_id=b_id, tour=tour)
+            if r := try_full_clean_and_save(instance):
+                return r
+
+        dummy = type("", (), {})()
+        dummy.data = {"data": "success"}
+        return post_success(serializer=dummy)
 
 
 class TourIndividualView(APIView):

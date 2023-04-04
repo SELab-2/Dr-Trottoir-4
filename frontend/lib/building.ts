@@ -4,6 +4,8 @@ import {User} from "@/lib/user";
 
 export interface BuildingInterface {
     id: number;
+    syndic: number;
+    name: string;
     city: string;
     postal_code: string;
     street: string;
@@ -11,9 +13,7 @@ export interface BuildingInterface {
     bus: string;
     client_id: number;
     duration: Date;
-    syndic: number;
     region: number;
-    name: string;
     public_id: string;
 }
 

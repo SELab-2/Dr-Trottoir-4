@@ -1,107 +1,84 @@
-import SyndicHeader from "@/components/header/syndicHeader";
-import { BuildingInterface, getBuildingInfo } from "@/lib/building";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
 import { withAuthorisation } from "@/components/withAuthorisation";
+import router from "next/router";
+import { BuildingInterface, getBuildingsFromOwner } from "@/lib/building";
+import { useEffect, useState } from "react";
 import { AxiosResponse } from "axios";
-import styles from "@/styles/Welcome.module.css";
-import { TiPencil } from "react-icons/ti";
-import PatchBuildingSyndicModal from "@/components/syndic/PatchBuildingSyndicModal";
 
-interface ParsedUrlQuery {}
-
-interface DashboardQuery extends ParsedUrlQuery {
-    id?: string;
-}
-
-function SyndicBuilding() {
-    const router = useRouter();
-    const query = router.query as DashboardQuery;
-
-    const [building, setBuilding] = useState<BuildingInterface | null>(null);
-    const [editBuilding, setEditBuilding] = useState(false);
-
-    async function fetchBuilding() {
-        getBuildingInfo(Number(query.id))
-            .then((buildings: AxiosResponse<any>) => {
-                setBuilding(buildings.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }
+function SyndicDashboard() {
+    const [id, setId] = useState("");
+    const [buildings, setBuildings] = useState([]);
 
     useEffect(() => {
-        if (!query.id) {
+        setId(sessionStorage.getItem("id") || "");
+    }, []);
+
+    useEffect(() => {
+        console.log("hier");
+
+        if (!id) {
+            console.log(`nog geen id ${id}`);
             return;
         }
-        fetchBuilding();
-    }, [query.id]);
 
-    function get_building_key(key: string) {
-        if (building) {
-            // @ts-ignore
-            return building[key] || "/";
+        console.log(`id is ${id}`);
+
+        async function fetchBuildings() {
+            getBuildingsFromOwner(id)
+                .then((buildings: AxiosResponse<any>) => {
+                    setBuildings(buildings.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         }
-        return "/";
+
+        fetchBuildings();
+    }, [id]);
+
+    if (!id || !buildings) {
+        //TODO: loading component, how to use? Maybe with a wrappen and a state boolean?
+        return <div>loading...</div>;
     }
 
     return (
         <>
-            <SyndicHeader />
             <p>
                 https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1145&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
             </p>
+
             <h1>Uw gebouwen</h1>
 
-            <div>
-                <a
-                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                        e.preventDefault();
-                        router.push("/syndic/dashboard");
-                    }}
-                >
-                    {" "}
-                    ⮌ Terug naar het overzicht
-                </a>
+            <div className="row">
+                {buildings.map((building: BuildingInterface) => {
+                    // console.log(building);
+                    return (
+                        <div
+                            className="col-md-4 mb-3"
+                            key={building.id}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                router.push({
+                                    pathname: "building",
+                                    query: { id: building.id },
+                                });
+                            }}
+                        >
+                            <div className="card">
+                                <div className="card-body">
+                                    <h5 className="card-title">
+                                        {building.name} {building.postal_code} {building.city}
+                                    </h5>
+                                    <p className="card-text">
+                                        {building.street} {building.house_number}{" "}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
-
-            {JSON.stringify(building)}
-
-            <h1 className={styles.title}>Welcome to the Syndic Dashboard!</h1>
-
-            <PatchBuildingSyndicModal
-                show={editBuilding}
-                closeModal={() => setEditBuilding(false)}
-                building={building}
-                setBuilding={setBuilding}
-            />
-
-            <h1>
-                Gebouw{" "}
-                <TiPencil
-                    onClick={(e) => {
-                        e.preventDefault();
-                        setEditBuilding(true);
-                    }}
-                ></TiPencil>
-            </h1>
-            <p>Naam: {get_building_key("name")}</p>
-            <p>Stad: {get_building_key("city")}</p>
-            <p>Postcode: {get_building_key("postal_code")}</p>
-            <p>Straat: {get_building_key("street")}</p>
-            <p>Nr: {get_building_key("house_number")}</p>
-            <p>Bus: {get_building_key("bus")}</p>
-            <p>Region (todo): {get_building_key("region_id")}</p>
-            <p>Werktijd: {get_building_key("duration")}</p>
-            <p>Client id: {get_building_key("client_id")}</p>
-            <p>Public id: {get_building_key("public_id")}</p>
-
-            <p>
-                https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1310&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
-            </p>
         </>
     );
 }
 
-export default withAuthorisation(SyndicBuilding, ["Syndic"]);
+export default withAuthorisation(SyndicDashboard, ["Syndic"]);

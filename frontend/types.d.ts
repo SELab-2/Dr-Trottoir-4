@@ -59,4 +59,5 @@ export type UserView = {
     role : string;
     phone_number : string;
     userId : number;
+    isActive : boolean;
 }
