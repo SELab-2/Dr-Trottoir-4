@@ -43,23 +43,17 @@ class BuildingSwapView(APIView):
         "added to the tour (no BuildingOnTour entry existed), a new entry will be created. If buildings that "
         "were originally on the tour are left out, they will be removed.",
         request=BuildingSwapRequestSerializer,
-        responses={
-            200: SuccessSerializer,
-            400: None
-        },
+        responses={200: SuccessSerializer, 400: None},
         examples=[
             OpenApiExample(
-                'Swapping 2 buildings',
-                value='{buildingID1: 0, buildingID2: 1}',
-                description='',
-                request_only=True
+                "Swapping 2 buildings", value="{buildingID1: 0, buildingID2: 1}", description="", request_only=True
             ),
             OpenApiExample(
-                'Swapping more than 2 buildings',
-                value='{buildingID1: 5, buildingID2: 6, buildingID3: 9, buildingID4: 17}',
-                request_only=True
-            )
-        ]
+                "Swapping more than 2 buildings",
+                value="{buildingID1: 5, buildingID2: 6, buildingID3: 9, buildingID4: 17}",
+                request_only=True,
+            ),
+        ],
     )
     def post(self, request, tour_id):
         data = request_to_dict(request.data)
