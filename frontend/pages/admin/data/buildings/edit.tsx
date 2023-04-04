@@ -24,6 +24,7 @@ function AdminDataBuildingsEdit() {
     const [syndic, setSyndic] = useState(""); //used for displaying the correct data
     const [syndicObj, setSyndicObj] = useState({} as User); //used for collecting the right id to post/patch
     const [manual, setManual] = useState<File | null>(null);
+    const [duration, setDuration] = useState("");
 
     const router = useRouter();
 
@@ -37,7 +38,7 @@ function AdminDataBuildingsEdit() {
             house_number: houseNumber,
             bus: busNumber,
             client_id: clientId,
-            duration: "",
+            duration: duration,
             region: regionObj.id.toString(),
             public_id: "",
         }).then();
@@ -56,6 +57,7 @@ function AdminDataBuildingsEdit() {
                 setPostalCode(res.data.postal_code);
                 setCity(res.data.city)
                 setName(res.data.name ? res.data.name : "");
+                setDuration(res.data.duration);
                 const region = await getRegion(res.data.region);
                 setRegion(region.data.region)
                 setRegionObj(region.data)
@@ -135,11 +137,21 @@ function AdminDataBuildingsEdit() {
                         />
                     </Form.Group>
 
-                    {/* Add other form fields and components */}
+
+                    <Form.Group controlId="duration">
+                        <Form.Label>Duur ronde (UU:MM:SS)</Form.Label>
+                        <Form.Control
+                            type="time"
+                            value={duration}
+                            step="1"
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setDuration(e.target.value)}
+                        />
+                    </Form.Group>
 
                 </Form>
                 <RegionAutocomplete value={region} onChange={setRegion} setObject={setRegionObj}></RegionAutocomplete>
-                <SyndicAutoCompleteComponent value={syndic} onChange={setSyndic} setObject={setSyndicObj}></SyndicAutoCompleteComponent>
+                <SyndicAutoCompleteComponent value={syndic} onChange={setSyndic}
+                                             setObject={setSyndicObj}></SyndicAutoCompleteComponent>
                 <PDFUploader onUpload={setManual}></PDFUploader>
                 <button onClick={handleSubmit} type="submit">
                     Opslaan
