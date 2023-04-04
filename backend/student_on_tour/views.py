@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -126,6 +127,15 @@ class AllView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = StudOnTourSerializer
 
+    @extend_schema(
+        parameters=param_docs({
+            "start date": ("Filter by start date", False, OpenApiTypes.DATE),
+            "end date": ("Filter by end date", False, OpenApiTypes.DATE),
+            "student": ("Filter by student (ID)", False, OpenApiTypes.INT),
+            "tour": ("Filter by tour (ID)", False, OpenApiTypes.INT),
+            "region": ("Filter by region (ID)", False, OpenApiTypes.INT),
+        })
+    )
     def get(self, request):
         """
         Get all StudentOnTours

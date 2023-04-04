@@ -4,6 +4,7 @@ from typing import Callable
 from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.response import Response
+from drf_spectacular.utils import OpenApiParameter
 
 
 def get_unique_uuid(lookup_func: Callable[[str], bool] = None):
@@ -106,3 +107,14 @@ def get_docs(serializer):
 
 def patch_docs(serializer):
     return get_docs(serializer)
+
+
+def param_docs(values):
+    """
+    values (dict) : this a dictionary with the name of a parameter as its key and the triplet
+    (description, required, type) as value
+    """
+    docs = []
+    for name, value in values.items():
+        docs.append(OpenApiParameter(name=name, description=value[0], required=value[1], type=value[2]))
+    return docs
