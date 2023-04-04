@@ -116,7 +116,7 @@ function SignupForm() {
                     value={phoneNumber}
                     preferredCountries={['be', 'nl']}
                     onChange={phone =>
-                        setPhoneNumber(phone)
+                        setPhoneNumber("+" + phone)
                     }
                     // TODO: Adapt styling to match other fields?
                     //containerClass={`form-control form-control-lg ${styles.input}`}

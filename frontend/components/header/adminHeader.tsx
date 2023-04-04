@@ -39,9 +39,8 @@ const AdminHeader = () => {
                     </ul>
                 </div>
                 <div className="ms-auto">
-                    <Link
+                    <a
                         className="nav-link dropdown-toggle"
-                        href="#"
                         id="navbarDropdown1"
                         role="button"
                         data-bs-toggle="dropdown"
@@ -53,12 +52,10 @@ const AdminHeader = () => {
                             className={`rounded-circle ${styles.person}`}
                             height={24}
                         />
-                    </Link>
+                    </a>
                     <ul className="dropdown-menu dropdown-menu-en dropdown-menu-end" aria-labelledby="navbarDropdown1">
                         <li>
-                            <Link className="dropdown-item" href="#">
-                                Bewerk account
-                            </Link>
+                            <a className="dropdown-item">Bewerk account</a>
                         </li>
                         <li>
                             <hr className="dropdown-divider" />
