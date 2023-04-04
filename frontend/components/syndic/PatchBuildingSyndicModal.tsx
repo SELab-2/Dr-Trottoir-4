@@ -136,4 +136,4 @@ function PatchBuildingSyndicModal({
     );
 }
 
-export default PatchBuildingSyndicModal; //withAuthorisation(PatchBuildingSyndicModal, ["Syndic"]);
+export default withAuthorisation(PatchBuildingSyndicModal, ["Syndic"]);

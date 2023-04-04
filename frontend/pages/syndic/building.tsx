@@ -1,17 +1,16 @@
 import BaseHeader from "@/components/header/BaseHeader";
-import { BuildingInterface, getBuildingInfo } from "@/lib/building";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { AxiosResponse } from "axios";
+import {BuildingInterface, getBuildingInfo} from "@/lib/building";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {AxiosResponse} from "axios";
 import styles from "@/styles/Welcome.module.css";
-import { TiPencil } from "react-icons/ti";
-import Image from "next/image";
-import soon from "@/public/coming_soon.png";
+import {TiPencil} from "react-icons/ti";
 import LogoutButton from "@/components/logoutbutton";
 import PatchBuildingSyndicModal from "@/components/syndic/PatchBuildingSyndicModal";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DashboardQuery extends ParsedUrlQuery {
     id?: string;
@@ -51,56 +50,57 @@ function SyndicBuilding() {
 
     return (
         <>
-            <BaseHeader />
+            <BaseHeader/>
+                <div>
+                    <a
+                        onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                            e.preventDefault();
+                            router.push("/syndic/dashboard");
+                        }}
+                    >
+                        {" "}
+                        ⮌ Terug naar het overzicht
+                    </a>
+                </div>
 
-            <div>
-                <a
-                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                        e.preventDefault();
-                        router.push("/syndic/dashboard");
-                    }}
-                >
-                    {" "}
-                    ⮌ Terug naar het overzicht
-                </a>
-            </div>
+                {JSON.stringify(building)}
 
-            {JSON.stringify(building)}
+                <h1 className={styles.title}>Welcome to the Syndic Dashboard!</h1>
 
-            <h1 className={styles.title}>Welcome to the Syndic Dashboard!</h1>
+            <details>
+                <PatchBuildingSyndicModal
+                    show={editBuilding}
+                    closeModal={() => setEditBuilding(false)}
+                    building={building}
+                    setBuilding={setBuilding}
+                />
 
-            <PatchBuildingSyndicModal
-                show={editBuilding}
-                closeModal={() => setEditBuilding(false)}
-                building={building}
-                setBuilding={setBuilding}
-            />
-
-            <h1>
-                Gebouw{" "}
-                <TiPencil
-                    onClick={(e) => {
-                        e.preventDefault();
-                        setEditBuilding(true);
-                    }}
-                ></TiPencil>
-            </h1>
-            <p>Naam: {get_building_key("name")}</p>
-            <p>Stad: {get_building_key("city")}</p>
-            <p>Postcode: {get_building_key("postal_code")}</p>
-            <p>Straat: {get_building_key("street")}</p>
-            <p>Nr: {get_building_key("house_number")}</p>
-            <p>Bus: {get_building_key("bus")}</p>
-            <p>Region (todo): {get_building_key("region_id")}</p>
-            <p>Werktijd: {get_building_key("duration")}</p>
-            <p>Client id: {get_building_key("client_id")}</p>
-            <p>Public id: {get_building_key("public_id")}</p>
+                <h1>
+                    Gebouw{" "}
+                    <TiPencil
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setEditBuilding(true);
+                        }}
+                    ></TiPencil>
+                </h1>
+                <p>Naam: {get_building_key("name")}</p>
+                <p>Stad: {get_building_key("city")}</p>
+                <p>Postcode: {get_building_key("postal_code")}</p>
+                <p>Straat: {get_building_key("street")}</p>
+                <p>Nr: {get_building_key("house_number")}</p>
+                <p>Bus: {get_building_key("bus")}</p>
+                <p>Region (todo): {get_building_key("region_id")}</p>
+                <p>Werktijd: {get_building_key("duration")}</p>
+                <p>Client id: {get_building_key("client_id")}</p>
+                <p>Public id: {get_building_key("public_id")}</p>
+            </details>
 
             <p>
                 https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1310&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
             </p>
 
-            <LogoutButton />
+            <LogoutButton/>
         </>
     );
 }
