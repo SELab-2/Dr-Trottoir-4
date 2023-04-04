@@ -1,9 +1,10 @@
 import AdminHeader from "@/components/header/adminHeader";
 import { BuildingComment, getAllBuildingComments } from "@/lib/building-comment";
 import { EmailTemplate, getAllEmailTemplates } from "@/lib/communication";
-import { Fragment, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from 'styles/Welcome.module.css';
 import { Dropdown, DropdownButton, FormControl } from "react-bootstrap";
+import Combobox from "@/components/combobox";
 
 
 export default function AdminCommunication() {
@@ -12,27 +13,13 @@ export default function AdminCommunication() {
     const [allComments, setAllComments] = useState<BuildingComment[]>([]);
     const [selectedTemplate, setSelectedTemplate] = useState("");
     const [selectedComment, setSelectedComment] = useState("");
-    const [templateQuery, setTemplateQuery] = useState("");
-    const [commentQuery, setCommentQuery] = useState("");
-
-    const filteredTemplates = templateQuery.trim()
-    ? allTemplates.filter(option =>
-        option.name.toLowerCase().includes(templateQuery.toLowerCase()))
-    : allTemplates;
-
-    const filteredComments = commentQuery.trim()
-    ? allComments.filter(option => 
-        option.comment.toLowerCase().includes(commentQuery.toLowerCase()))
-    : allComments;
 
     const handleSelectTemplate = (eventKey: string | null) => {
         setSelectedTemplate(eventKey ? eventKey : "");
-        setTemplateQuery("");
     }
 
     const handleSelectComment = (eventKey: string | null) => {
         setSelectedComment(eventKey ? eventKey : "");
-        setCommentQuery("");
     }
 
 
@@ -64,55 +51,17 @@ export default function AdminCommunication() {
                 <p className={styles.title}>Communicatie extern</p>
                 <p>Kies een template:</p>
 
-                <DropdownButton
-                    variant="secondary"
-                    title={selectedTemplate || 'Kies template'}
+                <Combobox
+                    options={allTemplates.map((option: EmailTemplate) => option.name)}
+                    selectedOption={selectedTemplate}
                     onSelect={handleSelectTemplate}
-                >
-                    <>
-                        <FormControl
-                            autoFocus
-                            placeholder="Zoeken..."
-                            onChange={e => setTemplateQuery(e.target.value)}
-                            value={templateQuery}
-                        />
-                        <Dropdown.Divider />
-                        {filteredTemplates.length > 0 ? (
-                        filteredTemplates.map((option: EmailTemplate) => (
-                            <Dropdown.Item key={option.name} eventKey={option.name}>
-                                {option.name}
-                            </Dropdown.Item>
-                        ))
-                        ) : (
-                            <Dropdown.Item disabled>Geen overeenkomende opties gevonden.</Dropdown.Item>
-                        )}
-                    </>
-                </DropdownButton>
+                />
 
-                <DropdownButton
-                    variant="secondary"
-                    title={selectedComment || 'Kies Opmerking'}
+                <Combobox
+                    options={allComments.map((option: BuildingComment) => option.comment)}
+                    selectedOption={selectedComment}
                     onSelect={handleSelectComment}
-                >
-                    <>
-                        <FormControl
-                            autoFocus
-                            placeholder="Zoeken..."
-                            onChange={e => setCommentQuery(e.target.value)}
-                            value={commentQuery}
-                        />
-                        <Dropdown.Divider />
-                        {filteredComments.length > 0 ? (
-                            filteredComments.map((option: BuildingComment) => (
-                                <Dropdown.Item key={option.comment} eventKey={option.comment}>
-                                    {option.comment}
-                                </Dropdown.Item>
-                            ))
-                        ) : (
-                            <Dropdown.Item disabled>Geen overeenkomende opties gevonden.</Dropdown.Item>
-                        )}
-                    </>
-                </DropdownButton>
+                />
             </>
         </>
     );
