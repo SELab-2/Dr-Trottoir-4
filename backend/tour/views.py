@@ -1,6 +1,6 @@
 from queue import PriorityQueue
 
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -46,7 +46,20 @@ class BuildingSwapView(APIView):
         responses={
             200: SuccessSerializer,
             400: None
-        }
+        },
+        examples=[
+            OpenApiExample(
+                'Swapping 2 buildings',
+                value='{buildingID1: 0, buildingID2: 1}',
+                description='',
+                request_only=True
+            ),
+            OpenApiExample(
+                'Swapping more than 2 buildings',
+                value='{buildingID1: 5, buildingID2: 6, buildingID3: 9, buildingID4: 17}',
+                request_only=True
+            )
+        ]
     )
     def post(self, request, tour_id):
         data = request_to_dict(request.data)

@@ -124,7 +124,5 @@ class SuccessSerializer(serializers.Serializer):
 
 class BuildingSwapRequestSerializer(serializers.Serializer):
     buildingID1 = serializers.IntegerField()
-    index1 = serializers.IntegerField()
 
     buildingID2 = serializers.IntegerField()
-    index2 = serializers.IntegerField()
