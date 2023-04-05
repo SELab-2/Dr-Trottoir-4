@@ -16,12 +16,12 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    TextField,
-    Button
+    TextField
 } from "@mui/material";
 import {Edit, Delete} from "@mui/icons-material";
 import {useRouter} from "next/router"
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
+import {Button} from "react-bootstrap";
 
 interface RegionView extends RegionInterface {
 }
@@ -41,7 +41,7 @@ function AdminDataRegions() {
         () => [
             {
                 accessorKey: "region",
-                header: "Region Name",
+                header: "Regio naam",
             },
         ],
         []
@@ -101,7 +101,7 @@ function AdminDataRegions() {
                         muiTableHeadCellProps: {
                             align: "center",
                         },
-                        header: "Actions",
+                        header: "Acties",
                     },
                 }}
                 enablePagination={false}
