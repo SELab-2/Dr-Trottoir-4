@@ -10,29 +10,35 @@ from rest_framework.response import Response
 from drf_spectacular.utils import OpenApiParameter
 
 
-def get_id_param(request, name):
+def get_id_param(request, name, required=False):
     param = request.GET.get(name, None)
     if param:
         if not param.isdigit():
             raise BadRequest(f'The query parameter {name} should be an integer')
+    else:
+        if required:
+            raise BadRequest(f'The query parameter {name} is required')
     return param
 
 
-def get_date_param(request, name):
+def get_date_param(request, name, required=False):
     param = request.GET.get(name, None)
     if param:
         try:
             param = datetime.strptime(param, '%Y-%m-%d')
         except ValueError:
             raise BadRequest(f"The date parameter {name} hasn't the appropriate form (=YYYY-MM-DD).")
+    else:
+        if required:
+            raise BadRequest(f'The query parameter {name} is required')
     return param
 
 
-def get_param(request, key):
+def get_param(request, key, required):
     if 'date' in key:
-        return get_date_param(request, key)
+        return get_date_param(request, key, required)
     elif 'id' in key:
-        return get_id_param(request, key)
+        return get_id_param(request, key, required)
     # add more conditions here as needed
     else:
         return None
@@ -40,10 +46,10 @@ def get_param(request, key):
 
 def filter_instances(request, instances, filters):
     try:
-        for key, value in filters.items():
-            param = get_param(request, key)
-            if param:
-                instances = instances.filter(**{value: param})
+        for key, (filter_key, required) in filters.items():
+            param_value = get_param(request, key, required)
+            if param_value:
+                instances = instances.filter(**{filter_key: param_value})
     except BadRequest as e:
         error = {'message': str(e)}
         return HttpResponseBadRequest(json.dumps(error), content_type='application/json')

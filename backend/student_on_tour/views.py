@@ -45,17 +45,17 @@ class TourPerStudentView(APIView):
         """
         Get all StudentOnTour for a student with given id
         """
-        start_date = get_date_param(request, 'start-date')
-        end_date = get_date_param(request, 'end-date')
         id_holder = type("", (), {})()
         id_holder.id = student_id
         self.check_object_permissions(request, id_holder)
 
+        filters = {
+            'start_date': ('date__gte', False),
+            'end_date': ('date__lte', False),
+        }
         student_on_tour_instances = StudentOnTour.objects.filter(student_id=student_id)
-        if start_date:
-            student_on_tour_instances.filter(date__gte=start_date)
-        if end_date:
-            student_on_tour_instances.filter(date__lte=end_date)
+        if r := filter_instances(request, student_on_tour_instances, filters):
+            return r
         serializer = StudOnTourSerializer(student_on_tour_instances, many=True)
         return get_success(serializer)
 
@@ -138,13 +138,14 @@ class AllView(APIView):
         Get all StudentOnTours
         """
         filters = {
-            'tour-id': 'tour_id',
-            'region-id': 'tour__region_id',
-            'start_date': 'date__gte',
-            'end_date': 'date__lte',
-            'student-id': 'student_id',
+            'tour-id': ('tour_id', False),
+            'region-id': ('tour__region_id', False),
+            'start_date': ('date__gte', False),
+            'end_date': ('date__lte', False),
+            'student-id': ('student_id', False),
         }
         stud_on_tour_instances = StudentOnTour.objects.all()
-        filter_instances(request, stud_on_tour_instances, filters)
+        if r := filter_instances(request, stud_on_tour_instances, filters):
+            return r
         serializer = StudOnTourSerializer(stud_on_tour_instances, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
