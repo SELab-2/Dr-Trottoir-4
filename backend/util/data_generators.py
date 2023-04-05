@@ -1,9 +1,11 @@
 import io
 import mimetypes
+from datetime import date, timedelta
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from base.models import User, Region, Building, Tour, Role, BuildingOnTour, BuildingComment, EmailTemplate
+from base.models import User, Region, Building, Tour, Role, BuildingOnTour, BuildingComment, EmailTemplate, \
+    GarbageCollection
 
 
 def insert_dummy_region():
@@ -150,3 +152,15 @@ def insert_dummy_email_template():
     title += "a"
     ET.save()
     return ET.id
+
+
+d = date.today()
+
+
+def insert_dummy_garbage():
+    global d
+    b_id = insert_dummy_building()
+    garbage = GarbageCollection(building=Building.objects.get(id=b_id), date=d, garbage_type="RES")
+    d += timedelta(days=1)
+    garbage.save()
+    return garbage.id

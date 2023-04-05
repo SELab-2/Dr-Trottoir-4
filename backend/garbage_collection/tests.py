@@ -1,151 +1,64 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 
+from base.models import GarbageCollection
+from base.serializers import GarbageCollectionSerializer
 from base.test_settings import backend_url, roles
-from util.data_generators import createUser, insert_dummy_building
+from util.data_generators import createUser, insert_dummy_building, insert_dummy_garbage
+from util.test_tools import BaseTest, BaseAuthTest
 
 
-class GarbageCollectionTests(TestCase):
+class GarbageCollectionTests(BaseTest):
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
+
     def test_empty_garbage_list(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        resp = client.get(f"{backend_url}/garbage-collection/all", follow=True)
-        assert resp.status_code == 200
-        data = [resp.data[e] for e in resp.data]
-        assert len(data) == 0
+        self.empty_list("garbage-collection/")
 
     def test_insert_garbage(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
-        resp = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
-        assert resp.status_code == 201
-        for key in data:
-            assert key in resp.data
-        assert "id" in resp.data
+        self.data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
+        self.insert("garbage-collection/")
 
     def test_insert_dupe_garbage(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user)
-
         b_id = insert_dummy_building()
-        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
-
-        _ = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
-        response = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
-        assert response.status_code == 400
+        self.data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
+        self.insert_dupe("garbage-collection/")
 
     def test_get_garbage(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-
-        b_id = insert_dummy_building()
-        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
-
-        response1 = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
-        assert response1.status_code == 201
-        for key in data:
-            # all the data should be present
-            assert key in response1.data
-        # ID should be returned as well
-        assert "id" in response1.data
-        id = response1.data["id"]
-        response2 = client.get(f"{backend_url}/garbage-collection/{id}/", follow=True)
-        assert response2.status_code == 200
-        for key in data:
-            # all the data should be present
-            assert key in response2.data
-        assert "id" in response2.data
+        g_id = insert_dummy_garbage()
+        data = GarbageCollectionSerializer(GarbageCollection.objects.get(id=g_id)).data
+        self.get(f"garbage-collection/{g_id}", data)
 
     def test_get_non_existing(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user)
-        resp = client.get(f"{backend_url}/garbage-collection/123456789", follow=True)
-        assert resp.status_code == 404
+        self.get_non_existent("garbage-collection/")
 
     def test_patch_garbage(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user)
         b_id = insert_dummy_building()
-        data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
-        data2 = {"building": b_id, "date": "2023-03-08", "garbage_type": "PMD"}
-        response1 = client.post(f"{backend_url}/garbage-collection/", data1, follow=True)
-        assert response1.status_code == 201
-        id = response1.data["id"]
-        response2 = client.patch(f"{backend_url}/garbage-collection/{id}/", data2, follow=True)
-        assert response2.status_code == 200
-        response3 = client.get(f"{backend_url}/garbage-collection/{id}/", follow=True)
-        for key in data2:
-            # all the data should be present
-            assert key in response3.data
-        assert response3.status_code == 200
-        assert "id" in response3.data
+        self.data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "PMD"}
+        g_id = insert_dummy_garbage()
+        self.patch(f"garbage-collection/{g_id}")
 
     def test_patch_invalid_garbage(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
-        response2 = client.patch(f"{backend_url}/garbage-collection/123434687658/", data, follow=True)
-        assert response2.status_code == 404
+        self.data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
+        self.patch_invalid("garbage-collection/")
 
     def test_patch_error_garbage(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
         b_id = insert_dummy_building()
-        data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
-        data2 = {"building": b_id, "date": "2023-03-08", "garbage_type": "PMD"}
-        response1 = client.post(f"{backend_url}/garbage-collection/", data1, follow=True)
-        _ = client.post(f"{backend_url}/garbage-collection/", data2, follow=True)
-        assert response1.status_code == 201
-        id = response1.data["id"]
-        response2 = client.patch(f"{backend_url}/garbage-collection/{id}/", data2, follow=True)
-        assert response2.status_code == 400
+        self.data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
+        self.data2 = {"building": b_id, "date": "2023-03-08", "garbage_type": "PMD"}
+        self.patch_error("garbage-collection/")
 
     def test_remove_garbage(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-
-        b_id = insert_dummy_building()
-        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
-
-        response1 = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
-        assert response1.status_code == 201
-        id = response1.data["id"]
-        response2 = client.delete(f"{backend_url}/garbage-collection/{id}/", follow=True)
-        assert response2.status_code == 204
-        response3 = client.get(f"{backend_url}/garbage-collection/{id}/", follow=True)
-        assert response3.status_code == 404
+        g_id = insert_dummy_garbage()
+        self.remove(f"garbage-collection/{g_id}")
 
     def test_remove_nonexistent_garbage(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response2 = client.delete(f"{backend_url}/garbage-collection/123456789/", follow=True)
-        assert response2.status_code == 404
-
-    def test_add_existing_garbage(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        b_id = insert_dummy_building()
-        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
-        _ = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
-        response1 = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
-        assert response1.status_code == 400
+        self.remove_invalid("garbage-collection/")
 
 
-class GarbageCollectionAuthorizationTests(TestCase):
+class GarbageCollectionAuthorizationTests(BaseAuthTest):
 
     def test_garbage_collection_list(self):
         codes = {
@@ -155,12 +68,7 @@ class GarbageCollectionAuthorizationTests(TestCase):
             "Student": 403,
             "Syndic": 403
         }
-        for role in roles:
-            user = createUser(role)
-            client = APIClient()
-            client.force_authenticate(user=user)
-            resp = client.get(f"{backend_url}/garbage-collection/all")
-            assert resp.status_code == codes[role]
+        self.list_view("garbage-collection/", codes)
 
     def test_insert_garbage_collection(self):
         codes = {
@@ -170,25 +78,9 @@ class GarbageCollectionAuthorizationTests(TestCase):
             "Student": 403,
             "Syndic": 403
         }
-        adminUser = createUser()
-        adminClient = APIClient()
-        adminClient.force_authenticate(user=adminUser)
         b_id = insert_dummy_building()
-        for role in roles:
-            user = createUser(role)
-            client = APIClient()
-            client.force_authenticate(user=user)
-
-            data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
-
-            resp = client.post(f"{backend_url}/garbage-collection/", data, follow=True)
-            print(resp.data)
-            assert resp.status_code == codes[role]
-            if resp.status_code == 201:
-                print(f"[{role}]\tinserted, removing again")
-                id = resp.data["id"]
-                print(id)
-                adminClient.delete(f"{backend_url}/garbage-collection/{id}/", follow=True)
+        self.data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
+        self.insert_view("garbage-collection/", codes)
 
     def test_get_garbage_collection(self):
         codes = {
@@ -198,25 +90,8 @@ class GarbageCollectionAuthorizationTests(TestCase):
             "Student": 200,
             "Syndic": 403
         }
-        adminUser = createUser()
-        adminClient = APIClient()
-        adminClient.force_authenticate(user=adminUser)
-
-        b_id = insert_dummy_building()
-        data = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
-
-        response1 = adminClient.post(f"{backend_url}/garbage-collection/", data, follow=True)
-
-        id = response1.data["id"]
-        assert response1.status_code == 201
-        for role in roles:
-            user = createUser(role)
-            client = APIClient()
-            client.force_authenticate(user=user)
-            response2 = client.get(f"{backend_url}/garbage-collection/{id}/", follow=True)
-            if response2.status_code != codes[role]:
-                print(f"role: {role}\tcode: {response2.status_code} (expected {codes[role]})")
-            assert response2.status_code == codes[role]
+        g_id = insert_dummy_garbage()
+        self.get_view(f"garbage-collection/{g_id}", codes)
 
     def test_patch_garbage_collection(self):
         codes = {
@@ -226,24 +101,15 @@ class GarbageCollectionAuthorizationTests(TestCase):
             "Student": 403,
             "Syndic": 403
         }
-        adminUser = createUser()
-        adminClient = APIClient()
-        adminClient.force_authenticate(user=adminUser)
-
+        g_id = insert_dummy_garbage()
         b_id = insert_dummy_building()
-        data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
-        data2 = {"building": b_id, "date": "2023-03-08", "garbage_type": "PMD"}
-
-        response1 = adminClient.post(f"{backend_url}/garbage-collection/", data1, follow=True)
-        id = response1.data["id"]
-        for role in roles:
-            user = createUser(role)
-            client = APIClient()
-            client.force_authenticate(user)
-            response2 = client.patch(f"{backend_url}/garbage-collection/{id}/", data2, follow=True)
-            assert response2.status_code == codes[role]
+        self.data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "PMD"}
+        self.patch_view(f"garbage-collection/{g_id}", codes)
 
     def test_remove_garbage_collection(self):
+        def create():
+            return insert_dummy_garbage()
+
         codes = {
             "Default": 403,
             "Admin": 204,
@@ -251,21 +117,4 @@ class GarbageCollectionAuthorizationTests(TestCase):
             "Student": 403,
             "Syndic": 403
         }
-        adminUser = createUser()
-        adminClient = APIClient()
-        adminClient.force_authenticate(user=adminUser)
-        b_id = insert_dummy_building()
-        data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
-        exists = False
-        for role in roles:
-            if not exists:
-                # building toevoegen als admin
-                response1 = adminClient.post(f"{backend_url}/garbage-collection/", data1, follow=True)
-                id = response1.data["id"]
-            # proberen verwijderen als `role`
-            user = createUser(role)
-            client = APIClient()
-            client.force_authenticate(user)
-            response2 = client.delete(f"{backend_url}/garbage-collection/{id}/", follow=True)
-            assert response2.status_code == codes[role]
-            exists = codes[role] != 204
+        self.remove_view("garbage-collection/", codes, create=create)
