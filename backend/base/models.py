@@ -13,7 +13,7 @@ from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2 ** 31 - 1
+MAX_INT = 2**31 - 1
 
 
 class Region(models.Model):
@@ -205,7 +205,7 @@ class GarbageCollection(models.Model):
                 "date",
                 name="garbage_collection_unique",
                 violation_error_message="This type of garbage is already being collected on the same day for this "
-                                        "building.",
+                "building.",
             ),
         ]
 
@@ -257,27 +257,17 @@ class BuildingOnTour(models.Model):
                     f"The regions for tour ({tour_region}) en building ({building_region}) are different."
                 )
 
-            nr_of_buildings = BuildingOnTour.objects.filter(tour=self.tour_id).count()
-            if self.index > nr_of_buildings:
-                raise ValidationError(f"The maximum allowed index for this building is {nr_of_buildings}")
-
     def __str__(self):
         return f"{self.building} on tour {self.tour}, index: {self.index}"
 
     class Meta:
         constraints = [
-            UniqueConstraint(
-                "index",
-                "tour",
-                name="unique_index_on_tour",
-                violation_error_message="The tour has already a building on this index.",
-            ),
-            UniqueConstraint(
+           UniqueConstraint(
                 "building",
                 "tour",
                 name="unique_building_on_tour",
                 violation_error_message="This building is already on this tour.",
-            ),
+            )
         ]
 
 
@@ -379,9 +369,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-                self.version_number == 0
-                or self.version_number > max_version_number + 1
-                or self.version_number in version_numbers
+            self.version_number == 0
+            or self.version_number > max_version_number + 1
+            or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 

@@ -1,4 +1,4 @@
-import { Reset_Password } from "@/types.d";
+import { Reset_Password } from "@/types";
 import api from "@/lib/api/axios";
 import { AxiosResponse } from "axios";
 

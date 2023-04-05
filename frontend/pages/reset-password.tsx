@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
-import BaseHeader from "@/components/header/BaseHeader";
+import BaseHeader from "@/components/header/baseHeader";
 import styles from "@/styles/Login.module.css";
 import Image from "next/image";
 import filler_image from "@/public/filler_image.png";

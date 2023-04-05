@@ -8,13 +8,13 @@ from base.permissions import (
     IsAdmin,
     IsSuperStudent,
     ReadOnlyStudent,
-    OwnerOfBuilding,
     OwnerWithLimitedPatch,
+    OwnerOfBuilding,
 )
 from base.serializers import BuildingSerializer
 from util.request_response_util import *
 
-TRANSLATE = {"syndic": "syndic_id"}
+TRANSLATE = {"syndic": "syndic_id", "region": "region_id"}
 
 
 class DefaultBuilding(APIView):
@@ -151,6 +151,21 @@ class AllBuildingsView(APIView):
         Get all buildings
         """
         building_instances = Building.objects.all()
+
+        serializer = BuildingSerializer(building_instances, many=True)
+        return get_success(serializer)
+
+
+class AllBuildingsInRegionView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = BuildingSerializer
+
+    @extend_schema(responses=get_docs(BuildingSerializer))
+    def get(self, request, region_id):
+        """
+        Get all buildings in region with given id
+        """
+        building_instances = Building.objects.filter(region_id=region_id)
 
         serializer = BuildingSerializer(building_instances, many=True)
         return get_success(serializer)

@@ -3,5 +3,12 @@
   "A user is already registered with this e-mail address.": "Er bestaat al een gebruiker met dit e-mailadres.",
   "This password is too short. It must contain at least 8 characters.": "Dit wachtwoord is te kort. Een wachtwoord moet minimum 8 karakters lang zijn.",
   "This password is too common.": "Dit wachtwoord is te eenvoudig.",
-  "This password is entirely numeric.": "Dit wachtwoord bestaat volledig uit cijfers, er moeten ook lettertekens in voorkomen."
+  "This password is entirely numeric.": "Dit wachtwoord bestaat volledig uit cijfers, er moeten ook lettertekens in voorkomen.",
+  "There is already a tour with the same name in the region.": "Er bestaat al een ronde met deze naam in deze regio.",
+  "Syndic": "Syndicus",
+  "The phone number entered is not valid": "Het telefoonnummer is niet geldig.",
+  "The name for this template already exists.": "Er bestaat al een template met deze naam.",
+  "You don't have the right permissions to delete this user": "U hebt niet de machtigingen om deze gebruiker te verwijderen.",
+  "You don't have the right permissions to edit this user": "U hebt niet de machtigingen om deze gebruiker aan te passen.",
+  "You can't assign a role to yourself or assign a role that is higher than your own": "Het is niet mogelijk om uzelf een rol te geven of een rol te geven die hoger is dan uw eigen rol."
 }
