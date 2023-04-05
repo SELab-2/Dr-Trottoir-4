@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from "react";
-import {getCurrentUser, getUserRole, patchUser, User} from "@/lib/user";
+import React, { useEffect, useState } from "react";
+import { getCurrentUser, getUserRole, patchUser, User } from "@/lib/user";
 import styles from "@/styles/Login.module.css";
 import PhoneInput from "react-phone-input-2";
-import {useTranslation} from "react-i18next";
-import {getAllRegions, RegionInterface} from "@/lib/region";
+import { useTranslation } from "react-i18next";
+import { getAllRegions, RegionInterface } from "@/lib/region";
 import AdminHeader from "@/components/header/adminHeader";
 import StudentHeader from "@/components/header/studentHeader";
 import SyndicHeader from "@/components/header/syndicHeader";
-import {getAndSetErrors} from "@/lib/error";
+import { getAndSetErrors } from "@/lib/error";
 
 export default function UserProfile() {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [user, setUser] = useState<User | null>(null);
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
@@ -92,13 +92,13 @@ export default function UserProfile() {
 
     useEffect(() => {
         console.log(selectedRegions);
-    }, [selectedRegions])
+    }, [selectedRegions]);
 
     return (
         <>
-            {["Admin", "Superstudent"].includes(role) && <AdminHeader/>}
-            {"Student" === role && <StudentHeader/>}
-            {"Syndic" === role && <SyndicHeader/>}
+            {["Admin", "Superstudent"].includes(role) && <AdminHeader />}
+            {"Student" === role && <StudentHeader />}
+            {"Syndic" === role && <SyndicHeader />}
             {errorMessages.length !== 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>
                     <ul>
@@ -117,7 +117,7 @@ export default function UserProfile() {
             )}
             <form>
                 <div className="d-flex align-items-center mb-3 pb-1">
-                    <i className="fas fa-cubes fa-2x me-3"/>
+                    <i className="fas fa-cubes fa-2x me-3" />
                     <span className="h1 fw-bold mb-0">Profiel</span>
                 </div>
 
@@ -184,34 +184,42 @@ export default function UserProfile() {
 
                 <div className="form-outline mb-4">
                     <label className="form-label">Regio's waarin u wilt werken:</label>
-                    {
-                        allRegions?.map((r: RegionInterface) => {
-                            return (
-                                <div className="form-check" key={r.id}>
-                                    <input className="form-check-input" type="checkbox" value={r.id}
-                                           id={r.id.toString()}
-                                           checked={selectedRegions.some((n: number) => n === r.id)}
-                                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                               const regionId = Number(e.target.value)
-                                               const regions = [...selectedRegions];
-                                               if (e.target.checked && ! selectedRegions.find((el : number) => el === regionId)) {
-                                                   regions.push(regionId);
-                                                   setSelectedRegions(regions);
-                                               } else if (! e.target.checked && selectedRegions.find((el : number) => el === regionId)) {
-                                                   const i = regions.indexOf(regionId);
-                                                   if (i > -1) {
-                                                       regions.splice(i, 1);
-                                                   }
-                                                   setSelectedRegions(regions);
-                                               }
-                                           }}/>
-                                    <label className="form-check-label" htmlFor={r.id.toString()}>
-                                        {r.region}
-                                    </label>
-                                </div>
-                            );
-                        })
-                    }
+                    {allRegions?.map((r: RegionInterface) => {
+                        return (
+                            <div className="form-check" key={r.id}>
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    value={r.id}
+                                    id={r.id.toString()}
+                                    checked={selectedRegions.some((n: number) => n === r.id)}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                        const regionId = Number(e.target.value);
+                                        const regions = [...selectedRegions];
+                                        if (
+                                            e.target.checked &&
+                                            !selectedRegions.find((el: number) => el === regionId)
+                                        ) {
+                                            regions.push(regionId);
+                                            setSelectedRegions(regions);
+                                        } else if (
+                                            !e.target.checked &&
+                                            selectedRegions.find((el: number) => el === regionId)
+                                        ) {
+                                            const i = regions.indexOf(regionId);
+                                            if (i > -1) {
+                                                regions.splice(i, 1);
+                                            }
+                                            setSelectedRegions(regions);
+                                        }
+                                    }}
+                                />
+                                <label className="form-check-label" htmlFor={r.id.toString()}>
+                                    {r.region}
+                                </label>
+                            </div>
+                        );
+                    })}
                 </div>
             </form>
             <div className="pt-1 mb-4">
