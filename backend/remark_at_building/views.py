@@ -24,7 +24,7 @@ class Default(APIView):
         """
         Create a new RemarkAtBuilding with data from post
         """
-        data = request_to_dict(request)
+        data = request_to_dict(request.data)
 
         remark_at_building = RemarkAtBuilding()
 
