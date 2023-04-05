@@ -55,52 +55,26 @@ class TourTests(BaseTest):
 
 
 class TourAuthorizationTests(BaseAuthTest):
-
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
 
     def test_lobby_tour(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         self.list_view("tour/", codes)
 
     def test_insert_tour(self):
-        codes = {
-            "Default": 403,
-            "Admin": 201,
-            "Superstudent": 201,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 201, "Student": 403, "Syndic": 403}
         r_id = insert_dummy_region()
         self.data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
         self.insert_view("tour/", codes)
 
-
     def test_get_tour(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 200,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 200, "Syndic": 403}
         t_id = insert_dummy_tour()
         self.get_view(f"tour/{t_id}", codes)
 
     def test_patch_tour(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         t_id = insert_dummy_tour()
         r_id = insert_dummy_region()
         self.data1 = {"name": "OverPoort", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
@@ -109,11 +83,6 @@ class TourAuthorizationTests(BaseAuthTest):
     def test_remove_tour(self):
         def create():
             return insert_dummy_tour()
-        codes = {
-            "Default": 403,
-            "Admin": 204,
-            "Superstudent": 204,
-            "Student": 403,
-            "Syndic": 403
-        }
+
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 204, "Student": 403, "Syndic": 403}
         self.remove_view("tour/", codes, create=create)

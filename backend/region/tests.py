@@ -51,45 +51,21 @@ class RegionAuthorizationTests(BaseAuthTest):
         super().__init__(methodName)
 
     def test_region_list(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 200,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 200, "Syndic": 403}
         self.list_view("region/", codes)
 
     def test_insert_region(self):
-        codes = {
-            "Default": 403,
-            "Admin": 201,
-            "Superstudent": 403,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 403, "Student": 403, "Syndic": 403}
         self.data1 = {"region": "Gent"}
         self.insert_view("region/", codes)
 
     def test_get_region(self):
-        codes = {
-            "Default": 200,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 200,
-            "Syndic": 200
-        }
+        codes = {"Default": 200, "Admin": 200, "Superstudent": 200, "Student": 200, "Syndic": 200}
         r_id = insert_dummy_region()
         self.get_view(f"region/{r_id}", codes)
 
     def test_patch_region(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 403,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 403, "Student": 403, "Syndic": 403}
         r_id = insert_dummy_region("Bruhhe")
         self.data1 = {"region": "Gent"}
         self.patch_view(f"region/{r_id}", codes)
@@ -97,11 +73,6 @@ class RegionAuthorizationTests(BaseAuthTest):
     def test_remove_region(self):
         def create():
             return insert_dummy_region()
-        codes = {
-            "Default": 403,
-            "Admin": 204,
-            "Superstudent": 403,
-            "Student": 403,
-            "Syndic": 403
-        }
+
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 403, "Student": 403, "Syndic": 403}
         self.remove_view("region/", codes, create=create)

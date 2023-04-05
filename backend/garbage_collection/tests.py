@@ -55,48 +55,23 @@ class GarbageCollectionTests(BaseTest):
 
 
 class GarbageCollectionAuthorizationTests(BaseAuthTest):
-
     def test_garbage_collection_list(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         self.list_view("garbage-collection/", codes)
 
     def test_insert_garbage_collection(self):
-        codes = {
-            "Default": 403,
-            "Admin": 201,
-            "Superstudent": 201,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 201, "Student": 403, "Syndic": 403}
         b_id = insert_dummy_building()
         self.data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
         self.insert_view("garbage-collection/", codes)
 
     def test_get_garbage_collection(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 200,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 200, "Syndic": 403}
         g_id = insert_dummy_garbage()
         self.get_view(f"garbage-collection/{g_id}", codes)
 
     def test_patch_garbage_collection(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         g_id = insert_dummy_garbage()
         b_id = insert_dummy_building()
         self.data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "PMD"}
@@ -106,11 +81,5 @@ class GarbageCollectionAuthorizationTests(BaseAuthTest):
         def create():
             return insert_dummy_garbage()
 
-        codes = {
-            "Default": 403,
-            "Admin": 204,
-            "Superstudent": 204,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 204, "Student": 403, "Syndic": 403}
         self.remove_view("garbage-collection/", codes, create=create)

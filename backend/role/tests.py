@@ -54,45 +54,21 @@ class RoleAuthorizationTests(BaseAuthTest):
         super().__init__(methodName)
 
     def test_role_list(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         self.list_view("role/", codes)
 
     def test_insert_role(self):
-        codes = {
-            "Default": 403,
-            "Admin": 201,
-            "Superstudent": 403,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 403, "Student": 403, "Syndic": 403}
         self.data1 = {"name": "Test", "rank": 2, "description": "testRole"}
         self.insert_view("role/", codes)
 
     def test_get_role(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         r_id = insert_dummy_role("testRole")
         self.get_view(f"role/{r_id}", codes)
 
     def test_patch_role(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         r_id = insert_dummy_role("testRole")
         self.data1 = {"name": "Test", "rank": 2, "description": "testRole"}
         self.patch_view(f"role/{r_id}", codes)
@@ -100,11 +76,6 @@ class RoleAuthorizationTests(BaseAuthTest):
     def test_remove_role(self):
         def create():
             return insert_dummy_role("testRole")
-        codes = {
-            "Default": 403,
-            "Admin": 204,
-            "Superstudent": 204,
-            "Student": 403,
-            "Syndic": 403
-        }
+
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 204, "Student": 403, "Syndic": 403}
         self.remove_view("role/", codes, create=create)
