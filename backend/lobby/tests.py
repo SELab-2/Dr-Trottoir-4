@@ -1,9 +1,6 @@
-from rest_framework.test import APIClient
-
 from base.models import Lobby
 from base.serializers import LobbySerializer
-from base.test_settings import backend_url, roles
-from util.data_generators import createUser, insert_dummy_role, insert_dummy_lobby
+from util.data_generators import insert_dummy_role, insert_dummy_lobby
 from util.test_tools import BaseTest, BaseAuthTest
 
 
@@ -94,7 +91,6 @@ class LobbyAuthorizationTests(BaseAuthTest):
         l_id = insert_dummy_lobby()
         self.get_view(f"lobby/{l_id}", codes)
 
-
     def test_patch_lobby(self):
         codes = {
             "Default": 403,
@@ -112,6 +108,7 @@ class LobbyAuthorizationTests(BaseAuthTest):
     def test_remove_lobby(self):
         def create():
             return insert_dummy_lobby()
+
         codes = {
             "Default": 403,
             "Admin": 204,
