@@ -5,8 +5,20 @@ from rest_framework.views import APIView
 from base.models import PictureOfRemark, StudentOnTour
 from base.permissions import IsAdmin, IsSuperStudent, IsStudent, OwnerAccount
 from base.serializers import PictureOfRemarkSerializer
-from util.request_response_util import post_docs, request_to_dict, set_keys_of_instance, try_full_clean_and_save, \
-    get_success, not_found, delete_docs, delete_success, patch_docs, patch_success, get_docs, post_success
+from util.request_response_util import (
+    post_docs,
+    request_to_dict,
+    set_keys_of_instance,
+    try_full_clean_and_save,
+    get_success,
+    not_found,
+    delete_docs,
+    delete_success,
+    patch_docs,
+    patch_success,
+    get_docs,
+    post_success,
+)
 
 TRANSLATE = {"remark_at_building": "remark_at_building_id"}
 
@@ -43,8 +55,7 @@ class PictureOfRemarkIndividualView(APIView):
         """
         Get info about a remark at building with a given id
         """
-        picture_of_remark = PictureOfRemark.objects.filter(
-            id=remark_at_building_id).first()
+        picture_of_remark = PictureOfRemark.objects.filter(id=remark_at_building_id).first()
 
         if not picture_of_remark:
             return not_found(object_name="PictureOfRemark")
