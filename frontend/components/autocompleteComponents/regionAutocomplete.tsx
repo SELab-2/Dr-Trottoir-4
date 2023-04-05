@@ -1,9 +1,8 @@
 import React from "react";
-import {getAllRegions, Region} from "@/lib/region";
-import AutocompleteComponent, {GenericProps} from "@/components/autocompleteComponents/autocompleteComponent";
+import { getAllRegions, Region } from "@/lib/region";
+import AutocompleteComponent, { GenericProps } from "@/components/autocompleteComponents/autocompleteComponent";
 
-const RegionAutocomplete: React.FC<GenericProps> = ({value, onChange, setObjectId, required}) => {
-
+const RegionAutocomplete: React.FC<GenericProps> = ({ value, onChange, setObjectId, required }) => {
     return (
         <AutocompleteComponent
             value={value}
@@ -12,7 +11,7 @@ const RegionAutocomplete: React.FC<GenericProps> = ({value, onChange, setObjectI
             onChange={onChange}
             mapping={(region: Region) => region.region}
             searchField={"region"}
-            searchTermHandler={value => value}
+            searchTermHandler={(value) => value}
             setObjectId={setObjectId}
         />
     );

@@ -1,17 +1,17 @@
-import React, {useEffect, useState, ChangeEvent, FormEvent, MouseEventHandler} from "react";
-import {useRouter} from "next/router";
-import {Form, Alert} from "react-bootstrap";
+import React, { useEffect, useState, ChangeEvent, FormEvent, MouseEventHandler } from "react";
+import { useRouter } from "next/router";
+import { Form, Alert } from "react-bootstrap";
 import {
     BuildingPostInterface,
     getBuildingInfo,
     getDurationFromMinutes,
     patchBuilding,
-    postBuilding
+    postBuilding,
 } from "@/lib/building";
-import {getRegion} from "@/lib/region";
-import {getUserInfo, userSearchString} from "@/lib/user";
+import { getRegion } from "@/lib/region";
+import { getUserInfo, userSearchString } from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
 import PDFUploader from "@/components/pdfUploader";
@@ -68,11 +68,10 @@ function AdminDataBuildingsEdit() {
                 setShowConfirmation(true);
             } catch (error: any) {
                 setShowConfirmation(false);
-                console.error('An error occurred:', error.request.responseText);
+                console.error("An error occurred:", error.request.responseText);
                 setErrorMessage(error.request.responseText);
                 setFormErrors(true);
             }
-
         } else {
             setFormErrors(true);
         }
@@ -85,7 +84,7 @@ function AdminDataBuildingsEdit() {
     useEffect(() => {
         setErrorMessage(requiredFieldsNotFilledMessage);
         if (router.query.building) {
-            getBuildingInfo(Number(router.query.building)).then(async res => {
+            getBuildingInfo(Number(router.query.building)).then(async (res) => {
                 setStreet(res.data.street);
                 setHouseNumber(res.data.house_number);
                 setBusNumber(res.data.bus ? res.data.bus : "");
@@ -107,7 +106,7 @@ function AdminDataBuildingsEdit() {
 
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <div className={styles.container}>
                 {showConfirmation && (
                     <Alert variant="success" onClose={() => setShowConfirmation(false)} dismissible>
@@ -137,9 +136,7 @@ function AdminDataBuildingsEdit() {
                             onChange={(e: ChangeEvent<HTMLInputElement>) => setPostalCode(e.target.value)}
                             required
                         />
-                        <Form.Control.Feedback type="invalid">
-                            Please provide a postal code.
-                        </Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">Please provide a postal code.</Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group controlId="city">
@@ -197,20 +194,22 @@ function AdminDataBuildingsEdit() {
                             min="0"
                             value={durationInMinutes}
                             onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                setDurationInMinutes(
-                                    e.target.value === "" ? 0 : parseInt(e.target.value)
-                                )
+                                setDurationInMinutes(e.target.value === "" ? 0 : parseInt(e.target.value))
                             }
                         />
                     </Form.Group>
-                    <RegionAutocomplete value={region}
-                                        onChange={setRegion}
-                                        setObjectId={setRegionId}
-                                        required={true}></RegionAutocomplete>
-                    <SyndicAutoCompleteComponent value={syndic}
-                                                 onChange={setSyndic}
-                                                 setObjectId={setSyndicId}
-                                                 required={true}></SyndicAutoCompleteComponent>
+                    <RegionAutocomplete
+                        value={region}
+                        onChange={setRegion}
+                        setObjectId={setRegionId}
+                        required={true}
+                    ></RegionAutocomplete>
+                    <SyndicAutoCompleteComponent
+                        value={syndic}
+                        onChange={setSyndic}
+                        setObjectId={setSyndicId}
+                        required={true}
+                    ></SyndicAutoCompleteComponent>
                     {!router.query.building && <PDFUploader onUpload={setManual}></PDFUploader>}
                 </Form>
                 <button onClick={handleSubmit} type="button">

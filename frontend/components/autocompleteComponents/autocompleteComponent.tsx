@@ -1,9 +1,8 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
-import Autocomplete, {AutocompleteRenderInputParams} from "@mui/material/Autocomplete";
-import {AxiosResponse} from "axios/index";
-import {Button, Form, Dropdown, InputGroup} from "react-bootstrap";
-
+import Autocomplete, { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
+import { AxiosResponse } from "axios/index";
+import { Button, Form, Dropdown, InputGroup } from "react-bootstrap";
 
 //A lot of typings here are any to make the AutocompleteComponentGeneric
 
@@ -35,15 +34,15 @@ function getIdBySearchTerm(arr: any[], field: string, searchTerm: string | null)
 }
 
 const AutocompleteComponent: React.FC<Props> = ({
-                                                    value,
-                                                    label,
-                                                    fetchOptions,
-                                                    onChange,
-                                                    mapping,
-                                                    searchField,
-                                                    searchTermHandler,
-                                                    setObjectId
-                                                }) => {
+    value,
+    label,
+    fetchOptions,
+    onChange,
+    mapping,
+    searchField,
+    searchTermHandler,
+    setObjectId,
+}) => {
     const [inputValue, setInputValue] = useState("");
     const [options, setOptions] = useState<string[]>([]);
 
@@ -61,34 +60,29 @@ const AutocompleteComponent: React.FC<Props> = ({
         fetch().then();
     }, [fetchOptions]);
 
-
     return (
         <>
-            <Form.Label> {label} </Form.Label><Autocomplete
-            //our option and value are different but without this line it will give warnings as the default
-            //implementations checks whether options === value
-            isOptionEqualToValue={(option: { toString: () => any; }, value: { toString: () => any; }) => true}
-            value={value}
-            inputValue={inputValue}
-            onChange={(
-                e: React.SyntheticEvent,
-                newValue: any
-            ) => {
-                if (newValue) {
-                    setObjectId(getIdBySearchTerm(options, searchField, searchTermHandler(newValue)));
-                    onChange(newValue ?? "");
-                }
-            }}
-            onInputChange={(
-                e: React.SyntheticEvent,
-                newInputValue: string
-            ) => {
-                setInputValue(newInputValue);
-            }}
-            options={options.map(mapping)}
-            renderInput={(params: AutocompleteRenderInputParams) => (
-                <TextField {...params} variant="outlined" fullWidth/>
-            )}/>
+            <Form.Label> {label} </Form.Label>
+            <Autocomplete
+                //our option and value are different but without this line it will give warnings as the default
+                //implementations checks whether options === value
+                isOptionEqualToValue={(option: { toString: () => any }, value: { toString: () => any }) => true}
+                value={value}
+                inputValue={inputValue}
+                onChange={(e: React.SyntheticEvent, newValue: any) => {
+                    if (newValue) {
+                        setObjectId(getIdBySearchTerm(options, searchField, searchTermHandler(newValue)));
+                        onChange(newValue ?? "");
+                    }
+                }}
+                onInputChange={(e: React.SyntheticEvent, newInputValue: string) => {
+                    setInputValue(newInputValue);
+                }}
+                options={options.map(mapping)}
+                renderInput={(params: AutocompleteRenderInputParams) => (
+                    <TextField {...params} variant="outlined" fullWidth />
+                )}
+            />
         </>
     );
 };
