@@ -1,3 +1,4 @@
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -136,6 +137,14 @@ class AllUsersView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = UserSerializer
 
+    @extend_schema(
+        parameters=param_docs({
+            "region-id-list": ("Filter by region ids", False, OpenApiTypes.INT),
+            "include-inactive-bool": ("Include the inactive users", False, OpenApiTypes.BOOL),
+            "include-role-name-list": ("Include all the users with specific role names", False, OpenApiTypes.STR),
+            "exclude-role-name-list": ("Exclude all the users with specific role names", False, OpenApiTypes.STR),
+        })
+    )
     def get(self, request):
         """
         Get all users
