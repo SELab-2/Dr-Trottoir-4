@@ -2,7 +2,6 @@ import AdminHeader from "@/components/header/adminHeader";
 import React, {useEffect, useMemo, useState} from "react";
 import {
     RegionInterface,
-    RegionPostInterface,
     getAllRegions,
     postRegion,
     patchRegion, deleteRegion,
@@ -175,7 +174,7 @@ function AdminDataRegions() {
                         autoFocus
                         margin="dense"
                         id="name"
-                        label="Region Name"
+                        label="Regio naam"
                         type="text"
                         fullWidth
                         value={regionName}
