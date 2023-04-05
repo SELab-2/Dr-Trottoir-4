@@ -1,8 +1,8 @@
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import router from "next/router";
-import {BuildingInterface, getBuildingsFromOwner} from "@/lib/building";
-import {useEffect, useState} from "react";
-import {AxiosResponse} from "axios";
+import { BuildingInterface, getBuildingsFromOwner } from "@/lib/building";
+import { useEffect, useState } from "react";
+import { AxiosResponse } from "axios";
 import DefaultHeader from "@/components/header/defaultHeader";
 
 function SyndicDashboard() {
@@ -43,7 +43,7 @@ function SyndicDashboard() {
 
     return (
         <>
-            <DefaultHeader/>
+            <DefaultHeader />
 
             <p>
                 https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1145&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
@@ -62,7 +62,7 @@ function SyndicDashboard() {
                                 e.preventDefault();
                                 router.push({
                                     pathname: "building",
-                                    query: {id: building.id},
+                                    query: { id: building.id },
                                 });
                             }}
                         >

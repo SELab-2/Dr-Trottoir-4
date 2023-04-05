@@ -1,24 +1,23 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {useRouter} from "next/router";
-import {getAllRegions, getRegion, RegionInterface} from "@/lib/region";
-import {deleteTour, getTour, patchTour, postTour, swapBuildingsOnTour, Tour} from "@/lib/tour";
-import {BuildingInterface, getAllBuildings} from "@/lib/building";
-import {BuildingOnTour, getAllBuildingsOnTourWithTourID,} from "@/lib/building-on-tour";
-import MaterialReactTable, {MRT_ColumnDef, MRT_Row} from "material-react-table";
-import {Box, Tooltip} from "@mui/material";
-import {Button} from "react-bootstrap";
+import React, { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import { getAllRegions, getRegion, RegionInterface } from "@/lib/region";
+import { deleteTour, getTour, patchTour, postTour, swapBuildingsOnTour, Tour } from "@/lib/tour";
+import { BuildingInterface, getAllBuildings } from "@/lib/building";
+import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
+import MaterialReactTable, { MRT_ColumnDef, MRT_Row } from "material-react-table";
+import { Box, Tooltip } from "@mui/material";
+import { Button } from "react-bootstrap";
 import SaveIcon from "@mui/icons-material/Save";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {Delete} from "@mui/icons-material";
-import {useTranslation} from "react-i18next";
-import {getAndSetErrors} from "@/lib/error";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { Delete } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
+import { getAndSetErrors } from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
-import {BuildingNotOnTourView, BuildingOnTourView, TourView} from "@/types";
-import {TourDeleteModal} from "@/components/admin/tourDeleteModal";
+import { BuildingNotOnTourView, BuildingOnTourView, TourView } from "@/types";
+import { TourDeleteModal } from "@/components/admin/tourDeleteModal";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DataToursEditQuery extends ParsedUrlQuery {
     tour?: number;
@@ -29,7 +28,7 @@ interface DataToursEditQuery extends ParsedUrlQuery {
  * @constructor
  */
 function AdminDataToursEdit() {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const router = useRouter();
     const query: DataToursEditQuery = router.query as DataToursEditQuery;
     const [tour, setTour] = useState<Tour>();
@@ -136,7 +135,7 @@ function AdminDataToursEdit() {
                 (res) => {
                     const r: Tour = res.data;
                     setTour(r);
-                    setTourView({name: r.name, region: "", tour_id: Number(query.tour), last_modified: ""})
+                    setTourView({ name: r.name, region: "", tour_id: Number(query.tour), last_modified: "" });
                 },
                 (err) => {
                     console.error(err);
@@ -198,7 +197,9 @@ function AdminDataToursEdit() {
             return;
         }
         // Get the selected region
-        const region: RegionInterface | undefined = possibleRegions.find((r: RegionInterface) => r.region === selectedRegion);
+        const region: RegionInterface | undefined = possibleRegions.find(
+            (r: RegionInterface) => r.region === selectedRegion
+        );
         if (!region) {
             return;
         }
@@ -270,7 +271,7 @@ function AdminDataToursEdit() {
      */
     function addToBuildingOnTour(buildingNotOnTour: BuildingNotOnTourView) {
         const index: number = buildingsOnTourView.length;
-        const bot: BuildingOnTourView = {...buildingNotOnTour, index: index};
+        const bot: BuildingOnTourView = { ...buildingNotOnTour, index: index };
         const i = buildingsNotOnTourView.indexOf(buildingNotOnTour);
         if (i > -1) {
             buildingsNotOnTourView.splice(i, 1);
@@ -312,7 +313,7 @@ function AdminDataToursEdit() {
             return;
         }
         if (tour) {
-            patchTour(tour.id, {name: tourName}, new Date(Date.now())).then(
+            patchTour(tour.id, { name: tourName }, new Date(Date.now())).then(
                 async (_) => {
                     if (buildingsOnTourView.length > 0) {
                         const buildingIndices: { [b: number]: number } = {};
@@ -399,8 +400,7 @@ function AdminDataToursEdit() {
             return;
         }
         deleteTour(tour.id).then(
-            async (_) => {
-            },
+            async (_) => {},
             (err) => {
                 console.error(err);
             }
@@ -418,9 +418,14 @@ function AdminDataToursEdit() {
 
     return (
         <>
-            <AdminHeader/>
-            <TourDeleteModal closeModal={closeModal} show={showDeleteModal} selectedTour={tourView}
-                             setSelectedTour={setTourView} onDelete={closeAndRouteDeleteModal}/>
+            <AdminHeader />
+            <TourDeleteModal
+                closeModal={closeModal}
+                show={showDeleteModal}
+                selectedTour={tourView}
+                setSelectedTour={setTourView}
+                onDelete={closeAndRouteDeleteModal}
+            />
             {errorMessages.length > 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>
                     <ul>
@@ -428,7 +433,7 @@ function AdminDataToursEdit() {
                             <li key={index}>{t(err)}</li>
                         ))}
                     </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
+                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])} />
                 </div>
             )}
             <MaterialReactTable
@@ -447,14 +452,14 @@ function AdminDataToursEdit() {
                 // Don't show the tour_id
                 enableHiding={false}
                 enableBottomToolbar={false}
-                initialState={{columnVisibility: {buildingId: false, index: false}}}
-                state={{isLoading: isLoading}}
+                initialState={{ columnVisibility: { buildingId: false, index: false } }}
+                state={{ isLoading: isLoading }}
                 autoResetPageIndex={false}
                 enableRowNumbers
                 enableRowOrdering
-                muiTableBodyRowDragHandleProps={({table}) => ({
+                muiTableBodyRowDragHandleProps={({ table }) => ({
                     onDragEnd: () => {
-                        const {draggingRow, hoveredRow} = table.getState();
+                        const { draggingRow, hoveredRow } = table.getState();
                         if (hoveredRow && draggingRow) {
                             buildingsOnTourView.splice(
                                 (hoveredRow as MRT_Row<BuildingOnTourView>).index,
@@ -466,8 +471,8 @@ function AdminDataToursEdit() {
                         }
                     },
                 })}
-                renderRowActions={({row}) => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                renderRowActions={({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Tooltip arrow placement="left" title="Verwijder van ronde">
                             <Button
                                 variant="warning"
@@ -482,7 +487,7 @@ function AdminDataToursEdit() {
                     </Box>
                 )}
                 renderTopToolbarCustomActions={() => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <label className="form-label">Ronde: </label>
                         <input
                             className={`form-control form-control-lg ${styles.input}`}
@@ -525,17 +530,15 @@ function AdminDataToursEdit() {
                                 }}
                             />
                         </Tooltip>
-                        {
-                            (tour) && (
-                                <Tooltip title="Verwijder ronde">
-                                    <Delete
-                                        onClick={() => {
-                                            setShowDeleteModal(true);
-                                        }}
-                                    />
-                                </Tooltip>
-                            )
-                        }
+                        {tour && (
+                            <Tooltip title="Verwijder ronde">
+                                <Delete
+                                    onClick={() => {
+                                        setShowDeleteModal(true);
+                                    }}
+                                />
+                            </Tooltip>
+                        )}
                     </Box>
                 )}
             />
@@ -554,12 +557,12 @@ function AdminDataToursEdit() {
                 }}
                 enablePagination={false}
                 enableEditing
-                state={{isLoading: isLoading}}
+                state={{ isLoading: isLoading }}
                 // Don't show the tour_id
                 enableHiding={false}
-                initialState={{columnVisibility: {buildingId: false}}}
-                renderRowActions={({row}) => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                initialState={{ columnVisibility: { buildingId: false } }}
+                renderRowActions={({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Tooltip arrow placement="left" title="Voeg toe aan ronde">
                             <Button
                                 variant="warning"
@@ -574,15 +577,13 @@ function AdminDataToursEdit() {
                     </Box>
                 )}
                 renderTopToolbarCustomActions={() => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <label className="form-label">Gebouwen niet op deze ronde (regio {region?.region})</label>
                     </Box>
                 )}
             />
         </>
-
     );
-
 }
 
 export default withAuthorisation(AdminDataToursEdit, ["Admin", "SuperStudent"]);
