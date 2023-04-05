@@ -138,15 +138,8 @@ class StudBuildTourTests(TestCase):
 
 
 class StudBuildTourAuthorizationTests(TestCase):
-
     def test_student_at_building_on_tour_list(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         for role in roles:
             user = createUser(role)
             client = APIClient()
@@ -155,13 +148,7 @@ class StudBuildTourAuthorizationTests(TestCase):
             assert resp.status_code == codes[role]
 
     def test_insert_student_at_building_on_tour(self):
-        codes = {
-            "Default": 403,
-            "Admin": 201,
-            "Superstudent": 201,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 201, "Student": 403, "Syndic": 403}
         adminUser = createUser()
         adminClient = APIClient()
         adminClient.force_authenticate(user=adminUser)
@@ -185,13 +172,7 @@ class StudBuildTourAuthorizationTests(TestCase):
                 adminClient.delete(f"{backend_url}/student-at-building-on-tour/{id}/", follow=True)
 
     def test_get_student_at_building_on_tour(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         adminUser = createUser()
         adminClient = APIClient()
         adminClient.force_authenticate(user=adminUser)
@@ -214,13 +195,7 @@ class StudBuildTourAuthorizationTests(TestCase):
             assert response2.status_code == codes[role]
 
     def test_patch_student_at_building_on_tour(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         adminUser = createUser()
         adminClient = APIClient()
         adminClient.force_authenticate(user=adminUser)
@@ -240,13 +215,7 @@ class StudBuildTourAuthorizationTests(TestCase):
             assert response2.status_code == codes[role]
 
     def test_remove_student_at_building_on_tour(self):
-        codes = {
-            "Default": 403,
-            "Admin": 204,
-            "Superstudent": 204,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 204, "Student": 403, "Syndic": 403}
         adminUser = createUser()
         adminClient = APIClient()
         adminClient.force_authenticate(user=adminUser)

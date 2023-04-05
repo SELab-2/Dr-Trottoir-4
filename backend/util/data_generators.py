@@ -37,10 +37,10 @@ def insert_dummy_role(role):
 
 
 def insert_test_user(
-        first_name: str = "test_student",
-        last_name: str = "test",
-        phone_number="+32467240957",
-        role: str = "admin",
+    first_name: str = "test_student",
+    last_name: str = "test",
+    phone_number="+32467240957",
+    role: str = "admin",
 ) -> int:
     o = User.objects.filter(first_name=first_name).first()
     if o:
@@ -92,11 +92,7 @@ index = 0
 def insert_dummy_tour():
     global index
     r_id = insert_dummy_region()
-    t = Tour(
-        name=f"Sterre S{index}",
-        region=Region.objects.get(id=r_id),
-        modified_at="2023-03-08T12:08:29+01:00"
-    )
+    t = Tour(name=f"Sterre S{index}", region=Region.objects.get(id=r_id), modified_at="2023-03-08T12:08:29+01:00")
     index += 1
     t.save()
     return t.id
@@ -158,11 +154,7 @@ def insert_dummy_picture_of_remark(picture):
 
 def insert_dummy_building_comment():
     b_id = insert_dummy_building()
-    BC = BuildingComment(
-        comment="<3 python",
-        date="2023-03-08T12:08:29+01:00",
-        building=Building.objects.get(id=b_id)
-    )
+    BC = BuildingComment(comment="<3 python", date="2023-03-08T12:08:29+01:00", building=Building.objects.get(id=b_id))
     BC.save()
     return BC.id
 
@@ -188,10 +180,7 @@ title = "a"
 
 def insert_dummy_email_template():
     global title
-    ET = EmailTemplate(
-        name="testTemplate " + title,
-        template="<p>{{name}<p>"
-    )
+    ET = EmailTemplate(name="testTemplate " + title, template="<p>{{name}<p>")
     title += "a"
     ET.save()
     return ET.id
@@ -215,7 +204,7 @@ def insert_dummy_lobby():
     lobby = Lobby(
         email=f"test_lobby_{email_counter}@example.com",
         role=Role.objects.get(id=r_id),
-        verification_code="azerty>qwerty"
+        verification_code="azerty>qwerty",
     )
     email_counter += 1
     lobby.save()
@@ -230,11 +219,7 @@ version = 0
 def insert_dummy_manual():
     global version
     b_id = insert_dummy_building()
-    m = Manual(
-        building=Building.objects.get(id=b_id),
-        file=f,
-        version_number=version
-    )
+    m = Manual(building=Building.objects.get(id=b_id), file=f, version_number=version)
     version += 1
     m.save()
     return m.id
