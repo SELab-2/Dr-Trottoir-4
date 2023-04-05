@@ -22,7 +22,7 @@ class BuildingCommentTests(BaseTest):
     def test_insert_dupe_comment(self):
         b_id = insert_dummy_building()
         self.data1 = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
-        self.insert("building-comment/")
+        self.insert_dupe("building-comment/")
 
     def test_get_comment(self):
         bc_id = insert_dummy_building_comment()
@@ -56,10 +56,6 @@ class BuildingCommentTests(BaseTest):
     def test_remove_nonexistent_comment(self):
         self.remove_invalid("building-comment/")
 
-    def test_add_existing_comment(self):
-        b_id = insert_dummy_building()
-        self.data1 = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
-        self.add_dupe("building-comment/")
 
 
 class BuildingCommentAuthorizationTests(BaseAuthTest):

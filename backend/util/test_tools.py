@@ -85,11 +85,6 @@ class BaseTest(TestCase):
         print(response2.data)
         assert response2.status_code == 404
 
-    def add_dupe(self, url):
-        _ = self.client.post(backend_url + "/" + url, self.data1, follow=True)
-        response1 = self.client.post(backend_url + "/" + url, self.data1, follow=True)
-        assert response1.status_code == 400
-
 
 class BaseAuthTest(TestCase):
     data1 = None
