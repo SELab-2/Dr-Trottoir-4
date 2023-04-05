@@ -1,10 +1,6 @@
-from django.test import TestCase
-from rest_framework.test import APIClient
-
 from base.models import GarbageCollection
 from base.serializers import GarbageCollectionSerializer
-from base.test_settings import backend_url, roles
-from util.data_generators import createUser, insert_dummy_building, insert_dummy_garbage
+from util.data_generators import insert_dummy_building, insert_dummy_garbage
 from util.test_tools import BaseTest, BaseAuthTest
 
 

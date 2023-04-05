@@ -1,10 +1,6 @@
-from django.test import TestCase
-from rest_framework.test import APIClient
-
 from base.models import Tour
 from base.serializers import TourSerializer
-from base.test_settings import backend_url, roles
-from util.data_generators import createUser, insert_dummy_region, insert_dummy_tour
+from util.data_generators import insert_dummy_region, insert_dummy_tour
 from util.test_tools import BaseTest, BaseAuthTest
 
 

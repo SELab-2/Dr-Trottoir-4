@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from base.test_settings import backend_url
 from util.data_generators import insert_dummy_remark_at_building, createMemoryFile, insert_dummy_picture_of_remark
 from util.test_tools import get_authenticated_client
