@@ -53,9 +53,31 @@ export default function AdminCommunication() {
         setSelectedPictures(selectedPhotos);
     }
     
+    const replaceVariable = (str: string, variable: string, value: string) : string => {
+        const regex = new RegExp(`{{\\s*${variable}\\s*}}`, 'g');
+        return str.replace(regex, value);
+    }
+
+    const fillInVariables = (input: string) : string => {
+         const currentSyndic = allSyndics.find(e => e.id === Number(syndicId));
+        if (currentSyndic) {
+            const currentBuilding = allBuildings.find(e => e.syndic === currentSyndic.id);
+
+            const replacedName = replaceVariable(input, 'name', 
+                currentSyndic.first_name + " " + currentSyndic.last_name
+            );
+            if (currentBuilding) {
+                const replacedAddress = replaceVariable(replacedName, 'address', currentBuilding.city);
+                return replacedAddress;
+            }
+        }
+
+        return input;
+    }
 
     const handleEditTemplate = (event: ChangeEvent<HTMLTextAreaElement>) => {
-        setTemplateText(event.target.value);
+            const changedVariablesText = fillInVariables(event.target.value);
+            setTemplateText(withVariables);
     }
 
     useEffect(() => {
@@ -93,7 +115,10 @@ export default function AdminCommunication() {
         setLoading(false);
         const currentBuilding = allBuildings.find(e => e.syndic === Number(syndicId));
         setSelectedBuilding(currentBuilding ? currentBuilding.name : "");
-    }, [allTemplates, allComments, allSyndics, allBuildings, selectedTemplate, selectedSyndic]);
+        console.log(syndicId);
+        const changedVariablesText = fillInVariables(templateText);
+        setTemplateText(changedVariablesText);
+    }, [allTemplates, allComments, allSyndics, allBuildings, selectedTemplate, selectedSyndic, templateText]);
 
 
     return (
