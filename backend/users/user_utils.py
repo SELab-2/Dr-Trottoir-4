@@ -24,6 +24,8 @@ def add_regions_to_user(user_instance, regions_raw):
             {"message": "Invalid syntax. Regions must be a list of id's"}, status=status.HTTP_400_BAD_REQUEST
         )
 
+    user_instance.region.clear()
+
     for region in regions:
         if r := try_adding_region_to_user_instance(user_instance, region):
             return r
