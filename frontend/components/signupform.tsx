@@ -5,7 +5,7 @@ import React, { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import signup from "@/lib/signup";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 function SignupForm() {
     const { t } = useTranslation();

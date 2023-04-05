@@ -2,7 +2,7 @@ import { Emailtemplate, patchMailTemplate, postMailTemplate } from "@/lib/emailt
 import React, { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 export default function ({
     show,
@@ -39,7 +39,7 @@ export default function ({
             },
             (error) => {
                 const e = handleError(error);
-                setErrorMessages(e)
+                setErrorMessages(e);
             }
         );
     }

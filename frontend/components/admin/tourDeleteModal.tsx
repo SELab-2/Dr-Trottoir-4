@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { deleteTour } from "@/lib/tour";
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 export function TourDeleteModal({
     show,

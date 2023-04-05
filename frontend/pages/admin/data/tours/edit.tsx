@@ -11,7 +11,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { Delete } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
 import { BuildingNotOnTourView, BuildingOnTourView, TourView } from "@/types";

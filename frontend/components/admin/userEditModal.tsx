@@ -5,7 +5,7 @@ import { UserView } from "@/types";
 import { getAllRoles, Role } from "@/lib/role";
 import { patchUser } from "@/lib/user";
 import { useTranslation } from "react-i18next";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 export function UserEditModal({
     show,
