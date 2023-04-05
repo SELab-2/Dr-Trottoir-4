@@ -5,7 +5,7 @@ from datetime import date, timedelta
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from base.models import User, Region, Building, Tour, Role, BuildingOnTour, BuildingComment, EmailTemplate, \
-    GarbageCollection, Lobby
+    GarbageCollection, Lobby, Manual
 
 
 def insert_dummy_region():
@@ -177,3 +177,20 @@ def insert_dummy_lobby():
     email_counter += 1
     lobby.save()
     return lobby.id
+
+
+f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
+
+
+version = 0
+def insert_dummy_manual():
+    global version
+    b_id = insert_dummy_building()
+    m = Manual(
+        building=Building.objects.get(id=b_id),
+        file=f,
+        version_number=version
+    )
+    version+=1
+    m.save()
+    return m.id

@@ -34,11 +34,14 @@ class BaseTest(TestCase):
             assert key in resp.data
         assert "id" in resp.data
 
-    def insert_dupe(self, url):
+    def insert_dupe(self, url, special=None):
         assert self.data1 is not None
         _ = self.client.post(backend_url + "/" + url, self.data1, follow=True)
         response = self.client.post(backend_url + "/" + url, self.data1, follow=True)
-        assert response.status_code == 400
+        if special is None:
+            assert response.status_code == 400
+        else:
+            assert response.status_code == special
 
     def get(self, url, data):
         response2 = self.client.get(backend_url + "/" + url, follow=True)
@@ -68,15 +71,18 @@ class BaseTest(TestCase):
         response2 = self.client.patch(backend_url + "/" + url + "123434687658/", self.data1, follow=True)
         assert response2.status_code == 404
 
-    def patch_error(self, url):
+    def patch_error(self, url, special=None):
         assert self.data1 is not None
         assert self.data2 is not None
         response1 = self.client.post(backend_url + "/" + url, self.data1, follow=True)
-        _ = self.client.post(backend_url + "/" + url, self.data2, follow=True)
+        r = self.client.post(backend_url + "/" + url, self.data2, follow=True)
         assert response1.status_code == 201
         result_id = response1.data["id"]
         response2 = self.client.patch(backend_url + "/" + url + f"{result_id}/", self.data2, follow=True)
-        assert response2.status_code == 400
+        if special is None:
+            assert response2.status_code == 400
+        else:
+            assert response2.status_code == special
 
     def remove(self, url):
         response2 = self.client.delete(backend_url + "/" + url, follow=True)
@@ -142,7 +148,8 @@ class BaseAuthTest(TestCase):
             client.force_authenticate(user=user)
             response2 = client.patch(backend_url + "/" + url, self.data1, follow=True)
             if response2.status_code != result:
-                print(f"failed special case for user with role {user.role.name}\t got {response2.status_code} (expected {result})")
+                print(
+                    f"failed special case for user with role {user.role.name}\t got {response2.status_code} (expected {result})")
             assert response2.status_code == result
 
     def remove_view(self, url, codes, create):
