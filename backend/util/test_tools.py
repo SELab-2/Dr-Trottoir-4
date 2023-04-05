@@ -27,6 +27,7 @@ class BaseTest(TestCase):
         assert len(data) == 0
 
     def insert(self, url):
+        assert self.data1 is not None
         resp = self.client.post(backend_url + "/" + url, self.data1, follow=True)
         assert resp.status_code == 201
         for key in self.data1:
@@ -34,6 +35,7 @@ class BaseTest(TestCase):
         assert "id" in resp.data
 
     def insert_dupe(self, url):
+        assert self.data1 is not None
         _ = self.client.post(backend_url + "/" + url, self.data1, follow=True)
         response = self.client.post(backend_url + "/" + url, self.data1, follow=True)
         assert response.status_code == 400
@@ -52,6 +54,7 @@ class BaseTest(TestCase):
         assert resp.status_code == 404
 
     def patch(self, url):
+        assert self.data1 is not None
         response2 = self.client.patch(backend_url + "/" + url, self.data1, follow=True)
         assert response2.status_code == 200
         response3 = self.client.get(backend_url + "/" + url, follow=True)
@@ -66,6 +69,8 @@ class BaseTest(TestCase):
         assert response2.status_code == 404
 
     def patch_error(self, url):
+        assert self.data1 is not None
+        assert self.data2 is not None
         response1 = self.client.post(backend_url + "/" + url, self.data1, follow=True)
         _ = self.client.post(backend_url + "/" + url, self.data2, follow=True)
         assert response1.status_code == 201

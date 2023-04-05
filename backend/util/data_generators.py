@@ -61,13 +61,18 @@ def createUser(name: str = "admin", is_staff: bool = True, withRegion: bool = Fa
     return user
 
 
+index = 0
+
+
 def insert_dummy_tour():
+    global index
     r_id = insert_dummy_region()
     t = Tour(
-        name="Sterre",
+        name=f"Sterre S{index}",
         region=Region.objects.get(id=r_id),
         modified_at="2023-03-08T12:08:29+01:00"
     )
+    index += 1
     t.save()
     return t.id
 
