@@ -54,8 +54,10 @@ class TourPerStudentView(APIView):
             'end-date': ('date__lte', False),
         }
         student_on_tour_instances = StudentOnTour.objects.filter(student_id=student_id)
-        if r := filter_instances(request, student_on_tour_instances, filters):
-            return r
+        try:
+            student_on_tour_instances = filter_instances(request, student_on_tour_instances, filters)
+        except BadRequest as e:
+            return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         serializer = StudOnTourSerializer(student_on_tour_instances, many=True)
         return get_success(serializer)
 
@@ -145,7 +147,11 @@ class AllView(APIView):
             'student-id': ('student_id', False),
         }
         stud_on_tour_instances = StudentOnTour.objects.all()
-        if r := filter_instances(request, stud_on_tour_instances, filters):
-            return r
+
+        try:
+            stud_on_tour_instances = filter_instances(request, stud_on_tour_instances, filters)
+        except BadRequest as e:
+            return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = StudOnTourSerializer(stud_on_tour_instances, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

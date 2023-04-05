@@ -122,8 +122,12 @@ class GarbageCollectionIndividualBuildingView(APIView):
             "end-date": ("date__lte", False),
         }
         garbage_collection_instances = GarbageCollection.objects.filter(building=building_id)
-        if r := filter_instances(request, garbage_collection_instances, filters):
-            return r
+
+        try:
+            garbage_collection_instances = filter_instances(request, garbage_collection_instances, filters)
+        except BadRequest as e:
+            return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
         return get_success(serializer)
 
@@ -149,8 +153,12 @@ class GarbageCollectionAllView(APIView):
             "end-date": ("date__lte", False),
         }
         garbage_collection_instances = GarbageCollection.objects.all()
-        if r := filter_instances(request, garbage_collection_instances, filters):
-            return r
+
+        try:
+            garbage_collection_instances = filter_instances(request, garbage_collection_instances, filters)
+        except BadRequest as e:
+            return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
         return get_success(serializer)
 

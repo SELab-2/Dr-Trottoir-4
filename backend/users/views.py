@@ -140,11 +140,26 @@ class AllUsersView(APIView):
         """
         Get all users
         """
-        include_inactive = request.GET.get("include-inactive", "false")
-        if include_inactive.lower() == "true":
-            user_instances = User.objects.all()
-        else:
-            user_instances = User.objects.filter(is_active=True)
+        user_instances = User.objects.all()
+        filters = {
+            "region-id-list": get_filter_object("region__in"),
+            "include-inactive-bool": get_filter_object("is_active"),
+            "include-role-name-list": get_filter_object("role__name__in"),
+            "exclude-role-name-list": get_filter_object("role__name__in", exclude=True)
+        }
+
+        def transformations(key, param_value):
+            if key == "include-inactive-bool":
+                return None if param_value else True
+            elif key in ["include-role-name-list", "exclude-role-name-list"]:
+                return list(map(lambda role: role.lower().capitalize(), param_value)) if param_value else param_value
+            else:
+                return param_value
+
+        try:
+            user_instances = filter_instances(request, user_instances, filters, transformations)
+        except BadRequest as e:
+            return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = UserSerializer(user_instances, many=True)
         return get_success(serializer)
