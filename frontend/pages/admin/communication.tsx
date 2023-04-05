@@ -4,15 +4,12 @@ import { EmailTemplate, getAllEmailTemplates } from "@/lib/email-template";
 import { useEffect, useState, ChangeEvent } from "react";
 import styles from 'styles/Welcome.module.css';
 import { Dropdown, DropdownButton, FloatingLabel, Form, FormControl } from "react-bootstrap";
-import Combobox from "@/components/combobox";
-import FileInputField from "@/components/fileInputField";
 import { getAllPicturesOfBuilding, PictureBuilding } from "@/lib/picture-building";
 import PhotoSelector from "@/components/scrollViewPicture";
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
-import { getAllUsers, User } from "@/lib/user";
+import { getAllUsers, User, userSearchString } from "@/lib/user";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
-import { width } from "@mui/system";
 
 
 export default function AdminCommunication() {
@@ -40,27 +37,17 @@ export default function AdminCommunication() {
                 setTemplateText(currentTemplate.template);
             }
         }
-        
     }
 
-    // const handleSelectComment = (eventKey: string | null) => {
-    //     setSelectedBuilding(-1);
-
-    //     setSelectedComment(eventKey ? eventKey : "");
-    //     if (eventKey) {
-    //         const currentComment = allComments.find(e => e.comment.startsWith(eventKey));
-    //         if (currentComment) {
-    //             setSelectedBuilding(currentComment.building);
-    //             getAllPicturesOfBuilding(currentComment.building).then(res => {
-    //                 const buildingPictures : PictureBuilding[] = res.data;
-    //                 setAllPictures(buildingPictures);
-    //                 console.log(buildingPictures);
-    //             }, err => {
-    //                 console.error(err);
-    //             });
-    //         }
-    //     }
-    // }
+    const handleSelectSyndic = (eventKey: string | null) => {
+        setSelectedSyndic(eventKey ? eventKey : "");
+        if (eventKey) {
+            console.log(syndicId);
+           
+            const currentBuilding = allBuildings.find(e => e.syndic === Number(syndicId));
+            console.log(currentBuilding);
+        }
+    }
 
     const handlePictureSelectionChange = (selectedPhotos: string[]) => {
         setSelectedPictures(selectedPhotos);
@@ -71,12 +58,12 @@ export default function AdminCommunication() {
         setTemplateText(event.target.value);
     }
 
-
     useEffect(() => {
         getAllEmailTemplates().then(res => {
             const emailTemplates : EmailTemplate[] = res.data;
             setAllTemplates(emailTemplates);
-            // setSelectedTemplate(emailTemplates[0].name);
+            setSelectedTemplate(emailTemplates[0].name);
+            setTemplateText(emailTemplates[0].template);
         }, err => {
             console.error(err);
         });
@@ -88,22 +75,25 @@ export default function AdminCommunication() {
             console.error(err);
         });
 
+         // change this to getAllSyndics when it's available
+         getAllUsers().then(res => {
+            const users : User[] = res.data;
+            setAllSyndics(users);
+            setSelectedSyndic(userSearchString(users[0]));
+            setSyndicId(users[0].id.toString());
+        });
+
         getAllBuildings().then(res => {
             const buildings : BuildingInterface[] = res.data;
             setAllBuildings(buildings);
-            setSelectedBuilding(buildings[0].name);
-        });
-
-        getAllUsers().then(res => {
-            const users : User[] = res.data;
-            setAllSyndics(users.filter(e => e.role == 2));
-            // setSelectedSyndic(allSyndics[0].first_name); // TODO edit
         });
     }, []);
 
     useEffect(() => {
         setLoading(false);
-    }, [allTemplates, allComments, selectedTemplate]);
+        const currentBuilding = allBuildings.find(e => e.syndic === Number(syndicId));
+        setSelectedBuilding(currentBuilding ? currentBuilding.name : "");
+    }, [allTemplates, allComments, allSyndics, allBuildings, selectedTemplate, selectedSyndic]);
 
 
     return (
@@ -113,18 +103,18 @@ export default function AdminCommunication() {
                 <p className={styles.title}>Communicatie extern</p>
                 <p className={styles.text}>Kies een template:</p>
                 <div style={{ display: 'flex', width:"100%"  }}>
-                    <div style={{ width: "40%" }}>
+                    <div style={{ width: "35%" }}>
                         <TemplateAutocomplete
                             value={selectedTemplate}
-                            onChange={setSelectedTemplate}
+                            onChange={handleSelectTemplate}
                             setObjectId={setTemplateId}
                             required={false}
                         ></TemplateAutocomplete>
                     </div>
-                    <div style={{ width: "40%" }}>
+                    <div style={{ width: "35%" }}>
                         <SyndicAutoCompleteComponent
                             value={selectedSyndic}
-                            onChange={setSelectedSyndic}
+                            onChange={handleSelectSyndic}
                             setObjectId={setSyndicId}
                             required={true}
                         ></SyndicAutoCompleteComponent>
