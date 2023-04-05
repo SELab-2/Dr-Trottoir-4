@@ -1,9 +1,13 @@
+import json
+
+from django.http import HttpResponseBadRequest
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema
 
-from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount, IsStudent
 from base.models import StudentOnTour
+from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount, IsStudent
 from base.serializers import StudOnTourSerializer
 from util.request_response_util import *
 
@@ -34,14 +38,27 @@ class TourPerStudentView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | (IsStudent & OwnerAccount)]
     serializer_class = StudOnTourSerializer
 
+    @extend_schema(
+        parameters=param_docs({
+            "start date": ("Filter by start date", False, OpenApiTypes.DATE),
+            "end date": ("Filter by end date", False, OpenApiTypes.DATE),
+        })
+    )
     def get(self, request, student_id):
         """
         Get all StudentOnTour for a student with given id
         """
+        start_date = get_date_param(request, 'start-date')
+        end_date = get_date_param(request, 'end-date')
         id_holder = type("", (), {})()
         id_holder.id = student_id
         self.check_object_permissions(request, id_holder)
+
         student_on_tour_instances = StudentOnTour.objects.filter(student_id=student_id)
+        if start_date:
+            student_on_tour_instances.filter(date__gte=start_date)
+        if end_date:
+            student_on_tour_instances.filter(date__lte=end_date)
         serializer = StudOnTourSerializer(student_on_tour_instances, many=True)
         return get_success(serializer)
 
@@ -110,11 +127,36 @@ class AllView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = StudOnTourSerializer
 
+    @extend_schema(
+        parameters=param_docs({
+            "start date": ("Filter by start date", False, OpenApiTypes.DATE),
+            "end date": ("Filter by end date", False, OpenApiTypes.DATE),
+            "student": ("Filter by student (ID)", False, OpenApiTypes.INT),
+            "tour": ("Filter by tour (ID)", False, OpenApiTypes.INT),
+            "region": ("Filter by region (ID)", False, OpenApiTypes.INT),
+        })
+    )
     def get(self, request):
         """
         Get all StudentOnTours
         """
-        stud_tour_building_instance = StudentOnTour.objects.all()
+        filters = {
+            'tour': 'tour',
+            'region': 'tour__region',
+            'start_date': 'date__gte',
+            'end_date': 'date__lte',
+            'student': 'student_id',
+        }
 
-        serializer = StudOnTourSerializer(stud_tour_building_instance, many=True)
+        stud_on_tour_instances = StudentOnTour.objects.all()
+        try:
+            for key, value in filters.items():
+                param = get_date_param(request, key) if 'date' in key else get_id_param(request, key)
+                if param:
+                    stud_on_tour_instances = stud_on_tour_instances.filter(**{value: param})
+        except BadRequest as e:
+            error = {'error': str(e)}
+            return HttpResponseBadRequest(json.dumps(error), content_type='application/json')
+
+        serializer = StudOnTourSerializer(stud_on_tour_instances, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
