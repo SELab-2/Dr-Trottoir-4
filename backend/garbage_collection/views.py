@@ -184,7 +184,6 @@ class GarbageCollectionDuplicateView(APIView):
         for gc in garbage_collections_to_duplicate:
             # offset the date by the start date difference
             copy_date = gc.date + (start_date_copy - start_date_period)
-            if not GarbageCollection.objects.filter(date=copy_date, building=gc.building,
-                                                    garbage_type=gc.garbage_type).exists():
+            if not GarbageCollection.objects.filter(date=copy_date, building=gc.building).exists():
                 GarbageCollection.objects.create(date=copy_date, building=gc.building, garbage_type=gc.garbage_type)
         return Response({"message": _("successfully copied the garbage collections")}, status=status.HTTP_200_OK)
