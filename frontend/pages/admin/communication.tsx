@@ -24,6 +24,7 @@ export default function AdminCommunication() {
     const [selectedSyndic, setSelectedSyndic] = useState("");
     
     const [templateText, setTemplateText] = useState("");
+    const [updatedTemplateText, setUpdatedTemplateText] = useState("");
     const [selectedPictures, setSelectedPictures] = useState<string[]>([]);
     const [templateId, setTemplateId] = useState("");
     const [commentId, setCommentId] = useState("");
@@ -43,7 +44,11 @@ export default function AdminCommunication() {
         setSelectedSyndic(eventKey ? eventKey : "");
         if (eventKey) {
             console.log(syndicId);
-           
+
+            const changedVariablesText = fillInVariables(templateText);
+            setUpdatedTemplateText(changedVariablesText);
+            console.log(changedVariablesText);
+
             const currentBuilding = allBuildings.find(e => e.syndic === Number(syndicId));
             console.log(currentBuilding);
         }
@@ -77,7 +82,7 @@ export default function AdminCommunication() {
 
     const handleEditTemplate = (event: ChangeEvent<HTMLTextAreaElement>) => {
             const changedVariablesText = fillInVariables(event.target.value);
-            setTemplateText(withVariables);
+            setUpdatedTemplateText(changedVariablesText);
     }
 
     useEffect(() => {
@@ -117,7 +122,7 @@ export default function AdminCommunication() {
         setSelectedBuilding(currentBuilding ? currentBuilding.name : "");
         console.log(syndicId);
         const changedVariablesText = fillInVariables(templateText);
-        setTemplateText(changedVariablesText);
+        setUpdatedTemplateText(changedVariablesText);
     }, [allTemplates, allComments, allSyndics, allBuildings, selectedTemplate, selectedSyndic, templateText]);
 
 
@@ -158,7 +163,7 @@ export default function AdminCommunication() {
                         as="textarea" 
                         placeholder="Schrijf je email hier"
                         style={{ height: '400px' }} 
-                        value={templateText}
+                        value={updatedTemplateText}
                         onChange={handleEditTemplate}
                         />
                     </FloatingLabel>
