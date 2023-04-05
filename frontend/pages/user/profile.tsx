@@ -3,7 +3,7 @@ import {getCurrentUser, getUserRole, patchUser, User} from "@/lib/user";
 import styles from "@/styles/Login.module.css";
 import PhoneInput from "react-phone-input-2";
 import {useTranslation} from "react-i18next";
-import {getAllRegions, Region} from "@/lib/region";
+import {getAllRegions, RegionInterface} from "@/lib/region";
 import AdminHeader from "@/components/header/adminHeader";
 import StudentHeader from "@/components/header/studentHeader";
 import SyndicHeader from "@/components/header/syndicHeader";
@@ -17,7 +17,7 @@ export default function UserProfile() {
     const [email, setEmail] = useState<string>("");
     const [phoneNumber, setPhoneNumber] = useState<string>("");
     const [selectedRegions, setSelectedRegions] = useState<number[]>([]);
-    const [allRegions, setAllRegions] = useState<Region[]>();
+    const [allRegions, setAllRegions] = useState<RegionInterface[]>();
     const [role, setRole] = useState<string>("");
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
@@ -31,7 +31,7 @@ export default function UserProfile() {
             console.error(err);
         });
         getAllRegions().then((res) => {
-            const regions: Region[] = res.data;
+            const regions: RegionInterface[] = res.data;
             setAllRegions(regions);
         });
     }, []);
@@ -194,7 +194,7 @@ export default function UserProfile() {
                             setSelectedRegions(values);
                         }}>
                     {
-                        allRegions?.map((r: Region) => {
+                        allRegions?.map((r: RegionInterface) => {
                             return (<option value={r.id} key={r.id}>{r.region}</option>)
                         })
                     }
