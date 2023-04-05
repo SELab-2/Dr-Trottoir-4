@@ -11,7 +11,7 @@ from base.permissions import (
     OwnerWithLimitedPatch,
     OwnerOfBuilding,
 )
-from base.serializers import BuildingSerializer
+from base.serializers import BuildingSerializer, PublicIdSerializer
 from util.request_response_util import *
 
 TRANSLATE = {"syndic": "syndic_id"}
@@ -144,6 +144,7 @@ class BuildingNewPublicId(APIView):
 
 class BuildingGetNewPublicId(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding]
+    serializer_class = PublicIdSerializer
 
     def get(self, request):
         """
