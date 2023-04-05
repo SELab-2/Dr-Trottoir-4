@@ -1,6 +1,3 @@
-import json
-
-from django.http import HttpResponseBadRequest
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated

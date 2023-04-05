@@ -1,3 +1,4 @@
+from drf_spectacular.types import OpenApiTypes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -79,6 +80,12 @@ class GarbageCollectionIndividualView(APIView):
         return patch_success(serializer)
 
 
+@extend_schema(
+    parameters=param_docs({
+        "start date": ("Filter by start date", False, OpenApiTypes.DATE),
+        "end date": ("Filter by end date", False, OpenApiTypes.DATE),
+    })
+)
 class GarbageCollectionIndividualBuildingView(APIView):
     """
     /building/<buildingid>
@@ -96,11 +103,22 @@ class GarbageCollectionIndividualBuildingView(APIView):
             return not_found("building")
         self.check_object_permissions(request, building_instance[0])
 
+        filters = {
+            'start_date': 'date__gte',
+            'end_date': 'date__lte',
+        }
         garbage_collection_instances = GarbageCollection.objects.filter(building=building_id)
+        filter_instances(request, garbage_collection_instances, filters)
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
         return get_success(serializer)
 
 
+@extend_schema(
+    parameters=param_docs({
+        "start date": ("Filter by start date", False, OpenApiTypes.DATE),
+        "end date": ("Filter by end date", False, OpenApiTypes.DATE),
+    })
+)
 class GarbageCollectionAllView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = GarbageCollectionSerializer
@@ -109,6 +127,11 @@ class GarbageCollectionAllView(APIView):
         """
         Get all garbage collections
         """
+        filters = {
+            'start_date': 'date__gte',
+            'end_date': 'date__lte',
+        }
         garbage_collection_instances = GarbageCollection.objects.all()
+        filter_instances(request, garbage_collection_instances, filters)
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
         return get_success(serializer)
