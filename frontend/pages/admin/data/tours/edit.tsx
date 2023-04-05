@@ -1,15 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import { getAllRegions, getRegion, RegionInterface } from "@/lib/region";
 import { deleteTour, getTour, patchTour, postTour, swapBuildingsOnTour, Tour } from "@/lib/tour";
-import { getAllRegions, getRegion, Region } from "@/lib/region";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
-import {
-    BuildingOnTour,
-    deleteBuildingOnTour,
-    getAllBuildingsOnTourWithTourID,
-    patchBuildingOnTour,
-    postBuildingOnTour,
-} from "@/lib/building-on-tour";
+import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 import MaterialReactTable, { MRT_ColumnDef, MRT_Row } from "material-react-table";
 import { Box, Tooltip } from "@mui/material";
 import { Button } from "react-bootstrap";
@@ -20,7 +14,8 @@ import { useTranslation } from "react-i18next";
 import { getAndSetErrors } from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
-import { BuildingNotOnTourView, BuildingOnTourView } from "@/types";
+import { BuildingNotOnTourView, BuildingOnTourView, TourView } from "@/types";
+import { TourDeleteModal } from "@/components/admin/tourDeleteModal";
 
 interface ParsedUrlQuery {}
 
@@ -37,7 +32,7 @@ function AdminDataToursEdit() {
     const router = useRouter();
     const query: DataToursEditQuery = router.query as DataToursEditQuery;
     const [tour, setTour] = useState<Tour>();
-    const [region, setRegion] = useState<Region>();
+    const [region, setRegion] = useState<RegionInterface>();
     const [allBuildingsInRegion, setAllBuildingsInRegion] = useState<BuildingInterface[]>([]);
     const [buildingsOnTour, setBuildingsOnTour] = useState<BuildingOnTour[]>([]);
 
@@ -46,9 +41,12 @@ function AdminDataToursEdit() {
     const [tourName, setTourName] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    const [possibleRegions, setPossibleRegions] = useState<Region[]>([]);
+    const [possibleRegions, setPossibleRegions] = useState<RegionInterface[]>([]);
     const [selectedRegion, setSelectedRegion] = useState<string>("");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
+    const [tourView, setTourView] = useState<TourView | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
     const columnsBuildingOnTourView = useMemo<MRT_ColumnDef<BuildingOnTourView>[]>(
         () => [
@@ -135,7 +133,9 @@ function AdminDataToursEdit() {
         } else {
             getTour(query.tour).then(
                 (res) => {
-                    setTour(res.data);
+                    const r: Tour = res.data;
+                    setTour(r);
+                    setTourView({ name: r.name, region: "", tour_id: Number(query.tour), last_modified: "" });
                 },
                 (err) => {
                     console.error(err);
@@ -197,7 +197,9 @@ function AdminDataToursEdit() {
             return;
         }
         // Get the selected region
-        const region: Region | undefined = possibleRegions.find((r: Region) => r.region === selectedRegion);
+        const region: RegionInterface | undefined = possibleRegions.find(
+            (r: RegionInterface) => r.region === selectedRegion
+        );
         if (!region) {
             return;
         }
@@ -313,24 +315,27 @@ function AdminDataToursEdit() {
         if (tour) {
             patchTour(tour.id, { name: tourName }, new Date(Date.now())).then(
                 async (_) => {
-                    await router.push("/admin/data/tours/");
-                    const buildingIndices: { [b: number]: number } = {};
-                    let i = 0;
-                    for (const botv of buildingsOnTourView) {
-                        buildingIndices[botv.buildingId] = i;
-                        i++;
-                    }
-                    swapBuildingsOnTour(tour.id, buildingIndices).then(
-                        (_) => {
-                            router.push("/admin/data/tours/").then();
-                        },
-                        (err) => {
-                            let errorRes = err.response;
-                            if (errorRes && errorRes.status === 400) {
-                                getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                            }
+                    if (buildingsOnTourView.length > 0) {
+                        const buildingIndices: { [b: number]: number } = {};
+                        let i = 0;
+                        for (const botv of buildingsOnTourView) {
+                            buildingIndices[botv.buildingId] = i;
+                            i++;
                         }
-                    );
+                        swapBuildingsOnTour(tour.id, buildingIndices).then(
+                            (_) => {
+                                router.push("/admin/data/tours/").then();
+                            },
+                            (err) => {
+                                let errorRes = err.response;
+                                if (errorRes && errorRes.status === 400) {
+                                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
+                                }
+                            }
+                        );
+                    } else {
+                        router.push("/admin/data/tours/").then();
+                    }
                 },
                 (err) => {
                     let errorRes = err.response;
@@ -352,27 +357,31 @@ function AdminDataToursEdit() {
             setErrorMessages([...errorMessages]);
             return;
         }
-        const region: Region = possibleRegions.find((r: Region) => r.region === selectedRegion)!;
+        const region: RegionInterface = possibleRegions.find((r: RegionInterface) => r.region === selectedRegion)!;
         postTour(tourName, new Date(Date.now()), region.id).then(
             (res) => {
-                const resTour: Tour = res.data;
-                const buildingIndices: { [b: number]: number } = {};
-                let i = 0;
-                for (const botv of buildingsOnTourView) {
-                    buildingIndices[botv.buildingId] = i;
-                    i++;
-                }
-                swapBuildingsOnTour(resTour.id, buildingIndices).then(
-                    (_) => {
-                        router.push("/admin/data/tours/").then();
-                    },
-                    (err) => {
-                        let errorRes = err.response;
-                        if (errorRes && errorRes.status === 400) {
-                            getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                        }
+                if (buildingsOnTourView.length > 0) {
+                    const resTour: Tour = res.data;
+                    const buildingIndices: { [b: number]: number } = {};
+                    let i = 0;
+                    for (const botv of buildingsOnTourView) {
+                        buildingIndices[botv.buildingId] = i;
+                        i++;
                     }
-                );
+                    swapBuildingsOnTour(resTour.id, buildingIndices).then(
+                        (_) => {
+                            router.push("/admin/data/tours/").then();
+                        },
+                        (err) => {
+                            let errorRes = err.response;
+                            if (errorRes && errorRes.status === 400) {
+                                getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
+                            }
+                        }
+                    );
+                } else {
+                    router.push("/admin/data/tours/").then();
+                }
             },
             (err) => {
                 let errorRes = err.response;
@@ -391,18 +400,32 @@ function AdminDataToursEdit() {
             return;
         }
         deleteTour(tour.id).then(
-            async (_) => {
-                await router.push("/admin/data/tours/");
-            },
+            async (_) => {},
             (err) => {
                 console.error(err);
             }
         );
     }
 
+    function closeAndRouteDeleteModal() {
+        setShowDeleteModal(false);
+        router.push("/admin/data/tours/").then();
+    }
+
+    function closeModal() {
+        setShowDeleteModal(false);
+    }
+
     return (
         <>
             <AdminHeader />
+            <TourDeleteModal
+                closeModal={closeModal}
+                show={showDeleteModal}
+                selectedTour={tourView}
+                setSelectedTour={setTourView}
+                onDelete={closeAndRouteDeleteModal}
+            />
             {errorMessages.length > 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>
                     <ul>
@@ -478,13 +501,13 @@ function AdminDataToursEdit() {
                                 <label className="form-label">Selecteer een regio:</label>
                                 <select
                                     defaultValue={""}
-                                    className="form-control"
+                                    className={`form-select form-control form-control-lg ${styles.input}`}
                                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                                         setSelectedRegion(e.target.value)
                                     }
                                 >
                                     <option disabled value={""}></option>
-                                    {possibleRegions.map((regio: Region, index: number) => (
+                                    {possibleRegions.map((regio: RegionInterface, index: number) => (
                                         <option value={regio.region} key={index}>
                                             {regio.region}
                                         </option>
@@ -507,14 +530,15 @@ function AdminDataToursEdit() {
                                 }}
                             />
                         </Tooltip>
-                        <Tooltip title="Verwijder ronde">
-                            <Delete
-                                className={tour ? "visible" : "invisible"}
-                                onClick={() => {
-                                    removeTour();
-                                }}
-                            />
-                        </Tooltip>
+                        {tour && (
+                            <Tooltip title="Verwijder ronde">
+                                <Delete
+                                    onClick={() => {
+                                        setShowDeleteModal(true);
+                                    }}
+                                />
+                            </Tooltip>
+                        )}
                     </Box>
                 )}
             />

@@ -52,6 +52,10 @@ export function getAddress(building : BuildingInterface) : string {
 
 export const patchBuildingInfo = async (buildingId: string | undefined, data: BuildingInterface | Object) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
+    console.log("--------------")
+    console.log(request_url)
+    console.log(data)
+    console.log("---------------")
     return await api.patch(request_url, data);
 };
 
@@ -59,6 +63,14 @@ export const generateNewPublicId = async (buildingId: string | undefined) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_NEW_PUBLIC_ID_BUILDING}${buildingId}`;
     return await api.post(request_url)
 }
+
+export const getNewPublicId = async () => {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GET_NEW_PUBLIC_ID_BUILDING}`;
+    console.log(request_url)
+    return await api.get(request_url)
+}
+
+
 
 export const deleteBuilding = async (buildingId: number | undefined) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;

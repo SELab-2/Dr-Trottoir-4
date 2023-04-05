@@ -1,7 +1,8 @@
-import React, { ChangeEvent, MouseEventHandler, useState } from "react";
+import React, { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { Button, Form, Modal } from "react-bootstrap";
-import { BuildingInterface, generateNewPublicId, patchBuildingInfo } from "@/lib/building";
+import { BuildingInterface, generateNewPublicId, getNewPublicId, patchBuildingInfo } from "@/lib/building";
+import build from "next/dist/build";
 
 function PatchBuildingSyndicModal({
     show,
@@ -14,19 +15,36 @@ function PatchBuildingSyndicModal({
     building: BuildingInterface | null;
     setBuilding: (x: any) => void;
 }) {
-    const [formData, setFormData] = useState<Object>({
+    interface formData {
+        name: string;
+        public_id: string;
+    }
+
+    const [formData, setFormData] = useState<formData>({
         name: "",
         public_id: "",
     });
-
     const [errorText, setErrorText] = useState("");
+
+    useEffect(() => {
+        setFormData({
+            name: building ? building.name : "",
+            public_id: building ? building.public_id : "",
+        });
+    }, [building]);
 
     const newPublicId = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-        generateNewPublicId("" + building?.id)
+        console.log(`Building id is ${building?.id}`);
+
+        getNewPublicId()
             .then((res) => {
-                setBuilding(res.data);
+                //setBuilding(res.data);
+                setFormData({
+                    ...formData,
+                    public_id: res.data.public_id,
+                });
             })
             .catch((error) => {
                 //TODO: generieke functie nodig voor error messages
@@ -51,16 +69,22 @@ function PatchBuildingSyndicModal({
     const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
+        console.log("form data");
+        console.log(formData);
+
         console.log(`In handleSubmit ${JSON.stringify(formData)}`);
 
         let toSend: any = {};
         for (const [key, value] of Object.entries(formData)) {
-            if (value) {
+            // @ts-ignore
+            if (value && (!building || building[key] != value)) {
                 toSend[key] = value;
             }
         }
 
-        patchBuildingInfo("" + building?.id, formData)
+        if (Object.keys(toSend).length === 0) return;
+
+        patchBuildingInfo("" + building?.id, toSend)
             .then((res) => {
                 setBuilding(res.data);
                 closeModal();
@@ -85,7 +109,7 @@ function PatchBuildingSyndicModal({
                                 <Form.Label>Naam</Form.Label>
                                 <Form.Control
                                     name="name"
-                                    defaultValue={building?.name}
+                                    value={formData.name}
                                     onChange={handleInputChange}
                                     placeholder="Vul de naam van het gebouw in"
                                 />
@@ -95,7 +119,7 @@ function PatchBuildingSyndicModal({
                             <Form.Group controlId="public_id">
                                 <Form.Control
                                     name="public_id"
-                                    defaultValue={building?.public_id}
+                                    value={formData.public_id}
                                     onChange={handleInputChange}
                                     placeholder="vul het public id van het gebouw in"
                                 />
@@ -127,7 +151,7 @@ function PatchBuildingSyndicModal({
                             Annuleer
                         </Button>
                         <Button variant="primary" type="submit" onClick={handleSubmit}>
-                            Opslaan (TODO: PATCH request)
+                            Opslaan
                         </Button>
                     </Form>
                 </Modal.Body>
@@ -136,4 +160,4 @@ function PatchBuildingSyndicModal({
     );
 }
 
-export default PatchBuildingSyndicModal; //withAuthorisation(PatchBuildingSyndicModal, ["Syndic"]);
+export default withAuthorisation(PatchBuildingSyndicModal, ["Syndic"]);

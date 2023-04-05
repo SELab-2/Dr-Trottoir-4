@@ -15,12 +15,4 @@ export const login = (email: string, password: string): Promise<AxiosResponse<an
     });
 };
 
-/**
- * Check if the refresh token is valid
- */
-export const verifyToken = (): Promise<AxiosResponse<any, any>> => {
-    const verify_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_VERIFY_TOKEN}`;
-    return api.get(verify_url);
-};
-
 export default login;
