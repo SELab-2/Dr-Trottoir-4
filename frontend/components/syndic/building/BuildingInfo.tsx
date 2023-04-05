@@ -1,20 +1,12 @@
-import {TiPencil} from "react-icons/ti";
-import React, {useEffect, useState} from "react";
+import { TiPencil } from "react-icons/ti";
+import React, { useEffect, useState } from "react";
 import PatchBuildingSyndicModal from "@/components/syndic/building/PatchBuildingSyndicModal";
-import {BuildingInterface} from "@/lib/building";
-import {getRegion, RegionInterface} from "@/lib/region";
+import { BuildingInterface } from "@/lib/building";
+import { getRegion, RegionInterface } from "@/lib/region";
 
-
-function BuildingSyndicInfo({
-                                building,
-                                setBuilding
-                            }: {
-    building: BuildingInterface;
-    setBuilding: (b: any) => void;
-}) {
-
+function BuildingSyndicInfo({ building, setBuilding }: { building: BuildingInterface; setBuilding: (b: any) => void }) {
     const [editBuilding, setEditBuilding] = useState(false);
-    const [regionName, setRegionName] = useState("/")
+    const [regionName, setRegionName] = useState("/");
 
     useEffect(() => {
         if (building) {
@@ -31,7 +23,7 @@ function BuildingSyndicInfo({
     }
 
     async function get_region_name(key: string) {
-        const region_id = get_building_key("region")
+        const region_id = get_building_key("region");
 
         if (isNaN(region_id)) {
             setRegionName("/");
@@ -72,13 +64,12 @@ function BuildingSyndicInfo({
             <p>Straat: {get_building_key("street")}</p>
             <p>Nr: {get_building_key("house_number")}</p>
             <p>Bus: {get_building_key("bus")}</p>
-            <p>RegionInterface: {regionName}  </p>
+            <p>RegionInterface: {regionName} </p>
             <p>Werktijd: {get_building_key("duration")}</p>
             <p>Client id: {get_building_key("client_id")}</p>
             <p>Public id: {get_building_key("public_id")}</p>
         </>
-
-    )
+    );
 }
 
 export default BuildingSyndicInfo;
