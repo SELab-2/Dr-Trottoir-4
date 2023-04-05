@@ -20,7 +20,7 @@ class Default(APIView):
         """
         Create a new PictureOfRemark with data from post
         """
-        data = request_to_dict(request)
+        data = request_to_dict(request.data)
 
         picture_of_remark_instance = PictureOfRemark()
 
