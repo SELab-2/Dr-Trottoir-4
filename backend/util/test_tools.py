@@ -1,3 +1,4 @@
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.test import TestCase
 from rest_framework.test import APIClient
 
@@ -13,6 +14,10 @@ def get_authenticated_client(role="admin"):
     return client
 
 
+def errorMessage(name, expected, got):
+    return f"[TEST FAILED]\tname: {name}\tgot: {got} (type: {type(got)}\texpected: {expected} (type: {type(expected)}"
+
+
 class BaseTest(TestCase):
     data1 = None
     data2 = None
@@ -22,79 +27,100 @@ class BaseTest(TestCase):
 
     def empty_list(self, url):
         resp = self.client.get(backend_url + "/" + url + "all/", follow=True)
-        assert resp.status_code == 200
+        assert resp.status_code == 200, errorMessage("empty_list", 200, resp.status_code)
         data = [resp.data[e] for e in resp.data]
-        assert len(data) == 0
+        assert len(data) == 0, errorMessage("empty_list", 0, len(data))
 
     def insert(self, url):
-        assert self.data1 is not None
+        assert self.data1 is not None, "no data found"
         resp = self.client.post(backend_url + "/" + url, self.data1, follow=True)
-        assert resp.status_code == 201
+        assert resp.status_code == 201, errorMessage("insert", 201, resp.status_code)
+        print(resp.data)
         for key in self.data1:
-            assert key in resp.data
-        assert "id" in resp.data
+            assert key in resp.data, errorMessage("insert", key, None)
+            if type(self.data1[key]) == InMemoryUploadedFile:
+                continue
+            assert self.data1[key] == resp.data[key], errorMessage(f"insert (key:{key})", self.data1[key], resp.data[key])
+        assert "id" in resp.data, errorMessage("insert", "id", None)
 
     def insert_dupe(self, url, special=None):
-        assert self.data1 is not None
+        assert self.data1 is not None, "no data found"
         _ = self.client.post(backend_url + "/" + url, self.data1, follow=True)
         response = self.client.post(backend_url + "/" + url, self.data1, follow=True)
         if special is None:
-            assert response.status_code == 400
+            assert response.status_code == 400, errorMessage("insert_dupe", 400, response.status_code)
         else:
-            assert response.status_code == special
+            assert response.status_code == special, errorMessage("insert_dupe", special, response.status_code)
 
     def get(self, url, data):
         response2 = self.client.get(backend_url + "/" + url, follow=True)
-        assert response2.status_code == 200
+        assert response2.status_code == 200, errorMessage("get", 200, response2.status_code)
         for key in data:
             # all data should be present
-            assert key in response2.data
+            assert key in response2.data, errorMessage("get", key, None)
+            if type(data[key]) == InMemoryUploadedFile:
+                continue
+            assert data[key] == response2.data[key], errorMessage("get (key:{key})", data[key], response2.data[key])
         # an ID should be present
-        assert "id" in response2.data
+        assert "id" in response2.data, errorMessage("insert", "id", None)
 
     def get_non_existent(self, url):
         resp = self.client.get(backend_url + "/" + url + "1234567", follow=True)
-        assert resp.status_code == 404
+        assert resp.status_code == 404, errorMessage("get_non_existent", 404, resp.status_code)
 
-    def patch(self, url):
-        assert self.data1 is not None
+    def patch(self, url, special=None):
+        if special is None:
+            special = []
+        assert self.data1 is not None, "no data found"
         response2 = self.client.patch(backend_url + "/" + url, self.data1, follow=True)
-        assert response2.status_code == 200
+        assert response2.status_code == 200, errorMessage("patch", 200, response2.status_code)
         response3 = self.client.get(backend_url + "/" + url, follow=True)
+        excluded = []
+        for key, value in special:
+            assert key in response3.data, errorMessage("patch", key, None)
+            assert value == response3.data[key], errorMessage("patch", value, response3.data[key])
+            excluded.append(key)
         for key in self.data1:
+            if key in excluded:
+                continue
             # all data should be present
-            assert key in response3.data
-        assert response3.status_code == 200
-        assert "id" in response3.data
+            assert key in response3.data, errorMessage("patch", key, None)
+            if type(self.data1[key]) == InMemoryUploadedFile:
+                continue
+            assert self.data1[key] == response3.data[key], errorMessage("patch", self.data1[key], response3.data[key])
+        assert response3.status_code == 200, errorMessage("patch", 200, response3.status_code)
+        assert "id" in response3.data, errorMessage("patch", "id", None)
 
     def patch_invalid(self, url):
         response2 = self.client.patch(backend_url + "/" + url + "123434687658/", self.data1, follow=True)
-        assert response2.status_code == 404
+        assert response2.status_code == 404, errorMessage("patch_invalid", 404, response2.status_code)
 
     def patch_error(self, url, special=None):
-        assert self.data1 is not None
-        assert self.data2 is not None
+        assert self.data1 is not None, "no data found"
+        assert self.data2 is not None, "no data found"
         response1 = self.client.post(backend_url + "/" + url, self.data1, follow=True)
-        r = self.client.post(backend_url + "/" + url, self.data2, follow=True)
-        assert response1.status_code == 201
+        _ = self.client.post(backend_url + "/" + url, self.data2, follow=True)
+        assert response1.status_code == 201, errorMessage("patch_error", 201, response1.status_code)
         result_id = response1.data["id"]
         response2 = self.client.patch(backend_url + "/" + url + f"{result_id}/", self.data2, follow=True)
         if special is None:
-            assert response2.status_code == 400
+            assert response2.status_code == 400, errorMessage("patch_error", 400, response2.status_code)
         else:
-            assert response2.status_code == special
+            assert response2.status_code == special, errorMessage("patch_error", special, response2.status_code)
 
     def remove(self, url):
         response2 = self.client.delete(backend_url + "/" + url, follow=True)
-        assert response2.status_code == 204
+        assert response2.status_code == 204, errorMessage("remove", 204, response2.status_code)
         response3 = self.client.get(backend_url + "/" + url, follow=True)
-        assert response3.status_code == 404
+        assert response3.status_code == 404, errorMessage("remove", 404, response3.status_code)
 
     def remove_invalid(self, url):
         response2 = self.client.delete(backend_url + "/" + url + "123434687658", follow=True)
-        print(response2.status_code)
-        print(response2.data)
-        assert response2.status_code == 404
+        assert response2.status_code == 404, errorMessage("remove_invalid", 404, response2.status_code)
+
+
+def auth_error_message(name, role, got, expected):
+    return f"[TEST FAILED]\tname: {name}\trole: {role}\tcode: {got} (expected {expected})"
 
 
 class BaseAuthTest(TestCase):
@@ -104,26 +130,27 @@ class BaseAuthTest(TestCase):
         for role in roles:
             client = get_authenticated_client(role)
             resp = client.get(backend_url + "/" + url + "all/")
-            assert resp.status_code == codes[role]
+            assert resp.status_code == codes[role], auth_error_message("list_view", role, resp.status_code, codes[role])
 
     def insert_view(self, url, codes):
         adminClient = get_authenticated_client()
         for role in roles:
             client = get_authenticated_client(role)
             resp = client.post(backend_url + "/" + url, self.data1, follow=True)
-            assert resp.status_code == codes[role]
+            assert resp.status_code == codes[role], auth_error_message("insert_view", role, resp.status_code,
+                                                                       codes[role])
             if resp.status_code == 201:
-                print(resp.data)
                 result_id = resp.data["id"]
                 _ = adminClient.delete(backend_url + "/" + url + str(result_id))
 
-    def get_view(self, url, codes, special=[]):
+    def get_view(self, url, codes, special=None):
+        if special is None:
+            special = []
         for role in roles:
             client = get_authenticated_client(role)
             response2 = client.get(backend_url + "/" + url, follow=True)
-            if response2.status_code != codes[role]:
-                print(f"role: {role}\tcode: {response2.status_code} (expected {codes[role]})")
-            assert response2.status_code == codes[role]
+            assert response2.status_code == codes[role], auth_error_message("get_view", role, response2.status_code,
+                                                                            codes[role])
         for user_id, result in special:
             user = User.objects.filter(id=user_id).first()  # there should only be 1
             if not User:
@@ -131,15 +158,17 @@ class BaseAuthTest(TestCase):
             client = APIClient()
             client.force_authenticate(user=user)
             response2 = client.get(backend_url + "/" + url, follow=True)
-            assert response2.status_code == result
+            assert response2.status_code == result, auth_error_message("get_view (special case)", user.role.name,
+                                                                       response2.status_code, result)
 
-    def patch_view(self, url, codes, special=[]):
+    def patch_view(self, url, codes, special=None):
+        if special is None:
+            special = []
         for role in roles:
             client = get_authenticated_client(role)
             response2 = client.patch(backend_url + "/" + url, self.data1, follow=True)
-            if response2.status_code != codes[role]:
-                print(f"role: {role}\tcode: {response2.status_code} (expected {codes[role]})")
-            assert response2.status_code == codes[role]
+            assert response2.status_code == codes[role], auth_error_message("patch_view", role, response2.status_code,
+                                                                            codes[role])
         for user_id, result in special:
             user = User.objects.filter(id=user_id).first()  # there should only be 1
             if not User:
@@ -147,10 +176,8 @@ class BaseAuthTest(TestCase):
             client = APIClient()
             client.force_authenticate(user=user)
             response2 = client.patch(backend_url + "/" + url, self.data1, follow=True)
-            if response2.status_code != result:
-                print(
-                    f"failed special case for user with role {user.role.name}\t got {response2.status_code} (expected {result})")
-            assert response2.status_code == result
+            assert response2.status_code == result, auth_error_message("patch_view (special case)", user.role.name,
+                                                                       response2.status_code, result)
 
     def remove_view(self, url, codes, create):
         exists = False
@@ -161,5 +188,6 @@ class BaseAuthTest(TestCase):
             # try to remove as `role`
             client = get_authenticated_client(role)
             response2 = client.delete(backend_url + "/" + url + f"{instance_id}/", follow=True)
-            assert response2.status_code == codes[role]
+            assert response2.status_code == codes[role], auth_error_message("remove_view", role, response2.status_code,
+                                                                            codes[role])
             exists = codes[role] != 204

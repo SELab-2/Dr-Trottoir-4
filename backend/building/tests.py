@@ -16,11 +16,11 @@ class BuildingTests(BaseTest):
         s_id = insert_dummy_syndic()
         self.data1 = {
             "city": "Gent",
-            "postal_code": 9000,
+            "postal_code": "9000",
             "street": "Overpoort",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
@@ -32,11 +32,11 @@ class BuildingTests(BaseTest):
         s_id = insert_dummy_syndic()
         self.data1 = {
             "city": "Gent",
-            "postal_code": 9000,
+            "postal_code": "9000",
             "street": "Overpoort",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
@@ -58,11 +58,11 @@ class BuildingTests(BaseTest):
         s_id = insert_dummy_syndic()
         self.data1 = {
             "city": "Gent",
-            "postal_code": 9000,
+            "postal_code": "9000",
             "street": "De Zuid",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
@@ -74,11 +74,11 @@ class BuildingTests(BaseTest):
         s_id = insert_dummy_syndic()
         self.data1 = {
             "city": "Gent",
-            "postal_code": 9000,
+            "postal_code": "9000",
             "street": "Overpoort",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
@@ -90,22 +90,22 @@ class BuildingTests(BaseTest):
         s_id = insert_dummy_syndic()
         self.data1 = {
             "city": "Gent",
-            "postal_code": 9000,
+            "postal_code": "9000",
             "street": "Overpoort",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
         }
         self.data2 = {
             "city": "Gent",
-            "postal_code": 9000,
+            "postal_code": "9000",
             "street": "De Zuid",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
@@ -150,7 +150,7 @@ class BuildingAuthorizationTests(BaseAuthTest):
             "street": "Overpoort",
             "house_number": 10,  # unique (local) number to avoid collision errors
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
@@ -187,7 +187,7 @@ class BuildingAuthorizationTests(BaseAuthTest):
             "street": "De Zuid",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"

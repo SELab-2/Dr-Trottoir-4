@@ -51,7 +51,7 @@ class ManualTests(BaseTest):
             "file": f,
             "version_number": 1
         }
-        self.patch(f"manual/{m_id}")
+        self.patch(f"manual/{m_id}", special=[("version_number", 0)])
 
     def test_patch_invalid_manual(self):
         b_id = insert_dummy_building()
