@@ -1,7 +1,7 @@
 import AdminHeader from "@/components/header/adminHeader";
 import React, { useEffect, useMemo, useState } from "react";
-import { deleteTour, getAllTours, getBuildingsOfTour, Tour } from "@/lib/tour";
-import { Region, getAllRegions } from "@/lib/region";
+import { getAllTours, getBuildingsOfTour, Tour } from "@/lib/tour";
+import { getAllRegions, RegionInterface } from "@/lib/region";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useRouter } from "next/router";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
@@ -10,15 +10,18 @@ import { Button } from "react-bootstrap";
 import { Delete, Edit } from "@mui/icons-material";
 import { BuildingInterface, getAddress } from "@/lib/building";
 import { TourView } from "@/types";
+import { TourDeleteModal } from "@/components/admin/tourDeleteModal";
 
 // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=68-429&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
 function AdminDataTours() {
     const router = useRouter();
     const [allTours, setAllTours] = useState<Tour[]>([]);
-    const [regions, setRegions] = useState<Region[]>([]);
+    const [regions, setRegions] = useState<RegionInterface[]>([]);
     const [tourViews, setTourViews] = useState<TourView[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [buildingsOfTour, setBuildingsOfTour] = useState<{ [id: number]: BuildingInterface[] }>({});
+    const [selectedTour, setSelectedTour] = useState<TourView | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
     const columns = useMemo<MRT_ColumnDef<TourView>[]>(
         () => [
@@ -44,18 +47,10 @@ function AdminDataTours() {
 
     // On refresh, get all the tours & regions
     useEffect(() => {
-        getAllTours().then(
-            (res) => {
-                const tours: Tour[] = res.data;
-                setAllTours(tours);
-            },
-            (err) => {
-                console.error(err);
-            }
-        );
+        getTours();
         getAllRegions().then(
             (res) => {
-                let regions: Region[] = res.data;
+                let regions: RegionInterface[] = res.data;
                 setRegions(regions);
             },
             (err) => {
@@ -84,6 +79,18 @@ function AdminDataTours() {
         setLoading(false);
     }, [tourViews]);
 
+    function getTours() {
+        getAllTours().then(
+            (res) => {
+                const tours: Tour[] = res.data;
+                setAllTours(tours);
+            },
+            (err) => {
+                console.error(err);
+            }
+        );
+    }
+
     /**
      * Get all the buildings of a tour
      * @param tourID the id of the tour
@@ -104,7 +111,7 @@ function AdminDataTours() {
 
     // Get the name of a region
     function getRegionName(regionId: number): string {
-        const region: Region | undefined = regions.find((region: Region) => region.id === regionId);
+        const region: RegionInterface | undefined = regions.find((region: RegionInterface) => region.id === regionId);
         if (region) {
             return region.region;
         }
@@ -118,25 +125,22 @@ function AdminDataTours() {
         });
     }
 
-    function removeTour(tourView: TourView) {
-        deleteTour(tourView.tour_id).then(
-            (_) => {
-                const i = tourViews.indexOf(tourView);
-                if (i > -1) {
-                    tourViews.splice(i, 1);
-                }
-                setTourViews([...tourViews]);
-                // All buildingOnTour references need to stay in the db
-            },
-            (err) => {
-                console.error(err);
-            }
-        );
+    function closeDeleteModal() {
+        setShowDeleteModal(false);
+        getTours();
+        setSelectedTour(null);
     }
 
     return (
         <>
             <AdminHeader />
+            <TourDeleteModal
+                closeModal={closeDeleteModal}
+                show={showDeleteModal}
+                selectedTour={selectedTour}
+                setSelectedTour={setSelectedTour}
+                onDelete={closeDeleteModal}
+            />
             <MaterialReactTable
                 displayColumnDefOptions={{
                     "mrt-row-actions": {
@@ -172,7 +176,8 @@ function AdminDataTours() {
                             <IconButton
                                 onClick={() => {
                                     const tourView: TourView = row.original;
-                                    removeTour(tourView);
+                                    setSelectedTour(tourView);
+                                    setShowDeleteModal(true);
                                 }}
                             >
                                 <Delete />
@@ -208,4 +213,5 @@ function AdminDataTours() {
         </>
     );
 }
+
 export default withAuthorisation(AdminDataTours, ["Admin", "Superstudent"]);

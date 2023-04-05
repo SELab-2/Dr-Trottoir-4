@@ -5,7 +5,7 @@ import { UserView } from "@/types";
 import { getAllRoles, Role } from "@/lib/role";
 import { patchUser } from "@/lib/user";
 import { useTranslation } from "react-i18next";
-import { getAndSetErrors } from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 export function UserEditModal({
     show,
@@ -48,15 +48,8 @@ export function UserEditModal({
                 closeModal();
             },
             (err) => {
-                let errorRes = err.response;
-                if (errorRes && errorRes.status === 400) {
-                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                } else if (errorRes && errorRes.status === 403) {
-                    const errorData: [any, string][] = Object.entries(errorRes.data);
-                    setErrorMessages(errorData.map((val) => val[1]));
-                } else {
-                    console.error(err);
-                }
+                const e = handleError(err);
+                setErrorMessages(e);
             }
         );
     }
@@ -64,7 +57,7 @@ export function UserEditModal({
     return (
         <Modal show={show} onHide={() => closeModal}>
             <Modal.Header>
-                <Modal.Title>Pas gebruiker aan:</Modal.Title>
+                <Modal.Title>Pas gebruiker aan</Modal.Title>
             </Modal.Header>
             {errorMessages.length !== 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>

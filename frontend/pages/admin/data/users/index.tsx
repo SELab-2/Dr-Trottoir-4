@@ -1,7 +1,7 @@
 import AdminHeader from "@/components/header/adminHeader";
 import React, { useEffect, useMemo, useState } from "react";
-import { deleteUser, getAllUsers, getUserRole, patchUser, User } from "@/lib/user";
-import { getAllRegions, Region } from "@/lib/region";
+import { getAllUsers, getUserRole, User } from "@/lib/user";
+import { getAllRegions, RegionInterface } from "@/lib/region";
 import { UserView } from "@/types";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
@@ -15,7 +15,7 @@ function AdminDataUsers() {
     const { t } = useTranslation();
     const [allUsers, setAllUsers] = useState<User[]>([]);
     const [allUserViews, setAllUserViews] = useState<UserView[]>([]);
-    const [allRegions, setAllRegions] = useState<Region[]>([]);
+    const [allRegions, setAllRegions] = useState<RegionInterface[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
@@ -66,7 +66,7 @@ function AdminDataUsers() {
     useEffect(() => {
         getAllRegions().then(
             (res) => {
-                let regions: Region[] = res.data;
+                let regions: RegionInterface[] = res.data;
                 setAllRegions(regions);
             },
             (err) => {

@@ -7,7 +7,7 @@ from base.test_settings import backend_url, roles
 from util.data_generators import createUser, insert_dummy_building, createMemoryFile, insert_dummy_manual
 from util.test_tools import BaseTest, BaseAuthTest
 
-f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
+f = createMemoryFile("./manual/lorem-ipsum.pdf")
 
 
 class ManualTests(BaseTest):

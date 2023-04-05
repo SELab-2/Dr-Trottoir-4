@@ -1,36 +1,34 @@
-import { Button, Modal } from "react-bootstrap";
-import React, { useState } from "react";
-import { UserView } from "@/types";
-import { handleError } from "@/lib/error";
+import { TourView, UserView } from "@/types";
 import { useTranslation } from "react-i18next";
-import { deleteMailTemplate, Emailtemplate } from "@/lib/emailtemplate";
+import { deleteTour } from "@/lib/tour";
+import React, { useState } from "react";
+import { Button, Modal } from "react-bootstrap";
+import { handleError } from "@/lib/error";
 
-export function DeleteEmailModal({
+export function TourDeleteModal({
     show,
     closeModal,
-    selectedMail,
-    setMail,
+    onDelete,
+    selectedTour,
+    setSelectedTour,
 }: {
     show: boolean;
     closeModal: () => void;
-    selectedMail: Emailtemplate | null;
-    setMail: (x: any) => void;
+    onDelete: () => void;
+    selectedTour: TourView | null;
+    setSelectedTour: (x: any) => void;
 }) {
     const { t } = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-    /**
-     * Remove a user, show errors if necessary
-     */
-    function removeMailTemplate() {
-        if (!selectedMail) {
+    function removeTour() {
+        if (!selectedTour) {
             return;
         }
-        deleteMailTemplate(selectedMail.id).then(
-            () => {
+        deleteTour(selectedTour.tour_id).then(
+            (_) => {
                 setErrorMessages([]);
-                setMail(null);
-                closeModal();
+                onDelete();
             },
             (err) => {
                 const e = handleError(err);
@@ -42,7 +40,7 @@ export function DeleteEmailModal({
     return (
         <Modal show={show} onHide={closeModal}>
             <Modal.Header>
-                <Modal.Title>Verwijder template:</Modal.Title>
+                <Modal.Title>Verwijder ronde</Modal.Title>
             </Modal.Header>
             {errorMessages.length !== 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>
@@ -54,13 +52,13 @@ export function DeleteEmailModal({
                     <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
                 </div>
             )}
-            <Modal.Body>Bent u zeker dat u template {selectedMail?.name} wil verwijderen?</Modal.Body>
+            <Modal.Body>Bent u zeker dat u ronde {selectedTour?.name} wil verwijderen?</Modal.Body>
             <Modal.Footer>
                 <Button
                     variant="secondary"
                     className="btn-light"
                     onClick={() => {
-                        setMail(null);
+                        setSelectedTour(null);
                         setErrorMessages([]);
                         closeModal();
                     }}
@@ -71,7 +69,7 @@ export function DeleteEmailModal({
                     variant="primary"
                     className="btn-dark"
                     onClick={async () => {
-                        removeMailTemplate();
+                        removeTour();
                     }}
                 >
                     Verwijder
