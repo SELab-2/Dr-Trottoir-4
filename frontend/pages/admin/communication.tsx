@@ -8,18 +8,29 @@ import Combobox from "@/components/combobox";
 import FileInputField from "@/components/fileInputField";
 import { getAllPicturesOfBuilding, PictureBuilding } from "@/lib/picture-building";
 import PhotoSelector from "@/components/scrollViewPicture";
+import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
+import { BuildingInterface, getAllBuildings } from "@/lib/building";
+import { getAllUsers, User } from "@/lib/user";
+import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
+import { width } from "@mui/system";
 
 
 export default function AdminCommunication() {
     const [loading, setLoading] = useState(true);
     const [allTemplates, setAllTemplates] = useState<EmailTemplate[]>([]);
     const [allComments, setAllComments] = useState<BuildingComment[]>([]);
-    const [selectedTemplate, setSelectedTemplate] = useState("");
-    const [selectedComment, setSelectedComment] = useState("");
-    const [selectedBuilding, setSelectedBuilding] = useState(-1);
     const [allPictures, setAllPictures] = useState<PictureBuilding[]>([]);
+    const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
+    const [allSyndics, setAllSyndics] = useState<User[]>([]);
+    const [selectedTemplate, setSelectedTemplate] = useState("");
+    const [selectedBuilding, setSelectedBuilding] = useState("");
+    const [selectedSyndic, setSelectedSyndic] = useState("");
+    
     const [templateText, setTemplateText] = useState("");
     const [selectedPictures, setSelectedPictures] = useState<string[]>([]);
+    const [templateId, setTemplateId] = useState("");
+    const [commentId, setCommentId] = useState("");
+    const [syndicId, setSyndicId] = useState("");
 
     const handleSelectTemplate = (eventKey: string | null) => {
         setSelectedTemplate(eventKey ? eventKey : "");
@@ -32,24 +43,24 @@ export default function AdminCommunication() {
         
     }
 
-    const handleSelectComment = (eventKey: string | null) => {
-        setSelectedBuilding(-1);
+    // const handleSelectComment = (eventKey: string | null) => {
+    //     setSelectedBuilding(-1);
 
-        setSelectedComment(eventKey ? eventKey : "");
-        if (eventKey) {
-            const currentComment = allComments.find(e => e.comment.startsWith(eventKey));
-            if (currentComment) {
-                setSelectedBuilding(currentComment.building);
-                getAllPicturesOfBuilding(currentComment.building).then(res => {
-                    const buildingPictures : PictureBuilding[] = res.data;
-                    setAllPictures(buildingPictures);
-                    console.log(buildingPictures);
-                }, err => {
-                    console.error(err);
-                });
-            }
-        }
-    }
+    //     setSelectedComment(eventKey ? eventKey : "");
+    //     if (eventKey) {
+    //         const currentComment = allComments.find(e => e.comment.startsWith(eventKey));
+    //         if (currentComment) {
+    //             setSelectedBuilding(currentComment.building);
+    //             getAllPicturesOfBuilding(currentComment.building).then(res => {
+    //                 const buildingPictures : PictureBuilding[] = res.data;
+    //                 setAllPictures(buildingPictures);
+    //                 console.log(buildingPictures);
+    //             }, err => {
+    //                 console.error(err);
+    //             });
+    //         }
+    //     }
+    // }
 
     const handlePictureSelectionChange = (selectedPhotos: string[]) => {
         setSelectedPictures(selectedPhotos);
@@ -65,6 +76,7 @@ export default function AdminCommunication() {
         getAllEmailTemplates().then(res => {
             const emailTemplates : EmailTemplate[] = res.data;
             setAllTemplates(emailTemplates);
+            // setSelectedTemplate(emailTemplates[0].name);
         }, err => {
             console.error(err);
         });
@@ -75,11 +87,23 @@ export default function AdminCommunication() {
         }, err => {
             console.error(err);
         });
+
+        getAllBuildings().then(res => {
+            const buildings : BuildingInterface[] = res.data;
+            setAllBuildings(buildings);
+            setSelectedBuilding(buildings[0].name);
+        });
+
+        getAllUsers().then(res => {
+            const users : User[] = res.data;
+            setAllSyndics(users.filter(e => e.role == 2));
+            // setSelectedSyndic(allSyndics[0].first_name); // TODO edit
+        });
     }, []);
 
     useEffect(() => {
         setLoading(false);
-    }, [allTemplates, allComments, selectedTemplate, selectedComment]);
+    }, [allTemplates, allComments, selectedTemplate]);
 
 
     return (
@@ -88,20 +112,27 @@ export default function AdminCommunication() {
                 <AdminHeader/>
                 <p className={styles.title}>Communicatie extern</p>
                 <p className={styles.text}>Kies een template:</p>
-                <div style={{ display: 'flex' }}>
-                    <Combobox
-                        options={allTemplates.map((option: EmailTemplate) => option.name)}
-                        selectedOption={selectedTemplate}
-                        onSelect={handleSelectTemplate}
-                    />
-
-                    <Combobox
-                        options={allComments.map((option: BuildingComment) => option.comment)}
-                        selectedOption={selectedComment}
-                        onSelect={handleSelectComment}
-                    />
+                <div style={{ display: 'flex', width:"100%"  }}>
+                    <div style={{ width: "40%" }}>
+                        <TemplateAutocomplete
+                            value={selectedTemplate}
+                            onChange={setSelectedTemplate}
+                            setObjectId={setTemplateId}
+                            required={false}
+                        ></TemplateAutocomplete>
+                    </div>
+                    <div style={{ width: "40%" }}>
+                        <SyndicAutoCompleteComponent
+                            value={selectedSyndic}
+                            onChange={setSelectedSyndic}
+                            setObjectId={setSyndicId}
+                            required={true}
+                        ></SyndicAutoCompleteComponent>
+                    </div>
+                    
+                
                 </div>
-                <div style={{ display: 'flex' }}>
+                <div style={{ display: 'flex'}}>
                     <FloatingLabel
                         controlId="floatingTextarea"
                         label="Email"
