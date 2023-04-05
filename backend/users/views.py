@@ -138,6 +138,9 @@ class AllUsersView(APIView):
     serializer_class = UserSerializer
 
     @extend_schema(
+        description="GET all users in the database. There is the possibility to filter as well. You can filter on "
+                    "various parameters. If the parameter name includes 'list' then you can add multiple entries of "
+                    "those in the url.",
         parameters=param_docs({
             "region-id-list": ("Filter by region ids", False, OpenApiTypes.INT),
             "include-inactive-bool": ("Include the inactive users", False, OpenApiTypes.BOOL),
