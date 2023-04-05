@@ -29,30 +29,7 @@ export default function AdminCommunication() {
     const [templateId, setTemplateId] = useState("");
     const [commentId, setCommentId] = useState("");
     const [syndicId, setSyndicId] = useState("");
-
-    const handleSelectTemplate = (eventKey: string | null) => {
-        setSelectedTemplate(eventKey ? eventKey : "");
-        if (eventKey) {
-            const currentTemplate = allTemplates.find(e => e.name.startsWith(eventKey));
-            if (currentTemplate) {
-                setTemplateText(currentTemplate.template);
-            }
-        }
-    }
-
-    const handleSelectSyndic = (eventKey: string | null) => {
-        setSelectedSyndic(eventKey ? eventKey : "");
-        if (eventKey) {
-            console.log(syndicId);
-
-            const changedVariablesText = fillInVariables(templateText);
-            setUpdatedTemplateText(changedVariablesText);
-            console.log(changedVariablesText);
-
-            const currentBuilding = allBuildings.find(e => e.syndic === Number(syndicId));
-            console.log(currentBuilding);
-        }
-    }
+    const [buildingId, setBuildingId] = useState("");
 
     const handlePictureSelectionChange = (selectedPhotos: string[]) => {
         setSelectedPictures(selectedPhotos);
@@ -117,13 +94,21 @@ export default function AdminCommunication() {
     }, []);
 
     useEffect(() => {
-        setLoading(false);
-        const currentBuilding = allBuildings.find(e => e.syndic === Number(syndicId));
-        setSelectedBuilding(currentBuilding ? currentBuilding.name : "");
-        console.log(syndicId);
         const changedVariablesText = fillInVariables(templateText);
         setUpdatedTemplateText(changedVariablesText);
-    }, [allTemplates, allComments, allSyndics, allBuildings, selectedTemplate, selectedSyndic, templateText]);
+
+        const template = allTemplates.find(e => e.id === Number(templateId));
+        const syndic = allSyndics.find(e => e.id === Number(syndicId));
+        const building = allBuildings.find(e=> e.syndic === Number(syndicId));
+        if (template) {
+            setTemplateText(template.template);
+        }
+
+        if (building) {
+            setBuildingId(building.id.toString());
+        }
+
+    }, [allTemplates, allSyndics, allBuildings, templateId, syndicId, templateText]);
 
 
     return (
@@ -136,7 +121,7 @@ export default function AdminCommunication() {
                     <div style={{ width: "35%" }}>
                         <TemplateAutocomplete
                             value={selectedTemplate}
-                            onChange={handleSelectTemplate}
+                            onChange={setSelectedTemplate}
                             setObjectId={setTemplateId}
                             required={false}
                         ></TemplateAutocomplete>
@@ -144,7 +129,7 @@ export default function AdminCommunication() {
                     <div style={{ width: "35%" }}>
                         <SyndicAutoCompleteComponent
                             value={selectedSyndic}
-                            onChange={handleSelectSyndic}
+                            onChange={setSelectedSyndic}
                             setObjectId={setSyndicId}
                             required={true}
                         ></SyndicAutoCompleteComponent>
