@@ -3,6 +3,7 @@ import router from "next/router";
 import { BuildingInterface, getBuildingsFromOwner } from "@/lib/building";
 import { useEffect, useState } from "react";
 import { AxiosResponse } from "axios";
+import DefaultHeader from "@/components/header/defaultHeader";
 
 function SyndicDashboard() {
     const [id, setId] = useState("");
@@ -42,6 +43,8 @@ function SyndicDashboard() {
 
     return (
         <>
+            <DefaultHeader />
+
             <p>
                 https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1145&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
             </p>

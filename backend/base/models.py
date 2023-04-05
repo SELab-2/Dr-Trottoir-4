@@ -4,7 +4,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import UniqueConstraint
+from django.db.models import UniqueConstraint, Q
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
@@ -13,7 +13,7 @@ from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2**31 - 1
+MAX_INT = 2 ** 31 - 1
 
 
 class Region(models.Model):
@@ -132,7 +132,7 @@ class Building(models.Model):
 
         # If a public_id exists, it should be unique
         if self.public_id:
-            if Building.objects.filter(public_id=self.public_id):
+            if Building.objects.filter(public_id=self.public_id).filter(~Q(id=self.id)):
                 raise ValidationError(f"{self.public_id} already exists as public_id of another building")
 
     class Meta:
@@ -205,7 +205,7 @@ class GarbageCollection(models.Model):
                 "date",
                 name="garbage_collection_unique",
                 violation_error_message="This type of garbage is already being collected on the same day for this "
-                "building.",
+                                        "building.",
             ),
         ]
 
@@ -262,7 +262,7 @@ class BuildingOnTour(models.Model):
 
     class Meta:
         constraints = [
-           UniqueConstraint(
+            UniqueConstraint(
                 "building",
                 "tour",
                 name="unique_building_on_tour",
@@ -369,9 +369,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-            self.version_number == 0
-            or self.version_number > max_version_number + 1
-            or self.version_number in version_numbers
+                self.version_number == 0
+                or self.version_number > max_version_number + 1
+                or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 

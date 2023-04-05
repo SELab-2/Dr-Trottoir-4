@@ -70,7 +70,7 @@ class IsSyndic(BasePermission):
 # ------------------
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
-        return request in SAFE_METHODS
+        return request.method in SAFE_METHODS
 
 
 # ------------------
@@ -103,7 +103,10 @@ class ReadOnlyOwnerOfBuilding(BasePermission):
         return request.user.role.name.lower() == "syndic"
 
     def has_object_permission(self, request, view, obj: Building):
+        print("CHECKEN")
         if request.method in SAFE_METHODS:
+            print("SAFE")
+            print(vars(obj))
             return request.user.id == obj.syndic_id
         return False
 
