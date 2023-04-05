@@ -4,8 +4,6 @@ import { EmailTemplate, getAllEmailTemplates } from "@/lib/email-template";
 import { useEffect, useState, ChangeEvent } from "react";
 import styles from 'styles/Welcome.module.css';
 import { Dropdown, DropdownButton, FloatingLabel, Form, FormControl } from "react-bootstrap";
-import { getAllPicturesOfBuilding, PictureBuilding } from "@/lib/picture-building";
-import PhotoSelector from "@/components/scrollViewPicture";
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import { getAllUsers, User, userSearchString } from "@/lib/user";
@@ -16,24 +14,17 @@ export default function AdminCommunication() {
     const [loading, setLoading] = useState(true);
     const [allTemplates, setAllTemplates] = useState<EmailTemplate[]>([]);
     const [allComments, setAllComments] = useState<BuildingComment[]>([]);
-    const [allPictures, setAllPictures] = useState<PictureBuilding[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [allSyndics, setAllSyndics] = useState<User[]>([]);
     const [selectedTemplate, setSelectedTemplate] = useState("");
-    const [selectedBuilding, setSelectedBuilding] = useState("");
     const [selectedSyndic, setSelectedSyndic] = useState("");
     
     const [templateText, setTemplateText] = useState("");
     const [updatedTemplateText, setUpdatedTemplateText] = useState("");
-    const [selectedPictures, setSelectedPictures] = useState<string[]>([]);
     const [templateId, setTemplateId] = useState("");
     const [commentId, setCommentId] = useState("");
     const [syndicId, setSyndicId] = useState("");
     const [buildingId, setBuildingId] = useState("");
-
-    const handlePictureSelectionChange = (selectedPhotos: string[]) => {
-        setSelectedPictures(selectedPhotos);
-    }
     
     const replaceVariable = (str: string, variable: string, value: string) : string => {
         const regex = new RegExp(`{{\\s*${variable}\\s*}}`, 'g');
@@ -153,15 +144,7 @@ export default function AdminCommunication() {
                         />
                     </FloatingLabel>
                     <div style={{ width: "30%" }}>
-                    <label className={styles.text}>Eventuele foto's opmerking:</label>
-                    <PhotoSelector
-                        photos={allPictures.length > 0 ? (
-                            allPictures.map(e => e.picture)
-                        ) : (
-                            ["https://www.pulsecarshalton.co.uk/wp-content/uploads/2016/08/jk-placeholder-image.jpg"]
-                        )}
-                        onSelectionChange={handlePictureSelectionChange}
-                    />
+                    
                     </div>
                 </div>
             </>
