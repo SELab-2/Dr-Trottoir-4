@@ -1,13 +1,11 @@
-import json
 import uuid
 from datetime import datetime
 from typing import Callable
 
 from django.core.exceptions import ValidationError, BadRequest
-from django.http import HttpResponseBadRequest
+from drf_spectacular.utils import OpenApiParameter
 from rest_framework import status
 from rest_framework.response import Response
-from drf_spectacular.utils import OpenApiParameter
 
 
 def get_id_param(request, name, required=False):
@@ -51,8 +49,16 @@ def filter_instances(request, instances, filters):
             if param_value:
                 instances = instances.filter(**{filter_key: param_value})
     except BadRequest as e:
-        error = {'message': str(e)}
-        return HttpResponseBadRequest(json.dumps(error), content_type='application/json')
+        return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+def check_required_keys_post(data: dict, required_keys: list):
+    violate_requirements = [k for k in required_keys if k not in data.keys()]
+    if violate_requirements:
+        return Response({
+            "message":
+                f"the following required keys were missing when posting to this endpoint: {', '.join(violate_requirements)}"
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 def get_unique_uuid(lookup_func: Callable[[str], bool] = None):
