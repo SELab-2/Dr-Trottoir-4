@@ -38,14 +38,13 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-    'django_nose',
+    "django_nose",
 ]
 
 AUTHENTICATION = [
     "rest_framework.authtoken",
     "allauth",
     "allauth.account",
-    "allauth.socialaccount",
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "rest_framework_simplejwt.token_blacklist",
@@ -60,12 +59,11 @@ THIRD_PARTY_APPS = AUTHENTICATION + [
 
 CREATED_APPS = ["base"]
 
-
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CREATED_APPS
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
+        "rest_framework.permissions.AllowAny",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": ("dj_rest_auth.jwt_auth.JWTCookieAuthentication",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -77,7 +75,10 @@ REST_FRAMEWORK = {
 # https://stackoverflow.com/a/70641487
 collections.Callable = collections.abc.Callable
 # Use nose to run all tests
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
+
+
+NOSE_ARGS = ["--cover-xml", "--cover-xml-file=./coverage.xml"]
 
 # drf-spectacular settings
 SPECTACULAR_SETTINGS = {
@@ -92,12 +93,15 @@ SPECTACULAR_SETTINGS = {
 AUTH_USER_MODEL = "base.User"
 
 REST_AUTH = {
+    "SESSION_LOGIN": False,
     "USE_JWT": True,
     "JWT_AUTH_HTTPONLY": True,
     "JWT_AUTH_SAMESITE": "Strict",
     "JWT_AUTH_COOKIE": "auth-access-token",
     "JWT_AUTH_REFRESH_COOKIE": "auth-refresh-token",
     "USER_DETAILS_SERIALIZER": "base.serializers.UserSerializer",
+    "PASSWORD_RESET_SERIALIZER": "authentication.serializers.CustomPasswordResetSerializer",
+    "PASSWORD_RESET_USE_SITES_DOMAIN": True,
 }
 
 SIMPLE_JWT = {
@@ -105,6 +109,7 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=14),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
+    "JTI_CLAIM": "jti",
 }
 
 AUTHENTICATION_BACKENDS = [
@@ -118,10 +123,10 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = "optional" if DEBUG else "mandatory"
-LOGIN_URL = "http://localhost:2002/user/login"
+ACCOUNT_EMAIL_VERIFICATION = None
+LOGIN_URL = "http://localhost/api/authentication/login"
 
-SITE_ID = 1
+SITE_ID = 1 if DEBUG else 2
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -155,7 +160,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -174,16 +179,17 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'drtrottoir',
-        'USER': 'django',
-        'PASSWORD': 'password',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "drtrottoir",
+        "USER": "django",
+        "PASSWORD": "password",
         # since testing is run outside the docker, we need a localhost db
         # the postgres docker port is exposed to it should be used as well
         # this 'hack' is just to fix the name resolving of 'web'
-        'HOST': 'localhost' if "test" in sys.argv else "web",
-        'PORT': '5432',
+        # "HOST": "localhost" if "test" in sys.argv else "web",
+        "HOST": "web",
+        "PORT": "5432",
     }
 }
 

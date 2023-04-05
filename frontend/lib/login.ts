@@ -1,5 +1,5 @@
 import api from "./api/axios";
-import { Login } from "@/types.d";
+import { Login } from "@/types";
 import { AxiosResponse } from "axios";
 
 export const login = (email: string, password: string): Promise<AxiosResponse<any, any>> => {
@@ -13,15 +13,6 @@ export const login = (email: string, password: string): Promise<AxiosResponse<an
     return api.post(host, JSON.stringify(login_data), {
         headers: { "Content-Type": "application/json" },
     });
-};
-
-// function to automatically log in if a refresh token is found
-export const verifyToken = (): Promise<AxiosResponse<any, any>> => {
-    // TODO: This is a temporary request to endpoint token/refresh, change this endpoint once token/verify/
-    //  or another endpoint is correctly set up
-    const verify_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}`;
-
-    return api.get(verify_url);
 };
 
 export default login;

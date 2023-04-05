@@ -1,4 +1,4 @@
-import { getUserRole } from "@/lib/user_info";
+import { getUserRole } from "@/lib/user";
 
 export function getSpecificDirection(role: string, direction: string): string {
     let path: string = role.toLowerCase();

@@ -7,7 +7,6 @@ from base.permissions import IsAdmin, IsSuperStudent
 from base.serializers import LobbySerializer
 from util.request_response_util import *
 
-
 TRANSLATE = {"role": "role_id"}
 
 _VERIFICATION_CODE = "verification_code"

@@ -4,7 +4,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import UniqueConstraint
+from django.db.models import UniqueConstraint, Q
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
@@ -21,13 +21,6 @@ class Region(models.Model):
 
     def __str__(self):
         return self.region
-
-
-# Catches the post_save signal (in signals.py) and creates a user token if not yet created
-# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-# def create_auth_token(sender, instance=None, created=False, **kwargs):
-#     if created:
-#         Token.objects.create(user=instance)
 
 
 class Role(models.Model):
@@ -97,9 +90,9 @@ class Lobby(models.Model):
     def clean(self):
         super().clean()
 
-        user = User.objects.filter(email=self.email)
-        if User.objects.filter(user):
-            user = user[0]
+        users = User.objects.filter(email=self.email)
+        if users:
+            user = users[0]
             is_inactive = not user.is_active
             addendum = ""
             if is_inactive:
@@ -139,7 +132,7 @@ class Building(models.Model):
 
         # If a public_id exists, it should be unique
         if self.public_id:
-            if Building.objects.filter(public_id=self.public_id):
+            if Building.objects.filter(public_id=self.public_id).filter(~Q(id=self.id)):
                 raise ValidationError(f"{self.public_id} already exists as public_id of another building")
 
     class Meta:
@@ -264,27 +257,17 @@ class BuildingOnTour(models.Model):
                     f"The regions for tour ({tour_region}) en building ({building_region}) are different."
                 )
 
-            nr_of_buildings = BuildingOnTour.objects.filter(tour=self.tour_id).count()
-            if self.index > nr_of_buildings:
-                raise ValidationError(f"The maximum allowed index for this building is {nr_of_buildings}")
-
     def __str__(self):
         return f"{self.building} on tour {self.tour}, index: {self.index}"
 
     class Meta:
         constraints = [
             UniqueConstraint(
-                "index",
-                "tour",
-                name="unique_index_on_tour",
-                violation_error_message="The tour has already a building on this index.",
-            ),
-            UniqueConstraint(
                 "building",
                 "tour",
                 name="unique_building_on_tour",
                 violation_error_message="This building is already on this tour.",
-            ),
+            )
         ]
 
 

@@ -1,42 +1,10 @@
 [
 {
-    "model": "sessions.session",
-    "pk": "agkbb75z1jzznlehgnfqgxnkftmu2h65",
+    "model": "sites.site",
+    "pk": 1,
     "fields": {
-        "session_data": ".eJxVjMEOwiAQRP-FsyG2WGC96Y-QZdkNjQ1NBE7Gf7c1Pehx3sy8lwrYWw698jPMSV3VoE6_LCI9uOwFLsuONRKtvTT93Rx11bctcWkzYZvXcj9ef6qMNW8eGQAvZHGckiemJCSeIaHY0ft4tgCQRMxI0QEMyBDBiHGT4wnQW6PeH_JXPT8:1pZrZn:aofO3hoPSRwP3rzhXO-gnpWAA2ykYuOdsRHuX5zTVZ4",
-        "expire_date": "2023-03-22T11:03:19.294Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "icpbdr23fsn7moz1gm1jvtk4p7p9uw15",
-    "fields": {
-        "session_data": ".eJxVjMEOwiAQRP-Fs2mKSxfwZn-ELFsIxIYmAifjv9uaHvQ4b2beSzjqLblew9PlRdyERHH5hZ74EcrR0LoeeCDmrZc2fDdnXYf7nkJpmanlrczn60-VqKbdE-XoNavggwc96ckyeqARyKNaFBqyI1sTrdyRMstVIkciYwAtwARavD_qxDwi:1pekHY:T1nBiKPojhdO5TXyl-NRmbf0mmnbG_Y3uuIJVBO__G0",
-        "expire_date": "2023-04-04T22:16:40.721Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "j021p17ab4dax6ex6axkiseb98hrwu47",
-    "fields": {
-        "session_data": ".eJxVjEEOwiAURO_C2hCk8AF39iLk84FAbGgidGW8u63pQpfz3sy8mMdtFL_19PQ1shuTkl1-YUB6pHYYXJYDcyRatzb4t3Pqzu97Sm1UwlHXNp-rv6uCvew_FoECSCVcSAooAiXtUpbZSpODimYCAqcdOm13JY0Vxlw1iCDiFKNi7w_sujxp:1pZxhm:zSprMzikHaWdPjNCuXbw1np1Z5NGjDr-mfABOH_t0xQ",
-        "expire_date": "2023-03-22T17:35:58.939Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "k4own88w8gyx1hru7z4awm02mzm0bjp6",
-    "fields": {
-        "session_data": ".eJxVjM0OwiAQhN-Fs2koPwt40xdpll0aiA1NhJ6M725retDjfN_MvMSEW8_T1tJzKiyuQo_i8gsj0iPVw-CyHHhAonWrffh2Tt2G255S7YWwl7Xez9XfVcaW9x-PQBGUkSEmA8RAyYY0q9krN0fDTgNBsAGD9btSzkvnRgsyStbMRrw_7Ls8aQ:1pZuvb:yMwFJC-JuHYDMGaXc_0E_-cyNrFJ5vQHdHyGCWplruI",
-        "expire_date": "2023-03-22T14:38:03.200Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "u9nff810u1xxttz70tut4k3lsrlztc9s",
-    "fields": {
-        "session_data": ".eJxVjMEOwiAQRP-Fs2mKSxfwZn-ELFsIxIYmAifjv9uaHvQ4b2beSzjqLblew9PlRdyERHH5hZ74EcrR0LoeeCDmrZc2fDdnXYf7nkJpmanlrczn60-VqKbdE-XoNavggwc96ckyeqARyKNaFBqyI1sTrdyRMstVIkciYwAtwARavD_qxDwi:1pejqI:QRVpxAj84QMF_yU7aGO78vEdTMu9SxSpmagUWd8HdvE",
-        "expire_date": "2023-04-04T21:48:30.327Z"
+        "domain": "localhost",
+        "name": "localhost"
     }
 },
 {
@@ -49,9 +17,10 @@
 },
 {
     "model": "sites.site",
+    "pk": 2,
     "fields": {
-        "domain": "example.com",
-        "name": "example.com"
+        "domain": "sel2-4.ugent.be",
+        "name": "sel2-4.ugent.be"
     }
 },
 {
