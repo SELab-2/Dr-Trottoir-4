@@ -64,7 +64,7 @@ export function UserEditModal({
     return (
         <Modal show={show} onHide={() => closeModal}>
             <Modal.Header>
-                <Modal.Title>Pas gebruiker aan:</Modal.Title>
+                <Modal.Title>Pas gebruiker aan</Modal.Title>
             </Modal.Header>
             {errorMessages.length !== 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>

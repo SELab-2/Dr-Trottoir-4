@@ -142,6 +142,18 @@ class BuildingNewPublicId(APIView):
         return post_success(BuildingSerializer(building_instance))
 
 
+class BuildingGetNewPublicId(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding]
+
+    def get(self, request):
+        """
+        Get a random unique uuid as public id that is still available.
+        Returns a json object with the public_id as key and the uuid as value.
+        """
+        unique_id = get_unique_uuid(lambda x: Building.objects.filter(public_id=x).exists())
+        return Response({"public_id": unique_id}, status=status.HTTP_200_OK)
+
+
 class AllBuildingsView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = BuildingSerializer
