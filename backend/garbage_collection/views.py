@@ -170,6 +170,7 @@ def validate_duplication_period(start_period: datetime, end_period: datetime, st
 
 class GarbageCollectionDuplicateView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = GarbageCollectionDuplicateRequestSerializer
 
     @extend_schema(
         description="POST body consists of a certain period",
@@ -187,13 +188,13 @@ class GarbageCollectionDuplicateView(APIView):
         }
     )
     def post(self, request):
-        data = request_to_dict(request.data)
-        if r := check_required_keys_post(data, ['start-date-period', 'end-date-period', 'start-date-copy']):
-            return r
+        serializer = GarbageCollectionDuplicateRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
         # transform them into the appropriate week-days:
-        start_date_period = get_monday_of_week(data.get('start-date-period'))
-        end_date_period = get_sunday_of_week(data.get('end-date-period'))
-        start_date_copy = get_monday_of_week(data.get('start-date-copy'))
+        start_date_period = get_monday_of_week(validated_data.get('start-date-period'))
+        end_date_period = get_sunday_of_week(validated_data.get('end-date-period'))
+        start_date_copy = get_monday_of_week(validated_data.get('start-date-copy'))
 
         if r := validate_duplication_period(start_date_period, end_date_period, start_date_copy):
             return r
@@ -203,7 +204,7 @@ class GarbageCollectionDuplicateView(APIView):
             date__range=[start_date_period, end_date_period]
         )
         # retrieve and apply the optional filtering on buildings
-        building_ids = data.get('building-ids', None)
+        building_ids = validated_data.get('building-ids', None)
         if building_ids:
             garbage_collections_to_duplicate = garbage_collections_to_duplicate.filter(building__id__in=building_ids)
 
