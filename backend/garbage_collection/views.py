@@ -87,7 +87,7 @@ class GarbageCollectionIndividualView(APIView):
 
 @extend_schema(
     parameters=param_docs({
-        "start date": ("Filter by start date", False, OpenApiTypes.DATE),
+        "start-date": ("Filter by start-date", False, OpenApiTypes.DATE),
         "end date": ("Filter by end date", False, OpenApiTypes.DATE),
     })
 )
@@ -121,7 +121,7 @@ class GarbageCollectionIndividualBuildingView(APIView):
 
 @extend_schema(
     parameters=param_docs({
-        "start date": ("Filter by start date", False, OpenApiTypes.DATE),
+        "start-date": ("Filter by start-date", False, OpenApiTypes.DATE),
         "end date": ("Filter by end date", False, OpenApiTypes.DATE),
     })
 )
