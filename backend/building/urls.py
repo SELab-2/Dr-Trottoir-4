@@ -8,7 +8,7 @@ from .views import (
     BuildingPublicView,
     BuildingNewPublicId,
     AllBuildingsInRegionView,
-    BuildingGetNewPublicId
+    BuildingGetNewPublicId,
 )
 
 urlpatterns = [
@@ -19,5 +19,5 @@ urlpatterns = [
     path("public/<building_public_id>/", BuildingPublicView.as_view()),
     path("new-public-id/<int:building_id>/", BuildingNewPublicId.as_view()),
     path("random-new-public-id/", BuildingGetNewPublicId.as_view()),
-    path("", DefaultBuilding.as_view())
+    path("", DefaultBuilding.as_view()),
 ]
