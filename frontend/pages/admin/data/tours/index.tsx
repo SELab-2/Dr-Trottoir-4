@@ -1,7 +1,7 @@
 import AdminHeader from "@/components/header/adminHeader";
 import React, { useEffect, useMemo, useState } from "react";
 import { deleteTour, getAllTours, getBuildingsOfTour, Tour } from "@/lib/tour";
-import { Region, getAllRegions } from "@/lib/region";
+import { RegionInterface, getAllRegions } from "@/lib/region";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useRouter } from "next/router";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
@@ -15,7 +15,7 @@ import { TourView } from "@/types";
 function AdminDataTours() {
     const router = useRouter();
     const [allTours, setAllTours] = useState<Tour[]>([]);
-    const [regions, setRegions] = useState<Region[]>([]);
+    const [regions, setRegions] = useState<RegionInterface[]>([]);
     const [tourViews, setTourViews] = useState<TourView[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [buildingsOfTour, setBuildingsOfTour] = useState<{ [id: number]: BuildingInterface[] }>({});
@@ -55,7 +55,7 @@ function AdminDataTours() {
         );
         getAllRegions().then(
             (res) => {
-                let regions: Region[] = res.data;
+                let regions: RegionInterface[] = res.data;
                 setRegions(regions);
             },
             (err) => {
@@ -104,7 +104,7 @@ function AdminDataTours() {
 
     // Get the name of a region
     function getRegionName(regionId: number): string {
-        const region: Region | undefined = regions.find((region: Region) => region.id === regionId);
+        const region: RegionInterface | undefined = regions.find((region: RegionInterface) => region.id === regionId);
         if (region) {
             return region.region;
         }

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { deleteTour, getTour, patchTour, postTour, Tour } from "@/lib/tour";
-import { getAllRegions, getRegion, Region } from "@/lib/region";
+import { getAllRegions, getRegion, RegionInterface } from "@/lib/region";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import {
     BuildingOnTour,
@@ -37,7 +37,7 @@ function AdminDataToursEdit() {
     const router = useRouter();
     const query: DataToursEditQuery = router.query as DataToursEditQuery;
     const [tour, setTour] = useState<Tour>();
-    const [region, setRegion] = useState<Region>();
+    const [region, setRegion] = useState<RegionInterface>();
     const [allBuildingsInRegion, setAllBuildingsInRegion] = useState<BuildingInterface[]>([]);
     const [buildingsOnTour, setBuildingsOnTour] = useState<BuildingOnTour[]>([]);
 
@@ -46,7 +46,7 @@ function AdminDataToursEdit() {
     const [tourName, setTourName] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    const [possibleRegions, setPossibleRegions] = useState<Region[]>([]);
+    const [possibleRegions, setPossibleRegions] = useState<RegionInterface[]>([]);
     const [selectedRegion, setSelectedRegion] = useState<string>("");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
@@ -197,7 +197,7 @@ function AdminDataToursEdit() {
             return;
         }
         // Get the selected region
-        const region: Region | undefined = possibleRegions.find((r: Region) => r.region === selectedRegion);
+        const region: RegionInterface | undefined = possibleRegions.find((r: RegionInterface) => r.region === selectedRegion);
         if (!region) {
             return;
         }
@@ -373,7 +373,7 @@ function AdminDataToursEdit() {
             setErrorMessages([...errorMessages]);
             return;
         }
-        const region: Region = possibleRegions.find((r: Region) => r.region === selectedRegion)!;
+        const region: RegionInterface = possibleRegions.find((r: RegionInterface) => r.region === selectedRegion)!;
         postTour(tourName, new Date(Date.now()), region.id).then(
             (res) => {
                 const resTour: Tour = res.data;
@@ -503,7 +503,7 @@ function AdminDataToursEdit() {
                                     }
                                 >
                                     <option disabled value={""}></option>
-                                    {possibleRegions.map((regio: Region, index: number) => (
+                                    {possibleRegions.map((regio: RegionInterface, index: number) => (
                                         <option value={regio.region} key={index}>
                                             {regio.region}
                                         </option>

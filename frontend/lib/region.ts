@@ -3,13 +3,7 @@ import api from "@/lib/api/axios";
 
 export interface RegionInterface {
     id: number;
-    region: number;
-}
-
-// @Simon, verwijder onderstaande interface, build docker en fix errors
-export interface Region {
-    id: number,
-    region : string
+    region: string;
 }
 
 export async function getAllRegions(): Promise<AxiosResponse<any>> {
