@@ -113,7 +113,7 @@ const MyCalendar: FC = () => {
                 localizer={localizer}
                 selectable
                 onSelectEvent={onEventSelection}
-                style={{height: '200vh'}}
+                style={{height: '100vh'}}
                 step={60}
                 timeslots={1}
                 onEventDrop={onEventChange}

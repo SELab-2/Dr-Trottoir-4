@@ -63,10 +63,15 @@ a {
 }
 
 .rbc-time-view .rbc-allday-cell {
-    height: calc(100vh - 98px) !important;
+    height: calc(90vh) !important;
     max-height: unset !important;
 }
 
 .rbc-time-view .rbc-time-content {
     display: none !important;
 }
+
+.rbc-time-view .rbc-time-slot {
+  height: 30px !important;
+}
+
