@@ -140,8 +140,8 @@ class AllUsersView(APIView):
         """
         Get all users
         """
-        include_inactive = request.GET.get('include-inactive', 'false')
-        if include_inactive.lower() == 'true':
+        include_inactive = request.GET.get("include-inactive", "false")
+        if include_inactive.lower() == "true":
             user_instances = User.objects.all()
         else:
             user_instances = User.objects.filter(is_active=True)
