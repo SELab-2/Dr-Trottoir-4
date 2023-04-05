@@ -1,28 +1,24 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/router";
-import { deleteTour, getTour, patchTour, postTour, Tour } from "@/lib/tour";
-import { getAllRegions, getRegion, RegionInterface } from "@/lib/region";
-import { BuildingInterface, getAllBuildings } from "@/lib/building";
-import {
-    BuildingOnTour,
-    deleteBuildingOnTour,
-    getAllBuildingsOnTourWithTourID,
-    patchBuildingOnTour,
-    postBuildingOnTour,
-} from "@/lib/building-on-tour";
-import MaterialReactTable, { MRT_ColumnDef, MRT_Row } from "material-react-table";
-import { Box, Tooltip } from "@mui/material";
-import { Button } from "react-bootstrap";
+import React, {useEffect, useMemo, useState} from "react";
+import {useRouter} from "next/router";
+import {getAllRegions, getRegion, RegionInterface} from "@/lib/region";
+import {deleteTour, getTour, patchTour, postTour, swapBuildingsOnTour, Tour} from "@/lib/tour";
+import {BuildingInterface, getAllBuildings} from "@/lib/building";
+import {BuildingOnTour, getAllBuildingsOnTourWithTourID,} from "@/lib/building-on-tour";
+import MaterialReactTable, {MRT_ColumnDef, MRT_Row} from "material-react-table";
+import {Box, Tooltip} from "@mui/material";
+import {Button} from "react-bootstrap";
 import SaveIcon from "@mui/icons-material/Save";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { Delete } from "@mui/icons-material";
-import { useTranslation } from "react-i18next";
-import { getAndSetErrors } from "@/lib/error";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {Delete} from "@mui/icons-material";
+import {useTranslation} from "react-i18next";
+import {getAndSetErrors} from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
-import {BuildingNotOnTourView, BuildingOnTourView} from "@/types";
+import {BuildingNotOnTourView, BuildingOnTourView, TourView} from "@/types";
+import {TourDeleteModal} from "@/components/admin/tourDeleteModal";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DataToursEditQuery extends ParsedUrlQuery {
     tour?: number;
@@ -33,7 +29,7 @@ interface DataToursEditQuery extends ParsedUrlQuery {
  * @constructor
  */
 function AdminDataToursEdit() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const router = useRouter();
     const query: DataToursEditQuery = router.query as DataToursEditQuery;
     const [tour, setTour] = useState<Tour>();
@@ -49,6 +45,9 @@ function AdminDataToursEdit() {
     const [possibleRegions, setPossibleRegions] = useState<RegionInterface[]>([]);
     const [selectedRegion, setSelectedRegion] = useState<string>("");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
+    const [tourView, setTourView] = useState<TourView | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
     const columnsBuildingOnTourView = useMemo<MRT_ColumnDef<BuildingOnTourView>[]>(
         () => [
@@ -135,7 +134,9 @@ function AdminDataToursEdit() {
         } else {
             getTour(query.tour).then(
                 (res) => {
-                    setTour(res.data);
+                    const r: Tour = res.data;
+                    setTour(r);
+                    setTourView({name: r.name, region: "", tour_id: Number(query.tour), last_modified: ""})
                 },
                 (err) => {
                     console.error(err);
@@ -269,7 +270,7 @@ function AdminDataToursEdit() {
      */
     function addToBuildingOnTour(buildingNotOnTour: BuildingNotOnTourView) {
         const index: number = buildingsOnTourView.length;
-        const bot: BuildingOnTourView = { ...buildingNotOnTour, index: index };
+        const bot: BuildingOnTourView = {...buildingNotOnTour, index: index};
         const i = buildingsNotOnTourView.indexOf(buildingNotOnTour);
         if (i > -1) {
             buildingsNotOnTourView.splice(i, 1);
@@ -311,47 +312,29 @@ function AdminDataToursEdit() {
             return;
         }
         if (tour) {
-            // PATCH tour & delete/patch/post buildingsOnTours
-            // get all buildingsonTour that where already in the list (PATCH)
-            const alreadyExistBuildingsOnTourViews: BuildingOnTourView[] = buildingsOnTourView.filter(
-                (bot: BuildingOnTourView) =>
-                    buildingsOnTour.some((b: BuildingOnTour) => b.building === bot.buildingId && b.index != bot.index)
-            );
-            await Promise.all(
-                alreadyExistBuildingsOnTourViews.map((bot: BuildingOnTourView) => {
-                    const b: BuildingOnTour = buildingsOnTour.find(
-                        (b: BuildingOnTour) => bot.buildingId === b.building
-                    )!; // not undefined
-                    return patchBuildingOnTour(b.id, { index: bot.index });
-                })
-            );
-
-            // Get removed buildingOnTours from list
-            // TODO: do a delete of a building that was removed from a tour request once the database is ready
-            const removedBuildingsOnTour: BuildingOnTour[] = buildingsOnTour.filter((bot: BuildingOnTour) =>
-                buildingsNotOnTourView.some((b: BuildingNotOnTourView) => bot.building === b.buildingId)
-            );
-            await Promise.all(
-                removedBuildingsOnTour.map((bot: BuildingOnTour) => {
-                    return deleteBuildingOnTour(bot.id);
-                    //return patchBuildingOnTour(bot.id, {tour : null}); TODO: change this once db is ready
-                })
-            );
-
-            // Get new buildingOnTours in the list (POST)
-            const nonExistentBuildingsOnTourViews: BuildingOnTourView[] = buildingsOnTourView.filter(
-                (bot: BuildingOnTourView) => !buildingsOnTour.some((b: BuildingOnTour) => b.building === bot.buildingId)
-            );
-            await Promise.all(
-                nonExistentBuildingsOnTourViews.map((bot: BuildingOnTourView) => {
-                    return postBuildingOnTour(tour.id, bot.buildingId, bot.index);
-                })
-            );
-
-            // patch tour && maybe post/patch buildingOnTours buildingOnTour.tour must become null if they are being removed
-            patchTour(tour.id, { name: tourName }, new Date(Date.now())).then(
+            patchTour(tour.id, {name: tourName}, new Date(Date.now())).then(
                 async (_) => {
-                    await router.push("/admin/data/tours/");
+                    if (buildingsOnTourView.length > 0) {
+                        const buildingIndices: { [b: number]: number } = {};
+                        let i = 0;
+                        for (const botv of buildingsOnTourView) {
+                            buildingIndices[botv.buildingId] = i;
+                            i++;
+                        }
+                        swapBuildingsOnTour(tour.id, buildingIndices).then(
+                            (_) => {
+                                router.push("/admin/data/tours/").then();
+                            },
+                            (err) => {
+                                let errorRes = err.response;
+                                if (errorRes && errorRes.status === 400) {
+                                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
+                                }
+                            }
+                        );
+                    } else {
+                        router.push("/admin/data/tours/").then();
+                    }
                 },
                 (err) => {
                     let errorRes = err.response;
@@ -376,22 +359,28 @@ function AdminDataToursEdit() {
         const region: RegionInterface = possibleRegions.find((r: RegionInterface) => r.region === selectedRegion)!;
         postTour(tourName, new Date(Date.now()), region.id).then(
             (res) => {
-                const resTour: Tour = res.data;
-                Promise.all(
-                    buildingsOnTourView.map((b: BuildingOnTourView, index: number) =>
-                        postBuildingOnTour(resTour.id, b.buildingId, index)
-                    )
-                ).then(
-                    (_) => {
-                        router.push("/admin/data/tours/").then();
-                    },
-                    (err) => {
-                        let errorRes = err.response;
-                        if (errorRes && errorRes.status === 400) {
-                            getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                        }
+                if (buildingsOnTourView.length > 0) {
+                    const resTour: Tour = res.data;
+                    const buildingIndices: { [b: number]: number } = {};
+                    let i = 0;
+                    for (const botv of buildingsOnTourView) {
+                        buildingIndices[botv.buildingId] = i;
+                        i++;
                     }
-                );
+                    swapBuildingsOnTour(resTour.id, buildingIndices).then(
+                        (_) => {
+                            router.push("/admin/data/tours/").then();
+                        },
+                        (err) => {
+                            let errorRes = err.response;
+                            if (errorRes && errorRes.status === 400) {
+                                getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
+                            }
+                        }
+                    );
+                } else {
+                    router.push("/admin/data/tours/").then();
+                }
             },
             (err) => {
                 let errorRes = err.response;
@@ -411,7 +400,6 @@ function AdminDataToursEdit() {
         }
         deleteTour(tour.id).then(
             async (_) => {
-                await router.push("/admin/data/tours/");
             },
             (err) => {
                 console.error(err);
@@ -419,9 +407,20 @@ function AdminDataToursEdit() {
         );
     }
 
+    function closeAndRouteDeleteModal() {
+        setShowDeleteModal(false);
+        router.push("/admin/data/tours/").then();
+    }
+
+    function closeModal() {
+        setShowDeleteModal(false);
+    }
+
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
+            <TourDeleteModal closeModal={closeModal} show={showDeleteModal} selectedTour={tourView}
+                             setSelectedTour={setTourView} onDelete={closeAndRouteDeleteModal}/>
             {errorMessages.length > 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>
                     <ul>
@@ -429,7 +428,7 @@ function AdminDataToursEdit() {
                             <li key={index}>{t(err)}</li>
                         ))}
                     </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])} />
+                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
                 </div>
             )}
             <MaterialReactTable
@@ -448,14 +447,14 @@ function AdminDataToursEdit() {
                 // Don't show the tour_id
                 enableHiding={false}
                 enableBottomToolbar={false}
-                initialState={{ columnVisibility: { buildingId: false, index: false } }}
-                state={{ isLoading: isLoading }}
+                initialState={{columnVisibility: {buildingId: false, index: false}}}
+                state={{isLoading: isLoading}}
                 autoResetPageIndex={false}
                 enableRowNumbers
                 enableRowOrdering
-                muiTableBodyRowDragHandleProps={({ table }) => ({
+                muiTableBodyRowDragHandleProps={({table}) => ({
                     onDragEnd: () => {
-                        const { draggingRow, hoveredRow } = table.getState();
+                        const {draggingRow, hoveredRow} = table.getState();
                         if (hoveredRow && draggingRow) {
                             buildingsOnTourView.splice(
                                 (hoveredRow as MRT_Row<BuildingOnTourView>).index,
@@ -467,8 +466,8 @@ function AdminDataToursEdit() {
                         }
                     },
                 })}
-                renderRowActions={({ row }) => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                renderRowActions={({row}) => (
+                    <Box sx={{display: "flex", gap: "1rem"}}>
                         <Tooltip arrow placement="left" title="Verwijder van ronde">
                             <Button
                                 variant="warning"
@@ -483,7 +482,7 @@ function AdminDataToursEdit() {
                     </Box>
                 )}
                 renderTopToolbarCustomActions={() => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                    <Box sx={{display: "flex", gap: "1rem"}}>
                         <label className="form-label">Ronde: </label>
                         <input
                             className={`form-control form-control-lg ${styles.input}`}
@@ -497,7 +496,7 @@ function AdminDataToursEdit() {
                                 <label className="form-label">Selecteer een regio:</label>
                                 <select
                                     defaultValue={""}
-                                    className="form-control"
+                                    className={`form-select form-control form-control-lg ${styles.input}`}
                                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                                         setSelectedRegion(e.target.value)
                                     }
@@ -526,14 +525,17 @@ function AdminDataToursEdit() {
                                 }}
                             />
                         </Tooltip>
-                        <Tooltip title="Verwijder ronde">
-                            <Delete
-                                className={tour ? "visible" : "invisible"}
-                                onClick={() => {
-                                    removeTour();
-                                }}
-                            />
-                        </Tooltip>
+                        {
+                            (tour) && (
+                                <Tooltip title="Verwijder ronde">
+                                    <Delete
+                                        onClick={() => {
+                                            setShowDeleteModal(true);
+                                        }}
+                                    />
+                                </Tooltip>
+                            )
+                        }
                     </Box>
                 )}
             />
@@ -552,12 +554,12 @@ function AdminDataToursEdit() {
                 }}
                 enablePagination={false}
                 enableEditing
-                state={{ isLoading: isLoading }}
+                state={{isLoading: isLoading}}
                 // Don't show the tour_id
                 enableHiding={false}
-                initialState={{ columnVisibility: { buildingId: false } }}
-                renderRowActions={({ row }) => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                initialState={{columnVisibility: {buildingId: false}}}
+                renderRowActions={({row}) => (
+                    <Box sx={{display: "flex", gap: "1rem"}}>
                         <Tooltip arrow placement="left" title="Voeg toe aan ronde">
                             <Button
                                 variant="warning"
@@ -572,7 +574,7 @@ function AdminDataToursEdit() {
                     </Box>
                 )}
                 renderTopToolbarCustomActions={() => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                    <Box sx={{display: "flex", gap: "1rem"}}>
                         <label className="form-label">Gebouwen niet op deze ronde (regio {region?.region})</label>
                     </Box>
                 )}

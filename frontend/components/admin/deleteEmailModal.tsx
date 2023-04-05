@@ -1,20 +1,20 @@
 import { Button, Modal } from "react-bootstrap";
 import React, { useState } from "react";
 import { UserView } from "@/types";
-import { deleteUser } from "@/lib/user";
 import { getAndSetErrors } from "@/lib/error";
 import { useTranslation } from "react-i18next";
+import { deleteMailTemplate, Emailtemplate } from "@/lib/emailtemplate";
 
-export function UserDeleteModal({
+export function DeleteEmailModal({
     show,
     closeModal,
-    selectedUser,
-    setSelectedUser,
+    selectedMail,
+    setMail,
 }: {
     show: boolean;
     closeModal: () => void;
-    selectedUser: UserView | null;
-    setSelectedUser: (x: any) => void;
+    selectedMail: Emailtemplate | null;
+    setMail: (x: any) => void;
 }) {
     const { t } = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
@@ -22,13 +22,14 @@ export function UserDeleteModal({
     /**
      * Remove a user, show errors if necessary
      */
-    function removeUser() {
-        if (!selectedUser) {
+    function removeMailTemplate() {
+        if (!selectedMail) {
             return;
         }
-        deleteUser(selectedUser?.userId).then(
+        deleteMailTemplate(selectedMail.id).then(
             () => {
                 setErrorMessages([]);
+                setMail(null);
                 closeModal();
             },
             (err) => {
@@ -48,7 +49,7 @@ export function UserDeleteModal({
     return (
         <Modal show={show} onHide={closeModal}>
             <Modal.Header>
-                <Modal.Title>Verwijder gebruiker</Modal.Title>
+                <Modal.Title>Verwijder template:</Modal.Title>
             </Modal.Header>
             {errorMessages.length !== 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>
@@ -60,16 +61,13 @@ export function UserDeleteModal({
                     <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
                 </div>
             )}
-            <Modal.Body>
-                Bent u zeker dat u gebruiker {selectedUser?.first_name} {selectedUser?.last_name} ({selectedUser?.email}
-                ) wil verwijderen?
-            </Modal.Body>
+            <Modal.Body>Bent u zeker dat u template {selectedMail?.name} wil verwijderen?</Modal.Body>
             <Modal.Footer>
                 <Button
                     variant="secondary"
                     className="btn-light"
                     onClick={() => {
-                        setSelectedUser(null);
+                        setMail(null);
                         setErrorMessages([]);
                         closeModal();
                     }}
@@ -80,7 +78,7 @@ export function UserDeleteModal({
                     variant="primary"
                     className="btn-dark"
                     onClick={async () => {
-                        removeUser();
+                        removeMailTemplate();
                     }}
                 >
                     Verwijder

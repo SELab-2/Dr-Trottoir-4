@@ -116,3 +116,13 @@ class RegionSerializer(serializers.ModelSerializer):
         model = Region
         fields = ["id", "region"]
         read_only_fields = ["id"]
+
+
+class SuccessSerializer(serializers.Serializer):
+    data = serializers.CharField(max_length=255)
+
+
+class BuildingSwapRequestSerializer(serializers.Serializer):
+    buildingID1 = serializers.IntegerField()
+
+    buildingID2 = serializers.IntegerField()
