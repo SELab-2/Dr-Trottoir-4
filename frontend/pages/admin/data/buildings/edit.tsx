@@ -1,6 +1,6 @@
-import React, { useEffect, useState, ChangeEvent, FormEvent, MouseEventHandler } from "react";
-import { useRouter } from "next/router";
-import { Form, Alert } from "react-bootstrap";
+import React, {useEffect, useState, ChangeEvent, FormEvent, MouseEventHandler} from "react";
+import {useRouter} from "next/router";
+import {Form, Alert} from "react-bootstrap";
 import {
     BuildingPostInterface,
     getBuildingInfo,
@@ -8,16 +8,17 @@ import {
     patchBuilding,
     postBuilding,
 } from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { getUserInfo, userSearchString } from "@/lib/user";
+import {getRegion} from "@/lib/region";
+import {getUserInfo, userSearchString} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoComplete";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessage from "@/components/errorMessage";
-import ConfirmationMessage from "@/components/confirmationMessage";
+import ConfirmationMessage from "@/components/confirmMessage";
+import confirmationMessage from "@/components/confirmMessage";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -106,9 +107,18 @@ function AdminDataBuildingsEdit() {
         }
     }, [router.isReady]);
 
+    useEffect(() => {
+            if (formErrors) {
+                setShowConfirmation(false);
+            } else if (showConfirmation) {
+                setFormErrors(false);
+            }
+        }
+    );
+
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             <div className={styles.container}>
                 <ConfirmationMessage showConfirm={showConfirmation}
                                      confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
