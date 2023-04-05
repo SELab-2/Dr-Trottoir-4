@@ -14,7 +14,12 @@ from base.models import (
     BuildingOnTour,
     StudentOnTour,
     RemarkAtBuilding,
-    PictureOfRemark, BuildingComment, EmailTemplate, GarbageCollection, Lobby, Manual,
+    PictureOfRemark,
+    BuildingComment,
+    EmailTemplate,
+    GarbageCollection,
+    Lobby,
+    Manual,
 )
 
 
