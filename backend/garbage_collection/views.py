@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import GarbageCollection, Building
-from base.permissions import IsSuperStudent, IsAdmin, ReadOnlyStudent, ReadOnlyOwnerOfBuilding
+from base.permissions import IsSuperStudent, IsAdmin, ReadOnlyStudent, ReadOnlyOwnerOfBuilding, OwnerOfBuilding
 from base.serializers import GarbageCollectionSerializer
 from util.request_response_util import *
 
@@ -33,7 +33,7 @@ class DefaultGarbageCollection(APIView):
 
 
 class GarbageCollectionIndividualView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = GarbageCollectionSerializer
 
     @extend_schema(responses=get_docs(GarbageCollectionSerializer))
@@ -44,7 +44,11 @@ class GarbageCollectionIndividualView(APIView):
         garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
         if not garbage_collection_instance:
             return not_found("GarbageCollection")
-        serializer = GarbageCollectionSerializer(garbage_collection_instance[0])
+        garbage_collection_instance = garbage_collection_instance[0]
+
+        self.check_object_permissions(request, garbage_collection_instance.building)
+
+        serializer = GarbageCollectionSerializer(garbage_collection_instance)
         return get_success(serializer)
 
     @extend_schema(responses=delete_docs())
@@ -55,6 +59,7 @@ class GarbageCollectionIndividualView(APIView):
         garbage_collection_instance = GarbageCollection.objects.filter(id=garbage_collection_id)
         if not garbage_collection_instance:
             return not_found("GarbageCollection")
+        self.check_object_permissions(request, garbage_collection_instance[0].building)
         garbage_collection_instance[0].delete()
         return delete_success()
 
@@ -68,6 +73,9 @@ class GarbageCollectionIndividualView(APIView):
             return not_found("GarbageCollection")
 
         garbage_collection_instance = garbage_collection_instance[0]
+
+        self.check_object_permissions(request, garbage_collection_instance.building)
+
         data = request_to_dict(request.data)
 
         set_keys_of_instance(garbage_collection_instance, data, TRANSLATE)
@@ -91,9 +99,14 @@ class GarbageCollectionIndividualBuildingView(APIView):
         """
         Get info about all garbage collections of a building with given id
         """
-        building_instance = Building.objects.filter(building_id=building_id)
+
+        print("building_id: " + building_id)
+
+        building_instance = Building.objects.filter(id=building_id)
+
         if not building_instance:
             return not_found("building")
+
         self.check_object_permissions(request, building_instance[0])
 
         garbage_collection_instances = GarbageCollection.objects.filter(building=building_id)
