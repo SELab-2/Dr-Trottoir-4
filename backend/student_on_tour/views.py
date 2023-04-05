@@ -140,8 +140,8 @@ class AllView(APIView):
         filters = {
             'tour-id': ('tour_id', False),
             'region-id': ('tour__region_id', False),
-            'start_date': ('date__gte', False),
-            'end_date': ('date__lte', False),
+            'start-date': ('date__gte', False),
+            'end-date': ('date__lte', False),
             'student-id': ('student_id', False),
         }
         stud_on_tour_instances = StudentOnTour.objects.all()

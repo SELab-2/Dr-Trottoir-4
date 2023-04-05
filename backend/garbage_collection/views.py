@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, date
 
 from drf_spectacular.types import OpenApiTypes
 from rest_framework.permissions import IsAuthenticated
@@ -211,7 +211,7 @@ class GarbageCollectionDuplicateView(APIView):
         # loop through the GarbageCollections to duplicate and create a copy if it doesn't already exist
         for gc in garbage_collections_to_duplicate:
             # offset the date by the start date difference
-            copy_date = gc.date + (start_date_copy - start_date_period)
+            copy_date = (datetime.combine(gc.date, datetime.min.time()) + (start_date_copy - start_date_period)).date()
             if not GarbageCollection.objects.filter(date=copy_date, building=gc.building).exists():
                 GarbageCollection.objects.create(date=copy_date, building=gc.building, garbage_type=gc.garbage_type)
         return Response({"message": _("successfully copied the garbage collections")}, status=status.HTTP_200_OK)
