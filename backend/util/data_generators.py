@@ -4,8 +4,17 @@ from datetime import date, datetime
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from base.models import User, Region, Building, Tour, Role, BuildingOnTour, StudentOnTour, RemarkAtBuilding, \
-    PictureOfRemark
+from base.models import (
+    User,
+    Region,
+    Building,
+    Tour,
+    Role,
+    BuildingOnTour,
+    StudentOnTour,
+    RemarkAtBuilding,
+    PictureOfRemark,
+)
 
 
 def insert_dummy_region():
@@ -25,11 +34,13 @@ def insert_dummy_role(role):
     r.save()
     return r.id
 
-def insert_test_user(first_name: str = "test_student",
-                     last_name: str = "test",
-                     phone_number="+32467240957",
-                     role: str = "admin",
-                     ) -> int:
+
+def insert_test_user(
+    first_name: str = "test_student",
+    last_name: str = "test",
+    phone_number="+32467240957",
+    role: str = "admin",
+) -> int:
     o = User.objects.filter(first_name=first_name).first()
     if o:
         return o.id
@@ -37,7 +48,7 @@ def insert_test_user(first_name: str = "test_student",
         first_name=first_name,
         last_name=last_name,
         phone_number=phone_number,
-        role=Role.objects.get(id=insert_dummy_role(role))
+        role=Role.objects.get(id=insert_dummy_role(role)),
     )
     s.save()
     return s.id
@@ -76,11 +87,7 @@ def createUser(name: str = "admin", is_staff: bool = True, withRegion: bool = Fa
 
 def insert_dummy_tour():
     r_id = insert_dummy_region()
-    t = Tour(
-        name="Sterre",
-        region=Region.objects.get(id=r_id),
-        modified_at="2023-03-08T12:08:29+01:00"
-    )
+    t = Tour(name="Sterre", region=Region.objects.get(id=r_id), modified_at="2023-03-08T12:08:29+01:00")
     t.save()
     return t.id
 
@@ -97,7 +104,7 @@ def insert_dummy_building(street="Overpoort"):
         duration="1:00:00",
         region=Region.objects.get(id=r_id),
         syndic=User.objects.get(id=s_id),
-        name="CB"
+        name="CB",
     )
     b.save()
     return b.id
@@ -106,21 +113,13 @@ def insert_dummy_building(street="Overpoort"):
 def insert_dummy_building_on_tour():
     t_id = insert_dummy_tour()
     b_id = insert_dummy_building()
-    BoT = BuildingOnTour(
-        tour=Tour.objects.get(id=t_id),
-        building=Building.objects.get(id=b_id),
-        index=0
-    )
+    BoT = BuildingOnTour(tour=Tour.objects.get(id=t_id), building=Building.objects.get(id=b_id), index=0)
     BoT.save()
     return BoT.id
 
 
 def insert_dummy_student_on_tour():
-    SoT = StudentOnTour(
-        tour_id=insert_dummy_tour(),
-        date=date.today(),
-        student_id=insert_dummy_student()
-    )
+    SoT = StudentOnTour(tour_id=insert_dummy_tour(), date=date.today(), student_id=insert_dummy_student())
     SoT.save()
     return SoT.id
 
@@ -137,10 +136,7 @@ def insert_dummy_remark_at_building():
 
 
 def insert_dummy_picture_of_remark(picture):
-    PoR = PictureOfRemark(
-        picture=picture,
-        remark_at_building=insert_dummy_remark_at_building()
-    )
+    PoR = PictureOfRemark(picture=picture, remark_at_building=insert_dummy_remark_at_building())
     PoR.save()
     return PoR.save()
 
@@ -156,5 +152,6 @@ def createMemoryFile(filename: str):
 
         content_type, charset = mimetypes.guess_type(filename)
 
-        return InMemoryUploadedFile(file=file_object, name=filename, field_name=None, content_type=content_type,
-                                    charset=charset, size=size)
+        return InMemoryUploadedFile(
+            file=file_object, name=filename, field_name=None, content_type=content_type, charset=charset, size=size
+        )
