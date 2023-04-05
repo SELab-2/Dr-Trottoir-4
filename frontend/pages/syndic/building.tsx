@@ -1,12 +1,12 @@
-import {BuildingInterface, getBuildingInfo, getBuildingsFromOwner} from "@/lib/building";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import SyndicHeader from "@/components/header/syndicHeader";
+import { BuildingInterface, getBuildingInfo } from "@/lib/building";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import { AxiosResponse } from "axios";
 import styles from "@/styles/Welcome.module.css";
 import { TiPencil } from "react-icons/ti";
 import PatchBuildingSyndicModal from "@/components/syndic/PatchBuildingSyndicModal";
+import SyndicHeader from "@/components/header/syndicHeader";
 
 interface ParsedUrlQuery {}
 
@@ -22,7 +22,7 @@ function SyndicBuilding() {
     const [editBuilding, setEditBuilding] = useState(false);
 
     async function fetchBuilding() {
-        getBuildingInfo(query.id)
+        getBuildingInfo(Number(query.id))
             .then((buildings: AxiosResponse<any>) => {
                 setBuilding(buildings.data);
             })
@@ -49,7 +49,6 @@ function SyndicBuilding() {
     return (
         <>
             <SyndicHeader />
-
             <div>
                 <a
                     onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {

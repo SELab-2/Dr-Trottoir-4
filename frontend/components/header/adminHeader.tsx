@@ -21,10 +21,46 @@ const AdminHeader = () => {
                                 Dashboard
                             </Link>
                         </li>
-                        <li className="nav-item">
-                            <Link className={`nav-link ${styles.text}`} href="/admin/data/users">
+                        <li className="position-relative">
+                            <a
+                                className={`nav-link dropdown-toggle ${styles.text}`}
+                                id="navbarDropdownData"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
                                 Data
-                            </Link>
+                            </a>
+                            <ul
+                                className="dropdown-menu dropdown-menu-en dropdown-menu-end"
+                                aria-labelledby="navbarDropdownData"
+                            >
+                                <li>
+                                    <Link className="dropdown-item" href="/admin/data/users">
+                                        Gebruikers
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item" href="/admin/data/schedules">
+                                        Planning
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item" href="/admin/data/tours">
+                                        Rondes
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item" href="/admin/data/buildings">
+                                        Gebouwen
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item" href="/admin/data/mails">
+                                        Mails
+                                    </Link>
+                                </li>
+                            </ul>
                         </li>
                         <li className="nav-item">
                             <Link className={`nav-link ${styles.text}`} href="/admin/communication">
@@ -39,9 +75,8 @@ const AdminHeader = () => {
                     </ul>
                 </div>
                 <div className="ms-auto">
-                    <Link
+                    <a
                         className="nav-link dropdown-toggle"
-                        href="#"
                         id="navbarDropdown1"
                         role="button"
                         data-bs-toggle="dropdown"
@@ -53,12 +88,10 @@ const AdminHeader = () => {
                             className={`rounded-circle ${styles.person}`}
                             height={24}
                         />
-                    </Link>
+                    </a>
                     <ul className="dropdown-menu dropdown-menu-en dropdown-menu-end" aria-labelledby="navbarDropdown1">
                         <li>
-                            <Link className="dropdown-item" href="#">
-                                Bewerk account
-                            </Link>
+                            <a className="dropdown-item">Bewerk account</a>
                         </li>
                         <li>
                             <hr className="dropdown-divider" />
