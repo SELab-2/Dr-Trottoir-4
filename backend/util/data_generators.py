@@ -3,7 +3,7 @@ import mimetypes
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from base.models import User, Region, Building, Tour, Role, BuildingOnTour, BuildingComment
+from base.models import User, Region, Building, Tour, Role, BuildingOnTour, BuildingComment, EmailTemplate
 
 
 def insert_dummy_region():
@@ -136,3 +136,17 @@ def createMemoryFile(filename: str):
 
         return InMemoryUploadedFile(file=file_object, name=filename, field_name=None, content_type=content_type,
                                     charset=charset, size=size)
+
+
+title = "a"
+
+
+def insert_dummy_email_template():
+    global title
+    ET = EmailTemplate(
+        name="testTemplate " + title,
+        template="<p>{{name}<p>"
+    )
+    title += "a"
+    ET.save()
+    return ET.id
