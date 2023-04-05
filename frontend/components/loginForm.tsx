@@ -7,7 +7,7 @@ import {useRouter} from "next/router";
 import login from "@/lib/login";
 import setSessionStorage from "@/lib/storage";
 import {getRoleDirection} from "@/lib/reroute";
-import {getAndSetErrors} from "@/lib/error";
+import { handleError} from "@/lib/error";
 import Link from "next/link";
 
 function LoginForm() {
@@ -27,12 +27,8 @@ function LoginForm() {
                 await router.push(direction);
             },
             (err) => {
-                let errorRes = err.response;
-                if (errorRes && errorRes.status === 400) {
-                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                } else {
-                    console.error(err);
-                }
+                const e = handleError(err);
+                setErrorMessages(e);
             }
         );
     };

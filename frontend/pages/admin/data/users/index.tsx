@@ -1,6 +1,6 @@
 import AdminHeader from "@/components/header/adminHeader";
 import React, { useEffect, useMemo, useState } from "react";
-import { deleteUser, getAllUsers, getUserRole, patchUser, User } from "@/lib/user";
+import { getAllUsers, getUserRole, User } from "@/lib/user";
 import { getAllRegions, RegionInterface } from "@/lib/region";
 import { UserView } from "@/types";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";

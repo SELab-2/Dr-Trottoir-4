@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { getAllRegions, getRegion, RegionInterface } from "@/lib/region";
-import { deleteTour, getTour, patchTour, postTour, swapBuildingsOnTour, Tour } from "@/lib/tour";
+import { getTour, patchTour, postTour, swapBuildingsOnTour, Tour } from "@/lib/tour";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 import MaterialReactTable, { MRT_ColumnDef, MRT_Row } from "material-react-table";
@@ -11,7 +11,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { Delete } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { getAndSetErrors } from "@/lib/error";
+import { handleError} from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
 import { BuildingNotOnTourView, BuildingOnTourView, TourView } from "@/types";
@@ -327,10 +327,8 @@ function AdminDataToursEdit() {
                                 router.push("/admin/data/tours/").then();
                             },
                             (err) => {
-                                let errorRes = err.response;
-                                if (errorRes && errorRes.status === 400) {
-                                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                                }
+                                const e = handleError(err);
+                                setErrorMessages(e);
                             }
                         );
                     } else {
@@ -338,10 +336,8 @@ function AdminDataToursEdit() {
                     }
                 },
                 (err) => {
-                    let errorRes = err.response;
-                    if (errorRes && errorRes.status === 400) {
-                        getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                    }
+                    const e = handleError(err);
+                    setErrorMessages(e);
                 }
             );
         } else {
@@ -373,10 +369,8 @@ function AdminDataToursEdit() {
                             router.push("/admin/data/tours/").then();
                         },
                         (err) => {
-                            let errorRes = err.response;
-                            if (errorRes && errorRes.status === 400) {
-                                getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                            }
+                            const e = handleError(err);
+                            setErrorMessages(e);
                         }
                     );
                 } else {
@@ -384,25 +378,8 @@ function AdminDataToursEdit() {
                 }
             },
             (err) => {
-                let errorRes = err.response;
-                if (errorRes && errorRes.status === 400) {
-                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                }
-            }
-        );
-    }
-
-    /**
-     * Remove a tour
-     */
-    function removeTour() {
-        if (!tour) {
-            return;
-        }
-        deleteTour(tour.id).then(
-            async (_) => {},
-            (err) => {
-                console.error(err);
+                const e = handleError(err);
+                setErrorMessages(e);
             }
         );
     }

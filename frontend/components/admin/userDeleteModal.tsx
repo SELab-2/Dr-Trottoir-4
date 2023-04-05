@@ -2,7 +2,7 @@ import { Button, Modal } from "react-bootstrap";
 import React, { useState } from "react";
 import { UserView } from "@/types";
 import { deleteUser } from "@/lib/user";
-import { getAndSetErrors } from "@/lib/error";
+import {handleError} from "@/lib/error";
 import { useTranslation } from "react-i18next";
 
 export function UserDeleteModal({
@@ -32,15 +32,8 @@ export function UserDeleteModal({
                 closeModal();
             },
             (err) => {
-                let errorRes = err.response;
-                if (errorRes && errorRes.status === 400) {
-                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                } else if (errorRes && errorRes.status === 403) {
-                    const errorData: [any, string][] = Object.entries(errorRes.data);
-                    setErrorMessages(errorData.map((val) => val[1]));
-                } else {
-                    console.error(err);
-                }
+                const e = handleError(err);
+                setErrorMessages(e);
             }
         );
     }

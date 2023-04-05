@@ -2,7 +2,7 @@ import { Emailtemplate, patchMailTemplate, postMailTemplate } from "@/lib/emailt
 import React, { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { getAndSetErrors } from "@/lib/error";
+import {handleError} from "@/lib/error";
 
 export default function ({
     show,
@@ -37,16 +37,9 @@ export default function ({
                 setEmail(null);
                 hideModal();
             },
-            (err) => {
-                let errorRes = err.response;
-                if (errorRes && errorRes.status === 400) {
-                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                } else if (errorRes && errorRes.status === 403) {
-                    const errorData: [any, string][] = Object.entries(errorRes.data);
-                    setErrorMessages(errorData.map((val) => val[1]));
-                } else {
-                    console.error(err);
-                }
+            (error) => {
+                const e = handleError(error);
+                setErrorMessages(e)
             }
         );
     }
@@ -69,15 +62,8 @@ export default function ({
                 hideModal();
             },
             (err) => {
-                let errorRes = err.response;
-                if (errorRes && errorRes.status === 400) {
-                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                } else if (errorRes && errorRes.status === 403) {
-                    const errorData: [any, string][] = Object.entries(errorRes.data);
-                    setErrorMessages(errorData.map((val) => val[1]));
-                } else {
-                    console.error(err);
-                }
+                const e = handleError(err);
+                setErrorMessages(e);
             }
         );
     }

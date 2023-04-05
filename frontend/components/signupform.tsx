@@ -5,6 +5,7 @@ import React, { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import signup from "@/lib/signup";
+import {handleError} from "@/lib/error";
 
 function SignupForm() {
     const { t } = useTranslation();
@@ -34,17 +35,8 @@ function SignupForm() {
                 }
             },
             (err) => {
-                let errorRes = err.response;
-                if (errorRes.status === 400) {
-                    let errors = [];
-                    let data: [any, string[]][] = Object.entries(errorRes.data);
-                    for (const [_, errorValues] of data) {
-                        errors.push(...errorValues);
-                    }
-                    setErrorMessages(errors);
-                } else {
-                    console.error(err);
-                }
+                const e = handleError(err);
+                setErrorMessages(e);
             }
         );
     };
