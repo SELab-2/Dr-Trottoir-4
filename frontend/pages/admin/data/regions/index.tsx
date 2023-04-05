@@ -5,7 +5,7 @@ import {
     RegionPostInterface,
     getAllRegions,
     postRegion,
-    patchRegion,
+    patchRegion, deleteRegion,
 } from "@/lib/region";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import MaterialReactTable, {type MRT_ColumnDef} from "material-react-table";
@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import {Edit, Delete} from "@mui/icons-material";
 import {useRouter} from "next/router"
+import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 
 interface RegionView extends RegionInterface {
 }
@@ -140,18 +141,18 @@ function AdminDataRegions() {
                 )}
                 renderTopToolbarCustomActions={() => (
                     <Button onClick={() => setAddDialogOpen(true)} variant="warning">
-                        Add New Region
+                        Maak nieuwe regio aan
                     </Button>
                 )}
             />
             <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
-                <DialogTitle>Add New Region</DialogTitle>
+                <DialogTitle>Maak nieuwe regio</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         margin="dense"
                         id="name"
-                        label="Region Name"
+                        label="Regio naam"
                         type="text"
                         fullWidth
                         value={regionName}
@@ -160,15 +161,15 @@ function AdminDataRegions() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setAddDialogOpen(false)} variant="secondary">
-                        Cancel
+                        Annuleer
                     </Button>
                     <Button onClick={addNewRegion} variant="primary">
-                        Add
+                        Voeg toe
                     </Button>
                 </DialogActions>
             </Dialog>
             <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-                <DialogTitle>Edit Region</DialogTitle>
+                <DialogTitle>Wijzig regio</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -183,10 +184,10 @@ function AdminDataRegions() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setEditDialogOpen(false)} variant="secondary">
-                        Cancel
+                        Annuleren
                     </Button>
                     <Button onClick={updateRegion} variant="primary">
-                        Save
+                        Opslaan
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -195,9 +196,14 @@ function AdminDataRegions() {
                 title="Verwijder Regio"
                 description="Weet u zeker dat u deze regio wilt verwijderen?"
                 handleClose={() => setDeleteDialogOpen(false)}
-                handleConfirm={() => {
-                    if (deletingRegion) {
-                        removeRegion(deletingRegion);
+                handleConfirm={async () => {
+                    if (selectedRegion) {
+                        try {
+                            await deleteRegion(selectedRegion.id);
+                            setRegions(regions.filter((region) => region.id !== selectedRegion.id));
+                        } catch (error) {
+                            console.error(error);
+                        }
                     }
                     setDeleteDialogOpen(false);
                 }}
