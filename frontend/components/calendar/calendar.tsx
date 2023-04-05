@@ -35,15 +35,27 @@ const MyCalendar: FC = () => {
     const [events, setEvents] = useState<MyEvent[]>([
         {
             title: 'Antwerpen',
-            start: new Date('2023-04-06T10:00:00'),
-            end: new Date('2023-04-06T12:00:00'),
+            start: new Date(2023, 3, 5),
+            end: new Date(2023, 3, 5),
             student: 'Emma'
         },
         {
             title: 'Gent',
-            start: new Date('2023-04-06T12:00:00'),
-            end: new Date('2023-04-06T13:00:00'),
+            start: new Date(2023, 3, 5),
+            end: new Date(2023, 3, 5),
             student: 'Emma',
+        },
+        {
+            title: 'Gent',
+            start: new Date(2023, 3, 5),
+            end: new Date(2023, 3, 5),
+            student: 'Simon',
+        },
+        {
+            title: 'Gent',
+            start: new Date(2023, 3, 5),
+            end: new Date(2023, 3, 5),
+            student: 'Fabrice',
         },
     ])
 
@@ -104,12 +116,11 @@ const MyCalendar: FC = () => {
                 events={events}
                 components={{ event: CustomDisplay }}
                 localizer={localizer}
-                onEventDrop={onEventChange}
-                onEventResize={onEventChange}
                 selectable
                 onSelectEvent={onEventSelection}
-                resizable
-                style={{height: '100vh'}}
+                style={{height: '200vh'}}
+                showMultiDayTimes={false}
+                step={1440}
             />
             {selectedEvent && (
                 <EditEventModal
