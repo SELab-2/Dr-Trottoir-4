@@ -141,22 +141,13 @@ class AllView(APIView):
         Get all StudentOnTours
         """
         filters = {
-            'tour': 'tour',
-            'region': 'tour__region',
+            'tour-id': 'tour_id',
+            'region-id': 'tour__region_id',
             'start_date': 'date__gte',
             'end_date': 'date__lte',
-            'student': 'student_id',
+            'student-id': 'student_id',
         }
-
         stud_on_tour_instances = StudentOnTour.objects.all()
-        try:
-            for key, value in filters.items():
-                param = get_date_param(request, key) if 'date' in key else get_id_param(request, key)
-                if param:
-                    stud_on_tour_instances = stud_on_tour_instances.filter(**{value: param})
-        except BadRequest as e:
-            error = {'error': str(e)}
-            return HttpResponseBadRequest(json.dumps(error), content_type='application/json')
-
+        filter_instances(request, stud_on_tour_instances, filters)
         serializer = StudOnTourSerializer(stud_on_tour_instances, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

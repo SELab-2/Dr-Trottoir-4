@@ -1,8 +1,10 @@
+import json
 import uuid
 from datetime import datetime
 from typing import Callable
 
 from django.core.exceptions import ValidationError, BadRequest
+from django.http import HttpResponseBadRequest
 from rest_framework import status
 from rest_framework.response import Response
 from drf_spectacular.utils import OpenApiParameter
@@ -24,6 +26,27 @@ def get_date_param(request, name):
         except ValueError:
             raise BadRequest(f"The date parameter {name} hasn't the appropriate form (=YYYY-MM-DD).")
     return param
+
+
+def get_param(request, key):
+    if 'date' in key:
+        return get_date_param(request, key)
+    elif 'id' in key:
+        return get_id_param(request, key)
+    # add more conditions here as needed
+    else:
+        return None
+
+
+def filter_instances(request, instances, filters):
+    try:
+        for key, value in filters.items():
+            param = get_param(request, key)
+            if param:
+                instances = instances.filter(**{value: param})
+    except BadRequest as e:
+        error = {'message': str(e)}
+        return HttpResponseBadRequest(json.dumps(error), content_type='application/json')
 
 
 def get_unique_uuid(lookup_func: Callable[[str], bool] = None):
