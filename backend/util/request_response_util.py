@@ -52,15 +52,6 @@ def filter_instances(request, instances, filters):
         return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-def check_required_keys_post(data: dict, required_keys: list):
-    violate_requirements = [k for k in required_keys if k not in data.keys()]
-    if violate_requirements:
-        return Response({
-            "message":
-                f"the following required keys were missing when posting to this endpoint: {', '.join(violate_requirements)}"
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-
 def get_unique_uuid(lookup_func: Callable[[str], bool] = None):
     # https://docs.python.org/3/library/uuid.html
     out_id = uuid.uuid4().hex
