@@ -9,6 +9,7 @@ import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import { getAllUsers, User, userSearchString } from "@/lib/user";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
 import router, { useRouter } from "next/router";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
 interface ParsedUrlQuery {}
 
@@ -16,7 +17,7 @@ interface DataCommunicationQuery extends ParsedUrlQuery {
     template?: number;
 }
 
-export default function AdminCommunication() {
+function AdminCommunication() {
     const [allTemplates, setAllTemplates] = useState<EmailTemplate[]>([]);
     const [allComments, setAllComments] = useState<BuildingComment[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
@@ -189,3 +190,5 @@ export default function AdminCommunication() {
         </>
     );
 }
+
+export default withAuthorisation(AdminCommunication, ["Admin", "Superstudent"]);
