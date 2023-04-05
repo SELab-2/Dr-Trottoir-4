@@ -8,11 +8,11 @@ from base.models import User, Region, Building, Tour, Role, BuildingOnTour, Buil
     GarbageCollection, Lobby, Manual
 
 
-def insert_dummy_region():
-    o = Region.objects.filter(region="Gent")
+def insert_dummy_region(name="Gent"):
+    o = Region.objects.filter(region=name)
     if len(o) == 1:
         return o[0].id
-    r = Region(region="Gent")
+    r = Region(region=name)
     r.save()
     return r.id
 
