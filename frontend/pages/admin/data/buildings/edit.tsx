@@ -13,9 +13,10 @@ import { getUserInfo, userSearchString } from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
-import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
+import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoComplete";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
+import ErrorMessage from "@/components/ErrorMessage";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -113,11 +114,12 @@ function AdminDataBuildingsEdit() {
                         De informatie voor dit gebouw is opgeslagen!
                     </Alert>
                 )}
-                {formErrors && (
-                    <div className="alert alert-danger" role="alert">
-                        {errorMessage}
-                    </div>
-                )}
+                {/*{formErrors && (*/}
+                {/*    <div className="alert alert-danger" role="alert">*/}
+                {/*        {errorMessage}*/}
+                {/*    </div>*/}
+                {/*)}*/}
+                <ErrorMessage formErrors={formErrors} errorMessage={errorMessage} />
                 <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
                     <Form.Group controlId="buildingName">
                         <Form.Label>Gebouw naam</Form.Label>
