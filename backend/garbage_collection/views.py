@@ -188,7 +188,7 @@ class GarbageCollectionDuplicateView(APIView):
         }
     )
     def post(self, request):
-        serializer = GarbageCollectionDuplicateRequestSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
         # transform them into the appropriate week-days:
