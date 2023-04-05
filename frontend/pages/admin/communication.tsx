@@ -47,7 +47,9 @@ function AdminCommunication() {
                 currentSyndic.first_name + " " + currentSyndic.last_name
             );
             if (currentBuilding) {
-                const replacedAddress = replaceVariable(replacedName, 'address', currentBuilding.city);
+                const replacedAddress = replaceVariable(replacedName, 'address',
+                currentBuilding.street + " " + currentBuilding.house_number + " (" 
+                + currentBuilding.postal_code + " " + currentBuilding.city + ")");
                 return replacedAddress;
             }
         }
