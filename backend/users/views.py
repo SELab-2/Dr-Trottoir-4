@@ -1,8 +1,6 @@
-from django.http import JsonResponse
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from django.utils.translation import gettext_lazy as _
 
 from base.models import User
 from base.permissions import (
