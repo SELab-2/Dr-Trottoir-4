@@ -7,8 +7,9 @@ from rest_framework.views import APIView
 from base.permissions import IsSuperStudent, IsAdmin, ReadOnlyStudent, ReadOnlyOwnerOfBuilding
 from base.models import GarbageCollection, Building
 from base.serializers import GarbageCollectionSerializer
+from garbage_collection.serializers import GarbageCollectionDuplicateRequestSerializer
 from util.request_response_util import *
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from django.utils.translation import gettext_lazy as _
 
 from util.util import get_monday_of_week, get_sunday_of_week
@@ -88,7 +89,7 @@ class GarbageCollectionIndividualView(APIView):
 @extend_schema(
     parameters=param_docs({
         "start-date": ("Filter by start-date", False, OpenApiTypes.DATE),
-        "end date": ("Filter by end date", False, OpenApiTypes.DATE),
+        "end-date": ("Filter by end-date", False, OpenApiTypes.DATE),
     })
 )
 class GarbageCollectionIndividualBuildingView(APIView):
@@ -99,6 +100,12 @@ class GarbageCollectionIndividualBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = GarbageCollectionSerializer
 
+    @extend_schema(
+        parameters=param_docs({
+            "start-date": ("Filter entries starting from start-date", False, OpenApiTypes.DATE),
+            "end-date": ("Filter entries up till end-date", False, OpenApiTypes.DATE),
+        })
+    )
     def get(self, request, building_id):
         """
         Get info about all garbage collections of a building with given id
@@ -109,8 +116,8 @@ class GarbageCollectionIndividualBuildingView(APIView):
         self.check_object_permissions(request, building_instance[0])
 
         filters = {
-            'start_date': ('date__gte', False),
-            'end_date': ('date__lte', False),
+            'start-date': ('date__gte', False),
+            'end-date': ('date__lte', False),
         }
         garbage_collection_instances = GarbageCollection.objects.filter(building=building_id)
         if r := filter_instances(request, garbage_collection_instances, filters):
@@ -119,23 +126,23 @@ class GarbageCollectionIndividualBuildingView(APIView):
         return get_success(serializer)
 
 
-@extend_schema(
-    parameters=param_docs({
-        "start-date": ("Filter by start-date", False, OpenApiTypes.DATE),
-        "end date": ("Filter by end date", False, OpenApiTypes.DATE),
-    })
-)
 class GarbageCollectionAllView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = GarbageCollectionSerializer
 
+    @extend_schema(
+        parameters=param_docs({
+            "start-date": ("Filter entries starting from start-date", False, OpenApiTypes.DATE),
+            "end-date": ("Filter entries up till end-date", False, OpenApiTypes.DATE),
+        })
+    )
     def get(self, request):
         """
         Get all garbage collections
         """
         filters = {
-            'start_date': ('date__gte', False),
-            'end_date': ('date__lte', False),
+            'start-date': ('date__gte', False),
+            'end-date': ('date__lte', False),
         }
         garbage_collection_instances = GarbageCollection.objects.all()
         if r := filter_instances(request, garbage_collection_instances, filters):
@@ -148,11 +155,11 @@ def validate_duplication_period(start_period: datetime, end_period: datetime, st
     # validate period itself
     if start_period > end_period:
         return Response(
-            {'message': _("the start date of the period can't be in a later week than the week of the end-date")},
+            {'message': _("the start date of the period can't be in a later week than the week of the end date")},
             status=status.HTTP_400_BAD_REQUEST
         )
     # validate interaction with copy period
-    if start_copy < end_period:
+    if start_copy <= end_period:
         return Response(
             {'message': _(
                 'the start date of the period to which you want to copy must be, at a minimum, in the week '
@@ -164,6 +171,21 @@ def validate_duplication_period(start_period: datetime, end_period: datetime, st
 class GarbageCollectionDuplicateView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
 
+    @extend_schema(
+        description="POST body consists of a certain period",
+        request=GarbageCollectionDuplicateRequestSerializer,
+        responses={
+            200: OpenApiResponse(
+                description='The garbage collections were successfully copied.',
+                examples={"message": "successfully copied the garbage collections"},
+            ),
+            400: OpenApiResponse(
+                description='The request was invalid. The response will include an error message.',
+                examples={
+                    "message": "the start date of the period can't be in a later week than the week of the end date"},
+            ),
+        }
+    )
     def post(self, request):
         data = request_to_dict(request.data)
         if r := check_required_keys_post(data, ['start-date-period', 'end-date-period', 'start-date-copy']):
@@ -180,6 +202,11 @@ class GarbageCollectionDuplicateView(APIView):
         garbage_collections_to_duplicate = GarbageCollection.objects.filter(
             date__range=[start_date_period, end_date_period]
         )
+        # retrieve and apply the optional filtering on buildings
+        building_ids = data.get('building-ids', None)
+        if building_ids:
+            garbage_collections_to_duplicate = garbage_collections_to_duplicate.filter(building__id__in=building_ids)
+
         # loop through the GarbageCollections to duplicate and create a copy if it doesn't already exist
         for gc in garbage_collections_to_duplicate:
             # offset the date by the start date difference

@@ -37,8 +37,8 @@ class TourPerStudentView(APIView):
 
     @extend_schema(
         parameters=param_docs({
-            "start date": ("Filter by start date", False, OpenApiTypes.DATE),
-            "end date": ("Filter by end date", False, OpenApiTypes.DATE),
+            "start-date": ("Filter by start-date", False, OpenApiTypes.DATE),
+            "end-date": ("Filter by end-date", False, OpenApiTypes.DATE),
         })
     )
     def get(self, request, student_id):
@@ -50,8 +50,8 @@ class TourPerStudentView(APIView):
         self.check_object_permissions(request, id_holder)
 
         filters = {
-            'start_date': ('date__gte', False),
-            'end_date': ('date__lte', False),
+            'start-date': ('date__gte', False),
+            'end-date': ('date__lte', False),
         }
         student_on_tour_instances = StudentOnTour.objects.filter(student_id=student_id)
         if r := filter_instances(request, student_on_tour_instances, filters):
@@ -126,8 +126,8 @@ class AllView(APIView):
 
     @extend_schema(
         parameters=param_docs({
-            "start date": ("Filter by start date", False, OpenApiTypes.DATE),
-            "end date": ("Filter by end date", False, OpenApiTypes.DATE),
+            "start-date": ("Filter by start date", False, OpenApiTypes.DATE),
+            "end-date": ("Filter by end-date", False, OpenApiTypes.DATE),
             "student": ("Filter by student (ID)", False, OpenApiTypes.INT),
             "tour": ("Filter by tour (ID)", False, OpenApiTypes.INT),
             "region": ("Filter by region (ID)", False, OpenApiTypes.INT),
