@@ -5,7 +5,7 @@ from datetime import date, timedelta
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from base.models import User, Region, Building, Tour, Role, BuildingOnTour, BuildingComment, EmailTemplate, \
-    GarbageCollection
+    GarbageCollection, Lobby
 
 
 def insert_dummy_region():
@@ -164,3 +164,16 @@ def insert_dummy_garbage():
     d += timedelta(days=1)
     garbage.save()
     return garbage.id
+
+
+def insert_dummy_lobby():
+    global email_counter
+    r_id = insert_dummy_role("Student")
+    lobby = Lobby(
+        email=f"test_lobby_{email_counter}@example.com",
+        role=Role.objects.get(id=r_id),
+        verification_code="azerty>qwerty"
+    )
+    email_counter += 1
+    lobby.save()
+    return lobby.id
