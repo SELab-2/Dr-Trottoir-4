@@ -1,10 +1,6 @@
-from django.test import TestCase
-from rest_framework.test import APIClient
-
 from base.models import Manual
 from base.serializers import ManualSerializer
-from base.test_settings import backend_url, roles
-from util.data_generators import createUser, insert_dummy_building, createMemoryFile, insert_dummy_manual
+from util.data_generators import insert_dummy_building, createMemoryFile, insert_dummy_manual
 from util.test_tools import BaseTest, BaseAuthTest
 
 f = createMemoryFile("./manual/lorem-ipsum.pdf")

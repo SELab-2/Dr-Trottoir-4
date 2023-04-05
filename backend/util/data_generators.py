@@ -14,7 +14,7 @@ from base.models import (
     BuildingOnTour,
     StudentOnTour,
     RemarkAtBuilding,
-    PictureOfRemark,
+    PictureOfRemark, BuildingComment, EmailTemplate, GarbageCollection, Lobby, Manual,
 )
 
 
@@ -211,7 +211,7 @@ def insert_dummy_lobby():
     return lobby.id
 
 
-f = createMemoryFile("backend/manual/lorem-ipsum.pdf")
+f = createMemoryFile("./manual/lorem-ipsum.pdf")
 
 version = 0
 
