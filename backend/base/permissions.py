@@ -119,6 +119,10 @@ class OwnerWithLimitedPatch(BasePermission):
         return request.user.role.name.lower() == "syndic"
 
     def has_object_permission(self, request, view, obj: Building):
+        # should only be able to perform actions on own building
+        if request.user.id != obj.syndic.id:
+            return False
+
         if request.method in SAFE_METHODS:
             return True
 
