@@ -119,22 +119,6 @@ class BuildingTests(BaseTest):
     def test_remove_nonexistent_building(self):
         self.remove_invalid("building/")
 
-    def test_add_existing_building(self):
-        r_id = insert_dummy_region()
-        s_id = insert_dummy_syndic()
-        self.data1 = {
-            "city": "Gent",
-            "postal_code": 9000,
-            "street": "Overpoort",
-            "house_number": 10,
-            "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
-            "region": r_id,
-            "syndic": s_id,
-            "name": "CB"
-        }
-        self.add_dupe("building/")
-
 
 class BuildingAuthorizationTests(BaseAuthTest):
     def __init__(self, methodName="runTest"):

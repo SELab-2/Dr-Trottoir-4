@@ -1,9 +1,6 @@
-from rest_framework.test import APIClient
-
-from base.models import Building, BuildingComment
+from base.models import BuildingComment
 from base.serializers import BuildingCommentSerializer
-from base.test_settings import backend_url, roles
-from util.data_generators import createUser, insert_dummy_building, insert_dummy_building_comment
+from util.data_generators import insert_dummy_building, insert_dummy_building_comment
 from util.test_tools import BaseTest, BaseAuthTest
 
 
@@ -55,7 +52,6 @@ class BuildingCommentTests(BaseTest):
 
     def test_remove_nonexistent_comment(self):
         self.remove_invalid("building-comment/")
-
 
 
 class BuildingCommentAuthorizationTests(BaseAuthTest):
@@ -113,6 +109,7 @@ class BuildingCommentAuthorizationTests(BaseAuthTest):
     def test_remove_building_comment(self):
         def create():
             return insert_dummy_building_comment()
+
         codes = {
             "Default": 403,
             "Admin": 204,
