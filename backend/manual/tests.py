@@ -4,7 +4,6 @@ from rest_framework.test import APIClient
 from base.test_settings import backend_url
 from util.data_generators import createUser, insert_dummy_building, createMemoryFile
 
-
 f = createMemoryFile("./manual/lorem-ipsum.pdf")
 
 

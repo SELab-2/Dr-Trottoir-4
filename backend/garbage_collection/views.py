@@ -1,17 +1,14 @@
-from datetime import timedelta, date
-
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import GarbageCollection, Building
-from base.permissions import IsSuperStudent, IsAdmin, ReadOnlyStudent, ReadOnlyOwnerOfBuilding, OwnerOfBuilding
+from base.permissions import IsSuperStudent, IsAdmin, ReadOnlyStudent, ReadOnlyOwnerOfBuilding
 from base.serializers import GarbageCollectionSerializer
 from garbage_collection.serializers import GarbageCollectionDuplicateRequestSerializer
 from util.request_response_util import *
-from drf_spectacular.utils import extend_schema, OpenApiResponse
-from django.utils.translation import gettext_lazy as _
-
 from util.util import get_monday_of_week, get_sunday_of_week
 
 TRANSLATE = {"building": "building_id"}

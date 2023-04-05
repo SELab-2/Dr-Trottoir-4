@@ -22,7 +22,6 @@ from authentication.serializers import (
 )
 from base.models import Lobby
 from base.serializers import UserSerializer
-from util.request_response_util import post_success
 
 
 class CustomSignUpView(APIView):
