@@ -72,7 +72,7 @@ class LobbySerializer(serializers.ModelSerializer):
 class RemarkAtBuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = RemarkAtBuilding
-        fields = ["id", "building_on_tour", "timestamp", "remark"]
+        fields = ["id", "building", "timestamp", "remark", "student_on_tour"]
         read_only_fields = ["id"]
 
 
