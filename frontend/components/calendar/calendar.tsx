@@ -26,25 +26,32 @@ const messages = {
     event: 'Evenement',
 }
 
-const MyCalendar: FC = () => {
+interface MyEvent extends Event {
+    student: string
+}
 
-    interface MyEvent extends Event {
-        student: string
-    }
+
+const MyCalendar: FC = () => {
 
     const [events, setEvents] = useState<MyEvent[]>([
         {
             title: 'Antwerpen',
-            start: new Date('2023-04-06T10:00:00'),
-            end: new Date('2023-04-06T12:00:00'),
-            student: 'Emma'
+            start: new Date(2023, 3, 6),
+            end: new Date(2023, 3, 6),
+            student: 'Test1'
         },
         {
-            title: 'Gent',
-            start: new Date('2023-04-06T12:00:00'),
-            end: new Date('2023-04-06T13:00:00'),
-            student: 'Emma',
+            title: 'Antwerpen',
+            start: new Date(2023, 3, 6),
+            end: new Date(2023, 3, 6),
+            student: 'Test2'
         },
+        {
+            title: 'Antwerpen',
+            start: new Date(2023, 3, 6),
+            end: new Date(2023, 3, 6),
+            student: 'Test3'
+        }
     ])
 
     const [popupIsOpen, setPopupIsOpen] = useState(false);
@@ -62,7 +69,7 @@ const MyCalendar: FC = () => {
         setPopupIsOpen(false);
     };
 
-    const handleEventSave = ({ title, student }: { title: string, student: string }) => {
+    const handleEventSave = ({title, student}: { title: string, student: string }) => {
         setEvents(currentEvents => {
             return currentEvents.map(currentEvent => {
                 if (currentEvent === selectedEvent) {
@@ -102,14 +109,17 @@ const MyCalendar: FC = () => {
                 culture={'nl-BE'}
                 defaultView='week'
                 events={events}
-                components={{ event: CustomDisplay }}
+                components={{event: CustomDisplay}}
                 localizer={localizer}
-                onEventDrop={onEventChange}
-                onEventResize={onEventChange}
                 selectable
                 onSelectEvent={onEventSelection}
+                style={{height: '200vh'}}
+                step={60}
+                timeslots={1}
+                onEventDrop={onEventChange}
+                onEventResize={onEventChange}
                 resizable
-                style={{height: '100vh'}}
+                defaultDate={new Date(2023, 3, 6)}
             />
             {selectedEvent && (
                 <EditEventModal
@@ -120,7 +130,8 @@ const MyCalendar: FC = () => {
                 />
             )}
         </div>
-    )
+    );
+
 }
 
 const locales = {
@@ -130,7 +141,9 @@ const locales = {
 const localizer = dateFnsLocalizer({
     format,
     parse,
-    startOfWeek,
+    startOfWeek: () => {
+        return startOfWeek(new Date(), {weekStartsOn: 0});
+    },
     getDay,
     locales,
 })

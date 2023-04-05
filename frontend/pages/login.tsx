@@ -5,12 +5,12 @@ import {getRoleDirection} from "@/lib/reroute";
 import setSessionStorage from "@/lib/storage";
 import {getCurrentUser} from "@/lib/user";
 import MyCalendar from "@/components/calendar/calendar";
+import AddEvent from "@/components/calendar/eventButton";
 
 export default function Login() {
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(true);
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    console.log(sidebarOpen)
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
@@ -57,6 +57,7 @@ export default function Login() {
                         <button className="btn btn-primary mb-3" onClick={toggleSidebar}>
                             {sidebarOpen ? "Hide sidebar" : "Show sidebar"}
                         </button>
+                        <AddEvent/>
                         <MyCalendar/>
                     </div>
                 </div>

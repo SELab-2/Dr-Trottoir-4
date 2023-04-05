@@ -57,3 +57,16 @@ a {
     color-scheme: light;
   }
 }
+
+.rbc-time-view .rbc-label {
+    display: none !important;
+}
+
+.rbc-time-view .rbc-allday-cell {
+    height: calc(100vh - 98px) !important;
+    max-height: unset !important;
+}
+
+.rbc-time-view .rbc-time-content {
+    display: none !important;
+}
