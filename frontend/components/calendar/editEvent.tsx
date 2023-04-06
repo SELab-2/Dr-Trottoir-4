@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
 function EditEventModal(data: any) {
-    const {event, isOpen, onClose, onSave} = data
+    const {event, isOpen, onClose, onSave, onDelete} = data
     const [title, setTitle] = useState(event.title);
     const [student, setStudent] = useState(event.student);
     const [start_time, setStarttime] = useState(event.start_time);
@@ -13,6 +13,11 @@ function EditEventModal(data: any) {
         onSave({title, student, start_time, end_time});
         onClose();
     };
+
+    const handleDelete = () => {
+        onDelete({event});
+        onClose();
+    }
 
     return (
         <Modal show={isOpen} onHide={onClose}>
@@ -54,6 +59,9 @@ function EditEventModal(data: any) {
                 </form>
             </Modal.Body>
             <Modal.Footer>
+                <Button variant="danger" onClick={handleDelete}>
+                    Delete
+                </Button>
                 <Button variant="secondary" onClick={onClose}>
                     Close
                 </Button>

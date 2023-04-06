@@ -6,26 +6,13 @@ import parse from 'date-fns/parse'
 import startOfWeek from 'date-fns/startOfWeek'
 import getDay from 'date-fns/getDay'
 import nlBE from 'date-fns/locale/nl-BE'
+import {messages} from '@/locales/localizerCalendar'
 
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import EditEventModal from "@/components/calendar/editEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
-
-const messages = {
-    allDay: 'Hele dag',
-    previous: 'Vorige',
-    next: 'Volgende',
-    today: 'Vandaag',
-    month: 'Maand',
-    week: 'Week',
-    day: 'Dag',
-    agenda: 'Agenda',
-    date: 'Datum',
-    time: 'Tijd',
-    event: 'Evenement',
-}
 
 interface MyEvent extends Event {
     student: string
@@ -35,13 +22,11 @@ interface MyEvent extends Event {
     end_time: string
 }
 
-
 const MyCalendar: FC = () => {
-    const [popupIsOpen, setPopupIsOpen] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+    const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
-    const [sidebarOpen, setSidebarOpen] = useState(true);
-    const [events, setEvents] = useState<MyEvent[]>([
+    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+    const [events, setEvents] = useState<MyEvent[]>([ // This will be replaced by backend events
         {
             title: 'Antwerpen',
             start: new Date(2023, 3, 6),
@@ -70,18 +55,12 @@ const MyCalendar: FC = () => {
 
 
     const onEventSelection = (e: Event) => {
-        console.log(e, "Event data");
         setSelectedEvent(e);
-        setPopupIsOpen(true);
+        setPopupIsOpenEdit(true);
     };
 
-    const handlePopupClose = () => {
-        setSelectedEvent(null);
-        setPopupIsOpen(false);
-    };
-
-    const handleEventSave = ({title, student, start_time, end_time}
-                                 : { title: string, student: string, start_time: string, end_time: string }) => {
+    const onEventEdit = ({title, student, start_time, end_time}
+                             : { title: string, student: string, start_time: string, end_time: string }) => {
         setEvents(currentEvents => {
             return currentEvents.map(currentEvent => {
                 if (currentEvent === selectedEvent) {
@@ -115,14 +94,36 @@ const MyCalendar: FC = () => {
                 start_time: start_time,
                 end_time: end_time,
             };
-            console.log(newEvent)
             return [...currentEvents, newEvent];
         });
 
     }
 
+    const onEventsAdd = (eventData: {
+        title: string,
+        data: {
+            student: string,
+            start: Date,
+            end: Date
+        }[],
+        start_time: string,
+        end_time: string
+    }) => {
+        setEvents(currentEvents => {
+            const newEvents = eventData.data.map(event => ({
+                title: eventData.title,
+                student: event.student,
+                start: event.start,
+                end: event.end,
+                start_time: eventData.start_time,
+                end_time: eventData.end_time,
+            }));
+            return [...currentEvents, ...newEvents];
+        });
+    }
 
-    const onEventChange: withDragAndDropProps['onEventResize'] = data => {
+
+    const onEventResize: withDragAndDropProps['onEventResize'] = data => {
         const {event, start, end} = data;
         setEvents(currentEvents => {
             return currentEvents.map(currentEvent => {
@@ -138,9 +139,22 @@ const MyCalendar: FC = () => {
         });
     };
 
+    const onEventDelete = ({event}: { event: MyEvent }) => {
+        setEvents(currentEvents => {
+            return currentEvents.filter(currentEvent => {
+                return currentEvent !== event;
+            });
+        });
+    }
 
-    const handleSubmit = () => {
+
+    const handlePopupOpen = () => {
         setPopupIsOpenAdd(true);
+    };
+
+    const handlePopupCloseEdit = () => {
+        setSelectedEvent(null);
+        setPopupIsOpenEdit(false);
     };
 
     const handlePopupCloseAdd = () => {
@@ -148,67 +162,42 @@ const MyCalendar: FC = () => {
     };
 
 
-    const toggleSidebar = () => {
-        setSidebarOpen(!sidebarOpen);
-    };
-
-
     return (
-        <div className="container-fluid">
-            <div className="row">
-                <div className={`col-md-2 ${sidebarOpen ? "" : "d-none"} bg-light sidebar`}>
-                    <div className="sidebar-sticky">
-                        <ul className="nav flex-column">
-                            <li className="nav-item">
-                                <button className="btn btn-primary btn-block mb-2">Button 1</button>
-                            </li>
-                            <li className="nav-item">
-                                <button className="btn btn-primary btn-block mb-2">Button 2</button>
-                            </li>
-                            <li className="nav-item">
-                                <button className="btn btn-primary btn-block mb-2">Button 3</button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div className={`col-md-10 ${sidebarOpen ? "" : "col-md-12"}`}>
-                    <button className="btn btn-primary mb-3" onClick={toggleSidebar}>
-                        {sidebarOpen ? "Hide sidebar" : "Show sidebar"}
-                    </button>
-                    <button className="btn btn-primary mb-3" onClick={handleSubmit}>Voeg ronde toe</button>
-                    <AddEventModal
-                        isOpen={popupIsOpenAdd}
-                        onClose={handlePopupCloseAdd}
-                        onSave={onEventAdd}
-                    />
-                    <DnDCalendar
-                        messages={messages}
-                        culture={'nl-BE'}
-                        defaultView='week'
-                        events={events}
-                        components={{event: CustomDisplay}}
-                        localizer={localizer}
-                        selectable
-                        onSelectEvent={onEventSelection}
-                        style={{height: '100vh'}}
-                        step={60}
-                        timeslots={1}
-                        onEventDrop={onEventChange}
-                        onEventResize={onEventChange}
-                        resizable
-                        defaultDate={new Date(2023, 3, 6)}
-                    />
-                    {selectedEvent && (
-                        <EditEventModal
-                            event={selectedEvent}
-                            isOpen={popupIsOpen}
-                            onClose={handlePopupClose}
-                            onSave={handleEventSave}
-                        />
-                    )}
-                </div>
-            </div>
-        </div>
+        <>
+            <button className="btn btn-primary mb-3" onClick={handlePopupOpen}>Voeg ronde toe</button>
+            <DnDCalendar
+                messages={messages}
+                culture={'nl-BE'}
+                defaultView='week'
+                events={events}
+                components={{event: CustomDisplay}}
+                localizer={localizer}
+                selectable
+                onSelectEvent={onEventSelection}
+                style={{height: '100vh'}}
+                step={60}
+                timeslots={1}
+                onEventDrop={onEventResize}
+                onEventResize={onEventResize}
+                resizable
+                defaultDate={new Date(2023, 3, 6)}
+            />
+            {selectedEvent && (
+                <EditEventModal
+                    event={selectedEvent}
+                    isOpen={popupIsOpenEdit}
+                    onClose={handlePopupCloseEdit}
+                    onSave={onEventEdit}
+                    onDelete={onEventDelete}
+                />
+            )}
+            <AddEventModal
+                isOpen={popupIsOpenAdd}
+                onClose={handlePopupCloseAdd}
+                onSave={onEventAdd}
+                onSaveMultiple={onEventsAdd}
+            />
+        </>
     );
 
 }
@@ -225,9 +214,9 @@ const localizer = dateFnsLocalizer({
     },
     getDay,
     locales,
-})
+});
 
 
-const DnDCalendar = withDragAndDrop(Calendar)
+const DnDCalendar = withDragAndDrop(Calendar);
 
-export default MyCalendar
+export default MyCalendar;
