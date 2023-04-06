@@ -106,7 +106,7 @@ function StudentDashboard() {
                                                 <h5 className="mb-1">{tours[el.tour] ? tours[el.tour].name : ""}</h5>
                                                 <small>{el.date.toLocaleDateString('en-GB')}</small>
                                             </div>
-                                            <p className="mb-1"></p>
+                                            <p className="mb-1">{tours[el.tour] && regions[tours[el.tour].region] ? regions[tours[el.tour].region].region : ""}</p>
                                             <small>TODO: set buildings here</small>
                                         </a>
                                     );
@@ -129,7 +129,7 @@ function StudentDashboard() {
                                                 <h5 className="mb-1">{tours[el.tour] ? tours[el.tour].name : ""}</h5>
                                                 <small>{el.date.toLocaleDateString('en-GB')}</small>
                                             </div>
-                                            <small>TODO: set buildings here</small>
+                                            <p className="mb-1">{tours[el.tour] && regions[tours[el.tour].region] ? regions[tours[el.tour].region].region : ""}</p>
                                         </a>
                                     );
                                 })
@@ -151,7 +151,7 @@ function StudentDashboard() {
                                                 <h5 className="mb-1">{tours[el.tour] ? tours[el.tour].name : ""}</h5>
                                                 <small>{el.date.toLocaleDateString('en-GB')}</small>
                                             </div>
-                                            <small>TODO: set buildings here</small>
+                                            <p className="mb-1">{tours[el.tour] && regions[tours[el.tour].region] ? regions[tours[el.tour].region].region : ""}</p>
                                         </a>
                                     );
                                 })
