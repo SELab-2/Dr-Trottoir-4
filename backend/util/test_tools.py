@@ -40,8 +40,9 @@ class BaseTest(TestCase):
             assert key in resp.data, errorMessage("insert", key, None)
             if type(self.data1[key]) == InMemoryUploadedFile:
                 continue
-            assert self.data1[key] == resp.data[key], errorMessage(f"insert (key:{key})", self.data1[key],
-                                                                   resp.data[key])
+            assert self.data1[key] == resp.data[key], errorMessage(
+                f"insert (key:{key})", self.data1[key], resp.data[key]
+            )
         assert "id" in resp.data, errorMessage("insert", "id", None)
 
     def insert_dupe(self, url, special=None):
@@ -138,8 +139,9 @@ class BaseAuthTest(TestCase):
         for role in roles:
             client = get_authenticated_client(role)
             resp = client.post(backend_url + "/" + url, self.data1, follow=True)
-            assert resp.status_code == codes[role], auth_error_message("insert_view", role, resp.status_code,
-                                                                       codes[role])
+            assert resp.status_code == codes[role], auth_error_message(
+                "insert_view", role, resp.status_code, codes[role]
+            )
             if resp.status_code == 201:
                 result_id = resp.data["id"]
                 _ = adminClient.delete(backend_url + "/" + url + str(result_id))
@@ -150,8 +152,9 @@ class BaseAuthTest(TestCase):
         for role in roles:
             client = get_authenticated_client(role)
             response2 = client.get(backend_url + "/" + url, follow=True)
-            assert response2.status_code == codes[role], auth_error_message("get_view", role, response2.status_code,
-                                                                            codes[role])
+            assert response2.status_code == codes[role], auth_error_message(
+                "get_view", role, response2.status_code, codes[role]
+            )
         for user_id, result in special:
             user = User.objects.filter(id=user_id).first()  # there should only be 1
             if not User:
@@ -159,8 +162,9 @@ class BaseAuthTest(TestCase):
             client = APIClient()
             client.force_authenticate(user=user)
             response2 = client.get(backend_url + "/" + url, follow=True)
-            assert response2.status_code == result, auth_error_message("get_view (special case)", user.role.name,
-                                                                       response2.status_code, result)
+            assert response2.status_code == result, auth_error_message(
+                "get_view (special case)", user.role.name, response2.status_code, result
+            )
 
     def patch_view(self, url, codes, special=None):
         if special is None:
@@ -168,8 +172,9 @@ class BaseAuthTest(TestCase):
         for role in roles:
             client = get_authenticated_client(role)
             response2 = client.patch(backend_url + "/" + url, self.data1, follow=True)
-            assert response2.status_code == codes[role], auth_error_message("patch_view", role, response2.status_code,
-                                                                            codes[role])
+            assert response2.status_code == codes[role], auth_error_message(
+                "patch_view", role, response2.status_code, codes[role]
+            )
         for user_id, result in special:
             user = User.objects.filter(id=user_id).first()  # there should only be 1
             if not User:
@@ -177,8 +182,9 @@ class BaseAuthTest(TestCase):
             client = APIClient()
             client.force_authenticate(user=user)
             response2 = client.patch(backend_url + "/" + url, self.data1, follow=True)
-            assert response2.status_code == result, auth_error_message("patch_view (special case)", user.role.name,
-                                                                       response2.status_code, result)
+            assert response2.status_code == result, auth_error_message(
+                "patch_view (special case)", user.role.name, response2.status_code, result
+            )
 
     def remove_view(self, url, codes, create):
         exists = False
@@ -189,6 +195,7 @@ class BaseAuthTest(TestCase):
             # try to remove as `role`
             client = get_authenticated_client(role)
             response2 = client.delete(backend_url + "/" + url + f"{instance_id}/", follow=True)
-            assert response2.status_code == codes[role], auth_error_message("remove_view", role, response2.status_code,
-                                                                            codes[role])
+            assert response2.status_code == codes[role], auth_error_message(
+                "remove_view", role, response2.status_code, codes[role]
+            )
             exists = codes[role] != 204
