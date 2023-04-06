@@ -8,8 +8,8 @@ function AddEventModal(data: any) {
     const [title, setTitle] = useState("");
     const [student, setStudent] = useState("");
     const [start, setStart] = useState(new Date(addDays(startOfWeek(startOfMonth(new Date()), {weekStartsOn: 0}), 8).toLocaleString('en', {timeZone: 'America/New_York'})));
-    const [start_time, setStarttime] = useState("");
-    const [end_time, setEndtime] = useState("");
+    const [start_time, setStarttime] = useState("17:00");
+    const [end_time, setEndtime] = useState("20:00");
 
 
     const handleSave = () => {
