@@ -139,14 +139,16 @@ class AllUsersView(APIView):
 
     @extend_schema(
         description="GET all users in the database. There is the possibility to filter as well. You can filter on "
-                    "various parameters. If the parameter name includes 'list' then you can add multiple entries of "
-                    "those in the url.",
-        parameters=param_docs({
-            "region-id-list": ("Filter by region ids", False, OpenApiTypes.INT),
-            "include-inactive-bool": ("Include the inactive users", False, OpenApiTypes.BOOL),
-            "include-role-name-list": ("Include all the users with specific role names", False, OpenApiTypes.STR),
-            "exclude-role-name-list": ("Exclude all the users with specific role names", False, OpenApiTypes.STR),
-        })
+        "various parameters. If the parameter name includes 'list' then you can add multiple entries of "
+        "those in the url.",
+        parameters=param_docs(
+            {
+                "region-id-list": ("Filter by region ids", False, OpenApiTypes.INT),
+                "include-inactive-bool": ("Include the inactive users", False, OpenApiTypes.BOOL),
+                "include-role-name-list": ("Include all the users with specific role names", False, OpenApiTypes.STR),
+                "exclude-role-name-list": ("Exclude all the users with specific role names", False, OpenApiTypes.STR),
+            }
+        ),
     )
     def get(self, request):
         """
@@ -157,7 +159,7 @@ class AllUsersView(APIView):
             "region-id-list": get_filter_object("region__in"),
             "include-inactive-bool": get_filter_object("is_active"),
             "include-role-name-list": get_filter_object("role__name__in"),
-            "exclude-role-name-list": get_filter_object("role__name__in", exclude=True)
+            "exclude-role-name-list": get_filter_object("role__name__in", exclude=True),
         }
 
         def transformations(key, param_value):
@@ -171,7 +173,7 @@ class AllUsersView(APIView):
         try:
             user_instances = filter_instances(request, user_instances, filters, transformations)
         except BadRequest as e:
-            return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = UserSerializer(user_instances, many=True)
         return get_success(serializer)

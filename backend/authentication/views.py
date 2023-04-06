@@ -59,9 +59,7 @@ class CustomLogoutView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CustomLogoutSerializer
 
-    @extend_schema(
-        request={},
-        responses={200: serializer_class, 401: serializer_class, 500: serializer_class})
+    @extend_schema(request={}, responses={200: serializer_class, 401: serializer_class, 500: serializer_class})
     def post(self, request):
         response = self.serializer_class().logout_user(request)
         return response
