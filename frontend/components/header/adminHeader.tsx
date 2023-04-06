@@ -91,7 +91,9 @@ const AdminHeader = () => {
                     </a>
                     <ul className="dropdown-menu dropdown-menu-en dropdown-menu-end" aria-labelledby="navbarDropdown1">
                         <li>
-                            <a className="dropdown-item">Bewerk account</a>
+                            <Link className="dropdown-item" href="/user/profile">
+                                Bewerk account
+                            </Link>
                         </li>
                         <li>
                             <hr className="dropdown-divider" />

@@ -47,26 +47,26 @@ class LobbyIndividualView(APIView):
     serializer_class = LobbySerializer
 
     @extend_schema(responses=get_docs(LobbySerializer))
-    def get(self, request, lobby_id):
+    def get(self, request, email_whitelist_id):
         """
         Get info about an EmailWhitelist with given id
         """
-        lobby_instance = Lobby.objects.filter(id=lobby_id)
+        lobby_instance = Lobby.objects.filter(id=email_whitelist_id)
 
         if not lobby_instance:
-            return bad_request("EmailWhitelist")
+            return not_found("EmailWhitelist")
 
         return get_success(LobbySerializer(lobby_instance[0]))
 
     @extend_schema(responses=delete_docs())
-    def delete(self, request, lobby_id):
+    def delete(self, request, email_whitelist_id):
         """
         Patch EmailWhitelist with given id
         """
-        lobby_instance = Lobby.objects.filter(id=lobby_id)
+        lobby_instance = Lobby.objects.filter(id=email_whitelist_id)
 
         if not lobby_instance:
-            return bad_request("EmailWhitelist")
+            return not_found("EmailWhitelist")
 
         lobby_instance[0].delete()
 
@@ -80,7 +80,7 @@ class LobbyIndividualView(APIView):
         email_whitelist_instance = Lobby.objects.filter(id=email_whitelist_id)
 
         if not email_whitelist_instance:
-            return bad_request("EmailWhitelist")
+            return not_found("EmailWhitelist")
 
         email_whitelist_instance = email_whitelist_instance[0]
         data = request_to_dict(request.data)
@@ -112,7 +112,7 @@ class LobbyRefreshVerificationCodeView(APIView):
         lobby_instance = Lobby.objects.filter(id=lobby_id)
 
         if not lobby_instance:
-            return bad_request("EmailWhitelist")
+            return not_found("EmailWhitelist")
 
         lobby_instance = lobby_instance[0]
         lobby_instance.verification_code = get_unique_uuid()

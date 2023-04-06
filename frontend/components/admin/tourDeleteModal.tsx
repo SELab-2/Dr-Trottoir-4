@@ -1,9 +1,9 @@
 import { TourView, UserView } from "@/types";
 import { useTranslation } from "react-i18next";
 import { deleteTour } from "@/lib/tour";
-import { getAndSetErrors } from "@/lib/error";
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { handleError } from "@/lib/error";
 
 export function TourDeleteModal({
     show,
@@ -31,15 +31,8 @@ export function TourDeleteModal({
                 onDelete();
             },
             (err) => {
-                let errorRes = err.response;
-                if (errorRes && errorRes.status === 400) {
-                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                } else if (errorRes && errorRes.status === 403) {
-                    const errorData: [any, string][] = Object.entries(errorRes.data);
-                    setErrorMessages(errorData.map((val) => val[1]));
-                } else {
-                    console.error(err);
-                }
+                const e = handleError(err);
+                setErrorMessages(e);
             }
         );
     }
