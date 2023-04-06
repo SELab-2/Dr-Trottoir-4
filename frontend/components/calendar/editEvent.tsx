@@ -4,10 +4,10 @@ import Button from 'react-bootstrap/Button';
 
 function EditEventModal(data: any) {
     const {event, isOpen, onClose, onSave} = data
-    const start_time = event.start_time
-    const end_time = event.end_time
     const [title, setTitle] = useState(event.title);
-    const [student, setStudent] = useState(event.student)
+    const [student, setStudent] = useState(event.student);
+    const [start_time, setStarttime] = useState(event.start_time);
+    const [end_time, setEndtime] = useState(event.end_time);
 
     const handleSave = () => {
         onSave({title, student, start_time, end_time});
@@ -38,6 +38,18 @@ function EditEventModal(data: any) {
                             value={student}
                             onChange={(e) => setStudent(e.target.value)}
                         />
+                    </div>
+                    <div className="form-row">
+                        <div className="col">
+                            <label>Start uur:</label>
+                            <input type="time" className="form-control" value={start_time}
+                                   onChange={(event) => setStarttime(event.target.value)}/>
+                        </div>
+                        <div className="col">
+                            <label htmlFor="end-time">Eind uur:</label>
+                            <input type="time" className="form-control" value={end_time}
+                                   onChange={(event) => setEndtime(event.target.value)}/>
+                        </div>
                     </div>
                 </form>
             </Modal.Body>
