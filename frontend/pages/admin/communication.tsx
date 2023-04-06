@@ -15,6 +15,7 @@ interface ParsedUrlQuery {}
 
 interface DataCommunicationQuery extends ParsedUrlQuery {
     template?: number;
+    syndic?: string;
 }
 
 function AdminCommunication() {
@@ -113,8 +114,12 @@ function AdminCommunication() {
         getAllUsers().then((res) => {
             const users: User[] = res.data;
             setAllSyndics(users);
-            setSelectedSyndic(userSearchString(users[0]));
-            setSyndicId(users[0].id.toString());
+            let currentSyndic = users[0];
+            if (query.syndic) {
+                currentSyndic = users.find(e => e.email === query.syndic) || users[0];
+            }
+            setSelectedSyndic(userSearchString(currentSyndic));
+            setSyndicId(currentSyndic.id.toString());
         });
 
         getAllBuildings().then((res) => {

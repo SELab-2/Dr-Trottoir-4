@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { Button } from "react-bootstrap";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, Email } from "@mui/icons-material";
 import { BuildingView } from "@/types";
 import { getUserInfo } from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
@@ -128,6 +128,13 @@ function AdminDataBuildings() {
         );
     }
 
+    async function routeToCommunication(buildingView: BuildingView) {
+        await router.push({
+            pathname: `/admin/communication`,
+            query: { syndic: buildingView.syndic_email },
+        });
+    }
+
     return (
         <>
             <AdminHeader />
@@ -169,6 +176,16 @@ function AdminDataBuildings() {
                                 }}
                             >
                                 <Delete />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verstuur mail">
+                            <IconButton
+                                onClick={() => {
+                                    const buildingView: BuildingView = row.original;
+                                    routeToCommunication(buildingView).then();
+                                }}
+                            >
+                                <Email />
                             </IconButton>
                         </Tooltip>
                     </Box>
