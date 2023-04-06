@@ -21,7 +21,7 @@ export default function ToursList({
     return (
         <>
             {studentOnTours.length > 0 && (
-                <div className="mt-3 mb-1 ml-2">
+                <div className="mt-3 mb-1 ms-2 me-2">
                     <span className="h1 fw-bold">{listTitle}</span>
                     <div className="list-group">
                         {studentOnTours.map((el) => {
