@@ -6,16 +6,19 @@ import {getCurrentUser, User} from "@/lib/user";
 import {getTour, Tour} from "@/lib/tour";
 import {getRegion, RegionInterface} from "@/lib/region";
 import ToursList from "@/components/student/toursList";
+import {useRouter} from "next/router";
+import Loading from "@/components/loading";
 
 // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=32-29&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
 function StudentDashboard() {
-
+    const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
     const [toursToday, setToursToday] = useState<StudentOnTour[]>([]);
     const [prevTours, setPrevTours] = useState<StudentOnTour[]>([]);
     const [upcomingTours, setUpcomingTours] = useState<StudentOnTour[]>([]);
     const [tours, setTours] = useState<Record<number, Tour>>({})
     const [regions, setRegions] = useState<Record<number, RegionInterface>>({});
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         getCurrentUser().then(res => {
@@ -87,19 +90,26 @@ function StudentDashboard() {
                 return d > currentDate && !datesEqual(d, currentDate);
             });
             setUpcomingTours(futureTours);
-
+            setLoading(false);
         }, console.error);
     }, [user]);
+
+    function redirectToSchedule(studentOnTourId: number, regionId: number) : void {
+        router.push({
+            pathname: "/student/schedule",
+            query: {regionId, studentOnTourId},
+        }).then();
+    }
 
     return (
         <>
             <StudentHeader/>
-            <ToursList studentOnTours={toursToday} listTitle="Vandaag" onClick={() => {
-            }} allTours={tours} allRegions={regions}/>
-            <ToursList studentOnTours={upcomingTours} listTitle="Gepland" onClick={() => {
-            }} allTours={tours} allRegions={regions}/>
-            <ToursList studentOnTours={prevTours} listTitle="Afgelopen maand" onClick={() => {
-            }} allTours={tours} allRegions={regions}/>
+            {
+                (loading) && (<Loading/>)
+            }
+            <ToursList studentOnTours={toursToday} listTitle="Vandaag" onSelect={redirectToSchedule} allTours={tours} allRegions={regions}/>
+            <ToursList studentOnTours={upcomingTours} listTitle="Gepland" onSelect={redirectToSchedule} allTours={tours} allRegions={regions}/>
+            <ToursList studentOnTours={prevTours} listTitle="Afgelopen maand" onSelect={redirectToSchedule} allTours={tours} allRegions={regions}/>
         </>
     );
 }
