@@ -118,8 +118,8 @@ class GarbageCollectionIndividualBuildingView(APIView):
         self.check_object_permissions(request, building_instance[0])
 
         filters = {
-            "start-date": ("date__gte", False),
-            "end-date": ("date__lte", False),
+            "start-date": get_filter_object("date__gte"),
+            "end-date": get_filter_object("date__lte"),
         }
         garbage_collection_instances = GarbageCollection.objects.filter(building=building_id)
 
@@ -149,8 +149,8 @@ class GarbageCollectionAllView(APIView):
         Get all garbage collections
         """
         filters = {
-            "start-date": ("date__gte", False),
-            "end-date": ("date__lte", False),
+            "start-date": get_filter_object("date__gte"),
+            "end-date": get_filter_object("date__lte"),
         }
         garbage_collection_instances = GarbageCollection.objects.all()
 

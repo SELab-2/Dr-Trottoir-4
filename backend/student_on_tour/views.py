@@ -52,8 +52,8 @@ class TourPerStudentView(APIView):
         self.check_object_permissions(request, id_holder)
 
         filters = {
-            "start-date": ("date__gte", False),
-            "end-date": ("date__lte", False),
+            "start-date": get_filter_object("date__gte"),
+            "end-date": get_filter_object("date__lte"),
         }
         student_on_tour_instances = StudentOnTour.objects.filter(student_id=student_id)
         try:
@@ -144,11 +144,11 @@ class AllView(APIView):
         Get all StudentOnTours
         """
         filters = {
-            "tour-id": ("tour_id", False),
-            "region-id": ("tour__region_id", False),
-            "start-date": ("date__gte", False),
-            "end-date": ("date__lte", False),
-            "student-id": ("student_id", False),
+            "tour-id": get_filter_object("tour_id"),
+            "region-id": get_filter_object("tour__region_id"),
+            "start-date": get_filter_object("date__gte"),
+            "end-date": get_filter_object("date__lte"),
+            "student-id": get_filter_object("student_id"),
         }
         stud_on_tour_instances = StudentOnTour.objects.all()
 
