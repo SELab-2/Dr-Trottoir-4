@@ -1,14 +1,14 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, {useEffect, useMemo, useState} from "react";
-import {BuildingInterface, deleteBuilding, getAddress, getAllBuildings} from "@/lib/building";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {useRouter} from "next/router";
-import MaterialReactTable, {type MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {Button} from "react-bootstrap";
-import {Delete, Edit} from "@mui/icons-material";
-import {BuildingView} from "@/types";
-import {getUserInfo} from "@/lib/user";
+import React, { useEffect, useMemo, useState } from "react";
+import { BuildingInterface, deleteBuilding, getAddress, getAllBuildings } from "@/lib/building";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { useRouter } from "next/router";
+import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { Button } from "react-bootstrap";
+import { Delete, Edit } from "@mui/icons-material";
+import { BuildingView } from "@/types";
+import { getUserInfo } from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 
 interface ParsedUrlQuery {}
@@ -61,25 +61,24 @@ function AdminDataBuildings() {
         );
     }, []);
 
-
     useEffect(() => {
         async function fetchBuildingData() {
             try {
                 const buildings: BuildingInterface[] = (await getAllBuildings()).data;
                 const buildingViews: BuildingView[] = [];
 
-                let cache: Record<string, string> = {}
+                let cache: Record<string, string> = {};
 
                 for (const building of buildings) {
-                    const s = building.syndic.toString()
-                    let syndicEmail: string
+                    const s = building.syndic.toString();
+                    let syndicEmail: string;
                     if (s in cache) {
-                        syndicEmail = cache[s]
+                        syndicEmail = cache[s];
                     } else {
                         // Get syndic email using your request
                         const res = await getUserInfo(building.syndic.toString());
                         syndicEmail = res.data.email;
-                        cache[s] = syndicEmail
+                        cache[s] = syndicEmail;
                     }
 
                     if (!query.syndic || (query.syndic && query.syndic === syndicEmail)) {
@@ -110,7 +109,7 @@ function AdminDataBuildings() {
     async function routeToEditView(buildingView: BuildingView) {
         await router.push({
             pathname: `${router.pathname}/edit`,
-            query: {building: buildingView.building_id},
+            query: { building: buildingView.building_id },
         });
     }
 
@@ -131,7 +130,7 @@ function AdminDataBuildings() {
 
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <MaterialReactTable
                 displayColumnDefOptions={{
                     "mrt-row-actions": {
@@ -145,12 +144,12 @@ function AdminDataBuildings() {
                 enableBottomToolbar={false}
                 columns={columns}
                 data={buildingViews}
-                state={{isLoading: loading}}
+                state={{ isLoading: loading }}
                 enableEditing
                 enableHiding={false}
-                initialState={{columnVisibility: {building_id: false}}}
-                renderRowActions={({row}) => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                initialState={{ columnVisibility: { building_id: false } }}
+                renderRowActions={({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Tooltip arrow placement="left" title="Pas aan">
                             <IconButton
                                 onClick={() => {
@@ -158,7 +157,7 @@ function AdminDataBuildings() {
                                     routeToEditView(buildingView).then();
                                 }}
                             >
-                                <Edit/>
+                                <Edit />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -169,7 +168,7 @@ function AdminDataBuildings() {
                                     setDeleteDialogOpen(true);
                                 }}
                             >
-                                <Delete/>
+                                <Delete />
                             </IconButton>
                         </Tooltip>
                     </Box>

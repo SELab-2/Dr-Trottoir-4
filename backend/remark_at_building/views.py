@@ -8,8 +8,6 @@ from base.permissions import (
     IsAdmin,
     IsStudent,
     OwnerAccount,
-    IsSyndic,
-    OwnerOfBuilding,
     ReadOnlyOwnerOfBuilding,
 )
 from base.serializers import RemarkAtBuildingSerializer
@@ -25,7 +23,6 @@ from util.request_response_util import (
     patch_success,
     patch_docs,
     get_docs,
-    bad_request_relation,
 )
 
 TRANSLATE = {

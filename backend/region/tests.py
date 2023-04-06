@@ -1,131 +1,78 @@
-from django.test import TestCase
-from rest_framework.test import APIClient
+from base.models import Region
+from base.serializers import RegionSerializer
+from util.data_generators import insert_dummy_region
+from util.test_tools import BaseTest, BaseAuthTest
 
-from base.test_settings import backend_url
-from util.data_generators import createUser
 
-
-class RegionTests(TestCase):
+class RegionTests(BaseTest):
     def test_empty_region_list(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response = client.get(f"{backend_url}/region/all", follow=True)
-        assert response.status_code == 200
-        data = [response.data[e] for e in response.data]
-        assert len(data) == 0
+        self.empty_list("region/")
 
     def test_insert_region(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data = {"region": "Gent"}
-        response = client.post(f"{backend_url}/region/", data, follow=True)
-        assert response.status_code == 201
-        for key in data:
-            assert key in response.data
-        assert "id" in response.data
+        self.data1 = {"region": "Gent"}
+        self.insert("region/")
 
     def test_insert_dupe_region(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data = {"region": "Gent"}
-        _ = client.post(f"{backend_url}/region/", data, follow=True)
-        response = client.post(f"{backend_url}/region/", data, follow=True)
-        assert response.status_code == 400
+        self.data1 = {"region": "Gent"}
+        self.insert_dupe("region/")
 
     def test_get_region(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data1 = {"region": "Gent"}
-        response1 = client.post(f"{backend_url}/region/", data1, follow=True)
-        assert response1.status_code == 201
-        for key in data1:
-            assert key in response1.data
-        assert "id" in response1.data
-        id = response1.data["id"]
-        response2 = client.get(f"{backend_url}/region/{id}/", follow=True)
-        assert response2.status_code == 200
-        assert response2.data["region"] == "Gent"
-        assert "id" in response2.data
+        r_id = insert_dummy_region()
+        data = RegionSerializer(Region.objects.get(id=r_id)).data
+        self.get(f"region/{r_id}", data)
 
     def test_get_non_existing(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response1 = client.get(f"{backend_url}/region/123654897", follow=True)
-        assert response1.status_code == 404
+        self.get_non_existent("region/")
 
     def test_patch_region(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data1 = {"region": "Brugge"}
-        data2 = {"region": "Gent"}
-        response1 = client.post(f"{backend_url}/region/", data1, follow=True)
-        assert response1.status_code == 201
-        for key in data1:
-            assert key in response1.data
-        assert "id" in response1.data
-        id = response1.data["id"]
-        response2 = client.patch(f"{backend_url}/region/{id}/", data2, follow=True)
-        assert response2.status_code == 200
-        response3 = client.get(f"{backend_url}/region/{id}/", follow=True)
-        assert response3.status_code == 200
-        assert response3.data["region"] == "Gent"
-        assert "id" in response3.data
+        r_id = insert_dummy_region("Brugge")
+        self.data1 = {"region": "Gent"}
+        self.patch(f"region/{r_id}")
 
     def test_patch_invalid_region(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data = {"region": "Brugge"}
-        response2 = client.patch(f"{backend_url}/region/123434687658/", data, follow=True)
-        assert response2.status_code == 404
+        self.data1 = {"region": "Gent"}
+        self.patch_invalid("region/")
 
     def test_patch_error_region(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data1 = {"region": "Brugge"}
-        data2 = {"region": "Gent"}
-        response1 = client.post(f"{backend_url}/region/", data1, follow=True)
-        _ = client.post(f"{backend_url}/region/", data2, follow=True)
-        assert response1.status_code == 201
-        id = response1.data["id"]
-        response2 = client.patch(f"{backend_url}/region/{id}/", data2, follow=True)
-        assert response2.status_code == 400
+        self.data1 = {"region": "Brugge"}
+        self.data2 = {"region": "Gent"}
+        self.patch_error("region/")
 
     def test_remove_region(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data1 = {"region": "Gent"}
-        response1 = client.post(f"{backend_url}/region/", data1, follow=True)
-        assert response1.status_code == 201
-        for key in data1:
-            assert key in response1.data
-        assert "id" in response1.data
-        id = response1.data["id"]
-        response2 = client.delete(f"{backend_url}/region/{id}/", follow=True)
-        assert response2.status_code == 204
-        response3 = client.get(f"{backend_url}/region/{id}/", follow=True)
-        assert response3.status_code == 404
+        r_id = insert_dummy_region()
+        self.remove(f"region/{r_id}")
 
     def test_remove_non_existent_region(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response2 = client.delete(f"{backend_url}/region/123456789/", follow=True)
-        assert response2.status_code == 404
+        self.remove_invalid("region/")
 
-    def test_add_existing_region(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data1 = {"region": "Gent"}
-        _ = client.post(f"{backend_url}/region/", data1, follow=True)
-        response1 = client.post(f"{backend_url}/region/", data1, follow=True)
-        assert response1.status_code == 400
+
+class RegionAuthorizationTests(BaseAuthTest):
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
+
+    def test_region_list(self):
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 200, "Syndic": 403}
+        self.list_view("region/", codes)
+
+    def test_insert_region(self):
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 403, "Student": 403, "Syndic": 403}
+        self.data1 = {"region": "Gent"}
+        self.insert_view("region/", codes)
+
+    def test_get_region(self):
+        codes = {"Default": 200, "Admin": 200, "Superstudent": 200, "Student": 200, "Syndic": 200}
+        r_id = insert_dummy_region()
+        self.get_view(f"region/{r_id}", codes)
+
+    def test_patch_region(self):
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 403, "Student": 403, "Syndic": 403}
+        r_id = insert_dummy_region("Bruhhe")
+        self.data1 = {"region": "Gent"}
+        self.patch_view(f"region/{r_id}", codes)
+
+    def test_remove_region(self):
+        def create():
+            return insert_dummy_region()
+
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 403, "Student": 403, "Syndic": 403}
+        self.remove_view("region/", codes, create=create)

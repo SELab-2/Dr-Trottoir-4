@@ -1,13 +1,12 @@
-import React, {ChangeEvent, useState} from "react";
+import React, { ChangeEvent, useState } from "react";
 import styles from "@/styles//PDFUploader.module.css";
-import {Form} from "react-bootstrap";
-
+import { Form } from "react-bootstrap";
 
 interface Props {
     onUpload: (file: File) => void;
 }
 
-const PDFUploader: React.FC<Props> = ({onUpload}) => {
+const PDFUploader: React.FC<Props> = ({ onUpload }) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,9 +23,8 @@ const PDFUploader: React.FC<Props> = ({onUpload}) => {
     return (
         <div>
             <Form.Group controlId="manual">
-
                 <Form.Label>Handleiding PDF</Form.Label>
-                <br/>
+                <br />
                 <label htmlFor="pdf-upload" className={styles.customFileUpload}>
                     {selectedFile ? selectedFile.name : "Kies een bestand"}
                 </label>
@@ -38,7 +36,6 @@ const PDFUploader: React.FC<Props> = ({onUpload}) => {
                     className={styles.hiddenFileInput}
                 />
             </Form.Group>
-
         </div>
     );
 };

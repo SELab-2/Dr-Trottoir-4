@@ -24,6 +24,7 @@ class DefaultEmailTemplate(APIView):
         set_keys_of_instance(email_template_instance, data)
 
         if r := try_full_clean_and_save(email_template_instance):
+            print(r)
             return r
 
         return post_success(EmailTemplateSerializer(email_template_instance))
@@ -41,7 +42,7 @@ class EmailTemplateIndividualView(APIView):
         email_template_instance = EmailTemplate.objects.filter(id=email_template_id)
 
         if not email_template_instance:
-            return bad_request("EmailTemplate")
+            return not_found("EmailTemplate")
 
         return get_success(EmailTemplateSerializer(email_template_instance[0]))
 
@@ -53,7 +54,7 @@ class EmailTemplateIndividualView(APIView):
         email_template_instance = EmailTemplate.objects.filter(id=email_template_id)
 
         if not email_template_instance:
-            return bad_request("EmailTemplate")
+            return not_found("EmailTemplate")
 
         email_template_instance[0].delete()
         return delete_success()
@@ -66,7 +67,7 @@ class EmailTemplateIndividualView(APIView):
         email_template_instance = EmailTemplate.objects.filter(id=email_template_id)
 
         if not email_template_instance:
-            return bad_request("EmailTemplate")
+            return not_found("EmailTemplate")
 
         email_template_instance = email_template_instance[0]
         data = request_to_dict(request.data)
