@@ -104,7 +104,7 @@ function StudentSchedule() {
                     }
                     {
                         (studentOnTour && !datesEqual(new Date(), studentOnTour.date) && new Date() > studentOnTour.date) && (
-                            <p>{`U hebt deze ronde afgewert op ${studentOnTour.date.toLocaleDateString("en-GB")}.`}</p>
+                            <p>{`U hebt deze ronde afgewerkt op ${studentOnTour.date.toLocaleDateString("en-GB")}.`}</p>
                         )
                     }
                 </div>
