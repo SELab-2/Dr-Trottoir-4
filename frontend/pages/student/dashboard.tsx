@@ -5,6 +5,7 @@ import getStudentOnTour, {datesEqual, formatDate, StudentOnTour, StudentOnTourSt
 import {getCurrentUser, User} from "@/lib/user";
 import {getTour, Tour} from "@/lib/tour";
 import {getRegion, RegionInterface} from "@/lib/region";
+import ToursList from "@/components/student/toursList";
 
 // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=32-29&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
 function StudentDashboard() {
@@ -17,13 +18,9 @@ function StudentDashboard() {
     const [regions, setRegions] = useState<Record<number, RegionInterface>>({});
 
     useEffect(() => {
-        const d = formatDate(new Date(Date.now()));
-        console.log(d);
-
         getCurrentUser().then(res => {
             const u: User = res.data;
             setUser(u);
-            console.log(u);
         }, console.error);
     }, []);
 
@@ -31,19 +28,21 @@ function StudentDashboard() {
         if (!user) {
             return;
         }
+        // Get all the tours the student is/was assigned to from one month back to next month
         const monthAgo: Date = new Date();
         monthAgo.setMonth(monthAgo.getMonth() - 1); // This also works for january to december
         const nextMonth: Date = new Date();
         nextMonth.setMonth(monthAgo.getMonth() + 1);
         getStudentOnTour(user.id, {startDate: monthAgo, endDate: nextMonth}).then(async res => {
 
+            // Some cache to recognize duplicate tours (to not do unnecessary requests)
             const t: Record<number, Tour> = {};
-            const r : Record<number, RegionInterface> = {};
-
+            const r: Record<number, RegionInterface> = {};
 
             const data: StudentOnTourStringDate[] = res.data;
 
             for (const rec of data) {
+                // Get the tours & regions of tours where the student was assigned to
                 if (!(rec.tour in t)) {
                     try {
                         const res = await getTour(rec.tour);
@@ -51,9 +50,9 @@ function StudentDashboard() {
                         t[tour.id] = tour;
                         setTours(t);
 
-                        if (! (tour.region in r)) { // get the region
+                        if (!(tour.region in r)) { // get the region
                             const resRegion = await getRegion(tour.region);
-                            const region : RegionInterface = resRegion.data;
+                            const region: RegionInterface = resRegion.data;
                             r[region.id] = region;
                             setRegions(r);
                         }
@@ -62,7 +61,7 @@ function StudentDashboard() {
                     }
                 }
             }
-
+            // Get the tours today
             const sot: StudentOnTour[] = data.map((s: StudentOnTourStringDate) => {
                 return {id: s.id, student: s.student, tour: s.tour, date: new Date(s.date)}
             });
@@ -73,6 +72,7 @@ function StudentDashboard() {
             });
             setToursToday(today);
 
+            // Get the tours the student has done prev month
             const finishedTours: StudentOnTour[] = sot.filter((s: StudentOnTour) => {
                 const d: Date = s.date;
                 const currentDate: Date = new Date();
@@ -80,6 +80,7 @@ function StudentDashboard() {
             });
             setPrevTours(finishedTours);
 
+            // Get the tours the student is assigned to in the future
             const futureTours: StudentOnTour[] = sot.filter((s: StudentOnTour) => {
                 const d: Date = s.date;
                 const currentDate: Date = new Date();
@@ -93,73 +94,12 @@ function StudentDashboard() {
     return (
         <>
             <StudentHeader/>
-            {
-                (toursToday.length > 0) && (
-                    <div className="mt-3 mb-1 ml-2">
-                        <span className="h1 fw-bold">Vandaag</span>
-                        <div className="list-group">
-                            {
-                                toursToday.map(el => {
-                                    return (
-                                        <a href="#" className="list-group-item list-group-item-action" key={el.id}>
-                                            <div className="d-flex w-100 justify-content-between">
-                                                <h5 className="mb-1">{tours[el.tour] ? tours[el.tour].name : ""}</h5>
-                                                <small>{el.date.toLocaleDateString('en-GB')}</small>
-                                            </div>
-                                            <p className="mb-1">{tours[el.tour] && regions[tours[el.tour].region] ? regions[tours[el.tour].region].region : ""}</p>
-                                            <small>TODO: set buildings here</small>
-                                        </a>
-                                    );
-                                })
-                            }
-                        </div>
-                    </div>
-                )
-            }
-            {
-                (upcomingTours.length > 0) && (
-                    <div className="mt-3 mb-1 ml-2">
-                        <span className="h1 fw-bold">Gepland</span>
-                        <div className="list-group">
-                            {
-                                upcomingTours.map(el => {
-                                    return (
-                                        <a href="#" className="list-group-item list-group-item-action" key={el.id}>
-                                            <div className="d-flex w-100 justify-content-between">
-                                                <h5 className="mb-1">{tours[el.tour] ? tours[el.tour].name : ""}</h5>
-                                                <small>{el.date.toLocaleDateString('en-GB')}</small>
-                                            </div>
-                                            <p className="mb-1">{tours[el.tour] && regions[tours[el.tour].region] ? regions[tours[el.tour].region].region : ""}</p>
-                                        </a>
-                                    );
-                                })
-                            }
-                        </div>
-                    </div>
-                )
-            }
-            {
-                (prevTours.length > 0) && (
-                    <div className="mt-3 mb-1 ml-2">
-                        <span className="h1 fw-bold">Afgelopen maand</span>
-                        <div className="list-group">
-                            {
-                                prevTours.map(el => {
-                                    return (
-                                        <a href="#" className="list-group-item list-group-item-action" key={el.id}>
-                                            <div className="d-flex w-100 justify-content-between">
-                                                <h5 className="mb-1">{tours[el.tour] ? tours[el.tour].name : ""}</h5>
-                                                <small>{el.date.toLocaleDateString('en-GB')}</small>
-                                            </div>
-                                            <p className="mb-1">{tours[el.tour] && regions[tours[el.tour].region] ? regions[tours[el.tour].region].region : ""}</p>
-                                        </a>
-                                    );
-                                })
-                            }
-                        </div>
-                    </div>
-                )
-            }
+            <ToursList studentOnTours={toursToday} listTitle="Vandaag" onClick={() => {
+            }} allTours={tours} allRegions={regions}/>
+            <ToursList studentOnTours={upcomingTours} listTitle="Gepland" onClick={() => {
+            }} allTours={tours} allRegions={regions}/>
+            <ToursList studentOnTours={prevTours} listTitle="Afgelopen maand" onClick={() => {
+            }} allTours={tours} allRegions={regions}/>
         </>
     );
 }
