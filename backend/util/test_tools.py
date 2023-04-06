@@ -35,7 +35,6 @@ class BaseTest(TestCase):
         assert self.data1 is not None, "no data found"
         resp = self.client.post(backend_url + "/" + url, self.data1, follow=True)
         assert resp.status_code == 201, errorMessage("insert", 201, resp.status_code)
-        print(resp.data)
         for key in self.data1:
             assert key in resp.data, errorMessage("insert", key, None)
             if type(self.data1[key]) == InMemoryUploadedFile:

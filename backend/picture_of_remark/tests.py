@@ -4,6 +4,7 @@ from util.data_generators import insert_dummy_remark_at_building, createMemoryFi
 from util.test_tools import BaseTest
 
 f = createMemoryFile("./picture_of_remark/scrambled1.png")
+f2 = createMemoryFile("./picture_of_remark/scrambled2.png")
 
 
 class PictureOfRemarkTests(BaseTest):
@@ -15,10 +16,12 @@ class PictureOfRemarkTests(BaseTest):
 
     def test_insert_picture_of_remark(self):
         self.data1 = {"picture": f, "remark_at_building": insert_dummy_remark_at_building()}
+        print(f)
         self.insert("picture-of-remark/")
 
     def test_insert_dupe_picture_of_remark(self):
-        self.data1 = {"picture": f, "remark_at_building": insert_dummy_remark_at_building()}
+        RaB = insert_dummy_remark_at_building()
+        self.data1 = {"picture": f, "remark_at_building": RaB}
         self.insert_dupe("picture-of-remark/")
 
     def test_get_picture_of_remark(self):
@@ -29,18 +32,11 @@ class PictureOfRemarkTests(BaseTest):
     def test_get_non_existing(self):
         self.get_non_existent("picture-of-remark/")
 
-    # def test_patch_picture_of_remark(self):
-        # p_id = insert_dummy_picture_of_remark(f)
-        # # TODO: add new picture for patch!
-        # patch_data = {"picture": f}
-        # # TODO: make the following code generic (Super class): super().test_patch(id, patch_data)
-        # resp1 = self.client.patch(self.base_url + p_id, patch_data)
-        # assert resp1.status_code == 200
-        # resp2 = self.client.get(self.base_url + p_id)
-        # assert resp2.status_code == 200
-        # for k in patch_data:
-        #     assert k in resp2.data
-        # assert "id" in resp2.data
+    def test_patch_picture_of_remark(self):
+        p_id = insert_dummy_picture_of_remark(f)
+        RaB = insert_dummy_remark_at_building()
+        self.data1 = {"picture": f2, "remark_at_building": RaB}
+        self.patch(f"picture-of-remark/{p_id}")
 
     def test_remove_picture_of_remark(self):
         p_id = insert_dummy_picture_of_remark(f)

@@ -1,6 +1,7 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+import hashlib
 
 from base.models import PictureOfRemark
 from base.permissions import IsAdmin, IsSuperStudent, IsStudent, OwnerAccount
@@ -33,13 +34,15 @@ class Default(APIView):
         Create a new PictureOfRemark with data from post
         """
         data = request_to_dict(request.data)
-        print(data)
-
         picture_of_remark_instance = PictureOfRemark()
 
+        f = data["picture"]
+        hashed_image = hashlib.sha1()
+        hashed_image.update(f.open().read())
+
+        data["hash"] = hashed_image.hexdigest()
+
         set_keys_of_instance(picture_of_remark_instance, data, TRANSLATE)
-        print(picture_of_remark_instance.picture)
-        print(picture_of_remark_instance.remark_at_building)
 
         if r := try_full_clean_and_save(picture_of_remark_instance):
             return r
@@ -54,43 +57,43 @@ class PictureOfRemarkIndividualView(APIView):
     serializer_class = PictureOfRemarkSerializer
 
     @extend_schema(responses=get_success(serializer_class))
-    def get(self, request, remark_at_building_id):
+    def get(self, request, picture_of_remark):
         """
         Get info about a remark at building with a given id
         """
-        picture_of_remark = PictureOfRemark.objects.filter(id=remark_at_building_id).first()
+        picture_of_remark = PictureOfRemark.objects.filter(id=picture_of_remark).first()
 
         if not picture_of_remark:
             return not_found(object_name="PictureOfRemark")
 
-        self.check_object_permissions(request, picture_of_remark.student_on_tour.student)
+        self.check_object_permissions(request, picture_of_remark.remark_at_building.student_on_tour.student)
 
         return get_success(self.serializer_class(picture_of_remark))
 
     @extend_schema(responses=delete_docs())
-    def delete(self, request, picture_of_remark_id):
+    def delete(self, request, picture_of_remark):
         """
         Delete remark at building with given id
         """
-        picture_of_remark_instance = PictureOfRemark.objects.filter(id=picture_of_remark_id).first()
+        picture_of_remark_instance = PictureOfRemark.objects.filter(id=picture_of_remark).first()
         if not picture_of_remark_instance:
             return not_found(object_name="RemarkAtBuilding")
 
-        self.check_object_permissions(request, picture_of_remark_instance.student_on_tour.student)
+        self.check_object_permissions(request, picture_of_remark_instance.remark_at_building.student_on_tour.student)
 
         picture_of_remark_instance.delete()
         return delete_success()
 
     @extend_schema(responses=patch_docs(serializer_class))
-    def patch(self, request, picture_of_remark_id):
+    def patch(self, request, picture_of_remark):
         """
         Edit building with given ID
         """
-        picture_of_remark_instance = PictureOfRemark.objects.filter(id=picture_of_remark_id).first()
+        picture_of_remark_instance = PictureOfRemark.objects.filter(id=picture_of_remark).first()
         if not picture_of_remark_instance:
             return not_found(object_name="RemarkAtBuilding")
 
-        self.check_object_permissions(request, picture_of_remark_instance.student_on_tour.student)
+        self.check_object_permissions(request, picture_of_remark_instance.remark_at_building.student_on_tour.student)
 
         data = request_to_dict(request.data)
 

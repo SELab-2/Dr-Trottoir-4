@@ -1,8 +1,10 @@
+import hashlib
 import io
 import mimetypes
 from datetime import date, datetime
 from datetime import timedelta
 
+import pytz
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from base.models import (
@@ -148,15 +150,22 @@ def insert_dummy_remark_at_building():
         student_on_tour_id=insert_dummy_student_on_tour(),
         building_id=insert_dummy_building(),
         remark="illegal dumping",
-        timestamp=str(datetime.now()),
+        timestamp=datetime.now(pytz.utc),
     )
     RaB.save()
     return RaB.id
 
 
 def insert_dummy_picture_of_remark(picture):
+    f = picture
+    hashed_image = hashlib.sha1()
+    # f.seek(0)
+    print(f.open().read())
+    hashed_image.update(f.open().read())
+    print(hashed_image.hexdigest())
     PoR = PictureOfRemark(picture=picture,
-                          remark_at_building=RemarkAtBuilding.objects.get(id=insert_dummy_remark_at_building()))
+                          remark_at_building=RemarkAtBuilding.objects.get(id=insert_dummy_remark_at_building()),
+                          hash=hashed_image)
     PoR.save()
     return PoR.id
 
