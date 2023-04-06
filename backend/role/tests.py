@@ -1,134 +1,81 @@
-from django.test import TestCase
-from rest_framework.test import APIClient
+from base.models import Role
+from base.serializers import RoleSerializer
+from util.data_generators import insert_dummy_role
+from util.test_tools import BaseTest, BaseAuthTest
 
-from base.test_settings import backend_url
-from util.data_generators import createUser
 
+class RoleTests(BaseTest):
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
 
-class RoleTests(TestCase):
-    def test_role_list(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response = client.get(f"{backend_url}/role/all", follow=True)
-        assert response.status_code == 200
-        data = [dict(e) for e in response.data]
-        # length should be 1 since there is an Admin user present
-        assert len(data) == 1
+    # no empty_list test because there will be regions since there is an admin client
+    # the admin used in that client has a region so the empty_list test will never succeed
 
     def test_insert_role(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data = {"name": "Test", "rank": 2, "description": "testRole"}
-        response = client.post(f"{backend_url}/role/", data, follow=True)
-        print(response.data)
-        assert response.status_code == 201
-        for key in data:
-            assert key in response.data
-        assert "id" in response.data
+        self.data1 = {"name": "Test", "rank": 2, "description": "testRole"}
+        self.insert("role/")
 
     def test_insert_dupe_role(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data = {"name": "Test", "rank": 2, "description": "testRole"}
-        _ = client.post(f"{backend_url}/role/", data, follow=True)
-        response = client.post(f"{backend_url}/role/", data, follow=True)
-        assert response.status_code == 400
+        self.data1 = {"name": "Test", "rank": 2, "description": "testRole"}
+        self.insert_dupe("role/")
 
     def test_get_role(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data1 = {"name": "Test", "rank": 2, "description": "testRole"}
-        response1 = client.post(f"{backend_url}/role/", data1, follow=True)
-        assert response1.status_code == 201
-        for key in data1:
-            assert key in response1.data
-        assert "id" in response1.data
-        id = response1.data["id"]
-        response2 = client.get(f"{backend_url}/role/{id}/", follow=True)
-        assert response2.status_code == 200
-        assert response2.data["name"] == "Test"
-        assert response2.data["description"] == "testRole"
-        assert "id" in response2.data
+        r_id = insert_dummy_role("testRole")
+        data = RoleSerializer(Role.objects.get(id=r_id)).data
+        self.get(f"role/{r_id}", data)
 
     def test_get_non_existing(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response1 = client.get(f"{backend_url}/role/123654897", follow=True)
-        assert response1.status_code == 404
+        self.get_non_existent("role/")
 
     def test_patch_role(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data1 = {"name": "Test", "rank": 2, "description": "testRole"}
-        data2 = {"name": "Test", "rank": 3, "description": "testRole"}
-        response1 = client.post(f"{backend_url}/role/", data1, follow=True)
-        assert response1.status_code == 201
-        for key in data1:
-            assert key in response1.data
-        assert "id" in response1.data
-        id = response1.data["id"]
-        response2 = client.patch(f"{backend_url}/role/{id}/", data2, follow=True)
-        assert response2.status_code == 200
-        response3 = client.get(f"{backend_url}/role/{id}/", follow=True)
-        assert response3.status_code == 200
-        assert response3.data["rank"] == 3
-        assert "id" in response3.data
+        r_id = insert_dummy_role("TestRole")
+        self.data1 = {"name": "Test", "rank": 2, "description": "testRole"}
+        self.patch(f"role/{r_id}")
 
     def test_patch_invalid_role(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data = {"name": "Test", "rank": 2, "description": "testRole"}
-        response2 = client.patch(f"{backend_url}/role/123434687658/", data, follow=True)
-        assert response2.status_code == 404
+        self.data1 = {"name": "Test", "rank": 2, "description": "testRole"}
+        self.patch_invalid("role/")
 
     def test_patch_error_role(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data1 = {"name": "Test", "rank": 2, "description": "testRole"}
-        data2 = {"name": "Test2", "rank": 2, "description": "testRole"}
-        response1 = client.post(f"{backend_url}/role/", data1, follow=True)
-        _ = client.post(f"{backend_url}/role/", data2, follow=True)
-        assert response1.status_code == 201
-        id = response1.data["id"]
-        response2 = client.patch(f"{backend_url}/role/{id}/", data2, follow=True)
-        assert response2.status_code == 400
+        self.data1 = {"name": "Test", "rank": 2, "description": "testRole"}
+        self.data2 = {"name": "Test2", "rank": 2, "description": "testRole"}
+        self.patch_error("role/")
 
     def test_remove_role(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data1 = {"name": "Test", "rank": 2, "description": "testRole"}
-        response1 = client.post(f"{backend_url}/role/", data1, follow=True)
-        assert response1.status_code == 201
-        for key in data1:
-            assert key in response1.data
-        assert "id" in response1.data
-        id = response1.data["id"]
-        response2 = client.delete(f"{backend_url}/role/{id}/", follow=True)
-        assert response2.status_code == 204
-        response3 = client.get(f"{backend_url}/role/{id}/", follow=True)
-        assert response3.status_code == 404
+        r_id = insert_dummy_role("testRole")
+        self.remove(f"role/{r_id}")
 
     def test_remove_non_existent_role(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response2 = client.delete(f"{backend_url}/role/123456789/", follow=True)
-        assert response2.status_code == 404
+        self.remove_invalid("role/")
 
-    def test_add_existing_role(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        data1 = {"name": "Test", "rank": 2, "description": "testRole"}
-        _ = client.post(f"{backend_url}/role/", data1, follow=True)
-        response1 = client.post(f"{backend_url}/role/", data1, follow=True)
-        assert response1.status_code == 400
+
+class RoleAuthorizationTests(BaseAuthTest):
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
+
+    def test_role_list(self):
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
+        self.list_view("role/", codes)
+
+    def test_insert_role(self):
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 403, "Student": 403, "Syndic": 403}
+        self.data1 = {"name": "Test", "rank": 2, "description": "testRole"}
+        self.insert_view("role/", codes)
+
+    def test_get_role(self):
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
+        r_id = insert_dummy_role("testRole")
+        self.get_view(f"role/{r_id}", codes)
+
+    def test_patch_role(self):
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
+        r_id = insert_dummy_role("testRole")
+        self.data1 = {"name": "Test", "rank": 2, "description": "testRole"}
+        self.patch_view(f"role/{r_id}", codes)
+
+    def test_remove_role(self):
+        def create():
+            return insert_dummy_role("testRole")
+
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 204, "Student": 403, "Syndic": 403}
+        self.remove_view("role/", codes, create=create)
