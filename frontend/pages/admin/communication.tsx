@@ -75,7 +75,7 @@ function AdminCommunication() {
     };
 
     async function routeToBuildings(syndicId: string) {
-        const currentSyndic = allSyndics.find(e => e.id === Number(syndicId));
+        const currentSyndic = allSyndics.find((e) => e.id === Number(syndicId));
         await router.push({
             pathname: `data/buildings/`,
             query: { syndic: currentSyndic?.email },
@@ -116,7 +116,7 @@ function AdminCommunication() {
             setAllSyndics(users);
             let currentSyndic = users[0];
             if (query.syndic) {
-                currentSyndic = users.find(e => e.email === query.syndic) || users[0];
+                currentSyndic = users.find((e) => e.email === query.syndic) || users[0];
             }
             setSelectedSyndic(userSearchString(currentSyndic));
             setSyndicId(currentSyndic.id.toString());

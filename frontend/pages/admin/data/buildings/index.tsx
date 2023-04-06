@@ -25,7 +25,6 @@ function AdminDataBuildings() {
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedBuilding, setSelectedBuilding] = useState<BuildingView | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
-    
 
     const columns = useMemo<MRT_ColumnDef<BuildingView>[]>(
         () => [
@@ -91,7 +90,6 @@ function AdminDataBuildings() {
 
                         buildingViews.push(buildingView);
                     }
-                    
                 }
                 setBuildingViews(buildingViews);
             } catch (err) {
