@@ -74,8 +74,10 @@ class BaseTest(TestCase):
             special = []
         assert self.data1 is not None, "no data found"
         response2 = self.client.patch(backend_url + "/" + url, self.data1, follow=True)
+        print(response2.data)
         assert response2.status_code == 200, errorMessage("patch", 200, response2.status_code)
         response3 = self.client.get(backend_url + "/" + url, follow=True)
+        print(response3.data)
         excluded = []
         for key, value in special:
             assert key in response3.data, errorMessage("patch", key, None)

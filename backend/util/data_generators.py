@@ -151,6 +151,7 @@ def insert_dummy_remark_at_building():
         building_id=insert_dummy_building(),
         remark="illegal dumping",
         timestamp=datetime.now(pytz.utc),
+        type="AA"
     )
     RaB.save()
     return RaB.id
