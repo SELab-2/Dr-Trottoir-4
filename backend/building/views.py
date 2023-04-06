@@ -11,10 +11,10 @@ from base.permissions import (
     OwnerWithLimitedPatch,
     OwnerOfBuilding,
 )
-from base.serializers import BuildingSerializer
+from base.serializers import BuildingSerializer, PublicIdSerializer
 from util.request_response_util import *
 
-TRANSLATE = {"syndic": "syndic_id"}
+TRANSLATE = {"syndic": "syndic_id", "region": "region_id"}
 
 
 class DefaultBuilding(APIView):
@@ -140,6 +140,19 @@ class BuildingNewPublicId(APIView):
             return r
 
         return post_success(BuildingSerializer(building_instance))
+
+
+class BuildingGetNewPublicId(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding]
+    serializer_class = PublicIdSerializer
+
+    def get(self, request):
+        """
+        Get a random unique uuid as public id that is still available.
+        Returns a json object with the public_id as key and the uuid as value.
+        """
+        unique_id = get_unique_uuid(lambda x: Building.objects.filter(public_id=x).exists())
+        return Response({"public_id": unique_id}, status=status.HTTP_200_OK)
 
 
 class AllBuildingsView(APIView):

@@ -13,6 +13,16 @@ export interface User {
     role : number
 }
 
+export function extractEmailFromString(text: string): string | null {
+  const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+  const match = text.match(emailRegex);
+  return match ? match[0] : null;
+}
+
+export function userSearchString(user: User){
+    return `${user.first_name} ${user.last_name} (${user.email})`
+}
+
 export const getCurrentUser = (): Promise<AxiosResponse<any, any>> => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}`;
     return api.get(request_url);
@@ -37,7 +47,23 @@ export const getUserRole = (role_id: string): string => {
     return userDict.get(parseInt(role_id)) || "Default";
 };
 
-export async function getAllUsers() : Promise<AxiosResponse<any, any>> {
+export async function getAllUsers(includeInactiveUser : boolean = false) : Promise<AxiosResponse<any, any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
-    return await api.get(request_url);
+    return await api.get(request_url, {
+        params : {
+            "include-inactive":includeInactiveUser
+        }
+    });
+}
+
+export async function deleteUser(userId : number) : Promise<AxiosResponse<any, any>> {
+    const delete_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}${userId}`;
+    return await api.delete(delete_url);
+}
+
+export async function patchUser(userId: number, data : Object) : Promise<AxiosResponse<any, any>> {
+    const patchUrl: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}${userId}`;
+    return await api.patch(patchUrl, JSON.stringify(data), {
+        headers: { "Content-Type": "application/json" },
+    });
 }

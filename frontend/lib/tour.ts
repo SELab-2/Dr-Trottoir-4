@@ -45,3 +45,15 @@ export async function patchTour(tourId : number, data : Object, modifiedAt : Dat
         }
     );
 }
+
+/**
+ * Takes a data object with buildings as key & index (the position of the building on the tour) as value
+ */
+export async function swapBuildingsOnTour(tourId : number, data : Object) {
+    const post_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_TOUR}${tourId}/sequence/`;
+    return await api.post(post_url, JSON.stringify(data),
+        {
+            headers: { "Content-Type": "application/json" },
+        }
+    );
+}

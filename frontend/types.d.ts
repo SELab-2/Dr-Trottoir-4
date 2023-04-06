@@ -24,6 +24,13 @@ export type TourView = {
     tour_id: number;
 };
 
+export type BuildingView = {
+    name: string;
+    address: string;
+    building_id: number;
+    syndic_email: string;
+};
+
 export type BuildingOnTourView = {
     buildingName: string;
     city: string;
@@ -52,4 +59,5 @@ export type UserView = {
     role : string;
     phone_number : string;
     userId : number;
+    isActive : boolean;
 }

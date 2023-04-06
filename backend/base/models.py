@@ -4,7 +4,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import UniqueConstraint
+from django.db.models import UniqueConstraint, Q
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
@@ -132,7 +132,7 @@ class Building(models.Model):
 
         # If a public_id exists, it should be unique
         if self.public_id:
-            if Building.objects.filter(public_id=self.public_id):
+            if Building.objects.filter(public_id=self.public_id).filter(~Q(id=self.id)):
                 raise ValidationError(f"{self.public_id} already exists as public_id of another building")
 
     class Meta:
@@ -247,9 +247,8 @@ class BuildingOnTour(models.Model):
     def clean(self):
         super().clean()
 
-        # Check for existence of all the fields we use below
-        # If the if statement fail, django will handle the errors correctly in a consistent way
-        if self.tour_id and self.building_id and self.index:
+        # If the if statement fails, django will handle the errors correctly in a consistent way
+        if self.tour_id and self.building_id:
             tour_region = self.tour.region
             building_region = self.building.region
             if tour_region != building_region:
@@ -257,22 +256,35 @@ class BuildingOnTour(models.Model):
                     f"The regions for tour ({tour_region}) en building ({building_region}) are different."
                 )
 
+        # Fail if the index is not unique for the tour
+
     def __str__(self):
         return f"{self.building} on tour {self.tour}, index: {self.index}"
 
     class Meta:
         constraints = [
-           UniqueConstraint(
+            UniqueConstraint(
                 "building",
                 "tour",
                 name="unique_building_on_tour",
                 violation_error_message="This building is already on this tour.",
-            )
+            ),
+            UniqueConstraint(
+                "index",
+                "tour",
+                name="unique_index_on_tour",
+                violation_error_message="This index is already in use.",
+            ),
         ]
 
 
-class StudentAtBuildingOnTour(models.Model):
-    building_on_tour = models.ForeignKey(BuildingOnTour, on_delete=models.SET_NULL, null=True)
+"""
+Links student to tours on a date
+"""
+
+
+class StudentOnTour(models.Model):
+    tour = models.ForeignKey(Tour, on_delete=models.SET_NULL, null=True)
     date = models.DateField()
     student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
@@ -284,42 +296,39 @@ class StudentAtBuildingOnTour(models.Model):
     def clean(self):
         super().clean()
 
-        if self.student_id and self.building_on_tour_id:
+        if self.student_id and self.tour_id:
             user = self.student
             if user.role.name.lower() == "syndic":
                 raise ValidationError("A syndic can't do tours")
-            building_on_tour_region = self.building_on_tour.tour.region
-            if not self.student.region.all().filter(region=building_on_tour_region).exists():
-                raise ValidationError(
-                    f"Student ({user.email}) doesn't do tours in this region ({building_on_tour_region})."
-                )
+            tour_region = self.tour.region
+            if not self.student.region.all().filter(region=tour_region).exists():
+                raise ValidationError(f"Student ({user.email}) doesn't do tours in this region ({tour_region}).")
 
     class Meta:
         constraints = [
             UniqueConstraint(
-                "building_on_tour",
+                "tour",
                 "date",
                 "student",
-                name="unique_student_at_building_on_tour",
+                name="unique_student_on_tour",
                 violation_error_message="The student is already assigned to this tour on this date.",
             ),
         ]
 
     def __str__(self):
-        return f"{self.student} at {self.building_on_tour} on {self.date}"
+        return f"{self.student} at {self.tour} on {self.date}"
 
 
-class PictureBuilding(models.Model):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    picture = models.ImageField(upload_to="building_pictures/")
-    description = models.TextField(blank=True, null=True)
+class RemarkAtBuilding(models.Model):
+    student_on_tour = models.ForeignKey(StudentOnTour, on_delete=models.SET_NULL, null=True)
+    building = models.ForeignKey(Building, on_delete=models.SET_NULL, null=True)
     timestamp = models.DateTimeField(blank=True)
+    remark = models.TextField(blank=True, null=True)
 
     AANKOMST = "AA"
     BINNEN = "BI"
     VERTREK = "VE"
     OPMERKING = "OP"
-
     TYPE = [
         (AANKOMST, "Aankomst"),
         (BINNEN, "Binnen"),
@@ -334,20 +343,35 @@ class PictureBuilding(models.Model):
         if not self.timestamp:
             self.timestamp = datetime.now()
 
+    def __str__(self):
+        return f"{self.type} for {self.building}"
+
     class Meta:
         constraints = [
             UniqueConstraint(
+                Lower("remark"),
                 "building",
-                Lower("picture"),
-                Lower("description"),
+                "student_on_tour",
                 "timestamp",
-                name="unique_picture_building",
-                violation_error_message="The building already has the upload.",
+                name="unique_remark_for_building",
+                violation_error_message="This remark was already uploaded to this building by this student on the tour.",
             ),
         ]
 
-    def __str__(self):
-        return f"{self.type} = {str(self.picture).split('/')[-1]} at {self.building} ({self.timestamp}): {self.description}"
+
+class PictureOfRemark(models.Model):
+    picture = models.ImageField(upload_to="building_pictures/")
+    remark_at_building = models.ForeignKey(RemarkAtBuilding, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                Lower("picture"),
+                "remark_at_building",
+                name="unique_picture_with_remark",
+                violation_error_message="The building already has this upload.",
+            ),
+        ]
 
 
 class Manual(models.Model):
