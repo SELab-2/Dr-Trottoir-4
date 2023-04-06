@@ -22,6 +22,8 @@ import {Edit, Delete} from "@mui/icons-material";
 import {useRouter} from "next/router"
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import {Button} from "react-bootstrap";
+import RegionModal, {ModalMode} from "@/components/regionModal";
+import {set} from "js-cookie";
 
 interface RegionView extends RegionInterface {
 }
@@ -144,52 +146,22 @@ function AdminDataRegions() {
                     </Button>
                 )}
             />
-            <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
-                <DialogTitle>Maak nieuwe regio</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Regio naam"
-                        type="text"
-                        fullWidth
-                        value={regionName}
-                        onChange={(e) => setRegionName(e.target.value)}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setAddDialogOpen(false)} variant="secondary">
-                        Annuleer
-                    </Button>
-                    <Button onClick={addNewRegion} variant="primary">
-                        Voeg toe
-                    </Button>
-                </DialogActions>
-            </Dialog>
-            <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-                <DialogTitle>Wijzig regio</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Regio naam"
-                        type="text"
-                        fullWidth
-                        value={regionName}
-                        onChange={(e) => setRegionName(e.target.value)}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setEditDialogOpen(false)} variant="secondary">
-                        Annuleren
-                    </Button>
-                    <Button onClick={updateRegion} variant="primary">
-                        Opslaan
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <RegionModal
+                show={addDialogOpen}
+                closeModal={() => setAddDialogOpen(false)}
+                onSubmit={addNewRegion}
+                mode={ModalMode.ADD}
+                regionName={regionName}
+                setRegionName={setRegionName}
+            />
+            <RegionModal
+                show={editDialogOpen}
+                closeModal={() => setEditDialogOpen(false)}
+                onSubmit={updateRegion}
+                mode={ModalMode.EDIT}
+                regionName={regionName}
+                setRegionName={setRegionName}
+            />
             <DeleteConfirmationDialog
                 open={deleteDialogOpen}
                 title="Verwijder Regio"
