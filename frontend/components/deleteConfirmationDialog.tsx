@@ -1,6 +1,6 @@
 import React from "react";
-import {Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions} from "@mui/material";
-import {Button} from "react-bootstrap";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
+import { Button } from "react-bootstrap";
 
 export interface DeleteConfirmationDialogProps {
     open: boolean;
@@ -13,14 +13,18 @@ export interface DeleteConfirmationDialogProps {
 }
 
 const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
-                                                                               open,
-                                                                               title,
-                                                                               description,
-                                                                               handleClose,
-                                                                               handleConfirm,
-                                                                           }) => (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="confirmation-dialog-title"
-            aria-describedby="confirmation-dialog-description">
+    open,
+    title,
+    description,
+    handleClose,
+    handleConfirm,
+}) => (
+    <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="confirmation-dialog-title"
+        aria-describedby="confirmation-dialog-description"
+    >
         <DialogTitle id="confirmation-dialog-title">{title}</DialogTitle>
         <DialogContent>
             <DialogContentText id="confirmation-dialog-description">{description}</DialogContentText>
