@@ -150,12 +150,15 @@ class AllBuildingsOnTourView(APIView):
     @extend_schema(responses=get_docs(BuildingSerializer))
     def get(self, request, tour_id):
         """
-        Get all buildings on a tour with given id
+        Get all buildings on a tour with given tour id. The buildings in the response body are ordered by their index.
         """
         building_on_tour_instances = BuildingOnTour.objects.filter(tour_id=tour_id)
         building_instances = Building.objects.filter(
             id__in=building_on_tour_instances.values_list("building_id", flat=True)
-        )
+        ).order_by("buildingontour__index")
+
+        print(type(building_instances))
+        print(building_instances)
 
         serializer = BuildingSerializer(building_instances, many=True)
         return get_success(serializer)

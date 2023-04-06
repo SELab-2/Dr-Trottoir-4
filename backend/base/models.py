@@ -13,7 +13,7 @@ from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2**31 - 1
+MAX_INT = 2 ** 31 - 1
 
 
 class Region(models.Model):
@@ -205,7 +205,7 @@ class GarbageCollection(models.Model):
                 "date",
                 name="garbage_collection_unique",
                 violation_error_message="This type of garbage is already being collected on the same day for this "
-                "building.",
+                                        "building.",
             ),
         ]
 
@@ -247,15 +247,16 @@ class BuildingOnTour(models.Model):
     def clean(self):
         super().clean()
 
-        # Check for existence of all the fields we use below
-        # If the if statement fail, django will handle the errors correctly in a consistent way
-        if self.tour_id and self.building_id and self.index:
+        # If the if statement fails, django will handle the errors correctly in a consistent way
+        if self.tour_id and self.building_id:
             tour_region = self.tour.region
             building_region = self.building.region
             if tour_region != building_region:
                 raise ValidationError(
                     f"The regions for tour ({tour_region}) en building ({building_region}) are different."
                 )
+
+        # Fail if the index is not unique for the tour
 
     def __str__(self):
         return f"{self.building} on tour {self.tour}, index: {self.index}"
@@ -267,6 +268,12 @@ class BuildingOnTour(models.Model):
                 "tour",
                 name="unique_building_on_tour",
                 violation_error_message="This building is already on this tour.",
+            ),
+            UniqueConstraint(
+                "index",
+                "tour",
+                name="unique_index_on_tour",
+                violation_error_message="This index is already in use.",
             )
         ]
 
@@ -386,9 +393,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-            self.version_number == 0
-            or self.version_number > max_version_number + 1
-            or self.version_number in version_numbers
+                self.version_number == 0
+                or self.version_number > max_version_number + 1
+                or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 
