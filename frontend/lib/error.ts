@@ -1,7 +1,24 @@
-export function getAndSetErrors(errorData : [any, string[]][], callback : (value : any) => any) {
-    let errors = [];
-    for (const [_, errorValues] of errorData) {
-        errors.push(...errorValues);
+/**
+ * This returns a list of all the errors in the errorMessage.
+ * @param error
+ */
+export function handleError(error : any) : string[] {
+    let errorRes = error.response;
+    if (! errorRes || ! errorRes.data) {
+        return [];
     }
-    callback([...errors]);
+    if (errorRes.status === 400) {
+        let errors = [];
+        let data: [any, string[]][] = Object.entries(errorRes.data);
+        for (const [_, errorValues] of data) {
+            errors.push(...errorValues);
+        }
+        return errors;
+    } else if (errorRes && errorRes.status === 403) {
+        const errorData: [any, string][] = Object.entries(errorRes.data);
+        return errorData.map((val) => val[1]);
+    } else {
+        console.error(error);
+        return [];
+    }
 }

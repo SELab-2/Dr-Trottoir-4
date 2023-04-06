@@ -1,4 +1,3 @@
-import operator
 import uuid
 from datetime import datetime
 from typing import Callable
@@ -13,10 +12,10 @@ def get_id_param(request, name, required=False):
     param = request.GET.get(name, None)
     if param:
         if not param.isdigit():
-            raise BadRequest(f'The query parameter {name} should be an integer')
+            raise BadRequest(f"The query parameter {name} should be an integer")
     else:
         if required:
-            raise BadRequest(f'The query parameter {name} is required')
+            raise BadRequest(f"The query parameter {name} is required")
     return param
 
 
@@ -24,12 +23,12 @@ def get_date_param(request, name, required=False):
     param = request.GET.get(name, None)
     if param:
         try:
-            param = datetime.strptime(param, '%Y-%m-%d')
+            param = datetime.strptime(param, "%Y-%m-%d")
         except ValueError:
             raise BadRequest(f"The date parameter '{name}': '{param}' hasn't the appropriate form (=YYYY-MM-DD).")
     else:
         if required:
-            raise BadRequest(f'The query parameter {name} is required')
+            raise BadRequest(f"The query parameter {name} is required")
     return param
 
 
@@ -59,16 +58,16 @@ def get_list_param(request, name, required=False):
 
 
 def get_param(request, key, required):
-    if 'date' in key:
+    if "date" in key:
         return get_date_param(request, key, required)
-    elif 'list' in key:
+    elif "list" in key:
         param_list = get_list_param(request, key, required)
         if param_list and 'id' in key:
             return list(map(int, param_list))
         return param_list
-    elif 'id' in key:
+    elif "id" in key:
         return get_id_param(request, key, required)
-    elif 'bool' in key:
+    elif "bool" in key:
         return get_boolean_param(request, key, required)
     # add more conditions here as needed
     else:
@@ -119,17 +118,11 @@ def set_keys_of_instance(instance, data: dict, translation: dict = {}):
 
 
 def not_found(object_name="Object"):
-    return Response(
-        {"message": f"{object_name} was not found"},
-        status=status.HTTP_404_NOT_FOUND
-    )
+    return Response({"message": f"{object_name} was not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 def bad_request(object_name="Object"):
-    return Response(
-        {"message": f"bad input for {object_name}"},
-        status=status.HTTP_400_BAD_REQUEST
-    )
+    return Response({"message": f"bad input for {object_name}"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def bad_request_relation(object1: str, object2: str):

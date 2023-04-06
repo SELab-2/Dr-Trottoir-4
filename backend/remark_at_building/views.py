@@ -3,10 +3,27 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import RemarkAtBuilding
-from base.permissions import IsSuperStudent, IsAdmin, IsStudent, OwnerAccount, ReadOnlyOwnerOfBuilding
+from base.permissions import (
+    IsSuperStudent,
+    IsAdmin,
+    IsStudent,
+    OwnerAccount,
+    ReadOnlyOwnerOfBuilding,
+)
 from base.serializers import RemarkAtBuildingSerializer
-from util.request_response_util import post_docs, request_to_dict, set_keys_of_instance, try_full_clean_and_save, \
-    not_found, get_success, delete_success, delete_docs, patch_success, patch_docs, get_docs
+from util.request_response_util import (
+    post_docs,
+    request_to_dict,
+    set_keys_of_instance,
+    try_full_clean_and_save,
+    not_found,
+    get_success,
+    delete_success,
+    delete_docs,
+    patch_success,
+    patch_docs,
+    get_docs,
+)
 
 TRANSLATE = {
     "student_on_tour": "student_on_tour_id",
@@ -103,9 +120,7 @@ class AllRemarkAtBuilding(APIView):
 
 
 class RemarksAtBuildingView(APIView):
-    permission_classes = [IsAuthenticated,
-                          IsAdmin | IsSuperStudent | ReadOnlyOwnerOfBuilding
-                          ]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = RemarkAtBuildingSerializer
 
     @extend_schema(responses=get_docs(serializer_class))
@@ -121,5 +136,3 @@ class RemarksAtBuildingView(APIView):
             self.check_object_permissions(request, r.building)
 
         return get_success(self.serializer_class(remark_at_building_instances, many=True))
-
-

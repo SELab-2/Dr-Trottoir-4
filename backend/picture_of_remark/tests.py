@@ -8,7 +8,6 @@ f = createMemoryFile("backend/picture_building/scrambled1.png")
 
 
 class PictureOfRemarkTests(TestCase):
-
     def __init__(self, methodName="runTest"):
         self.client = get_authenticated_client()
         self.base_url = f"{backend_url}/picture-of-remark/"
@@ -16,16 +15,13 @@ class PictureOfRemarkTests(TestCase):
 
     def test_empty_picture_of_remark(self):
         # TODO: make the following code generic (Super class)
-        resp = self.client.get(self.base_url + 'all', follow=True)
+        resp = self.client.get(self.base_url + "all", follow=True)
         assert resp.status_code == 200
         data = [resp.data[e] for e in resp.data]
         assert len(data) == 0
 
     def test_insert_picture_of_remark(self):
-        data = {
-            "picture": f,
-            "remark_at_building": insert_dummy_remark_at_building()
-        }
+        data = {"picture": f, "remark_at_building": insert_dummy_remark_at_building()}
         # TODO: make the following code generic (Super class): super().test_insert(data)
         resp = self.client.post(self.base_url, data, follow=True)
         assert resp.status_code == 201
@@ -34,10 +30,7 @@ class PictureOfRemarkTests(TestCase):
         assert "id" in resp.data
 
     def test_insert_dupe_picture_of_remark(self):
-        data = {
-            "picture": f,
-            "remark_at_building": insert_dummy_remark_at_building()
-        }
+        data = {"picture": f, "remark_at_building": insert_dummy_remark_at_building()}
         # TODO: make the following code generic (Super class): super().test_insert_dupe(data)
         resp = self.client.post(self.base_url, data, follow=True)
         assert resp.status_code == 201
@@ -51,15 +44,13 @@ class PictureOfRemarkTests(TestCase):
 
     def test_get_non_existing(self):
         # TODO: move this code to the super class
-        resp = self.client.get(self.base_url + '123456')
+        resp = self.client.get(self.base_url + "123456")
         assert resp.status_code == 404
 
     def test_patch_picture_of_remark(self):
         p_id = insert_dummy_picture_of_remark(f)
         # TODO: add new picture for patch!
-        patch_data = {
-            "picture": f
-        }
+        patch_data = {"picture": f}
         # TODO: make the following code generic (Super class): super().test_patch(id, patch_data)
         resp1 = self.client.patch(self.base_url + p_id, patch_data)
         assert resp1.status_code == 200
@@ -79,5 +70,5 @@ class PictureOfRemarkTests(TestCase):
 
     def test_remove_non_existing_picture_of_remark(self):
         # TODO: move this code to the super class
-        resp = self.client.delete(self.base_url + '123456')
+        resp = self.client.delete(self.base_url + "123456")
         assert resp.status_code == 404
