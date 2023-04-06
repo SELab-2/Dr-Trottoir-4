@@ -1,24 +1,28 @@
 import StudentHeader from "@/components/header/studentHeader";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {useEffect, useState} from "react";
-import getStudentOnTour, {datesEqual, formatDate, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
-import {getCurrentUser, User} from "@/lib/user";
-import {getTour, Tour} from "@/lib/tour";
-import {getRegion, RegionInterface} from "@/lib/region";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { useEffect, useState } from "react";
+import getStudentOnTour, {
+    datesEqual,
+    formatDate,
+    StudentOnTour,
+    StudentOnTourStringDate,
+} from "@/lib/student-on-tour";
+import { getCurrentUser, User } from "@/lib/user";
+import { getTour, Tour } from "@/lib/tour";
+import { getRegion, RegionInterface } from "@/lib/region";
 import ToursList from "@/components/student/toursList";
 
 // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=32-29&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
 function StudentDashboard() {
-
     const [user, setUser] = useState<User | null>(null);
     const [toursToday, setToursToday] = useState<StudentOnTour[]>([]);
     const [prevTours, setPrevTours] = useState<StudentOnTour[]>([]);
     const [upcomingTours, setUpcomingTours] = useState<StudentOnTour[]>([]);
-    const [tours, setTours] = useState<Record<number, Tour>>({})
+    const [tours, setTours] = useState<Record<number, Tour>>({});
     const [regions, setRegions] = useState<Record<number, RegionInterface>>({});
 
     useEffect(() => {
-        getCurrentUser().then(res => {
+        getCurrentUser().then((res) => {
             const u: User = res.data;
             setUser(u);
         }, console.error);
@@ -33,8 +37,7 @@ function StudentDashboard() {
         monthAgo.setMonth(monthAgo.getMonth() - 1); // This also works for january to december
         const nextMonth: Date = new Date();
         nextMonth.setMonth(monthAgo.getMonth() + 1);
-        getStudentOnTour(user.id, {startDate: monthAgo, endDate: nextMonth}).then(async res => {
-
+        getStudentOnTour(user.id, { startDate: monthAgo, endDate: nextMonth }).then(async (res) => {
             // Some cache to recognize duplicate tours (to not do unnecessary requests)
             const t: Record<number, Tour> = {};
             const r: Record<number, RegionInterface> = {};
@@ -50,7 +53,8 @@ function StudentDashboard() {
                         t[tour.id] = tour;
                         setTours(t);
 
-                        if (!(tour.region in r)) { // get the region
+                        if (!(tour.region in r)) {
+                            // get the region
                             const resRegion = await getRegion(tour.region);
                             const region: RegionInterface = resRegion.data;
                             r[region.id] = region;
@@ -63,7 +67,7 @@ function StudentDashboard() {
             }
             // Get the tours today
             const sot: StudentOnTour[] = data.map((s: StudentOnTourStringDate) => {
-                return {id: s.id, student: s.student, tour: s.tour, date: new Date(s.date)}
+                return { id: s.id, student: s.student, tour: s.tour, date: new Date(s.date) };
             });
             const today: StudentOnTour[] = sot.filter((s: StudentOnTour) => {
                 const d: Date = s.date;
@@ -87,19 +91,33 @@ function StudentDashboard() {
                 return d > currentDate && !datesEqual(d, currentDate);
             });
             setUpcomingTours(futureTours);
-
         }, console.error);
     }, [user]);
 
     return (
         <>
-            <StudentHeader/>
-            <ToursList studentOnTours={toursToday} listTitle="Vandaag" onClick={() => {
-            }} allTours={tours} allRegions={regions}/>
-            <ToursList studentOnTours={upcomingTours} listTitle="Gepland" onClick={() => {
-            }} allTours={tours} allRegions={regions}/>
-            <ToursList studentOnTours={prevTours} listTitle="Afgelopen maand" onClick={() => {
-            }} allTours={tours} allRegions={regions}/>
+            <StudentHeader />
+            <ToursList
+                studentOnTours={toursToday}
+                listTitle="Vandaag"
+                onClick={() => {}}
+                allTours={tours}
+                allRegions={regions}
+            />
+            <ToursList
+                studentOnTours={upcomingTours}
+                listTitle="Gepland"
+                onClick={() => {}}
+                allTours={tours}
+                allRegions={regions}
+            />
+            <ToursList
+                studentOnTours={prevTours}
+                listTitle="Afgelopen maand"
+                onClick={() => {}}
+                allTours={tours}
+                allRegions={regions}
+            />
         </>
     );
 }
