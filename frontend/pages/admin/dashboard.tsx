@@ -9,6 +9,7 @@ import Loading from "@/components/loading";
 import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
 import {styled} from '@mui/system';
+import LiveField from '@/components/liveField';
 
 const GreenLinearProgress = styled(LinearProgress)(() => ({
     height: '20px',
@@ -25,7 +26,9 @@ function AdminDashboard() {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [remarksCount, setRemarksCount] = useState<Record<string, number>>({});
+    const [counter, setCounter] = useState(0);
 
+    const fetchCounter = () => Promise.resolve(counter);
 
     const fetchRemarks = async (studentOnTourId: number) => {
         // Fetch remarks based on studentOnTourId
@@ -87,6 +90,10 @@ function AdminDashboard() {
         <div>
             <AdminHeader/>
             <h2>Rondes van vandaag</h2>
+            <div>
+                <h1>Counter: <LiveField fetcher={fetchCounter} formatter={(count) => count.toString()} /></h1>
+                <button onClick={() => setCounter(counter + 1)}>Increment</button>
+            </div>
             <table className="table">
                 <thead>
                 <tr>
