@@ -41,6 +41,7 @@ const MyCalendar: FC = () => {
     const [events, setEvents] = useState<MyEvent[]>([
         {
             title: 'Antwerpen',
+<<<<<<< HEAD
             start: new Date(2023, 3, 6),
             end: new Date(2023, 3, 6),
             student: 'Test1',
@@ -63,6 +64,30 @@ const MyCalendar: FC = () => {
             start_time: "17:00",
             end_time: "20:00",
         }
+=======
+            start: new Date(2023, 3, 5),
+            end: new Date(2023, 3, 5),
+            student: 'Emma'
+        },
+        {
+            title: 'Gent',
+            start: new Date(2023, 3, 5),
+            end: new Date(2023, 3, 5),
+            student: 'Emma',
+        },
+        {
+            title: 'Gent',
+            start: new Date(2023, 3, 5),
+            end: new Date(2023, 3, 5),
+            student: 'Simon',
+        },
+        {
+            title: 'Gent',
+            start: new Date(2023, 3, 5),
+            end: new Date(2023, 3, 5),
+            student: 'Fabrice',
+        },
+>>>>>>> c114f88a000dda3c84b989f8f8bb08b1605060f5
     ])
 
     const [popupIsOpen, setPopupIsOpen] = useState(false);
@@ -166,6 +191,7 @@ const MyCalendar: FC = () => {
                 localizer={localizer}
                 selectable
                 onSelectEvent={onEventSelection}
+<<<<<<< HEAD
                 style={{height: '100vh'}}
                 step={60}
                 timeslots={1}
@@ -173,6 +199,11 @@ const MyCalendar: FC = () => {
                 onEventResize={onEventChange}
                 resizable
                 defaultDate={new Date(2023, 3, 6)}
+=======
+                style={{height: '200vh'}}
+                showMultiDayTimes={false}
+                step={1440}
+>>>>>>> c114f88a000dda3c84b989f8f8bb08b1605060f5
             />
             {selectedEvent && (
                 <EditEventModal
