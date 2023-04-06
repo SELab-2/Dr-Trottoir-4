@@ -41,7 +41,7 @@ const SyndicHeader = () => {
                     </a>
                     <ul className="dropdown-menu dropdown-menu-en dropdown-menu-end" aria-labelledby="navbarDropdown1">
                         <li>
-                            <Link className="dropdown-item" href="#">
+                            <Link className="dropdown-item" href="/user/profile">
                                 Bewerk account
                             </Link>
                         </li>

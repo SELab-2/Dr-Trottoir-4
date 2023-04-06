@@ -1,12 +1,7 @@
 import StudentHeader from "@/components/header/studentHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useEffect, useState } from "react";
-import getStudentOnTour, {
-    datesEqual,
-    formatDate,
-    StudentOnTour,
-    StudentOnTourStringDate,
-} from "@/lib/student-on-tour";
+import getStudentOnTour, { datesEqual, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
 import { getCurrentUser, User } from "@/lib/user";
 import { getTour, Tour } from "@/lib/tour";
 import { getRegion, RegionInterface } from "@/lib/region";
@@ -39,8 +34,9 @@ function StudentDashboard() {
         // Get all the tours the student is/was assigned to from one month back to next month
         const monthAgo: Date = new Date();
         monthAgo.setMonth(monthAgo.getMonth() - 1); // This also works for january to december
+
         const nextMonth: Date = new Date();
-        nextMonth.setMonth(monthAgo.getMonth() + 1);
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
         getStudentOnTour(user.id, { startDate: monthAgo, endDate: nextMonth }).then(async (res) => {
             // Some cache to recognize duplicate tours (to not do unnecessary requests)
             const t: Record<number, Tour> = {};
@@ -79,6 +75,7 @@ function StudentDashboard() {
                 return datesEqual(d, currentDate);
             });
             setToursToday(today);
+            setLoading(false);
 
             // Get the tours the student has done prev month
             const finishedTours: StudentOnTour[] = sot.filter((s: StudentOnTour) => {
@@ -95,7 +92,6 @@ function StudentDashboard() {
                 return d > currentDate && !datesEqual(d, currentDate);
             });
             setUpcomingTours(futureTours);
-            setLoading(false);
         }, console.error);
     }, [user]);
 
