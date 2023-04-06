@@ -10,20 +10,20 @@ export default function StudentBuilding() {
     }, []);
 
     function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-        const newFiles : FileList | null = event.target.files;
-        if (! newFiles) {
+        const newFiles: FileList | null = event.target.files;
+        if (!newFiles) {
             return;
         }
         setFiles([...files, newFiles[0]]);
     }
 
-   function handleRemoveFile(index: number) {
+    function handleRemoveFile(index: number) {
         const newFiles = [...files];
         newFiles.splice(index, 1);
         setFiles(newFiles);
     }
 
-    function handleSubmit(e : React.FormEvent<HTMLFormElement>) {
+    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         // Submit files to server
     }
@@ -44,11 +44,14 @@ export default function StudentBuilding() {
                 <label className="form-label">Upload een foto</label>
                 <input className="form-control" type="file" onChange={handleFileChange} accept="image/*"/>
             </div>
-            <br />
+            <br/>
             {files.map((file, index) => (
-                <div key={index}>{downloadFile(file)}</div>
+                <div key={index}>
+                    <div>{downloadFile(file)}</div>
+                    <button type="button" onClick={() => handleRemoveFile(index)}>Remove</button>
+                </div>
             ))}
-            <br />
+            <br/>
             <button type="submit">Submit</button>
         </Form>
     );
