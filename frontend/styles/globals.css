@@ -17,7 +17,7 @@ body {
 /* Button Styles */
 
 /* Style for all buttons */
-button {
+Button, button {
     height: 50px;
     width: 150px;
     margin: 5px;
@@ -36,7 +36,7 @@ button {
 }
 
 /* Style for buttons when hovering */
-button:hover {
+Button:hover, button:hover {
     color: #000;
     background: rgb(255, 218, 87);
 }

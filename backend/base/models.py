@@ -13,7 +13,7 @@ from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2 ** 31 - 1
+MAX_INT = 2**31 - 1
 
 
 class Region(models.Model):
@@ -205,7 +205,7 @@ class GarbageCollection(models.Model):
                 "date",
                 name="garbage_collection_unique",
                 violation_error_message="This type of garbage is already being collected on the same day for this "
-                                        "building.",
+                "building.",
             ),
         ]
 
@@ -247,15 +247,16 @@ class BuildingOnTour(models.Model):
     def clean(self):
         super().clean()
 
-        # Check for existence of all the fields we use below
-        # If the if statement fail, django will handle the errors correctly in a consistent way
-        if self.tour_id and self.building_id and self.index:
+        # If the if statement fails, django will handle the errors correctly in a consistent way
+        if self.tour_id and self.building_id:
             tour_region = self.tour.region
             building_region = self.building.region
             if tour_region != building_region:
                 raise ValidationError(
                     f"The regions for tour ({tour_region}) en building ({building_region}) are different."
                 )
+
+        # Fail if the index is not unique for the tour
 
     def __str__(self):
         return f"{self.building} on tour {self.tour}, index: {self.index}"
@@ -267,12 +268,23 @@ class BuildingOnTour(models.Model):
                 "tour",
                 name="unique_building_on_tour",
                 violation_error_message="This building is already on this tour.",
-            )
+            ),
+            UniqueConstraint(
+                "index",
+                "tour",
+                name="unique_index_on_tour",
+                violation_error_message="This index is already in use.",
+            ),
         ]
 
 
-class StudentAtBuildingOnTour(models.Model):
-    building_on_tour = models.ForeignKey(BuildingOnTour, on_delete=models.SET_NULL, null=True)
+"""
+Links student to tours on a date
+"""
+
+
+class StudentOnTour(models.Model):
+    tour = models.ForeignKey(Tour, on_delete=models.SET_NULL, null=True)
     date = models.DateField()
     student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
@@ -284,42 +296,39 @@ class StudentAtBuildingOnTour(models.Model):
     def clean(self):
         super().clean()
 
-        if self.student_id and self.building_on_tour_id:
+        if self.student_id and self.tour_id:
             user = self.student
             if user.role.name.lower() == "syndic":
                 raise ValidationError("A syndic can't do tours")
-            building_on_tour_region = self.building_on_tour.tour.region
-            if not self.student.region.all().filter(region=building_on_tour_region).exists():
-                raise ValidationError(
-                    f"Student ({user.email}) doesn't do tours in this region ({building_on_tour_region})."
-                )
+            tour_region = self.tour.region
+            if not self.student.region.all().filter(region=tour_region).exists():
+                raise ValidationError(f"Student ({user.email}) doesn't do tours in this region ({tour_region}).")
 
     class Meta:
         constraints = [
             UniqueConstraint(
-                "building_on_tour",
+                "tour",
                 "date",
                 "student",
-                name="unique_student_at_building_on_tour",
+                name="unique_student_on_tour",
                 violation_error_message="The student is already assigned to this tour on this date.",
             ),
         ]
 
     def __str__(self):
-        return f"{self.student} at {self.building_on_tour} on {self.date}"
+        return f"{self.student} at {self.tour} on {self.date}"
 
 
-class PictureBuilding(models.Model):
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    picture = models.ImageField(upload_to="building_pictures/")
-    description = models.TextField(blank=True, null=True)
+class RemarkAtBuilding(models.Model):
+    student_on_tour = models.ForeignKey(StudentOnTour, on_delete=models.SET_NULL, null=True)
+    building = models.ForeignKey(Building, on_delete=models.SET_NULL, null=True)
     timestamp = models.DateTimeField(blank=True)
+    remark = models.TextField(blank=True, null=True)
 
     AANKOMST = "AA"
     BINNEN = "BI"
     VERTREK = "VE"
     OPMERKING = "OP"
-
     TYPE = [
         (AANKOMST, "Aankomst"),
         (BINNEN, "Binnen"),
@@ -334,20 +343,35 @@ class PictureBuilding(models.Model):
         if not self.timestamp:
             self.timestamp = datetime.now()
 
+    def __str__(self):
+        return f"{self.type} for {self.building}"
+
     class Meta:
         constraints = [
             UniqueConstraint(
+                Lower("remark"),
                 "building",
-                Lower("picture"),
-                Lower("description"),
+                "student_on_tour",
                 "timestamp",
-                name="unique_picture_building",
-                violation_error_message="The building already has the upload.",
+                name="unique_remark_for_building",
+                violation_error_message="This remark was already uploaded to this building by this student on the tour.",
             ),
         ]
 
-    def __str__(self):
-        return f"{self.type} = {str(self.picture).split('/')[-1]} at {self.building} ({self.timestamp}): {self.description}"
+
+class PictureOfRemark(models.Model):
+    picture = models.ImageField(upload_to="building_pictures/")
+    remark_at_building = models.ForeignKey(RemarkAtBuilding, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                Lower("picture"),
+                "remark_at_building",
+                name="unique_picture_with_remark",
+                violation_error_message="The building already has this upload.",
+            ),
+        ]
 
 
 class Manual(models.Model):
@@ -369,9 +393,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-                self.version_number == 0
-                or self.version_number > max_version_number + 1
-                or self.version_number in version_numbers
+            self.version_number == 0
+            or self.version_number > max_version_number + 1
+            or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 
