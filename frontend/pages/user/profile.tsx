@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { getCurrentUser, getUserRole, patchUser, User } from "@/lib/user";
 import styles from "@/styles/Login.module.css";
-import PhoneInput from "react-phone-input-2";
 import { useTranslation } from "react-i18next";
 import { getAllRegions, RegionInterface } from "@/lib/region";
 import AdminHeader from "@/components/header/adminHeader";
 import StudentHeader from "@/components/header/studentHeader";
 import SyndicHeader from "@/components/header/syndicHeader";
-import { getAndSetErrors } from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 export default function UserProfile() {
     const { t } = useTranslation();
@@ -77,15 +76,8 @@ export default function UserProfile() {
                 setSuccessPatch(true);
             },
             (err) => {
-                let errorRes = err.response;
-                if (errorRes && errorRes.status === 400) {
-                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
-                } else if (errorRes && errorRes.status === 403) {
-                    const errorData: [any, string][] = Object.entries(errorRes.data);
-                    setErrorMessages(errorData.map((val) => val[1]));
-                } else {
-                    console.error(err);
-                }
+                const e = handleError(err);
+                setErrorMessages(e);
             }
         );
     }
