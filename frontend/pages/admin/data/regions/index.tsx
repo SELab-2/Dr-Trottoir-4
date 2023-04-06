@@ -8,7 +8,7 @@ import { Edit, Delete } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import { Button } from "react-bootstrap";
-import RegionModal, {ModalMode} from "@/components/regionModal";
+import RegionModal, { ModalMode } from "@/components/regionModal";
 
 interface RegionView extends RegionInterface {}
 
