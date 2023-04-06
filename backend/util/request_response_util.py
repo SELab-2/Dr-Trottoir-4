@@ -12,10 +12,10 @@ def get_id_param(request, name, required=False):
     param = request.GET.get(name, None)
     if param:
         if not param.isdigit():
-            raise BadRequest(f'The query parameter {name} should be an integer')
+            raise BadRequest(f"The query parameter {name} should be an integer")
     else:
         if required:
-            raise BadRequest(f'The query parameter {name} is required')
+            raise BadRequest(f"The query parameter {name} is required")
     return param
 
 
@@ -23,19 +23,19 @@ def get_date_param(request, name, required=False):
     param = request.GET.get(name, None)
     if param:
         try:
-            param = datetime.strptime(param, '%Y-%m-%d')
+            param = datetime.strptime(param, "%Y-%m-%d")
         except ValueError:
             raise BadRequest(f"The date parameter {name} hasn't the appropriate form (=YYYY-MM-DD).")
     else:
         if required:
-            raise BadRequest(f'The query parameter {name} is required')
+            raise BadRequest(f"The query parameter {name} is required")
     return param
 
 
 def get_param(request, key, required):
-    if 'date' in key:
+    if "date" in key:
         return get_date_param(request, key, required)
-    elif 'id' in key:
+    elif "id" in key:
         return get_id_param(request, key, required)
     # add more conditions here as needed
     else:
@@ -49,16 +49,18 @@ def filter_instances(request, instances, filters):
             if param_value:
                 instances = instances.filter(**{filter_key: param_value})
     except BadRequest as e:
-        return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def check_required_keys_post(data: dict, required_keys: list):
     violate_requirements = [k for k in required_keys if k not in data.keys()]
     if violate_requirements:
-        return Response({
-            "message":
-                f"the following required keys were missing when posting to this endpoint: {', '.join(violate_requirements)}"
-        }, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {
+                "message": f"the following required keys were missing when posting to this endpoint: {', '.join(violate_requirements)}"
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
 
 def get_unique_uuid(lookup_func: Callable[[str], bool] = None):
@@ -85,17 +87,11 @@ def set_keys_of_instance(instance, data: dict, translation: dict = {}):
 
 
 def not_found(object_name="Object"):
-    return Response(
-        {"message": f"{object_name} was not found"},
-        status=status.HTTP_404_NOT_FOUND
-    )
+    return Response({"message": f"{object_name} was not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 def bad_request(object_name="Object"):
-    return Response(
-        {"message": f"bad input for {object_name}"},
-        status=status.HTTP_400_BAD_REQUEST
-    )
+    return Response({"message": f"bad input for {object_name}"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def bad_request_relation(object1: str, object2: str):

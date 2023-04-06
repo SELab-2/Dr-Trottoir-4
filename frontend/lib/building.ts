@@ -36,7 +36,7 @@ export const getBuildingsFromOwner = async (ownerId: string): Promise<AxiosRespo
     return await api.get(request_url);
 };
 
-export const getBuildingInfo = async (buildingId: number): Promise<AxiosResponse<any>> => {
+export const getBuildingInfo = async (buildingId: string | undefined | number): Promise<AxiosResponse<any>> => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
     return await api.get(request_url);
 };
@@ -52,10 +52,6 @@ export function getAddress(building : BuildingInterface) : string {
 
 export const patchBuildingInfo = async (buildingId: string | undefined, data: BuildingInterface | Object) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
-    console.log("--------------")
-    console.log(request_url)
-    console.log(data)
-    console.log("---------------")
     return await api.patch(request_url, data);
 };
 
@@ -64,14 +60,7 @@ export const generateNewPublicId = async (buildingId: string | undefined) => {
     return await api.post(request_url)
 }
 
-export const getNewPublicId = async () => {
-    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GET_NEW_PUBLIC_ID_BUILDING}`;
-    console.log(request_url)
-    return await api.get(request_url)
-}
-
-
-
+<<<<<<<<< Temporary merge branch 1
 export const deleteBuilding = async (buildingId: number | undefined) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
     return await api.delete(request_url);
@@ -101,5 +90,13 @@ export function getDurationFromMinutes(durationInMinutes: number){
         .padStart(2, "0")}:${(durationInMinutes % 60)
         .toString()
         .padStart(2, "0")}`
+}
+
+
+
+export const getNewPublicId = async () => {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GET_NEW_PUBLIC_ID_BUILDING}`;
+    console.log(request_url)
+    return await api.get(request_url)
 }
 
