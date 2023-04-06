@@ -62,7 +62,7 @@ function AdminDataRegions() {
         if (selectedRegion) {
             try {
                 const updatedRegion = { ...selectedRegion, region: regionName };
-                await patchRegion(selectedRegion.id, {region: updatedRegion.region});
+                await patchRegion(selectedRegion.id, { region: updatedRegion.region });
                 setRegions(regions.map((region) => (region.id === selectedRegion.id ? updatedRegion : region)));
                 setSelectedRegion(null);
                 setRegionName("");
