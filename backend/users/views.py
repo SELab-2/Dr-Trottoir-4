@@ -154,6 +154,7 @@ class AllUsersView(APIView):
         """
         Get all users
         """
+
         user_instances = User.objects.all()
         filters = {
             "region-id-list": get_filter_object("region__in"),

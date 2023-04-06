@@ -1,18 +1,25 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, { useEffect, useMemo, useState } from "react";
-import { BuildingInterface, deleteBuilding, getAddress, getAllBuildings } from "@/lib/building";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { useRouter } from "next/router";
-import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
-import { Box, IconButton, Tooltip } from "@mui/material";
-import { Button } from "react-bootstrap";
-import { Delete, Edit } from "@mui/icons-material";
-import { BuildingView } from "@/types";
-import { getUserInfo } from "@/lib/user";
+import React, {  useEffect, useMemo, useState  } from "react";
+import {  BuildingInterface, deleteBuilding, getAddress, getAllBuildings  } from "@/lib/building";
+import {  withAuthorisation  } from "@/components/withAuthorisation";
+import {  useRouter  } from "next/router";
+import MaterialReactTable, {  type MRT_ColumnDef  } from "material-react-table";
+import {  Box, IconButton, Tooltip  } from "@mui/material";
+import {  Button  } from "react-bootstrap";
+import {  Delete, Edit , Email } from "@mui/icons-material";
+import {  BuildingView  } from "@/types";
+import {  getUserInfo  } from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
+
+interface ParsedUrlQuery {}
+
+interface DataBuildingsQuery extends ParsedUrlQuery {
+    syndic?: string;
+}
 
 function AdminDataBuildings() {
     const router = useRouter();
+    const query: DataBuildingsQuery = router.query as DataBuildingsQuery;
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [buildingViews, setBuildingViews] = useState<BuildingView[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -72,14 +79,17 @@ function AdminDataBuildings() {
                         syndicEmail = res.data.email;
                         cache[s] = syndicEmail;
                     }
-                    const buildingView: BuildingView = {
-                        name: building.name,
-                        address: getAddress(building),
-                        building_id: building.id,
-                        syndic_email: syndicEmail,
-                    };
 
-                    buildingViews.push(buildingView);
+                    if (!query.syndic || (query.syndic && query.syndic === syndicEmail)) {
+                        const buildingView: BuildingView = {
+                            name: building.name,
+                            address: getAddress(building),
+                            building_id: building.id,
+                            syndic_email: syndicEmail,
+                        };
+
+                        buildingViews.push(buildingView);
+                    }
                 }
                 setBuildingViews(buildingViews);
             } catch (err) {
@@ -114,6 +124,13 @@ function AdminDataBuildings() {
                 console.error(err);
             }
         );
+    }
+
+    async function routeToCommunication(buildingView: BuildingView) {
+        await router.push({
+            pathname: `/admin/communication`,
+            query: { syndic: buildingView.syndic_email },
+        });
     }
 
     return (
@@ -157,6 +174,16 @@ function AdminDataBuildings() {
                                 }}
                             >
                                 <Delete />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verstuur mail">
+                            <IconButton
+                                onClick={() => {
+                                    const buildingView: BuildingView = row.original;
+                                    routeToCommunication(buildingView).then();
+                                }}
+                            >
+                                <Email  />
                             </IconButton>
                         </Tooltip>
                     </Box>

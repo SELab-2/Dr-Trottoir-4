@@ -1,6 +1,7 @@
 import io
 import mimetypes
 from datetime import date, datetime
+from datetime import timedelta
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
@@ -14,14 +15,19 @@ from base.models import (
     StudentOnTour,
     RemarkAtBuilding,
     PictureOfRemark,
+    BuildingComment,
+    EmailTemplate,
+    GarbageCollection,
+    Lobby,
+    Manual,
 )
 
 
-def insert_dummy_region():
-    o = Region.objects.filter(region="Gent")
+def insert_dummy_region(name="Gent"):
+    o = Region.objects.filter(region=name)
     if len(o) == 1:
         return o[0].id
-    r = Region(region="Gent")
+    r = Region(region=name)
     r.save()
     return r.id
 
@@ -30,7 +36,7 @@ def insert_dummy_role(role):
     o = Role.objects.filter(name=role.lower())
     if len(o) == 1:
         return o[0].id
-    r = Role(name=role, rank=1, description="testrole")
+    r = Role(name=role.lower(), rank=1, description="testrole")
     r.save()
     return r.id
 
@@ -85,27 +91,37 @@ def createUser(name: str = "admin", is_staff: bool = True, withRegion: bool = Fa
     return user
 
 
+index = 0
+
+
 def insert_dummy_tour():
+    global index
     r_id = insert_dummy_region()
-    t = Tour(name="Sterre", region=Region.objects.get(id=r_id), modified_at="2023-03-08T12:08:29+01:00")
+    t = Tour(name=f"Sterre S{index}", region=Region.objects.get(id=r_id), modified_at="2023-03-08T12:08:29+01:00")
+    index += 1
     t.save()
     return t.id
 
 
+number = 1
+
+
 def insert_dummy_building(street="Overpoort"):
+    global number
     r_id = insert_dummy_region()
     s_id = insert_dummy_syndic()
     b = Building(
         city="Gent",
         postal_code=9000,
         street=street,
-        house_number=10,
+        house_number=number,
         client_number="1234567890abcdef",
         duration="1:00:00",
         region=Region.objects.get(id=r_id),
         syndic=User.objects.get(id=s_id),
         name="CB",
     )
+    number += 1
     b.save()
     return b.id
 
@@ -141,6 +157,13 @@ def insert_dummy_picture_of_remark(picture):
     return PoR.save()
 
 
+def insert_dummy_building_comment():
+    b_id = insert_dummy_building()
+    BC = BuildingComment(comment="<3 python", date="2023-03-08T12:08:29+01:00", building=Building.objects.get(id=b_id))
+    BC.save()
+    return BC.id
+
+
 def createMemoryFile(filename: str):
     filename = filename.strip()
     with open(filename, "rb") as file:
@@ -155,3 +178,53 @@ def createMemoryFile(filename: str):
         return InMemoryUploadedFile(
             file=file_object, name=filename, field_name=None, content_type=content_type, charset=charset, size=size
         )
+
+
+title = "a"
+
+
+def insert_dummy_email_template():
+    global title
+    ET = EmailTemplate(name="testTemplate " + title, template="<p>{{name}<p>")
+    title += "a"
+    ET.save()
+    return ET.id
+
+
+d = date.today()
+
+
+def insert_dummy_garbage():
+    global d
+    b_id = insert_dummy_building()
+    garbage = GarbageCollection(building=Building.objects.get(id=b_id), date=d, garbage_type="RES")
+    d += timedelta(days=1)
+    garbage.save()
+    return garbage.id
+
+
+def insert_dummy_lobby():
+    global email_counter
+    r_id = insert_dummy_role("Student")
+    lobby = Lobby(
+        email=f"test_lobby_{email_counter}@example.com",
+        role=Role.objects.get(id=r_id),
+        verification_code="azerty>qwerty",
+    )
+    email_counter += 1
+    lobby.save()
+    return lobby.id
+
+
+f = createMemoryFile("./manual/lorem-ipsum.pdf")
+
+version = 0
+
+
+def insert_dummy_manual():
+    global version
+    b_id = insert_dummy_building()
+    m = Manual(building=Building.objects.get(id=b_id), file=f, version_number=version)
+    version += 1
+    m.save()
+    return m.id
