@@ -63,7 +63,6 @@ class BuildingSwapView(APIView):
     )
     def post(self, request, tour_id):
         data = request_to_dict(request.data)
-        print(data)
         tour = Tour.objects.filter(id=tour_id).first()
         if not tour:
             return not_found("Tour")
@@ -156,9 +155,6 @@ class AllBuildingsOnTourView(APIView):
         building_instances = Building.objects.filter(
             id__in=building_on_tour_instances.values_list("building_id", flat=True)
         ).order_by("buildingontour__index")
-
-        print(type(building_instances))
-        print(building_instances)
 
         serializer = BuildingSerializer(building_instances, many=True)
         return get_success(serializer)
