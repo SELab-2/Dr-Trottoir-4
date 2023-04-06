@@ -36,14 +36,6 @@ export function formatDate(date: Date): string {
 }
 
 /**
- * Converts a string date (e.g YYYY-MM-DD) to a Date
- * @param date
- */
-export function convertStringToDate(date : string) : Date {
-    return new Date(date);
-}
-
-/**
  * Returns true if the dates are equal, so year, month & day is equal.
  */
 export function datesEqual(date1 : Date, date2 : Date) {
