@@ -1,251 +1,207 @@
-from django.test import TestCase
-from rest_framework.test import APIClient
+from base.models import Building
+from base.serializers import BuildingSerializer
+from util.data_generators import insert_dummy_region, insert_dummy_syndic, insert_dummy_building
+from util.test_tools import BaseTest, BaseAuthTest
 
-from base.test_settings import backend_url
-from util.data_generators import createUser, insert_dummy_region, insert_dummy_syndic
 
+class BuildingTests(BaseTest):
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
 
-class BuildingTests(TestCase):
     def test_empty_building_list(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        resp = client.get(f"{backend_url}/building/all", follow=True)
-        assert resp.status_code == 200
-        data = [resp.data[e] for e in resp.data]
-        assert len(data) == 0
+        self.empty_list("building/")
 
     def test_insert_building(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
         r_id = insert_dummy_region()
         s_id = insert_dummy_syndic()
-        data = {
+        self.data1 = {
             "city": "Gent",
-            "postal_code": 9000,
+            "postal_code": "9000",
             "street": "Overpoort",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
         }
-        resp = client.post(f"{backend_url}/building/", data, follow=True)
-        assert resp.status_code == 201
-        for key in data:
-            assert key in resp.data
-        assert "id" in resp.data
+        self.insert("building/")
 
     def test_insert_dupe_building(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user)
-
         r_id = insert_dummy_region()
         s_id = insert_dummy_syndic()
-        data = {
+        self.data1 = {
             "city": "Gent",
-            "postal_code": 9000,
+            "postal_code": "9000",
             "street": "Overpoort",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
         }
-
-        _ = client.post(f"{backend_url}/building/", data, follow=True)
-        response = client.post(f"{backend_url}/building/", data, follow=True)
-        assert response.status_code == 400
+        self.insert_dupe("building/")
 
     def test_get_building(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-
-        r_id = insert_dummy_region()
-        s_id = insert_dummy_syndic()
-        data = {
-            "city": "Gent",
-            "postal_code": 9000,
-            "street": "Overpoort",
-            "house_number": 10,
-            "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
-            "region": r_id,
-            "syndic": s_id,
-            "name": "CB"
-        }
-
-        response1 = client.post(f"{backend_url}/building/", data, follow=True)
-        assert response1.status_code == 201
-        for key in data:
-            # all data should be present
-            assert key in response1.data
-        # there should be an ID as well
-        assert "id" in response1.data
-        id = response1.data["id"]
-        response2 = client.get(f"{backend_url}/building/{id}/", follow=True)
-        assert response2.status_code == 200
-        for key in data:
-            # all data should be present
-            assert key in response2.data
-        assert "id" in response2.data
+        b_id = insert_dummy_building()
+        data = BuildingSerializer(Building.objects.get(id=b_id)).data
+        self.get(f"building/{b_id}", data)
 
     def test_get_non_existing(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user)
-        resp = client.get(f"{backend_url}/building/123456789", follow=True)
-        assert resp.status_code == 404
+        self.get_non_existent(f"building/")
 
     def test_patch_building(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user)
+        b_id = insert_dummy_building()
+
         r_id = insert_dummy_region()
         s_id = insert_dummy_syndic()
-        data1 = {
+        self.data1 = {
             "city": "Gent",
-            "postal_code": 9000,
-            "street": "Overpoort",
-            "house_number": 10,
-            "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
-            "region": r_id,
-            "syndic": s_id,
-            "name": "CB"
-        }
-        data2 = {
-            "city": "Gent",
-            "postal_code": 9000,
+            "postal_code": "9000",
             "street": "De Zuid",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
         }
-        response1 = client.post(f"{backend_url}/building/", data1, follow=True)
-        assert response1.status_code == 201
-        id = response1.data["id"]
-        response2 = client.patch(f"{backend_url}/building/{id}/", data2, follow=True)
-        assert response2.status_code == 200
-        response3 = client.get(f"{backend_url}/building/{id}/", follow=True)
-        for key in data2:
-            # all data should be present
-            assert key in response3.data
-        assert response3.status_code == 200
-        assert "id" in response3.data
+        self.patch(f"building/{b_id}")
 
     def test_patch_invalid_building(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
         r_id = insert_dummy_region()
         s_id = insert_dummy_syndic()
-        data = {
+        self.data1 = {
             "city": "Gent",
-            "postal_code": 9000,
+            "postal_code": "9000",
             "street": "Overpoort",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
         }
-        response2 = client.patch(f"{backend_url}/building/123434687658/", data, follow=True)
-        assert response2.status_code == 404
+        self.patch_invalid("building/")
 
     def test_patch_error_building(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
         r_id = insert_dummy_region()
         s_id = insert_dummy_syndic()
-        data1 = {
+        self.data1 = {
             "city": "Gent",
-            "postal_code": 9000,
+            "postal_code": "9000",
             "street": "Overpoort",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
         }
-        data2 = {
+        self.data2 = {
+            "city": "Gent",
+            "postal_code": "9000",
+            "street": "De Zuid",
+            "house_number": 10,
+            "client_number": "1234567890abcdef",
+            "duration": "01:00:00",
+            "region": r_id,
+            "syndic": s_id,
+            "name": "CB"
+        }
+        self.patch_error("building/")
+
+    def test_remove_building(self):
+        b_id = insert_dummy_building()
+        self.remove(f"building/{b_id}")
+
+    def test_remove_nonexistent_building(self):
+        self.remove_invalid("building/")
+
+
+class BuildingAuthorizationTests(BaseAuthTest):
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
+
+    def test_building_list(self):
+        codes = {
+            "Default": 403,
+            "Admin": 200,
+            "Superstudent": 200,
+            "Student": 403,
+            "Syndic": 403
+        }
+        self.list_view("building/", codes)
+
+    def test_insert_building(self):
+        codes = {
+            "Default": 403,
+            "Admin": 201,
+            "Superstudent": 201,
+            "Student": 403,
+            "Syndic": 403
+        }
+        r_id = insert_dummy_region()
+        s_id = insert_dummy_syndic()
+        self.data1 = {
+            "city": "Gent",
+            "postal_code": 9000,
+            "street": "Overpoort",
+            "house_number": 10,  # unique (local) number to avoid collision errors
+            "client_number": "1234567890abcdef",
+            "duration": "01:00:00",
+            "region": r_id,
+            "syndic": s_id,
+            "name": "CB"
+        }
+        self.insert_view("building/", codes)
+
+    def test_get_building(self):
+        codes = {
+            "Default": 403,
+            "Admin": 200,
+            "Superstudent": 200,
+            "Student": 200,
+            "Syndic": 403
+        }
+        b_id = insert_dummy_building()
+        s_id = Building.objects.get(id=b_id).syndic.id
+        self.get_view(f"building/{b_id}", codes, special=[(s_id, 200)])
+
+    def test_patch_building(self):
+        codes = {
+            "Default": 403,
+            "Admin": 200,
+            "Superstudent": 200,
+            "Student": 403,
+            "Syndic": 403
+        }
+        b_id = insert_dummy_building()
+        owner_id = Building.objects.get(id=b_id).syndic.id
+        r_id = insert_dummy_region()
+        s_id = insert_dummy_syndic()
+        self.data1 = {
             "city": "Gent",
             "postal_code": 9000,
             "street": "De Zuid",
             "house_number": 10,
             "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
+            "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
             "name": "CB"
         }
-        response1 = client.post(f"{backend_url}/building/", data1, follow=True)
-        _ = client.post(f"{backend_url}/building/", data2, follow=True)
-        assert response1.status_code == 201
-        id = response1.data["id"]
-        response2 = client.patch(f"{backend_url}/building/{id}/", data2, follow=True)
-        assert response2.status_code == 400
+        self.patch_view(f"building/{b_id}", codes, special=[(owner_id, 403)])
 
     def test_remove_building(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        r_id = insert_dummy_region()
-        s_id = insert_dummy_syndic()
-        data1 = {
-            "city": "Gent",
-            "postal_code": 9000,
-            "street": "Overpoort",
-            "house_number": 10,
-            "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
-            "region": r_id,
-            "syndic": s_id,
-            "name": "CB"
+        def create():
+            return insert_dummy_building()
+        codes = {
+            "Default": 403,
+            "Admin": 204,
+            "Superstudent": 204,
+            "Student": 403,
+            "Syndic": 403
         }
-        response1 = client.post(f"{backend_url}/building/", data1, follow=True)
-        assert response1.status_code == 201
-        id = response1.data["id"]
-        response2 = client.delete(f"{backend_url}/building/{id}/", follow=True)
-        assert response2.status_code == 204
-        response3 = client.get(f"{backend_url}/building/{id}/", follow=True)
-        assert response3.status_code == 404
-
-    def test_remove_nonexistent_building(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response2 = client.delete(f"{backend_url}/building/123456789/", follow=True)
-        assert response2.status_code == 404
-
-    def test_add_existing_building(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        r_id = insert_dummy_region()
-        s_id = insert_dummy_syndic()
-        data1 = {
-            "city": "Gent",
-            "postal_code": 9000,
-            "street": "Overpoort",
-            "house_number": 10,
-            "client_number": "1234567890abcdef",
-            "duration": "1:00:00",
-            "region": r_id,
-            "syndic": s_id,
-            "name": "CB"
-        }
-        _ = client.post(f"{backend_url}/building/", data1, follow=True)
-        response1 = client.post(f"{backend_url}/building/", data1, follow=True)
-        assert response1.status_code == 400
+        self.remove_view("building/", codes, create=create)

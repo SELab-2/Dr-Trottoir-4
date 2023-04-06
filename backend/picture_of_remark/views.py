@@ -2,7 +2,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from base.models import PictureOfRemark, StudentOnTour
+from base.models import PictureOfRemark
 from base.permissions import IsAdmin, IsSuperStudent, IsStudent, OwnerAccount
 from base.serializers import PictureOfRemarkSerializer
 from util.request_response_util import (

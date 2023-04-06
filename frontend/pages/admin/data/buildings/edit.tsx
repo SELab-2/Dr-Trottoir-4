@@ -13,9 +13,12 @@ import {getUserInfo, userSearchString} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
-import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
+import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoComplete";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
+import ErrorMessage from "@/components/errorMessage";
+import ConfirmationMessage from "@/components/confirmMessage";
+import confirmationMessage from "@/components/confirmMessage";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -104,20 +107,24 @@ function AdminDataBuildingsEdit() {
         }
     }, [router.isReady]);
 
+    useEffect(() => {
+        if (formErrors) {
+            setShowConfirmation(false);
+        } else if (showConfirmation) {
+            setFormErrors(false);
+        }
+    });
+
     return (
         <>
             <AdminHeader/>
             <div className={styles.container}>
-                {showConfirmation && (
-                    <Alert variant="success" onClose={() => setShowConfirmation(false)} dismissible>
-                        De informatie voor dit gebouw is opgeslagen!
-                    </Alert>
-                )}
-                {formErrors && (
-                    <div className="alert alert-danger" role="alert">
-                        {errorMessage}
-                    </div>
-                )}
+                <ConfirmationMessage
+                    showConfirm={showConfirmation}
+                    confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
+                    onClose={setShowConfirmation}
+                ></ConfirmationMessage>
+                <ErrorMessage formErrors={formErrors} errorMessage={errorMessage} onClose={setFormErrors} />
                 <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
                     <Form.Group controlId="buildingName">
                         <Form.Label>Gebouw naam</Form.Label>

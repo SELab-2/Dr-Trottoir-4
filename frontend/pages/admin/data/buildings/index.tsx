@@ -1,18 +1,25 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, {useEffect, useMemo, useState} from "react";
-import {BuildingInterface, deleteBuilding, getAddress, getAllBuildings} from "@/lib/building";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {useRouter} from "next/router";
-import MaterialReactTable, {type MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {Button} from "react-bootstrap";
-import {Delete, Edit} from "@mui/icons-material";
-import {BuildingView} from "@/types";
-import {getUserInfo} from "@/lib/user";
+import React, { useEffect, useMemo, useState } from "react";
+import { BuildingInterface, deleteBuilding, getAddress, getAllBuildings } from "@/lib/building";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { useRouter } from "next/router";
+import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { Button } from "react-bootstrap";
+import { Delete, Edit, Email } from "@mui/icons-material";
+import { BuildingView } from "@/types";
+import { getUserInfo } from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
+
+interface ParsedUrlQuery {}
+
+interface DataBuildingsQuery extends ParsedUrlQuery {
+    syndic?: string;
+}
 
 function AdminDataBuildings() {
     const router = useRouter();
+    const query: DataBuildingsQuery = router.query as DataBuildingsQuery;
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [buildingViews, setBuildingViews] = useState<BuildingView[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -53,34 +60,36 @@ function AdminDataBuildings() {
         );
     }, []);
 
-
     useEffect(() => {
         async function fetchBuildingData() {
             try {
                 const buildings: BuildingInterface[] = (await getAllBuildings()).data;
                 const buildingViews: BuildingView[] = [];
 
-                let cache: Record<string, string> = {}
+                let cache: Record<string, string> = {};
 
                 for (const building of buildings) {
-                    const s = building.syndic.toString()
-                    let syndicEmail: string
+                    const s = building.syndic.toString();
+                    let syndicEmail: string;
                     if (s in cache) {
-                        syndicEmail = cache[s]
+                        syndicEmail = cache[s];
                     } else {
                         // Get syndic email using your request
                         const res = await getUserInfo(building.syndic.toString());
                         syndicEmail = res.data.email;
-                        cache[s] = syndicEmail
+                        cache[s] = syndicEmail;
                     }
-                    const buildingView: BuildingView = {
-                        name: building.name,
-                        address: getAddress(building),
-                        building_id: building.id,
-                        syndic_email: syndicEmail,
-                    };
 
-                    buildingViews.push(buildingView);
+                    if (!query.syndic || (query.syndic && query.syndic === syndicEmail)) {
+                        const buildingView: BuildingView = {
+                            name: building.name,
+                            address: getAddress(building),
+                            building_id: building.id,
+                            syndic_email: syndicEmail,
+                        };
+
+                        buildingViews.push(buildingView);
+                    }
                 }
                 setBuildingViews(buildingViews);
             } catch (err) {
@@ -98,7 +107,7 @@ function AdminDataBuildings() {
     async function routeToEditView(buildingView: BuildingView) {
         await router.push({
             pathname: `${router.pathname}/edit`,
-            query: {building: buildingView.building_id},
+            query: { building: buildingView.building_id },
         });
     }
 
@@ -117,9 +126,16 @@ function AdminDataBuildings() {
         );
     }
 
+    async function routeToCommunication(buildingView: BuildingView) {
+        await router.push({
+            pathname: `/admin/communication`,
+            query: { syndic: buildingView.syndic_email },
+        });
+    }
+
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <MaterialReactTable
                 displayColumnDefOptions={{
                     "mrt-row-actions": {
@@ -133,12 +149,12 @@ function AdminDataBuildings() {
                 enableBottomToolbar={false}
                 columns={columns}
                 data={buildingViews}
-                state={{isLoading: loading}}
+                state={{ isLoading: loading }}
                 enableEditing
                 enableHiding={false}
-                initialState={{columnVisibility: {building_id: false}}}
-                renderRowActions={({row}) => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                initialState={{ columnVisibility: { building_id: false } }}
+                renderRowActions={({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Tooltip arrow placement="left" title="Pas aan">
                             <IconButton
                                 onClick={() => {
@@ -146,7 +162,7 @@ function AdminDataBuildings() {
                                     routeToEditView(buildingView).then();
                                 }}
                             >
-                                <Edit/>
+                                <Edit />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -157,7 +173,17 @@ function AdminDataBuildings() {
                                     setDeleteDialogOpen(true);
                                 }}
                             >
-                                <Delete/>
+                                <Delete />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verstuur mail">
+                            <IconButton
+                                onClick={() => {
+                                    const buildingView: BuildingView = row.original;
+                                    routeToCommunication(buildingView).then();
+                                }}
+                            >
+                                <Email />
                             </IconButton>
                         </Tooltip>
                     </Box>

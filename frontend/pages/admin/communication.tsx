@@ -7,7 +7,7 @@ import { Button, Dropdown, DropdownButton, FloatingLabel, Form, FormControl, Off
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import { getAllUsers, User, userSearchString } from "@/lib/user";
-import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
+import SyndicAutoComplete from "@/components/autocompleteComponents/syndicAutoComplete";
 import router, { useRouter } from "next/router";
 import { withAuthorisation } from "@/components/withAuthorisation";
 
@@ -15,6 +15,7 @@ interface ParsedUrlQuery {}
 
 interface DataCommunicationQuery extends ParsedUrlQuery {
     template?: number;
+    syndic?: string;
 }
 
 function AdminCommunication() {
@@ -73,10 +74,11 @@ function AdminCommunication() {
         setUpdatedTemplateText(changedVariablesText);
     };
 
-    async function routeToBuilding(buildingId: string) {
+    async function routeToBuildings(syndicId: string) {
+        const currentSyndic = allSyndics.find((e) => e.id === Number(syndicId));
         await router.push({
-            pathname: `building/`,
-            query: { building: buildingId },
+            pathname: `data/buildings/`,
+            query: { syndic: currentSyndic?.email },
         });
     }
 
@@ -87,8 +89,6 @@ function AdminCommunication() {
                 setAllTemplates(emailTemplates);
                 let currentTemplate = emailTemplates[0];
                 if (query.template) {
-                    console.log(emailTemplates);
-                    console.log(query.template);
                     currentTemplate = emailTemplates.find((e) => e.id === Number(query.template)) || emailTemplates[0];
                 }
                 setSelectedTemplate(currentTemplate.name);
@@ -114,8 +114,12 @@ function AdminCommunication() {
         getAllUsers().then((res) => {
             const users: User[] = res.data;
             setAllSyndics(users);
-            setSelectedSyndic(userSearchString(users[0]));
-            setSyndicId(users[0].id.toString());
+            let currentSyndic = users[0];
+            if (query.syndic) {
+                currentSyndic = users.find((e) => e.email === query.syndic) || users[0];
+            }
+            setSelectedSyndic(userSearchString(currentSyndic));
+            setSyndicId(currentSyndic.id.toString());
         });
 
         getAllBuildings().then((res) => {
@@ -157,22 +161,22 @@ function AdminCommunication() {
                             ></TemplateAutocomplete>
                         </div>
                         <div style={{ width: "33%" }}>
-                            <SyndicAutoCompleteComponent
+                            <SyndicAutoComplete
                                 value={selectedSyndic}
                                 onChange={setSelectedSyndic}
                                 setObjectId={setSyndicId}
                                 required={false}
-                            ></SyndicAutoCompleteComponent>
+                            ></SyndicAutoComplete>
                         </div>
                         <div style={{ width: "33%" }}>
                             <Button
                                 variant="secondary"
                                 size="lg"
                                 onClick={() => {
-                                    routeToBuilding(buildingId).then();
+                                    routeToBuildings(syndicId).then();
                                 }}
                             >
-                                Building
+                                Gebouw
                             </Button>
                         </div>
                     </div>
