@@ -1,6 +1,6 @@
-import React, {useEffect, useState, ChangeEvent, FormEvent, MouseEventHandler} from "react";
-import {useRouter} from "next/router";
-import {Form, Alert} from "react-bootstrap";
+import React, { useEffect, useState, ChangeEvent, FormEvent, MouseEventHandler } from "react";
+import { useRouter } from "next/router";
+import { Form, Alert } from "react-bootstrap";
 import {
     BuildingPostInterface,
     getBuildingInfo,
@@ -8,10 +8,10 @@ import {
     patchBuilding,
     postBuilding,
 } from "@/lib/building";
-import {getRegion} from "@/lib/region";
-import {getUserInfo, userSearchString} from "@/lib/user";
+import { getRegion } from "@/lib/region";
+import { getUserInfo, userSearchString } from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoComplete";
 import PDFUploader from "@/components/pdfUploader";
@@ -117,7 +117,7 @@ function AdminDataBuildingsEdit() {
 
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <div className={styles.container}>
                 <ConfirmationMessage
                     showConfirm={showConfirmation}
