@@ -1,17 +1,17 @@
 import StudentHeader from "@/components/header/studentHeader";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {useEffect, useState} from "react";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { useEffect, useState } from "react";
 import getStudentOnTour, {
     datesEqual,
     formatDate,
     StudentOnTour,
     StudentOnTourStringDate,
 } from "@/lib/student-on-tour";
-import {getCurrentUser, User} from "@/lib/user";
-import {getTour, Tour} from "@/lib/tour";
-import {getRegion, RegionInterface} from "@/lib/region";
+import { getCurrentUser, User } from "@/lib/user";
+import { getTour, Tour } from "@/lib/tour";
+import { getRegion, RegionInterface } from "@/lib/region";
 import ToursList from "@/components/student/toursList";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 import Loading from "@/components/loading";
 
 // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=32-29&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
@@ -41,7 +41,7 @@ function StudentDashboard() {
         monthAgo.setMonth(monthAgo.getMonth() - 1); // This also works for january to december
         const nextMonth: Date = new Date();
         nextMonth.setMonth(monthAgo.getMonth() + 1);
-        getStudentOnTour(user.id, {startDate: monthAgo, endDate: nextMonth}).then(async (res) => {
+        getStudentOnTour(user.id, { startDate: monthAgo, endDate: nextMonth }).then(async (res) => {
             // Some cache to recognize duplicate tours (to not do unnecessary requests)
             const t: Record<number, Tour> = {};
             const r: Record<number, RegionInterface> = {};
@@ -71,7 +71,7 @@ function StudentDashboard() {
             }
             // Get the tours today
             const sot: StudentOnTour[] = data.map((s: StudentOnTourStringDate) => {
-                return {id: s.id, student: s.student, tour: s.tour, date: new Date(s.date)};
+                return { id: s.id, student: s.student, tour: s.tour, date: new Date(s.date) };
             });
             const today: StudentOnTour[] = sot.filter((s: StudentOnTour) => {
                 const d: Date = s.date;
@@ -100,24 +100,39 @@ function StudentDashboard() {
     }, [user]);
 
     function redirectToSchedule(studentOnTourId: number, regionId: number): void {
-        router.push({
-            pathname: "/student/schedule",
-            query: {regionId, studentOnTourId},
-        }).then();
+        router
+            .push({
+                pathname: "/student/schedule",
+                query: { regionId, studentOnTourId },
+            })
+            .then();
     }
 
     return (
         <>
-            <StudentHeader/>
-            {
-                (loading) && (<Loading/>)
-            }
-            <ToursList studentOnTours={toursToday} listTitle="Vandaag" onSelect={redirectToSchedule} allTours={tours}
-                       allRegions={regions}/>
-            <ToursList studentOnTours={upcomingTours} listTitle="Gepland" onSelect={redirectToSchedule} allTours={tours}
-                       allRegions={regions}/>
-            <ToursList studentOnTours={prevTours} listTitle="Afgelopen maand" onSelect={redirectToSchedule}
-                       allTours={tours} allRegions={regions}/>
+            <StudentHeader />
+            {loading && <Loading />}
+            <ToursList
+                studentOnTours={toursToday}
+                listTitle="Vandaag"
+                onSelect={redirectToSchedule}
+                allTours={tours}
+                allRegions={regions}
+            />
+            <ToursList
+                studentOnTours={upcomingTours}
+                listTitle="Gepland"
+                onSelect={redirectToSchedule}
+                allTours={tours}
+                allRegions={regions}
+            />
+            <ToursList
+                studentOnTours={prevTours}
+                listTitle="Afgelopen maand"
+                onSelect={redirectToSchedule}
+                allTours={tours}
+                allRegions={regions}
+            />
         </>
     );
 }
