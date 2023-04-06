@@ -61,7 +61,7 @@ export async function getSyndics() {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
     return await api.get(request_url, {
         params: {
-            "exclude-role-name-list": ["admin", "student", "superstudent"]
+            "include-role-name-list": "syndic"
         }
     });
 }
