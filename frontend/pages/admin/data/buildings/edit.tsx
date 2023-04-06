@@ -13,7 +13,7 @@ import { getUserInfo, userSearchString } from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
-import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoComplete";
+import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutocomplete";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessage from "@/components/errorMessage";
