@@ -36,12 +36,12 @@ def get_boolean_param(request, name, required=False):
     param = request.GET.get(name, None)
     if param is None:
         if required:
-            raise BadRequest(f'The query parameter {name} is required')
+            raise BadRequest(f"The query parameter {name} is required")
         else:
             return None
-    elif param.lower() == 'true':
+    elif param.lower() == "true":
         return True
-    elif param.lower() == 'false':
+    elif param.lower() == "false":
         return False
     else:
         raise BadRequest(f"Invalid value for boolean parameter '{name}': '{param}' (true or false expected)")
@@ -51,7 +51,7 @@ def get_list_param(request, name, required=False):
     param = request.GET.getlist(name)
     if not param:
         if required:
-            raise BadRequest(f'The query parameter {name} is required')
+            raise BadRequest(f"The query parameter {name} is required")
         else:
             return None
     return param
@@ -62,7 +62,7 @@ def get_param(request, key, required):
         return get_date_param(request, key, required)
     elif "list" in key:
         param_list = get_list_param(request, key, required)
-        if param_list and 'id' in key:
+        if param_list and "id" in key:
             return list(map(int, param_list))
         return param_list
     elif "id" in key:
@@ -75,11 +75,7 @@ def get_param(request, key, required):
 
 
 def get_filter_object(filter_key: str, required=False, exclude=False) -> dict:
-    return {
-        "filter_key": filter_key,
-        "required": required,
-        "exclude": exclude
-    }
+    return {"filter_key": filter_key, "required": required, "exclude": exclude}
 
 
 def filter_instances(request, instances, filters, query_param_value_transformation=lambda k, v: v):
