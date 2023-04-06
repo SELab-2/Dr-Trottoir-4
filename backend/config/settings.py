@@ -77,6 +77,9 @@ collections.Callable = collections.abc.Callable
 # Use nose to run all tests
 TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 
+
+NOSE_ARGS = ["--cover-xml", "--cover-xml-file=./coverage.xml"]
+
 # drf-spectacular settings
 SPECTACULAR_SETTINGS = {
     "TITLE": "Dr-Trottoir API",
@@ -184,7 +187,8 @@ DATABASES = {
         # since testing is run outside the docker, we need a localhost db
         # the postgres docker port is exposed to it should be used as well
         # this 'hack' is just to fix the name resolving of 'web'
-        "HOST": "localhost" if "test" in sys.argv else "web",
+        # "HOST": "localhost" if "test" in sys.argv else "web",
+        "HOST": "web",
         "PORT": "5432",
     }
 }
