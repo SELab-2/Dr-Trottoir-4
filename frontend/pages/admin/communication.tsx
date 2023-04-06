@@ -171,7 +171,7 @@ function AdminCommunication() {
                                     routeToBuildings(syndicId).then();
                                 }}
                             >
-                                Building
+                                Gebouw
                             </Button>
                         </div>
                     </div>
