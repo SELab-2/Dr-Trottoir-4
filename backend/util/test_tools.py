@@ -15,7 +15,7 @@ def get_authenticated_client(role="admin"):
 
 
 def errorMessage(name, expected, got):
-    return f"[TEST FAILED]\tname: {name}\tgot: {got} (type: {type(got)}\texpected: {expected} (type: {type(expected)}"
+    return f"[TEST FAILED]\tname: {name}\tgot: {got} (type: {type(got)})\texpected: {expected} (type: {type(expected)})"
 
 
 class BaseTest(TestCase):

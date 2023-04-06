@@ -366,7 +366,7 @@ class PictureOfRemark(models.Model):
     class Meta:
         constraints = [
             UniqueConstraint(
-                Lower("picture"),
+                "picture",
                 "remark_at_building",
                 name="unique_picture_with_remark",
                 violation_error_message="The building already has this upload.",

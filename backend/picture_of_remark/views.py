@@ -33,10 +33,13 @@ class Default(APIView):
         Create a new PictureOfRemark with data from post
         """
         data = request_to_dict(request.data)
+        print(data)
 
         picture_of_remark_instance = PictureOfRemark()
 
         set_keys_of_instance(picture_of_remark_instance, data, TRANSLATE)
+        print(picture_of_remark_instance.picture)
+        print(picture_of_remark_instance.remark_at_building)
 
         if r := try_full_clean_and_save(picture_of_remark_instance):
             return r

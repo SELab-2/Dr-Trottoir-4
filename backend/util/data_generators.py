@@ -42,11 +42,12 @@ def insert_dummy_role(role):
 
 
 def insert_test_user(
-    first_name: str = "test_student",
-    last_name: str = "test",
-    phone_number="+32467240957",
-    role: str = "admin",
+        first_name: str = "test_student",
+        last_name: str = "test",
+        phone_number="+32467240957",
+        role: str = "admin",
 ) -> int:
+    global email_counter
     o = User.objects.filter(first_name=first_name).first()
     if o:
         return o.id
@@ -55,7 +56,9 @@ def insert_test_user(
         last_name=last_name,
         phone_number=phone_number,
         role=Role.objects.get(id=insert_dummy_role(role)),
+        email=f"test_{email_counter}@test.com",
     )
+    email_counter += 1
     s.save()
     return s.id
 
@@ -152,9 +155,10 @@ def insert_dummy_remark_at_building():
 
 
 def insert_dummy_picture_of_remark(picture):
-    PoR = PictureOfRemark(picture=picture, remark_at_building=insert_dummy_remark_at_building())
+    PoR = PictureOfRemark(picture=picture,
+                          remark_at_building=RemarkAtBuilding.objects.get(id=insert_dummy_remark_at_building()))
     PoR.save()
-    return PoR.save()
+    return PoR.id
 
 
 def insert_dummy_building_comment():
