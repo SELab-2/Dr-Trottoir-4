@@ -118,12 +118,16 @@ class GarbageCollectionIndividualBuildingView(APIView):
         self.check_object_permissions(request, building_instance[0])
 
         filters = {
-            "start-date": ("date__gte", False),
-            "end-date": ("date__lte", False),
+            "start-date": get_filter_object("date__gte"),
+            "end-date": get_filter_object("date__lte"),
         }
         garbage_collection_instances = GarbageCollection.objects.filter(building=building_id)
-        if r := filter_instances(request, garbage_collection_instances, filters):
-            return r
+
+        try:
+            garbage_collection_instances = filter_instances(request, garbage_collection_instances, filters)
+        except BadRequest as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
         return get_success(serializer)
 
@@ -145,12 +149,16 @@ class GarbageCollectionAllView(APIView):
         Get all garbage collections
         """
         filters = {
-            "start-date": ("date__gte", False),
-            "end-date": ("date__lte", False),
+            "start-date": get_filter_object("date__gte"),
+            "end-date": get_filter_object("date__lte"),
         }
         garbage_collection_instances = GarbageCollection.objects.all()
-        if r := filter_instances(request, garbage_collection_instances, filters):
-            return r
+
+        try:
+            garbage_collection_instances = filter_instances(request, garbage_collection_instances, filters)
+        except BadRequest as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
         return get_success(serializer)
 

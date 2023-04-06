@@ -26,7 +26,7 @@ function SyndicBuilding() {
     const [building, setBuilding] = useState<BuildingInterface>(null);
 
     async function fetchBuilding() {
-        getBuildingInfo(query.id)
+        getBuildingInfo(Number(query.id))
             .then((buildings: AxiosResponse<any>) => {
                 setBuilding(buildings.data);
             })

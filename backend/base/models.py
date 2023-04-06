@@ -247,15 +247,16 @@ class BuildingOnTour(models.Model):
     def clean(self):
         super().clean()
 
-        # Check for existence of all the fields we use below
-        # If the if statement fail, django will handle the errors correctly in a consistent way
-        if self.tour_id and self.building_id and self.index:
+        # If the if statement fails, django will handle the errors correctly in a consistent way
+        if self.tour_id and self.building_id:
             tour_region = self.tour.region
             building_region = self.building.region
             if tour_region != building_region:
                 raise ValidationError(
                     f"The regions for tour ({tour_region}) en building ({building_region}) are different."
                 )
+
+        # Fail if the index is not unique for the tour
 
     def __str__(self):
         return f"{self.building} on tour {self.tour}, index: {self.index}"
@@ -267,7 +268,13 @@ class BuildingOnTour(models.Model):
                 "tour",
                 name="unique_building_on_tour",
                 violation_error_message="This building is already on this tour.",
-            )
+            ),
+            UniqueConstraint(
+                "index",
+                "tour",
+                name="unique_index_on_tour",
+                violation_error_message="This index is already in use.",
+            ),
         ]
 
 

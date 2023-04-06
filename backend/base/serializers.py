@@ -1,5 +1,6 @@
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
+import uuid
 
 from .models import *
 
@@ -133,3 +134,11 @@ class BuildingSwapRequestSerializer(serializers.Serializer):
     buildingID1 = serializers.IntegerField()
 
     buildingID2 = serializers.IntegerField()
+
+
+class PublicIdSerializer(serializers.Serializer):
+    public_id = serializers.UUIDField(format="hex")
+
+    def create(self, validated_data):
+        public_id = uuid.uuid4()
+        return {"public_id": public_id}

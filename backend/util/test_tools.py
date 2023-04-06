@@ -40,7 +40,8 @@ class BaseTest(TestCase):
             assert key in resp.data, errorMessage("insert", key, None)
             if type(self.data1[key]) == InMemoryUploadedFile:
                 continue
-            assert self.data1[key] == resp.data[key], errorMessage(f"insert (key:{key})", self.data1[key], resp.data[key])
+            assert self.data1[key] == resp.data[key], errorMessage(f"insert (key:{key})", self.data1[key],
+                                                                   resp.data[key])
         assert "id" in resp.data, errorMessage("insert", "id", None)
 
     def insert_dupe(self, url, special=None):
