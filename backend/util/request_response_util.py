@@ -25,42 +25,69 @@ def get_date_param(request, name, required=False):
         try:
             param = datetime.strptime(param, "%Y-%m-%d")
         except ValueError:
-            raise BadRequest(f"The date parameter {name} hasn't the appropriate form (=YYYY-MM-DD).")
+            raise BadRequest(f"The date parameter '{name}': '{param}' hasn't the appropriate form (=YYYY-MM-DD).")
     else:
         if required:
             raise BadRequest(f"The query parameter {name} is required")
     return param
 
 
+def get_boolean_param(request, name, required=False):
+    param = request.GET.get(name, None)
+    if param is None:
+        if required:
+            raise BadRequest(f"The query parameter {name} is required")
+        else:
+            return None
+    elif param.lower() == "true":
+        return True
+    elif param.lower() == "false":
+        return False
+    else:
+        raise BadRequest(f"Invalid value for boolean parameter '{name}': '{param}' (true or false expected)")
+
+
+def get_list_param(request, name, required=False):
+    param = request.GET.getlist(name)
+    if not param:
+        if required:
+            raise BadRequest(f"The query parameter {name} is required")
+        else:
+            return None
+    return param
+
+
 def get_param(request, key, required):
     if "date" in key:
         return get_date_param(request, key, required)
+    elif "list" in key:
+        param_list = get_list_param(request, key, required)
+        if param_list and "id" in key:
+            return list(map(int, param_list))
+        return param_list
     elif "id" in key:
         return get_id_param(request, key, required)
+    elif "bool" in key:
+        return get_boolean_param(request, key, required)
     # add more conditions here as needed
     else:
         return None
 
 
-def filter_instances(request, instances, filters):
-    try:
-        for key, (filter_key, required) in filters.items():
-            param_value = get_param(request, key, required)
-            if param_value:
-                instances = instances.filter(**{filter_key: param_value})
-    except BadRequest as e:
-        return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+def get_filter_object(filter_key: str, required=False, exclude=False) -> dict:
+    return {"filter_key": filter_key, "required": required, "exclude": exclude}
 
 
-def check_required_keys_post(data: dict, required_keys: list):
-    violate_requirements = [k for k in required_keys if k not in data.keys()]
-    if violate_requirements:
-        return Response(
-            {
-                "message": f"the following required keys were missing when posting to this endpoint: {', '.join(violate_requirements)}"
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+def filter_instances(request, instances, filters, query_param_value_transformation=lambda k, v: v):
+    for key, filter_object in filters.items():
+        param_value = get_param(request, key, filter_object["required"])
+        param_value = query_param_value_transformation(key, param_value)
+        if param_value is not None:
+            if filter_object["exclude"]:
+                instances = instances.exclude(**{filter_object["filter_key"]: param_value})
+            else:
+                instances = instances.filter(**{filter_object["filter_key"]: param_value})
+    return instances
 
 
 def get_unique_uuid(lookup_func: Callable[[str], bool] = None):
