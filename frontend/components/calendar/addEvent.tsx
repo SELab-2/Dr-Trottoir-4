@@ -1,18 +1,19 @@
 import {useState} from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import {addDays, startOfMonth, startOfWeek} from 'date-fns';
 
 function AddEventModal(data: any) {
     const {isOpen, onClose, onSave} = data
     const [title, setTitle] = useState("");
     const [student, setStudent] = useState("");
-    const [start, setStart] = useState(new Date());
-    const [end, setEnd] = useState(new Date());
+    const [start, setStart] = useState(new Date(addDays(startOfWeek(startOfMonth(new Date()), {weekStartsOn: 0}), 8).toLocaleString('en', {timeZone: 'America/New_York'})));
     const [start_time, setStarttime] = useState("");
     const [end_time, setEndtime] = useState("");
 
 
     const handleSave = () => {
+        const end = addDays(start, 5);
         onSave({title, student, start, end, start_time, end_time});
         onClose();
     };
@@ -21,10 +22,6 @@ function AddEventModal(data: any) {
         setStart(new Date(e.target.value));
     };
 
-
-    const handleEndDateChange = (e: { target: { value: string | number | Date; }; }) => {
-        setEnd(new Date(e.target.value));
-    };
 
     return (
         <Modal show={isOpen} onHide={onClose}>
@@ -56,11 +53,6 @@ function AddEventModal(data: any) {
                             <label htmlFor="start-time">Start datum:</label>
                             <input type="date" value={start.toISOString().substring(0, 10)}
                                    onChange={handleStartDateChange} className="form-control"/>
-                        </div>
-                        <div className="col">
-                            <label htmlFor="end-time">Eind datum:</label>
-                            <input type="date" value={end.toISOString().substring(0, 10)} onChange={handleEndDateChange}
-                                   className="form-control"/>
                         </div>
                     </div>
                     <div className="form-row">

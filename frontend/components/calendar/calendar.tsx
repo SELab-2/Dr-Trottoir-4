@@ -227,6 +227,7 @@ const localizer = dateFnsLocalizer({
     locales,
 })
 
+
 const DnDCalendar = withDragAndDrop(Calendar)
 
 export default MyCalendar
