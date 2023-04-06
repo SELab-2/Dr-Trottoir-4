@@ -11,13 +11,21 @@ import {BuildingView} from "@/types";
 import {getUserInfo} from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 
+interface ParsedUrlQuery {}
+
+interface DataBuildingsQuery extends ParsedUrlQuery {
+    syndic?: string;
+}
+
 function AdminDataBuildings() {
     const router = useRouter();
+    const query: DataBuildingsQuery = router.query as DataBuildingsQuery;
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [buildingViews, setBuildingViews] = useState<BuildingView[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedBuilding, setSelectedBuilding] = useState<BuildingView | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+    
 
     const columns = useMemo<MRT_ColumnDef<BuildingView>[]>(
         () => [
@@ -73,14 +81,18 @@ function AdminDataBuildings() {
                         syndicEmail = res.data.email;
                         cache[s] = syndicEmail
                     }
-                    const buildingView: BuildingView = {
-                        name: building.name,
-                        address: getAddress(building),
-                        building_id: building.id,
-                        syndic_email: syndicEmail,
-                    };
 
-                    buildingViews.push(buildingView);
+                    if (!query.syndic || (query.syndic && query.syndic === syndicEmail)) {
+                        const buildingView: BuildingView = {
+                            name: building.name,
+                            address: getAddress(building),
+                            building_id: building.id,
+                            syndic_email: syndicEmail,
+                        };
+
+                        buildingViews.push(buildingView);
+                    }
+                    
                 }
                 setBuildingViews(buildingViews);
             } catch (err) {
