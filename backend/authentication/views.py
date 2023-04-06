@@ -22,7 +22,6 @@ from authentication.serializers import (
 )
 from base.models import Lobby
 from base.serializers import UserSerializer
-from util.request_response_util import post_success
 
 
 class CustomSignUpView(APIView):
@@ -58,11 +57,13 @@ class CustomLoginView(LoginView):
 
 class CustomLogoutView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = CustomLogoutSerializer
 
-    @extend_schema(responses={200: CustomLogoutSerializer, 401: CustomLogoutSerializer, 500: CustomLogoutSerializer})
+    @extend_schema(
+        request={},
+        responses={200: serializer_class, 401: serializer_class, 500: serializer_class})
     def post(self, request):
-        serializer = CustomLogoutSerializer()
-        response = serializer.logout_user(request)
+        response = self.serializer_class().logout_user(request)
         return response
 
 
