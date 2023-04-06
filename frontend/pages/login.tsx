@@ -57,7 +57,6 @@ export default function Login() {
                         <button className="btn btn-primary mb-3" onClick={toggleSidebar}>
                             {sidebarOpen ? "Hide sidebar" : "Show sidebar"}
                         </button>
-                        <AddEvent/>
                         <MyCalendar/>
                     </div>
                 </div>

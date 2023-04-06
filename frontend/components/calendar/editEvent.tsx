@@ -4,23 +4,25 @@ import Button from 'react-bootstrap/Button';
 
 function EditEventModal(data: any) {
     const {event, isOpen, onClose, onSave} = data
+    const start_time = event.start_time
+    const end_time = event.end_time
     const [title, setTitle] = useState(event.title);
     const [student, setStudent] = useState(event.student)
 
     const handleSave = () => {
-        onSave({title, student});
+        onSave({title, student, start_time, end_time});
         onClose();
     };
 
     return (
         <Modal show={isOpen} onHide={onClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Edit Event</Modal.Title>
+                <Modal.Title>Bewerk Ronde</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <form>
                     <div className="form-group">
-                        <label>Title</label>
+                        <label>Ronde</label>
                         <input
                             type="text"
                             className="form-control"
