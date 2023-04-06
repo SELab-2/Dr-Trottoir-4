@@ -60,7 +60,6 @@ export const generateNewPublicId = async (buildingId: string | undefined) => {
     return await api.post(request_url)
 }
 
-<<<<<<<<< Temporary merge branch 1
 export const deleteBuilding = async (buildingId: number | undefined) => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
     return await api.delete(request_url);
@@ -91,7 +90,6 @@ export function getDurationFromMinutes(durationInMinutes: number){
         .toString()
         .padStart(2, "0")}`
 }
-
 
 
 export const getNewPublicId = async () => {
