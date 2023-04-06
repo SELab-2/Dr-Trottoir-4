@@ -37,7 +37,10 @@ interface MyEvent extends Event {
 
 
 const MyCalendar: FC = () => {
-
+    const [popupIsOpen, setPopupIsOpen] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+    const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(true);
     const [events, setEvents] = useState<MyEvent[]>([
         {
             title: 'Antwerpen',
@@ -63,10 +66,7 @@ const MyCalendar: FC = () => {
             start_time: "17:00",
             end_time: "20:00",
         }
-])
-
-    const [popupIsOpen, setPopupIsOpen] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+    ])
 
 
     const onEventSelection = (e: Event) => {
@@ -138,7 +138,6 @@ const MyCalendar: FC = () => {
         });
     };
 
-    const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
 
     const handleSubmit = () => {
         setPopupIsOpenAdd(true);
@@ -149,39 +148,66 @@ const MyCalendar: FC = () => {
     };
 
 
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
+
+
     return (
-        <div>
-            <button className="btn btn-primary mb-3" onClick={handleSubmit}>Voeg ronde toe</button>
-            <AddEventModal
-                isOpen={popupIsOpenAdd}
-                onClose={handlePopupCloseAdd}
-                onSave={onEventAdd}
-            />
-            <DnDCalendar
-                messages={messages}
-                culture={'nl-BE'}
-                defaultView='week'
-                events={events}
-                components={{event: CustomDisplay}}
-                localizer={localizer}
-                selectable
-                onSelectEvent={onEventSelection}
-                style={{height: '100vh'}}
-                step={60}
-                timeslots={1}
-                onEventDrop={onEventChange}
-                onEventResize={onEventChange}
-                resizable
-                defaultDate={new Date(2023, 3, 6)}
-            />
-            {selectedEvent && (
-                <EditEventModal
-                    event={selectedEvent}
-                    isOpen={popupIsOpen}
-                    onClose={handlePopupClose}
-                    onSave={handleEventSave}
-                />
-            )}
+        <div className="container-fluid">
+            <div className="row">
+                <div className={`col-md-2 ${sidebarOpen ? "" : "d-none"} bg-light sidebar`}>
+                    <div className="sidebar-sticky">
+                        <ul className="nav flex-column">
+                            <li className="nav-item">
+                                <button className="btn btn-primary btn-block mb-2">Button 1</button>
+                            </li>
+                            <li className="nav-item">
+                                <button className="btn btn-primary btn-block mb-2">Button 2</button>
+                            </li>
+                            <li className="nav-item">
+                                <button className="btn btn-primary btn-block mb-2">Button 3</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div className={`col-md-10 ${sidebarOpen ? "" : "col-md-12"}`}>
+                    <button className="btn btn-primary mb-3" onClick={toggleSidebar}>
+                        {sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+                    </button>
+                    <button className="btn btn-primary mb-3" onClick={handleSubmit}>Voeg ronde toe</button>
+                    <AddEventModal
+                        isOpen={popupIsOpenAdd}
+                        onClose={handlePopupCloseAdd}
+                        onSave={onEventAdd}
+                    />
+                    <DnDCalendar
+                        messages={messages}
+                        culture={'nl-BE'}
+                        defaultView='week'
+                        events={events}
+                        components={{event: CustomDisplay}}
+                        localizer={localizer}
+                        selectable
+                        onSelectEvent={onEventSelection}
+                        style={{height: '100vh'}}
+                        step={60}
+                        timeslots={1}
+                        onEventDrop={onEventChange}
+                        onEventResize={onEventChange}
+                        resizable
+                        defaultDate={new Date(2023, 3, 6)}
+                    />
+                    {selectedEvent && (
+                        <EditEventModal
+                            event={selectedEvent}
+                            isOpen={popupIsOpen}
+                            onClose={handlePopupClose}
+                            onSave={handleEventSave}
+                        />
+                    )}
+                </div>
+            </div>
         </div>
     );
 
