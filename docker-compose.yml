@@ -26,6 +26,12 @@ services:
     volumes:
       - ./data/drtrottoir:/var/lib/postgresql/data/
 
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U django -d drtrottoir" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   frontend:
     build:
       context: ./frontend
@@ -57,4 +63,5 @@ services:
       - ./backend:/app/backend
 
     depends_on:
-      - web
+      web:
+        condition: service_healthy
