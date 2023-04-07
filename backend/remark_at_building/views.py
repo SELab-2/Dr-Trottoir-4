@@ -22,7 +22,7 @@ from util.request_response_util import (
     delete_docs,
     patch_success,
     patch_docs,
-    get_docs,
+    get_docs, post_success,
 )
 
 TRANSLATE = {
@@ -51,7 +51,7 @@ class Default(APIView):
 
         self.check_object_permissions(request, remark_at_building.student_on_tour.student)
 
-        return post_docs(self.serializer_class(remark_at_building))
+        return post_success(self.serializer_class(remark_at_building))
 
 
 class RemarkAtBuildingIndividualView(APIView):
