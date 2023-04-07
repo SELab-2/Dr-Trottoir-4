@@ -135,7 +135,9 @@ class BaseAuthTest(TestCase):
             resp = client.get(backend_url + "/" + url + "all/")
             assert resp.status_code == codes[role], auth_error_message("list_view", role, resp.status_code, codes[role])
 
-    def insert_view(self, url, codes):
+    def insert_view(self, url, codes, special=None):
+        if special is None:
+            special = []
         adminClient = get_authenticated_client()
         for role in roles:
             client = get_authenticated_client(role)
@@ -145,6 +147,19 @@ class BaseAuthTest(TestCase):
             )
             if resp.status_code == 201:
                 result_id = resp.data["id"]
+                res = adminClient.delete(backend_url + "/" + url + str(result_id))
+        for user_id, result in special:
+            user = User.objects.filter(id=user_id).first()  # there should only be 1
+            if not User:
+                raise ValueError("user not valid")
+            client = APIClient()
+            client.force_authenticate(user=user)
+            response2 = client.post(backend_url + "/" + url, self.data1, follow=True)
+            assert response2.status_code == result, auth_error_message(
+                "insert_view (special case)", user.role.name, response2.status_code, result
+            )
+            if response2.status_code == 201:
+                result_id = response2.data["id"]
                 _ = adminClient.delete(backend_url + "/" + url + str(result_id))
 
     def get_view(self, url, codes, special=None):
