@@ -68,17 +68,8 @@ class EmailTemplateAuthorizationTests(BaseAuthTest):
         self.get_view(f"email-template/{et_id}", codes)
 
     def test_patch_email_template(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
-        self.data1 = {
-            "name": "testTemplate2",
-            "template": "<p>{{name}<p>"
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
+        self.data1 = {"name": "testTemplate2", "template": "<p>{{name}<p>"}
 
         et_id = insert_dummy_email_template()
         self.patch_view(f"email-template/{et_id}", codes)

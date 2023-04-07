@@ -87,11 +87,7 @@ class BuildingOnTourAuthorizationTests(BaseAuthTest):
         BoT_id = insert_dummy_building_on_tour()
         t_id = insert_dummy_tour()
         b_id = insert_dummy_building(street="Zuid")
-        self.data1 = {
-            "tour": t_id,
-            "building": b_id,
-            "index": 1
-        }
+        self.data1 = {"tour": t_id, "building": b_id, "index": 1}
         self.patch_view(f"building-on-tour/{BoT_id}", codes)
 
     def test_remove_building_on_tour(self):
