@@ -17,7 +17,8 @@ import {User} from "@/lib/user";
 import {Tour} from "@/lib/tour";
 
 interface MyEvent extends Event {
-    student: string
+    tour : Tour
+    student: User
     start: Date
     end: Date
     start_time: string
@@ -33,32 +34,7 @@ const MyCalendar: FC<Props> = (props) => {
     const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-    const [events, setEvents] = useState<MyEvent[]>([ // This will be replaced by backend events
-        {
-            title: 'Antwerpen',
-            start: new Date(2023, 3, 6),
-            end: new Date(2023, 3, 6),
-            student: 'Test1',
-            start_time: "17:00",
-            end_time: "20:00",
-        },
-        {
-            title: 'Antwerpen',
-            start: new Date(2023, 3, 6),
-            end: new Date(2023, 3, 6),
-            student: 'Test2',
-            start_time: "17:00",
-            end_time: "20:00",
-        },
-        {
-            title: 'Antwerpen',
-            start: new Date(2023, 3, 6),
-            end: new Date(2023, 3, 6),
-            student: 'Test3',
-            start_time: "17:00",
-            end_time: "20:00",
-        }
-    ])
+    const [events, setEvents] = useState<MyEvent[]>([])
 
 
     const onEventSelection = (e: Event) => {
@@ -66,14 +42,14 @@ const MyCalendar: FC<Props> = (props) => {
         setPopupIsOpenEdit(true);
     };
 
-    const onEventEdit = ({title, student, start_time, end_time}
-                             : { title: string, student: string, start_time: string, end_time: string }) => {
+    const onEventEdit = ({tour, student, start_time, end_time}
+                             : { tour: Tour, student: User, start_time: string, end_time: string }) => {
         setEvents(currentEvents => {
             return currentEvents.map(currentEvent => {
                 if (currentEvent === selectedEvent) {
                     return {
                         ...currentEvent,
-                        title: title,
+                        tour: tour,
                         student: student,
                         start_time: start_time,
                         end_time: end_time
@@ -94,8 +70,8 @@ const MyCalendar: FC<Props> = (props) => {
                         }: { tour: Tour, student: User, start: Date, end: Date, start_time: string, end_time: string }) => {
         setEvents(currentEvents => {
             const newEvent: MyEvent = {
-                title: tour?.name,
-                student: student?.first_name + " " + student?.last_name,
+                tour: tour,
+                student: student,
                 start: start,
                 end: end,
                 start_time: start_time,
@@ -107,9 +83,9 @@ const MyCalendar: FC<Props> = (props) => {
     }
 
     const onEventsAdd = (eventData: {
-        title: string,
+        tour: Tour,
         data: {
-            student: string,
+            student: User,
             start: Date,
             end: Date
         }[],
@@ -118,13 +94,14 @@ const MyCalendar: FC<Props> = (props) => {
     }) => {
         setEvents(currentEvents => {
             const newEvents = eventData.data.map(event => ({
-                title: eventData.title,
+                tour: eventData.tour,
                 student: event.student,
                 start: event.start,
                 end: event.end,
                 start_time: eventData.start_time,
                 end_time: eventData.end_time,
             }));
+            console.log([...currentEvents, ...newEvents])
             return [...currentEvents, ...newEvents];
         });
     }

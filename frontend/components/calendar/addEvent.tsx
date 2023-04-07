@@ -13,11 +13,11 @@ function AddEventModal(data: any) {
     const [start_time, setStarttime] = useState("17:00");
     const [end_time, setEndtime] = useState("20:00");
     const [checked, setChecked] = useState(true);
-    const [week, setWeek] = useState(Array(7).fill("")); // Week starts on Sunday (index 0)
+    const [week, setWeek] = useState<User[]>(Array(7).fill(null)); // Week starts on Sunday (index 0)
 
-    function splitOnValueChange(arr: string[]): string[][] {
-        return arr.reduce((result: string[][], currentValue: string, index: number, array: string[]) => {
-            if (index === 0 || currentValue !== array[index - 1]) {
+    function splitOnValueChange(arr: User[]): User[][] {
+        return arr.reduce((result: User[][], currentValue: User, index: number, array: User[]) => {
+            if (index === 0 || currentValue.first_name !== array[index - 1].first_name || currentValue.last_name !== array[index - 1].last_name) {
                 result.push([currentValue]); // start a new group
             } else {
                 result[result.length - 1].push(currentValue); // add to the current group
@@ -35,7 +35,7 @@ function AddEventModal(data: any) {
             onClose();
         } else {
             week.pop();
-            let data: { student: string, start: Date, end: Date }[] = [];
+            let data: { student: User, start: Date, end: Date }[] = [];
             let new_start = start;
             new_start.setHours(0);
             const split = splitOnValueChange(week);
@@ -46,7 +46,7 @@ function AddEventModal(data: any) {
                 new_start = new_end;
             }
             onSaveMultiple({
-                title: tour,
+                tour: tour,
                 data: data,
                 start_time: start_time,
                 end_time: end_time,
@@ -61,7 +61,7 @@ function AddEventModal(data: any) {
     };
 
     const handleCheckChange = () => {
-        setWeek(Array(7).fill(student?.first_name + " " + student?.last_name));
+        setWeek(Array(7).fill(student));
         setChecked(!checked);
     }
 
@@ -78,8 +78,9 @@ function AddEventModal(data: any) {
     }
 
     const updateWeekdayStudent = (e: ChangeEvent<HTMLSelectElement>, index: number) => {
+        const studentID = Number(e.target.value);
         const updatedWeek = [...week];
-        updatedWeek[index] = e.target.value;
+        updatedWeek[index] = allStudents.find((student: User) => student.id === studentID);
         setWeek(updatedWeek);
     }
 
@@ -124,67 +125,67 @@ function AddEventModal(data: any) {
                             <div>
                                 <div>
                                     <label>Zondag:</label>
-                                    <select className="form-control" value={week[0]}
+                                    <select className="form-control" value={week[0].id}
                                             onChange={e => updateWeekdayStudent(e, 0)}>
                                         <option value="">-- Selecteer student(e) --</option>
                                         {allStudents.map((student: User) => (
                                             <option key={student.id}
-                                                    value={student.first_name + " " + student.last_name}>{student.first_name} {student.last_name}</option>
+                                                    value={student.id}>{student.first_name} {student.last_name}</option>
                                         ))}
                                     </select>
                                 </div>
                                 <div>
                                     <label>Maandag:</label>
-                                    <select className="form-control" value={week[1]}
+                                    <select className="form-control" value={week[1].id}
                                             onChange={e => updateWeekdayStudent(e, 1)}>
                                         <option value="">-- Selecteer student(e) --</option>
                                         {allStudents.map((student: User) => (
                                             <option key={student.id}
-                                                    value={student.first_name + " " + student.last_name}>{student.first_name} {student.last_name}</option>
+                                                    value={student.id}>{student.first_name} {student.last_name}</option>
                                         ))}
                                     </select>
                                 </div>
                                 <div>
                                     <label>Dinsdag:</label>
-                                    <select className="form-control" value={week[2]}
+                                    <select className="form-control" value={week[2].id}
                                             onChange={e => updateWeekdayStudent(e, 2)}>
                                         <option value="">-- Selecteer student(e) --</option>
                                         {allStudents.map((student: User) => (
                                             <option key={student.id}
-                                                    value={student.first_name + " " + student.last_name}>{student.first_name} {student.last_name}</option>
+                                                    value={student.id}>{student.first_name} {student.last_name}</option>
                                         ))}
                                     </select>
                                 </div>
                                 <div>
                                     <label>Woensdag:</label>
-                                    <select className="form-control" value={week[3]}
+                                    <select className="form-control" value={week[3].id}
                                             onChange={e => updateWeekdayStudent(e, 3)}>
                                         <option value="">-- Selecteer student(e) --</option>
                                         {allStudents.map((student: User) => (
                                             <option key={student.id}
-                                                    value={student.first_name + " " + student.last_name}>{student.first_name} {student.last_name}</option>
+                                                    value={student.id}>{student.first_name} {student.last_name}</option>
                                         ))}
                                     </select>
                                 </div>
                                 <div>
                                     <label>Donderdag:</label>
-                                    <select className="form-control" value={week[4]}
+                                    <select className="form-control" value={week[4].id}
                                             onChange={e => updateWeekdayStudent(e, 4)}>
                                         <option value="">-- Selecteer student(e) --</option>
                                         {allStudents.map((student: User) => (
                                             <option key={student.id}
-                                                    value={student.first_name + " " + student.last_name}>{student.first_name} {student.last_name}</option>
+                                                    value={student.id}>{student.first_name} {student.last_name}</option>
                                         ))}
                                     </select>
                                 </div>
                                 <div>
                                     <label>Vrijdag:</label>
-                                    <select className="form-control" value={week[5]}
+                                    <select className="form-control" value={week[5].id}
                                             onChange={e => updateWeekdayStudent(e, 5)}>
                                         <option value="">-- Selecteer student(e) --</option>
                                         {allStudents.map((student: User) => (
                                             <option key={student.id}
-                                                    value={student.first_name + " " + student.last_name}>{student.first_name} {student.last_name}</option>
+                                                    value={student.id}>{student.first_name} {student.last_name}</option>
                                         ))}
                                     </select>
                                 </div>
