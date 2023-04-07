@@ -4,7 +4,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import UniqueConstraint, Q
+from django.db.models import UniqueConstraint, Q, Max
 from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
@@ -13,7 +13,7 @@ from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2**31 - 1
+MAX_INT = 2 ** 31 - 1
 
 
 class Region(models.Model):
@@ -205,7 +205,7 @@ class GarbageCollection(models.Model):
                 "date",
                 name="garbage_collection_unique",
                 violation_error_message="This type of garbage is already being collected on the same day for this "
-                "building.",
+                                        "building.",
             ),
         ]
 
@@ -287,6 +287,8 @@ class StudentOnTour(models.Model):
     tour = models.ForeignKey(Tour, on_delete=models.SET_NULL, null=True)
     date = models.DateField()
     student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    started_tour = models.DateTimeField(null=True, blank=True)
+    completed_tour = models.DateTimeField(null=True, blank=True)
 
     """
     A syndic can't do tours, so we need to check that a student assigned to the building on the tour is not a syndic.
@@ -393,9 +395,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-            self.version_number == 0
-            or self.version_number > max_version_number + 1
-            or self.version_number in version_numbers
+                self.version_number == 0
+                or self.version_number > max_version_number + 1
+                or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 

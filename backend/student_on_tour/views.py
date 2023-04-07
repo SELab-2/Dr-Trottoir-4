@@ -159,3 +159,51 @@ class AllView(APIView):
 
         serializer = StudOnTourSerializer(stud_on_tour_instances, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class StartTourView(APIView):
+    permission_classes = [IsAuthenticated, OwnerAccount]
+    serializer_class = StudOnTourSerializer
+
+    @extend_schema()
+    def post(self, request, student_on_tour_id):
+        student_on_tour_instance = StudentOnTour.objects.filter(id=student_on_tour_id).first()
+
+        self.check_object_permissions(request, student_on_tour_instance.student)
+
+        data = request_to_dict(request.data)
+
+        if not data.get("started_tour", None):
+            return Response({"message": "Request body must contain the key 'started_tour'"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        set_keys_of_instance(student_on_tour_instance, data)
+
+        if r := try_full_clean_and_save(student_on_tour_instance):
+            return r
+
+        return post_success(self.serializer_class(student_on_tour_instance))
+
+
+class EndTourView(APIView):
+    permission_classes = [IsAuthenticated, OwnerAccount]
+    serializer_class = StudOnTourSerializer
+
+    @extend_schema()
+    def post(self, request, student_on_tour_id):
+        student_on_tour_instance = StudentOnTour.objects.filter(id=student_on_tour_id).first()
+
+        self.check_object_permissions(request, student_on_tour_instance.student)
+
+        data = request_to_dict(request.data)
+
+        if not data.get("completed_tour", None):
+            return Response({"message": "Request body must contain the key 'completed_tour'"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        set_keys_of_instance(student_on_tour_instance, data)
+
+        if r := try_full_clean_and_save(student_on_tour_instance):
+            return r
+
+        return post_success(self.serializer_class(student_on_tour_instance))
