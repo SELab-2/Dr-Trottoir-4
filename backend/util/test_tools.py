@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.test import TestCase
 from rest_framework.test import APIClient
@@ -101,11 +103,13 @@ class BaseTest(TestCase):
     def patch_error(self, url, special=None):
         assert self.data1 is not None, "no data found"
         assert self.data2 is not None, "no data found"
+        # taking a deepcopy to fix file issues when uploading pictures
+        backup = deepcopy(self.data2)
         response1 = self.client.post(backend_url + "/" + url, self.data1, follow=True)
         _ = self.client.post(backend_url + "/" + url, self.data2, follow=True)
         assert response1.status_code == 201, errorMessage("patch_error", 201, response1.status_code)
         result_id = response1.data["id"]
-        response2 = self.client.patch(backend_url + "/" + url + f"{result_id}/", self.data2, follow=True)
+        response2 = self.client.patch(backend_url + "/" + url + f"{result_id}/", backup, follow=True)
         if special is None:
             assert response2.status_code == 400, errorMessage("patch_error", 400, response2.status_code)
         else:
