@@ -85,17 +85,17 @@ const MyCalendar: FC<Props> = (props) => {
     }
 
     const onEventAdd = ({
-                            title,
+                            tour,
                             student,
                             start,
                             end,
                             start_time,
                             end_time
-                        }: { title: string, student: string, start: Date, end: Date, start_time: string, end_time: string }) => {
+                        }: { tour: Tour, student: User, start: Date, end: Date, start_time: string, end_time: string }) => {
         setEvents(currentEvents => {
             const newEvent: MyEvent = {
-                title: title,
-                student: student,
+                title: tour?.name,
+                student: student?.first_name + " " + student?.last_name,
                 start: start,
                 end: end,
                 start_time: start_time,

@@ -31,7 +31,7 @@ function AddEventModal(data: any) {
         if (checked) {
             start.setHours(0);
             const end = addDays(start, 6);
-            onSave({title:tour?.name, student: student?.first_name + " " + student?.last_name, start, end, start_time, end_time});
+            onSave({tour, student, start, end, start_time, end_time});
             onClose();
         } else {
             week.pop();
@@ -61,7 +61,7 @@ function AddEventModal(data: any) {
     };
 
     const handleCheckChange = () => {
-        setWeek(Array(7).fill(student))
+        setWeek(Array(7).fill(student?.first_name + " " + student?.last_name));
         setChecked(!checked);
     }
 
@@ -77,7 +77,7 @@ function AddEventModal(data: any) {
         setTour(selectedTour);
     }
 
-    const updateWeekdayStudent = (e: ChangeEvent<HTMLInputElement>, index: number) => {
+    const updateWeekdayStudent = (e: ChangeEvent<HTMLSelectElement>, index: number) => {
         const updatedWeek = [...week];
         updatedWeek[index] = e.target.value;
         setWeek(updatedWeek);
@@ -105,7 +105,8 @@ function AddEventModal(data: any) {
                         <select className="form-control" value={student?.id} onChange={handleStudentChange}>
                             <option value="">-- Selecteer student(e) --</option>
                             {allStudents.map((student: User) => (
-                                <option key={student.id} value={student.id}>{student.first_name} {student.last_name}</option>
+                                <option key={student.id}
+                                        value={student.id}>{student.first_name} {student.last_name}</option>
                             ))}
                         </select>
                     </div>
@@ -123,33 +124,69 @@ function AddEventModal(data: any) {
                             <div>
                                 <div>
                                     <label>Zondag:</label>
-                                    <input type="text" className="form-control" value={week[0]}
-                                           onChange={e => updateWeekdayStudent(e, 0)}/>
+                                    <select className="form-control" value={week[0]}
+                                            onChange={e => updateWeekdayStudent(e, 0)}>
+                                        <option value="">-- Selecteer student(e) --</option>
+                                        {allStudents.map((student: User) => (
+                                            <option key={student.id}
+                                                    value={student.first_name + " " + student.last_name}>{student.first_name} {student.last_name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div>
                                     <label>Maandag:</label>
-                                    <input type="select" className="form-control" value={week[1]}
-                                           onChange={e => updateWeekdayStudent(e, 1)}/>
+                                    <select className="form-control" value={week[1]}
+                                            onChange={e => updateWeekdayStudent(e, 1)}>
+                                        <option value="">-- Selecteer student(e) --</option>
+                                        {allStudents.map((student: User) => (
+                                            <option key={student.id}
+                                                    value={student.first_name + " " + student.last_name}>{student.first_name} {student.last_name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div>
                                     <label>Dinsdag:</label>
-                                    <input type="text" className="form-control" value={week[2]}
-                                           onChange={e => updateWeekdayStudent(e, 2)}/>
+                                    <select className="form-control" value={week[2]}
+                                            onChange={e => updateWeekdayStudent(e, 2)}>
+                                        <option value="">-- Selecteer student(e) --</option>
+                                        {allStudents.map((student: User) => (
+                                            <option key={student.id}
+                                                    value={student.first_name + " " + student.last_name}>{student.first_name} {student.last_name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div>
                                     <label>Woensdag:</label>
-                                    <input type="text" className="form-control" value={week[3]}
-                                           onChange={e => updateWeekdayStudent(e, 3)}/>
+                                    <select className="form-control" value={week[3]}
+                                            onChange={e => updateWeekdayStudent(e, 3)}>
+                                        <option value="">-- Selecteer student(e) --</option>
+                                        {allStudents.map((student: User) => (
+                                            <option key={student.id}
+                                                    value={student.first_name + " " + student.last_name}>{student.first_name} {student.last_name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div>
                                     <label>Donderdag:</label>
-                                    <input type="text" className="form-control" value={week[4]}
-                                           onChange={e => updateWeekdayStudent(e, 4)}/>
+                                    <select className="form-control" value={week[4]}
+                                            onChange={e => updateWeekdayStudent(e, 4)}>
+                                        <option value="">-- Selecteer student(e) --</option>
+                                        {allStudents.map((student: User) => (
+                                            <option key={student.id}
+                                                    value={student.first_name + " " + student.last_name}>{student.first_name} {student.last_name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div>
                                     <label>Vrijdag:</label>
-                                    <input type="text" className="form-control" value={week[5]}
-                                           onChange={e => updateWeekdayStudent(e, 5)}/>
+                                    <select className="form-control" value={week[5]}
+                                            onChange={e => updateWeekdayStudent(e, 5)}>
+                                        <option value="">-- Selecteer student(e) --</option>
+                                        {allStudents.map((student: User) => (
+                                            <option key={student.id}
+                                                    value={student.first_name + " " + student.last_name}>{student.first_name} {student.last_name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
                         )}
