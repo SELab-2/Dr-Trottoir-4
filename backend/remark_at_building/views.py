@@ -46,10 +46,10 @@ class Default(APIView):
 
         set_keys_of_instance(remark_at_building, data, TRANSLATE)
 
+        self.check_object_permissions(request, remark_at_building.student_on_tour.student)
+
         if r := try_full_clean_and_save(remark_at_building):
             return r
-
-        self.check_object_permissions(request, remark_at_building.student_on_tour.student)
 
         return post_success(self.serializer_class(remark_at_building))
 
