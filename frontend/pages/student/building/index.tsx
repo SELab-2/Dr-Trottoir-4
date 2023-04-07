@@ -1,9 +1,16 @@
 import React, {useEffect, useState} from "react";
 import {Button, Form} from "react-bootstrap";
+import RemarkModal from "@/components/student/remarkModal";
 
 export default function StudentBuilding() {
+    const typeNames = ["Aankomst", "Binnen", "Vertrek"];
 
+    // Steps for normal process through building (arrival, inside & leaving)
+    const [step, setStep] = useState<number>(0);
+    const finalStep = 2;
     const [files, setFiles] = useState<File[]>([]);
+
+    const [showRemarkModal, setShowRemarkModal] = useState<boolean>(false);
 
     useEffect(() => {
         console.log(files);
@@ -25,34 +32,50 @@ export default function StudentBuilding() {
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        // Submit files to server
+
+        console.log(files);
+
+        setFiles([]);
+
+        if (step === finalStep) {
+            console.log("Go to next building");
+        } else {
+            setStep((prevState) => prevState + 1);
+        }
     }
 
-    function downloadFile(file: File) {
+    function downloadFile(file: File, index: number) {
         const fileUrl = URL.createObjectURL(file);
         const fileName = file.name;
         return (
             <a href={fileUrl} download={fileName}>
-                {fileName}
+                {`upload_${index + 1}`}
             </a>
         );
     }
 
     return (
-        <Form onSubmit={handleSubmit}>
-            <div>
-                <label className="form-label">Upload een foto</label>
-                <input className="form-control" type="file" onChange={handleFileChange} accept="image/*"/>
-            </div>
-            <br/>
-            {files.map((file, index) => (
-                <div key={index}>
-                    <div>{downloadFile(file)}</div>
-                    <button type="button" onClick={() => handleRemoveFile(index)}>Remove</button>
+        <>
+            <RemarkModal downloadFile={downloadFile} onHide={() => setShowRemarkModal(false)} show={showRemarkModal}/>
+            <Form onSubmit={handleSubmit}>
+                <span className="h1">{typeNames[step]}</span>
+                <div>
+                    <label className="form-label">Upload een foto</label>
+                    <input className="form-control" type="file" onChange={handleFileChange} accept="image/*"/>
                 </div>
-            ))}
-            <br/>
-            <button type="submit">Submit</button>
-        </Form>
+                <ol/>
+                {files.map((file, index) => (
+                    <li key={index}>
+                        <div>{downloadFile(file, index)}</div>
+                        <button type="button" onClick={() => handleRemoveFile(index)}>Remove</button>
+                    </li>
+                ))}
+                <br/>
+                <Button variant="primary"
+                        className="btn-dark" type="submit">Submit</Button>
+            </Form>
+            <Button variant="primary"
+                    className="btn-dark" onClick={() => setShowRemarkModal(true)}>Maak een opmerking</Button>
+        </>
     );
 }
