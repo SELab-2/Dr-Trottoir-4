@@ -23,7 +23,7 @@ class BuildingTests(BaseTest):
             "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
-            "name": "CB"
+            "name": "CB",
         }
         self.insert("building/")
 
@@ -39,7 +39,7 @@ class BuildingTests(BaseTest):
             "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
-            "name": "CB"
+            "name": "CB",
         }
         self.insert_dupe("building/")
 
@@ -65,7 +65,7 @@ class BuildingTests(BaseTest):
             "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
-            "name": "CB"
+            "name": "CB",
         }
         self.patch(f"building/{b_id}")
 
@@ -81,7 +81,7 @@ class BuildingTests(BaseTest):
             "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
-            "name": "CB"
+            "name": "CB",
         }
         self.patch_invalid("building/")
 
@@ -97,7 +97,7 @@ class BuildingTests(BaseTest):
             "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
-            "name": "CB"
+            "name": "CB",
         }
         self.data2 = {
             "city": "Gent",
@@ -108,7 +108,7 @@ class BuildingTests(BaseTest):
             "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
-            "name": "CB"
+            "name": "CB",
         }
         self.patch_error("building/")
 
@@ -125,23 +125,11 @@ class BuildingAuthorizationTests(BaseAuthTest):
         super().__init__(methodName)
 
     def test_building_list(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         self.list_view("building/", codes)
 
     def test_insert_building(self):
-        codes = {
-            "Default": 403,
-            "Admin": 201,
-            "Superstudent": 201,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 201, "Student": 403, "Syndic": 403}
         r_id = insert_dummy_region()
         s_id = insert_dummy_syndic()
         self.data1 = {
@@ -153,30 +141,18 @@ class BuildingAuthorizationTests(BaseAuthTest):
             "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
-            "name": "CB"
+            "name": "CB",
         }
         self.insert_view("building/", codes)
 
     def test_get_building(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 200,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 200, "Syndic": 403}
         b_id = insert_dummy_building()
         s_id = Building.objects.get(id=b_id).syndic.id
         self.get_view(f"building/{b_id}", codes, special=[(s_id, 200)])
 
     def test_patch_building(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         b_id = insert_dummy_building()
         owner_id = Building.objects.get(id=b_id).syndic.id
         r_id = insert_dummy_region()
@@ -190,18 +166,13 @@ class BuildingAuthorizationTests(BaseAuthTest):
             "duration": "01:00:00",
             "region": r_id,
             "syndic": s_id,
-            "name": "CB"
+            "name": "CB",
         }
         self.patch_view(f"building/{b_id}", codes, special=[(owner_id, 403)])
 
     def test_remove_building(self):
         def create():
             return insert_dummy_building()
-        codes = {
-            "Default": 403,
-            "Admin": 204,
-            "Superstudent": 204,
-            "Student": 403,
-            "Syndic": 403
-        }
+
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 204, "Student": 403, "Syndic": 403}
         self.remove_view("building/", codes, create=create)

@@ -59,47 +59,23 @@ class BuildingCommentAuthorizationTests(BaseAuthTest):
         super().__init__(methodName)
 
     def test_building_comment_list(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         self.list_view("building-comment/", codes)
 
     def test_insert_building_comment(self):
-        codes = {
-            "Default": 403,
-            "Admin": 201,
-            "Superstudent": 201,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 201, "Student": 403, "Syndic": 403}
         b_id = insert_dummy_building()
         self.data1 = {"comment": f"<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
         self.insert_view("building-comment/", codes)
 
     def test_get_building_comment(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 200,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 200, "Syndic": 403}
         bc_id = insert_dummy_building_comment()
         s_id = BuildingComment.objects.get(id=bc_id).building.syndic.id
         self.get_view(f"building-comment/{bc_id}", codes, special=[(s_id, 200)])
 
     def test_patch_building_comment(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         bc_id = insert_dummy_building_comment()
         owner_id = BuildingComment.objects.get(id=bc_id).building.syndic.id
         b_id = insert_dummy_building()
@@ -110,11 +86,5 @@ class BuildingCommentAuthorizationTests(BaseAuthTest):
         def create():
             return insert_dummy_building_comment()
 
-        codes = {
-            "Default": 403,
-            "Admin": 204,
-            "Superstudent": 204,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 204, "Student": 403, "Syndic": 403}
         self.remove_view("building-comment/", codes, create=create)
