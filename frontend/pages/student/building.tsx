@@ -7,7 +7,7 @@ import {postPictureOfRemark} from "@/lib/picture-of-remark";
 import {useRouter} from "next/router";
 import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
 import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
-import {GarbageCollectionInterface, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
+import {GarbageCollectionInterface, garbageTypes, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
 
 
 interface ParsedUrlQuery {
@@ -70,10 +70,10 @@ export default function StudentBuilding() {
         }, console.error);
     }
 
-    function getGarbageCollection(buildingId : number) {
+    function getGarbageCollection(buildingId: number) {
         getGarbageCollectionFromBuilding(buildingId, {startDate: new Date(), endDate: new Date()}).then(res => {
-            const col : GarbageCollectionInterface[] = res.data;
-            console.log(col);
+            const col: GarbageCollectionInterface[] = res.data;
+            setGarbageCollections(col);
         }, console.error);
     }
 
@@ -146,7 +146,21 @@ export default function StudentBuilding() {
             <div className="card">
                 <div className="card-body">
                     <h5 className="card-title">{building ? getAddress(building) : ""}</h5>
-                    <p className="card-text"></p>
+                    {
+                        <ul>
+                            {
+                                garbageCollections.map((gar: GarbageCollectionInterface) => (
+                                    <li key={gar.id} className="card-text">
+                                        {
+                                            garbageTypes[gar.garbage_type] ?
+                                                garbageTypes[gar.garbage_type] :
+                                                gar.garbage_type
+                                        }
+                                    </li>
+                                ))
+                            }
+                        </ul>
+                    }
                 </div>
             </div>
             {errorMessages.length > 0 && (

@@ -2,11 +2,12 @@ import StudentHeader from "@/components/header/studentHeader";
 import {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
 import {getBuildingsOfTour, getTour, Tour} from "@/lib/tour";
-import {datesEqual, getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
 import {getRegion, RegionInterface} from "@/lib/region";
 import {BuildingInterface, getAddress} from "@/lib/building";
 import {Button} from "react-bootstrap";
 import {withAuthorisation} from "@/components/withAuthorisation";
+import {datesEqual} from "@/lib/date";
 
 interface ParsedUrlQuery {
 }
