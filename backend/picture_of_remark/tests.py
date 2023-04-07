@@ -38,6 +38,17 @@ class PictureOfRemarkTests(BaseTest):
         self.data1 = {"picture": f2, "remark_at_building": RaB}
         self.patch(f"picture-of-remark/{p_id}")
 
+    def test_patch_invalid_picture_of_remark(self):
+        RaB = insert_dummy_remark_at_building()
+        self.data1 = {"picture": f, "remark_at_building": RaB}
+        self.patch_invalid(f"picture-of-remark/")
+
+    def test_patch_error_picture_of_remark(self):
+        RaB = insert_dummy_remark_at_building()
+        self.data1 = {"picture": f, "remark_at_building": RaB}
+        self.data2 = {"picture": f2, "remark_at_building": RaB}
+        self.patch_error(f"picture-of-remark/")
+
     def test_remove_picture_of_remark(self):
         p_id = insert_dummy_picture_of_remark(f)
         self.remove(f"picture-of-remark/{p_id}")
