@@ -9,6 +9,7 @@ export default function StudentBuilding() {
     const [step, setStep] = useState<number>(0);
     const finalStep = 2;
     const [files, setFiles] = useState<File[]>([]);
+    const [stepDescription, setStepDescription] = useState<string>("");
 
     const [showRemarkModal, setShowRemarkModal] = useState<boolean>(false);
 
@@ -32,11 +33,10 @@ export default function StudentBuilding() {
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-
         console.log(files);
+        console.log(stepDescription);
 
         setFiles([]);
-
         if (step === finalStep) {
             console.log("Go to next building");
         } else {
@@ -59,6 +59,11 @@ export default function StudentBuilding() {
             <RemarkModal downloadFile={downloadFile} onHide={() => setShowRemarkModal(false)} show={showRemarkModal}/>
             <Form onSubmit={handleSubmit}>
                 <span className="h1">{typeNames[step]}</span>
+                <div>
+                    <label className="form-label">Beschrijving (optioneel):</label>
+                    <textarea className={`form-control form-control-lg`} value={stepDescription}
+                              onChange={e => setStepDescription(e.target.value)}></textarea>
+                </div>
                 <div>
                     <label className="form-label">Upload een foto</label>
                     <input className="form-control" type="file" onChange={handleFileChange} accept="image/*"/>
