@@ -5,9 +5,13 @@ import {FileList} from "@/components/student/FileList";
 import {postRemarkAtBuilding, RemarkAtBuilding, remarkTypes} from "@/lib/remark-at-building";
 import {postPictureOfRemark} from "@/lib/picture-of-remark";
 import {useRouter} from "next/router";
+import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
+import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import {GarbageCollectionInterface, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
 
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DataBuildingIdQuery extends ParsedUrlQuery {
     buildingId?: number;
@@ -19,10 +23,12 @@ interface DataBuildingIdQuery extends ParsedUrlQuery {
  */
 export default function StudentBuilding() {
     const router = useRouter();
-    const typeNames : string[] = ["Aankomst", "Binnen", "Vertrek"];
-    const typeRemarks : string[] = [remarkTypes["arrival"], remarkTypes["inside"], remarkTypes["leaving"]];
+    const typeNames: string[] = ["Aankomst", "Binnen", "Vertrek"];
+    const typeRemarks: string[] = [remarkTypes["arrival"], remarkTypes["inside"], remarkTypes["leaving"]];
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
+    const [studentOnTour, setStudentOnTour] = useState<StudentOnTour | null>(null);
 
     // Steps for normal process through building (arrival, inside & leaving)
     const [step, setStep] = useState<number>(0);
@@ -32,15 +38,44 @@ export default function StudentBuilding() {
     const [timeRegistry, setTimeRegistry] = useState<Date | null>(null);
 
     const [showRemarkModal, setShowRemarkModal] = useState<boolean>(false);
+    const [building, setBuilding] = useState<BuildingInterface | null>(null);
+
+    const [garbageCollections, setGarbageCollections] = useState<GarbageCollectionInterface[]>([]);
 
     useEffect(() => {
-        const query : DataBuildingIdQuery = router.query as DataBuildingIdQuery;
-        if (! query.buildingId || ! query.studentOnTourId) {
+        const query: DataBuildingIdQuery = router.query as DataBuildingIdQuery;
+        if (!query.buildingId || !query.studentOnTourId) {
             return;
         }
-        console.log("Building: " + query.buildingId);
-        console.log("StudentOnTour: " + query.studentOnTourId);
+
+        // Get the building, garbage collection & studentOnTour
+        getBuilding(query.buildingId);
+        getGarbageCollection(query.buildingId);
+        getStudentOnTour(query.studentOnTourId).then(res => {
+            const sots: StudentOnTourStringDate = res.data;
+            const sot: StudentOnTour = {
+                id: sots.id,
+                student: sots.student,
+                tour: sots.tour,
+                date: new Date(sots.date)
+            };
+            setStudentOnTour(sot);
+        }, console.error);
     }, [router.isReady]);
+
+    function getBuilding(buildingId: number) {
+        getBuildingInfo(buildingId).then(res => {
+            const b: BuildingInterface = res.data;
+            setBuilding(b);
+        }, console.error);
+    }
+
+    function getGarbageCollection(buildingId : number) {
+        getGarbageCollectionFromBuilding(buildingId, {startDate: new Date(), endDate: new Date()}).then(res => {
+            const col : GarbageCollectionInterface[] = res.data;
+            console.log(col);
+        }, console.error);
+    }
 
     // Handle when a file is selected
     function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -108,8 +143,14 @@ export default function StudentBuilding() {
     return (
         <div className="m-2">
             <RemarkModal onHide={() => setShowRemarkModal(false)} show={showRemarkModal}/>
+            <div className="card">
+                <div className="card-body">
+                    <h5 className="card-title">{building ? getAddress(building) : ""}</h5>
+                    <p className="card-text"></p>
+                </div>
+            </div>
             {errorMessages.length > 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
+                <div className="visible alert alert-danger alert-dismissible fade show mt-2 mb-2">
                     <ul>
                         {errorMessages.map((err: string, index: number) => (
                             <li key={index}>{err}</li>
@@ -119,14 +160,14 @@ export default function StudentBuilding() {
                 </div>
             )}
             <Form onSubmit={handleSubmit}>
-                <span className="h1">{typeNames[step]}</span>
+                <span className="h1 mt-2">{typeNames[step]}</span>
                 <div className="mb-2 mt-2">
                     <label className="form-label">Beschrijving (optioneel):</label>
                     <textarea className={`form-control form-control-lg`} value={stepDescription}
                               onChange={e => setStepDescription(e.target.value)}></textarea>
                 </div>
                 <div>
-                    <label className="form-label">Upload een foto</label>
+                    <label className="form-label">Upload één of meerdere foto's:</label>
                     <input className="form-control" type="file" onChange={handleFileChange} accept="image/*"/>
                 </div>
 

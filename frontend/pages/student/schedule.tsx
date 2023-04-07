@@ -1,14 +1,15 @@
 import StudentHeader from "@/components/header/studentHeader";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { getBuildingsOfTour, getTour, Tour } from "@/lib/tour";
-import { datesEqual, getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
-import { getRegion, RegionInterface } from "@/lib/region";
-import { BuildingInterface, getAddress } from "@/lib/building";
-import { Button } from "react-bootstrap";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {getBuildingsOfTour, getTour, Tour} from "@/lib/tour";
+import {datesEqual, getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import {getRegion, RegionInterface} from "@/lib/region";
+import {BuildingInterface, getAddress} from "@/lib/building";
+import {Button} from "react-bootstrap";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DataScheduleQuery extends ParsedUrlQuery {
     regionId?: number;
@@ -66,14 +67,16 @@ function StudentSchedule() {
         }
         const firstBuilding: BuildingInterface = buildings[0];
         await router.push({
-            pathname: `/student/building`,
-            query: {buildingId: firstBuilding.id, studentOnTourId: studentOnTour?.id},
-        }, "/student/building");
+                pathname: `/student/building`,
+                query: {buildingId: firstBuilding.id, studentOnTourId: studentOnTour?.id},
+            }
+            //, "/student/building"
+        );
     }
 
     return (
         <>
-            <StudentHeader />
+            <StudentHeader/>
             <div className="mt-3 mb-1 ms-2 me-2">
                 <span className="h1 fw-bold">{tour ? `Ronde ${tour?.name}` : ""}</span>
                 <p className="h5 fw-bold">{region ? `Regio ${region}` : ""}</p>
