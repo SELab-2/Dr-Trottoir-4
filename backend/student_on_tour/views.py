@@ -1,5 +1,6 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
+from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -165,7 +166,12 @@ class StartTourView(APIView):
     permission_classes = [IsAuthenticated, OwnerAccount]
     serializer_class = StudOnTourSerializer
 
-    @extend_schema()
+    @extend_schema(
+        request=serializers.Serializer({
+            "started_tour": serializers.DateTimeField(required=True)
+        }),
+        responses=post_docs(serializer_class)
+    )
     def post(self, request, student_on_tour_id):
         student_on_tour_instance = StudentOnTour.objects.filter(id=student_on_tour_id).first()
 
@@ -189,7 +195,12 @@ class EndTourView(APIView):
     permission_classes = [IsAuthenticated, OwnerAccount]
     serializer_class = StudOnTourSerializer
 
-    @extend_schema()
+    @extend_schema(
+        request=serializers.Serializer({
+            "completed_tour": serializers.DateTimeField(required=True)
+        }),
+        responses=post_docs(serializer_class)
+    )
     def post(self, request, student_on_tour_id):
         student_on_tour_instance = StudentOnTour.objects.filter(id=student_on_tour_id).first()
 
