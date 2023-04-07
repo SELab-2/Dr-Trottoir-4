@@ -105,7 +105,7 @@ class UserTests(BaseTest):
         self.get_non_existent("user/")
 
     def test_patch_user(self):
-        u = insert_test_user()
+        u = insert_test_user(role="superstudent")
         B_id = insert_dummy_region("Brugge")
         R_id = insert_dummy_role("student")
         self.data1 = {
@@ -122,4 +122,68 @@ class UserTests(BaseTest):
             ],
             "password": "testPassword1"
         }
-        self.patch(f"user/{u}")
+        self.patch(f"user/{u}", excluded=[
+            "username",
+            "is_staff",
+            "password"
+        ])
+
+    def test_patch_invalid_user(self):
+        B_id = insert_dummy_region("Brugge")
+        R_id = insert_dummy_role("student")
+        self.data1 = {
+            "username": "testUserfdsq",
+            "email": "testuserfdsq@example.com",
+            "is_staff": False,
+            "is_active": True,
+            "first_name": "Test1",
+            "last_name": "User1",
+            "phone_number": "+32487172525",
+            "role": R_id,
+            "region": [
+                B_id,
+            ],
+            "password": "testPassword1"
+        }
+        self.patch_invalid("user/")
+
+    def test_patch_error_user(self):
+        B_id = insert_dummy_region("Brugge")
+        R_id = insert_dummy_role("student")
+        self.data1 = {
+            "username": "testUserfdsq",
+            "email": "testuserfdsq@example.com",
+            "is_staff": False,
+            "is_active": True,
+            "first_name": "Test1",
+            "last_name": "User1",
+            "phone_number": "+32487172525",
+            "role": R_id,
+            "region": [
+                B_id,
+            ],
+            "password": "testPassword1"
+        }
+        self.data1 = {
+            "username": "fd",
+            "email": "fd@example.com",
+            "is_staff": True,
+            "is_active": False,
+            "first_name": "te",
+            "last_name": "fdsq",
+            "phone_number": "+32485172525",
+            "role": R_id,
+            "region": [
+                B_id,
+            ],
+            "password": "456"
+        }
+        self.patch_invalid("user/")
+
+    def test_remove_user(self):
+        u = insert_test_user(role="student")
+        # special case: user should still exist but will be inactive
+        self.remove(f"user/{u}", 200)
+
+    def test_remove_nonexistent_user(self):
+        self.remove_invalid("user/")

@@ -92,7 +92,9 @@ class BaseTest(TestCase):
         resp = self.client.get(backend_url + "/" + url + "1234567", follow=True)
         assert resp.status_code == 404, errorMessage("get_non_existent", 404, resp.status_code)
 
-    def patch(self, url, special=None):
+    def patch(self, url, special=None, excluded=None):
+        if excluded is None:
+            excluded = []
         if special is None:
             special = []
         assert self.data1 is not None, "no data found"
@@ -104,13 +106,15 @@ class BaseTest(TestCase):
         # response2 = self.client.patch(backend_url + "/" + url, self.data1, follow=True)
         assert response2.status_code == 200, errorMessage("patch", 200, response2.status_code)
         response3 = self.client.get(backend_url + "/" + url, follow=True)
-        excluded = []
+        checked = []
         for key, value in special:
+            if key in excluded:
+                continue
             assert key in response3.data, errorMessage("patch", key, None)
             assert value == response3.data[key], errorMessage("patch", value, response3.data[key])
-            excluded.append(key)
+            checked.append(key)
         for key in self.data1:
-            if key in excluded:
+            if key in checked or key in excluded:
                 continue
             # all data should be present
             assert key in response3.data, errorMessage("patch", key, None)
@@ -165,11 +169,14 @@ class BaseTest(TestCase):
         else:
             assert response2.status_code == special, errorMessage("patch_error", special, response2.status_code)
 
-    def remove(self, url):
+    def remove(self, url, special=None):
         response2 = self.client.delete(backend_url + "/" + url, follow=True)
         assert response2.status_code == 204, errorMessage("remove", 204, response2.status_code)
         response3 = self.client.get(backend_url + "/" + url, follow=True)
-        assert response3.status_code == 404, errorMessage("remove", 404, response3.status_code)
+        if special is not None:
+            assert response3.status_code == special, errorMessage("remove", special, response3.status_code)
+        else:
+            assert response3.status_code == 404, errorMessage("remove", 404, response3.status_code)
 
     def remove_invalid(self, url):
         response2 = self.client.delete(backend_url + "/" + url + "123434687658", follow=True)

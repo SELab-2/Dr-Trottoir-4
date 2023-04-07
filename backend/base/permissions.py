@@ -174,7 +174,7 @@ class CanCreateUser(BasePermission):
                 role_instance = Role.objects.filter(id=data["role"]).first()
                 if not role_instance:
                     return False
-                return request.user.role.rank == 1 or request.user.role.rank > role_instance.rank
+                return request.user.role.rank == 1 or request.user.role.rank <= role_instance.rank
         return True
 
 
@@ -199,7 +199,13 @@ class CanEditUser(BasePermission):
     message = "You don't have the right permissions to edit this user"
 
     def has_object_permission(self, request, view, obj: User):
+        print("here")
         if request.method in ["PATCH"]:
+            print("here2")
+            print(request.user.role.rank)
+            print(type(request.user.role.rank))
+            print(obj.role.rank)
+            print(type(obj.role.rank))
             return request.user.id == obj.id or request.user.role.rank < obj.role.rank
         return True
 
