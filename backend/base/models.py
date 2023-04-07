@@ -364,6 +364,9 @@ class PictureOfRemark(models.Model):
     remark_at_building = models.ForeignKey(RemarkAtBuilding, on_delete=models.SET_NULL, null=True)
     hash = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return f"PictureOfRemark for {self.remark_at_building} (id:{self.remark_at_building.id}) (file: {self.picture}\thash: {self.hash})"
+
     class Meta:
         constraints = [
             UniqueConstraint(
