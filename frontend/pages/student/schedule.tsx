@@ -60,6 +60,17 @@ function StudentSchedule() {
         }
     }, [router.isReady]);
 
+    async function routeToFirstBuilding() {
+        if (buildings.length === 0) {
+            return;
+        }
+        const firstBuilding: BuildingInterface = buildings[0];
+        await router.push({
+            pathname: `/student/building`,
+            query: {buildingId: firstBuilding.id, studentOnTourId: studentOnTour?.id},
+        }, "/student/building");
+    }
+
     return (
         <>
             <StudentHeader />
@@ -73,7 +84,7 @@ function StudentSchedule() {
                         <div className="list-group">
                             {buildings.map((el: BuildingInterface, index: number) => {
                                 return (
-                                    <a className="list-group-item list-group-item-action" key={el.id}>
+                                    <a className="list-group-item list-group-item-action" key={`${el.id}-${index}`}>
                                         <div className="d-flex w-100 justify-content-between">
                                             <h5 className="mb-1">{getAddress(el)}</h5>
                                             <small>{index + 1}</small>
@@ -87,7 +98,7 @@ function StudentSchedule() {
                 )}
                 <div className="mt-1">
                     {(studentOnTour ? datesEqual(new Date(), studentOnTour?.date) : false) && (
-                        <Button variant="primary" className="btn-dark">
+                        <Button variant="primary" className="btn-dark" onClick={() => routeToFirstBuilding().then()}>
                             Start deze ronde
                         </Button>
                     )}

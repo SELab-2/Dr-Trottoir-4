@@ -4,8 +4,21 @@ import RemarkModal from "@/components/student/remarkModal";
 import {FileList} from "@/components/student/FileList";
 import {postRemarkAtBuilding, RemarkAtBuilding, remarkTypes} from "@/lib/remark-at-building";
 import {postPictureOfRemark} from "@/lib/picture-of-remark";
+import {useRouter} from "next/router";
 
+
+interface ParsedUrlQuery {}
+
+interface DataBuildingIdQuery extends ParsedUrlQuery {
+    buildingId?: number;
+    studentOnTourId?: number;
+}
+
+/**
+ * This page receives a studentOnTourId & buildingId, otherwise nothing is displayed
+ */
 export default function StudentBuilding() {
+    const router = useRouter();
     const typeNames : string[] = ["Aankomst", "Binnen", "Vertrek"];
     const typeRemarks : string[] = [remarkTypes["arrival"], remarkTypes["inside"], remarkTypes["leaving"]];
 
@@ -21,8 +34,13 @@ export default function StudentBuilding() {
     const [showRemarkModal, setShowRemarkModal] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log(files);
-    }, []);
+        const query : DataBuildingIdQuery = router.query as DataBuildingIdQuery;
+        if (! query.buildingId || ! query.studentOnTourId) {
+            return;
+        }
+        console.log("Building: " + query.buildingId);
+        console.log("StudentOnTour: " + query.studentOnTourId);
+    }, [router.isReady]);
 
     // Handle when a file is selected
     function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
