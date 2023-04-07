@@ -1,15 +1,14 @@
 import {Button, Form, Modal} from "react-bootstrap";
 import React, {useState} from "react";
+import {FileList} from "@/components/student/FileList";
 
 export default function RemarkModal(
     {
         show,
-        onHide,
-        downloadFile
+        onHide
     }: {
         show: boolean;
         onHide: () => void;
-        downloadFile: (file: File, index: number) => JSX.Element
     }
 ) {
 
@@ -50,14 +49,7 @@ export default function RemarkModal(
                         <label className="form-label">Upload een foto bij uw opmerking</label>
                         <input className="form-control" type="file" onChange={handleRemarkFileChange} accept="image/*"/>
                     </div>
-                    <ol>
-                        {remarkFiles.map((file, index) => (
-                            <li key={index}>
-                                <div>{downloadFile(file, index)}</div>
-                                <button type="button" onClick={() => handleRemoveRemarkFile(index)}>Remove</button>
-                            </li>
-                        ))}
-                    </ol>
+                    <FileList files={remarkFiles} handleRemoveFile={handleRemoveRemarkFile}/>
                 </Form>
             </Modal.Body>
             <Modal.Footer>

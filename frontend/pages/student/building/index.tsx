@@ -1,6 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {Button, Form} from "react-bootstrap";
 import RemarkModal from "@/components/student/remarkModal";
+import {IconButton, Tooltip} from "@mui/material";
+import {Emailtemplate} from "@/lib/emailtemplate";
+import {Delete} from "@mui/icons-material";
+import {FileList} from "@/components/student/FileList";
 
 export default function StudentBuilding() {
     const typeNames = ["Aankomst", "Binnen", "Vertrek"];
@@ -10,6 +14,7 @@ export default function StudentBuilding() {
     const finalStep = 2;
     const [files, setFiles] = useState<File[]>([]);
     const [stepDescription, setStepDescription] = useState<string>("");
+    const [timeRegistry, setTimeRegistry] = useState<Date | null>(null);
 
     const [showRemarkModal, setShowRemarkModal] = useState<boolean>(false);
 
@@ -18,6 +23,9 @@ export default function StudentBuilding() {
     }, []);
 
     function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+        if (! files) {
+            setTimeRegistry(new Date());
+        }
         const newFiles: FileList | null = event.target.files;
         if (!newFiles) {
             return;
@@ -37,6 +45,10 @@ export default function StudentBuilding() {
         console.log(stepDescription);
 
         setFiles([]);
+        setTimeRegistry(null);
+
+        // TODO: upload the files to the server for resp. arrival, inside or leaving
+
         if (step === finalStep) {
             console.log("Go to next building");
         } else {
@@ -44,19 +56,9 @@ export default function StudentBuilding() {
         }
     }
 
-    function downloadFile(file: File, index: number) {
-        const fileUrl = URL.createObjectURL(file);
-        const fileName = file.name;
-        return (
-            <a href={fileUrl} download={fileName}>
-                {`upload_${index + 1}`}
-            </a>
-        );
-    }
-
     return (
-        <>
-            <RemarkModal downloadFile={downloadFile} onHide={() => setShowRemarkModal(false)} show={showRemarkModal}/>
+        <div className="mt-2 ms-2">
+            <RemarkModal onHide={() => setShowRemarkModal(false)} show={showRemarkModal}/>
             <Form onSubmit={handleSubmit}>
                 <span className="h1">{typeNames[step]}</span>
                 <div>
@@ -68,19 +70,14 @@ export default function StudentBuilding() {
                     <label className="form-label">Upload een foto</label>
                     <input className="form-control" type="file" onChange={handleFileChange} accept="image/*"/>
                 </div>
-                <ol/>
-                {files.map((file, index) => (
-                    <li key={index}>
-                        <div>{downloadFile(file, index)}</div>
-                        <button type="button" onClick={() => handleRemoveFile(index)}>Remove</button>
-                    </li>
-                ))}
-                <br/>
+
+                <FileList files={files} handleRemoveFile={handleRemoveFile}/>
+
                 <Button variant="primary"
-                        className="btn-dark" type="submit">Submit</Button>
+                        className="btn-dark" type="submit">{`Upload bestanden`}</Button>
             </Form>
             <Button variant="primary"
                     className="btn-dark" onClick={() => setShowRemarkModal(true)}>Maak een opmerking</Button>
-        </>
+        </div>
     );
 }
