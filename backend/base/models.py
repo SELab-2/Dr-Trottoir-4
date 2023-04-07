@@ -310,7 +310,6 @@ class StudentOnTour(models.Model):
             self.started_tour = self.started_tour.astimezone()
             self.completed_tour = self.completed_tour.astimezone()
 
-            print(type(self.started_tour))
             if not self.completed_tour > self.started_tour:
                 raise ValidationError(f"Time of completion must come after time of starting the tour.")
 
