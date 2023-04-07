@@ -15,9 +15,11 @@ import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
 import {User} from "@/lib/user";
 import {Tour} from "@/lib/tour";
+import {formatDate, postStudentOnTour} from "@/lib/student-on-tour";
+import {handleError} from "@/lib/error";
 
 interface MyEvent extends Event {
-    tour : Tour
+    tour: Tour
     student: User
     start: Date
     end: Date
@@ -101,7 +103,6 @@ const MyCalendar: FC<Props> = (props) => {
                 start_time: eventData.start_time,
                 end_time: eventData.end_time,
             }));
-            console.log([...currentEvents, ...newEvents])
             return [...currentEvents, ...newEvents];
         });
     }
@@ -131,8 +132,41 @@ const MyCalendar: FC<Props> = (props) => {
         });
     }
 
+    const getDaysArray = function (start: Date, end: Date) {
+        let arr = [];
+        let dt = new Date(start);
+        for (; dt <= new Date(end); dt.setDate(dt.getDate() + 1)) {
+            arr.push(new Date(dt));
+        }
+        return arr;
+    };
 
-    const handlePopupOpen = () => {
+    const handleScheduleSave = () => {
+        console.log(events);
+        for (let e in events) {
+            const dates = getDaysArray(events[e].start, events[e].end);
+            for (let d in dates) {
+                console.log(events[e].tour.id, events[e].student.id, formatDate(dates[d]));
+                postStudentOnTour(events[e].tour.id, events[e].student.id, formatDate(dates[d])).then(
+                    (_) => {
+                        //TODO
+                        console.log("success")
+                    },
+                    (err) => {
+                        const e = handleError(err);
+                        //setErrorMessages(e);
+                    }
+                );
+            }
+        }
+        console.log(events);
+    };
+
+    const handleScheduleLoad = () => {
+        console.log("Load");
+    };
+
+    const handlePopupOpenAdd = () => {
         setPopupIsOpenAdd(true);
     };
 
@@ -148,7 +182,9 @@ const MyCalendar: FC<Props> = (props) => {
 
     return (
         <>
-            <button className="btn btn-primary mb-3" onClick={handlePopupOpen}>Voeg ronde toe</button>
+            <button className="btn btn-primary mb-3" onClick={handlePopupOpenAdd}>Voeg ronde toe</button>
+            <button className="btn btn-primary mb-3" onClick={handleScheduleLoad}>Kies vorige planning</button>
+            <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>Sla planning op</button>
             <DnDCalendar
                 messages={messages}
                 culture={'nl-BE'}
