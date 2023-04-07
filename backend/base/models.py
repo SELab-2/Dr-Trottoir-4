@@ -306,6 +306,14 @@ class StudentOnTour(models.Model):
             if not self.student.region.all().filter(region=tour_region).exists():
                 raise ValidationError(f"Student ({user.email}) doesn't do tours in this region ({tour_region}).")
 
+        if self.started_tour and self.completed_tour:
+            self.started_tour = self.started_tour.astimezone()
+            self.completed_tour = self.completed_tour.astimezone()
+
+            print(type(self.started_tour))
+            if not self.completed_tour > self.started_tour:
+                raise ValidationError(f"Time of completion must come after time of starting the tour.")
+
     class Meta:
         constraints = [
             UniqueConstraint(

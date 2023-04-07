@@ -5,6 +5,8 @@ from .views import (
     TourPerStudentView,
     AllView,
     Default,
+    StartTourView,
+    EndTourView
 )
 
 urlpatterns = [
