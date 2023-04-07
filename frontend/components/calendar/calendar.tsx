@@ -13,6 +13,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import EditEventModal from "@/components/calendar/editEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
+import {User} from "@/lib/user";
+import {Tour} from "@/lib/tour";
 
 interface MyEvent extends Event {
     student: string
@@ -22,7 +24,12 @@ interface MyEvent extends Event {
     end_time: string
 }
 
-const MyCalendar: FC = () => {
+interface Props {
+    students: User[]
+    tours: Tour[]
+}
+
+const MyCalendar: FC<Props> = (props) => {
     const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -192,6 +199,8 @@ const MyCalendar: FC = () => {
                 />
             )}
             <AddEventModal
+                allStudents={props.students}
+                allTours={props.tours}
                 isOpen={popupIsOpenAdd}
                 onClose={handlePopupCloseAdd}
                 onSave={onEventAdd}

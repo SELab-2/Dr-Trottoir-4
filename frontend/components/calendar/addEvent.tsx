@@ -2,11 +2,13 @@ import {ChangeEvent, useState} from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import {addDays, startOfMonth, startOfWeek} from 'date-fns';
+import {User} from "@/lib/user";
+import {Tour} from "@/lib/tour";
 
 function AddEventModal(data: any) {
-    const {isOpen, onClose, onSave, onSaveMultiple} = data
-    const [title, setTitle] = useState("");
-    const [student, setStudent] = useState("");
+    const {allStudents, allTours, isOpen, onClose, onSave, onSaveMultiple} = data
+    const [tour, setTour] = useState<Tour | null>(null);
+    const [student, setStudent] = useState<User | null>(null);
     const [start, setStart] = useState(new Date(addDays(startOfWeek(startOfMonth(new Date()), {weekStartsOn: 0}), 8).toLocaleString('en', {timeZone: 'America/New_York'})));
     const [start_time, setStarttime] = useState("17:00");
     const [end_time, setEndtime] = useState("20:00");
@@ -29,7 +31,7 @@ function AddEventModal(data: any) {
         if (checked) {
             start.setHours(0);
             const end = addDays(start, 6);
-            onSave({title, student, start, end, start_time, end_time});
+            onSave({title:tour?.name, student: student?.first_name + " " + student?.last_name, start, end, start_time, end_time});
             onClose();
         } else {
             week.pop();
@@ -44,7 +46,7 @@ function AddEventModal(data: any) {
                 new_start = new_end;
             }
             onSaveMultiple({
-                title: title,
+                title: tour,
                 data: data,
                 start_time: start_time,
                 end_time: end_time,
@@ -63,6 +65,18 @@ function AddEventModal(data: any) {
         setChecked(!checked);
     }
 
+    const handleStudentChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        const studentID = Number(e.target.value);
+        const selectedStudent = allStudents.find((student: User) => student.id === studentID);
+        setStudent(selectedStudent);
+    }
+
+    const handleTourChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        const tourID = Number(e.target.value);
+        const selectedTour = allTours.find((tour: Tour) => tour.id === tourID);
+        setTour(selectedTour);
+    }
+
     const updateWeekdayStudent = (e: ChangeEvent<HTMLInputElement>, index: number) => {
         const updatedWeek = [...week];
         updatedWeek[index] = e.target.value;
@@ -79,21 +93,21 @@ function AddEventModal(data: any) {
                 <form>
                     <div className="form-group">
                         <label>Ronde</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                        />
+                        <select className="form-control" value={tour?.id} onChange={handleTourChange}>
+                            <option value="">-- Selecteer Ronde --</option>
+                            {allTours.map((tour: Tour) => (
+                                <option key={tour.id} value={tour.id}>{tour.name}</option>
+                            ))}
+                        </select>
                     </div>
                     <div className="form-group">
                         <label>Student</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={student}
-                            onChange={(e) => setStudent(e.target.value)}
-                        />
+                        <select className="form-control" value={student?.id} onChange={handleStudentChange}>
+                            <option value="">-- Selecteer student(e) --</option>
+                            {allStudents.map((student: User) => (
+                                <option key={student.id} value={student.id}>{student.first_name} {student.last_name}</option>
+                            ))}
+                        </select>
                     </div>
                     <div className="form-row">
                         <div className="col">
@@ -114,7 +128,7 @@ function AddEventModal(data: any) {
                                 </div>
                                 <div>
                                     <label>Maandag:</label>
-                                    <input type="text" className="form-control" value={week[1]}
+                                    <input type="select" className="form-control" value={week[1]}
                                            onChange={e => updateWeekdayStudent(e, 1)}/>
                                 </div>
                                 <div>
