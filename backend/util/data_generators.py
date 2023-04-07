@@ -160,10 +160,7 @@ def insert_dummy_remark_at_building():
 def insert_dummy_picture_of_remark(picture):
     f = picture
     hashed_image = hashlib.sha1()
-    # f.seek(0)
-    print(f.open().read())
     hashed_image.update(f.open().read())
-    print(hashed_image.hexdigest())
     PoR = PictureOfRemark(picture=picture,
                           remark_at_building=RemarkAtBuilding.objects.get(id=insert_dummy_remark_at_building()),
                           hash=hashed_image)
