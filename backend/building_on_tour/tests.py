@@ -139,7 +139,7 @@ class BuildingOnTourAuthorizationTests(BaseAuthTest):
         BoT_id = insert_dummy_building_on_tour()
         t_id = insert_dummy_tour()
         b_id = insert_dummy_building(street="Zuid")
-        self.data2 = {
+        self.data1 = {
             "tour": t_id,
             "building": b_id,
             "index": 1

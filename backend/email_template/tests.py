@@ -67,7 +67,7 @@ class EmailTemplateTests(BaseTest):
         self.remove_invalid("email-template/")
 
 
-class BuildingOnTourAuthorizationTests(BaseAuthTest):
+class EmailTemplateAuthorizationTests(BaseAuthTest):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
 
@@ -114,7 +114,7 @@ class BuildingOnTourAuthorizationTests(BaseAuthTest):
             "Student": 403,
             "Syndic": 403
         }
-        self.data2 = {
+        self.data1 = {
             "name": "testTemplate2",
             "template": "<p>{{name}<p>"
         }
