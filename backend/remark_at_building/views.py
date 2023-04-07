@@ -22,7 +22,8 @@ from util.request_response_util import (
     delete_docs,
     patch_success,
     patch_docs,
-    get_docs, post_success,
+    get_docs,
+    post_success,
 )
 
 TRANSLATE = {
