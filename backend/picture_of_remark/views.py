@@ -44,10 +44,10 @@ class Default(APIView):
 
         set_keys_of_instance(picture_of_remark_instance, data, TRANSLATE)
 
+        self.check_object_permissions(request, picture_of_remark_instance.remark_at_building.student_on_tour.student)
+
         if r := try_full_clean_and_save(picture_of_remark_instance):
             return r
-
-        self.check_object_permissions(request, picture_of_remark_instance.remark_at_building.student_on_tour.student)
 
         return post_success(self.serializer_class(picture_of_remark_instance))
 
@@ -96,6 +96,10 @@ class PictureOfRemarkIndividualView(APIView):
         self.check_object_permissions(request, picture_of_remark_instance.remark_at_building.student_on_tour.student)
 
         data = request_to_dict(request.data)
+        f = request.data["picture"]
+        hashed_image = hashlib.sha1()
+        hashed_image.update(f.open().read())
+        data["hash"] = hashed_image.hexdigest()
 
         set_keys_of_instance(picture_of_remark_instance, data, TRANSLATE)
 
