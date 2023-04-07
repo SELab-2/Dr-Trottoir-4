@@ -70,7 +70,6 @@ export default function UserProfile() {
         }
         patchUser(user.id, patchBody).then(
             (res) => {
-                console.log(res.data);
                 const u: User = res.data;
                 setUserInfo(u);
                 setSuccessPatch(true);
@@ -81,10 +80,6 @@ export default function UserProfile() {
             }
         );
     }
-
-    useEffect(() => {
-        console.log(selectedRegions);
-    }, [selectedRegions]);
 
     return (
         <>
@@ -107,7 +102,7 @@ export default function UserProfile() {
                     <button type="button" className="btn-close" onClick={() => setSuccessPatch(false)}></button>
                 </div>
             )}
-            <form>
+            <form className="ms-2 mt-2 me-2">
                 <div className="d-flex align-items-center mb-3 pb-1">
                     <i className="fas fa-cubes fa-2x me-3" />
                     <span className="h1 fw-bold mb-0">Profiel</span>
