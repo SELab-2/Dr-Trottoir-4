@@ -91,15 +91,18 @@ class ManualBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding]
     serializer_class = ManualSerializer
 
-    @extend_schema(responses=get_docs(ManualSerializer),
-                   parameters=param_docs(
-                       {
-                           "most-recent": (
-                                   "When set to 'true', only the most recent manual will be returned", False,
-                                   OpenApiTypes.BOOL
-                           )
-                       }
-                   ))
+    @extend_schema(
+        responses=get_docs(ManualSerializer),
+        parameters=param_docs(
+            {
+                "most-recent": (
+                    "When set to 'true', only the most recent manual will be returned",
+                    False,
+                    OpenApiTypes.BOOL,
+                )
+            }
+        ),
+    )
     def get(self, request, building_id):
         """
         Get all manuals of a building with given id
@@ -114,7 +117,8 @@ class ManualBuildingView(APIView):
             if param.capitalize() not in ["True", "False"]:
                 return Response(
                     {"message": f"Invalid value for boolean parameter 'most-recent': {param} (true or false expected)"},
-                    status=status.HTTP_400_BAD_REQUEST)
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             else:
                 most_recent_only = bool(param.capitalize())
 
