@@ -173,7 +173,7 @@ class TimeTourViewBase(APIView):
         self.check_object_permissions(request, student_on_tour_instance.student)
 
         setattr(student_on_tour_instance, field_name, datetime.now())
-        student_on_tour_instance.save()
+        student_on_tour_instance.save(update_fields=field_name)
 
         return post_success(self.serializer_class(student_on_tour_instance))
 

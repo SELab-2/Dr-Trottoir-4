@@ -11,7 +11,7 @@ import os
 
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
-from django.urls import re_path
+from django.urls import re_path, path
 from . import consumers
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
@@ -19,6 +19,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": URLRouter([
-        re_path(r'ws/student_on_tour/(?P<student_on_tour_id>\w+)/$', consumers.StudentOnTourConsumer.as_asgi()),
+        re_path(r'ws/student-on-tour/(?P<student_on_tour_id>\w+)/$',
+                consumers.IndividualStudentOnTourConsumer.as_asgi()),
+        path('ws/student-on-tour/all/', consumers.AllStudentOnTourConsumer.as_asgi()),
     ])
 })

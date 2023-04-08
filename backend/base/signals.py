@@ -27,34 +27,27 @@ def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs
 
 
 @receiver(post_save, sender=StudentOnTour)
-def set_max_building_index(sender, instance: StudentOnTour, created, **kwargs):
-    if created or instance.started_tour:
-        max_index = instance.tour.buildingontour_set.aggregate(Max('index'))['index__max']
-        instance.max_building_index = max_index
-        instance.save()
-
-
-@receiver(post_save, sender=StudentOnTour)
-def student_on_tour_update(sender, instance: StudentOnTour, **kwargs):
-    if 'update_fields' in kwargs and 'current_building_index' not in kwargs['update_fields']:
-        # The update didn't modify the current_building_index field, so no need to send a message
+def student_on_tour_update(sender, instance, update_fields, **kwargs):
+    if 'started_tour' in update_fields:
+        event_type = 'student_on_tour_started'
+    elif 'completed_tour' in update_fields:
+        event_type = 'student_on_tour_completed_tour'
+    else:
         return
-
-    message = {
-        'type': 'student_on_tour_update',
-        'data': {
-            'id': instance.id,
-            'current_building_index': instance.current_building_index,
-        }
-    }
 
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        "student_on_tour_updates",
+        'student_on_tour_updates',
         {
-            "type": "student_on_tour_update",
-            "student_on_tour_id": instance.id,
-            "current_building_index": instance.current_building_index,
-            "max_building_index": instance.max_building_index
+            'type': event_type,
+            'student_on_tour': instance,
         }
     )
+
+
+@receiver(post_save, sender=StudentOnTour)
+def set_max_building_index(sender, instance: StudentOnTour, created, **kwargs):
+    if instance.started_tour:
+        max_index = instance.tour.buildingontour_set.aggregate(Max('index'))['index__max']
+        instance.max_building_index = max_index
+        instance.save()
