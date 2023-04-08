@@ -6,7 +6,7 @@ export interface BuildingManual {
     id: number,
     building: number,
     version_number: 0,
-    file: File
+    file: string
 }
 
 export async function getManualsForBuilding(buildingId: number): Promise<AxiosResponse<any>> {
@@ -14,4 +14,8 @@ export async function getManualsForBuilding(buildingId: number): Promise<AxiosRe
     return await api.get(get_url, {
         headers: {"Content-Type": "multipart/form-data"},
     });
+}
+
+export function getManualPath(relativePath : string) {
+    return `${process.env.NEXT_PUBLIC_BASE_API_URL}${relativePath}`
 }

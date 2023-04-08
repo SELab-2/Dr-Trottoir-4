@@ -16,7 +16,7 @@ export function FileList(
         const fileUrl = URL.createObjectURL(file);
         const fileName = file.name;
         return (
-            <a href={fileUrl} download={fileName}>{`upload_${index + 1}`}</a>
+            <a href={fileUrl} download={fileName} style={{ textDecoration: "underline" }}>{`upload_${index + 1}`}</a>
         );
     }
 

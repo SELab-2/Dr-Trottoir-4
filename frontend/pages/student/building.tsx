@@ -10,7 +10,8 @@ import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/st
 import {GarbageCollectionInterface, garbageTypes, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
 import {BuildingComment, getAllBuildingCommentsByBuildingID} from "@/lib/building-comment";
 import StudentHeader from "@/components/header/studentHeader";
-import {BuildingManual, getManualsForBuilding} from "@/lib/building-manual";
+import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/building-manual";
+import api from "@/lib/api/axios";
 
 
 interface ParsedUrlQuery {
@@ -46,6 +47,7 @@ export default function StudentBuilding() {
     const [garbageCollections, setGarbageCollections] = useState<GarbageCollectionInterface[]>([]);
     const [buildingComments, setBuildingComments] = useState<BuildingComment[]>([]);
     const [manual, setManual] = useState<BuildingManual | null>()
+    const [url, setUrl] = useState<string>("");
 
     useEffect(() => {
         const query: DataBuildingIdQuery = router.query as DataBuildingIdQuery;
@@ -93,13 +95,13 @@ export default function StudentBuilding() {
 
     function getBuildingManual(buildingId: number) {
         getManualsForBuilding(buildingId).then((res) => {
-            console.log(res.data);
-            /*const manuals: BuildingManual[] = res.data;
+            const manuals: BuildingManual[] = res.data;
             if (manuals.length === 0) {
                 return;
             }
-            setManual(manuals[0]);
-            console.log(manuals[0]);*/
+            const m: BuildingManual = manuals[0];
+            m.file = getManualPath(m.file);
+            setManual(m);
         }, console.error);
     }
 
@@ -210,7 +212,7 @@ export default function StudentBuilding() {
                                 <h5>Handleiding van gebouw:</h5>
                                 <ul className="list-group list-group-flush">
                                     <li className="list-group-item">
-                                        <a href={URL.createObjectURL(manual.file)} download={manual.file.name}>
+                                        <a href={manual.file} download style={{ textDecoration: "underline" }}>
                                             Handleiding
                                         </a>
                                     </li>
