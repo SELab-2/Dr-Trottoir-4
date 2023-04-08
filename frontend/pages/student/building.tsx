@@ -1,22 +1,20 @@
-import React, {useEffect, useState} from "react";
-import {Button, Form} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Form } from "react-bootstrap";
 import RemarkModal from "@/components/student/remarkModal";
-import {FileList} from "@/components/student/FileList";
-import {postRemarkAtBuilding, RemarkAtBuilding, remarkTypes} from "@/lib/remark-at-building";
-import {postPictureOfRemark} from "@/lib/picture-of-remark";
-import {useRouter} from "next/router";
-import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
-import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
-import {GarbageCollectionInterface, garbageTypes, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
-import {BuildingComment, getAllBuildingCommentsByBuildingID} from "@/lib/building-comment";
+import { FileList } from "@/components/student/FileList";
+import { postRemarkAtBuilding, RemarkAtBuilding, remarkTypes } from "@/lib/remark-at-building";
+import { postPictureOfRemark } from "@/lib/picture-of-remark";
+import { useRouter } from "next/router";
+import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
+import { getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import { GarbageCollectionInterface, garbageTypes, getGarbageCollectionFromBuilding } from "@/lib/garbage-collection";
+import { BuildingComment, getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
 import StudentHeader from "@/components/header/studentHeader";
-import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/building-manual";
+import { BuildingManual, getManualPath, getManualsForBuilding } from "@/lib/building-manual";
 import api from "@/lib/api/axios";
-import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
+import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 
-
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DataBuildingIdQuery extends ParsedUrlQuery {
     studentOnTourId?: number;
@@ -46,7 +44,7 @@ export default function StudentBuilding() {
 
     const [garbageCollections, setGarbageCollections] = useState<GarbageCollectionInterface[]>([]);
     const [buildingComments, setBuildingComments] = useState<BuildingComment[]>([]);
-    const [manual, setManual] = useState<BuildingManual | null>()
+    const [manual, setManual] = useState<BuildingManual | null>();
     const [buildingsOnTour, setBuildingsOnTour] = useState<BuildingOnTour[]>([]);
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
@@ -56,13 +54,13 @@ export default function StudentBuilding() {
             return;
         }
         // Get the building, garbage collection, buildingComments & studentOnTour
-        getStudentOnTour(query.studentOnTourId).then(res => {
+        getStudentOnTour(query.studentOnTourId).then((res) => {
             const sots: StudentOnTourStringDate = res.data;
             const sot: StudentOnTour = {
                 id: sots.id,
                 student: sots.student,
                 tour: sots.tour,
-                date: new Date(sots.date)
+                date: new Date(sots.date),
             };
             setStudentOnTour(sot);
             getBuildingsOnTour(sots.tour);
@@ -83,7 +81,7 @@ export default function StudentBuilding() {
 
     // Get the building with id
     function getBuilding(buildingId: number) {
-        getBuildingInfo(buildingId).then(res => {
+        getBuildingInfo(buildingId).then((res) => {
             const b: BuildingInterface = res.data;
             setBuilding(b);
         }, console.error);
@@ -91,7 +89,7 @@ export default function StudentBuilding() {
 
     // Get the buildings on a tour
     function getBuildingsOnTour(tourId: number) {
-        getAllBuildingsOnTourWithTourID(tourId).then(res => {
+        getAllBuildingsOnTourWithTourID(tourId).then((res) => {
             const bot: BuildingOnTour[] = res.data;
             bot.sort((a, b) => a.index - b.index);
             setBuildingsOnTour(bot);
@@ -100,7 +98,7 @@ export default function StudentBuilding() {
 
     // Get the garbage collection for a building for today
     function getGarbageCollection(buildingId: number) {
-        getGarbageCollectionFromBuilding(buildingId, {startDate: new Date(), endDate: new Date()}).then(res => {
+        getGarbageCollectionFromBuilding(buildingId, { startDate: new Date(), endDate: new Date() }).then((res) => {
             const col: GarbageCollectionInterface[] = res.data;
             setGarbageCollections(col);
         }, console.error);
@@ -108,7 +106,7 @@ export default function StudentBuilding() {
 
     // Get the comments of a building
     function getBuildingComments(buildingId: number) {
-        getAllBuildingCommentsByBuildingID(buildingId).then(res => {
+        getAllBuildingCommentsByBuildingID(buildingId).then((res) => {
             const bc: BuildingComment[] = res.data;
             setBuildingComments(bc);
         }, console.error);
@@ -181,8 +179,7 @@ export default function StudentBuilding() {
         ).then((res) => {
             const remark: RemarkAtBuilding = res.data;
             files.forEach((f: File) => {
-                postPictureOfRemark(f, remark.id).then(_ => {
-                }, console.error);
+                postPictureOfRemark(f, remark.id).then((_) => {}, console.error);
             });
 
             // remove all data
@@ -202,59 +199,54 @@ export default function StudentBuilding() {
 
     return (
         <>
-            <StudentHeader/>
+            <StudentHeader />
             <div className="m-2">
-                <RemarkModal onHide={() => setShowRemarkModal(false)} show={showRemarkModal}
-                             studentOnTour={studentOnTour} building={building}/>
+                <RemarkModal
+                    onHide={() => setShowRemarkModal(false)}
+                    show={showRemarkModal}
+                    studentOnTour={studentOnTour}
+                    building={building}
+                />
                 <div className="card">
                     <div className="card-body">
                         <h5 className="card-title">{building ? getAddress(building) : ""}</h5>
                         {
                             <ul>
-                                {
-                                    garbageCollections.map((gar: GarbageCollectionInterface) => (
-                                        <li key={gar.id} className="card-subtitle mb-2 text-muted">
-                                            {
-                                                garbageTypes[gar.garbage_type] ?
-                                                    garbageTypes[gar.garbage_type] :
-                                                    gar.garbage_type
-                                            }
-                                        </li>
-                                    ))
-                                }
+                                {garbageCollections.map((gar: GarbageCollectionInterface) => (
+                                    <li key={gar.id} className="card-subtitle mb-2 text-muted">
+                                        {garbageTypes[gar.garbage_type]
+                                            ? garbageTypes[gar.garbage_type]
+                                            : gar.garbage_type}
+                                    </li>
+                                ))}
                             </ul>
                         }
                     </div>
-                    {
-                        (buildingComments.length > 0) && (
-                            <>
-                                <h5>Opmerkingen bij dit gebouw:</h5>
-                                <ul className="list-group list-group-flush">
-                                    {
-                                        buildingComments.map((bc: BuildingComment) => (
-                                            <li className="list-group-item" key={bc.id}>{bc.comment}</li>
-                                        ))
-                                    }
-                                </ul>
-                            </>
-                        )
-                    }
-                    {
-                        (manual) && (
-                            <>
-                                <h5>Handleiding van gebouw:</h5>
-                                <ul className="list-group list-group-flush">
-                                    <li className="list-group-item">
-                                        <a href={manual.file} download style={{textDecoration: "underline"}}>
-                                            Handleiding
-                                        </a>
+                    {buildingComments.length > 0 && (
+                        <>
+                            <h5>Opmerkingen bij dit gebouw:</h5>
+                            <ul className="list-group list-group-flush">
+                                {buildingComments.map((bc: BuildingComment) => (
+                                    <li className="list-group-item" key={bc.id}>
+                                        {bc.comment}
                                     </li>
-                                </ul>
-                            </>
-                        )
-                    }
+                                ))}
+                            </ul>
+                        </>
+                    )}
+                    {manual && (
+                        <>
+                            <h5>Handleiding van gebouw:</h5>
+                            <ul className="list-group list-group-flush">
+                                <li className="list-group-item">
+                                    <a href={manual.file} download style={{ textDecoration: "underline" }}>
+                                        Handleiding
+                                    </a>
+                                </li>
+                            </ul>
+                        </>
+                    )}
                 </div>
-
 
                 {errorMessages.length > 0 && (
                     <div className="visible alert alert-danger alert-dismissible fade show mt-2 mb-2">
@@ -263,27 +255,37 @@ export default function StudentBuilding() {
                                 <li key={index}>{err}</li>
                             ))}
                         </ul>
-                        <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
+                        <button type="button" className="btn-close" onClick={() => setErrorMessages([])} />
                     </div>
                 )}
                 <Form onSubmit={handleSubmit}>
                     <span className="h1 mt-2">{typeNames[step]}</span>
                     <div className="mb-2 mt-2">
                         <label className="form-label">Beschrijving (optioneel):</label>
-                        <textarea className={`form-control form-control-lg`} value={stepDescription}
-                                  onChange={e => setStepDescription(e.target.value)}></textarea>
+                        <textarea
+                            className={`form-control form-control-lg`}
+                            value={stepDescription}
+                            onChange={(e) => setStepDescription(e.target.value)}
+                        ></textarea>
                     </div>
                     <div>
                         <label className="form-label">Upload één of meerdere foto's:</label>
-                        <input className="form-control" type="file" onChange={handleFileChange} accept="image/*"/>
+                        <input className="form-control" type="file" onChange={handleFileChange} accept="image/*" />
                     </div>
 
-                    <FileList files={files} handleRemoveFile={handleRemoveFile}/>
-                    <Button variant="primary"
-                            className="btn-danger d-inline-block" onClick={() => setShowRemarkModal(true)}>Maak een
-                        opmerking</Button>
-                    <Button variant="primary"
-                            className="btn-dark d-inline-block" type="submit">{`Upload bestanden`}</Button>
+                    <FileList files={files} handleRemoveFile={handleRemoveFile} />
+                    <Button
+                        variant="primary"
+                        className="btn-danger d-inline-block"
+                        onClick={() => setShowRemarkModal(true)}
+                    >
+                        Maak een opmerking
+                    </Button>
+                    <Button
+                        variant="primary"
+                        className="btn-dark d-inline-block"
+                        type="submit"
+                    >{`Upload bestanden`}</Button>
                 </Form>
             </div>
         </>
