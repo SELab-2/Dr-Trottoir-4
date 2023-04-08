@@ -12,13 +12,13 @@ import {BuildingComment, getAllBuildingCommentsByBuildingID} from "@/lib/buildin
 import StudentHeader from "@/components/header/studentHeader";
 import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/building-manual";
 import api from "@/lib/api/axios";
+import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
 
 
 interface ParsedUrlQuery {
 }
 
 interface DataBuildingIdQuery extends ParsedUrlQuery {
-    buildingId?: number;
     studentOnTourId?: number;
 }
 
@@ -47,19 +47,15 @@ export default function StudentBuilding() {
     const [garbageCollections, setGarbageCollections] = useState<GarbageCollectionInterface[]>([]);
     const [buildingComments, setBuildingComments] = useState<BuildingComment[]>([]);
     const [manual, setManual] = useState<BuildingManual | null>()
-    const [url, setUrl] = useState<string>("");
+    const [buildingsOnTour, setBuildingsOnTour] = useState<BuildingOnTour[]>([]);
+    const [currentIndex, setCurrentIndex] = useState<number>(0);
 
     useEffect(() => {
         const query: DataBuildingIdQuery = router.query as DataBuildingIdQuery;
-        if (!query.buildingId || !query.studentOnTourId) {
+        if (!query.studentOnTourId) {
             return;
         }
-        const bId: number = query.buildingId;
         // Get the building, garbage collection, buildingComments & studentOnTour
-        getBuilding(bId);
-        getBuildingManual(bId);
-        getGarbageCollection(bId);
-        getBuildingComments(bId);
         getStudentOnTour(query.studentOnTourId).then(res => {
             const sots: StudentOnTourStringDate = res.data;
             const sot: StudentOnTour = {
@@ -69,9 +65,23 @@ export default function StudentBuilding() {
                 date: new Date(sots.date)
             };
             setStudentOnTour(sot);
+            getBuildingsOnTour(sots.tour);
         }, console.error);
     }, [router.isReady]);
 
+    // Get the new building when the index changes
+    useEffect(() => {
+        if (buildingsOnTour.length === 0) {
+            return;
+        }
+        if (currentIndex === buildingsOnTour.length) {
+            alert("Einde van tour");
+            return;
+        }
+        getBuildingInfoAtIndex();
+    }, [currentIndex, buildingsOnTour]);
+
+    // Get the building with id
     function getBuilding(buildingId: number) {
         getBuildingInfo(buildingId).then(res => {
             const b: BuildingInterface = res.data;
@@ -79,6 +89,16 @@ export default function StudentBuilding() {
         }, console.error);
     }
 
+    // Get the buildings on a tour
+    function getBuildingsOnTour(tourId: number) {
+        getAllBuildingsOnTourWithTourID(tourId).then(res => {
+            const bot: BuildingOnTour[] = res.data;
+            bot.sort((a, b) => a.index - b.index);
+            setBuildingsOnTour(bot);
+        }, console.error);
+    }
+
+    // Get the garbage collection for a building for today
     function getGarbageCollection(buildingId: number) {
         getGarbageCollectionFromBuilding(buildingId, {startDate: new Date(), endDate: new Date()}).then(res => {
             const col: GarbageCollectionInterface[] = res.data;
@@ -86,6 +106,7 @@ export default function StudentBuilding() {
         }, console.error);
     }
 
+    // Get the comments of a building
     function getBuildingComments(buildingId: number) {
         getAllBuildingCommentsByBuildingID(buildingId).then(res => {
             const bc: BuildingComment[] = res.data;
@@ -93,6 +114,7 @@ export default function StudentBuilding() {
         }, console.error);
     }
 
+    // Get the manual for a building
     function getBuildingManual(buildingId: number) {
         getManualsForBuilding(buildingId).then((res) => {
             const manuals: BuildingManual[] = res.data;
@@ -103,6 +125,19 @@ export default function StudentBuilding() {
             m.file = getManualPath(m.file);
             setManual(m);
         }, console.error);
+    }
+
+    // Get the buildingInfo at the currentIndex
+    function getBuildingInfoAtIndex(): boolean {
+        if (currentIndex >= buildingsOnTour.length) {
+            return false;
+        }
+        const buildingOnTour: BuildingOnTour = buildingsOnTour[currentIndex];
+        getBuilding(buildingOnTour.building);
+        getBuildingManual(buildingOnTour.building);
+        getGarbageCollection(buildingOnTour.building);
+        getBuildingComments(buildingOnTour.building);
+        return true;
     }
 
     // Handle when a file is selected
@@ -127,20 +162,19 @@ export default function StudentBuilding() {
     // Handle the submit event
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        if (!building || !studentOnTour) {
+            return;
+        }
         // There must be 1 picture to upload at minimum
         if (files.length === 0) {
             setErrorMessages(["U moet ten minste 1 foto uploaden."]);
             return;
         }
 
-        // This is temp hardcoded for testing purposes
-        const sot = 23; // studentOnTourId
-        const b = 2; // buildingId
-
         // Post a remark & pictures with the remark for a building by a student on a tour.
         postRemarkAtBuilding(
-            b,
-            sot,
+            building.id,
+            studentOnTour.id,
             stepDescription,
             timeRegistry ? timeRegistry : new Date(),
             typeRemarks[step]
@@ -157,11 +191,9 @@ export default function StudentBuilding() {
             setErrorMessages([]);
             setStepDescription("");
 
-            // Set the step
             if (step === finalStep) {
-                console.log("Go to next building");
                 setStep(0);
-                // Change buildingId etc..
+                setCurrentIndex((prevIndex) => prevIndex + 1);
             } else {
                 setStep((prevState) => prevState + 1);
             }
@@ -172,7 +204,8 @@ export default function StudentBuilding() {
         <>
             <StudentHeader/>
             <div className="m-2">
-                <RemarkModal onHide={() => setShowRemarkModal(false)} show={showRemarkModal}/>
+                <RemarkModal onHide={() => setShowRemarkModal(false)} show={showRemarkModal}
+                             studentOnTour={studentOnTour} building={building}/>
                 <div className="card">
                     <div className="card-body">
                         <h5 className="card-title">{building ? getAddress(building) : ""}</h5>
@@ -212,7 +245,7 @@ export default function StudentBuilding() {
                                 <h5>Handleiding van gebouw:</h5>
                                 <ul className="list-group list-group-flush">
                                     <li className="list-group-item">
-                                        <a href={manual.file} download style={{ textDecoration: "underline" }}>
+                                        <a href={manual.file} download style={{textDecoration: "underline"}}>
                                             Handleiding
                                         </a>
                                     </li>
@@ -246,12 +279,12 @@ export default function StudentBuilding() {
                     </div>
 
                     <FileList files={files} handleRemoveFile={handleRemoveFile}/>
-
                     <Button variant="primary"
-                            className="btn-dark" type="submit">{`Upload bestanden`}</Button>
+                            className="btn-danger d-inline-block" onClick={() => setShowRemarkModal(true)}>Maak een
+                        opmerking</Button>
+                    <Button variant="primary"
+                            className="btn-dark d-inline-block" type="submit">{`Upload bestanden`}</Button>
                 </Form>
-                <Button variant="primary"
-                        className="btn-dark" onClick={() => setShowRemarkModal(true)}>Maak een opmerking</Button>
             </div>
         </>
     );

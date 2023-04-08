@@ -3,14 +3,20 @@ import React, {useState} from "react";
 import {FileList} from "@/components/student/FileList";
 import {postRemarkAtBuilding, RemarkAtBuilding, remarkTypes} from "@/lib/remark-at-building";
 import {postPictureOfRemark} from "@/lib/picture-of-remark";
+import {StudentOnTour} from "@/lib/student-on-tour";
+import {BuildingInterface} from "@/lib/building";
 
 export default function RemarkModal(
     {
         show,
-        onHide
+        onHide,
+        studentOnTour,
+        building
     }: {
         show: boolean;
         onHide: () => void;
+        studentOnTour : StudentOnTour | null;
+        building : BuildingInterface | null;
     }
 ) {
 
@@ -46,14 +52,13 @@ export default function RemarkModal(
             setErrorMessages(["De opmerking mag niet leeg zijn."]);
             return;
         }
-
-        // This is temp hardcoded for testing purposes
-        const sot = 23; // studentOnTourId
-        const b = 2; // buildingId
+        if (! building || ! studentOnTour) {
+            return;
+        }
 
         postRemarkAtBuilding(
-            b,
-            sot,
+            building.id,
+            studentOnTour.id,
             remark,
             new Date(),
             type

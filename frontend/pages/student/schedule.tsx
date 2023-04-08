@@ -66,10 +66,9 @@ function StudentSchedule() {
         if (buildings.length === 0) {
             return;
         }
-        const firstBuilding: BuildingInterface = buildings[0];
         await router.push({
                 pathname: `/student/building`,
-                query: {buildingId: firstBuilding.id, studentOnTourId: studentOnTour?.id},
+                query: {studentOnTourId: studentOnTour?.id},
             }
             //, "/student/building"
         );
