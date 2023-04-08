@@ -1,11 +1,9 @@
-from django.db.models import Max
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
-from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from base.models import StudentOnTour, BuildingOnTour
+from base.models import StudentOnTour
 from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount, IsStudent
 from base.serializers import StudOnTourSerializer, ProgressTourSerializer
 from util.request_response_util import *

@@ -1,6 +1,7 @@
+import uuid
+
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
-import uuid
 
 from .models import *
 
