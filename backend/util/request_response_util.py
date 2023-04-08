@@ -5,6 +5,7 @@ from typing import Callable
 from django.core.exceptions import ValidationError, BadRequest
 from drf_spectacular.utils import OpenApiParameter
 from rest_framework import status
+from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 
 
