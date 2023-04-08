@@ -289,6 +289,8 @@ class StudentOnTour(models.Model):
     student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     started_tour = models.DateTimeField(null=True, blank=True)
     completed_tour = models.DateTimeField(null=True, blank=True)
+    current_building_index = models.IntegerField()
+    max_building_index = models.IntegerField()  # gets set by a signal
 
     """
     A syndic can't do tours, so we need to check that a student assigned to the building on the tour is not a syndic.
@@ -312,6 +314,8 @@ class StudentOnTour(models.Model):
 
             if not self.completed_tour > self.started_tour:
                 raise ValidationError(f"Time of completion must come after time of starting the tour.")
+        elif self.completed_tour:
+            raise ValidationError(f"Started tour time must be set before completion time.")
 
     class Meta:
         constraints = [

@@ -51,6 +51,7 @@ AUTHENTICATION = [
 ]
 
 THIRD_PARTY_APPS = AUTHENTICATION + [
+    "channels",
     "corsheaders",
     "rest_framework",
     "phonenumber_field",
@@ -248,3 +249,14 @@ MEDIA_URL = "/media/"
 # allow upload big file
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 20  # 20M
 FILE_UPLOAD_MAX_MEMORY_SIZE = DATA_UPLOAD_MAX_MEMORY_SIZE
+
+#
+ASGI_APPLICATION = 'config.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+    },
+}

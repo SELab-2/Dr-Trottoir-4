@@ -1,12 +1,13 @@
+from django.db.models import Max
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from base.models import StudentOnTour
+from base.models import StudentOnTour, BuildingOnTour
 from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount, IsStudent
-from base.serializers import StudOnTourSerializer
+from base.serializers import StudOnTourSerializer, ProgressTourSerializer
 from util.request_response_util import *
 
 TRANSLATE = {"tour": "tour_id", "student": "student_id"}
@@ -162,59 +163,43 @@ class AllView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class StartTourView(APIView):
+class TimeTourViewBase(APIView):
     permission_classes = [IsAuthenticated, OwnerAccount]
     serializer_class = StudOnTourSerializer
 
-    @extend_schema(
-        request=serializers.Serializer({
-            "started_tour": serializers.DateTimeField(required=True)
-        }),
-        responses=post_docs(serializer_class)
-    )
-    def post(self, request, student_on_tour_id):
-        student_on_tour_instance = StudentOnTour.objects.filter(id=student_on_tour_id).first()
+    def set_tour_time(self, request, student_on_tour_id, field_name):
+        student_on_tour_instance: StudentOnTour = StudentOnTour.objects.filter(id=student_on_tour_id).first()
 
         self.check_object_permissions(request, student_on_tour_instance.student)
 
-        data = request_to_dict(request.data)
-
-        if not data.get("started_tour", None):
-            return Response({"message": "Request body must contain the key 'started_tour'"},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        set_keys_of_instance(student_on_tour_instance, data)
-
-        if r := try_full_clean_and_save(student_on_tour_instance):
-            return r
+        setattr(student_on_tour_instance, field_name, datetime.now())
+        student_on_tour_instance.save()
 
         return post_success(self.serializer_class(student_on_tour_instance))
 
 
-class EndTourView(APIView):
-    permission_classes = [IsAuthenticated, OwnerAccount]
-    serializer_class = StudOnTourSerializer
-
+class StartTourView(TimeTourViewBase):
     @extend_schema(
-        request=serializers.Serializer({
-            "completed_tour": serializers.DateTimeField(required=True)
-        }),
-        responses=post_docs(serializer_class)
+        responses=post_docs(super().serializer_class)
     )
     def post(self, request, student_on_tour_id):
-        student_on_tour_instance = StudentOnTour.objects.filter(id=student_on_tour_id).first()
+        return self.set_tour_time(request, student_on_tour_id, 'started_tour')
 
-        self.check_object_permissions(request, student_on_tour_instance.student)
 
-        data = request_to_dict(request.data)
+class EndTourView(TimeTourViewBase):
+    @extend_schema(
+        responses=post_docs(super().serializer_class)
+    )
+    def post(self, request, student_on_tour_id):
+        return self.set_tour_time(request, student_on_tour_id, 'completed_tour')
 
-        if not data.get("completed_tour", None):
-            return Response({"message": "Request body must contain the key 'completed_tour'"},
-                            status=status.HTTP_400_BAD_REQUEST)
 
-        set_keys_of_instance(student_on_tour_instance, data)
+class ProgressTourView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = ProgressTourSerializer
 
-        if r := try_full_clean_and_save(student_on_tour_instance):
-            return r
-
-        return post_success(self.serializer_class(student_on_tour_instance))
+    @extend_schema(responses=get_docs(serializer_class))
+    def get(self, request, student_on_tour_id):
+        student_on_tour = StudentOnTour.objects.get(id=student_on_tour_id)
+        serializer = ProgressTourSerializer(student_on_tour)
+        return Response(serializer.data)

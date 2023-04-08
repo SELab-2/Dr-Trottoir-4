@@ -142,3 +142,9 @@ class PublicIdSerializer(serializers.Serializer):
     def create(self, validated_data):
         public_id = uuid.uuid4()
         return {"public_id": public_id}
+
+
+class ProgressTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentOnTour
+        fields = ('current_building_index', 'max_building_index')
