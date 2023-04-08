@@ -8,6 +8,9 @@ import {useRouter} from "next/router";
 import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
 import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
 import {GarbageCollectionInterface, garbageTypes, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
+import {BuildingComment, getAllBuildingCommentsByBuildingID} from "@/lib/building-comment";
+import StudentHeader from "@/components/header/studentHeader";
+import {BuildingManual, getManualsForBuilding} from "@/lib/building-manual";
 
 
 interface ParsedUrlQuery {
@@ -41,16 +44,20 @@ export default function StudentBuilding() {
     const [building, setBuilding] = useState<BuildingInterface | null>(null);
 
     const [garbageCollections, setGarbageCollections] = useState<GarbageCollectionInterface[]>([]);
+    const [buildingComments, setBuildingComments] = useState<BuildingComment[]>([]);
+    const [manual, setManual] = useState<BuildingManual | null>()
 
     useEffect(() => {
         const query: DataBuildingIdQuery = router.query as DataBuildingIdQuery;
         if (!query.buildingId || !query.studentOnTourId) {
             return;
         }
-
-        // Get the building, garbage collection & studentOnTour
-        getBuilding(query.buildingId);
-        getGarbageCollection(query.buildingId);
+        const bId: number = query.buildingId;
+        // Get the building, garbage collection, buildingComments & studentOnTour
+        getBuilding(bId);
+        getBuildingManual(bId);
+        getGarbageCollection(bId);
+        getBuildingComments(bId);
         getStudentOnTour(query.studentOnTourId).then(res => {
             const sots: StudentOnTourStringDate = res.data;
             const sot: StudentOnTour = {
@@ -74,6 +81,25 @@ export default function StudentBuilding() {
         getGarbageCollectionFromBuilding(buildingId, {startDate: new Date(), endDate: new Date()}).then(res => {
             const col: GarbageCollectionInterface[] = res.data;
             setGarbageCollections(col);
+        }, console.error);
+    }
+
+    function getBuildingComments(buildingId: number) {
+        getAllBuildingCommentsByBuildingID(buildingId).then(res => {
+            const bc: BuildingComment[] = res.data;
+            setBuildingComments(bc);
+        }, console.error);
+    }
+
+    function getBuildingManual(buildingId: number) {
+        getManualsForBuilding(buildingId).then((res) => {
+            console.log(res.data);
+            /*const manuals: BuildingManual[] = res.data;
+            if (manuals.length === 0) {
+                return;
+            }
+            setManual(manuals[0]);
+            console.log(manuals[0]);*/
         }, console.error);
     }
 
@@ -141,57 +167,90 @@ export default function StudentBuilding() {
     }
 
     return (
-        <div className="m-2">
-            <RemarkModal onHide={() => setShowRemarkModal(false)} show={showRemarkModal}/>
-            <div className="card">
-                <div className="card-body">
-                    <h5 className="card-title">{building ? getAddress(building) : ""}</h5>
+        <>
+            <StudentHeader/>
+            <div className="m-2">
+                <RemarkModal onHide={() => setShowRemarkModal(false)} show={showRemarkModal}/>
+                <div className="card">
+                    <div className="card-body">
+                        <h5 className="card-title">{building ? getAddress(building) : ""}</h5>
+                        {
+                            <ul>
+                                {
+                                    garbageCollections.map((gar: GarbageCollectionInterface) => (
+                                        <li key={gar.id} className="card-subtitle mb-2 text-muted">
+                                            {
+                                                garbageTypes[gar.garbage_type] ?
+                                                    garbageTypes[gar.garbage_type] :
+                                                    gar.garbage_type
+                                            }
+                                        </li>
+                                    ))
+                                }
+                            </ul>
+                        }
+                    </div>
                     {
-                        <ul>
-                            {
-                                garbageCollections.map((gar: GarbageCollectionInterface) => (
-                                    <li key={gar.id} className="card-text">
-                                        {
-                                            garbageTypes[gar.garbage_type] ?
-                                                garbageTypes[gar.garbage_type] :
-                                                gar.garbage_type
-                                        }
+                        (buildingComments.length > 0) && (
+                            <>
+                                <h5>Opmerkingen bij dit gebouw:</h5>
+                                <ul className="list-group list-group-flush">
+                                    {
+                                        buildingComments.map((bc: BuildingComment) => (
+                                            <li className="list-group-item" key={bc.id}>{bc.comment}</li>
+                                        ))
+                                    }
+                                </ul>
+                            </>
+                        )
+                    }
+                    {
+                        (manual) && (
+                            <>
+                                <h5>Handleiding van gebouw:</h5>
+                                <ul className="list-group list-group-flush">
+                                    <li className="list-group-item">
+                                        <a href={URL.createObjectURL(manual.file)} download={manual.file.name}>
+                                            Handleiding
+                                        </a>
                                     </li>
-                                ))
-                            }
-                        </ul>
+                                </ul>
+                            </>
+                        )
                     }
                 </div>
-            </div>
-            {errorMessages.length > 0 && (
-                <div className="visible alert alert-danger alert-dismissible fade show mt-2 mb-2">
-                    <ul>
-                        {errorMessages.map((err: string, index: number) => (
-                            <li key={index}>{err}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
-                </div>
-            )}
-            <Form onSubmit={handleSubmit}>
-                <span className="h1 mt-2">{typeNames[step]}</span>
-                <div className="mb-2 mt-2">
-                    <label className="form-label">Beschrijving (optioneel):</label>
-                    <textarea className={`form-control form-control-lg`} value={stepDescription}
-                              onChange={e => setStepDescription(e.target.value)}></textarea>
-                </div>
-                <div>
-                    <label className="form-label">Upload één of meerdere foto's:</label>
-                    <input className="form-control" type="file" onChange={handleFileChange} accept="image/*"/>
-                </div>
 
-                <FileList files={files} handleRemoveFile={handleRemoveFile}/>
 
+                {errorMessages.length > 0 && (
+                    <div className="visible alert alert-danger alert-dismissible fade show mt-2 mb-2">
+                        <ul>
+                            {errorMessages.map((err: string, index: number) => (
+                                <li key={index}>{err}</li>
+                            ))}
+                        </ul>
+                        <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
+                    </div>
+                )}
+                <Form onSubmit={handleSubmit}>
+                    <span className="h1 mt-2">{typeNames[step]}</span>
+                    <div className="mb-2 mt-2">
+                        <label className="form-label">Beschrijving (optioneel):</label>
+                        <textarea className={`form-control form-control-lg`} value={stepDescription}
+                                  onChange={e => setStepDescription(e.target.value)}></textarea>
+                    </div>
+                    <div>
+                        <label className="form-label">Upload één of meerdere foto's:</label>
+                        <input className="form-control" type="file" onChange={handleFileChange} accept="image/*"/>
+                    </div>
+
+                    <FileList files={files} handleRemoveFile={handleRemoveFile}/>
+
+                    <Button variant="primary"
+                            className="btn-dark" type="submit">{`Upload bestanden`}</Button>
+                </Form>
                 <Button variant="primary"
-                        className="btn-dark" type="submit">{`Upload bestanden`}</Button>
-            </Form>
-            <Button variant="primary"
-                    className="btn-dark" onClick={() => setShowRemarkModal(true)}>Maak een opmerking</Button>
-        </div>
+                        className="btn-dark" onClick={() => setShowRemarkModal(true)}>Maak een opmerking</Button>
+            </div>
+        </>
     );
 }
