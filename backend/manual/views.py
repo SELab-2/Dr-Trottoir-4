@@ -116,7 +116,7 @@ class ManualBuildingView(APIView):
                     {"message": f"Invalid value for boolean parameter 'most-recent': {param} (true or false expected)"},
                     status=status.HTTP_400_BAD_REQUEST)
             else:
-                most_recent_only = bool(param.capitalize())
+                most_recent_only = param.lower() == "true"
 
         manual_instances = Manual.objects.filter(building_id=building_id)
 
