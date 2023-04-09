@@ -1,140 +1,88 @@
-from django.test import TestCase
-from rest_framework.test import APIClient
+from base.models import Tour
+from base.serializers import TourSerializer
+from util.data_generators import insert_dummy_region, insert_dummy_tour
+from util.test_tools import BaseTest, BaseAuthTest
 
-from base.test_settings import backend_url
-from util.data_generators import createUser, insert_dummy_region
 
+class TourTests(BaseTest):
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
 
-class TourTests(TestCase):
     def test_empty_tour_list(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        resp = client.get(f"{backend_url}/tour/all", follow=True)
-        assert resp.status_code == 200
-        data = [resp.data[e] for e in resp.data]
-        assert len(data) == 0
+        self.empty_list("tour/")
 
     def test_insert_tour(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
         r_id = insert_dummy_region()
-        data = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
-        resp = client.post(f"{backend_url}/tour/", data, follow=True)
-        assert resp.status_code == 201
-        for key in data:
-            assert key in resp.data
-        assert "id" in resp.data
+        self.data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
+        self.insert("tour/")
 
     def test_insert_dupe_tour(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user)
-
         r_id = insert_dummy_region()
-        data = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
-        _ = client.post(f"{backend_url}/tour/", data, follow=True)
-        response = client.post(f"{backend_url}/tour/", data, follow=True)
-        assert response.status_code == 400
+        self.data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
+        self.insert_dupe("tour/")
 
     def test_get_tour(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-
-        r_id = insert_dummy_region()
-        data = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
-        response1 = client.post(f"{backend_url}/tour/", data, follow=True)
-        assert response1.status_code == 201
-        for key in data:
-            assert key in response1.data
-        assert "id" in response1.data
-        id = response1.data["id"]
-        response2 = client.get(f"{backend_url}/tour/{id}/", follow=True)
-        assert response2.status_code == 200
-        for key in data:
-            assert key in response2.data
-        assert "id" in response2.data
+        t_id = insert_dummy_tour()
+        data = TourSerializer(Tour.objects.get(id=t_id)).data
+        self.get(f"tour/{t_id}", data)
 
     def test_get_non_existing(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user)
-        resp = client.get(f"{backend_url}/tour/123456789", follow=True)
-        assert resp.status_code == 404
+        self.get_non_existent("tour/")
 
     def test_patch_tour(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user)
+        t_id = insert_dummy_tour()
         r_id = insert_dummy_region()
-        data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
-        data2 = {"name": "Overpoort", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
-        response1 = client.post(f"{backend_url}/tour/", data1, follow=True)
-        assert response1.status_code == 201
-        for key in data1:
-            assert key in response1.data
-        assert "id" in response1.data
-        id = response1.data["id"]
-        response2 = client.patch(f"{backend_url}/tour/{id}/", data2, follow=True)
-        assert response2.status_code == 200
-        response3 = client.get(f"{backend_url}/tour/{id}/", follow=True)
-        for key in data2:
-            assert key in response3.data
-        assert response3.status_code == 200
-        assert "id" in response3.data
+        self.data1 = {"name": "Overpoort", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
+        self.patch(f"tour/{t_id}")
 
     def test_patch_invalid_tour(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
         r_id = insert_dummy_region()
-        data = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
-        response2 = client.patch(f"{backend_url}/tour/123434687658/", data, follow=True)
-        assert response2.status_code == 404
+        self.data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
+        self.patch_invalid("tour/")
 
     def test_patch_error_tour(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
         r_id = insert_dummy_region()
-        data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
-        data2 = {"name": "Overpoort", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
-        response1 = client.post(f"{backend_url}/tour/", data1, follow=True)
-        _ = client.post(f"{backend_url}/tour/", data2, follow=True)
-        assert response1.status_code == 201
-        id = response1.data["id"]
-        response2 = client.patch(f"{backend_url}/tour/{id}/", data2, follow=True)
-        assert response2.status_code == 400
+        self.data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
+        self.data2 = {"name": "Overpoort", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
+        self.patch_error("tour/")
 
     def test_remove_tour(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        r_id = insert_dummy_region()
-        data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
-        response1 = client.post(f"{backend_url}/tour/", data1, follow=True)
-        assert response1.status_code == 201
-        id = response1.data["id"]
-        response2 = client.delete(f"{backend_url}/tour/{id}/", follow=True)
-        assert response2.status_code == 204
-        response3 = client.get(f"{backend_url}/tour/{id}/", follow=True)
-        assert response3.status_code == 404
+        t_id = insert_dummy_tour()
+        self.remove(f"tour/{t_id}")
 
     def test_remove_nonexistent_tour(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response2 = client.delete(f"{backend_url}/tour/123456789/", follow=True)
-        assert response2.status_code == 404
+        self.remove_invalid("tour/")
 
-    def test_add_existing_tour(self):
-        user = createUser()
-        client = APIClient()
-        client.force_authenticate(user=user)
+
+class TourAuthorizationTests(BaseAuthTest):
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
+
+    def test_lobby_tour(self):
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
+        self.list_view("tour/", codes)
+
+    def test_insert_tour(self):
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 201, "Student": 403, "Syndic": 403}
         r_id = insert_dummy_region()
-        data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
-        _ = client.post(f"{backend_url}/tour/", data1, follow=True)
-        response1 = client.post(f"{backend_url}/tour/", data1, follow=True)
-        assert response1.status_code == 400
+        self.data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
+        self.insert_view("tour/", codes)
+
+    def test_get_tour(self):
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 200, "Syndic": 403}
+        t_id = insert_dummy_tour()
+        self.get_view(f"tour/{t_id}", codes)
+
+    def test_patch_tour(self):
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
+        t_id = insert_dummy_tour()
+        r_id = insert_dummy_region()
+        self.data1 = {"name": "OverPoort", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
+        self.patch_view(f"tour/{t_id}", codes)
+
+    def test_remove_tour(self):
+        def create():
+            return insert_dummy_tour()
+
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 204, "Student": 403, "Syndic": 403}
+        self.remove_view("tour/", codes, create=create)

@@ -137,8 +137,8 @@ class BuildingSwapRequestSerializer(serializers.Serializer):
 
 
 class PublicIdSerializer(serializers.Serializer):
-    public_id = serializers.UUIDField(format='hex')
+    public_id = serializers.UUIDField(format="hex")
 
     def create(self, validated_data):
         public_id = uuid.uuid4()
-        return {'public_id': public_id}
+        return {"public_id": public_id}

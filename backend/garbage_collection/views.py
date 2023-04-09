@@ -111,7 +111,7 @@ class GarbageCollectionIndividualBuildingView(APIView):
         """
         Get info about all garbage collections of a building with given id
         """
-        building_instance = Building.objects.filter(building_id=building_id)
+        building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
             return not_found("building")
 
@@ -126,7 +126,7 @@ class GarbageCollectionIndividualBuildingView(APIView):
         try:
             garbage_collection_instances = filter_instances(request, garbage_collection_instances, filters)
         except BadRequest as e:
-            return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
         return get_success(serializer)
@@ -157,7 +157,7 @@ class GarbageCollectionAllView(APIView):
         try:
             garbage_collection_instances = filter_instances(request, garbage_collection_instances, filters)
         except BadRequest as e:
-            return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = GarbageCollectionSerializer(garbage_collection_instances, many=True)
         return get_success(serializer)
