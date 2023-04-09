@@ -7,7 +7,7 @@ import { getAllRegions, RegionInterface } from "@/lib/region";
 import AdminHeader from "@/components/header/adminHeader";
 import StudentHeader from "@/components/header/studentHeader";
 import SyndicHeader from "@/components/header/syndicHeader";
-import { getAndSetErrors } from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 export default function UserProfile() {
     const { t } = useTranslation();
@@ -79,7 +79,7 @@ export default function UserProfile() {
             (err) => {
                 let errorRes = err.response;
                 if (errorRes && errorRes.status === 400) {
-                    getAndSetErrors(Object.entries(errorRes.data), setErrorMessages);
+                    setErrorMessages(handleError(Object.entries(errorRes.data)));
                 } else if (errorRes && errorRes.status === 403) {
                     const errorData: [any, string][] = Object.entries(errorRes.data);
                     setErrorMessages(errorData.map((val) => val[1]));

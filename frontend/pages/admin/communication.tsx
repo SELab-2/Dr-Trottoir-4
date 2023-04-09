@@ -7,7 +7,7 @@ import { Button, Dropdown, DropdownButton, FloatingLabel, Form, FormControl, Off
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import { getAllUsers, User, userSearchString } from "@/lib/user";
-import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutoCompleteComponent";
+import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutocomplete";
 import router, { useRouter } from "next/router";
 import { withAuthorisation } from "@/components/withAuthorisation";
 
