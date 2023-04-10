@@ -61,7 +61,7 @@ function SyndicDashboard() {
                         }).map((building: BuildingInterface) => {
                             return (
                                 <div
-                                    className="col-md-4 mb-3"
+                                    className="col-md-4 mb-3 clickable"
                                     key={building.id}
                                     onClick={(e) => {
                                         e.preventDefault();
