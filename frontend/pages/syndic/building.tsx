@@ -1,18 +1,17 @@
-import { BuildingInterface, getBuildingInfo } from "@/lib/building";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { AxiosResponse } from "axios";
+import {BuildingInterface, getBuildingInfo} from "@/lib/building";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {AxiosResponse} from "axios";
 import styles from "@/styles/Welcome.module.css";
-import { TiPencil } from "react-icons/ti";
-import PatchBuildingSyndicModal from "@/components/syndic/building/PatchBuildingSyndicModal";
 import SyndicHeader from "@/components/header/syndicHeader";
-import { getRegion } from "@/lib/region";
 import SyndicFooter from "@/components/footer/syndicFooter";
 import BuildingSyndicInfo from "@/components/syndic/building/BuildingInfo";
 import LatestCollections from "@/components/syndic/building/LatestCollections";
+import LatestCollectionDetail from "@/components/syndic/building/LatestCollectionDetail";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DashboardQuery extends ParsedUrlQuery {
     id?: string;
@@ -42,43 +41,34 @@ function SyndicBuilding() {
         fetchBuilding();
     }, [query.id]);
 
+
+    // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1310&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
+
+
     return (
         <>
-            <SyndicHeader />
-
-            <div>
-                <a
-                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                        e.preventDefault();
-                        router.push("/syndic/dashboard");
-                    }}
-                >
-                    {" "}
-                    ⮌ Terug naar het overzicht
-                </a>
-            </div>
-
-            {JSON.stringify(building)}
+            <SyndicHeader/>
 
             <h1 className={styles.title}>Welcome to the Syndic Dashboard!</h1>
 
-            <details open={true}>
-                <summary>Building info</summary>
-                <BuildingSyndicInfo building={building} setBuilding={setBuilding} />
-            </details>
 
-            <details open={true}>
-                <summary>Recente ophalingen</summary>
-                <LatestCollections building={building ? building.id : 0} />
-            </details>
+            <div style={{display: "flex"}}>
+                <div style={{flex: "1"}}>
+                    <BuildingSyndicInfo building={building} setBuilding={setBuilding}/>
+                </div>
+                <div style={{flex: "1"}}>
+                    <LatestCollectionDetail building={building ? building.id : 0}/>
+                </div>
+                <div style={{flex: "1"}}>
+                    <LatestCollections building={building ? building.id : 0}/>
+                </div>
+            </div>
 
-            <p>
-                https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1310&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
-            </p>
+            <SyndicFooter/>
 
-            <SyndicFooter />
         </>
     );
 }
+
 
 export default withAuthorisation(SyndicBuilding, ["Syndic"]);

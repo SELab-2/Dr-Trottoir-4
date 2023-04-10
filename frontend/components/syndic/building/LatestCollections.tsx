@@ -1,12 +1,10 @@
 import {GarbageCollectionInterface, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
 import {useEffect, useState} from "react";
-import {BuildingInterface} from "@/lib/building";
 
 function LatestCollections({building}: { building: number }) {
     const [collections, setCollections] = useState<GarbageCollectionInterface[]>([]);
 
     useEffect(() => {
-        console.log(`Building id is ${building}`);
         if (building) {
             const date = new Date();
             const currentDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -15,8 +13,6 @@ function LatestCollections({building}: { building: number }) {
 
             getGarbageCollectionFromBuilding(building, lastMonth, currentDate)
                 .then((res) => {
-                    console.log(JSON.stringify(res.data));
-                    //alert(JSON.stringify(res.data))
                     setCollections(res.data);
 
                 })
@@ -36,7 +32,7 @@ function LatestCollections({building}: { building: number }) {
                     {collections.map((collection: GarbageCollectionInterface) => (
                         <li key={collection.id}>
                             <>
-                                Type: {collection.garbage_type}  <br/>
+                                Type: {collection.garbage_type} <br/>
                                 Datum: {collection.date}
                                 <br/>
                             </>

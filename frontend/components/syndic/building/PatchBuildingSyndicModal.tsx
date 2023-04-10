@@ -1,15 +1,14 @@
-import React, { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { Button, Form, Modal } from "react-bootstrap";
-import { BuildingInterface, generateNewPublicId, getNewPublicId, patchBuildingInfo } from "@/lib/building";
-import build from "next/dist/build";
+import React, {ChangeEvent, useEffect, useState} from "react";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {Button, Form, Modal} from "react-bootstrap";
+import {BuildingInterface, getNewPublicId, patchBuildingInfo} from "@/lib/building";
 
 function PatchBuildingSyndicModal({
-    show,
-    closeModal,
-    building,
-    setBuilding,
-}: {
+                                      show,
+                                      closeModal,
+                                      building,
+                                      setBuilding,
+                                  }: {
     show: boolean;
     closeModal: () => void;
     building: BuildingInterface | null;
@@ -35,8 +34,6 @@ function PatchBuildingSyndicModal({
 
     const newPublicId = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
-
-        console.log(`Building id is ${building?.id}`);
 
         getNewPublicId()
             .then((res) => {
@@ -139,7 +136,7 @@ function PatchBuildingSyndicModal({
                         </Form.Group>
 
                         {/*TODO: below line should probably a custom component with a state boolean*/}
-                        <div style={{ background: "red" }}>{errorText}</div>
+                        <div style={{background: "red"}}>{errorText}</div>
 
                         <Button
                             variant="danger"

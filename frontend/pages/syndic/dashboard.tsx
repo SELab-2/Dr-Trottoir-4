@@ -49,6 +49,10 @@ function SyndicDashboard() {
 
                     <div className="row" style={{width: "99%", marginLeft: "auto", marginRight: "auto"}}>
                         {buildings.sort((a: BuildingInterface, b: BuildingInterface) => {
+                            if (a.city < b.city)
+                                return -1;
+                            else if (a.city > b.city)
+                                return 1;
                             if (a.street < b.street)
                                 return -1;
                             else if (a.street > b.street)
