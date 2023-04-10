@@ -112,7 +112,7 @@ class AllPictureOfRemark(APIView):
 
 
 class PicturesOfRemarkView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | (IsStudent & OwnerAccount)]
+    permission_classes = [IsAuthenticated] # IsAdmin | IsSuperStudent | OwnerAccount | (IsStudent & OwnerAccount)]  Ook residents moeten de foto's kunnen zien
     serializer_class = PictureOfRemarkSerializer
 
     @extend_schema(responses=get_docs(serializer_class))
