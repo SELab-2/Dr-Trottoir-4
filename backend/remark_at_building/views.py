@@ -1,5 +1,7 @@
 from drf_spectacular.utils import extend_schema
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from base.models import RemarkAtBuilding
@@ -23,7 +25,7 @@ from util.request_response_util import (
     patch_success,
     patch_docs,
     get_docs,
-    post_success,
+    post_success, param_docs, get_most_recent_param_docs,
 )
 
 TRANSLATE = {
@@ -124,16 +126,31 @@ class RemarksAtBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = RemarkAtBuildingSerializer
 
-    @extend_schema(responses=get_docs(serializer_class))
+    @extend_schema(responses=get_docs(serializer_class),
+                   parameters=param_docs(get_most_recent_param_docs("RemarksAtBuilding")))
     def get(self, request, building_id):
         """
         Get all remarks on a specific building
         """
         remark_at_building_instances = RemarkAtBuilding.objects.filter(building_id=building_id)
-        if not remark_at_building_instances:
-            return not_found("RemarkAtBuilding")
 
-        for r in remark_at_building_instances:
-            self.check_object_permissions(request, r.building)
+        # Little bit of code duplication with `get_maybe_most_recent_param`, but this situation is a bit different because we have more than one most recent
+        most_recent_only = False
+        param = request.GET.get("most-recent", None)
+        if param:
+            if param.capitalize() not in ["True", "False"]:
+                return Response(
+                    {"message": f"Invalid value for boolean parameter 'most-recent': {param} (true or false expected)"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            else:
+                most_recent_only = param.lower() == "true"
+        if most_recent_only:
+            instances = remark_at_building_instances.order_by("-timestamp").first()
+
+            # Now we have the most recent one, but there are more remarks on that same day
+            most_recent_day = str(instances.timestamp.date())
+
+            remark_at_building_instances = remark_at_building_instances.filter(timestamp__gte=most_recent_day)
 
         return get_success(self.serializer_class(remark_at_building_instances, many=True))
