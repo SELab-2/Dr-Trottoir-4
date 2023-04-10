@@ -51,6 +51,7 @@ function BuildingSyndicInfo({ building, setBuilding }: { building: BuildingInter
             <h1>
                 Gebouw{" "}
                 <TiPencil
+                    className={"clickable"}
                     onClick={(e) => {
                         e.preventDefault();
                         setEditBuilding(true);

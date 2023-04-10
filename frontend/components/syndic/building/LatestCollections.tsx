@@ -1,17 +1,24 @@
-import { GarbageCollectionInterface, getGarbageCollectionFromBuilding } from "@/lib/garbage-collection";
-import { useEffect, useState } from "react";
-import { BuildingInterface } from "@/lib/building";
+import {GarbageCollectionInterface, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
+import {useEffect, useState} from "react";
+import {BuildingInterface} from "@/lib/building";
 
-function LatestCollections({ building }: { building: number }) {
+function LatestCollections({building}: { building: number }) {
     const [collections, setCollections] = useState<GarbageCollectionInterface[]>([]);
 
     useEffect(() => {
         console.log(`Building id is ${building}`);
         if (building) {
-            getGarbageCollectionFromBuilding(building)
+            const date = new Date();
+            const currentDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+            date.setMonth(date.getMonth() - 1);
+            const lastMonth = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
+            getGarbageCollectionFromBuilding(building, lastMonth, currentDate)
                 .then((res) => {
                     console.log(JSON.stringify(res.data));
+                    //alert(JSON.stringify(res.data))
                     setCollections(res.data);
+
                 })
                 .catch((error) => {
                     //TODO: generieke functie nodig voor error messages
@@ -22,19 +29,24 @@ function LatestCollections({ building }: { building: number }) {
     }, [building]);
 
     return (
-        <div style={{ height: "100%", overflowY: "scroll" }}>
-            <h1>Latest Collections (TODO: werken met query params en bv gwn de laatste maand opvragen)</h1>
-            <ul>
-                {collections.map((collection: GarbageCollectionInterface) => (
-                    <li key={collection.id}>
-                        <>
-                            Type: {collection.garbage_type} <br />
-                            Datum: {collection.date}
-                            <br />
-                        </>
-                    </li>
-                ))}
-            </ul>
+        <div style={{height: "100%", overflowY: "scroll"}}>
+            <h1>Recente ophalingen</h1>
+            {collections.length > 0 ? (
+                <ul>
+                    {collections.map((collection: GarbageCollectionInterface) => (
+                        <li key={collection.id}>
+                            <>
+                                Type: {collection.garbage_type}  <br/>
+                                Datum: {collection.date}
+                                <br/>
+                            </>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>Er zijn geen ophalingen gevonden in de voorbije maand.</p>
+            )
+            }
         </div>
     );
 }
