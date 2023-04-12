@@ -23,16 +23,14 @@ export function translateRemartAtBuildingType(type: RemarkAtBuildingInterface["t
     }
 }
 
-export async function getRemarksAtBuildingOfSpecificBuilding(buildingId: number, mostRecent = false): Promise<AxiosResponse<any>> {
+export async function getRemarksAtBuildingOfSpecificBuilding(buildingId: number, mostRecent: boolean = false): Promise<AxiosResponse<any>> {
     let request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_REMARKS_OF_A_BUILDING}${buildingId}`;
 
-    if (mostRecent) {
-        request_url += `?most-recent=true`;
-    }
-
-    console.log(request_url);
-
-    return await api.get(request_url);
+    return await api.get(request_url, {
+        params: {
+            "most-recent": mostRecent
+        }
+    });
 }
 
 
