@@ -3,7 +3,6 @@ import {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import {AxiosResponse} from "axios";
-import styles from "@/styles/Welcome.module.css";
 import SyndicHeader from "@/components/header/syndicHeader";
 import SyndicFooter from "@/components/footer/syndicFooter";
 import BuildingSyndicInfo from "@/components/syndic/building/BuildingInfo";
@@ -48,9 +47,6 @@ function SyndicBuilding() {
     return (
         <>
             <SyndicHeader/>
-
-            <h1 className={styles.title}>Welcome to the Syndic Dashboard!</h1>
-
 
             <div style={{display: "flex"}}>
                 <div style={{flex: "1"}}>
