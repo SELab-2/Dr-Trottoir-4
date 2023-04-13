@@ -12,28 +12,22 @@ export function FileList(
     }
 ) {
 
-    function downloadFile(file: File, index: number) {
-        const fileUrl = URL.createObjectURL(file);
-        const fileName = file.name;
-        return (
-            <a href={fileUrl} download={fileName} style={{ textDecoration: "underline" }}>{`upload_${index + 1}`}</a>
-        );
-    }
-
     return (
         <ol>
-            {files.map((file, index) => (
-                <li key={index}>
-                    {
-                        downloadFile(file, index)
-                    }
-                    <Tooltip arrow placement="right" title="Verwijder">
-                        <IconButton onClick={() => handleRemoveFile(index)}>
-                            <Delete/>
-                        </IconButton>
-                    </Tooltip>
-                </li>
-            ))}
+            {files.map((file, index) => {
+                const fileUrl = URL.createObjectURL(file); // Get the url to download the image
+                return (
+                    <li key={index}>
+                        <a href={fileUrl} download style={{ textDecoration: "underline" }}>{file.name}</a>
+                        <Tooltip arrow placement="right" title="Verwijder">
+                            <IconButton onClick={() => handleRemoveFile(index)}>
+                                <Delete/>
+                            </IconButton>
+                        </Tooltip>
+                    </li>
+                );
+            }
+            )}
         </ol>
     );
 

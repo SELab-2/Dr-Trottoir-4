@@ -270,10 +270,13 @@ export default function StudentBuilding() {
                     </div>
                     <div>
                         <label className="form-label">Upload één of meerdere foto's:</label>
-                        <input className="form-control" type="file" onChange={handleFileChange} accept="image/*" />
+                        <input className="form-control" type="file" onChange={(e) => {
+                            handleFileChange(e);
+                            e.target.value = ""; // reset the value of the input field
+                        }} accept="image/*" />
                     </div>
 
-                    <FileList files={files} handleRemoveFile={handleRemoveFile} />
+                    <FileList files={files} handleRemoveFile={handleRemoveFile}/>
                     <Button
                         variant="primary"
                         className="btn-danger d-inline-block"
