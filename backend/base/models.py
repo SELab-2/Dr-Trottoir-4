@@ -13,7 +13,7 @@ from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2 ** 31 - 1
+MAX_INT = 2**31 - 1
 
 
 class Region(models.Model):
@@ -37,7 +37,8 @@ class Role(models.Model):
             highest_rank = Role.objects.order_by("-rank").first().rank
             if self.rank > highest_rank + 1:
                 raise ValidationError(
-                    _("The maximum rank allowed is {highest_rank}.").format(highest_rank=highest_rank + 1))
+                    _("The maximum rank allowed is {highest_rank}.").format(highest_rank=highest_rank + 1)
+                )
 
     class Meta:
         constraints = [
@@ -98,10 +99,13 @@ class Lobby(models.Model):
             addendum = ""
             if is_inactive:
                 addendum = _(
-                    " This email belongs to an INACTIVE user. Instead of trying to register this user, you can simply reactivate the account.")
+                    " This email belongs to an INACTIVE user. Instead of trying to register this user, you can simply reactivate the account."
+                )
             raise ValidationError(
-                _("Email already exists in database for a user (id: {user_id}).{addendum}").format(user_id=user.id,
-                                                                                                   addendum=addendum))
+                _("Email already exists in database for a user (id: {user_id}).{addendum}").format(
+                    user_id=user.id, addendum=addendum
+                )
+            )
 
 
 class Building(models.Model):
@@ -138,7 +142,8 @@ class Building(models.Model):
         if self.public_id:
             if Building.objects.filter(public_id=self.public_id).filter(~Q(id=self.id)):
                 raise ValidationError(
-                    _("{public_id} already exists as public_id of another building").format(public_id=self.public_id))
+                    _("{public_id} already exists as public_id of another building").format(public_id=self.public_id)
+                )
 
     class Meta:
         constraints = [
@@ -210,7 +215,8 @@ class GarbageCollection(models.Model):
                 "date",
                 name="garbage_collection_unique",
                 violation_error_message=_(
-                    "This type of garbage is already being collected on the same day for this building."),
+                    "This type of garbage is already being collected on the same day for this building."
+                ),
             ),
         ]
 
@@ -259,7 +265,8 @@ class BuildingOnTour(models.Model):
             if tour_region != building_region:
                 raise ValidationError(
                     _("The regions for tour ({tour_region}) and building ({building_region}) are different.").format(
-                        tour_region=tour_region, building_region=building_region),
+                        tour_region=tour_region, building_region=building_region
+                    ),
                 )
 
     def __str__(self):
@@ -306,8 +313,11 @@ class StudentOnTour(models.Model):
                 raise ValidationError("A syndic can't do tours")
             tour_region = self.tour.region
             if not self.student.region.all().filter(region=tour_region).exists():
-                raise ValidationError("Student ({user_email}) doesn't do tours in this region ({tour_region}).".format(
-                    user_email=user.email, tour_region=tour_region))
+                raise ValidationError(
+                    "Student ({user_email}) doesn't do tours in this region ({tour_region}).".format(
+                        user_email=user.email, tour_region=tour_region
+                    )
+                )
 
     class Meta:
         constraints = [
@@ -360,7 +370,8 @@ class RemarkAtBuilding(models.Model):
                 "timestamp",
                 name="unique_remark_for_building",
                 violation_error_message=_(
-                    "This remark was already uploaded to this building by this student on the tour."),
+                    "This remark was already uploaded to this building by this student on the tour."
+                ),
             ),
         ]
 
@@ -399,9 +410,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-                self.version_number == 0
-                or self.version_number > max_version_number + 1
-                or self.version_number in version_numbers
+            self.version_number == 0
+            or self.version_number > max_version_number + 1
+            or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 
