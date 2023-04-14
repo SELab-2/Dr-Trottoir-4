@@ -220,8 +220,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 USE_I18N = True
 
-# LANGUAGE_CODE = "nl"
-
 LANGUAGE_COOKIE_AGE = 3600
 LANGUAGE_COOKIE_NAME = "language-cookie"
 
