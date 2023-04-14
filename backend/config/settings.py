@@ -138,11 +138,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'django.middleware.locale.LocaleMiddleware'
+    "django.middleware.locale.LocaleMiddleware",
 ]
 
 LOCALE_PATHS = [
-    BASE_DIR / 'locale/',
+    BASE_DIR / "locale/",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = False
@@ -226,8 +226,8 @@ LANGUAGE_COOKIE_NAME = "language-cookie"
 LANGUAGE_CODE = "nl"
 
 LANGUAGES = [
-    ('nl', _('Dutch')),
-    ('en', _('English')),
+    ("nl", _("Dutch")),
+    ("en", _("English")),
 ]
 
 TIME_ZONE = "CET"
