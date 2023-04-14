@@ -37,7 +37,7 @@ class Role(models.Model):
             highest_rank = Role.objects.order_by("-rank").first().rank
             if self.rank > highest_rank + 1:
                 raise ValidationError(
-                    _("The maximum rank allowed is {highest_rank + 1}.").format(highest_rank=highest_rank))
+                    _("The maximum rank allowed is {highest_rank}.").format(highest_rank=highest_rank + 1))
 
     class Meta:
         constraints = [
@@ -79,7 +79,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Lobby(models.Model):
     email = models.EmailField(
-        _("email address"), unique=True, error_messages={"unique": _("This email is already in the lobby.")}
+        "email address", unique=True, error_messages={"unique": _("This email is already in the lobby.")}
     )
     # The verification code, preferably hashed
     verification_code = models.CharField(
@@ -208,7 +208,7 @@ class GarbageCollection(models.Model):
                 "building",
                 Lower("garbage_type"),
                 "date",
-                name=_("garbage_collection_unique"),
+                name="garbage_collection_unique",
                 violation_error_message=_(
                     "This type of garbage is already being collected on the same day for this building."),
             ),

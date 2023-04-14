@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-14 16:14+0200\n"
+"POT-Creation-Date: 2023-04-14 16:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,7 +73,8 @@ msgid "This region already exists"
 msgstr ""
 
 #: base/models.py:40
-msgid "The maximum rank allowed is {highest_rank + 1}."
+#, python-brace-format
+msgid "The maximum rank allowed is {highest_rank}."
 msgstr ""
 
 #: base/models.py:47
@@ -82,10 +83,6 @@ msgstr ""
 
 #: base/models.py:58
 msgid "A user already exists with this email."
-msgstr ""
-
-#: base/models.py:82
-msgid "email address"
 msgstr ""
 
 #: base/models.py:82
@@ -130,10 +127,6 @@ msgstr ""
 
 #: base/models.py:175
 msgid "This comment already exists, and was posted at the exact same time."
-msgstr ""
-
-#: base/models.py:211
-msgid "garbage_collection_unique"
 msgstr ""
 
 #: base/models.py:213

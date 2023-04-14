@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-14 16:14+0200\n"
+"POT-Creation-Date: 2023-04-14 16:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,270 +30,251 @@ msgstr ""
 
 #: authentication/serializers.py:57
 msgid "invalid verification code"
-msgstr ""
+msgstr "ongeldige verificatiecode"
 
 #: authentication/serializers.py:62
 msgid "the two password fields didn't match."
-msgstr ""
+msgstr "de twee wachtwoordvelden komen niet overeen"
 
 #: authentication/serializers.py:103 authentication/serializers.py:134
 msgid "no valid refresh token found"
-msgstr ""
+msgstr "geen geldige refresh token gevonden"
 
 #: authentication/serializers.py:162
 msgid "successfully logged out"
-msgstr ""
+msgstr "succesvol uitgelogd"
 
 #: authentication/serializers.py:172
 msgid "refresh token was not included in request cookies"
-msgstr ""
+msgstr "refresh token was niet in de request cookies opgenomen"
 
 #: authentication/serializers.py:180 authentication/serializers.py:183
 msgid "an error has occurred."
-msgstr ""
+msgstr "er is een fout opgetreden"
 
 #: authentication/views.py:50
 msgid "successful login"
-msgstr ""
+msgstr "succesvol ingelogd"
 
 #: authentication/views.py:83
 msgid "refresh of tokens successful"
-msgstr ""
+msgstr "tokens succesvol vernieuwd"
 
 #: authentication/views.py:101
 msgid "refresh token validation successful"
-msgstr ""
+msgstr "refresh token validatie succesvol"
 
 #: authentication/views.py:112
 msgid "new password has been saved"
-msgstr ""
+msgstr "nieuw wachtwoord is opgeslagen"
 
 #: base/models.py:20
 msgid "This region already exists"
-msgstr ""
+msgstr "Deze regio bestaat al"
 
 #: base/models.py:40
-msgid "The maximum rank allowed is {highest_rank + 1}."
-msgstr ""
+#, python-brace-format
+msgid "The maximum rank allowed is {highest_rank}."
+msgstr "De hoogste toegestane rang is {highest_rank}."
 
 #: base/models.py:47
 msgid "This role name already exists."
-msgstr ""
+msgstr "Deze rolnaam bestaat al."
 
 #: base/models.py:58
 msgid "A user already exists with this email."
-msgstr ""
+msgstr "Er bestaat al een gebruiker met deze e-mail"
 
-#: base/models.py:82
-msgid "email address"
-msgstr ""
 
 #: base/models.py:82
 msgid "This email is already in the lobby."
-msgstr ""
+msgstr "Dit e-mailadres is al in de lobby aanwezig."
 
 #: base/models.py:86
 msgid "This verification code already exists."
-msgstr ""
+msgstr "Deze verificatiecode bestaat al."
 
 #: base/models.py:101
 msgid ""
 " This email belongs to an INACTIVE user. Instead of trying to register this "
 "user, you can simply reactivate the account."
 msgstr ""
+" Dit e-mailadres hoort bij een INACTIEVE gebruiker. In plaats van deze "
+"gebruiker te proberen te registreren, kunt u het account eenvoudig reactiveren."
 
 #: base/models.py:103
 #, python-brace-format
 msgid "Email already exists in database for a user (id: {user_id}).{addendum}"
-msgstr ""
+msgstr "E-mailadres bestaat al in de database voor een gebruiker (id: {user_id}).{addendum}"
 
 #: base/models.py:112
 msgid "No bus"
-msgstr ""
+msgstr "Geen bus"
 
 #: base/models.py:128
 msgid "The house number of the building must be positive and not zero."
-msgstr ""
+msgstr "Het huisnummer van het gebouw moet een positief getal zijn, groter dan nul."
 
 #: base/models.py:135
 msgid "Only a user with role \"syndic\" can own a building."
-msgstr ""
+msgstr "Alleen een gebruiker met de rol \"syndicus\" kan een gebouw bezitten."
 
 #: base/models.py:141
 #, python-brace-format
 msgid "{public_id} already exists as public_id of another building"
-msgstr ""
+msgstr "{public_id} bestaat al als public_id van een ander gebouw"
 
 #: base/models.py:152
 msgid "A building with this address already exists."
-msgstr ""
+msgstr "Er bestaat al een gebouw met dit adres."
 
 #: base/models.py:175
 msgid "This comment already exists, and was posted at the exact same time."
-msgstr ""
-
-#: base/models.py:211
-msgid "garbage_collection_unique"
-msgstr ""
+msgstr "Deze opmerking bestaat al, en is op exact hetzelfde moment geplaatst."
 
 #: base/models.py:213
-msgid ""
-"This type of garbage is already being collected on the same day for this "
-"building."
-msgstr ""
+msgid "This type of garbage is already being collected on the same day for this building."
+msgstr "Dit soort afval wordt al op dezelfde dag voor dit gebouw opgehaald."
 
 #: base/models.py:238
 msgid "There is already a tour with the same name in the region."
-msgstr ""
+msgstr "Er bestaat al een tour met dezelfde naam in de regio."
 
 #: base/models.py:261
 #, python-brace-format
-msgid ""
-"The regions for tour ({tour_region}) and building ({building_region}) are "
-"different."
-msgstr ""
+msgid "The regions for tour ({tour_region}) and building ({building_region}) are different."
+msgstr "De regio's voor tour ({tour_region}) en gebouw ({building_region}) zijn verschillend."
 
 #: base/models.py:274
 msgid "This building is already on this tour."
-msgstr ""
+msgstr "Dit gebouw staat al op deze tour."
 
 #: base/models.py:280
 msgid "This index is already in use."
-msgstr ""
+msgstr "Deze index is al in gebruik"
 
 #: base/models.py:319
 msgid "The student is already assigned to this tour on this date."
-msgstr ""
+msgstr "De student is al toegewezen aan deze tour op deze datum."
 
 #: base/models.py:363
-msgid ""
-"This remark was already uploaded to this building by this student on the "
-"tour."
-msgstr ""
+msgid "This remark was already uploaded to this building by this student on the tour."
+msgstr "Deze opmerking is al geüpload naar dit gebouw door deze student op de tour."
 
 #: base/models.py:378
 msgid "The building already has this upload."
-msgstr ""
+msgstr "Het gebouw heeft al deze upload."
 
 #: base/models.py:414
 msgid "The building already has a manual with the same version number"
-msgstr ""
+msgstr "Het gebouw heeft al een handleiding met hetzelfde versienummer"
 
 #: base/models.py:431
 msgid "The name for this template already exists."
-msgstr ""
+msgstr "De naam van deze template bestaat al."
 
 #: base/permissions.py:19
 msgid "Admin permission required"
-msgstr ""
+msgstr "Admin permissie vereist"
 
 #: base/permissions.py:30
 msgid "Super student permission required"
-msgstr ""
+msgstr "Superstudent permisie vereist"
 
 #: base/permissions.py:41
 msgid "Student permission required"
-msgstr ""
+msgstr "Student permissie vereist"
 
 #: base/permissions.py:52
 msgid "Students are only allowed to read"
-msgstr ""
+msgstr "Studenten mogen alleen lezen"
 
 #: base/permissions.py:64
 msgid "Syndic permission required"
-msgstr ""
+msgstr "Syndicus permissie vereist"
 
 #: base/permissions.py:88
 msgid "You can only access/edit the buildings that you own"
-msgstr ""
+msgstr "Je kan alleen de gebouwen zien/bewerken die je zelf bezit"
 
 #: base/permissions.py:102
 msgid "You can only read the building that you own"
-msgstr ""
+msgstr "Je kan enkel de gebouwen lezen die je zelf bezit"
 
 #: base/permissions.py:118
-msgid ""
-"You can only patch the building public id and the name of the building that "
-"you own"
-msgstr ""
+msgid "You can only patch the building public id and the name of the building that you own"
+msgstr "Je kan alleen de public id en de naam van een gebouw bewerken dat je zelf bezit"
 
 #: base/permissions.py:146
 msgid "You can only access/edit your own account"
-msgstr ""
+msgstr "Je kan alleen je eigen account zien/bewerken"
 
 #: base/permissions.py:157
 msgid "You can only access your own account"
-msgstr ""
+msgstr "Je kan alleen je eigen account raadplegen"
 
 #: base/permissions.py:170
 msgid "You can't create a user of a higher role"
-msgstr ""
+msgstr "Je kan geen gebruiker met een hogere rol aanmaken"
 
 #: base/permissions.py:186
 msgid "You don't have the right permissions to delete this user"
-msgstr ""
+msgstr "Je hebt niet de juiste permissies om deze gebruiker te verwijderen"
 
 #: base/permissions.py:199
 msgid "You don't have the right permissions to edit this user"
-msgstr ""
+msgstr "Je hebt niet de juiste permissies om deze gebruiker te bewerken"
 
 #: base/permissions.py:212
-msgid ""
-"You can't assign a role to yourself or assign a role that is higher than "
-"your own"
-msgstr ""
+msgid "You can't assign a role to yourself or assign a role that is higher than your own"
+msgstr "Je kan geen rol toekennen aan jezelf of een rol toekennen die hoger is dan je eigen rol"
 
 #: base/permissions.py:231
 msgid "You can only view manuals that are linked to one of your buildings"
-msgstr ""
+msgstr "Je kan enkel handleidingen bekijken die gelinkt zijn aan een van je eigen gebouwen"
 
 #: config/settings.py:231
 msgid "Dutch"
-msgstr ""
+msgstr "Nederlands"
 
 #: config/settings.py:232
 msgid "English"
-msgstr ""
+msgstr "Engels"
 
 #: garbage_collection/views.py:170
-msgid ""
-"the start date of the period can't be in a later week than the week of the "
-"end date"
-msgstr ""
+msgid "the start date of the period can't be in a later week than the week of the end date"
+msgstr "de start datum van de periode mag niet in een latere week zijn dan de week van de eind datum"
 
 #: garbage_collection/views.py:178
-msgid ""
-"the start date of the period to which you want to copy must be, at a "
-"minimum, in the week immediately following the end date of the original "
-"period"
-msgstr ""
+msgid "the start date of the period to which you want to copy must be, at a minimum, in the week immediately following the end date of the original period"
+msgstr "de startdatum van de periode naar waar je wil kopiëren moet minstens de week direct volgend op de einddatum van de oorspronkelijke periode zijn"
 
 #: garbage_collection/views.py:233
 msgid "successfully copied the garbage collections"
-msgstr ""
+msgstr "de afvalophalingen werden succesvol gekopieerd"
 
 #: users/managers.py:16
 msgid "Email is required"
-msgstr ""
+msgstr "E-mail is vereist"
 
 #: users/managers.py:32
 msgid "Superuser must have is_staff=True."
-msgstr ""
+msgstr "Superuser moet is_staff=True hebben."
 
 #: users/managers.py:34
 msgid "Superuser must have is_superuser=True."
-msgstr ""
+msgstr "Superuser moet is_superuser=True hebben."
 
 #: util/request_response_util.py:16
 #, python-brace-format
 msgid "The query parameter {name} should be an integer"
-msgstr ""
+msgstr "De query parameter {name} moet een getal zijn"
 
 #: util/request_response_util.py:19 util/request_response_util.py:34
 #: util/request_response_util.py:42 util/request_response_util.py:59
 #, python-brace-format
 msgid "The query parameter {name} is required"
-msgstr ""
+msgstr "De query parameter {name} is vereist"
 
 #: util/request_response_util.py:30
 #, python-brace-format
@@ -306,23 +287,21 @@ msgstr ""
 
 #: util/request_response_util.py:51
 #, python-brace-format
-msgid ""
-"Invalid value for boolean parameter '{name}': '{param}' (true or false "
-"expected)"
-msgstr ""
+msgid "Invalid value for boolean parameter '{name}': '{param}' (true or false expected)"
+msgstr "Ongeldige booleaanse parameter '{name}': '{param}' (true of false verwacht)"
 
 #: util/request_response_util.py:122
 msgid "{} was not found"
-msgstr ""
+msgstr "{} werd niet gevonden"
 
 #: util/request_response_util.py:126
 msgid "bad input for {}"
-msgstr ""
+msgstr "slechte input voor {}"
 
 #: util/request_response_util.py:131
 #, python-brace-format
 msgid "There is no {object1} that is linked to {object2} with given id."
-msgstr ""
+msgstr "Er is geen {object1} dat gelinkt is aan {object2} met de gegeven id."
 
 #: venv/lib/python3.10/site-packages/django/contrib/messages/apps.py:15
 msgid "Messages"
@@ -360,20 +339,20 @@ msgstr ""
 
 #: venv/lib/python3.10/site-packages/django/core/validators.py:22
 msgid "Enter a valid value."
-msgstr ""
+msgstr "Vul een geldige waarde in"
 
 #: venv/lib/python3.10/site-packages/django/core/validators.py:104
 #: venv/lib/python3.10/site-packages/django/forms/fields.py:751
 msgid "Enter a valid URL."
-msgstr ""
+msgstr "Vul een geldige URL in"
 
 #: venv/lib/python3.10/site-packages/django/core/validators.py:164
 msgid "Enter a valid integer."
-msgstr ""
+msgstr "Vul een geldig getal in"
 
 #: venv/lib/python3.10/site-packages/django/core/validators.py:175
 msgid "Enter a valid email address."
-msgstr ""
+msgstr "Vul een geldig e-mailadres in"
 
 #. Translators: "letters" means latin letters: a-z and A-Z.
 #: venv/lib/python3.10/site-packages/django/core/validators.py:256
@@ -453,7 +432,7 @@ msgstr[1] ""
 #: venv/lib/python3.10/site-packages/django/forms/fields.py:347
 #: venv/lib/python3.10/site-packages/django/forms/fields.py:386
 msgid "Enter a number."
-msgstr ""
+msgstr "Vul een nummer in"
 
 #: venv/lib/python3.10/site-packages/django/core/validators.py:460
 #, python-format
@@ -511,11 +490,11 @@ msgstr ""
 
 #: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:130
 msgid "This field cannot be null."
-msgstr ""
+msgstr "Dit veld mag nie null zijn"
 
 #: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:131
 msgid "This field cannot be blank."
-msgstr ""
+msgstr "dit veld mag niet leeg zijn"
 
 #: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:132
 #, python-format
