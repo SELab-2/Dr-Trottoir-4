@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import RemarkModal from "@/components/student/remarkModal";
-import { FileList } from "@/components/student/FileList";
+import { FileList } from "@/components/student/fileList";
 import { postRemarkAtBuilding, RemarkAtBuilding, remarkTypes } from "@/lib/remark-at-building";
 import { postPictureOfRemark } from "@/lib/picture-of-remark";
 import { useRouter } from "next/router";
@@ -11,8 +11,8 @@ import { GarbageCollectionInterface, garbageTypes, getGarbageCollectionFromBuild
 import { BuildingComment, getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
 import StudentHeader from "@/components/header/studentHeader";
 import { BuildingManual, getManualPath, getManualsForBuilding } from "@/lib/building-manual";
-import api from "@/lib/api/axios";
 import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
+import BuildingOverview from "@/components/student/buildingOverview";
 
 interface ParsedUrlQuery {}
 
@@ -35,18 +35,26 @@ export default function StudentBuilding() {
     // Steps for normal process through building (arrival, inside & leaving)
     const [step, setStep] = useState<number>(0);
     const finalStep = 2;
+    const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+
     const [files, setFiles] = useState<File[]>([]);
     const [stepDescription, setStepDescription] = useState<string>("");
+
+    // Registry for time, when a first picture is uploaded, that time is used & send to db
     const [timeRegistry, setTimeRegistry] = useState<Date | null>(null);
 
     const [showRemarkModal, setShowRemarkModal] = useState<boolean>(false);
-    const [building, setBuilding] = useState<BuildingInterface | null>(null);
 
+    // The necessary info of a building
+    const [building, setBuilding] = useState<BuildingInterface | null>(null);
     const [garbageCollections, setGarbageCollections] = useState<GarbageCollectionInterface[]>([]);
     const [buildingComments, setBuildingComments] = useState<BuildingComment[]>([]);
-    const [manual, setManual] = useState<BuildingManual | null>();
+    const [manual, setManual] = useState<BuildingManual | null>(null);
     const [buildingsOnTour, setBuildingsOnTour] = useState<BuildingOnTour[]>([]);
-    const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+    // buildingOverview
+    const [showBuildingOverview, setShowBuildingOverview] = useState<boolean>(false);
 
     useEffect(() => {
         const query: DataBuildingIdQuery = router.query as DataBuildingIdQuery;
@@ -189,12 +197,18 @@ export default function StudentBuilding() {
             setStepDescription("");
 
             if (step === finalStep) {
-                setStep(0);
-                setCurrentIndex((prevIndex) => prevIndex + 1);
+                // show finish building modal
+                setShowBuildingOverview(true);
             } else {
                 setStep((prevState) => prevState + 1);
             }
         }, console.error);
+    }
+
+    function closeBuildingOverviewModal() {
+        setShowBuildingOverview(false);
+        setStep(0);
+        setCurrentIndex((prevIndex) => prevIndex + 1);
     }
 
     return (
@@ -207,6 +221,7 @@ export default function StudentBuilding() {
                     studentOnTour={studentOnTour}
                     building={building}
                 />
+                <BuildingOverview show={showBuildingOverview} closeModal={closeBuildingOverviewModal} building={building}/>
                 <div className="card">
                     <div className="card-body">
                         <h5 className="card-title">{building ? getAddress(building) : ""}</h5>

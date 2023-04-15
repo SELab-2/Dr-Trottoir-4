@@ -17,7 +17,7 @@ export function FileList(
             {files.map((file, index) => {
                 const fileUrl = URL.createObjectURL(file); // Get the url to download the image
                 return (
-                    <li key={index}>
+                    <li key={index} className="m-2">
                         <a href={fileUrl} download style={{ textDecoration: "underline" }}>{file.name}</a>
                         <Tooltip arrow placement="right" title="Verwijder">
                             <IconButton onClick={() => handleRemoveFile(index)}>
@@ -30,5 +30,4 @@ export function FileList(
             )}
         </ol>
     );
-
 }
