@@ -37,7 +37,6 @@ export default function StudentBuilding() {
     const finalStep = 2;
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
-
     const [files, setFiles] = useState<File[]>([]);
     const [stepDescription, setStepDescription] = useState<string>("");
 
@@ -221,7 +220,11 @@ export default function StudentBuilding() {
                     studentOnTour={studentOnTour}
                     building={building}
                 />
-                <BuildingOverview show={showBuildingOverview} closeModal={closeBuildingOverviewModal} building={building}/>
+                <BuildingOverview
+                    show={showBuildingOverview}
+                    closeModal={closeBuildingOverviewModal}
+                    building={building}
+                />
                 <div className="card">
                     <div className="card-body">
                         <h5 className="card-title">{building ? getAddress(building) : ""}</h5>
