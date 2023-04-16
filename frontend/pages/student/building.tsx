@@ -1,21 +1,20 @@
-import React, {useEffect, useState} from "react";
-import {Button, Form} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Form } from "react-bootstrap";
 import RemarkModal from "@/components/student/remarkModal";
-import {FileList} from "@/components/student/fileList";
-import {postRemarkAtBuilding, RemarkAtBuilding, remarkTypes} from "@/lib/remark-at-building";
-import {postPictureOfRemark} from "@/lib/picture-of-remark";
-import {useRouter} from "next/router";
-import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
-import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
-import {GarbageCollectionInterface, garbageTypes, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
-import {BuildingComment, getAllBuildingCommentsByBuildingID} from "@/lib/building-comment";
+import { FileList } from "@/components/student/fileList";
+import { postRemarkAtBuilding, RemarkAtBuilding, remarkTypes } from "@/lib/remark-at-building";
+import { postPictureOfRemark } from "@/lib/picture-of-remark";
+import { useRouter } from "next/router";
+import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
+import { getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import { GarbageCollectionInterface, garbageTypes, getGarbageCollectionFromBuilding } from "@/lib/garbage-collection";
+import { BuildingComment, getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
 import StudentHeader from "@/components/header/studentHeader";
-import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/building-manual";
-import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
+import { BuildingManual, getManualPath, getManualsForBuilding } from "@/lib/building-manual";
+import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 import BuildingOverview from "@/components/student/buildingOverview";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DataBuildingIdQuery extends ParsedUrlQuery {
     studentOnTourId?: number;
@@ -107,7 +106,7 @@ export default function StudentBuilding() {
 
     // Get the garbage collection for a building for today
     function getGarbageCollection(buildingId: number) {
-        getGarbageCollectionFromBuilding(buildingId, {startDate: new Date(), endDate: new Date()}).then((res) => {
+        getGarbageCollectionFromBuilding(buildingId, { startDate: new Date(), endDate: new Date() }).then((res) => {
             const col: GarbageCollectionInterface[] = res.data;
             setGarbageCollections(col);
         }, console.error);
@@ -188,8 +187,7 @@ export default function StudentBuilding() {
         ).then((res) => {
             const remark: RemarkAtBuilding = res.data;
             files.forEach((f: File) => {
-                postPictureOfRemark(f, remark.id).then((_) => {
-                }, console.error);
+                postPictureOfRemark(f, remark.id).then((_) => {}, console.error);
             });
 
             // remove all data
@@ -220,7 +218,7 @@ export default function StudentBuilding() {
             router
                 .push({
                     pathname: "/student/schedule",
-                    query: {studentOnTourId},
+                    query: { studentOnTourId },
                 })
                 .then();
         } else {
@@ -230,7 +228,7 @@ export default function StudentBuilding() {
 
     return (
         <>
-            <StudentHeader/>
+            <StudentHeader />
             <div className="m-2">
                 <RemarkModal
                     onHide={() => setShowRemarkModal(false)}
@@ -238,8 +236,12 @@ export default function StudentBuilding() {
                     studentOnTour={studentOnTour}
                     building={building}
                 />
-                <BuildingOverview show={showBuildingOverview} closeModal={closeBuildingOverviewModal}
-                                  building={building} finish={isLastBuilding}/>
+                <BuildingOverview
+                    show={showBuildingOverview}
+                    closeModal={closeBuildingOverviewModal}
+                    building={building}
+                    finish={isLastBuilding}
+                />
                 <div className="card">
                     <div className="card-body">
                         <h5 className="card-title">{building ? getAddress(building) : ""}</h5>
@@ -272,7 +274,7 @@ export default function StudentBuilding() {
                             <h5>Handleiding van gebouw:</h5>
                             <ul className="list-group list-group-flush">
                                 <li className="list-group-item">
-                                    <a href={manual.file} download style={{textDecoration: "underline"}}>
+                                    <a href={manual.file} download style={{ textDecoration: "underline" }}>
                                         Handleiding
                                     </a>
                                 </li>
@@ -288,7 +290,7 @@ export default function StudentBuilding() {
                                 <li key={index}>{err}</li>
                             ))}
                         </ul>
-                        <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
+                        <button type="button" className="btn-close" onClick={() => setErrorMessages([])} />
                     </div>
                 )}
                 <Form onSubmit={handleSubmit}>
@@ -314,7 +316,7 @@ export default function StudentBuilding() {
                         />
                     </div>
 
-                    <FileList files={files} handleRemoveFile={handleRemoveFile}/>
+                    <FileList files={files} handleRemoveFile={handleRemoveFile} />
                     <Button
                         variant="primary"
                         className="btn-danger d-inline-block"
