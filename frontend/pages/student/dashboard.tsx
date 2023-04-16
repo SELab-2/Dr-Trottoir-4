@@ -96,11 +96,11 @@ function StudentDashboard() {
         }, console.error);
     }, [user]);
 
-    function redirectToSchedule(studentOnTourId: number, regionId: number): void {
+    function redirectToSchedule(studentOnTourId: number): void {
         router
             .push({
                 pathname: "/student/schedule",
-                query: { regionId, studentOnTourId },
+                query: { studentOnTourId },
             })
             .then();
     }

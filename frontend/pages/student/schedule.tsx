@@ -12,7 +12,6 @@ import { datesEqual } from "@/lib/date";
 interface ParsedUrlQuery {}
 
 interface DataScheduleQuery extends ParsedUrlQuery {
-    regionId?: number;
     studentOnTourId?: number;
 }
 
@@ -33,6 +32,12 @@ function StudentSchedule() {
                 getTour(sots.tour).then((res) => {
                     const t: Tour = res.data;
                     setTour(t);
+
+                    getRegion(t.region).then((res) => {
+                        const r: RegionInterface = res.data;
+                        setRegion(r.region);
+                    }, console.error);
+
                 }, console.error);
                 getBuildingsOfTour(sots.tour).then(
                     (res) => {
@@ -52,13 +57,6 @@ function StudentSchedule() {
                 });
             }, console.error);
         }
-        // Get the region of the tour
-        if (query.regionId) {
-            getRegion(query.regionId).then((res) => {
-                const r: RegionInterface = res.data;
-                setRegion(r.region);
-            }, console.error);
-        }
     }, [router.isReady]);
 
     async function routeToFirstBuilding() {
@@ -70,7 +68,6 @@ function StudentSchedule() {
                 pathname: `/student/building`,
                 query: { studentOnTourId: studentOnTour?.id },
             }
-            //, "/student/building"
         );
     }
 

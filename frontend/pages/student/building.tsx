@@ -55,6 +55,7 @@ export default function StudentBuilding() {
 
     // buildingOverview
     const [showBuildingOverview, setShowBuildingOverview] = useState<boolean>(false);
+    const [isLastBuilding, setIsLastBuilding] = useState<boolean>(false);
 
     useEffect(() => {
         const query: DataBuildingIdQuery = router.query as DataBuildingIdQuery;
@@ -80,9 +81,9 @@ export default function StudentBuilding() {
         if (buildingsOnTour.length === 0) {
             return;
         }
-        if (currentIndex === buildingsOnTour.length) {
-            alert("Einde van tour");
-            return;
+        // Set is last building flag on true
+        if (currentIndex  + 1 == buildingsOnTour.length) {
+            setIsLastBuilding(true);
         }
         getBuildingInfoAtIndex();
     }, [currentIndex, buildingsOnTour]);
@@ -205,10 +206,25 @@ export default function StudentBuilding() {
         }, console.error);
     }
 
+    // Close the building overview & redirect back to schedule
     function closeBuildingOverviewModal() {
         setShowBuildingOverview(false);
         setStep(0);
-        setCurrentIndex((prevIndex) => prevIndex + 1);
+        if (currentIndex + 1 === buildingsOnTour.length) {
+            if (! studentOnTour) {
+                return;
+            }
+            const studentOnTourId : number = studentOnTour.id;
+            alert("Einde van tour");
+            router
+                .push({
+                    pathname: "/student/schedule",
+                    query: { studentOnTourId },
+                })
+                .then();
+        } else {
+            setCurrentIndex((prevIndex) => prevIndex + 1);
+        }
     }
 
     return (
@@ -221,7 +237,7 @@ export default function StudentBuilding() {
                     studentOnTour={studentOnTour}
                     building={building}
                 />
-                <BuildingOverview show={showBuildingOverview} closeModal={closeBuildingOverviewModal} building={building}/>
+                <BuildingOverview show={showBuildingOverview} closeModal={closeBuildingOverviewModal} building={building} finish={isLastBuilding}/>
                 <div className="card">
                     <div className="card-body">
                         <h5 className="card-title">{building ? getAddress(building) : ""}</h5>

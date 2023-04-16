@@ -16,7 +16,7 @@ export default function ToursList({
     studentOnTours: StudentOnTour[];
     allTours: Record<number, Tour>;
     allRegions: Record<number, RegionInterface>;
-    onSelect: (studentOnTourId: number, regionId: number) => void;
+    onSelect: (studentOnTourId: number) => void;
 }) {
     return (
         <>
@@ -28,12 +28,7 @@ export default function ToursList({
                             return (
                                 <a
                                     onClick={() =>
-                                        onSelect(
-                                            el.id,
-                                            allTours[el.tour] && allRegions[allTours[el.tour].region]
-                                                ? allRegions[allTours[el.tour].region].id
-                                                : 0
-                                        )
+                                        onSelect(el.id)
                                     }
                                     className="list-group-item list-group-item-action"
                                     key={el.id}

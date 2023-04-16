@@ -7,11 +7,13 @@ export default function BuildingOverview(
     {
         show,
         closeModal,
-        building
+        building,
+        finish
     }: {
         show: boolean,
         closeModal: () => void,
-        building : BuildingInterface | null
+        building : BuildingInterface | null,
+        finish : boolean
     }
 ) {
 
@@ -23,11 +25,11 @@ export default function BuildingOverview(
         }
         // Change this to the correct student information,
         // now it is only filtered on building but needs to also be filtered on student
-        getRemarksOfBuilding(building.id).then(res => {
+        /*getRemarksOfBuilding(building.id).then(res => {
             const r : RemarkAtBuilding[] = res.data;
             setRemarks(r);
             console.log(r);
-        }, console.error);
+        }, console.error);*/
     }
 
     return (
@@ -49,7 +51,7 @@ export default function BuildingOverview(
                         closeModal();
                     }}
                 >
-                    Volgende gebouw
+                    {finish ? "Beëindig ronde": "Volgende gebouw"}
                 </Button>
             </Modal.Footer>
         </Modal>
