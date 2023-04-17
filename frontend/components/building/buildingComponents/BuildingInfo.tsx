@@ -1,10 +1,17 @@
-import { TiPencil } from "react-icons/ti";
-import React, { useEffect, useState } from "react";
-import PatchBuildingSyndicModal from "@/components/syndic/building/PatchBuildingSyndicModal";
-import { BuildingInterface } from "@/lib/building";
-import { getRegion, RegionInterface } from "@/lib/region";
+import {TiPencil} from "react-icons/ti";
+import React, {useEffect, useState} from "react";
+import PatchBuildingSyndicModal from "@/components/building/buildingComponents/PatchBuildingSyndicModal";
+import {BuildingInterface} from "@/lib/building";
+import {getRegion, RegionInterface} from "@/lib/region";
 
-function BuildingSyndicInfo({ building, setBuilding }: { building: BuildingInterface; setBuilding: (b: any) => void }) {
+function BuildingInfo(
+    {
+        building, setBuilding, type
+    }:
+        {
+            building: BuildingInterface; setBuilding: (b: any) => void, type: "syndic" | "admin" | ""
+        }
+) {
     const [editBuilding, setEditBuilding] = useState(false);
     const [regionName, setRegionName] = useState("/");
 
@@ -41,12 +48,20 @@ function BuildingSyndicInfo({ building, setBuilding }: { building: BuildingInter
 
     return (
         <>
-            <PatchBuildingSyndicModal
+        {type == "syndic" ? <PatchBuildingSyndicModal
                 show={editBuilding}
                 closeModal={() => setEditBuilding(false)}
                 building={building}
                 setBuilding={setBuilding}
-            />
+            /> : null}
+
+            {type == "admin" ? <PatchBuildingSyndicModal
+                show={editBuilding}
+                closeModal={() => setEditBuilding(false)}
+                building={building}
+                setBuilding={setBuilding}
+            /> : null}
+
 
             <h1>
                 Gebouw{" "}
@@ -73,4 +88,4 @@ function BuildingSyndicInfo({ building, setBuilding }: { building: BuildingInter
     );
 }
 
-export default BuildingSyndicInfo;
+export default BuildingInfo;
