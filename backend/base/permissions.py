@@ -70,7 +70,7 @@ class IsSyndic(BasePermission):
 # ------------------
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
-        return request in SAFE_METHODS
+        return request.method in SAFE_METHODS
 
 
 # ------------------
@@ -89,7 +89,7 @@ class OwnerOfBuilding(BasePermission):
         return request.user.role.name.lower() == "syndic"
 
     def has_object_permission(self, request, view, obj: Building):
-        return request.user.id == obj.syndic_id
+        return request.user.id == obj.syndic.id
 
 
 class ReadOnlyOwnerOfBuilding(BasePermission):
@@ -104,7 +104,7 @@ class ReadOnlyOwnerOfBuilding(BasePermission):
 
     def has_object_permission(self, request, view, obj: Building):
         if request.method in SAFE_METHODS:
-            return request.user.id == obj.syndic_id
+            return request.user.id == obj.syndic.id
         return False
 
 
@@ -119,12 +119,15 @@ class OwnerWithLimitedPatch(BasePermission):
         return request.user.role.name.lower() == "syndic"
 
     def has_object_permission(self, request, view, obj: Building):
+        # should only be able to perform actions on own building
+        if request.user.id != obj.syndic.id:
+            return False
+
         if request.method in SAFE_METHODS:
             return True
 
         if request.method == "PATCH":
             data = request_to_dict(request.data)
-            print(data.keys())
             for k in data.keys():
                 if k not in ["public_id", "name"]:
                     return False

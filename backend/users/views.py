@@ -1,3 +1,4 @@
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -19,16 +20,6 @@ from util.request_response_util import *
 TRANSLATE = {"role": "role_id"}
 
 DESCRIPTION = "For region, pass a list of id's. For example: [1, 2, 3]"
-
-
-# In GET, you only get active users
-# Except when you explicitly pass a parameter 'include_inactive' to the body of the request and set it as true
-# If you
-def _include_inactive(request) -> bool:
-    data = request_to_dict(request.data)
-    if "include_inactive" in data:
-        return data["include_inactive"]
-    return False
 
 
 class DefaultUser(APIView):
@@ -135,7 +126,7 @@ class UserIndividualView(APIView):
             return r
 
         # Now that we have an ID, we can look at the many-to-many relationship region
-        if r := add_regions_to_user(user_instance, data["region"]):
+        if data.get("region") and (r := add_regions_to_user(user_instance, data["region"])):
             return r
 
         serializer = UserSerializer(user_instance)
@@ -146,13 +137,44 @@ class AllUsersView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = UserSerializer
 
+    @extend_schema(
+        description="GET all users in the database. There is the possibility to filter as well. You can filter on "
+        "various parameters. If the parameter name includes 'list' then you can add multiple entries of "
+        "those in the url.",
+        parameters=param_docs(
+            {
+                "region-id-list": ("Filter by region ids", False, OpenApiTypes.INT),
+                "include-inactive-bool": ("Include the inactive users", False, OpenApiTypes.BOOL),
+                "include-role-name-list": ("Include all the users with specific role names", False, OpenApiTypes.STR),
+                "exclude-role-name-list": ("Exclude all the users with specific role names", False, OpenApiTypes.STR),
+            }
+        ),
+    )
     def get(self, request):
         """
         Get all users
         """
-        if _include_inactive(request):
-            user_instances = User.objects.all()
-        else:
-            user_instances = User.objects.filter(is_active=True)
+
+        user_instances = User.objects.all()
+        filters = {
+            "region-id-list": get_filter_object("region__in"),
+            "include-inactive-bool": get_filter_object("is_active"),
+            "include-role-name-list": get_filter_object("role__name__in"),
+            "exclude-role-name-list": get_filter_object("role__name__in", exclude=True),
+        }
+
+        def transformations(key, param_value):
+            if key == "include-inactive-bool":
+                return None if param_value else True
+            elif key in ["include-role-name-list", "exclude-role-name-list"]:
+                return list(map(lambda role: role.lower().capitalize(), param_value)) if param_value else param_value
+            else:
+                return param_value
+
+        try:
+            user_instances = filter_instances(request, user_instances, filters, transformations)
+        except BadRequest as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = UserSerializer(user_instances, many=True)
         return get_success(serializer)

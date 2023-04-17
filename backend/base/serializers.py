@@ -1,5 +1,6 @@
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
+import uuid
 
 from .models import *
 
@@ -69,17 +70,24 @@ class LobbySerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
-class PictureBuildingSerializer(serializers.ModelSerializer):
+class RemarkAtBuildingSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PictureBuilding
-        fields = ["id", "building", "picture", "description", "timestamp", "type"]
+        model = RemarkAtBuilding
+        fields = ["id", "building", "timestamp", "remark", "student_on_tour"]
         read_only_fields = ["id"]
 
 
-class StudBuildTourSerializer(serializers.ModelSerializer):
+class PictureOfRemarkSerializer(serializers.ModelSerializer):
     class Meta:
-        model = StudentAtBuildingOnTour
-        fields = ["id", "building_on_tour", "date", "student"]
+        model = PictureOfRemark
+        fields = ["id", "picture", "remark_at_building"]
+        read_only_fields = ["id"]
+
+
+class StudOnTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentOnTour
+        fields = ["id", "tour", "date", "student"]
         read_only_fields = ["id"]
 
 
@@ -116,3 +124,21 @@ class RegionSerializer(serializers.ModelSerializer):
         model = Region
         fields = ["id", "region"]
         read_only_fields = ["id"]
+
+
+class SuccessSerializer(serializers.Serializer):
+    data = serializers.CharField(max_length=255)
+
+
+class BuildingSwapRequestSerializer(serializers.Serializer):
+    buildingID1 = serializers.IntegerField()
+
+    buildingID2 = serializers.IntegerField()
+
+
+class PublicIdSerializer(serializers.Serializer):
+    public_id = serializers.UUIDField(format="hex")
+
+    def create(self, validated_data):
+        public_id = uuid.uuid4()
+        return {"public_id": public_id}

@@ -1,11 +1,12 @@
-from rest_framework.permissions import IsAuthenticated
-from drf_spectacular.utils import extend_schema
+from queue import PriorityQueue
+
+from drf_spectacular.utils import extend_schema, OpenApiExample
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import Tour, BuildingOnTour, Building
 from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
-from base.serializers import TourSerializer, BuildingSerializer
+from base.serializers import TourSerializer, BuildingSerializer, SuccessSerializer, BuildingSwapRequestSerializer
 from util.request_response_util import *
 
 TRANSLATE = {"region": "region_id"}
@@ -29,6 +30,64 @@ class Default(APIView):
             return r
 
         return post_success(TourSerializer(tour_instance))
+
+
+class BuildingSwapView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = TourSerializer
+
+    description = "Note that buildingID should also be an integer."
+
+    @extend_schema(
+        description="POST body consists of a list of building_id - index pairs that will be assigned to this tour. "
+        "This enables the frontend to restructure a tour in 1 request instead of multiple. If a building is "
+        "added to the tour (no BuildingOnTour entry existed before), a new entry will be created. If buildings that "
+        "were originally on the tour are left out, they will be removed from the tour."
+        "The indices that should be used in the request start at 0 and should be incremented 1 at a time.",
+        request=BuildingSwapRequestSerializer,
+        responses={200: SuccessSerializer, 400: None},
+        examples=[
+            OpenApiExample(
+                "Set 2 buildings on the tour",
+                value={"buildingID1": 0, "buildingID2": 1},
+                description=description,
+                request_only=True,
+            ),
+            OpenApiExample(
+                "Reorder more than 2 buildings",
+                value={"buildingID1": 1, "buildingID2": 3, "buildingID3": 2, "buildingID4": 0},
+                description=description + " The new order of buildings will be [4,1,3,2]",
+                request_only=True,
+            ),
+        ],
+    )
+    def post(self, request, tour_id):
+        data = request_to_dict(request.data)
+        tour = Tour.objects.filter(id=tour_id).first()
+        if not tour:
+            return not_found("Tour")
+        items = BuildingOnTour.objects.filter(tour=tour)
+        items.delete()
+        q = PriorityQueue()
+        max_index = -1
+        for b_id, i in data.items():
+            index = int(i) + 1
+            if index < 0:
+                return bad_request("Index")
+            if index > max_index:
+                max_index = index
+            q.put((index, b_id))
+        if len(data.items()) > max_index:
+            return bad_request("Index")
+        while not q.empty():
+            index, b_id = q.get()
+            instance = BuildingOnTour(index=index, building_id=b_id, tour=tour)
+            if r := try_full_clean_and_save(instance):
+                return r
+
+        dummy = type("", (), {})()
+        dummy.data = {"data": "success"}
+        return post_success(serializer=dummy)
 
 
 class TourIndividualView(APIView):
@@ -90,12 +149,12 @@ class AllBuildingsOnTourView(APIView):
     @extend_schema(responses=get_docs(BuildingSerializer))
     def get(self, request, tour_id):
         """
-        Get all buildings on a tour with given id
+        Get all buildings on a tour with given tour id. The buildings in the response body are ordered by their index.
         """
         building_on_tour_instances = BuildingOnTour.objects.filter(tour_id=tour_id)
         building_instances = Building.objects.filter(
             id__in=building_on_tour_instances.values_list("building_id", flat=True)
-        )
+        ).order_by("buildingontour__index")
 
         serializer = BuildingSerializer(building_instances, many=True)
         return get_success(serializer)
