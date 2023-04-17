@@ -55,12 +55,12 @@ function BuildingInfo(
                 setBuilding={setBuilding}
             /> : null}
 
-            {type == "admin" ? <PatchBuildingSyndicModal
+        {type == "admin" ? <p>TODO: edit modal for admin building</p> /*<PatchBuildingSyndicModal
                 show={editBuilding}
                 closeModal={() => setEditBuilding(false)}
                 building={building}
-                setBuilding={setBuilding}
-            /> : null}
+                setBuilding={setBuilding} />*/
+            : null}
 
 
             <h1>
