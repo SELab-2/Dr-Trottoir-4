@@ -63,10 +63,10 @@ function EditEventModal(data: any) {
                     Delete
                 </Button>
                 <Button variant="secondary" onClick={onClose}>
-                    Close
+                    Sluit af
                 </Button>
                 <Button variant="primary" onClick={handleSave}>
-                    Save Changes
+                    Sla op
                 </Button>
             </Modal.Footer>
         </Modal>

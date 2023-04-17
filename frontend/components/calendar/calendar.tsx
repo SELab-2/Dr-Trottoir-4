@@ -15,8 +15,9 @@ import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
 import {User} from "@/lib/user";
 import {Tour} from "@/lib/tour";
-import {formatDate, postStudentOnTour} from "@/lib/student-on-tour";
+import {formatDate, getALlStudentOnTourFromDate, postStudentOnTour} from "@/lib/student-on-tour";
 import {handleError} from "@/lib/error";
+import LoadEventsModal from "@/components/calendar/loadSchedule";
 
 interface MyEvent extends Event {
     tour: Tour
@@ -35,9 +36,25 @@ interface Props {
 const MyCalendar: FC<Props> = (props) => {
     const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
+    const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [events, setEvents] = useState<MyEvent[]>([])
 
+
+    const onEventsLoad = ({start_date, end_date} : {start_date : Date, end_date : Date}) => {
+        console.log(start_date)
+        console.log(end_date)
+        console.log("Load events")
+        getALlStudentOnTourFromDate({startDate : new Date(start_date), endDate : new Date(end_date)}).then(
+            (res) => {
+                console.log(res.data)
+            },
+            (err) => {
+                console.error(err);
+            }
+        );
+
+    }
 
     const onEventSelection = (e: Event) => {
         setSelectedEvent(e);
@@ -154,7 +171,7 @@ const MyCalendar: FC<Props> = (props) => {
                     },
                     (err) => {
                         const e = handleError(err);
-                        //setErrorMessages(e);
+                        //setErrorMessages(e); // TODO add error message to page
                     }
                 );
             }
@@ -162,28 +179,12 @@ const MyCalendar: FC<Props> = (props) => {
         console.log(events);
     };
 
-    const handleScheduleLoad = () => {
-        console.log("Load");
-    };
-
-    const handlePopupOpenAdd = () => {
-        setPopupIsOpenAdd(true);
-    };
-
-    const handlePopupCloseEdit = () => {
-        setSelectedEvent(null);
-        setPopupIsOpenEdit(false);
-    };
-
-    const handlePopupCloseAdd = () => {
-        setPopupIsOpenAdd(false);
-    };
-
 
     return (
         <>
-            <button className="btn btn-primary mb-3" onClick={handlePopupOpenAdd}>Voeg ronde toe</button>
-            <button className="btn btn-primary mb-3" onClick={handleScheduleLoad}>Kies vorige planning</button>
+            <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenAdd(true)}>Voeg ronde toe</button>
+            <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenLoad(true)}>Kies vorige planning
+            </button>
             <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>Sla planning op</button>
             <DnDCalendar
                 messages={messages}
@@ -206,7 +207,10 @@ const MyCalendar: FC<Props> = (props) => {
                 <EditEventModal
                     event={selectedEvent}
                     isOpen={popupIsOpenEdit}
-                    onClose={handlePopupCloseEdit}
+                    onClose={() => {
+                        setSelectedEvent(null);
+                        setPopupIsOpenEdit(false);
+                    }}
                     onSave={onEventEdit}
                     onDelete={onEventDelete}
                 />
@@ -215,9 +219,14 @@ const MyCalendar: FC<Props> = (props) => {
                 allStudents={props.students}
                 allTours={props.tours}
                 isOpen={popupIsOpenAdd}
-                onClose={handlePopupCloseAdd}
+                onClose={() => setPopupIsOpenAdd(false)}
                 onSave={onEventAdd}
                 onSaveMultiple={onEventsAdd}
+            />
+            <LoadEventsModal
+                isOpen={popupIsOpenLoad}
+                onClose={() => setPopupIsOpenLoad(false)}
+                onSave={onEventsLoad}
             />
         </>
     );
