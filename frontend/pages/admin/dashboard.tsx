@@ -10,6 +10,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
 import {styled} from '@mui/system';
 import LiveField from '@/components/liveField';
+import { BuildingComment } from '@/lib/building-comment';
 
 const GreenLinearProgress = styled(LinearProgress)(() => ({
     height: '20px',
@@ -22,7 +23,7 @@ const GreenLinearProgress = styled(LinearProgress)(() => ({
 function AdminDashboard() {
     const router = useRouter();
     const [tours, setTours] = useState<Tour[]>([]);
-    const [studentOnTours, setStudentOnTours] = useState<StudentOnTour[]>([]);
+    const [studentsOnTours, setStudentsOnTours] = useState<StudentOnTour[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [remarksCount, setRemarksCount] = useState<Record<string, number>>({});
@@ -30,19 +31,20 @@ function AdminDashboard() {
 
     const fetchCounter = () => Promise.resolve(counter);
 
-    const fetchRemarks = async (studentOnTourId: number) => {
+    const fetchRemarks = (studentOnTourId: number) => {
         // Fetch remarks based on studentOnTourId
         // Return an array of remarks
+        const allBuildings = 
     };
 
     const fetchAllRemarks = async () => {
-        // // Fetch all remarks for each studentOnTour and store the count in remarksCount
-        // const newRemarksCount = {};
-        // for (const studentOnTour of studentOnTours) {
-        //     const remarks = await fetchRemarks(studentOnTour.id);
-        //     newRemarksCount[studentOnTour.id] = remarks.length;
-        // }
-        // setRemarksCount(newRemarksCount);
+        // Fetch all remarks for each studentOnTour and store the count in remarksCount
+        const newRemarksCount : Record<string, number> = {};
+        for (const studentOnTour of studentsOnTours) {
+            const remarks = await fetchRemarks(studentOnTour.id);
+            newRemarksCount[studentOnTour.id] = remarks.length;
+        }
+        setRemarksCount(newRemarksCount);
     };
 
     const redirectToRemarksPage = (studentOnTourId: number) => {
@@ -62,13 +64,8 @@ function AdminDashboard() {
                 const allUsersResponse = await getAllUsers();
 
                 setTours(tourResponse.data);
-                setStudentOnTours(studentOnTourResponse.data);
+                setStudentsOnTours(studentOnTourResponse.data);
                 setUsers(allUsersResponse.data);
-
-                setLoading(false);
-                if (studentOnTours.length > 0) {
-                    await fetchAllRemarks();
-                }
             } catch (error) {
                 console.error(error);
             }
@@ -76,6 +73,17 @@ function AdminDashboard() {
 
         fetchData();
     }, []);
+
+    useEffect(() => {
+        setLoading(false);
+        const fetchData = async () => {
+            if (studentsOnTours.length > 0) {
+                await fetchAllRemarks();
+            }
+        }
+        
+        fetchData();
+    }, [tours, studentsOnTours, users]);
 
     if (loading) {
         return (
@@ -103,7 +111,7 @@ function AdminDashboard() {
                 </tr>
                 </thead>
                 <tbody>
-                {studentOnTours.map((studentOnTour) => {
+                {studentsOnTours.map((studentOnTour) => {
                     const tour = tours.find((t) => t.id === studentOnTour.tour);
                     const user = users.find((u) => u.id === studentOnTour.student);
 
