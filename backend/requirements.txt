@@ -28,6 +28,6 @@ six==1.16.0
 sqlparse==0.4.3
 urllib3==1.26.15
 Pillow==9.4.0
-drf-spectacular==0.26.1
+drf-spectacular==0.26.2
 django-nose==1.4.7
 coverage==7.2.1
