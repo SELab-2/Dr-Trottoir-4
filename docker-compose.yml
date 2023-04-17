@@ -62,6 +62,8 @@ services:
     volumes:
       - ./backend:/app/backend
 
+    mem_limit: 4g
+
     depends_on:
       web:
         condition: service_healthy
