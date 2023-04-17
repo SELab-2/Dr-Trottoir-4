@@ -18,14 +18,20 @@ import {Tour} from "@/lib/tour";
 import {formatDate, getALlStudentOnTourFromDate, postStudentOnTour} from "@/lib/student-on-tour";
 import {handleError} from "@/lib/error";
 import LoadEventsModal from "@/components/calendar/loadSchedule";
+import {addDays} from "date-fns";
 
 interface MyEvent extends Event {
     tour: Tour
     student: User
     start: Date
     end: Date
-    start_time: string
-    end_time: string
+}
+
+interface Test {
+    id: number,
+    tour: number,
+    student: number,
+    date: Date,
 }
 
 interface Props {
@@ -41,19 +47,44 @@ const MyCalendar: FC<Props> = (props) => {
     const [events, setEvents] = useState<MyEvent[]>([])
 
 
-    const onEventsLoad = ({start_date, end_date} : {start_date : Date, end_date : Date}) => {
-        console.log(start_date)
-        console.log(end_date)
-        console.log("Load events")
-        getALlStudentOnTourFromDate({startDate : new Date(start_date), endDate : new Date(end_date)}).then(
+    const onEventsLoad = ({start_date, end_date}: { start_date: Date, end_date: Date }) => {
+        getALlStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
             (res) => {
-                console.log(res.data)
+                const list: Test[] = res.data
+                let new_events : MyEvent[] = []
+                for (let e in list) {
+                    let tour : Tour = props.tours.filter(function (tour: Tour) {
+                        return tour.id == list[e].tour
+                    })[0];
+                    let student : User = props.students.filter(function (user: User) {
+                        return user.id == list[e].student
+                    })[0];
+                    let new_start = new Date(list[e].date)
+                    new_start.setHours(0)
+                    let new_end = addDays(new Date(list[e].date), 1)
+                    new_end.setHours(0)
+                    new_events[e] = {tour: tour, student: student, start: new_start, end: new_end}
+                }
+                onEventsAdd(new_events);
+                // const tours = groupByKey(new_events, 'tour')
+                // for (let tour in tours) {
+                //     tours[tour] = groupByKey(tours[tour], 'student')
+                // }
+                // console.log(tours)
             },
             (err) => {
                 console.error(err);
             }
         );
 
+    }
+
+    function groupByKey(array: any, key: any) {
+        return array
+            .reduce((hash: any, obj: any) => {
+                if (obj[key] === undefined) return hash;
+                return Object.assign(hash, {[obj[key]]: (hash[obj[key]] || []).concat(obj)})
+            }, {})
     }
 
     const onEventSelection = (e: Event) => {
@@ -84,41 +115,26 @@ const MyCalendar: FC<Props> = (props) => {
                             student,
                             start,
                             end,
-                            start_time,
-                            end_time
-                        }: { tour: Tour, student: User, start: Date, end: Date, start_time: string, end_time: string }) => {
+                        }: { tour: Tour, student: User, start: Date, end: Date }) => {
         setEvents(currentEvents => {
             const newEvent: MyEvent = {
                 tour: tour,
                 student: student,
                 start: start,
-                end: end,
-                start_time: start_time,
-                end_time: end_time,
+                end: end
             };
             return [...currentEvents, newEvent];
         });
-
     }
 
-    const onEventsAdd = (eventData: {
-        tour: Tour,
-        data: {
-            student: User,
-            start: Date,
-            end: Date
-        }[],
-        start_time: string,
-        end_time: string
-    }) => {
+    const onEventsAdd = (eventData: MyEvent[]
+    ) => {
         setEvents(currentEvents => {
-            const newEvents = eventData.data.map(event => ({
-                tour: eventData.tour,
+            const newEvents = eventData.map(event => ({
+                tour: event.tour,
                 student: event.student,
                 start: event.start,
                 end: event.end,
-                start_time: eventData.start_time,
-                end_time: eventData.end_time,
             }));
             return [...currentEvents, ...newEvents];
         });
@@ -159,11 +175,9 @@ const MyCalendar: FC<Props> = (props) => {
     };
 
     const handleScheduleSave = () => {
-        console.log(events);
         for (let e in events) {
             const dates = getDaysArray(events[e].start, events[e].end);
             for (let d in dates) {
-                console.log(events[e].tour.id, events[e].student.id, formatDate(dates[d]));
                 postStudentOnTour(events[e].tour.id, events[e].student.id, formatDate(dates[d])).then(
                     (_) => {
                         //TODO
@@ -176,7 +190,6 @@ const MyCalendar: FC<Props> = (props) => {
                 );
             }
         }
-        console.log(events);
     };
 
 
@@ -201,7 +214,6 @@ const MyCalendar: FC<Props> = (props) => {
                 onEventDrop={onEventResize}
                 onEventResize={onEventResize}
                 resizable
-                defaultDate={new Date(2023, 3, 6)}
             />
             {selectedEvent && (
                 <EditEventModal

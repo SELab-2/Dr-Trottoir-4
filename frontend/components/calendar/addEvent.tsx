@@ -10,8 +10,6 @@ function AddEventModal(data: any) {
     const [tour, setTour] = useState<Tour | null>(null);
     const [student, setStudent] = useState<User | null>(null);
     const [start, setStart] = useState(new Date(addDays(startOfWeek(startOfMonth(new Date()), {weekStartsOn: 0}), 8).toLocaleString('en', {timeZone: 'America/New_York'})));
-    const [start_time, setStarttime] = useState("17:00");
-    const [end_time, setEndtime] = useState("20:00");
     const [checked, setChecked] = useState(true);
     const [week, setWeek] = useState<User[]>(Array(7).fill(null)); // Week starts on Sunday (index 0)
 
@@ -31,26 +29,22 @@ function AddEventModal(data: any) {
         if (checked) {
             start.setHours(0);
             const end = addDays(start, 6);
-            onSave({tour, student, start, end, start_time, end_time});
+            onSave({tour, student, start, end});
             onClose();
         } else {
             week.pop();
-            let data: { student: User, start: Date, end: Date }[] = [];
+            let data: { tour: Tour, student: User, start: Date, end: Date }[] = [];
             let new_start = start;
             new_start.setHours(0);
             const split = splitOnValueChange(week);
             for (let s in split) {
                 let new_end = addDays(new_start, split[s].length);
                 new_end.setHours(0);
-                data[s] = {student: split[s][0], start: new_start, end: new_end};
+                data[s] = {tour: tour!, student: split[s][0], start: new_start, end: new_end};
                 new_start = new_end;
             }
-            onSaveMultiple({
-                tour: tour,
-                data: data,
-                start_time: start_time,
-                end_time: end_time,
-            })
+            console.log(data)
+            onSaveMultiple(data)
             onClose();
         }
     }
@@ -191,18 +185,6 @@ function AddEventModal(data: any) {
                                 </div>
                             </div>
                         )}
-                    </div>
-                    <div className="form-row">
-                        <div className="col">
-                            <label>Start uur:</label>
-                            <input type="time" className="form-control" value={start_time}
-                                   onChange={(event) => setStarttime(event.target.value)}/>
-                        </div>
-                        <div className="col">
-                            <label>Eind uur:</label>
-                            <input type="time" className="form-control" value={end_time}
-                                   onChange={(event) => setEndtime(event.target.value)}/>
-                        </div>
                     </div>
                 </form>
             </Modal.Body>
