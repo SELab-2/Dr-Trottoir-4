@@ -23,7 +23,9 @@ jobs:
 
 
       - name: Copy file to local machine
-        run: docker-compose cp backend:/app/backend/coverage.xml coverage.xml
+        run: | #docker-compose cp backend:/app/backend/coverage.xml coverage.xml
+          container_id=$(docker-compose ps -q backend)
+          docker cp ${container_id}:/app/backend/coverage.xml coverage.xml
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2.6.1
