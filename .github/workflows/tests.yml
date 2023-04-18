@@ -21,11 +21,11 @@ jobs:
         # run: chmod +x runtests.sh ; ./runtests.sh
         #docker-compose run --rm --name backend_test backend python manage.py test lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role --coverage-xml=coverage.xml
         #docker-compose exec --rm backend python manage.py test lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role
-        run: docker-compose run --rm --name backend_test backend python manage.py test lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role --coverage-xml=coverage.xml
+        run: docker-compose run --rm --name backend_test backend python manage.py test lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role --cover-xml --cover-xml-file=coverage.xml
         env:
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           SECRET_EMAIL_USER: ${{ secrets.SECRET_EMAIL_USER }}
-          SECRET_EMAIL_USER_PSWD: ${{ secrets.SECRET_EMAIL_USER_PSWD }} 
+          SECRET_EMAIL_USER_PSWD: ${{ secrets.SECRET_EMAIL_USER_PSWD }}
 
       # - name: Copy file to local machine
       #   run: | #docker-compose cp backend:/app/backend/coverage.xml coverage.xml
