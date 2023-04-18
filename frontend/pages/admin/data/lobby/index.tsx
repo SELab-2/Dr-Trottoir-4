@@ -1,18 +1,17 @@
-import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {Delete, Edit} from "@mui/icons-material";
-import React, {useEffect, useMemo, useState} from "react";
-import {useTranslation} from "react-i18next";
-import {deleteLobby, getAllInLobby, Lobby} from "@/lib/lobby";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { deleteLobby, getAllInLobby, Lobby } from "@/lib/lobby";
 import AdminHeader from "@/components/header/adminHeader";
-import {getUserRole} from "@/lib/user";
-import {Button} from "react-bootstrap";
+import { getUserRole } from "@/lib/user";
+import { Button } from "react-bootstrap";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import EditLobbyModal from "@/components/admin/editLobbyModal";
 
 export default function LobbyPage() {
-
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [lobbies, setLobbies] = useState<Lobby[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [showCreateLobbyModal, setShowCreateLobbyModal] = useState<boolean>(false);
@@ -50,13 +49,16 @@ export default function LobbyPage() {
     }, []);
 
     function getAllLobbies() {
-        getAllInLobby().then(res => {
-            const lobbies: Lobby[] = res.data;
-            setLobbies(lobbies);
-            setLoading(false);
-        }, err => {
-            console.error(err);
-        });
+        getAllInLobby().then(
+            (res) => {
+                const lobbies: Lobby[] = res.data;
+                setLobbies(lobbies);
+                setLoading(false);
+            },
+            (err) => {
+                console.error(err);
+            }
+        );
     }
 
     function afterPost(lobby: Lobby) {
@@ -68,8 +70,8 @@ export default function LobbyPage() {
         if (!selectedLobby) {
             return;
         }
-        const i = lobbies.findIndex(l => l.id === selectedLobby.id);
-        setLobbies(prevLobbies => {
+        const i = lobbies.findIndex((l) => l.id === selectedLobby.id);
+        setLobbies((prevLobbies) => {
             const el = [...prevLobbies];
             el[i].email = lobby.email;
             el[i].role = lobby.role;
@@ -82,8 +84,8 @@ export default function LobbyPage() {
         if (!selectedLobby) {
             return;
         }
-        const i = lobbies.findIndex(l => l.id === selectedLobby.id);
-        setLobbies(prevLobbies => {
+        const i = lobbies.findIndex((l) => l.id === selectedLobby.id);
+        setLobbies((prevLobbies) => {
             const el = [...prevLobbies];
             el[i].verification_code = lobby.verification_code;
             return el;
@@ -105,12 +107,12 @@ export default function LobbyPage() {
         if (!selectedLobby) {
             return;
         }
-        deleteLobby(selectedLobby.id).then(_ => {
-            const i = lobbies.findIndex(l => l.id === selectedLobby.id);
+        deleteLobby(selectedLobby.id).then((_) => {
+            const i = lobbies.findIndex((l) => l.id === selectedLobby.id);
             if (i < 0) {
                 return;
             }
-            setLobbies(prevLobbies => {
+            setLobbies((prevLobbies) => {
                 const el = [...prevLobbies];
                 el.splice(i, 1);
                 return el;
@@ -123,18 +125,26 @@ export default function LobbyPage() {
 
     return (
         <>
-            <AdminHeader/>
-            <DeleteConfirmationDialog open={showRemoveDialog} title="Verwijder uit lobby"
-                                      description={`Weet u zeker dat u ${selectedLobby?.email} (${
-                                          selectedLobby ?
-                                              t(getUserRole(selectedLobby.role.toString()))
-                                              : ""
-                                      }) uit de lobby wilt verwijderen?`}
-                                      handleClose={closeRemoveModal}
-                                      handleConfirm={removeLobby}
-                                      confirmButtonText="Verwijder" cancelButtonText="Annuleer"/>
-            <EditLobbyModal selectedLobby={selectedLobby} show={showCreateLobbyModal} onHide={hideModal}
-                            onPatch={afterPatch} onPost={afterPost} onNewVerificationCode={afterNewVerificationPost}/>
+            <AdminHeader />
+            <DeleteConfirmationDialog
+                open={showRemoveDialog}
+                title="Verwijder uit lobby"
+                description={`Weet u zeker dat u ${selectedLobby?.email} (${
+                    selectedLobby ? t(getUserRole(selectedLobby.role.toString())) : ""
+                }) uit de lobby wilt verwijderen?`}
+                handleClose={closeRemoveModal}
+                handleConfirm={removeLobby}
+                confirmButtonText="Verwijder"
+                cancelButtonText="Annuleer"
+            />
+            <EditLobbyModal
+                selectedLobby={selectedLobby}
+                show={showCreateLobbyModal}
+                onHide={hideModal}
+                onPatch={afterPatch}
+                onPost={afterPost}
+                onNewVerificationCode={afterNewVerificationPost}
+            />
             <MaterialReactTable
                 displayColumnDefOptions={{
                     "mrt-row-actions": {
@@ -149,21 +159,23 @@ export default function LobbyPage() {
                 columns={columns}
                 data={lobbies}
                 editingMode="modal" //default
-                state={{isLoading: loading}}
+                state={{ isLoading: loading }}
                 enableEditing
                 enableHiding={false}
-                initialState={{columnVisibility: {id: false}}}
+                initialState={{ columnVisibility: { id: false } }}
                 renderTopToolbarCustomActions={() => (
-                    <Button variant="primary"
-                            className="btn-dark"
-                            onClick={async () => {
-                                setShowCreateLobbyModal(true);
-                            }}>
+                    <Button
+                        variant="primary"
+                        className="btn-dark"
+                        onClick={async () => {
+                            setShowCreateLobbyModal(true);
+                        }}
+                    >
                         Voeg toe aan lobby
                     </Button>
                 )}
-                renderRowActions={({row}) => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                renderRowActions={({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Tooltip arrow placement="left" title="Pas aan">
                             <IconButton
                                 onClick={() => {
@@ -172,7 +184,7 @@ export default function LobbyPage() {
                                     setSelectedLobby(lobby);
                                 }}
                             >
-                                <Edit/>
+                                <Edit />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -183,7 +195,7 @@ export default function LobbyPage() {
                                     setSelectedLobby(lobby);
                                 }}
                             >
-                                <Delete/>
+                                <Delete />
                             </IconButton>
                         </Tooltip>
                     </Box>
