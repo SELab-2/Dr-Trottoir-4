@@ -18,6 +18,9 @@ class PictureOfRemarkTests(BaseTest):
         self.data1 = {"picture": f, "remark_at_building": insert_dummy_remark_at_building()}
         self.insert("picture-of-remark/")
 
+    def test_insert_empty(self):
+        self.insert_empty("picture-of-remark/")
+
     def test_insert_dupe_picture_of_remark(self):
         RaB = insert_dummy_remark_at_building()
         self.data1 = {"picture": f, "remark_at_building": RaB}

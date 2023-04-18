@@ -25,6 +25,9 @@ class RemarkAtBuildingTests(BaseTest):
         }
         self.insert("remark-at-building/")
 
+    def test_insert_empty(self):
+        self.insert_empty("remark-at-building/")
+
     def test_insert_dupe_remark_at_building(self):
         self.data1 = {
             "student_on_tour": insert_dummy_student_on_tour(),

@@ -155,7 +155,7 @@ class Building(models.Model):
 class BuildingComment(models.Model):
     comment = models.TextField()
     date = models.DateTimeField()
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"Comment: {self.comment} ({self.date}) for {self.building}"

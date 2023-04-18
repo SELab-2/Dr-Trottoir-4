@@ -23,7 +23,7 @@ from util.request_response_util import (
     patch_success,
     patch_docs,
     get_docs,
-    post_success,
+    post_success, bad_request,
 )
 
 TRANSLATE = {
@@ -46,6 +46,9 @@ class Default(APIView):
         remark_at_building = RemarkAtBuilding()
 
         set_keys_of_instance(remark_at_building, data, TRANSLATE)
+
+        if remark_at_building.student_on_tour is None:
+            return bad_request("RemarkAtBuilding")
 
         self.check_object_permissions(request, remark_at_building.student_on_tour.student)
 

@@ -56,6 +56,11 @@ class BaseTest(TestCase):
             )
         assert "id" in resp.data, errorMessage("insert", "id", None)
 
+    def insert_empty(self, url):
+        resp = self.client.post(backend_url + "/" + url, {}, follow=True)
+        print(resp)
+        assert resp.status_code == 400, errorMessage("insert_empty", 400, resp.status_code)
+
     def insert_dupe(self, url, special=None):
         assert self.data1 is not None, "no data found"
         if "region" in self.data1:

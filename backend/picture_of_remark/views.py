@@ -18,7 +18,7 @@ from util.request_response_util import (
     patch_docs,
     patch_success,
     get_docs,
-    post_success,
+    post_success, bad_request,
 )
 
 TRANSLATE = {"remark_at_building": "remark_at_building_id"}
@@ -36,14 +36,17 @@ class Default(APIView):
         data = request_to_dict(request.data)
         picture_of_remark_instance = PictureOfRemark()
 
-        f = data["picture"]
-        hashed_image = hashlib.sha1()
-        hashed_image.update(f.open().read())
-
-        data["hash"] = hashed_image.hexdigest()
+        if "picture" in data:
+            f = data["picture"]
+            hashed_image = hashlib.sha1()
+            hashed_image.update(f.open().read())
+            data["hash"] = hashed_image.hexdigest()
 
         set_keys_of_instance(picture_of_remark_instance, data, TRANSLATE)
 
+        if picture_of_remark_instance.remark_at_building is None:
+            return bad_request("pictureOfRemark")
+        
         self.check_object_permissions(request, picture_of_remark_instance.remark_at_building.student_on_tour.student)
 
         if r := try_full_clean_and_save(picture_of_remark_instance):
@@ -96,10 +99,11 @@ class PictureOfRemarkIndividualView(APIView):
         self.check_object_permissions(request, picture_of_remark_instance.remark_at_building.student_on_tour.student)
 
         data = request_to_dict(request.data)
-        f = request.data["picture"]
-        hashed_image = hashlib.sha1()
-        hashed_image.update(f.open().read())
-        data["hash"] = hashed_image.hexdigest()
+        if "picture" in request.data:
+            f = request.data["picture"]
+            hashed_image = hashlib.sha1()
+            hashed_image.update(f.open().read())
+            data["hash"] = hashed_image.hexdigest()
 
         set_keys_of_instance(picture_of_remark_instance, data, TRANSLATE)
 

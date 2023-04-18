@@ -15,6 +15,9 @@ class EmailTemplateTests(BaseTest):
         self.data1 = {"name": "testTemplate", "template": "<p>{{name}<p>"}
         self.insert("email-template/")
 
+    def test_insert_empty(self):
+        self.insert_empty("email-template/")
+
     def test_insert_dupe_email_template(self):
         self.data1 = {"name": "testTemplate", "template": "<p>{{name}<p>"}
         self.insert_dupe("email-template/")

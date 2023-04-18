@@ -75,6 +75,9 @@ class UserTests(BaseTest):
             "password"
         ])
 
+    def test_insert_empty(self):
+        self.insert_empty("user/")
+
     def test_insert_dupe(self):
         G_id = insert_dummy_region("Gent")
         B_id = insert_dummy_region("Brugge")

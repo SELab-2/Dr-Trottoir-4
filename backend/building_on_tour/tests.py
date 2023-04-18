@@ -17,6 +17,9 @@ class BuildingOnTourTests(BaseTest):
         self.data1 = {"tour": t_id, "building": b_id, "index": 0}
         self.insert("building-on-tour/")
 
+    def test_insert_empty(self):
+        self.insert_empty("building-on-tour/")
+
     def test_insert_dupe_building_on_tour(self):
         t_id = insert_dummy_tour()
         b_id = insert_dummy_building()
