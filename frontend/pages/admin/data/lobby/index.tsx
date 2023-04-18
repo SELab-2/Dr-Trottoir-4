@@ -76,21 +76,16 @@ export default function LobbyPage() {
         });
     }
 
-    // Request a new verification code for a certain lobby
-    function requestNewVerificationCode() {
+    function afterNewVerificationPost(lobby: Lobby) {
         if (!selectedLobby) {
             return;
         }
-        newVerificationCode(selectedLobby.id).then(res => {
-            const lobby: Lobby = res.data;
-            const i = lobbies.findIndex(l => l.id === selectedLobby.id);
-            setLobbies(prevLobbies => {
-                const el = [...prevLobbies];
-                el[i].verification_code = lobby.verification_code;
-                return el;
-            });
-            setSelectedLobby(lobby);
-        }, console.error);
+        const i = lobbies.findIndex(l => l.id === selectedLobby.id);
+        setLobbies(prevLobbies => {
+            const el = [...prevLobbies];
+            el[i].verification_code = lobby.verification_code;
+            return el;
+        });
     }
 
     // hide the modal
@@ -132,7 +127,7 @@ export default function LobbyPage() {
                                       }}
                                       confirmButtonText="Verwijder" cancelButtonText="Annuleer"/>
             <EditLobbyModal selectedLobby={selectedLobby} show={showCreateLobbyModal} onHide={hideModal}
-                            onPatch={afterPatch} onPost={afterPost} newVerificationCode={requestNewVerificationCode}/>
+                            onPatch={afterPatch} onPost={afterPost} onNewVerificationCode={afterNewVerificationPost}/>
             <MaterialReactTable
                 displayColumnDefOptions={{
                     "mrt-row-actions": {

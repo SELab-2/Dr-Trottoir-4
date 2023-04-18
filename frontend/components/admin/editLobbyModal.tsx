@@ -4,7 +4,7 @@ import React, {FormEvent, useEffect, useState} from "react";
 import {getAllRoles, Role} from "@/lib/role";
 import {IconButton} from "@mui/material";
 import {Replay} from "@mui/icons-material";
-import {addToLobby, Lobby, patchLobby} from "@/lib/lobby";
+import {addToLobby, Lobby, newVerificationCode, patchLobby} from "@/lib/lobby";
 import {useTranslation} from "react-i18next";
 import {handleError} from "@/lib/error";
 
@@ -15,14 +15,14 @@ export default function EditLobbyModal(
         onHide,
         onPatch,
         onPost,
-        newVerificationCode
+        onNewVerificationCode
     } : {
         selectedLobby : Lobby | null,
         show : boolean,
         onHide : () => void,
         onPatch : (l: Lobby) => void,
         onPost : (l : Lobby) => void,
-        newVerificationCode : () => void
+        onNewVerificationCode : (l : Lobby) => void
     }
 ) {
     const {t} = useTranslation();
@@ -30,6 +30,7 @@ export default function EditLobbyModal(
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [email, setEmail] = useState<string>("");
     const [role, setRole] = useState<string>("");
+    const [verificationCode, setVerificationCode] = useState<string>("");
     const [allRoles, setAllRoles] = useState<Role[]>([]);
 
     useEffect(() => {
@@ -45,6 +46,7 @@ export default function EditLobbyModal(
         }
         setEmail(selectedLobby.email);
         setRole(allRoles.find(r => r.id === selectedLobby.role)!.name);
+        setVerificationCode(selectedLobby.verification_code);
     }, [selectedLobby]);
 
     // post/patch a lobby
@@ -97,10 +99,24 @@ export default function EditLobbyModal(
         });
     }
 
+    // Request a new verification code for a certain lobby
+    function requestNewVerificationCode() {
+        if (!selectedLobby) {
+            return;
+        }
+        newVerificationCode(selectedLobby.id).then(res => {
+            const lobby: Lobby = res.data;
+            setVerificationCode(lobby.verification_code);
+            onNewVerificationCode(lobby);
+        }, console.error);
+    }
+
+
     function hideModal() {
         onHide();
         setRole("");
         setEmail("");
+        setVerificationCode("");
         setErrorMessages([]);
     }
 
@@ -166,7 +182,7 @@ export default function EditLobbyModal(
                                            value={selectedLobby?.verification_code}
                                            aria-describedby="regenerate"/>
                                     <div className="input-group-append">
-                                        <IconButton onClick={() => newVerificationCode()} id="regenerate">
+                                        <IconButton onClick={() => requestNewVerificationCode()} id="regenerate">
                                             <Replay/>
                                         </IconButton>
                                     </div>
