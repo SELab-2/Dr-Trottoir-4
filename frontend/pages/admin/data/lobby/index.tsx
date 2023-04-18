@@ -3,12 +3,13 @@ import {Box, IconButton, Tooltip} from "@mui/material";
 import {Delete, Edit} from "@mui/icons-material";
 import React, {FormEvent, useEffect, useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {addToLobby, getAllInLobby, Lobby} from "@/lib/lobby";
+import {addToLobby, deleteLobby, getAllInLobby, Lobby} from "@/lib/lobby";
 import AdminHeader from "@/components/header/adminHeader";
 import {getUserRole} from "@/lib/user";
 import {Button, Form, Modal} from "react-bootstrap";
 import styles from "@/styles/Login.module.css";
 import {getAllRoles, Role} from "@/lib/role";
+import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 
 export default function LobbyPage() {
 
@@ -19,6 +20,8 @@ export default function LobbyPage() {
     const [email, setEmail] = useState<string>("");
     const [role, setRole] = useState<string>();
     const [allRoles, setAllRoles] = useState<Role[]>([]);
+    const [showRemoveDialog, setShowRemoveDialog] = useState<boolean>(false);
+    const [selectedLobby, setSelectedLobby] = useState<Lobby | null>(null);
 
     const columns = useMemo<MRT_ColumnDef<Lobby>[]>(
         () => [
@@ -78,9 +81,39 @@ export default function LobbyPage() {
     return (
         <>
             <AdminHeader/>
+            <DeleteConfirmationDialog open={showRemoveDialog} title="Verwijder uit lobby"
+                                      description={`Weet u zeker dat u ${selectedLobby?.email} (${
+                                          selectedLobby ? 
+                                              t(getUserRole(selectedLobby.role.toString())) 
+                                              : ""
+                                      }) uit de lobby wilt verwijderen?`}
+                                      handleClose={() => {
+                                        setSelectedLobby(null);
+                                        setShowRemoveDialog(false);
+                                      }}
+                                      handleConfirm={() => {
+                                          if (! selectedLobby) {
+                                              return;
+                                          }
+                                          deleteLobby(selectedLobby.id).then(_ => {
+                                              const i = lobbies.findIndex(l => l.id === selectedLobby.id);
+                                              console.log(i);
+                                              if (i < 0) {
+                                                  return;
+                                              }
+                                              setLobbies(prevLobbies => {
+                                                  const el = [...prevLobbies];
+                                                  el.splice(i, 1);
+                                                  return el;
+                                              });
+                                              setSelectedLobby(null);
+                                              setShowRemoveDialog(false);
+                                          }, console.error);
+                                      }}
+                                      confirmButtonText="Verwijder" cancelButtonText="Annuleer"/>
             <Modal show={showCreateLobbyModal} onHide={() => setShowCreateLobbyModal(false)}>
                 <Modal.Header>
-                    <Modal.Title>Pas gebruiker aan</Modal.Title>
+                    <Modal.Title>Voeg toe aan lobby</Modal.Title>
                 </Modal.Header>
                 <Form onSubmit={addLobby}>
                     <Modal.Body>
@@ -181,7 +214,8 @@ export default function LobbyPage() {
                         <Tooltip arrow placement="right" title="Verwijder">
                             <IconButton
                                 onClick={() => {
-                                    console.log("Remove");
+                                    setShowRemoveDialog(true);
+                                    setSelectedLobby(row.original);
                                 }}
                             >
                                 <Delete/>

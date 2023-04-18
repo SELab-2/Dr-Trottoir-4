@@ -70,7 +70,6 @@ export default function UserProfile() {
         }
         patchUser(user.id, patchBody).then(
             (res) => {
-                console.log(res.data);
                 const u: User = res.data;
                 setUserInfo(u);
                 setSuccessPatch(true);
@@ -81,10 +80,6 @@ export default function UserProfile() {
             }
         );
     }
-
-    useEffect(() => {
-        console.log(selectedRegions);
-    }, [selectedRegions]);
 
     return (
         <>

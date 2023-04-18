@@ -19,3 +19,8 @@ export async function addToLobby(email : string, roleId : number) {
         headers: { "Content-Type": "application/json" },
     });
 }
+
+export async function deleteLobby(lobbyId : number) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_LOBBY}${lobbyId}`;
+    return await api.delete(request_url);
+}
