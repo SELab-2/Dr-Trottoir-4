@@ -86,6 +86,7 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "This is the documentation for the Dr-Trottoir API",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    "SCHEMA_PATH_PREFIX_INSERT": "/api",
     # OTHER SETTINGS
 }
 
