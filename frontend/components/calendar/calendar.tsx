@@ -17,7 +17,7 @@ import {User} from "@/lib/user";
 import {Tour} from "@/lib/tour";
 import {formatDate, getALlStudentOnTourFromDate, postStudentOnTour} from "@/lib/student-on-tour";
 import {handleError} from "@/lib/error";
-import LoadEventsModal from "@/components/calendar/loadSchedule";
+import LoadEventsModal from "@/components/calendar/loadEvents";
 import {addDays} from "date-fns";
 
 interface MyEvent extends Event {
@@ -51,26 +51,14 @@ const MyCalendar: FC<Props> = (props) => {
         getALlStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
             (res) => {
                 const list: Test[] = res.data
-                let new_events: MyEvent[] = []
-                for (let e in list) {
-                    let tour: Tour = props.tours.filter(function (tour: Tour) {
-                        return tour.id == list[e].tour
-                    })[0];
-                    let student: User = props.students.filter(function (user: User) {
-                        return user.id == list[e].student
-                    })[0];
-                    let new_start = new Date(list[e].date)
-                    new_start.setHours(0)
-                    let new_end = addDays(new Date(list[e].date), 1)
-                    new_end.setHours(0)
-                    new_events[e] = {tour: tour, students: [student], start: new_start, end: new_end}
-                }
                 const tours = groupByKey(list, 'tour');
                 console.log(tours)
-                let test_events: MyEvent[] = []
-                for (let t in tours) {
+                let my_events: MyEvent[] = []
+                for (let a in tours) {
+                    const t = parseInt(a);
                     let students: User[] = []
-                    for (let s in tours[t]) {
+                    for (let b in tours[t]) {
+                        const s = parseInt(b);
                         students[s] = props.students.filter(function (user: User) {
                             return user.id == tours[t][s].student;
                         })[0]
@@ -78,7 +66,7 @@ const MyCalendar: FC<Props> = (props) => {
                     let tour: Tour = props.tours.filter(function (tour: Tour) {
                         return tour.id == t
                     })[0];
-                    const dates = tours[t].reduce((acc, curr) => {
+                    const dates = tours[t].reduce((acc : any, curr : any) => {
                         const currDate = new Date(curr.date);
 
                         // If the current date is consecutive with the previous date,
@@ -106,22 +94,15 @@ const MyCalendar: FC<Props> = (props) => {
                         return acc;
                     }, {earliest: null, latest: null, previousDate: null, currentGroup: [], results: []});
 
-                    // If the last group has more than one date, add its earliest and latest dates to the results object.
-                    if (dates.currentGroup.length > 1) {
-                        const earliestDate = dates.currentGroup[0];
-                        const latestDate = dates.currentGroup[dates.currentGroup.length - 1];
-                        dates.results.push({earliestDate, latestDate});
-                    }
                     console.log(dates)
                     const new_start = new Date(dates.earliest)
                     const new_end = new Date(dates.latest)
                     new_start.setHours(0)
-                    //new_end.setHours(0)
-                    test_events[t] = {tour: tour, students: students, start: new_start, end: new_end}
-                    console.log(test_events[t])
+                    new_end.setHours(0)
+                    my_events[t] = {tour: tour, students: students, start: new_start, end: new_end}
+                    console.log(my_events[t])
                 }
-                console.log(test_events)
-                onEventsAdd(test_events);
+                onEventsAdd(my_events);
             },
             (err) => {
                 console.error(err);
