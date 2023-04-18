@@ -4,16 +4,16 @@ import {User} from "@/lib/user";
 
 export interface BuildingInterface {
     id: number;
-    syndic: number;
+    syndic: string;
     name: string;
     city: string;
     postal_code: string;
     street: string;
-    house_number: number;
+    house_number: string;
     bus: string;
-    client_id: number;
-    duration: Date;
-    region: number;
+    client_number: string;
+    duration: string;
+    region: string;
     public_id: string;
 }
 
@@ -28,6 +28,11 @@ export interface BuildingPostInterface {
     client_number: string;
     duration: string;
     region: string;
+    public_id: string;
+}
+
+export interface BuildingSyndicPostInterface {
+    name: string;
     public_id: string;
 }
 

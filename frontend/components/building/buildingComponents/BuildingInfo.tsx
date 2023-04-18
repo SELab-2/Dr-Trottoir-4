@@ -1,8 +1,9 @@
 import {TiPencil} from "react-icons/ti";
 import React, {useEffect, useState} from "react";
-import PatchBuildingSyndicModal from "@/components/building/buildingComponents/PatchBuildingSyndicModal";
+import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
 import {BuildingInterface} from "@/lib/building";
 import {getRegion, RegionInterface} from "@/lib/region";
+import PatchBuildingAdminModal from "@/components/building/buildingComponents/editModals/PatchBuildingAdminModal";
 
 function BuildingInfo(
     {
@@ -55,11 +56,11 @@ function BuildingInfo(
                 setBuilding={setBuilding}
             /> : null}
 
-        {type == "admin" ? <p>TODO: edit modal for admin building</p> /*<PatchBuildingSyndicModal
+        {type == "admin" ? <PatchBuildingAdminModal
                 show={editBuilding}
                 closeModal={() => setEditBuilding(false)}
                 building={building}
-                setBuilding={setBuilding} />*/
+                setBuilding={setBuilding} />
             : null}
 
 
