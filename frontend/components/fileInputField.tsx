@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import React, { useState } from "react";
+import { Form, Button } from "react-bootstrap";
 
 interface FileInputFieldProps {
     onUpload: (files: FileList) => void;
@@ -11,8 +11,7 @@ function FileInputField(props: FileInputFieldProps) {
 
     function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
         const files = event.target.files;
-        if (files)
-            setSelectedFiles(files);
+        if (files) setSelectedFiles(files);
     }
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -24,16 +23,15 @@ function FileInputField(props: FileInputFieldProps) {
         }
     }
 
-
     return (
         <div>
-        <Form onSubmit={handleSubmit}>
-            <Form.Group>
-            <Form.Label>Voeg bestand toe</Form.Label>
-            <Form.Control type="file" multiple onChange={handleFileChange} value={undefined} />
-            </Form.Group>
-            <Button type="submit">Upload</Button>
-        </Form>
+            <Form onSubmit={handleSubmit}>
+                <Form.Group>
+                    <Form.Label>Voeg bestand toe</Form.Label>
+                    <Form.Control type="file" multiple onChange={handleFileChange} value={undefined} />
+                </Form.Group>
+                <Button type="submit">Upload</Button>
+            </Form>
         </div>
     );
 }

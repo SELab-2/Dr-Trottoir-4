@@ -59,46 +59,22 @@ class LobbyAuthorizationTests(BaseAuthTest):
         super().__init__(methodName)
 
     def test_lobby_list(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         self.list_view("lobby/", codes)
 
     def test_insert_lobby(self):
-        codes = {
-            "Default": 403,
-            "Admin": 201,
-            "Superstudent": 201,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 201, "Student": 403, "Syndic": 403}
         r_id = insert_dummy_role("Student")
         self.data1 = {"email": "test_lobby@example.com", "role": r_id}
         self.insert_view("lobby/", codes)
 
     def test_get_lobby(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         l_id = insert_dummy_lobby()
         self.get_view(f"lobby/{l_id}", codes)
 
     def test_patch_lobby(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         l_id = insert_dummy_lobby()
 
         r_id = insert_dummy_role("Student")
@@ -109,11 +85,5 @@ class LobbyAuthorizationTests(BaseAuthTest):
         def create():
             return insert_dummy_lobby()
 
-        codes = {
-            "Default": 403,
-            "Admin": 204,
-            "Superstudent": 204,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 204, "Student": 403, "Syndic": 403}
         self.remove_view("lobby/", codes, create=create)

@@ -219,11 +219,11 @@ function AdminDataBuildingsEdit() {
                     ></SyndicAutoCompleteComponent>
                     {!router.query.building && <PDFUploader onUpload={setManual}></PDFUploader>}
                 </Form>
-                <button onClick={handleSubmit} type="button">
-                    Opslaan
-                </button>
                 <button onClick={goBack} className="ml-2">
                     Terug
+                </button>
+                <button onClick={handleSubmit} type="button">
+                    Opslaan
                 </button>
             </div>
         </>
