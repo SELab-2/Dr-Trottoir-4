@@ -96,9 +96,9 @@ class ManualBuildingView(APIView):
         parameters=param_docs(
             {
                 "most-recent": (
-                    "When set to 'true', only the most recent manual will be returned",
-                    False,
-                    OpenApiTypes.BOOL,
+                        "When set to 'true', only the most recent manual will be returned",
+                        False,
+                        OpenApiTypes.BOOL,
                 )
             }
         ),
@@ -110,17 +110,10 @@ class ManualBuildingView(APIView):
         if not Building.objects.filter(id=building_id):
             return not_found("Building")
 
-        most_recent_only = False
-
-        param = request.GET.get("most-recent")
-        if param:
-            if param.capitalize() not in ["True", "False"]:
-                return Response(
-                    {"message": f"Invalid value for boolean parameter 'most-recent': {param} (true or false expected)"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            else:
-                most_recent_only = param.lower() == "true"
+        try:
+            most_recent_only = get_boolean_param(request, "most-recent")
+        except BadRequest as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         manual_instances = Manual.objects.filter(building_id=building_id)
 
