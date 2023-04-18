@@ -111,7 +111,7 @@ class PictureOfRemarkAuthorizationTests(BaseAuthTest):
 
     def test_remove_picture_of_remark(self):
         # testing the special case where the student of the tour removes the instance is very difficult,
-        # sinces there are always new instances created and there is no way to access them from here
+        # since there are always new instances created and there is no way to access them from here
         def create():
             return insert_dummy_picture_of_remark(f)
 
