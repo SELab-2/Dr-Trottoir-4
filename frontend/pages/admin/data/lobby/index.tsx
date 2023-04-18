@@ -1,15 +1,16 @@
 import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
 import {Box, IconButton, Tooltip} from "@mui/material";
-import {Delete, Edit} from "@mui/icons-material";
+import {Delete, Edit, Replay} from "@mui/icons-material";
 import React, {FormEvent, useEffect, useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {addToLobby, deleteLobby, getAllInLobby, Lobby} from "@/lib/lobby";
+import {addToLobby, deleteLobby, getAllInLobby, Lobby, newVerificationCode, patchLobby} from "@/lib/lobby";
 import AdminHeader from "@/components/header/adminHeader";
 import {getUserRole} from "@/lib/user";
 import {Button, Form, Modal} from "react-bootstrap";
 import styles from "@/styles/Login.module.css";
 import {getAllRoles, Role} from "@/lib/role";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
+import {handleError} from "@/lib/error";
 
 export default function LobbyPage() {
 
@@ -18,11 +19,14 @@ export default function LobbyPage() {
     const [loading, setLoading] = useState<boolean>(true);
     const [showCreateLobbyModal, setShowCreateLobbyModal] = useState<boolean>(false);
     const [email, setEmail] = useState<string>("");
-    const [role, setRole] = useState<string>();
+    const [role, setRole] = useState<string>("");
     const [allRoles, setAllRoles] = useState<Role[]>([]);
     const [showRemoveDialog, setShowRemoveDialog] = useState<boolean>(false);
     const [selectedLobby, setSelectedLobby] = useState<Lobby | null>(null);
 
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
+    // The columns for the lobby table
     const columns = useMemo<MRT_ColumnDef<Lobby>[]>(
         () => [
             {
@@ -48,6 +52,7 @@ export default function LobbyPage() {
     );
 
     useEffect(() => {
+        // Get all the lobbies & roles.
         getAllLobbies();
         getAllRoles().then(res => {
             const r: Role[] = res.data;
@@ -65,8 +70,18 @@ export default function LobbyPage() {
         });
     }
 
-    function addLobby(event: FormEvent) {
+    // post/patch a lobby
+    function changeLobby(event : FormEvent) {
         event.preventDefault();
+        if (selectedLobby) {
+            modifyLobby();
+        } else {
+            addLobby();
+        }
+    }
+
+    // Add a lobby via a post
+    function addLobby() {
         if (!role) {
             return;
         }
@@ -74,8 +89,66 @@ export default function LobbyPage() {
         addToLobby(email, selectedRole.id).then(res => {
             const l: Lobby = res.data;
             setLobbies([...lobbies, l]);
-            setShowCreateLobbyModal(false);
+            hideModal();
+        }, err => {
+            const e = handleError(err);
+            setErrorMessages(e);
+        });
+    }
+
+    // Patch a lobby
+    function modifyLobby() {
+        if (!role || ! selectedLobby) {
+            return;
+        }
+        const selectedRole: Role = allRoles.find(r => r.name === role)!;
+        const data : { [name: string]: string | number | number[] } = {};
+        if (selectedRole.id != selectedLobby.id) {
+            data['role'] = selectedRole.id;
+        }
+        if (email != selectedLobby.email) {
+            data['email'] = email;
+        }
+        patchLobby(selectedLobby.id, data).then(res => {
+            const lobby : Lobby = res.data;
+            const i = lobbies.findIndex(l => l.id === selectedLobby.id);
+            setLobbies(prevLobbies => {
+                const el = [...prevLobbies];
+                el[i].email = lobby.email;
+                el[i].role = lobby.role;
+                return el;
+            });
+            hideModal();
+        }, err => {
+            const e = handleError(err);
+            setErrorMessages(e);
+        });
+    }
+
+    // Request a new verification code for a certain lobby
+    function requestNewVerificationCode() {
+        if (! selectedLobby) {
+            return;
+        }
+        newVerificationCode(selectedLobby.id).then(res => {
+            const lobby : Lobby = res.data;
+            const i = lobbies.findIndex(l => l.id === selectedLobby.id);
+            setLobbies(prevLobbies => {
+                const el = [...prevLobbies];
+                el[i].verification_code = lobby.verification_code;
+                return el;
+            });
+            setSelectedLobby(lobby);
         }, console.error);
+    }
+
+    // hide the modal
+    function hideModal() {
+        setSelectedLobby(null);
+        setRole("");
+        setEmail("");
+        setShowCreateLobbyModal(false);
+        setErrorMessages([]);
     }
 
     return (
@@ -83,16 +156,16 @@ export default function LobbyPage() {
             <AdminHeader/>
             <DeleteConfirmationDialog open={showRemoveDialog} title="Verwijder uit lobby"
                                       description={`Weet u zeker dat u ${selectedLobby?.email} (${
-                                          selectedLobby ? 
-                                              t(getUserRole(selectedLobby.role.toString())) 
+                                          selectedLobby ?
+                                              t(getUserRole(selectedLobby.role.toString()))
                                               : ""
                                       }) uit de lobby wilt verwijderen?`}
                                       handleClose={() => {
-                                        setSelectedLobby(null);
-                                        setShowRemoveDialog(false);
+                                          setSelectedLobby(null);
+                                          setShowRemoveDialog(false);
                                       }}
                                       handleConfirm={() => {
-                                          if (! selectedLobby) {
+                                          if (!selectedLobby) {
                                               return;
                                           }
                                           deleteLobby(selectedLobby.id).then(_ => {
@@ -111,12 +184,24 @@ export default function LobbyPage() {
                                           }, console.error);
                                       }}
                                       confirmButtonText="Verwijder" cancelButtonText="Annuleer"/>
-            <Modal show={showCreateLobbyModal} onHide={() => setShowCreateLobbyModal(false)}>
+            <Modal show={showCreateLobbyModal} onHide={() => {
+                hideModal()
+            }}>
                 <Modal.Header>
-                    <Modal.Title>Voeg toe aan lobby</Modal.Title>
+                    <Modal.Title>{selectedLobby ? "Pas lobby aan" : "Voeg toe aan lobby"}</Modal.Title>
                 </Modal.Header>
-                <Form onSubmit={addLobby}>
+                <Form onSubmit={changeLobby}>
                     <Modal.Body>
+                        {errorMessages.length !== 0 && (
+                            <div className={"visible alert alert-danger alert-dismissible fade show"}>
+                                <ul>
+                                    {errorMessages.map((err, i) => (
+                                        <li key={i}>{t(err)}</li>
+                                    ))}
+                                </ul>
+                                <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
+                            </div>
+                        )}
                         <div className="card-body p-4 p-lg-5 text-black">
                             <div className="form-outline mb-4">
                                 <label className="form-label">Email:</label>
@@ -134,13 +219,13 @@ export default function LobbyPage() {
                             <div className="form-outline mb-4">
                                 <label className="form-label">Rol:</label>
                                 <select
-                                    defaultValue={""}
+                                    value={role}
                                     className={`form-select form-control form-control-lg ${styles.input}`}
                                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                         setRole(e.target.value);
                                     }}
                                 >
-                                    <option disabled value={""}></option>
+                                    <option disabled value=""></option>
                                     {allRoles.map((role: Role) => (
                                         <option value={role.name} key={role.name}>
                                             {t(role.name)}
@@ -148,6 +233,24 @@ export default function LobbyPage() {
                                     ))}
                                 </select>
                             </div>
+                            {
+                                (selectedLobby) &&
+                                (
+                                    <div className="form-outline mb-4">
+                                        <label className="form-label">Verificatiecode:</label>
+                                        <input type="text"
+                                               readOnly
+                                               className={`form-control form-control-lg ${styles.input}`}
+                                               value={selectedLobby?.verification_code}
+                                               aria-describedby="regenerate"/>
+                                        <div className="input-group-append">
+                                            <IconButton onClick={() => requestNewVerificationCode()} id="regenerate">
+                                                <Replay/>
+                                            </IconButton>
+                                        </div>
+                                    </div>
+                                )
+                            }
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
@@ -155,9 +258,7 @@ export default function LobbyPage() {
                             variant="secondary"
                             className="btn-light"
                             onClick={() => {
-                                setRole("");
-                                setEmail("");
-                                setShowCreateLobbyModal(false);
+                                hideModal();
                             }}
                         >
                             Annuleer
@@ -167,7 +268,7 @@ export default function LobbyPage() {
                             className="btn-dark"
                             type="submit"
                         >
-                            Voeg email toe aan lobby
+                            {selectedLobby ? "Pas aan" : "Voeg email toe aan lobby"}
                         </Button>
                     </Modal.Footer>
                 </Form>
@@ -188,7 +289,6 @@ export default function LobbyPage() {
                 editingMode="modal" //default
                 state={{isLoading: loading}}
                 enableEditing
-                enableRowNumbers
                 enableHiding={false}
                 initialState={{columnVisibility: {id: false}}}
                 renderTopToolbarCustomActions={() => (
@@ -205,7 +305,11 @@ export default function LobbyPage() {
                         <Tooltip arrow placement="left" title="Pas aan">
                             <IconButton
                                 onClick={() => {
-                                    console.log("Edit");
+                                    const lobby: Lobby = row.original;
+                                    setShowCreateLobbyModal(true);
+                                    setSelectedLobby(lobby);
+                                    setEmail(lobby.email);
+                                    setRole(allRoles.find(r => r.id === lobby.role)!.name);
                                 }}
                             >
                                 <Edit/>
@@ -214,8 +318,9 @@ export default function LobbyPage() {
                         <Tooltip arrow placement="right" title="Verwijder">
                             <IconButton
                                 onClick={() => {
+                                    const lobby: Lobby = row.original;
                                     setShowRemoveDialog(true);
-                                    setSelectedLobby(row.original);
+                                    setSelectedLobby(lobby);
                                 }}
                             >
                                 <Delete/>
