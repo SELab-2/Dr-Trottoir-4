@@ -17,7 +17,7 @@ MAX_INT = 2**31 - 1
 
 
 class Region(models.Model):
-    region = models.CharField(max_length=40, unique=True, error_messages={"unique": "Deze regio bestaat al."})
+    region = models.CharField(max_length=40, unique=True, error_messages={"unique": _("This region already exists")})
 
     def __str__(self):
         return self.region
@@ -36,14 +36,16 @@ class Role(models.Model):
         if Role.objects.count() != 0 and self.rank != MAX_INT:
             highest_rank = Role.objects.order_by("-rank").first().rank
             if self.rank > highest_rank + 1:
-                raise ValidationError(f"The maximum rank allowed is {highest_rank + 1}.")
+                raise ValidationError(
+                    _("The maximum rank allowed is {highest_rank}.").format(highest_rank=highest_rank + 1)
+                )
 
     class Meta:
         constraints = [
             UniqueConstraint(
                 Lower("name"),
                 name="role_unique",
-                violation_error_message="This role name already exists.",
+                violation_error_message=_("This role name already exists."),
             ),
         ]
 
@@ -52,9 +54,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = None
     # extra fields for authentication
     email = models.EmailField(
-        _("email address"),
+        "email address",
         unique=True,
-        error_messages={"unique": "A user already exists with this email."},
+        error_messages={"unique": _("A user already exists with this email.")},
     )
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -78,11 +80,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Lobby(models.Model):
     email = models.EmailField(
-        _("email address"), unique=True, error_messages={"unique": "This email is already in the whitelist."}
+        "email address", unique=True, error_messages={"unique": _("This email is already in the lobby.")}
     )
     # The verification code, preferably hashed
     verification_code = models.CharField(
-        max_length=128, unique=True, error_messages={"unique": "This verification code already exists."}
+        max_length=128, unique=True, error_messages={"unique": _("This verification code already exists.")}
     )
 
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
@@ -96,8 +98,14 @@ class Lobby(models.Model):
             is_inactive = not user.is_active
             addendum = ""
             if is_inactive:
-                addendum = " This email belongs to an INACTIVE user. Instead of trying to register this user, you can simply reactivate the account."
-            raise ValidationError(f"Email already exists in database for a user (id: {user.id}).{addendum}")
+                addendum = _(
+                    " This email belongs to an INACTIVE user. Instead of trying to register this user, you can simply reactivate the account."
+                )
+            raise ValidationError(
+                _("Email already exists in database for a user (id: {user_id}).{addendum}").format(
+                    user_id=user.id, addendum=addendum
+                )
+            )
 
 
 class Building(models.Model):
@@ -105,7 +113,7 @@ class Building(models.Model):
     postal_code = models.CharField(max_length=10)
     street = models.CharField(max_length=60)
     house_number = models.PositiveIntegerField()
-    bus = models.CharField(max_length=10, blank=True, null=False, default="No bus")
+    bus = models.CharField(max_length=10, blank=True, null=False, default=_("No bus"))
     client_number = models.CharField(max_length=40, blank=True, null=True)
     duration = models.TimeField(default="00:00")
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
@@ -121,19 +129,21 @@ class Building(models.Model):
         super().clean()
 
         if self.house_number == 0:
-            raise ValidationError("The house number of the building must be positive and not zero.")
+            raise ValidationError(_("The house number of the building must be positive and not zero."))
 
         # With this if, a building is not required to have a syndic. If a syndic should be required, blank has to be False
         # If this if is removed, an internal server error will be thrown since youll try to access a non existing attribute of type 'NoneType'
         if self.syndic:
             user = self.syndic
             if user.role.name.lower() != "syndic":
-                raise ValidationError('Only a user with role "syndic" can own a building.')
+                raise ValidationError(_('Only a user with role "syndic" can own a building.'))
 
         # If a public_id exists, it should be unique
         if self.public_id:
             if Building.objects.filter(public_id=self.public_id).filter(~Q(id=self.id)):
-                raise ValidationError(f"{self.public_id} already exists as public_id of another building")
+                raise ValidationError(
+                    _("{public_id} already exists as public_id of another building").format(public_id=self.public_id)
+                )
 
     class Meta:
         constraints = [
@@ -144,7 +154,7 @@ class Building(models.Model):
                 "house_number",
                 Lower("bus"),
                 name="address_unique",
-                violation_error_message="A building with this address already exists.",
+                violation_error_message=_("A building with this address already exists."),
             ),
         ]
 
@@ -167,7 +177,7 @@ class BuildingComment(models.Model):
                 Lower("comment"),
                 "date",
                 name="building_comment_unique",
-                violation_error_message="This comment already exists, and was posted at the exact same time.",
+                violation_error_message=_("This comment already exists, and was posted at the exact same time."),
             ),
         ]
 
@@ -204,8 +214,9 @@ class GarbageCollection(models.Model):
                 Lower("garbage_type"),
                 "date",
                 name="garbage_collection_unique",
-                violation_error_message="This type of garbage is already being collected on the same day for this "
-                "building.",
+                violation_error_message=_(
+                    "This type of garbage is already being collected on the same day for this building."
+                ),
             ),
         ]
 
@@ -230,7 +241,7 @@ class Tour(models.Model):
                 Lower("name"),
                 "region",
                 name="unique_tour",
-                violation_error_message="There is already a tour with the same name in the region.",
+                violation_error_message=_("There is already a tour with the same name in the region."),
             ),
         ]
 
@@ -253,10 +264,10 @@ class BuildingOnTour(models.Model):
             building_region = self.building.region
             if tour_region != building_region:
                 raise ValidationError(
-                    f"The regions for tour ({tour_region}) en building ({building_region}) are different."
+                    _("The regions for tour ({tour_region}) and building ({building_region}) are different.").format(
+                        tour_region=tour_region, building_region=building_region
+                    ),
                 )
-
-        # Fail if the index is not unique for the tour
 
     def __str__(self):
         return f"{self.building} on tour {self.tour}, index: {self.index}"
@@ -267,13 +278,13 @@ class BuildingOnTour(models.Model):
                 "building",
                 "tour",
                 name="unique_building_on_tour",
-                violation_error_message="This building is already on this tour.",
+                violation_error_message=_("This building is already on this tour."),
             ),
             UniqueConstraint(
                 "index",
                 "tour",
                 name="unique_index_on_tour",
-                violation_error_message="This index is already in use.",
+                violation_error_message=_("This index is already in use."),
             ),
         ]
 
@@ -302,7 +313,11 @@ class StudentOnTour(models.Model):
                 raise ValidationError("A syndic can't do tours")
             tour_region = self.tour.region
             if not self.student.region.all().filter(region=tour_region).exists():
-                raise ValidationError(f"Student ({user.email}) doesn't do tours in this region ({tour_region}).")
+                raise ValidationError(
+                    "Student ({user_email}) doesn't do tours in this region ({tour_region}).".format(
+                        user_email=user.email, tour_region=tour_region
+                    )
+                )
 
     class Meta:
         constraints = [
@@ -311,7 +326,7 @@ class StudentOnTour(models.Model):
                 "date",
                 "student",
                 name="unique_student_on_tour",
-                violation_error_message="The student is already assigned to this tour on this date.",
+                violation_error_message=_("The student is already assigned to this tour on this date."),
             ),
         ]
 
@@ -354,7 +369,9 @@ class RemarkAtBuilding(models.Model):
                 "student_on_tour",
                 "timestamp",
                 name="unique_remark_for_building",
-                violation_error_message="This remark was already uploaded to this building by this student on the tour.",
+                violation_error_message=_(
+                    "This remark was already uploaded to this building by this student on the tour."
+                ),
             ),
         ]
 
@@ -369,7 +386,7 @@ class PictureOfRemark(models.Model):
                 Lower("picture"),
                 "remark_at_building",
                 name="unique_picture_with_remark",
-                violation_error_message="The building already has this upload.",
+                violation_error_message=_("The building already has this upload."),
             ),
         ]
 
@@ -405,7 +422,7 @@ class Manual(models.Model):
                 "building",
                 "version_number",
                 name="unique_manual",
-                violation_error_message="The building already has a manual with the same version number",
+                violation_error_message=_("The building already has a manual with the same version number"),
             ),
         ]
 
@@ -422,6 +439,6 @@ class EmailTemplate(models.Model):
             UniqueConstraint(
                 "name",
                 name="unique_template_name",
-                violation_error_message="The name for this template already exists.",
+                violation_error_message=_("The name for this template already exists."),
             ),
         ]
