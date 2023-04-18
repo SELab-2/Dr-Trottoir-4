@@ -83,6 +83,7 @@ export default function LobbyPage() {
     // Add a lobby via a post
     function addLobby() {
         if (!role) {
+            setErrorMessages(["Een rol is verplicht."])
             return;
         }
         const selectedRole: Role = allRoles.find(r => r.name === role)!;
