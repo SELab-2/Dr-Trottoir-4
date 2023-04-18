@@ -21,7 +21,7 @@ class RemarkAtBuildingTests(BaseTest):
             "building": insert_dummy_building(),
             "timestamp": str(datetime.now(pytz.timezone("CET"))).replace(" ", "T"),
             "remark": "illegal dumping",
-            "type": "AA"
+            "type": "AA",
         }
         self.insert("remark-at-building/")
 
@@ -34,7 +34,7 @@ class RemarkAtBuildingTests(BaseTest):
             "building": insert_dummy_building(),
             "timestamp": str(datetime.now(pytz.timezone("CET"))).replace(" ", "T"),
             "remark": "illegal dumping",
-            "type": "AA"
+            "type": "AA",
         }
         self.insert_dupe("remark-at-building/")
 
@@ -53,7 +53,7 @@ class RemarkAtBuildingTests(BaseTest):
             "building": insert_dummy_building(),
             "timestamp": str(datetime.now(pytz.timezone("CET"))).replace(" ", "T"),
             "remark": "couldn't enter the building",
-            "type": "AA"
+            "type": "AA",
         }
         self.patch(f"remark-at-building/{r_id}")
 
@@ -63,7 +63,7 @@ class RemarkAtBuildingTests(BaseTest):
             "building": insert_dummy_building(),
             "timestamp": str(datetime.now(pytz.timezone("CET"))).replace(" ", "T"),
             "remark": "couldn't enter the building",
-            "type": "AA"
+            "type": "AA",
         }
         self.patch_invalid(f"remark-at-building/")
 
@@ -73,14 +73,14 @@ class RemarkAtBuildingTests(BaseTest):
             "building": insert_dummy_building(),
             "timestamp": str(datetime.now(pytz.timezone("CET"))).replace(" ", "T"),
             "remark": "couldn't enter the building",
-            "type": "AA"
+            "type": "AA",
         }
         self.data2 = {
             "student_on_tour": insert_dummy_student_on_tour(),
             "building": insert_dummy_building(),
             "timestamp": str(datetime.now(pytz.timezone("CET"))).replace(" ", "T"),
             "remark": "code was wrong",
-            "type": "AA"
+            "type": "AA",
         }
         self.patch_error(f"remark-at-building/")
 
@@ -109,7 +109,7 @@ class RemarkAtBuildingAuthorizationTests(BaseAuthTest):
             "building": insert_dummy_building(),
             "timestamp": str(datetime.now(pytz.timezone("CET"))).replace(" ", "T"),
             "remark": "no bins present",
-            "type": "AA"
+            "type": "AA",
         }
         self.insert_view("remark-at-building/", codes, special=[(specialStudent, 201)])
 
@@ -128,7 +128,7 @@ class RemarkAtBuildingAuthorizationTests(BaseAuthTest):
             "building": insert_dummy_building(),
             "timestamp": str(datetime.now(pytz.timezone("CET"))).replace(" ", "T"),
             "remark": "no bins present",
-            "type": "AA"
+            "type": "AA",
         }
         self.patch_view(f"remark-at-building/{RaB_id}", codes, special=[(specialStudent, 200)])
 

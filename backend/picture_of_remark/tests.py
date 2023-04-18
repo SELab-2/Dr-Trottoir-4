@@ -64,48 +64,24 @@ class PictureOfRemarkAuthorizationTests(BaseAuthTest):
         super().__init__(methodName)
 
     def test_picture_of_remark_list(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         self.list_view("picture-of-remark/", codes)
 
     def test_insert_picture_of_remark(self):
-        codes = {
-            "Default": 403,
-            "Admin": 201,
-            "Superstudent": 201,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 201, "Student": 403, "Syndic": 403}
         RaB = insert_dummy_remark_at_building()
         specialStudent = RemarkAtBuilding.objects.get(id=RaB).student_on_tour.student.id
         self.data1 = {"picture": f, "remark_at_building": RaB}
         self.insert_view("picture-of-remark/", codes, special=[(specialStudent, 201)])
 
     def test_get_picture_of_remark(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         PoR_id = insert_dummy_picture_of_remark(f)
         specialStudent = PictureOfRemark.objects.get(id=PoR_id).remark_at_building.student_on_tour.student.id
         self.get_view(f"picture-of-remark/{PoR_id}", codes, special=[(specialStudent, 200)])
 
     def test_patch_picture_of_remark(self):
-        codes = {
-            "Default": 403,
-            "Admin": 200,
-            "Superstudent": 200,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
         PoR = insert_dummy_picture_of_remark(f)
         RaB = insert_dummy_remark_at_building()
         specialStudent = RemarkAtBuilding.objects.get(id=RaB).student_on_tour.student.id
@@ -118,11 +94,5 @@ class PictureOfRemarkAuthorizationTests(BaseAuthTest):
         def create():
             return insert_dummy_picture_of_remark(f)
 
-        codes = {
-            "Default": 403,
-            "Admin": 204,
-            "Superstudent": 204,
-            "Student": 403,
-            "Syndic": 403
-        }
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 204, "Student": 403, "Syndic": 403}
         self.remove_view("picture-of-remark/", codes, create=create)

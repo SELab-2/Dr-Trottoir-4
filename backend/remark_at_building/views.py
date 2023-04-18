@@ -23,7 +23,8 @@ from util.request_response_util import (
     patch_success,
     patch_docs,
     get_docs,
-    post_success, bad_request,
+    post_success,
+    bad_request,
 )
 
 TRANSLATE = {

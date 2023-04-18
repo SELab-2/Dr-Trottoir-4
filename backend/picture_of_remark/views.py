@@ -18,7 +18,8 @@ from util.request_response_util import (
     patch_docs,
     patch_success,
     get_docs,
-    post_success, bad_request,
+    post_success,
+    bad_request,
 )
 
 TRANSLATE = {"remark_at_building": "remark_at_building_id"}
@@ -46,7 +47,7 @@ class Default(APIView):
 
         if picture_of_remark_instance.remark_at_building is None:
             return bad_request("pictureOfRemark")
-        
+
         self.check_object_permissions(request, picture_of_remark_instance.remark_at_building.student_on_tour.student)
 
         if r := try_full_clean_and_save(picture_of_remark_instance):

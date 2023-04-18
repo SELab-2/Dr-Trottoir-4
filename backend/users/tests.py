@@ -46,7 +46,6 @@ class UsersManagersTests(TestCase):
 
 
 class UserTests(BaseTest):
-
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
 
@@ -67,13 +66,9 @@ class UserTests(BaseTest):
                 G_id,
                 B_id,
             ],
-            "password": "testPassword"
+            "password": "testPassword",
         }
-        self.insert("user/", excluded=[
-            "username",
-            "is_staff",
-            "password"
-        ])
+        self.insert("user/", excluded=["username", "is_staff", "password"])
 
     def test_insert_empty(self):
         self.insert_empty("user/")
@@ -95,7 +90,7 @@ class UserTests(BaseTest):
                 G_id,
                 B_id,
             ],
-            "password": "testPassword"
+            "password": "testPassword",
         }
         self.insert_dupe("user/")
 
@@ -123,13 +118,9 @@ class UserTests(BaseTest):
             "region": [
                 B_id,
             ],
-            "password": "testPassword1"
+            "password": "testPassword1",
         }
-        self.patch(f"user/{u}", excluded=[
-            "username",
-            "is_staff",
-            "password"
-        ])
+        self.patch(f"user/{u}", excluded=["username", "is_staff", "password"])
 
     def test_patch_invalid_user(self):
         B_id = insert_dummy_region("Brugge")
@@ -146,7 +137,7 @@ class UserTests(BaseTest):
             "region": [
                 B_id,
             ],
-            "password": "testPassword1"
+            "password": "testPassword1",
         }
         self.patch_invalid("user/")
 
@@ -165,7 +156,7 @@ class UserTests(BaseTest):
             "region": [
                 B_id,
             ],
-            "password": "testPassword1"
+            "password": "testPassword1",
         }
         self.data1 = {
             "username": "fd",
@@ -179,7 +170,7 @@ class UserTests(BaseTest):
             "region": [
                 B_id,
             ],
-            "password": "456"
+            "password": "456",
         }
         self.patch_invalid("user/")
 

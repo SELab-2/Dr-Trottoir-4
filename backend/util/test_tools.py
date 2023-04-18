@@ -132,7 +132,9 @@ class BaseTest(TestCase):
     def patch_invalid(self, url):
         if "region" in self.data1:
             data = json.dumps(self.data1)
-            response2 = self.client.patch(backend_url + "/" + url + "123434687658/", data, content_type="application/json", follow=True)
+            response2 = self.client.patch(
+                backend_url + "/" + url + "123434687658/", data, content_type="application/json", follow=True
+            )
         else:
             response2 = self.client.patch(backend_url + "/" + url + "123434687658/", self.data1, follow=True)
         # response2 = self.client.patch(backend_url + "/" + url + "123434687658/", self.data1, follow=True)
@@ -145,16 +147,14 @@ class BaseTest(TestCase):
         backup = deepcopy(self.data2)
         if "region" in self.data1:
             data = json.dumps(self.data1)
-            response1 = self.client.post(backend_url + "/" + url, data,
-                                          content_type="application/json", follow=True)
+            response1 = self.client.post(backend_url + "/" + url, data, content_type="application/json", follow=True)
         else:
             response1 = self.client.post(backend_url + "/" + url, self.data1, follow=True)
 
         # response1 = self.client.post(backend_url + "/" + url, self.data1, follow=True)
         if "region" in self.data2:
             data = json.dumps(self.data2)
-            _ = self.client.post(backend_url + "/" + url, data,
-                                          content_type="application/json", follow=True)
+            _ = self.client.post(backend_url + "/" + url, data, content_type="application/json", follow=True)
         else:
             _ = self.client.post(backend_url + "/" + url, self.data2, follow=True)
 
@@ -163,8 +163,9 @@ class BaseTest(TestCase):
         result_id = response1.data["id"]
         if "region" in backup:
             data = json.dumps(backup)
-            response2 = self.client.patch(backend_url + "/" + url + f"{result_id}", data,
-                                          content_type="application/json", follow=True)
+            response2 = self.client.patch(
+                backend_url + "/" + url + f"{result_id}", data, content_type="application/json", follow=True
+            )
         else:
             response2 = self.client.patch(backend_url + "/" + url + f"{result_id}", backup, follow=True)
 
@@ -209,8 +210,7 @@ class BaseAuthTest(TestCase):
             client = get_authenticated_client(role)
             if "region" in self.data1:
                 data = json.dumps(self.data1)
-                resp = client.post(backend_url + "/" + url, data,
-                                              content_type="application/json", follow=True)
+                resp = client.post(backend_url + "/" + url, data, content_type="application/json", follow=True)
             else:
                 resp = client.post(backend_url + "/" + url, self.data1, follow=True)
 
@@ -230,8 +230,7 @@ class BaseAuthTest(TestCase):
             # response2 = client.post(backend_url + "/" + url, self.data1, follow=True)
             if "region" in self.data1:
                 data = json.dumps(self.data1)
-                response2 = client.post(backend_url + "/" + url, data,
-                                              content_type="application/json", follow=True)
+                response2 = client.post(backend_url + "/" + url, data, content_type="application/json", follow=True)
             else:
                 response2 = client.post(backend_url + "/" + url, self.data1, follow=True)
             assert response2.status_code == result, auth_error_message(
@@ -268,8 +267,7 @@ class BaseAuthTest(TestCase):
             client = get_authenticated_client(role)
             if "region" in self.data1:
                 data = json.dumps(self.data1)
-                response2 = client.patch(backend_url + "/" + url, data,
-                                              content_type="application/json", follow=True)
+                response2 = client.patch(backend_url + "/" + url, data, content_type="application/json", follow=True)
             else:
                 response2 = client.patch(backend_url + "/" + url, self.data1, follow=True)
             # response2 = client.patch(backend_url + "/" + url, self.data1, follow=True)
@@ -284,8 +282,7 @@ class BaseAuthTest(TestCase):
             client.force_authenticate(user=user)
             if "region" in self.data1:
                 data = json.dumps(self.data1)
-                response2 = client.patch(backend_url + "/" + url, data,
-                                              content_type="application/json", follow=True)
+                response2 = client.patch(backend_url + "/" + url, data, content_type="application/json", follow=True)
             else:
                 response2 = client.patch(backend_url + "/" + url, self.data1, follow=True)
             # response2 = client.patch(backend_url + "/" + url, self.data1, follow=True)
