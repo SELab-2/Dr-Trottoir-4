@@ -52,57 +52,62 @@ const MyCalendar: FC<Props> = (props) => {
             (res) => {
                 const list: Test[] = res.data
                 const tours = groupByKey(list, 'tour');
-                console.log(tours)
-                let my_events: MyEvent[] = []
                 for (let a in tours) {
                     const t = parseInt(a);
+                    const value = tours[t]
+                    value.sort((x: any, y: any) => {
+                        if (x.date < y.date) {
+                            return -1;
+                        }
+                        if (x.date > y.date) {
+                            return 1;
+                        }
+                        return 0;
+                    })
                     let students: User[] = []
-                    for (let b in tours[t]) {
+                    for (let b in value) {
                         const s = parseInt(b);
                         students[s] = props.students.filter(function (user: User) {
-                            return user.id == tours[t][s].student;
+                            return user.id == value[s].student;
                         })[0]
                     }
                     let tour: Tour = props.tours.filter(function (tour: Tour) {
                         return tour.id == t
                     })[0];
-                    const dates = tours[t].reduce((acc : any, curr : any) => {
-                        const currDate = new Date(curr.date);
+                    const groupedTours = [];
+                    let currentGroup = [];
 
-                        // If the current date is consecutive with the previous date,
-                        // add it to the current group. Otherwise, start a new group.
-                        if (acc.currentGroup.length === 0 || currDate.getTime() === acc.previousDate.getTime() + 86400000) {
-                            acc.currentGroup.push(currDate);
-                        } else {
-                            // If the current group has more than one date, add its earliest
-                            // and latest dates to the results object.
-                            if (acc.currentGroup.length > 1) {
-                                const earliestDate = acc.currentGroup[0];
-                                const latestDate = acc.currentGroup[acc.currentGroup.length - 1];
-                                acc.results.push({earliestDate, latestDate});
-                            }
-                            acc.currentGroup = [currDate];
+                    for (let i = 0; i < value.length; i++) {
+                        const tour = value[i];
+                        const nextTour = value[i + 1];
+
+                        currentGroup.push(tour);
+                        if (nextTour && Math.floor(new Date(nextTour.date) - new Date(tour.date)) !== 86400000) {
+                            groupedTours.push(currentGroup);
+                            currentGroup = [];
                         }
+                    }
 
-                        // Update the previous date to the current date.
-                        acc.previousDate = currDate;
-
-                        // Update the earliest and latest dates based on the current date.
-                        acc.earliest = acc.earliest ? (currDate < acc.earliest ? currDate : acc.earliest) : currDate;
-                        acc.latest = acc.latest ? (currDate > acc.latest ? currDate : acc.latest) : currDate;
-
-                        return acc;
-                    }, {earliest: null, latest: null, previousDate: null, currentGroup: [], results: []});
-
-                    console.log(dates)
-                    const new_start = new Date(dates.earliest)
-                    const new_end = new Date(dates.latest)
-                    new_start.setHours(0)
-                    new_end.setHours(0)
-                    my_events[t] = {tour: tour, students: students, start: new_start, end: new_end}
-                    console.log(my_events[t])
+                    if (currentGroup.length > 0) {
+                        groupedTours.push(currentGroup);
+                    }
+                    for (let g in groupedTours) {
+                        let students: User[] = []
+                        for (let o in groupedTours[g]) {
+                            students[o] = props.students.filter(function (user: User) {
+                                return user.id == groupedTours[g][o].student;
+                            })[0]
+                        }
+                        const start = new Date(groupedTours[g][0].date)
+                        let end = new Date(groupedTours[g][groupedTours[g].length - 1].date)
+                        if (groupedTours[g][0].date == groupedTours[g][g.length - 1].date) {
+                            end = addDays(end, 1)
+                            end.setHours(0)
+                        }
+                        start.setHours(0)
+                        onEventAdd({tour: tour, students: students, start: start, end: end})
+                    }
                 }
-                onEventsAdd(my_events);
             },
             (err) => {
                 console.error(err);
@@ -121,7 +126,6 @@ const MyCalendar: FC<Props> = (props) => {
 
 
     const onEventSelection = (e: Event) => {
-        console.log(e)
         setSelectedEvent(e);
         setPopupIsOpenEdit(true);
     };
@@ -144,14 +148,14 @@ const MyCalendar: FC<Props> = (props) => {
 
     const onEventAdd = ({
                             tour,
-                            student,
+                            students,
                             start,
                             end,
-                        }: { tour: Tour, student: User, start: Date, end: Date }) => {
+                        }: { tour: Tour, students: User[], start: Date, end: Date }) => {
         setEvents(currentEvents => {
             const newEvent: MyEvent = {
                 tour: tour,
-                students: [student],
+                students: students,
                 start: start,
                 end: end
             };
