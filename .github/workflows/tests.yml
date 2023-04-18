@@ -22,22 +22,19 @@ jobs:
           docker-compose run -e "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" -e "SECRET_EMAIL_USER=${{ secrets.SECRET_EMAIL_USER }}" -e "SECRET_EMAIL_USER_PSWD=${{ secrets.SECRET_EMAIL_USER_PSWD }}" --name backend_test backend python manage.py test lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role --cover-xml --cover-xml-file=/app/coverage.xml
           docker cp backend_test:/app/coverage.xml coverage.xml
           docker-compose down
-        #docker-compose run -e "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" -e "SECRET_EMAIL_USER=${{ secrets.SECRET_EMAIL_USER }}" -e "SECRET_EMAIL_USER_PSWD=${{ secrets.SECRET_EMAIL_USER_PSWD }}" --rm --name backend_test backend python manage.py test lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role --cover-xml --cover-xml-file=/app/coverage.xml
-        #docker-compose run -e "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" -e "SECRET_EMAIL_USER=${{ secrets.SECRET_EMAIL_USER }}" -e "SECRET_EMAIL_USER_PSWD=${{ secrets.SECRET_EMAIL_USER_PSWD }}" --rm --name backend_test backend python manage.py test lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role --cover-xml --cover-xml-file=coverage.xml
 
-
-      # - name: Copy file to local machine
-      #   run: docker cp dr-trottoir-4_backend_1:/app/coverage.xml coverage.xml
-      #     #docker-compose cp backend:/app/backend/coverage.xml coverage.xml
-      #     # container_id=$(docker-compose ps -q backend)
-      #     # docker cp ${container_id}:/app/backend/coverage.xml coverage.xml
+      # - name: Publish Test Results
+      #   uses: EnricoMi/publish-unit-test-result-action@v2.6.1
+      #   if: always()
+      #   with:
+      #     files: |
+      #       coverage.xml
 
       - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2.6.1
+        uses: test-summary/action@v2.1
         if: always()
         with:
-          files: |
-            coverage.xml
+          paths: "coverage.xml"
           
 
       - name: Clean up
