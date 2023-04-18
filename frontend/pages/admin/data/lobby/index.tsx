@@ -118,7 +118,6 @@ export default function LobbyPage() {
                                           }
                                           deleteLobby(selectedLobby.id).then(_ => {
                                               const i = lobbies.findIndex(l => l.id === selectedLobby.id);
-                                              console.log(i);
                                               if (i < 0) {
                                                   return;
                                               }
