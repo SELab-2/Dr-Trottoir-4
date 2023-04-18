@@ -44,18 +44,6 @@ function EditEventModal(data: any) {
                             onChange={(e) => setStudent(e.target.value)}
                         />
                     </div>
-                    <div className="form-row">
-                        <div className="col">
-                            <label>Start uur:</label>
-                            <input type="time" className="form-control" value={start_time}
-                                   onChange={(event) => setStarttime(event.target.value)}/>
-                        </div>
-                        <div className="col">
-                            <label htmlFor="end-time">Eind uur:</label>
-                            <input type="time" className="form-control" value={end_time}
-                                   onChange={(event) => setEndtime(event.target.value)}/>
-                        </div>
-                    </div>
                 </form>
             </Modal.Body>
             <Modal.Footer>
