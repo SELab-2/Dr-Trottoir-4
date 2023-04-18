@@ -1,14 +1,13 @@
 import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
 import {Box, IconButton, Tooltip} from "@mui/material";
 import {Delete, Edit} from "@mui/icons-material";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {FormEvent, useEffect, useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {getAllInLobby, Lobby} from "@/lib/lobby";
+import {addToLobby, getAllInLobby, Lobby} from "@/lib/lobby";
 import AdminHeader from "@/components/header/adminHeader";
 import {getUserRole} from "@/lib/user";
-import {Button, Modal} from "react-bootstrap";
+import {Button, Form, Modal} from "react-bootstrap";
 import styles from "@/styles/Login.module.css";
-import {UserView} from "@/types";
 import {getAllRoles, Role} from "@/lib/role";
 
 export default function LobbyPage() {
@@ -32,7 +31,7 @@ export default function LobbyPage() {
                 header: "Verificatie code",
             },
             {
-                accessorFn: (lobby : Lobby) => t(getUserRole(lobby.role.toString())),
+                accessorFn: (lobby: Lobby) => t(getUserRole(lobby.role.toString())),
                 id: "translatedRole",
                 header: "Rol",
             },
@@ -46,22 +45,34 @@ export default function LobbyPage() {
     );
 
     useEffect(() => {
+        getAllLobbies();
+        getAllRoles().then(res => {
+            const r: Role[] = res.data;
+            setAllRoles(r);
+        }, console.error);
+    }, []);
+
+    function getAllLobbies() {
         getAllInLobby().then(res => {
-            const lobbies : Lobby[] = res.data;
+            const lobbies: Lobby[] = res.data;
             setLobbies(lobbies);
             setLoading(false);
         }, err => {
             console.error(err);
         });
+    }
 
-        getAllRoles().then(res => {
-            const r : Role[] = res.data;
-            setAllRoles(r);
+    function addLobby(event: FormEvent) {
+        event.preventDefault();
+        if (!role) {
+            return;
+        }
+        const selectedRole: Role = allRoles.find(r => r.name === role)!;
+        addToLobby(email, selectedRole.id).then(res => {
+            const l: Lobby = res.data;
+            setLobbies([...lobbies, l]);
+            setShowCreateLobbyModal(false);
         }, console.error);
-    }, []);
-
-    function createLobby() {
-        setShowCreateLobbyModal(true);
     }
 
     return (
@@ -71,9 +82,9 @@ export default function LobbyPage() {
                 <Modal.Header>
                     <Modal.Title>Pas gebruiker aan</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    <div className="card-body p-4 p-lg-5 text-black">
-                        <form>
+                <Form onSubmit={addLobby}>
+                    <Modal.Body>
+                        <div className="card-body p-4 p-lg-5 text-black">
                             <div className="form-outline mb-4">
                                 <label className="form-label">Email:</label>
                                 <input
@@ -81,7 +92,7 @@ export default function LobbyPage() {
                                     className={`form-control form-control-lg ${styles.input}`}
                                     id="email"
                                     value={email}
-                                    onChange={(e : React.ChangeEvent<HTMLInputElement>) => {
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                         setEmail(e.target.value);
                                     }}
                                     required
@@ -93,10 +104,7 @@ export default function LobbyPage() {
                                     defaultValue={""}
                                     className={`form-select form-control form-control-lg ${styles.input}`}
                                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                        const r = e.target.value;
-                                        if (r != "default") {
-                                            setRole(e.target.value);
-                                        }
+                                        setRole(e.target.value);
                                     }}
                                 >
                                     <option disabled value={""}></option>
@@ -107,28 +115,29 @@ export default function LobbyPage() {
                                     ))}
                                 </select>
                             </div>
-                        </form>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        variant="secondary"
-                        className="btn-light"
-                        onClick={() => {
-
-                        }}
-                    >
-                        Annuleer
-                    </Button>
-                    <Button
-                        variant="primary"
-                        className="btn-dark"
-                        onClick={async () => {
-                        }}
-                    >
-                        Pas aan
-                    </Button>
-                </Modal.Footer>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            variant="secondary"
+                            className="btn-light"
+                            onClick={() => {
+                                setRole("");
+                                setEmail("");
+                                setShowCreateLobbyModal(false);
+                            }}
+                        >
+                            Annuleer
+                        </Button>
+                        <Button
+                            variant="primary"
+                            className="btn-dark"
+                            type="submit"
+                        >
+                            Voeg email toe aan lobby
+                        </Button>
+                    </Modal.Footer>
+                </Form>
             </Modal>
             <MaterialReactTable
                 displayColumnDefOptions={{
@@ -144,7 +153,7 @@ export default function LobbyPage() {
                 columns={columns}
                 data={lobbies}
                 editingMode="modal" //default
-                state={{ isLoading: loading }}
+                state={{isLoading: loading}}
                 enableEditing
                 enableRowNumbers
                 enableHiding={false}
@@ -153,7 +162,7 @@ export default function LobbyPage() {
                     <Button variant="primary"
                             className="btn-dark"
                             onClick={async () => {
-                                createLobby();
+                                setShowCreateLobbyModal(true);
                             }}>
                         Voeg toe aan lobby
                     </Button>

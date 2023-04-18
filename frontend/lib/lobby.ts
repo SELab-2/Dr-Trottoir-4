@@ -10,5 +10,12 @@ export interface Lobby {
 
 export async function getAllInLobby() {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_LOBBY}`;
-    return api.get(request_url);
+    return await api.get(request_url);
+}
+
+export async function addToLobby(email : string, roleId : number) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_LOBBY}`;
+    return await api.post(request_url, {email, role : roleId}, {
+        headers: { "Content-Type": "application/json" },
+    });
 }
