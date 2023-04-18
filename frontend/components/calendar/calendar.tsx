@@ -46,7 +46,6 @@ const MyCalendar: FC<Props> = (props) => {
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [events, setEvents] = useState<MyEvent[]>([])
 
-
     const onEventsLoad = ({start_date, end_date}: { start_date: Date, end_date: Date }) => {
         getALlStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
             (res) => {
@@ -74,7 +73,7 @@ const MyCalendar: FC<Props> = (props) => {
                     let tour: Tour = props.tours.filter(function (tour: Tour) {
                         return tour.id == t
                     })[0];
-                    const groupedTours = [];
+                    const groupedTours: any[][] = [];
                     let currentGroup = [];
 
                     for (let i = 0; i < value.length; i++) {
@@ -82,6 +81,8 @@ const MyCalendar: FC<Props> = (props) => {
                         const nextTour = value[i + 1];
 
                         currentGroup.push(tour);
+
+                        // @ts-ignore
                         if (nextTour && Math.floor(new Date(nextTour.date) - new Date(tour.date)) !== 86400000) {
                             groupedTours.push(currentGroup);
                             currentGroup = [];
@@ -124,21 +125,20 @@ const MyCalendar: FC<Props> = (props) => {
         }, {});
     }
 
-
     const onEventSelection = (e: Event) => {
         setSelectedEvent(e);
         setPopupIsOpenEdit(true);
     };
 
-    const onEventEdit = ({tour, student}
-                             : { tour: Tour, student: User }) => {
+    const onEventEdit = ({tour, students}
+                             : { tour: Tour, students: User[] }) => {
         setEvents(currentEvents => {
             return currentEvents.map(currentEvent => {
                 if (currentEvent === selectedEvent) {
                     return {
                         ...currentEvent,
                         tour: tour,
-                        student: student
+                        students: students
                     };
                 }
                 return currentEvent;
@@ -162,20 +162,6 @@ const MyCalendar: FC<Props> = (props) => {
             return [...currentEvents, newEvent];
         });
     }
-
-    const onEventsAdd = (eventData: MyEvent[]
-    ) => {
-        setEvents(currentEvents => {
-            const newEvents = eventData.map(event => ({
-                tour: event.tour,
-                students: event.students,
-                start: event.start,
-                end: event.end,
-            }));
-            return [...currentEvents, ...newEvents];
-        });
-    }
-
 
     const onEventResize: withDragAndDropProps['onEventResize'] = data => {
         const {event, start, end} = data;
@@ -213,17 +199,28 @@ const MyCalendar: FC<Props> = (props) => {
     const handleScheduleSave = () => {
         for (let e in events) {
             const dates = getDaysArray(events[e].start, events[e].end);
-            for (let d in dates) {
-                postStudentOnTour(events[e].tour.id, events[e].students[0].id, formatDate(dates[d])).then(
-                    (_) => {
-                        //TODO
-                        console.log("success")
-                    },
-                    (err) => {
-                        const e = handleError(err);
-                        //setErrorMessages(e); // TODO add error message to page
+            for (let d of dates) {
+                const filtered = events[e].students.reduce((acc: User[], obj: User) => {
+                    // Add the object to the array if it doesn't exist
+                    if (!acc.some((item) => item.id === obj.id)) {
+                        acc.push(obj);
                     }
-                );
+                    return acc;
+                }, []);
+                for (let s of filtered) {
+                    const testje = [events[e].tour.id, s.id, formatDate(d)]
+                    console.log(testje)
+                    postStudentOnTour(events[e].tour.id, s.id, formatDate(d)).then(
+                        (_) => {
+                            //TODO
+                            console.log("success")
+                        },
+                        (err) => {
+                            const e = handleError(err);
+                            //setErrorMessages(e); // TODO add error message to page
+                        }
+                    );
+                }
             }
         }
     };
@@ -254,6 +251,8 @@ const MyCalendar: FC<Props> = (props) => {
             {selectedEvent && (
                 <EditEventModal
                     event={selectedEvent}
+                    allStudents={props.students}
+                    allTours={props.tours}
                     isOpen={popupIsOpenEdit}
                     onClose={() => {
                         setSelectedEvent(null);
@@ -269,7 +268,6 @@ const MyCalendar: FC<Props> = (props) => {
                 isOpen={popupIsOpenAdd}
                 onClose={() => setPopupIsOpenAdd(false)}
                 onSave={onEventAdd}
-                onSaveMultiple={onEventsAdd}
             />
             <LoadEventsModal
                 isOpen={popupIsOpenLoad}

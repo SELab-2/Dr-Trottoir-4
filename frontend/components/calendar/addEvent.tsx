@@ -6,7 +6,7 @@ import {User} from "@/lib/user";
 import {Tour} from "@/lib/tour";
 
 function AddEventModal(data: any) {
-    const {allStudents, allTours, isOpen, onClose, onSave, onSaveMultiple} = data
+    const {allStudents, allTours, isOpen, onClose, onSave} = data
     const [tour, setTour] = useState<Tour | null>(null);
     const [student, setStudent] = useState<User | null>(null);
     const [start, setStart] = useState(new Date(addDays(startOfWeek(startOfMonth(new Date()), {weekStartsOn: 0}), 8).toLocaleString('en', {timeZone: 'America/New_York'})));
@@ -29,22 +29,18 @@ function AddEventModal(data: any) {
         if (checked) {
             start.setHours(0);
             const end = addDays(start, 6);
-            onSave({tour, student, start, end});
+            let data = { tour: tour, students: Array(7).fill(student), start: start, end: end };
+            onSave(data);
             onClose();
         } else {
             week.pop();
-            let data: { tour: Tour, student: User, start: Date, end: Date }[] = [];
-            let new_start = start;
-            new_start.setHours(0);
-            const split = splitOnValueChange(week);
-            for (let s in split) {
-                let new_end = addDays(new_start, split[s].length);
-                new_end.setHours(0);
-                data[s] = {tour: tour!, student: split[s][0], start: new_start, end: new_end};
-                new_start = new_end;
-            }
+            start.setHours(0);
+            const end = addDays(start, 6);
+            const split = splitOnValueChange(week).flat();
+            console.log(split)
+            let data = { tour: tour, students: split, start: start, end: end };
             console.log(data)
-            onSaveMultiple(data)
+            onSave(data)
             onClose();
         }
     }
