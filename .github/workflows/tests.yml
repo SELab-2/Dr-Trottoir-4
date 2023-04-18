@@ -25,7 +25,7 @@ jobs:
         env:
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           SECRET_EMAIL_USER: ${{ secrets.SECRET_EMAIL_USER }}
-          SECRET_EMAIL_USER_PSWD: ${{ secrets.SECRET_EMAIL_USER_PSWD }}
+          SECRET_EMAIL_USER_PSWD: ${{ secrets.SECRET_EMAIL_USER_PSWD }} 
 
       # - name: Copy file to local machine
       #   run: | #docker-compose cp backend:/app/backend/coverage.xml coverage.xml
