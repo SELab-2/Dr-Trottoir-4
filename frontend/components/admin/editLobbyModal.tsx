@@ -1,31 +1,29 @@
-import {Button, Form, Modal} from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import styles from "@/styles/Login.module.css";
-import React, {FormEvent, useEffect, useState} from "react";
-import {getAllRoles, Role} from "@/lib/role";
-import {IconButton} from "@mui/material";
-import {Replay} from "@mui/icons-material";
-import {addToLobby, Lobby, patchLobby} from "@/lib/lobby";
-import {useTranslation} from "react-i18next";
-import {handleError} from "@/lib/error";
+import React, { FormEvent, useEffect, useState } from "react";
+import { getAllRoles, Role } from "@/lib/role";
+import { IconButton } from "@mui/material";
+import { Replay } from "@mui/icons-material";
+import { addToLobby, Lobby, patchLobby } from "@/lib/lobby";
+import { useTranslation } from "react-i18next";
+import { handleError } from "@/lib/error";
 
-export default function EditLobbyModal(
-    {
-        selectedLobby,
-        show,
-        onHide,
-        onPatch,
-        onPost,
-        newVerificationCode
-    } : {
-        selectedLobby : Lobby | null,
-        show : boolean,
-        onHide : () => void,
-        onPatch : (l: Lobby) => void,
-        onPost : (l : Lobby) => void,
-        newVerificationCode : () => void
-    }
-) {
-    const {t} = useTranslation();
+export default function EditLobbyModal({
+    selectedLobby,
+    show,
+    onHide,
+    onPatch,
+    onPost,
+    newVerificationCode,
+}: {
+    selectedLobby: Lobby | null;
+    show: boolean;
+    onHide: () => void;
+    onPatch: (l: Lobby) => void;
+    onPost: (l: Lobby) => void;
+    newVerificationCode: () => void;
+}) {
+    const { t } = useTranslation();
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [email, setEmail] = useState<string>("");
@@ -33,22 +31,22 @@ export default function EditLobbyModal(
     const [allRoles, setAllRoles] = useState<Role[]>([]);
 
     useEffect(() => {
-        getAllRoles().then(res => {
+        getAllRoles().then((res) => {
             const r: Role[] = res.data;
             setAllRoles(r);
         }, console.error);
     }, []);
 
     useEffect(() => {
-        if (! selectedLobby) {
+        if (!selectedLobby) {
             return;
         }
         setEmail(selectedLobby.email);
-        setRole(allRoles.find(r => r.id === selectedLobby.role)!.name);
+        setRole(allRoles.find((r) => r.id === selectedLobby.role)!.name);
     }, [selectedLobby]);
 
     // post/patch a lobby
-    function changeLobby(event : FormEvent) {
+    function changeLobby(event: FormEvent) {
         event.preventDefault();
         if (selectedLobby) {
             modifyLobby();
@@ -63,38 +61,44 @@ export default function EditLobbyModal(
             setErrorMessages(["Een rol is verplicht."]);
             return;
         }
-        const selectedRole: Role = allRoles.find(r => r.name === role)!;
-        addToLobby(email, selectedRole.id).then(res => {
-            const l: Lobby = res.data;
-            onPost(l);
-            hideModal();
-        }, err => {
-            const e = handleError(err);
-            setErrorMessages(e);
-        });
+        const selectedRole: Role = allRoles.find((r) => r.name === role)!;
+        addToLobby(email, selectedRole.id).then(
+            (res) => {
+                const l: Lobby = res.data;
+                onPost(l);
+                hideModal();
+            },
+            (err) => {
+                const e = handleError(err);
+                setErrorMessages(e);
+            }
+        );
     }
 
     // Patch a lobby
     function modifyLobby() {
-        if (!role || ! selectedLobby) {
+        if (!role || !selectedLobby) {
             return;
         }
-        const selectedRole: Role = allRoles.find(r => r.name === role)!;
-        const data : { [name: string]: string | number | number[] } = {};
+        const selectedRole: Role = allRoles.find((r) => r.name === role)!;
+        const data: { [name: string]: string | number | number[] } = {};
         if (selectedRole.id != selectedLobby.id) {
-            data['role'] = selectedRole.id;
+            data["role"] = selectedRole.id;
         }
         if (email != selectedLobby.email) {
-            data['email'] = email;
+            data["email"] = email;
         }
-        patchLobby(selectedLobby.id, data).then(res => {
-            const lobby : Lobby = res.data;
-            onPatch(lobby)
-            hideModal();
-        }, err => {
-            const e = handleError(err);
-            setErrorMessages(e);
-        });
+        patchLobby(selectedLobby.id, data).then(
+            (res) => {
+                const lobby: Lobby = res.data;
+                onPatch(lobby);
+                hideModal();
+            },
+            (err) => {
+                const e = handleError(err);
+                setErrorMessages(e);
+            }
+        );
     }
 
     function hideModal() {
@@ -104,11 +108,13 @@ export default function EditLobbyModal(
         setErrorMessages([]);
     }
 
-
     return (
-        <Modal show={show} onHide={() => {
-            onHide()
-        }}>
+        <Modal
+            show={show}
+            onHide={() => {
+                onHide();
+            }}
+        >
             <Modal.Header>
                 <Modal.Title>{selectedLobby ? "Pas lobby aan" : "Voeg toe aan lobby"}</Modal.Title>
             </Modal.Header>
@@ -155,24 +161,23 @@ export default function EditLobbyModal(
                                 ))}
                             </select>
                         </div>
-                        {
-                            (selectedLobby) &&
-                            (
-                                <div className="form-outline mb-4">
-                                    <label className="form-label">Verificatiecode:</label>
-                                    <input type="text"
-                                           readOnly
-                                           className={`form-control form-control-lg ${styles.input}`}
-                                           value={selectedLobby?.verification_code}
-                                           aria-describedby="regenerate"/>
-                                    <div className="input-group-append">
-                                        <IconButton onClick={() => newVerificationCode()} id="regenerate">
-                                            <Replay/>
-                                        </IconButton>
-                                    </div>
+                        {selectedLobby && (
+                            <div className="form-outline mb-4">
+                                <label className="form-label">Verificatiecode:</label>
+                                <input
+                                    type="text"
+                                    readOnly
+                                    className={`form-control form-control-lg ${styles.input}`}
+                                    value={selectedLobby?.verification_code}
+                                    aria-describedby="regenerate"
+                                />
+                                <div className="input-group-append">
+                                    <IconButton onClick={() => newVerificationCode()} id="regenerate">
+                                        <Replay />
+                                    </IconButton>
                                 </div>
-                            )
-                        }
+                            </div>
+                        )}
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
@@ -185,11 +190,7 @@ export default function EditLobbyModal(
                     >
                         Annuleer
                     </Button>
-                    <Button
-                        variant="primary"
-                        className="btn-dark"
-                        type="submit"
-                    >
+                    <Button variant="primary" className="btn-dark" type="submit">
                         {selectedLobby ? "Pas aan" : "Voeg email toe aan lobby"}
                     </Button>
                 </Modal.Footer>
