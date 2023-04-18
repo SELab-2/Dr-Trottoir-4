@@ -96,9 +96,9 @@ class ManualBuildingView(APIView):
         parameters=param_docs(
             {
                 "most-recent": (
-                        "When set to 'true', only the most recent manual will be returned",
-                        False,
-                        OpenApiTypes.BOOL,
+                    "When set to 'true', only the most recent manual will be returned",
+                    False,
+                    OpenApiTypes.BOOL,
                 )
             }
         ),
