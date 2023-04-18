@@ -27,8 +27,10 @@ def get_date_param(request, name, required=False):
             param = datetime.strptime(param, "%Y-%m-%d")
         except ValueError:
             raise BadRequest(
-                _("The date parameter '{name}': '{param}' hasn't the appropriate form (=YYYY-MM-DD).").format(name=name,
-                                                                                                              param=param))
+                _("The date parameter '{name}': '{param}' hasn't the appropriate form (=YYYY-MM-DD).").format(
+                    name=name, param=param
+                )
+            )
     else:
         if required:
             raise BadRequest(_("The query parameter {name} is required").format(name=name))
@@ -48,8 +50,10 @@ def get_boolean_param(request, name, required=False):
         return False
     else:
         raise BadRequest(
-            _("Invalid value for boolean parameter '{name}': '{param}' (true or false expected)").format(name=name,
-                                                                                                         param=param))
+            _("Invalid value for boolean parameter '{name}': '{param}' (true or false expected)").format(
+                name=name, param=param
+            )
+        )
 
 
 def get_list_param(request, name, required=False):
@@ -128,8 +132,11 @@ def bad_request(object_name="Object"):
 
 def bad_request_relation(object1: str, object2: str):
     return Response(
-        {"message": _("There is no {object1} that is linked to {object2} with given id.").format(object1=object1,
-                                                                                                 object2=object2)},
+        {
+            "message": _("There is no {object1} that is linked to {object2} with given id.").format(
+                object1=object1, object2=object2
+            )
+        },
         status=status.HTTP_400_BAD_REQUEST,
     )
 
