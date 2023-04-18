@@ -61,6 +61,7 @@ export default function LobbyPage() {
 
     function afterPost(lobby: Lobby) {
         setLobbies([...lobbies, lobby]);
+        setSelectedLobby(null);
     }
 
     function afterPatch(lobby: Lobby) {
@@ -74,6 +75,7 @@ export default function LobbyPage() {
             el[i].role = lobby.role;
             return el;
         });
+        setSelectedLobby(null);
     }
 
     function afterNewVerificationPost(lobby: Lobby) {

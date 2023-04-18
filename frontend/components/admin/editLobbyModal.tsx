@@ -179,7 +179,7 @@ export default function EditLobbyModal(
                                     <input type="text"
                                            readOnly
                                            className={`form-control form-control-lg ${styles.input}`}
-                                           value={selectedLobby?.verification_code}
+                                           value={verificationCode}
                                            aria-describedby="regenerate"/>
                                     <div className="input-group-append">
                                         <IconButton onClick={() => requestNewVerificationCode()} id="regenerate">
@@ -196,7 +196,7 @@ export default function EditLobbyModal(
                         variant="secondary"
                         className="btn-light"
                         onClick={() => {
-                            onHide();
+                            hideModal();
                         }}
                     >
                         Annuleer
