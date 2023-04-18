@@ -1,3 +1,4 @@
+from django.core.exceptions import BadRequest
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -25,7 +26,7 @@ from util.request_response_util import (
     patch_success,
     patch_docs,
     get_docs,
-    post_success, param_docs, get_most_recent_param_docs,
+    post_success, param_docs, get_most_recent_param_docs, get_boolean_param,
 )
 
 TRANSLATE = {
@@ -134,17 +135,11 @@ class RemarksAtBuildingView(APIView):
         """
         remark_at_building_instances = RemarkAtBuilding.objects.filter(building_id=building_id)
 
-        # Little bit of code duplication with `get_maybe_most_recent_param`, but this situation is a bit different because we have more than one most recent
-        most_recent_only = False
-        param = request.GET.get("most-recent", None)
-        if param:
-            if param.capitalize() not in ["True", "False"]:
-                return Response(
-                    {"message": f"Invalid value for boolean parameter 'most-recent': {param} (true or false expected)"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            else:
-                most_recent_only = param.lower() == "true"
+        try:
+            most_recent_only = get_boolean_param(request, "most-recent")
+        except BadRequest as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         if most_recent_only:
             instances = remark_at_building_instances.order_by("-timestamp").first()
 
