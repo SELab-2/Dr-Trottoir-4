@@ -41,7 +41,11 @@ export default function EditLobbyModal(
     }, []);
 
     useEffect(() => {
+        // if no lobby is selected, set the values empty
         if (! selectedLobby) {
+            setEmail("");
+            setRole("");
+            setVerificationCode("");
             return;
         }
         setEmail(selectedLobby.email);

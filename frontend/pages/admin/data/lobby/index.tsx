@@ -3,10 +3,10 @@ import {Box, IconButton, Tooltip} from "@mui/material";
 import {Delete, Edit} from "@mui/icons-material";
 import React, {useEffect, useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {deleteLobby, getAllInLobby, Lobby, newVerificationCode} from "@/lib/lobby";
+import {deleteLobby, getAllInLobby, Lobby} from "@/lib/lobby";
 import AdminHeader from "@/components/header/adminHeader";
 import {getUserRole} from "@/lib/user";
-import {Button, Form, Modal} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import EditLobbyModal from "@/components/admin/editLobbyModal";
 
@@ -96,6 +96,31 @@ export default function LobbyPage() {
         setShowCreateLobbyModal(false);
     }
 
+    function closeRemoveModal() {
+        setSelectedLobby(null);
+        setShowRemoveDialog(false);
+    }
+
+    function removeLobby() {
+        if (!selectedLobby) {
+            return;
+        }
+        deleteLobby(selectedLobby.id).then(_ => {
+            const i = lobbies.findIndex(l => l.id === selectedLobby.id);
+            if (i < 0) {
+                return;
+            }
+            setLobbies(prevLobbies => {
+                const el = [...prevLobbies];
+                el.splice(i, 1);
+                return el;
+            });
+            setSelectedLobby(null);
+            setShowRemoveDialog(false);
+            hideModal();
+        }, console.error);
+    }
+
     return (
         <>
             <AdminHeader/>
@@ -105,28 +130,8 @@ export default function LobbyPage() {
                                               t(getUserRole(selectedLobby.role.toString()))
                                               : ""
                                       }) uit de lobby wilt verwijderen?`}
-                                      handleClose={() => {
-                                          setSelectedLobby(null);
-                                          setShowRemoveDialog(false);
-                                      }}
-                                      handleConfirm={() => {
-                                          if (!selectedLobby) {
-                                              return;
-                                          }
-                                          deleteLobby(selectedLobby.id).then(_ => {
-                                              const i = lobbies.findIndex(l => l.id === selectedLobby.id);
-                                              if (i < 0) {
-                                                  return;
-                                              }
-                                              setLobbies(prevLobbies => {
-                                                  const el = [...prevLobbies];
-                                                  el.splice(i, 1);
-                                                  return el;
-                                              });
-                                              setSelectedLobby(null);
-                                              setShowRemoveDialog(false);
-                                          }, console.error);
-                                      }}
+                                      handleClose={closeRemoveModal}
+                                      handleConfirm={removeLobby}
                                       confirmButtonText="Verwijder" cancelButtonText="Annuleer"/>
             <EditLobbyModal selectedLobby={selectedLobby} show={showCreateLobbyModal} onHide={hideModal}
                             onPatch={afterPatch} onPost={afterPost} onNewVerificationCode={afterNewVerificationPost}/>
