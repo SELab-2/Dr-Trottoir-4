@@ -9,8 +9,9 @@ import {getUserRole} from "@/lib/user";
 import {Button} from "react-bootstrap";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import EditLobbyModal from "@/components/admin/editLobbyModal";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
-export default function LobbyPage() {
+function LobbyPage() {
 
     const {t} = useTranslation();
     const [lobbies, setLobbies] = useState<Lobby[]>([]);
@@ -192,3 +193,5 @@ export default function LobbyPage() {
         </>
     );
 }
+
+export default withAuthorisation(LobbyPage, ["Admin", "Superstudent"]);
