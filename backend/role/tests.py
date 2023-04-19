@@ -19,6 +19,9 @@ class RoleTests(BaseTest):
         self.data1 = {"name": "Test", "rank": 2, "description": "testRole"}
         self.insert_dupe("role/")
 
+    def test_insert_empty(self):
+        self.insert_empty("role/")
+
     def test_get_role(self):
         r_id = insert_dummy_role("testRole")
         data = RoleSerializer(Role.objects.get(id=r_id)).data

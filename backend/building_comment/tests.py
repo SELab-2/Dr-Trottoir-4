@@ -16,6 +16,9 @@ class BuildingCommentTests(BaseTest):
         self.data1 = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
         self.insert("building-comment/")
 
+    def test_insert_empty(self):
+        self.insert_empty("building-comment/")
+
     def test_insert_dupe_comment(self):
         b_id = insert_dummy_building()
         self.data1 = {"comment": "<3 python", "date": "2023-03-08T12:08:29+01:00", "building": b_id}
