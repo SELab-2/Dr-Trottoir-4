@@ -68,7 +68,7 @@ export default function UserProfile() {
             patchBody["phone_number"] = phoneNumber;
         }
         if (selectedRegions !== user?.region) {
-            patchBody["region"] = JSON.stringify(selectedRegions); // convert list to string
+            patchBody["region"] = selectedRegions; // convert list to string
         }
         patchUser(user.id, patchBody).then(
             (res) => {
