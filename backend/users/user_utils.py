@@ -10,12 +10,12 @@ def try_adding_region_to_user_instance(user_instance, region_value):
         return Response(str(e.__cause__), status=status.HTTP_400_BAD_REQUEST)
 
 
-def add_regions_to_user(user_instance, regions_raw):
-    if not regions_raw:
-        return
+def add_regions_to_user(user_instance, regions):
+    # if not regions_raw:
+    #     return
 
     try:
-        regions = list(map(lambda x: int(x), regions_raw.strip("][").split(",")))
+        # regions = list(map(lambda x: int(x), regions_raw.strip("][").split(",")))
         if not type(regions) == list:
             raise SyntaxError()
 

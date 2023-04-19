@@ -11,7 +11,7 @@ function LatestCollections({building}: { building: number }) {
             date.setMonth(date.getMonth() - 1);
             const lastMonth = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 
-            getGarbageCollectionFromBuilding(building, lastMonth, currentDate)
+            getGarbageCollectionFromBuilding(building, {startDate: new Date(lastMonth), endDate: new Date(currentDate)})
                 .then((res) => {
                     setCollections(res.data);
 

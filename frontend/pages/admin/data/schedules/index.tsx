@@ -6,7 +6,7 @@ export default function AdminDataSchedule() {
         <>
             <>
                 <AdminHeader />
-                <MyCalendar/>
+                <MyCalendar />
             </>
         </>
     );

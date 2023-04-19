@@ -2,16 +2,16 @@ import StudentHeader from "@/components/header/studentHeader";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { getBuildingsOfTour, getTour, Tour } from "@/lib/tour";
-import { datesEqual, getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import { getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
 import { getRegion, RegionInterface } from "@/lib/region";
 import { BuildingInterface, getAddress } from "@/lib/building";
 import { Button } from "react-bootstrap";
 import { withAuthorisation } from "@/components/withAuthorisation";
+import { datesEqual } from "@/lib/date";
 
 interface ParsedUrlQuery {}
 
 interface DataScheduleQuery extends ParsedUrlQuery {
-    regionId?: number;
     studentOnTourId?: number;
 }
 
@@ -32,6 +32,12 @@ function StudentSchedule() {
                 getTour(sots.tour).then((res) => {
                     const t: Tour = res.data;
                     setTour(t);
+
+                    getRegion(t.region).then((res) => {
+                        const r: RegionInterface = res.data;
+                        setRegion(r.region);
+                    }, console.error);
+
                 }, console.error);
                 getBuildingsOfTour(sots.tour).then(
                     (res) => {
@@ -51,14 +57,19 @@ function StudentSchedule() {
                 });
             }, console.error);
         }
-        // Get the region of the tour
-        if (query.regionId) {
-            getRegion(query.regionId).then((res) => {
-                const r: RegionInterface = res.data;
-                setRegion(r.region);
-            }, console.error);
-        }
     }, [router.isReady]);
+
+    async function routeToFirstBuilding() {
+        if (buildings.length === 0) {
+            return;
+        }
+        await router.push(
+            {
+                pathname: `/student/building`,
+                query: { studentOnTourId: studentOnTour?.id },
+            }
+        );
+    }
 
     return (
         <>
@@ -73,7 +84,7 @@ function StudentSchedule() {
                         <div className="list-group">
                             {buildings.map((el: BuildingInterface, index: number) => {
                                 return (
-                                    <a className="list-group-item list-group-item-action" key={el.id}>
+                                    <a className="list-group-item list-group-item-action" key={`${el.id}-${index}`}>
                                         <div className="d-flex w-100 justify-content-between">
                                             <h5 className="mb-1">{getAddress(el)}</h5>
                                             <small>{index + 1}</small>
@@ -87,7 +98,7 @@ function StudentSchedule() {
                 )}
                 <div className="mt-1">
                     {(studentOnTour ? datesEqual(new Date(), studentOnTour?.date) : false) && (
-                        <Button variant="primary" className="btn-dark">
+                        <Button variant="primary" className="btn-dark" onClick={() => routeToFirstBuilding().then()}>
                             Start deze ronde
                         </Button>
                     )}
