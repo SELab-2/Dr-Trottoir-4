@@ -56,7 +56,7 @@ function AdminDataUsers() {
                     return userView.isActive ? <Check /> : <Clear />;
                 },
                 id: "isActive",
-                header: "Bestaat",
+                header: "Actief",
             },
         ],
         []

@@ -2,7 +2,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from base.models import Manual
+from base.models import Manual, Building
 from base.permissions import (
     IsAdmin,
     IsSuperStudent,
@@ -98,8 +98,22 @@ class ManualBuildingView(APIView):
         """
         Get all manuals of a building with given id
         """
+
+        if not Building.objects.filter(id=building_id):
+            return not_found("Building")
+
+        try:
+            most_recent_only = get_boolean_param(request, "most-recent")
+        except BadRequest as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         manual_instances = Manual.objects.filter(building_id=building_id)
-        return get_maybe_most_recent_param(request, manual_instances, self.serializer_class, "-version_number")
+
+        if most_recent_only:
+            manual_instances = manual_instances.order_by("-version_number").first()
+
+        serializer = ManualSerializer(manual_instances, many=not most_recent_only)
+        return get_success(serializer)
 
 
 class ManualsView(APIView):
@@ -113,4 +127,4 @@ class ManualsView(APIView):
         instances = Manual.objects.all()
 
         serializer = ManualSerializer(instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_success(serializer)
