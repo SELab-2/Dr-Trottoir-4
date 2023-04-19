@@ -39,7 +39,6 @@ ranks = {
     "superstudent": 2,
     "student": 3,
     "syndic": 3,
-
 }
 
 
@@ -53,10 +52,10 @@ def insert_dummy_role(role):
 
 
 def insert_test_user(
-        first_name: str = "test_student",
-        last_name: str = "test",
-        phone_number="+32467240957",
-        role: str = "admin",
+    first_name: str = "test_student",
+    last_name: str = "test",
+    phone_number="+32467240957",
+    role: str = "admin",
 ) -> int:
     global email_counter
     o = User.objects.filter(first_name=first_name).first()
@@ -160,7 +159,7 @@ def insert_dummy_remark_at_building():
         building_id=insert_dummy_building(),
         remark="illegal dumping",
         timestamp=datetime.now(pytz.utc),
-        type="AA"
+        type="AA",
     )
     RaB.save()
     return RaB.id
@@ -170,9 +169,11 @@ def insert_dummy_picture_of_remark(picture):
     f = picture
     hashed_image = hashlib.sha1()
     hashed_image.update(f.open().read())
-    PoR = PictureOfRemark(picture=picture,
-                          remark_at_building=RemarkAtBuilding.objects.get(id=insert_dummy_remark_at_building()),
-                          hash=hashed_image)
+    PoR = PictureOfRemark(
+        picture=picture,
+        remark_at_building=RemarkAtBuilding.objects.get(id=insert_dummy_remark_at_building()),
+        hash=hashed_image,
+    )
     PoR.save()
     return PoR.id
 
