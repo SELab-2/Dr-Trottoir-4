@@ -1,7 +1,7 @@
 import StudentHeader from "@/components/header/studentHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useEffect, useState } from "react";
-import getStudentOnTour, { datesEqual, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import {getToursOfStudent, datesEqual, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
 import { getCurrentUser, User } from "@/lib/user";
 import { getTour, Tour } from "@/lib/tour";
 import { getRegion, RegionInterface } from "@/lib/region";
@@ -37,7 +37,7 @@ function StudentDashboard() {
 
         const nextMonth: Date = new Date();
         nextMonth.setMonth(nextMonth.getMonth() + 1);
-        getStudentOnTour(user.id, { startDate: monthAgo, endDate: nextMonth }).then(async (res) => {
+        getToursOfStudent(user.id, { startDate: monthAgo, endDate: nextMonth }).then(async (res) => {
             // Some cache to recognize duplicate tours (to not do unnecessary requests)
             const t: Record<number, Tour> = {};
             const r: Record<number, RegionInterface> = {};

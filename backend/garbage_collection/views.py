@@ -111,7 +111,7 @@ class GarbageCollectionIndividualBuildingView(APIView):
         """
         Get info about all garbage collections of a building with given id
         """
-        building_instance = Building.objects.filter(building_id=building_id)
+        building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
             return not_found("building")
 
