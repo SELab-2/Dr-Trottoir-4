@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {Button, Modal} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 import styles from "@/styles/Login.module.css";
 
 export enum ModalMode {
@@ -16,14 +16,7 @@ interface RegionModalProps {
     setRegionName: (name: string) => void;
 }
 
-const RegionModal: React.FC<RegionModalProps> = ({
-                                                     show,
-                                                     closeModal,
-                                                     onSubmit,
-                                                     mode,
-                                                     regionName,
-                                                     setRegionName
-                                                 }) => {
+const RegionModal: React.FC<RegionModalProps> = ({ show, closeModal, onSubmit, mode, regionName, setRegionName }) => {
     // const [regionName, setRegionName] = useState(initialRegionName);
 
     const handleSubmit = () => {
