@@ -1,22 +1,22 @@
-import { ChangeEvent, useState } from "react";
+import {ChangeEvent, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { User } from "@/lib/user";
-import { Tour } from "@/lib/tour";
+import {User} from "@/lib/user";
+import {Tour} from "@/lib/tour";
 
 function EditEventModal(data: any) {
-    const { event, allStudents, allTours, isOpen, onClose, onSave, onDelete } = data;
+    const {event, allStudents, allTours, isOpen, onClose, onSave, onDelete} = data;
     const [tour, setTour] = useState<Tour | null>(event.tour);
     const [student, setStudent] = useState(event.student);
 
     const handleSave = () => {
-        let data = { tour: tour, student: student };
+        let data = {tour: tour, student: student};
         onSave(data);
         onClose();
     };
 
     const handleDelete = () => {
-        onDelete({ event });
+        onDelete({event});
         onClose();
     };
 

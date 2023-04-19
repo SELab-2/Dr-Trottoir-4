@@ -56,8 +56,18 @@ const AdminHeader = () => {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link className="dropdown-item" href="/admin/data/regions">
+                                        Regio's
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link className="dropdown-item" href="/admin/data/mails">
                                         Mails
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item" href="/admin/data/lobby">
+                                        Lobby
                                     </Link>
                                 </li>
                             </ul>

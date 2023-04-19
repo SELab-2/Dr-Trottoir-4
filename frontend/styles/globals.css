@@ -107,3 +107,6 @@ input:focus {
     height: 30px !important;
 }
 
+.clickable {
+    cursor: pointer;
+}

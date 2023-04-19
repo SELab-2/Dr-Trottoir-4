@@ -193,8 +193,8 @@ function AdminDataTours() {
                             <>
                                 <label>Gebouwen op deze tour:</label>
                                 <ul>
-                                    {buildings.map((building: BuildingInterface) => (
-                                        <li key={building.id}>{getAddress(building)}</li>
+                                    {buildings.map((building: BuildingInterface, index: number) => (
+                                        <li key={`${building.id}-${index}`}>{getAddress(building)}</li>
                                     ))}
                                 </ul>
                             </>
