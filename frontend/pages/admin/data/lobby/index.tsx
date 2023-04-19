@@ -51,13 +51,16 @@ function LobbyPage() {
     }, []);
 
     function getAllLobbies() {
-        getAllInLobby().then(res => {
-            const lobbies: Lobby[] = res.data;
-            setLobbies(lobbies);
-            setLoading(false);
-        }, err => {
-            console.error(err);
-        });
+        getAllInLobby().then(
+            (res) => {
+                const lobbies: Lobby[] = res.data;
+                setLobbies(lobbies);
+                setLoading(false);
+            },
+            (err) => {
+                console.error(err);
+            }
+        );
     }
 
     function afterPost(lobby: Lobby) {
@@ -69,8 +72,8 @@ function LobbyPage() {
         if (!selectedLobby) {
             return;
         }
-        const i = lobbies.findIndex(l => l.id === selectedLobby.id);
-        setLobbies(prevLobbies => {
+        const i = lobbies.findIndex((l) => l.id === selectedLobby.id);
+        setLobbies((prevLobbies) => {
             const el = [...prevLobbies];
             el[i].email = lobby.email;
             el[i].role = lobby.role;
@@ -83,8 +86,8 @@ function LobbyPage() {
         if (!selectedLobby) {
             return;
         }
-        const i = lobbies.findIndex(l => l.id === selectedLobby.id);
-        setLobbies(prevLobbies => {
+        const i = lobbies.findIndex((l) => l.id === selectedLobby.id);
+        setLobbies((prevLobbies) => {
             const el = [...prevLobbies];
             el[i].verification_code = lobby.verification_code;
             return el;
@@ -106,12 +109,12 @@ function LobbyPage() {
         if (!selectedLobby) {
             return;
         }
-        deleteLobby(selectedLobby.id).then(_ => {
-            const i = lobbies.findIndex(l => l.id === selectedLobby.id);
+        deleteLobby(selectedLobby.id).then((_) => {
+            const i = lobbies.findIndex((l) => l.id === selectedLobby.id);
             if (i < 0) {
                 return;
             }
-            setLobbies(prevLobbies => {
+            setLobbies((prevLobbies) => {
                 const el = [...prevLobbies];
                 el.splice(i, 1);
                 return el;
@@ -125,17 +128,25 @@ function LobbyPage() {
     return (
         <>
             <AdminHeader/>
-            <DeleteConfirmationDialog open={showRemoveDialog} title="Verwijder uit lobby"
-                                      description={`Weet u zeker dat u ${selectedLobby?.email} (${
-                                          selectedLobby ?
-                                              t(getUserRole(selectedLobby.role.toString()))
-                                              : ""
-                                      }) uit de lobby wilt verwijderen?`}
-                                      handleClose={closeRemoveModal}
-                                      handleConfirm={removeLobby}
-                                      confirmButtonText="Verwijder" cancelButtonText="Annuleer"/>
-            <EditLobbyModal selectedLobby={selectedLobby} show={showCreateLobbyModal} onHide={hideModal}
-                            onPatch={afterPatch} onPost={afterPost} onNewVerificationCode={afterNewVerificationPost}/>
+            <DeleteConfirmationDialog
+                open={showRemoveDialog}
+                title="Verwijder uit lobby"
+                description={`Weet u zeker dat u ${selectedLobby?.email} (${
+                    selectedLobby ? t(getUserRole(selectedLobby.role.toString())) : ""
+                }) uit de lobby wilt verwijderen?`}
+                handleClose={closeRemoveModal}
+                handleConfirm={removeLobby}
+                confirmButtonText="Verwijder"
+                cancelButtonText="Annuleer"
+            />
+            <EditLobbyModal
+                selectedLobby={selectedLobby}
+                show={showCreateLobbyModal}
+                onHide={hideModal}
+                onPatch={afterPatch}
+                onPost={afterPost}
+                onNewVerificationCode={afterNewVerificationPost}
+            />
             <MaterialReactTable
                 displayColumnDefOptions={{
                     "mrt-row-actions": {
@@ -155,11 +166,13 @@ function LobbyPage() {
                 enableHiding={false}
                 initialState={{columnVisibility: {id: false}}}
                 renderTopToolbarCustomActions={() => (
-                    <Button variant="primary"
-                            className="btn-dark"
-                            onClick={async () => {
-                                setShowCreateLobbyModal(true);
-                            }}>
+                    <Button
+                        variant="primary"
+                        className="btn-dark"
+                        onClick={async () => {
+                            setShowCreateLobbyModal(true);
+                        }}
+                    >
                         Voeg toe aan lobby
                     </Button>
                 )}
