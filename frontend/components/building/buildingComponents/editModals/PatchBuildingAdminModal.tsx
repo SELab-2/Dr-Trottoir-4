@@ -32,16 +32,16 @@ function PatchBuildingAdminModal({
         name: "",
         postal_code: "",
         public_id: "",
-        region: "",
+        region: 0,
         street: "",
-        syndic: "",
+        syndic: 0,
     });
 
     const [errorText, setErrorText] = useState("");
 
     useEffect(() => {
         setFormData({
-            syndic: building ? building.syndic : "",
+            syndic: building ? building.syndic : 0,
             bus: building ? building.bus : "",
             city: building ? building.city : "",
             client_number: building ? building.client_number : "",
@@ -50,7 +50,7 @@ function PatchBuildingAdminModal({
             name: building ? building.name : "",
             postal_code: building ? building.postal_code : "",
             public_id: building ? building.public_id : "",
-            region: building ? building.region : "",
+            region: building ? building.region : 0,
             street: building ? building.street : "",
         });
     }, [building]);

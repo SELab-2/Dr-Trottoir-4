@@ -1,14 +1,14 @@
 import AdminHeader from "@/components/header/adminHeader";
 import { BuildingComment, getAllBuildingComments } from "@/lib/building-comment";
 import { EmailTemplate, getAllEmailTemplates } from "@/lib/email-template";
-import { useEffect, useState, ChangeEvent } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import styles from "styles/Welcome.module.css";
-import { Button, Dropdown, DropdownButton, FloatingLabel, Form, FormControl, Offcanvas } from "react-bootstrap";
+import { Button, FloatingLabel, Form } from "react-bootstrap";
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import { getAllUsers, User, userSearchString } from "@/lib/user";
 import SyndicAutoComplete from "@/components/autocompleteComponents/syndicAutocomplete";
-import router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { withAuthorisation } from "@/components/withAuthorisation";
 
 interface ParsedUrlQuery {}
@@ -42,7 +42,7 @@ function AdminCommunication() {
     const fillInVariables = (input: string): string => {
         const currentSyndic = allSyndics.find((e) => e.id === Number(syndicId));
         if (currentSyndic) {
-            const currentBuilding = allBuildings.find((e) => e.syndic === currentSyndic.id.toString());
+            const currentBuilding = allBuildings.find((e) => e.syndic === currentSyndic.id);
 
             const replacedName = replaceVariable(
                 input,
