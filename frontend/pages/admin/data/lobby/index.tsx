@@ -1,19 +1,18 @@
-import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {Delete, Edit} from "@mui/icons-material";
-import React, {useEffect, useMemo, useState} from "react";
-import {useTranslation} from "react-i18next";
-import {deleteLobby, getAllInLobby, Lobby} from "@/lib/lobby";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { deleteLobby, getAllInLobby, Lobby } from "@/lib/lobby";
 import AdminHeader from "@/components/header/adminHeader";
-import {getUserRole} from "@/lib/user";
-import {Button} from "react-bootstrap";
+import { getUserRole } from "@/lib/user";
+import { Button } from "react-bootstrap";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import EditLobbyModal from "@/components/admin/editLobbyModal";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
 function LobbyPage() {
-
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [lobbies, setLobbies] = useState<Lobby[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [showCreateLobbyModal, setShowCreateLobbyModal] = useState<boolean>(false);
@@ -127,7 +126,7 @@ function LobbyPage() {
 
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <DeleteConfirmationDialog
                 open={showRemoveDialog}
                 title="Verwijder uit lobby"
@@ -161,10 +160,10 @@ function LobbyPage() {
                 columns={columns}
                 data={lobbies}
                 editingMode="modal" //default
-                state={{isLoading: loading}}
+                state={{ isLoading: loading }}
                 enableEditing
                 enableHiding={false}
-                initialState={{columnVisibility: {id: false}}}
+                initialState={{ columnVisibility: { id: false } }}
                 renderTopToolbarCustomActions={() => (
                     <Button
                         variant="primary"
@@ -176,8 +175,8 @@ function LobbyPage() {
                         Voeg toe aan lobby
                     </Button>
                 )}
-                renderRowActions={({row}) => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                renderRowActions={({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Tooltip arrow placement="left" title="Pas aan">
                             <IconButton
                                 onClick={() => {
@@ -186,7 +185,7 @@ function LobbyPage() {
                                     setSelectedLobby(lobby);
                                 }}
                             >
-                                <Edit/>
+                                <Edit />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -197,7 +196,7 @@ function LobbyPage() {
                                     setSelectedLobby(lobby);
                                 }}
                             >
-                                <Delete/>
+                                <Delete />
                             </IconButton>
                         </Tooltip>
                     </Box>
