@@ -1,46 +1,39 @@
-import React, { useEffect, useState, ChangeEvent, FormEvent, MouseEventHandler } from "react";
-import { useRouter } from "next/router";
-import { Form, Alert } from "react-bootstrap";
-import {
-    BuildingPostInterface,
-    getBuildingInfo,
-    getDurationFromMinutes,
-    patchBuilding,
-    postBuilding,
-} from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { getUserInfo, userSearchString } from "@/lib/user";
+import React, {ChangeEvent, useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {Form} from "react-bootstrap";
+import {getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding,} from "@/lib/building";
+import {getRegion} from "@/lib/region";
+import {getUserInfo, userSearchString} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutocomplete";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessage from "@/components/errorMessage";
 import ConfirmationMessage from "@/components/confirmMessage";
-import confirmationMessage from "@/components/confirmMessage";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
-    const [name, setName] = useState("");
-    const [city, setCity] = useState("");
-    const [houseNumber, setHouseNumber] = useState("");
-    const [busNumber, setBusNumber] = useState("");
-    const [postalCode, setPostalCode] = useState("");
-    const [street, setStreet] = useState("");
-    const [clientNumber, setClientNumber] = useState("");
-    const [region, setRegion] = useState(""); //used for displaying the correct data
-    const [regionId, setRegionId] = useState(""); //used for collecting the right id to post/patch
-    const [syndic, setSyndic] = useState(""); //used for displaying the correct data
-    const [syndicId, setSyndicId] = useState(""); //used for collecting the right id to post/patch
+    const [name, setName] = useState<string>("");
+    const [city, setCity] = useState<string>("");
+    const [houseNumber, setHouseNumber] = useState<string>("");
+    const [busNumber, setBusNumber] = useState<string>("");
+    const [postalCode, setPostalCode] = useState<string>("");
+    const [street, setStreet] = useState<string>("");
+    const [clientNumber, setClientNumber] = useState<string>("");
+    const [region, setRegion] = useState<string>(""); //used for displaying the correct data
+    const [regionId, setRegionId] = useState<number>(0); //used for collecting the right id to post/patch
+    const [syndic, setSyndic] = useState<string>(""); //used for displaying the correct data
+    const [syndicId, setSyndicId] = useState<number>(0); //used for collecting the right id to post/patch
     const [manual, setManual] = useState<File | null>(null);
-    const [duration, setDuration] = useState("00:00");
-    const [public_id, setPublicId] = useState("");
-    const [validated, setValidated] = useState(false);
-    const [formErrors, setFormErrors] = useState(false);
-    const [durationInMinutes, setDurationInMinutes] = useState(0);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [duration, setDuration] = useState<string>("00:00");
+    const [public_id, setPublicId] = useState<string>("");
+    const [validated, setValidated] = useState<boolean>(false);
+    const [formErrors, setFormErrors] = useState<boolean>(false);
+    const [durationInMinutes, setDurationInMinutes] = useState<number>(0);
+    const [errorMessage, setErrorMessage] = useState<string>("");
+    const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
     const router = useRouter();
 
@@ -117,14 +110,14 @@ function AdminDataBuildingsEdit() {
 
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             <div className={styles.container}>
                 <ConfirmationMessage
                     showConfirm={showConfirmation}
                     confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
                     onClose={setShowConfirmation}
                 ></ConfirmationMessage>
-                <ErrorMessage formErrors={formErrors} errorMessage={errorMessage} onClose={setFormErrors} />
+                <ErrorMessage formErrors={formErrors} errorMessage={errorMessage} onClose={setFormErrors}/>
                 <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
                     <Form.Group controlId="buildingName">
                         <Form.Label>Gebouw naam</Form.Label>

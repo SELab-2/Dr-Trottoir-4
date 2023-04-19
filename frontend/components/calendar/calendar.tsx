@@ -15,10 +15,11 @@ import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
 import { User } from "@/lib/user";
 import { Tour } from "@/lib/tour";
-import { formatDate, getALlStudentOnTourFromDate, postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
+import { getALlStudentOnTourFromDate, postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
 import { handleError } from "@/lib/error";
 import LoadEventsModal from "@/components/calendar/loadEvents";
 import { addDays } from "date-fns";
+import {formatDate} from "@/lib/date";
 
 interface MyEvent extends Event {
     tour: Tour;
