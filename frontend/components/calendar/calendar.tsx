@@ -43,6 +43,7 @@ const MyCalendar: FC<Props> = (props) => {
     const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
     const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [events, setEvents] = useState<MyEvent[]>([])
 
@@ -63,13 +64,6 @@ const MyCalendar: FC<Props> = (props) => {
                         }
                         return 0;
                     })
-                    let students: User[] = []
-                    for (let b in value) {
-                        const s = parseInt(b);
-                        students[s] = props.students.filter(function (user: User) {
-                            return user.id == value[s].student;
-                        })[0]
-                    }
                     let tour: Tour = props.tours.filter(function (tour: Tour) {
                         return tour.id == t
                     })[0];
@@ -147,12 +141,8 @@ const MyCalendar: FC<Props> = (props) => {
         });
     }
 
-    const onEventAdd = ({
-                            tour,
-                            students,
-                            start,
-                            end,
-                        }: { tour: Tour, students: User[], start: Date, end: Date }) => {
+    const onEventAdd = ({tour, students, start, end,}
+                            : { tour: Tour, students: User[], start: Date, end: Date }) => {
         setEvents(currentEvents => {
             const newEvent: MyEvent = {
                 tour: tour,
@@ -211,14 +201,12 @@ const MyCalendar: FC<Props> = (props) => {
                     return acc;
                 }, []);
                 for (let s of filtered) {
-                    postStudentOnTour(events[e].tour.id, s.id, formatDate(d)).then(
+                    postStudentOnTour(events[e].tour.id, s.id, "undefined").then(
                         (_) => {
-                            //TODO
-                            console.log("success")
                         },
                         (err) => {
                             const e = handleError(err);
-                            //setErrorMessages(e); // TODO add error message to page
+                            setErrorMessages(e);
                         }
                     );
                 }
@@ -233,6 +221,16 @@ const MyCalendar: FC<Props> = (props) => {
             <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenLoad(true)}>Kies vorige planning
             </button>
             <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>Sla planning op</button>
+            {errorMessages.length !== 0 && (
+                <div className={"visible alert alert-danger alert-dismissible fade show"}>
+                    <ul>
+                        {errorMessages.map((err, i) => (
+                            <li key={i}>{err}</li>
+                        ))}
+                    </ul>
+                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
+                </div>
+            )}
             <DnDCalendar
                 messages={messages}
                 culture={'nl-BE'}

@@ -9,20 +9,9 @@ function AddEventModal(data: any) {
     const {allStudents, allTours, isOpen, onClose, onSave} = data
     const [tour, setTour] = useState<Tour | null>(null);
     const [student, setStudent] = useState<User | null>(null);
-    const [start, setStart] = useState(new Date(addDays(startOfWeek(startOfMonth(new Date()), {weekStartsOn: 0}), 8).toLocaleString('en', {timeZone: 'America/New_York'})));
+    const [start, setStart] = useState(new Date(addDays(startOfWeek(new Date(), {weekStartsOn: 0}), 1).toLocaleString('en', {timeZone: 'America/New_York'})));
     const [checked, setChecked] = useState(true);
     const [week, setWeek] = useState<User[]>(Array(7).fill(null)); // Week starts on Sunday (index 0)
-
-    function splitOnValueChange(arr: User[]): User[][] {
-        return arr.reduce((result: User[][], currentValue: User, index: number, array: User[]) => {
-            if (index === 0 || currentValue.first_name !== array[index - 1].first_name || currentValue.last_name !== array[index - 1].last_name) {
-                result.push([currentValue]); // start a new group
-            } else {
-                result[result.length - 1].push(currentValue); // add to the current group
-            }
-            return result;
-        }, []);
-    }
 
 
     const handleSave = () => {
@@ -30,18 +19,20 @@ function AddEventModal(data: any) {
             const end = addDays(start, 5);
             start.setHours(0);
             end.setHours(2)
-            let data = { tour: tour, students: Array(7).fill(student), start: start, end: end };
+            let data = {tour: tour, students: Array(7).fill(student), start: start, end: end};
             onSave(data);
-            onClose();
         } else {
             const end = addDays(start, 5);
             start.setHours(0);
-            end.setHours(2)
-            const split = splitOnValueChange(week).flat();
-            let data = { tour: tour, students: split, start: start, end: end };
-            onSave(data)
-            onClose();
+            end.setHours(2);
+            let data = {tour: tour, students: week, start: start, end: end};
+            onSave(data);
         }
+        setTour(null);
+        setStudent(null)
+        setStart(new Date(addDays(startOfWeek(startOfMonth(new Date()), {weekStartsOn: 0}), 8).toLocaleString('en', {timeZone: 'America/New_York'})))
+        setWeek(Array(7).fill(null));
+        onClose();
     }
 
 
