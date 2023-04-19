@@ -65,6 +65,11 @@ const AdminHeader = () => {
                                         Mails
                                     </Link>
                                 </li>
+                                <li>
+                                    <Link className="dropdown-item" href="/admin/data/lobby">
+                                        Lobby
+                                    </Link>
+                                </li>
                             </ul>
                         </li>
                         <li className="nav-item">
