@@ -1713,69 +1713,6 @@
     }
 },
 {
-    "model": "base.manual",
-    "pk": 1,
-    "fields": {
-        "building": 2,
-        "version_number": 0,
-        "file": "building_manuals/manual.pdf"
-    }
-},
-{
-    "model": "base.manual",
-    "pk": 2,
-    "fields": {
-        "building": 10,
-        "version_number": 0,
-        "file": "building_manuals/manualXYZ.pdf"
-    }
-},
-{
-    "model": "base.manual",
-    "pk": 3,
-    "fields": {
-        "building": 2,
-        "version_number": 1,
-        "file": "building_manuals/manual_Z9rE7NK.pdf"
-    }
-},
-{
-    "model": "base.manual",
-    "pk": 4,
-    "fields": {
-        "building": 2,
-        "version_number": 2,
-        "file": "building_manuals/manual_ZrabAvF.pdf"
-    }
-},
-{
-    "model": "base.manual",
-    "pk": 5,
-    "fields": {
-        "building": 2,
-        "version_number": 3,
-        "file": "building_manuals/manual_1rTYOnL.pdf"
-    }
-},
-{
-    "model": "base.manual",
-    "pk": 6,
-    "fields": {
-        "building": 7,
-        "version_number": 0,
-        "file": "building_manuals/manual_Lis1No8.pdf"
-    }
-},
-{
-    "model": "base.manual",
-    "pk": 7,
-    "fields": {
-        "building": 1,
-        "version_number": 0,
-        "file": "building_manuals/manual_KGPwTq7.pdf"
-    }
-},
-{
     "model": "base.emailtemplate",
     "pk": 1,
     "fields": {
