@@ -26,7 +26,9 @@ from util.request_response_util import (
     patch_success,
     patch_docs,
     get_docs,
-    param_docs, get_most_recent_param_docs, get_boolean_param,
+    param_docs,
+    get_most_recent_param_docs,
+    get_boolean_param,
     post_success,
     bad_request,
 )
@@ -131,8 +133,9 @@ class RemarksAtBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = RemarkAtBuildingSerializer
 
-    @extend_schema(responses=get_docs(serializer_class),
-                   parameters=param_docs(get_most_recent_param_docs("RemarksAtBuilding")))
+    @extend_schema(
+        responses=get_docs(serializer_class), parameters=param_docs(get_most_recent_param_docs("RemarksAtBuilding"))
+    )
     def get(self, request, building_id):
         """
         Get all remarks on a specific building

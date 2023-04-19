@@ -37,7 +37,6 @@ function StudentSchedule() {
                         const r: RegionInterface = res.data;
                         setRegion(r.region);
                     }, console.error);
-
                 }, console.error);
                 getBuildingsOfTour(sots.tour).then(
                     (res) => {
@@ -63,12 +62,10 @@ function StudentSchedule() {
         if (buildings.length === 0) {
             return;
         }
-        await router.push(
-            {
-                pathname: `/student/building`,
-                query: { studentOnTourId: studentOnTour?.id },
-            }
-        );
+        await router.push({
+            pathname: `/student/building`,
+            query: { studentOnTourId: studentOnTour?.id },
+        });
     }
 
     return (

@@ -1,26 +1,23 @@
-import {Button, Modal} from "react-bootstrap";
-import React, {useState} from "react";
-import {BuildingInterface, getAddress} from "@/lib/building";
-import {getRemarksOfBuilding, RemarkAtBuilding} from "@/lib/remark-at-building";
+import { Button, Modal } from "react-bootstrap";
+import React, { useState } from "react";
+import { BuildingInterface, getAddress } from "@/lib/building";
+import { getRemarksOfBuilding, RemarkAtBuilding } from "@/lib/remark-at-building";
 
-export default function BuildingOverview(
-    {
-        show,
-        closeModal,
-        building,
-        finish
-    }: {
-        show: boolean,
-        closeModal: () => void,
-        building : BuildingInterface | null,
-        finish : boolean
-    }
-) {
-
+export default function BuildingOverview({
+    show,
+    closeModal,
+    building,
+    finish,
+}: {
+    show: boolean;
+    closeModal: () => void;
+    building: BuildingInterface | null;
+    finish: boolean;
+}) {
     const [remarks, setRemarks] = useState<RemarkAtBuilding[]>([]);
 
     function retrieveRemarks() {
-        if (! building) {
+        if (!building) {
             return;
         }
         // Change this to the correct student information,
@@ -33,10 +30,13 @@ export default function BuildingOverview(
     }
 
     return (
-        <Modal show={show} onShow={() => {
-            console.log(building);
-            retrieveRemarks();
-        }}>
+        <Modal
+            show={show}
+            onShow={() => {
+                console.log(building);
+                retrieveRemarks();
+            }}
+        >
             <Modal.Header>
                 <Modal.Title>Overzicht gebouw</Modal.Title>
             </Modal.Header>
@@ -51,7 +51,7 @@ export default function BuildingOverview(
                         closeModal();
                     }}
                 >
-                    {finish ? "Beëindig ronde": "Volgende gebouw"}
+                    {finish ? "Beëindig ronde" : "Volgende gebouw"}
                 </Button>
             </Modal.Footer>
         </Modal>
