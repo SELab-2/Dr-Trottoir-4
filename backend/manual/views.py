@@ -1,3 +1,4 @@
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -90,7 +91,18 @@ class ManualBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding]
     serializer_class = ManualSerializer
 
-    @extend_schema(responses=get_docs(ManualSerializer))
+    @extend_schema(
+        responses=get_docs(ManualSerializer),
+        parameters=param_docs(
+            {
+                "most-recent": (
+                    "When set to 'true', only the most recent manual will be returned",
+                    False,
+                    OpenApiTypes.BOOL,
+                )
+            }
+        ),
+    )
     def get(self, request, building_id):
         """
         Get all manuals of a building with given id
@@ -98,8 +110,17 @@ class ManualBuildingView(APIView):
         if not Building.objects.filter(id=building_id):
             return not_found("Building")
 
+        try:
+            most_recent_only = get_boolean_param(request, "most-recent")
+        except BadRequest as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         manual_instances = Manual.objects.filter(building_id=building_id)
-        serializer = ManualSerializer(manual_instances, many=True)
+
+        if most_recent_only:
+            manual_instances = manual_instances.order_by("-version_number").first()
+
+        serializer = ManualSerializer(manual_instances, many=not most_recent_only)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
