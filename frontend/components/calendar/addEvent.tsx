@@ -11,11 +11,10 @@ function AddEventModal(data: any) {
     const [student, setStudent] = useState<User | null>(null);
     const [start, setStart] = useState(new Date(addDays(startOfWeek(new Date(), {weekStartsOn: 0}), 1).toLocaleString('en', {timeZone: 'America/New_York'})));
     const [checked, setChecked] = useState(true);
-    const [week, setWeek] = useState<User[]>(Array(6).fill("")); // Week starts on Sunday (index 0)
+    const [week, setWeek] = useState<User[]>(Array(6).fill(null)); // Week starts on Sunday (index 0)
 
 
     const handleSave = () => {
-        console.log(week)
         const end = addDays(start, 5);
         let data = [];
         let currentDate = new Date(start);
@@ -38,13 +37,12 @@ function AddEventModal(data: any) {
                 currentDate.setHours(0);
             }
         }
-        console.log(data)
             onSaveMultiple(data);
         setTour(null);
         setStudent(null);
         setStart(new Date(addDays(startOfWeek(startOfMonth(new Date()), {weekStartsOn: 0}), 8).toLocaleString('en', {timeZone: 'America/New_York'})))
-        setWeek(Array(6).fill(student));
-        setChecked(false);
+        setWeek(Array(6).fill(null));
+        setChecked(true);
         onClose();
     }
 
@@ -75,7 +73,6 @@ function AddEventModal(data: any) {
         const updatedWeek = [...week];
         updatedWeek[index] = allStudents.find((student: User) => student.id === studentID);
         setWeek(updatedWeek);
-        console.log(week)
     }
 
 

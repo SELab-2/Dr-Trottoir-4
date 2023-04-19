@@ -7,10 +7,10 @@ import {Tour} from "@/lib/tour";
 function EditEventModal(data: any) {
     const {event, allStudents, allTours, isOpen, onClose, onSave, onDelete} = data
     const [tour, setTour] = useState<Tour | null>(event.tour);
-    const [week, setWeek] = useState<User[]>(event.students); // Week starts on Sunday (index 0)
+    const [student, setStudent] = useState(event.student);
 
     const handleSave = () => {
-        let data = {tour: tour, students: week}
+        let data = {tour: tour, student: student}
         onSave(data);
         onClose();
     };
@@ -26,11 +26,10 @@ function EditEventModal(data: any) {
         setTour(selectedTour);
     }
 
-    const updateWeekdayStudent = (e: ChangeEvent<HTMLSelectElement>, index: number) => {
+    const handleStudentChange = (e: ChangeEvent<HTMLSelectElement>) => {
         const studentID = Number(e.target.value);
-        const updatedWeek = [...week];
-        updatedWeek[index] = allStudents.find((student: User) => student.id === studentID);
-        setWeek(updatedWeek);
+        const selectedStudent = allStudents.find((user: User) => user.id === studentID);
+        setStudent(selectedStudent);
     }
 
 
@@ -51,75 +50,12 @@ function EditEventModal(data: any) {
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>Studenten</label>
-                        <div>
-                            <div>
-                                <label>Zondag:</label>
-                                <select className="form-control" value={week[0].id}
-                                        onChange={e => updateWeekdayStudent(e, 0)}>
-                                    <option value="">-- Selecteer student(e) --</option>
-                                    {allStudents.map((student: User) => (
-                                        <option key={student.id}
-                                                value={student.id}>{student.first_name} {student.last_name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label>Maandag:</label>
-                                <select className="form-control" value={week[1].id}
-                                        onChange={e => updateWeekdayStudent(e, 1)}>
-                                    <option value="">-- Selecteer student(e) --</option>
-                                    {allStudents.map((student: User) => (
-                                        <option key={student.id}
-                                                value={student.id}>{student.first_name} {student.last_name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label>Dinsdag:</label>
-                                <select className="form-control" value={week[2].id}
-                                        onChange={e => updateWeekdayStudent(e, 2)}>
-                                    <option value="">-- Selecteer student(e) --</option>
-                                    {allStudents.map((student: User) => (
-                                        <option key={student.id}
-                                                value={student.id}>{student.first_name} {student.last_name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label>Woensdag:</label>
-                                <select className="form-control" value={week[3].id}
-                                        onChange={e => updateWeekdayStudent(e, 3)}>
-                                    <option value="">-- Selecteer student(e) --</option>
-                                    {allStudents.map((student: User) => (
-                                        <option key={student.id}
-                                                value={student.id}>{student.first_name} {student.last_name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label>Donderdag:</label>
-                                <select className="form-control" value={week[4].id}
-                                        onChange={e => updateWeekdayStudent(e, 4)}>
-                                    <option value="">-- Selecteer student(e) --</option>
-                                    {allStudents.map((student: User) => (
-                                        <option key={student.id}
-                                                value={student.id}>{student.first_name} {student.last_name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label>Vrijdag:</label>
-                                <select className="form-control" value={week[5].id}
-                                        onChange={e => updateWeekdayStudent(e, 5)}>
-                                    <option value="">-- Selecteer student(e) --</option>
-                                    {allStudents.map((student: User) => (
-                                        <option key={student.id}
-                                                value={student.id}>{student.first_name} {student.last_name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
+                        <label>Student</label>
+                        <select className="form-control" value={student?.id} onChange={handleStudentChange}>
+                            {allStudents.map((user: User) => (
+                                <option key={user.id} value={user.id}>{user.first_name} {user.last_name}</option>
+                            ))}
+                        </select>
                     </div>
                 </form>
             </Modal.Body>

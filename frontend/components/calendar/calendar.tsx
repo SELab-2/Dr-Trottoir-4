@@ -1,15 +1,15 @@
-import React, {FC, useState} from 'react'
-import {Calendar, dateFnsLocalizer, Event} from 'react-big-calendar'
-import withDragAndDrop, {withDragAndDropProps} from 'react-big-calendar/lib/addons/dragAndDrop'
-import format from 'date-fns/format'
-import parse from 'date-fns/parse'
-import startOfWeek from 'date-fns/startOfWeek'
-import getDay from 'date-fns/getDay'
-import nlBE from 'date-fns/locale/nl-BE'
-import {messages} from '@/locales/localizerCalendar'
+import React, {FC, useState} from "react";
+import {Calendar, dateFnsLocalizer, Event} from "react-big-calendar";
+import withDragAndDrop, {withDragAndDropProps} from "react-big-calendar/lib/addons/dragAndDrop";
+import format from "date-fns/format";
+import parse from "date-fns/parse";
+import startOfWeek from "date-fns/startOfWeek";
+import getDay from "date-fns/getDay";
+import nlBE from "date-fns/locale/nl-BE";
+import {messages} from "@/locales/localizerCalendar";
 
-import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
-import 'react-big-calendar/lib/css/react-big-calendar.css'
+import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import EditEventModal from "@/components/calendar/editEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
@@ -28,8 +28,8 @@ interface MyEvent extends Event {
 }
 
 interface Props {
-    students: User[]
-    tours: Tour[]
+    students: User[];
+    tours: Tour[];
 }
 
 const MyCalendar: FC<Props> = (props) => {
@@ -38,73 +38,41 @@ const MyCalendar: FC<Props> = (props) => {
     const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-    const [events, setEvents] = useState<MyEvent[]>([])
+    const [events, setEvents] = useState<MyEvent[]>([]);
 
-    const onEventsLoad = ({start_date, end_date}: { start_date: Date, end_date: Date }) => {
+    const onEventsLoad = ({start_date, end_date}: { start_date: Date; end_date: Date }) => {
         getALlStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
             (res) => {
                 const list: StudentOnTour[] = res.data
                 const tours = groupByKey(list, 'tour');
+                let data: MyEvent[] = []
                 for (let a in tours) {
                     const t = parseInt(a);
-                    const value = tours[t]
-                    value.sort((x: any, y: any) => {
-                        if (x.date < y.date) {
-                            return -1;
-                        }
-                        if (x.date > y.date) {
-                            return 1;
-                        }
-                        return 0;
-                    })
+                    const value = tours[t];
                     let tour: Tour = props.tours.filter(function (tour: Tour) {
-                        return tour.id == t
+                        return tour.id == t;
                     })[0];
-                    const groupedTours: any[][] = [];
-                    let currentGroup = [];
-
-                    for (let i = 0; i < value.length; i++) {
-                        const tour = value[i];
-                        const nextTour = value[i + 1];
-
-                        currentGroup.push(tour);
-
-                        // @ts-ignore
-                        if (nextTour && Math.floor(new Date(nextTour.date) - new Date(tour.date)) !== 86400000) {
-                            groupedTours.push(currentGroup);
-                            currentGroup = [];
-                        }
+                    for (let b in value) {
+                        const v = parseInt(b);
+                        const item = value[v]
+                        let student: User = props.students.filter(function (user: User) {
+                            return user.id == item.student;
+                        })[0];
+                        let start = new Date(item.date);
+                        let end = addDays(start, 1);
+                        start.setHours(0);
+                        end.setHours(0);
+                        data[t] = {tour: tour, student: student, start: start, end: end};
                     }
-
-                    if (currentGroup.length > 0) {
-                        groupedTours.push(currentGroup);
-                    }
-                    for (let g in groupedTours) {
-                        let students: User[] = []
-                        for (let o in groupedTours[g]) {
-                            students[o] = props.students.filter(function (user: User) {
-                                return user.id == groupedTours[g][o].student;
-                            })[0]
-                        }
-                        const start = new Date(groupedTours[g][0].date)
-                        let end = new Date(groupedTours[g][groupedTours[g].length - 1].date)
-                        if (groupedTours[g][0].date == groupedTours[g][g.length - 1].date) {
-                            end = addDays(end, 1)
-                            end.setHours(0)
-                        }
-                        start.setHours(0)
-                        for (let student of students) {
-                            onEventAdd({tour: tour, student: student, start: start, end: end})
-                        }
-                    }
+                    data = data.filter(Boolean);
+                    onEventsAdd(data);
                 }
             },
             (err) => {
                 console.error(err);
             }
         );
-
-    }
+    };
 
     function groupByKey(array: any[], key: string) {
         return array.reduce((result, currentValue) => {
@@ -115,7 +83,7 @@ const MyCalendar: FC<Props> = (props) => {
     }
 
     const onEventSelection = (e: Event) => {
-        console.log(e)
+        console.log(e);
         setSelectedEvent(e);
         setPopupIsOpenEdit(true);
     };
@@ -134,7 +102,7 @@ const MyCalendar: FC<Props> = (props) => {
                 return currentEvent;
             });
         });
-    }
+    };
 
     const onEventAdd = ({tour, student, start, end,}
                             : { tour: Tour, student: User, start: Date, end: Date }) => {
@@ -143,11 +111,11 @@ const MyCalendar: FC<Props> = (props) => {
                 tour: tour,
                 student: student,
                 start: start,
-                end: end
+                end: end,
             };
             return [...currentEvents, newEvent];
         });
-    }
+    };
 
     const onEventsAdd = (eventData: MyEvent[]
     ) => {
@@ -172,7 +140,7 @@ const MyCalendar: FC<Props> = (props) => {
                         start: new Date(start),
                         startDate: new Date(start),
                         endDate: new Date(end),
-                        end: new Date(end)
+                        end: new Date(end),
                     };
                 }
                 return currentEvent;
@@ -181,12 +149,12 @@ const MyCalendar: FC<Props> = (props) => {
     };
 
     const onEventDelete = ({event}: { event: MyEvent }) => {
-        setEvents(currentEvents => {
-            return currentEvents.filter(currentEvent => {
+        setEvents((currentEvents) => {
+            return currentEvents.filter((currentEvent) => {
                 return currentEvent !== event;
             });
         });
-    }
+    };
 
     const getDaysArray = function (start: Date, end: Date) {
         let arr = [];
@@ -198,29 +166,31 @@ const MyCalendar: FC<Props> = (props) => {
     };
 
     const handleScheduleSave = () => {
-        for (let e in events) {
-            const dates = getDaysArray(events[e].start, events[e].end);
-            for (let d of dates) {
-                postStudentOnTour(events[e].tour.id, events[e].student.id, formatDate(d)).then(
-                    (_) => {
-                    },
-                    (err) => {
-                        const e = handleError(err);
-                        setErrorMessages(e);
-                    }
-                );
-            }
+        const toLoad = events.filter(Boolean);
+        for (let e in toLoad) {
+            postStudentOnTour(toLoad[e].tour.id, toLoad[e].student.id, formatDate(toLoad[e].start)).then(
+                (_) => {
+                },
+                (err) => {
+                    const e = handleError(err);
+                    setErrorMessages(e);
+                }
+            );
         }
-    };
 
+    };
 
     return (
         <>
-            <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenAdd(true)}>Voeg ronde toe</button>
-            <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenLoad(true)}>Kies vorige planning
+            <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenAdd(true)}>
+                Voeg ronde toe
             </button>
-            <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>Sla planning op</button>
-            <button className="btn btn-primary mb-3" onClick={() => console.log(events)}>Events</button>
+            <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenLoad(true)}>
+                Kies vorige planning
+            </button>
+            <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>
+                Sla planning op
+            </button>
             {errorMessages.length !== 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>
                     <ul>
@@ -233,14 +203,14 @@ const MyCalendar: FC<Props> = (props) => {
             )}
             <DnDCalendar
                 messages={messages}
-                culture={'nl-BE'}
-                defaultView='week'
+                culture={"nl-BE"}
+                defaultView="week"
                 events={events}
                 components={{event: CustomDisplay}}
                 localizer={localizer}
                 selectable
                 onSelectEvent={onEventSelection}
-                style={{height: '100vh'}}
+                style={{height: "100vh"}}
                 step={60}
                 timeslots={1}
                 onEventDrop={onEventResize}
@@ -267,21 +237,16 @@ const MyCalendar: FC<Props> = (props) => {
                 isOpen={popupIsOpenAdd}
                 onClose={() => setPopupIsOpenAdd(false)}
                 onSave={onEventAdd}
-                onSaveMultiple= {onEventsAdd}
+                onSaveMultiple={onEventsAdd}
             />
-            <LoadEventsModal
-                isOpen={popupIsOpenLoad}
-                onClose={() => setPopupIsOpenLoad(false)}
-                onSave={onEventsLoad}
-            />
+            <LoadEventsModal isOpen={popupIsOpenLoad} onClose={() => setPopupIsOpenLoad(false)} onSave={onEventsLoad}/>
         </>
     );
-
-}
+};
 
 const locales = {
-    'nl-BE': nlBE,
-}
+    "nl-BE": nlBE,
+};
 
 const localizer = dateFnsLocalizer({
     format,
@@ -292,7 +257,6 @@ const localizer = dateFnsLocalizer({
     getDay,
     locales,
 });
-
 
 const DnDCalendar = withDragAndDrop(Calendar);
 
