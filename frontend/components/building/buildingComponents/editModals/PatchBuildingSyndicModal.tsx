@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from "react";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {Button, Form, Modal} from "react-bootstrap";
-import {BuildingInterface, BuildingSyndicPostInterface} from "@/lib/building";
+import React, { useEffect, useState } from "react";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { Button, Form, Modal } from "react-bootstrap";
+import { BuildingInterface, BuildingSyndicPostInterface } from "@/lib/building";
 import {
     getNewPublicIdUtil,
     handleInputChangeUtil,
-    handleSubmitUtil
+    handleSubmitUtil,
 } from "@/components/building/buildingComponents/editModals/handleUtil";
 
 function PatchBuildingSyndicModal({
@@ -19,7 +19,6 @@ function PatchBuildingSyndicModal({
     building: BuildingInterface | null;
     setBuilding: (x: any) => void;
 }) {
-
     const [formData, setFormData] = useState<BuildingSyndicPostInterface>({
         name: "",
         public_id: "",
@@ -43,18 +42,16 @@ function PatchBuildingSyndicModal({
             //TODO: generic component
             console.error(JSON.stringify(error));
         }
-
     };
 
     const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-
-        try{
+        try {
             await handleSubmitUtil(event, formData, building, setBuilding, closeModal);
-        } catch (error:any) {
+        } catch (error: any) {
             //TODO: generic error component
-            setErrorText(JSON.stringify(error.response.data))
+            setErrorText(JSON.stringify(error.response.data));
         }
     };
 
@@ -70,7 +67,7 @@ function PatchBuildingSyndicModal({
                                 <Form.Control
                                     name="name"
                                     value={formData.name}
-                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul de naam van het gebouw in"
                                 />
                             </Form.Group>
@@ -80,7 +77,7 @@ function PatchBuildingSyndicModal({
                                 <Form.Control
                                     name="public_id"
                                     value={formData.public_id}
-                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="vul het public id van het gebouw in"
                                 />
                                 <Button variant={"success"} size={"sm"} onClick={newPublicId}>

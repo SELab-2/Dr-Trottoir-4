@@ -1,17 +1,17 @@
-import {ChangeEvent, useState} from "react";
+import { ChangeEvent, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import {addDays, startOfMonth, startOfWeek} from "date-fns";
-import {User} from "@/lib/user";
-import {Tour} from "@/lib/tour";
+import { addDays, startOfMonth, startOfWeek } from "date-fns";
+import { User } from "@/lib/user";
+import { Tour } from "@/lib/tour";
 
 function AddEventModal(data: any) {
-    const {allStudents, allTours, isOpen, onClose, onSave, onSaveMultiple} = data;
+    const { allStudents, allTours, isOpen, onClose, onSave, onSaveMultiple } = data;
     const [tour, setTour] = useState<Tour | null>(null);
     const [student, setStudent] = useState<User | null>(null);
     const [start, setStart] = useState(
         new Date(
-            addDays(startOfWeek(new Date(), {weekStartsOn: 0}), 1).toLocaleString("en", {
+            addDays(startOfWeek(new Date(), { weekStartsOn: 0 }), 1).toLocaleString("en", {
                 timeZone: "America/New_York",
             })
         )
@@ -28,7 +28,7 @@ function AddEventModal(data: any) {
             while (currentDate <= end) {
                 let nextDate = addDays(currentDate, 1);
                 nextDate.setHours(2);
-                data.push({tour: tour, student: student, start: currentDate, end: nextDate});
+                data.push({ tour: tour, student: student, start: currentDate, end: nextDate });
                 currentDate = nextDate;
                 currentDate.setHours(0);
             }
@@ -37,7 +37,7 @@ function AddEventModal(data: any) {
                 let s = week.pop();
                 let nextDate = addDays(currentDate, 1);
                 nextDate.setHours(2);
-                data.push({tour: tour, student: s, start: currentDate, end: nextDate});
+                data.push({ tour: tour, student: s, start: currentDate, end: nextDate });
                 currentDate = nextDate;
                 currentDate.setHours(0);
             }
@@ -47,7 +47,7 @@ function AddEventModal(data: any) {
         setStudent(null);
         setStart(
             new Date(
-                addDays(startOfWeek(startOfMonth(new Date()), {weekStartsOn: 0}), 8).toLocaleString("en", {
+                addDays(startOfWeek(startOfMonth(new Date()), { weekStartsOn: 0 }), 8).toLocaleString("en", {
                     timeZone: "America/New_York",
                 })
             )
@@ -125,7 +125,7 @@ function AddEventModal(data: any) {
                             />
                         </div>
                         <label>
-                            <input type="checkbox" checked={checked} onChange={handleCheckChange}/>1 student per week
+                            <input type="checkbox" checked={checked} onChange={handleCheckChange} />1 student per week
                         </label>
                         {!checked && (
                             <div>

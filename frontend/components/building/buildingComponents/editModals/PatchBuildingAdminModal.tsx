@@ -1,32 +1,28 @@
-import {BuildingInterface, BuildingPostInterface} from "@/lib/building";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import React, {useEffect, useState} from "react";
-import {Button, Form, Modal} from "react-bootstrap";
+import { BuildingInterface, BuildingPostInterface } from "@/lib/building";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import React, { useEffect, useState } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
 import {
     getNewPublicIdUtil,
     handleInputChangeUtil,
-    handleSubmitUtil
+    handleSubmitUtil,
 } from "@/components/building/buildingComponents/editModals/handleUtil";
-
-
 
 /*
 TODO: this page should be shown on click with a row in the tables
  */
 
 function PatchBuildingAdminModal({
-                                     show,
-                                     closeModal,
-                                     building,
-                                     setBuilding
-                                 }:
-                                     {
-                                         show: boolean;
-                                         closeModal: () => void;
-                                         building: BuildingInterface | null;
-                                         setBuilding: (x: any) => void;
-                                     }) {
-
+    show,
+    closeModal,
+    building,
+    setBuilding,
+}: {
+    show: boolean;
+    closeModal: () => void;
+    building: BuildingInterface | null;
+    setBuilding: (x: any) => void;
+}) {
     const [formData, setFormData] = useState<BuildingPostInterface>({
         bus: "",
         city: "",
@@ -38,7 +34,7 @@ function PatchBuildingAdminModal({
         public_id: "",
         region: "",
         street: "",
-        syndic: ""
+        syndic: "",
     });
 
     const [errorText, setErrorText] = useState("");
@@ -68,18 +64,16 @@ function PatchBuildingAdminModal({
             //TODO: generic component
             console.error(JSON.stringify(error));
         }
-
     };
 
     const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-
         try {
             await handleSubmitUtil(event, formData, building, setBuilding, closeModal);
         } catch (error: any) {
             //TODO: generic error component
-            setErrorText(JSON.stringify(error.response.data))
+            setErrorText(JSON.stringify(error.response.data));
         }
     };
 
@@ -95,7 +89,7 @@ function PatchBuildingAdminModal({
                                 <Form.Control
                                     name="name"
                                     value={formData.name}
-                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul de naam van het gebouw in"
                                 />
                             </Form.Group>
@@ -106,7 +100,7 @@ function PatchBuildingAdminModal({
                                 <Form.Control
                                     name="syndic"
                                     value={formData.syndic}
-                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul de id van de syndicus in"
                                 />
                             </Form.Group>
@@ -116,7 +110,7 @@ function PatchBuildingAdminModal({
                                 <Form.Control
                                     name="city"
                                     value={formData.city}
-                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul naam van de stad in"
                                 />
                             </Form.Group>
@@ -126,7 +120,7 @@ function PatchBuildingAdminModal({
                                 <Form.Control
                                     name="postal_code"
                                     value={formData.postal_code}
-                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul de postcode in"
                                 />
                             </Form.Group>
@@ -136,7 +130,7 @@ function PatchBuildingAdminModal({
                                 <Form.Control
                                     name="street"
                                     value={formData.street}
-                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul de straat in"
                                 />
                             </Form.Group>
@@ -146,7 +140,7 @@ function PatchBuildingAdminModal({
                                 <Form.Control
                                     name="house_number"
                                     value={formData.house_number}
-                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul het huisnummer in"
                                 />
                             </Form.Group>
@@ -157,7 +151,7 @@ function PatchBuildingAdminModal({
                                 <Form.Control
                                     name="region"
                                     value={formData.region}
-                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul de regio in"
                                 />
                             </Form.Group>
@@ -167,7 +161,7 @@ function PatchBuildingAdminModal({
                                 <Form.Control
                                     name="bus"
                                     value={formData.bus}
-                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul het busnummer in"
                                 />
                             </Form.Group>
@@ -177,7 +171,7 @@ function PatchBuildingAdminModal({
                                 <Form.Control
                                     name="client_number"
                                     value={formData.client_number}
-                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul de client id in"
                                 />
                             </Form.Group>
@@ -188,7 +182,7 @@ function PatchBuildingAdminModal({
                                 <Form.Control
                                     name="duration"
                                     value={formData.duration}
-                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul de duur in"
                                 />
 
@@ -197,10 +191,9 @@ function PatchBuildingAdminModal({
                                     <Form.Control
                                         name="public_id"
                                         value={formData.public_id}
-                                        onChange={event => handleInputChangeUtil(event, formData, setFormData)}
+                                        onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                         placeholder="vul het public id van het gebouw in"
                                     />
-
 
                                     <Button variant={"success"} size={"sm"} onClick={newPublicId}>
                                         Willekeurig
@@ -223,7 +216,7 @@ function PatchBuildingAdminModal({
                             </Form.Group>
 
                             {/*TODO: below line should probably a custom component with a state boolean*/}
-                            <div style={{background: "red"}}>{errorText}</div>
+                            <div style={{ background: "red" }}>{errorText}</div>
 
                             <Button
                                 variant="danger"
@@ -244,9 +237,6 @@ function PatchBuildingAdminModal({
             </Modal>
         </>
     );
-
 }
 
 export default withAuthorisation(PatchBuildingAdminModal, ["Admin"]);
-
-
