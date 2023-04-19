@@ -1,7 +1,12 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { Button, Form, Modal } from "react-bootstrap";
-import { BuildingInterface, getNewPublicId, patchBuildingInfo } from "@/lib/building";
+import React, {useEffect, useState} from "react";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {Button, Form, Modal} from "react-bootstrap";
+import {BuildingInterface, BuildingSyndicPostInterface} from "@/lib/building";
+import {
+    getNewPublicIdUtil,
+    handleInputChangeUtil,
+    handleSubmitUtil
+} from "@/components/building/buildingComponents/editModals/handleUtil";
 
 function PatchBuildingSyndicModal({
     show,
@@ -14,15 +19,12 @@ function PatchBuildingSyndicModal({
     building: BuildingInterface | null;
     setBuilding: (x: any) => void;
 }) {
-    interface formData {
-        name: string;
-        public_id: string;
-    }
 
-    const [formData, setFormData] = useState<formData>({
+    const [formData, setFormData] = useState<BuildingSyndicPostInterface>({
         name: "",
         public_id: "",
     });
+
     const [errorText, setErrorText] = useState("");
 
     useEffect(() => {
@@ -35,54 +37,25 @@ function PatchBuildingSyndicModal({
     const newPublicId = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-        getNewPublicId()
-            .then((res) => {
-                //setBuilding(res.data);
-                setFormData({
-                    ...formData,
-                    public_id: res.data.public_id,
-                });
-            })
-            .catch((error) => {
-                //TODO: generieke functie nodig voor error messages
-                console.error(error);
-            });
-    };
+        try {
+            getNewPublicIdUtil(event, formData, setFormData);
+        } catch (error) {
+            //TODO: generic component
+            console.error(JSON.stringify(error));
+        }
 
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        event.preventDefault();
-
-        const name = event.target.name;
-        const value = event.target.value;
-
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
     };
 
     const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-        let toSend: any = {};
-        for (const [key, value] of Object.entries(formData)) {
-            // @ts-ignore
-            if (value && (!building || building[key] != value)) {
-                toSend[key] = value;
-            }
+
+        try{
+            await handleSubmitUtil(event, formData, building, setBuilding, closeModal);
+        } catch (error:any) {
+            //TODO: generic error component
+            setErrorText(JSON.stringify(error.response.data))
         }
-
-        if (Object.keys(toSend).length === 0) return;
-
-        patchBuildingInfo("" + building?.id, toSend)
-            .then((res) => {
-                setBuilding(res.data);
-                closeModal();
-            })
-            .catch((error) => {
-                // TODO: generieke functie
-                setErrorText(error.response.data.detail);
-            });
     };
 
     return (
@@ -97,7 +70,7 @@ function PatchBuildingSyndicModal({
                                 <Form.Control
                                     name="name"
                                     value={formData.name}
-                                    onChange={handleInputChange}
+                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul de naam van het gebouw in"
                                 />
                             </Form.Group>
@@ -107,7 +80,7 @@ function PatchBuildingSyndicModal({
                                 <Form.Control
                                     name="public_id"
                                     value={formData.public_id}
-                                    onChange={handleInputChange}
+                                    onChange={event => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="vul het public id van het gebouw in"
                                 />
                                 <Button variant={"success"} size={"sm"} onClick={newPublicId}>

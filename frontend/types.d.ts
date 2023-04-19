@@ -47,7 +47,7 @@ export type BuildingNotOnTourView = {
     city: string;
     postalCode: string;
     street: string;
-    houseNumber: number;
+    houseNumber: string;
     bus: string;
     buildingId: number;
 };

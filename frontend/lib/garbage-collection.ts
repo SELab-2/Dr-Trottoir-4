@@ -1,4 +1,3 @@
-import api from "@/lib/api/axios";
 import {AxiosResponse} from "axios";
 import {DateInterval, getFromDate} from "@/lib/date";
 

@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
-from base.models import Manual
+from base.models import Manual, Building
 from base.permissions import (
     IsAdmin,
     IsSuperStudent,
@@ -99,6 +99,7 @@ class ManualBuildingView(APIView):
         """
         Get all manuals of a building with given id
         """
+
         if not Building.objects.filter(id=building_id):
             return not_found("Building")
 
@@ -113,7 +114,7 @@ class ManualBuildingView(APIView):
             manual_instances = manual_instances.order_by("-version_number").first()
 
         serializer = ManualSerializer(manual_instances, many=not most_recent_only)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_success(serializer)
 
 
 class ManualsView(APIView):
@@ -127,4 +128,4 @@ class ManualsView(APIView):
         instances = Manual.objects.all()
 
         serializer = ManualSerializer(instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_success(serializer)

@@ -42,7 +42,7 @@ function AdminCommunication() {
     const fillInVariables = (input: string): string => {
         const currentSyndic = allSyndics.find((e) => e.id === Number(syndicId));
         if (currentSyndic) {
-            const currentBuilding = allBuildings.find((e) => e.syndic === currentSyndic.id);
+            const currentBuilding = allBuildings.find((e) => e.syndic === currentSyndic.id.toString());
 
             const replacedName = replaceVariable(
                 input,
