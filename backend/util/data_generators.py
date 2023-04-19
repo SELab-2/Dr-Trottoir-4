@@ -1,8 +1,10 @@
+import hashlib
 import io
 import mimetypes
 from datetime import date, datetime
 from datetime import timedelta
 
+import pytz
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from base.models import (
@@ -32,21 +34,31 @@ def insert_dummy_region(name="Gent"):
     return r.id
 
 
+ranks = {
+    "admin": 1,
+    "superstudent": 2,
+    "student": 3,
+    "syndic": 3,
+
+}
+
+
 def insert_dummy_role(role):
     o = Role.objects.filter(name=role.lower())
     if len(o) == 1:
         return o[0].id
-    r = Role(name=role.lower(), rank=1, description="testrole")
+    r = Role(name=role.lower(), rank=ranks.get(role.lower(), 2147483647), description="testrole")
     r.save()
     return r.id
 
 
 def insert_test_user(
-    first_name: str = "test_student",
-    last_name: str = "test",
-    phone_number="+32467240957",
-    role: str = "admin",
+        first_name: str = "test_student",
+        last_name: str = "test",
+        phone_number="+32467240957",
+        role: str = "admin",
 ) -> int:
+    global email_counter
     o = User.objects.filter(first_name=first_name).first()
     if o:
         return o.id
@@ -55,7 +67,9 @@ def insert_test_user(
         last_name=last_name,
         phone_number=phone_number,
         role=Role.objects.get(id=insert_dummy_role(role)),
+        email=f"test_{email_counter}@test.com",
     )
+    email_counter += 1
     s.save()
     return s.id
 
@@ -145,16 +159,22 @@ def insert_dummy_remark_at_building():
         student_on_tour_id=insert_dummy_student_on_tour(),
         building_id=insert_dummy_building(),
         remark="illegal dumping",
-        timestamp=str(datetime.now()),
+        timestamp=datetime.now(pytz.utc),
+        type="AA"
     )
     RaB.save()
     return RaB.id
 
 
 def insert_dummy_picture_of_remark(picture):
-    PoR = PictureOfRemark(picture=picture, remark_at_building=insert_dummy_remark_at_building())
+    f = picture
+    hashed_image = hashlib.sha1()
+    hashed_image.update(f.open().read())
+    PoR = PictureOfRemark(picture=picture,
+                          remark_at_building=RemarkAtBuilding.objects.get(id=insert_dummy_remark_at_building()),
+                          hash=hashed_image)
     PoR.save()
-    return PoR.save()
+    return PoR.id
 
 
 def insert_dummy_building_comment():

@@ -15,6 +15,9 @@ class EmailTemplateTests(BaseTest):
         self.data1 = {"name": "testTemplate", "template": "<p>{{name}<p>"}
         self.insert("email-template/")
 
+    def test_insert_empty(self):
+        self.insert_empty("email-template/")
+
     def test_insert_dupe_email_template(self):
         self.data1 = {"name": "testTemplate", "template": "<p>{{name}<p>"}
         self.insert_dupe("email-template/")
@@ -49,7 +52,7 @@ class EmailTemplateTests(BaseTest):
         self.remove_invalid("email-template/")
 
 
-class BuildingOnTourAuthorizationTests(BaseAuthTest):
+class EmailTemplateAuthorizationTests(BaseAuthTest):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
 
@@ -69,7 +72,8 @@ class BuildingOnTourAuthorizationTests(BaseAuthTest):
 
     def test_patch_email_template(self):
         codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
-        self.data2 = {"name": "testTemplate2", "template": "<p>{{name}<p>"}
+        self.data1 = {"name": "testTemplate2", "template": "<p>{{name}<p>"}
+
         et_id = insert_dummy_email_template()
         self.patch_view(f"email-template/{et_id}", codes)
 

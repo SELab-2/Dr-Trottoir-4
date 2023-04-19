@@ -1,5 +1,6 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.views import APIView
 
 from base.models import Manual, Building
@@ -22,7 +23,7 @@ class Default(APIView):
     serializer_class = ManualSerializer
 
     @extend_schema(responses=post_docs(ManualSerializer))
-    def post(self, request):
+    def post(self, request: Request):
         """
         Create a new manual with data from post
         """

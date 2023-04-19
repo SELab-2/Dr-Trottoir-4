@@ -1,7 +1,7 @@
-import {Calendar, momentLocalizer} from 'react-big-calendar'
-import moment from 'moment'
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
 
-const localizer = momentLocalizer(moment)
+const localizer = momentLocalizer(moment);
 
 const MyCalendar = (props) => (
     <div>
@@ -10,7 +10,7 @@ const MyCalendar = (props) => (
             events={myEventsList}
             startAccessor="start"
             endAccessor="end"
-            style={{height: 500}}
+            style={{ height: 500 }}
         />
     </div>
-)
+);

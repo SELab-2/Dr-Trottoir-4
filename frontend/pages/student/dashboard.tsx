@@ -1,7 +1,7 @@
 import StudentHeader from "@/components/header/studentHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useEffect, useState } from "react";
-import {getToursOfStudent, datesEqual, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import { getToursOfStudent, datesEqual, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
 import { getCurrentUser, User } from "@/lib/user";
 import { getTour, Tour } from "@/lib/tour";
 import { getRegion, RegionInterface } from "@/lib/region";
