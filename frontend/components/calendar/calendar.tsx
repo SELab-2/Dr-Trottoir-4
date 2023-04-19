@@ -1,24 +1,25 @@
-import React, { FC, useState } from "react";
-import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
-import withDragAndDrop, { withDragAndDropProps } from "react-big-calendar/lib/addons/dragAndDrop";
+import React, {FC, useState} from "react";
+import {Calendar, dateFnsLocalizer, Event} from "react-big-calendar";
+import withDragAndDrop, {withDragAndDropProps} from "react-big-calendar/lib/addons/dragAndDrop";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
-import { messages } from "@/locales/localizerCalendar";
+import {messages} from "@/locales/localizerCalendar";
 
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import EditEventModal from "@/components/calendar/editEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
-import { User } from "@/lib/user";
-import { Tour } from "@/lib/tour";
-import { formatDate, getALlStudentOnTourFromDate, postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
-import { handleError } from "@/lib/error";
+import {User} from "@/lib/user";
+import {Tour} from "@/lib/tour";
+import {getALlStudentOnTourFromDate, postStudentOnTour, StudentOnTour} from "@/lib/student-on-tour";
+import {handleError} from "@/lib/error";
 import LoadEventsModal from "@/components/calendar/loadEvents";
-import { addDays } from "date-fns";
+import {addDays} from "date-fns";
+import {formatDate} from "@/lib/date";
 
 interface MyEvent extends Event {
     tour: Tour;
@@ -40,8 +41,8 @@ const MyCalendar: FC<Props> = (props) => {
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [events, setEvents] = useState<MyEvent[]>([]);
 
-    const onEventsLoad = ({ start_date, end_date }: { start_date: Date; end_date: Date }) => {
-        getALlStudentOnTourFromDate({ startDate: new Date(start_date), endDate: new Date(end_date) }).then(
+    const onEventsLoad = ({start_date, end_date}: { start_date: Date; end_date: Date }) => {
+        getALlStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
             (res) => {
                 const list: StudentOnTour[] = res.data;
                 const tours = groupByKey(list, "tour");
@@ -62,7 +63,7 @@ const MyCalendar: FC<Props> = (props) => {
                         let end = addDays(start, 1);
                         start.setHours(0);
                         end.setHours(0);
-                        data[t] = { tour: tour, student: student, start: start, end: end };
+                        data[t] = {tour: tour, student: student, start: start, end: end};
                     }
                     data = data.filter(Boolean);
                     onEventsAdd(data);
@@ -88,7 +89,7 @@ const MyCalendar: FC<Props> = (props) => {
         setPopupIsOpenEdit(true);
     };
 
-    const onEventEdit = ({ tour, student }: { tour: Tour; student: User }) => {
+    const onEventEdit = ({tour, student}: { tour: Tour; student: User }) => {
         setEvents((currentEvents) => {
             return currentEvents.map((currentEvent) => {
                 if (currentEvent === selectedEvent) {
@@ -103,7 +104,7 @@ const MyCalendar: FC<Props> = (props) => {
         });
     };
 
-    const onEventAdd = ({ tour, student, start, end }: { tour: Tour; student: User; start: Date; end: Date }) => {
+    const onEventAdd = ({tour, student, start, end}: { tour: Tour; student: User; start: Date; end: Date }) => {
         setEvents((currentEvents) => {
             const newEvent: MyEvent = {
                 tour: tour,
@@ -128,7 +129,7 @@ const MyCalendar: FC<Props> = (props) => {
     };
 
     const onEventResize: withDragAndDropProps["onEventResize"] = (data) => {
-        const { event, start, end } = data;
+        const {event, start, end} = data;
         setEvents((currentEvents) => {
             return currentEvents.map((currentEvent) => {
                 if (currentEvent === event) {
@@ -145,7 +146,7 @@ const MyCalendar: FC<Props> = (props) => {
         });
     };
 
-    const onEventDelete = ({ event }: { event: MyEvent }) => {
+    const onEventDelete = ({event}: { event: MyEvent }) => {
         setEvents((currentEvents) => {
             return currentEvents.filter((currentEvent) => {
                 return currentEvent !== event;
@@ -166,7 +167,8 @@ const MyCalendar: FC<Props> = (props) => {
         const toLoad = events.filter(Boolean);
         for (let e in toLoad) {
             postStudentOnTour(toLoad[e].tour.id, toLoad[e].student.id, formatDate(toLoad[e].start)).then(
-                (_) => {},
+                (_) => {
+                },
                 (err) => {
                     const e = handleError(err);
                     setErrorMessages(e);
@@ -193,7 +195,7 @@ const MyCalendar: FC<Props> = (props) => {
                             <li key={i}>{err}</li>
                         ))}
                     </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])} />
+                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
                 </div>
             )}
             <DnDCalendar
@@ -201,11 +203,11 @@ const MyCalendar: FC<Props> = (props) => {
                 culture={"nl-BE"}
                 defaultView="week"
                 events={events}
-                components={{ event: CustomDisplay }}
+                components={{event: CustomDisplay}}
                 localizer={localizer}
                 selectable
                 onSelectEvent={onEventSelection}
-                style={{ height: "100vh" }}
+                style={{height: "100vh"}}
                 step={60}
                 timeslots={1}
                 onEventDrop={onEventResize}
@@ -234,7 +236,7 @@ const MyCalendar: FC<Props> = (props) => {
                 onSave={onEventAdd}
                 onSaveMultiple={onEventsAdd}
             />
-            <LoadEventsModal isOpen={popupIsOpenLoad} onClose={() => setPopupIsOpenLoad(false)} onSave={onEventsLoad} />
+            <LoadEventsModal isOpen={popupIsOpenLoad} onClose={() => setPopupIsOpenLoad(false)} onSave={onEventsLoad}/>
         </>
     );
 };
@@ -247,7 +249,7 @@ const localizer = dateFnsLocalizer({
     format,
     parse,
     startOfWeek: () => {
-        return startOfWeek(new Date(), { weekStartsOn: 0 });
+        return startOfWeek(new Date(), {weekStartsOn: 0});
     },
     getDay,
     locales,
