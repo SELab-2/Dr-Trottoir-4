@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
-import {getAllTours, Tour} from '@/lib/tour';
+import {getAllTours, getBuildingsOfTour, getTour, Tour} from '@/lib/tour';
 import {getAllStudentOnTourFromDate, getProgress, StudentOnTour} from '@/lib/student-on-tour';
 import {getAllUsers, getUserRole, User} from '@/lib/user';
 import AdminHeader from "@/components/header/adminHeader";
@@ -11,6 +11,8 @@ import Box from '@mui/material/Box';
 import {styled} from '@mui/system';
 import LiveField from '@/components/liveField';
 import { BuildingComment } from '@/lib/building-comment';
+import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from '@/lib/building-on-tour';
+import { getAllRemarksAtBuildingWithBuildingId, getRemarkAtBuilding } from '@/lib/remark-at-building';
 
 const GreenLinearProgress = styled(LinearProgress)(() => ({
     height: '20px',
@@ -26,26 +28,49 @@ function AdminDashboard() {
     const [studentsOnTours, setStudentsOnTours] = useState<StudentOnTour[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
-    const [remarksCount, setRemarksCount] = useState<Record<string, number>>({});
-    const [counter, setCounter] = useState(0);
+    const [remarksRecord, setRemarksRecord] = useState<Record<string, number>>({});
+    const [progressRecord, setProgressRecord] = useState<Record<string, number>>({});
 
-    const fetchCounter = () => Promise.resolve(counter);
+    const getRemarkText = (studentOnTourId: number) : string => {
+        const numberOfRemarks = remarksRecord[studentOnTourId];
+        let extension = "";
+        if (numberOfRemarks > 1) {
+            extension = "en";
+        }
 
-    const fetchRemarks = (studentOnTourId: number) => {
+        return `${numberOfRemarks} opmerking${extension}`;
+    }
+
+    const fetchRemarks = async (studentOnTour: StudentOnTour) : Promise<number> => {
         // Fetch remarks based on studentOnTourId
         // Return an array of remarks
-        const allBuildings = 
+        let remarksCount = 0;
+        await getAllBuildingsOnTourWithTourID(studentOnTour.tour).then(
+            async (buildingRes) => {
+                const buildingsOnTour : BuildingOnTour[] = buildingRes.data;
+                for (const buildingOnTour of buildingsOnTour) {
+                    await getAllRemarksAtBuildingWithBuildingId(buildingOnTour.building).then(
+                        (remarkRes) => {
+                            // don't actually care about the remark, just the count
+                            remarksCount++;
+                        },
+                        (remarkErr) => {
+                            // no remarks on the building
+                        }
+                    )
+                }
+            },
+            (err) => {
+                console.error(err);
+            }
+        );
+        return remarksCount;
     };
 
-    const fetchAllRemarks = async () => {
-        // Fetch all remarks for each studentOnTour and store the count in remarksCount
-        const newRemarksCount : Record<string, number> = {};
-        for (const studentOnTour of studentsOnTours) {
-            const remarks = await fetchRemarks(studentOnTour.id);
-            newRemarksCount[studentOnTour.id] = remarks.length;
-        }
-        setRemarksCount(newRemarksCount);
-    };
+    const fetchProgress = async (studentOnTourId: number) : Promise<number> => {
+        // Fetch progress
+        return studentOnTourId * 5;
+    }
 
     const redirectToRemarksPage = (studentOnTourId: number) => {
         // // Redirect to a new page with the studentOnTourId as a parameter
@@ -77,9 +102,17 @@ function AdminDashboard() {
     useEffect(() => {
         setLoading(false);
         const fetchData = async () => {
-            if (studentsOnTours.length > 0) {
-                await fetchAllRemarks();
+            const newRemarks: Record<string, number> = {};
+            const newProgress: Record<string, number> = {};
+            for (const studentOnTour of studentsOnTours) {
+                const remarks = await fetchRemarks(studentOnTour);
+                const progress = await fetchProgress(studentOnTour.id);
+                
+                newRemarks[studentOnTour.id] = remarks;
+                newProgress[studentOnTour.id] = progress;
             }
+            setRemarksRecord(newRemarks);
+            setProgressRecord(newProgress);
         }
         
         fetchData();
@@ -98,10 +131,6 @@ function AdminDashboard() {
         <div>
             <AdminHeader/>
             <h2>Rondes van vandaag</h2>
-            <div>
-                <h1>Counter: <LiveField fetcher={fetchCounter} formatter={(count) => count.toString()} /></h1>
-                <button onClick={() => setCounter(counter + 1)}>Increment</button>
-            </div>
             <table className="table">
                 <thead>
                 <tr>
@@ -123,13 +152,13 @@ function AdminDashboard() {
                             <td>{`${user.first_name} ${user.last_name}`}</td>
                             <td>
                                 <Box sx={{width: '100%'}}>
-                                    <GreenLinearProgress variant="determinate" value={50}/>
+                                    <GreenLinearProgress variant="determinate" value={progressRecord[studentOnTour.id] || 0}/>
                                 </Box>
                             </td>
                             <td>
-                                {remarksCount[studentOnTour.id] > 0 ? (
+                                {remarksRecord[studentOnTour.id] > 0 ? (
                                     <button onClick={() => redirectToRemarksPage(studentOnTour.id)}>
-                                        Bekijk opmerkingen
+                                        {getRemarkText(studentOnTour.id)}
                                     </button>
                                 ) : (
                                     "Geen opmerkingen"
