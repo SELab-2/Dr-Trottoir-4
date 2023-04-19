@@ -1,7 +1,7 @@
 import {GarbageCollectionInterface, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
 import {useEffect, useState} from "react";
 
-function LatestCollections({building}: { building: number }) {
+function LatestCollections({building}: { building: string }) {
     const [collections, setCollections] = useState<GarbageCollectionInterface[]>([]);
 
     useEffect(() => {

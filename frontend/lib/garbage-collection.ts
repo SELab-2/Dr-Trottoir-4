@@ -9,7 +9,7 @@ export interface GarbageCollectionInterface {
 }
 
 
-export const getGarbageCollectionFromBuilding = async (buildingId: number, start: string = "", end: string = ""): Promise<AxiosResponse<any>> => {
+export const getGarbageCollectionFromBuilding = async (buildingId: string, start: string = "", end: string = ""): Promise<AxiosResponse<any>> => {
     let request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GARBAGE_COLLECTION_BUILDING}${buildingId}`;
 
     return await api.get(request_url, {

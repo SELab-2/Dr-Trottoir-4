@@ -7,7 +7,7 @@ import {
 import {Card} from "react-bootstrap";
 import {getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface} from "@/lib/picture-of-remark";
 
-function LatestCollectionDetail({building}: { building: number }) {
+function LatestCollectionDetail({building}: { building: string }) {
 
     const [remarks, setRemarks] = useState<RemarkAtBuildingInterface[]>([]);
     const [pictures, setPictures] = useState<string[]>([]);

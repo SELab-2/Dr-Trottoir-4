@@ -1,9 +1,8 @@
 import api from "@/lib/api/axios";
-import { AxiosResponse } from "axios";
-import {User} from "@/lib/user";
+import {AxiosResponse} from "axios";
 
 export interface BuildingInterface {
-    id: number;
+    id: string;
     syndic: string;
     name: string;
     city: string;
@@ -46,12 +45,12 @@ export const getBuildingInfo = async (buildingId: string | undefined | number): 
     return await api.get(request_url);
 };
 
-export async function getAllBuildings() : Promise<AxiosResponse<any>> {
+export async function getAllBuildings(): Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_BUILDINGS}`;
     return await api.get(request_url);
 }
 
-export function getAddress(building : BuildingInterface) : string {
+export function getAddress(building: BuildingInterface): string {
     return `${building.street} ${building.house_number} ${building.bus ? building.bus : ""}, ${building.postal_code} ${building.city}`;
 }
 
@@ -70,25 +69,25 @@ export const deleteBuilding = async (buildingId: number | undefined) => {
     return await api.delete(request_url);
 };
 
-export async function postBuilding(building: BuildingPostInterface) : Promise<AxiosResponse<any>> {
+export async function postBuilding(building: BuildingPostInterface): Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}`;
     return await api.post(request_url, JSON.stringify(building),
         {
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
         }
     );
 }
 
-export async function patchBuilding(building: BuildingPostInterface, id: Number) : Promise<AxiosResponse<any>> {
+export async function patchBuilding(building: BuildingPostInterface, id: Number): Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${id}`;
     return await api.patch(request_url, JSON.stringify(building),
         {
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
         }
     );
 }
 
-export function getDurationFromMinutes(durationInMinutes: number){
+export function getDurationFromMinutes(durationInMinutes: number) {
     return `${Math.floor(durationInMinutes / 60)
         .toString()
         .padStart(2, "0")}:${(durationInMinutes % 60)
