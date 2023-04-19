@@ -47,7 +47,7 @@ class CustomSignUpView(APIView):
 class CustomLoginView(LoginView):
     def get_response(self):
         data = {
-            "message": "successful login",
+            "message": _("successful login"),
             "user": UserSerializer(self.user).data,
         }
         response = Response(data, status=status.HTTP_200_OK)
@@ -98,7 +98,7 @@ class CustomTokenVerifyView(TokenVerifyView):
         except TokenError as e:
             raise InvalidToken(e.args[0])
 
-        return Response({"message": "refresh token validation successful"}, status=status.HTTP_200_OK)
+        return Response({"message": _("refresh token validation successful")}, status=status.HTTP_200_OK)
 
 
 class CustomPasswordChangeView(PasswordChangeView):

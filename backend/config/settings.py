@@ -10,9 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import collections
-import sys
 from datetime import timedelta
 from pathlib import Path
+
+from django.utils.translation import gettext_lazy as _
 import os
 
 try:
@@ -83,7 +84,6 @@ collections.Callable = collections.abc.Callable
 # Use nose to run all tests
 TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 
-
 NOSE_ARGS = ["--cover-xml", "--cover-xml-file=./coverage.xml"]
 
 # drf-spectacular settings
@@ -92,6 +92,7 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "This is the documentation for the Dr-Trottoir API",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    "SCHEMA_PATH_PREFIX_INSERT": "/api",
     # OTHER SETTINGS
 }
 
@@ -144,6 +145,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / "locale/",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = False
@@ -219,12 +225,19 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
+USE_I18N = True
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_COOKIE_AGE = 3600
+LANGUAGE_COOKIE_NAME = "language-cookie"
+
+LANGUAGE_CODE = "nl"
+
+LANGUAGES = [
+    ("nl", _("Dutch")),
+    ("en", _("English")),
+]
 
 TIME_ZONE = "CET"
-
-USE_I18N = True
 
 USE_TZ = True
 
