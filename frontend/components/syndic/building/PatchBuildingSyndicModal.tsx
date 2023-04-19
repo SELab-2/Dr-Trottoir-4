@@ -1,8 +1,7 @@
-import React, { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { Button, Form, Modal } from "react-bootstrap";
-import { BuildingInterface, generateNewPublicId, getNewPublicId, patchBuildingInfo } from "@/lib/building";
-import build from "next/dist/build";
+import { BuildingInterface, getNewPublicId, patchBuildingInfo } from "@/lib/building";
 
 function PatchBuildingSyndicModal({
     show,
@@ -36,8 +35,6 @@ function PatchBuildingSyndicModal({
     const newPublicId = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-        console.log(`Building id is ${building?.id}`);
-
         getNewPublicId()
             .then((res) => {
                 //setBuilding(res.data);
@@ -62,17 +59,10 @@ function PatchBuildingSyndicModal({
             ...formData,
             [name]: value,
         });
-
-        console.log(`handleInputChange is dus gedaan, nu is formData ${JSON.stringify(formData)}`);
     };
 
     const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
-
-        console.log("form data");
-        console.log(formData);
-
-        console.log(`In handleSubmit ${JSON.stringify(formData)}`);
 
         let toSend: any = {};
         for (const [key, value] of Object.entries(formData)) {
@@ -91,10 +81,7 @@ function PatchBuildingSyndicModal({
             })
             .catch((error) => {
                 // TODO: generieke functie
-                console.log("We hebben een error");
                 setErrorText(error.response.data.detail);
-                console.log(error.response.data.detail);
-                console.log(error);
             });
     };
 
@@ -130,10 +117,15 @@ function PatchBuildingSyndicModal({
                             <Form.Text className="text-muted">
                                 De inwoners van uw gebouw kunnen info over vuilnisophaling zien op de link{" "}
                                 <a
-                                    href={`${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_OWNER_BUILDING}${building?.public_id}`}
+                                    href={
+                                        building?.public_id
+                                            ? `${process.env.NEXT_PUBLIC_HOST}public/building/${building?.public_id}`
+                                            : "#"
+                                    }
                                 >
-                                    `${process.env.NEXT_PUBLIC_BASE_API_URL}$
-                                    {process.env.NEXT_PUBLIC_API_OWNER_BUILDING}${building?.public_id}`
+                                    {`${process.env.NEXT_PUBLIC_HOST}public/building/${
+                                        building?.public_id ? building?.public_id : "<public_id>"
+                                    }`}
                                 </a>
                             </Form.Text>
                         </Form.Group>

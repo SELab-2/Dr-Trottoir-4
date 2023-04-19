@@ -1,10 +1,9 @@
-from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
-from base.models import Manual, Building
+from base.models import Manual
 from base.permissions import (
     IsAdmin,
     IsSuperStudent,
@@ -94,15 +93,7 @@ class ManualBuildingView(APIView):
 
     @extend_schema(
         responses=get_docs(ManualSerializer),
-        parameters=param_docs(
-            {
-                "most-recent": (
-                    "When set to 'true', only the most recent manual will be returned",
-                    False,
-                    OpenApiTypes.BOOL,
-                )
-            }
-        ),
+        parameters=param_docs(get_most_recent_param_docs("manual")),
     )
     def get(self, request, building_id):
         """

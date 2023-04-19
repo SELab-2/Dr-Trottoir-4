@@ -27,9 +27,7 @@ export default function ToursList({
                         {studentOnTours.map((el) => {
                             return (
                                 <a
-                                    onClick={() =>
-                                        onSelect(el.id)
-                                    }
+                                    onClick={() => onSelect(el.id)}
                                     className="list-group-item list-group-item-action"
                                     key={el.id}
                                 >

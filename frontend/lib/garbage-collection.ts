@@ -9,11 +9,12 @@ export interface GarbageCollectionInterface {
     garbage_type: string;
 }
 
-export const garbageTypes : Record<string, string> = {
-    "GFT":"GFT",
+
+export const garbageTypes: Record<string, string> = {
+    "GFT": "GFT",
     "GLS": "Glas",
     "GRF": "Grof vuil",
-    "KER":"Kerstbomen",
+    "KER": "Kerstbomen",
     "PAP": "Papier",
     "PMD": "PMD",
     "RES": "Restafval",
