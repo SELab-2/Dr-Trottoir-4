@@ -2,6 +2,8 @@ from rest_framework.permissions import BasePermission
 
 from base.models import Building, User, Role, Manual
 from util.request_response_util import request_to_dict
+from django.utils.translation import gettext_lazy as _
+
 
 SAFE_METHODS = ["GET", "HEAD", "OPTIONS"]
 
@@ -14,7 +16,7 @@ class IsAdmin(BasePermission):
     Global permission that only grants access to admin users
     """
 
-    message = "Admin permission required"
+    message = _("Admin permission required")
 
     def has_permission(self, request, view):
         return request.user.role.name.lower() == "admin"
@@ -25,7 +27,7 @@ class IsSuperStudent(BasePermission):
     Global permission that grants access to super students
     """
 
-    message = "Super student permission required"
+    message = _("Super student permission required")
 
     def has_permission(self, request, view):
         return request.user.role.name.lower() == "superstudent"
@@ -36,7 +38,7 @@ class IsStudent(BasePermission):
     Global permission that grants access to students
     """
 
-    message = "Student permission required"
+    message = _("Student permission required")
 
     def has_permission(self, request, view):
         return request.user.role.name.lower() == "student"
@@ -47,7 +49,7 @@ class ReadOnlyStudent(BasePermission):
     Global permission that only grants read access for students
     """
 
-    message = "Students are only allowed to read"
+    message = _("Students are only allowed to read")
 
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
@@ -59,7 +61,7 @@ class IsSyndic(BasePermission):
     Global permission that grants access to syndicates
     """
 
-    message = "Syndic permission required"
+    message = _("Syndic permission required")
 
     def has_permission(self, request, view):
         return request.user.role.name.lower() == "syndic"
@@ -83,7 +85,7 @@ class OwnerOfBuilding(BasePermission):
     Check if the user owns the building
     """
 
-    message = "You can only access/edit the buildings that you own"
+    message = _("You can only access/edit the buildings that you own")
 
     def has_permission(self, request, view):
         return request.user.role.name.lower() == "syndic"
@@ -97,7 +99,7 @@ class ReadOnlyOwnerOfBuilding(BasePermission):
     Checks if the user owns the building and only tries to read from it
     """
 
-    message = "You can only read the building that you own"
+    message = _("You can only read the building that you own")
 
     def has_permission(self, request, view):
         return request.user.role.name.lower() == "syndic"
@@ -113,7 +115,7 @@ class OwnerWithLimitedPatch(BasePermission):
     Checks if the syndic patches
     """
 
-    message = "You can only patch the building public id and the name of the building that you own"
+    message = _("You can only patch the building public id and the name of the building that you own")
 
     def has_permission(self, request, view):
         return request.user.role.name.lower() == "syndic"
@@ -141,7 +143,7 @@ class OwnerAccount(BasePermission):
     Checks if the user owns the user account
     """
 
-    message = "You can only access/edit your own account"
+    message = _("You can only access/edit your own account")
 
     def has_object_permission(self, request, view, obj: User):
         return request.user.id == obj.id
@@ -152,7 +154,7 @@ class ReadOnlyOwnerAccount(BasePermission):
     Checks if the user owns the user account and only tries to read information
     """
 
-    message = "You can only access your own account"
+    message = _("You can only access your own account")
 
     def has_object_permission(self, request, view, obj: User):
         if request.method in SAFE_METHODS:
@@ -165,14 +167,16 @@ class CanCreateUser(BasePermission):
     Checks if the user has the right permissions to create the user
     """
 
-    message = "You can't create a user of a higher role"
+    message = _("You can't create a user of a higher role")
 
     def has_object_permission(self, request, view, obj: User):
         if request.method in ["POST"]:
             data = request_to_dict(request.data)
             if "role" in data.keys():
-                role_instance = Role.objects.filter(id=data["role"])[0]
-                return request.user.role.rank <= role_instance.rank
+                role_instance = Role.objects.filter(id=data["role"]).first()
+                if not role_instance:
+                    return False
+                return request.user.role.rank == 1 or request.user.role.rank <= role_instance.rank
         return True
 
 
@@ -181,7 +185,7 @@ class CanDeleteUser(BasePermission):
     Checks if the user has the right permissions to delete a user
     """
 
-    message = "You don't have the right permissions to delete this user"
+    message = _("You don't have the right permissions to delete this user")
 
     def has_object_permission(self, request, view, obj: User):
         if request.method in ["DELETE"]:
@@ -194,7 +198,7 @@ class CanEditUser(BasePermission):
     Checks if the user has the right permissions to edit
     """
 
-    message = "You don't have the right permissions to edit this user"
+    message = _("You don't have the right permissions to edit this user")
 
     def has_object_permission(self, request, view, obj: User):
         if request.method in ["PATCH"]:
@@ -207,7 +211,7 @@ class CanEditRole(BasePermission):
     Checks if the user has the right permissions to edit the role of a user
     """
 
-    message = "You can't assign a role to yourself or assign a role that is higher than your own"
+    message = _("You can't assign a role to yourself or assign a role that is higher than your own")
 
     def has_object_permission(self, request, view, obj: User):
         if request.method in ["PATCH"]:
@@ -226,7 +230,7 @@ class ReadOnlyManualFromSyndic(BasePermission):
     Checks if the manual belongs to a building from the syndic
     """
 
-    message = "You can only view manuals that are linked to one of your buildings"
+    message = _("You can only view manuals that are linked to one of your buildings")
 
     def has_permission(self, request, view):
         return request.user.role.name == "syndic" and request.method in SAFE_METHODS

@@ -16,6 +16,9 @@ class TourTests(BaseTest):
         self.data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}
         self.insert("tour/")
 
+    def test_insert_empty(self):
+        self.insert_empty("tour/")
+
     def test_insert_dupe_tour(self):
         r_id = insert_dummy_region()
         self.data1 = {"name": "Sterre", "region": r_id, "modified_at": "2023-03-08T12:08:29+01:00"}

@@ -12,7 +12,7 @@ const AdminHeader = () => {
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
                 <Link href="/admin/dashboard">
-                    <Image src={logo} alt="My App Logo" width={120} height={30} />
+                    <Image src={logo} alt="My App Logo" width={120} height={30}/>
                 </Link>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -56,8 +56,18 @@ const AdminHeader = () => {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link className="dropdown-item" href="/admin/data/regions">
+                                        Regio's
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link className="dropdown-item" href="/admin/data/mails">
                                         Mails
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item" href="/admin/data/lobby">
+                                        Lobby
                                     </Link>
                                 </li>
                             </ul>
@@ -96,10 +106,10 @@ const AdminHeader = () => {
                             </Link>
                         </li>
                         <li>
-                            <hr className="dropdown-divider" />
+                            <hr className="dropdown-divider"/>
                         </li>
                         <li>
-                            <Logout />
+                            <Logout/>
                         </li>
                     </ul>
                 </div>
@@ -111,7 +121,7 @@ const AdminHeader = () => {
                     aria-expanded="false"
                     aria-label="Toggle navigation"
                 >
-                    <Image src={menu} alt="My App Menu" height={24} />
+                    <Image src={menu} alt="My App Menu" height={24}/>
                 </a>
             </div>
         </nav>

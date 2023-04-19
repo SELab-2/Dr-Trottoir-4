@@ -78,7 +78,7 @@ class UserIndividualView(APIView):
         user_instance = User.objects.filter(id=user_id)
 
         if not user_instance:
-            return bad_request(object_name="User")
+            return not_found(object_name="User")
         user_instance = user_instance[0]
 
         self.check_object_permissions(request, user_instance)
@@ -94,7 +94,7 @@ class UserIndividualView(APIView):
         """
         user_instance = User.objects.filter(id=user_id)
         if not user_instance:
-            return bad_request(object_name="User")
+            return not_found(object_name="User")
         user_instance = user_instance[0]
 
         self.check_object_permissions(request, user_instance)
@@ -112,7 +112,7 @@ class UserIndividualView(APIView):
         user_instance = User.objects.filter(id=user_id)
 
         if not user_instance:
-            return bad_request(object_name="User")
+            return not_found(object_name="User")
 
         user_instance = user_instance[0]
 

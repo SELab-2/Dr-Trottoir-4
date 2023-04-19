@@ -24,6 +24,7 @@ from util.request_response_util import (
     patch_docs,
     get_docs,
     post_success,
+    bad_request,
 )
 
 TRANSLATE = {
@@ -47,11 +48,13 @@ class Default(APIView):
 
         set_keys_of_instance(remark_at_building, data, TRANSLATE)
 
-        if r := try_full_clean_and_save(remark_at_building):
-            return r
+        if remark_at_building.student_on_tour is None:
+            return bad_request("RemarkAtBuilding")
 
         self.check_object_permissions(request, remark_at_building.student_on_tour.student)
 
+        if r := try_full_clean_and_save(remark_at_building):
+            return r
         return post_success(self.serializer_class(remark_at_building))
 
 
