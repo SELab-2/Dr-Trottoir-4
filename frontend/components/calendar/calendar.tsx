@@ -200,8 +200,8 @@ const MyCalendar: FC<Props> = (props) => {
                     }
                     return acc;
                 }, []);
-                for (let s of filtered) {
-                    postStudentOnTour(events[e].tour.id, s.id, "undefined").then(
+                for (let s of filtered) { // TODO when endpoint changes send array of data
+                    postStudentOnTour(events[e].tour.id, s.id, formatDate(d)).then(
                         (_) => {
                         },
                         (err) => {
