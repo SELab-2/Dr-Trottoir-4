@@ -1,25 +1,23 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import {
     getRemarksAtBuildingOfSpecificBuilding,
     RemarkAtBuildingInterface,
-    translateRemartAtBuildingType
+    translateRemartAtBuildingType,
 } from "@/lib/remark-at-building";
-import {Card} from "react-bootstrap";
-import {getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface} from "@/lib/picture-of-remark";
+import { Card } from "react-bootstrap";
+import { getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
 
-function LatestCollectionDetail({building}: { building: string }) {
-
+function LatestCollectionDetail({ building }: { building: string }) {
     const [remarks, setRemarks] = useState<RemarkAtBuildingInterface[]>([]);
     const [pictures, setPictures] = useState<string[]>([]);
     const [date, setDate] = useState<Date | undefined>();
 
     useEffect(() => {
-        if (!building)
-            return;
+        if (!building) return;
         getRemarksAtBuildingOfSpecificBuilding(building, true)
             .then((response) => {
-                setRemarks(response.data.sort(
-                    (a: RemarkAtBuildingInterface, b: RemarkAtBuildingInterface) => {
+                setRemarks(
+                    response.data.sort((a: RemarkAtBuildingInterface, b: RemarkAtBuildingInterface) => {
                         for (let t of ["AA", "BI", "VE", "OP"]) {
                             if (a.type == t) {
                                 return 1;
@@ -28,18 +26,15 @@ function LatestCollectionDetail({building}: { building: string }) {
                                 return -1;
                             }
                         }
-                    }
-                ));
-
+                    })
+                );
             })
             .catch((error) => {
                 console.error(error);
-            })
+            });
     }, [building]);
 
-
     useEffect(() => {
-
         let remarkPictures: string[] = [];
 
         for (let remark of remarks) {
@@ -52,8 +47,7 @@ function LatestCollectionDetail({building}: { building: string }) {
                     console.error(error);
                 });
         }
-
-    }, [remarks])
+    }, [remarks]);
 
     useEffect(() => {
         if (remarks.length > 0) {
@@ -61,12 +55,15 @@ function LatestCollectionDetail({building}: { building: string }) {
         }
     }, [remarks]);
 
-
     return (
         <>
             <h1>Details laatste ophaling</h1>
 
-            <h3>{date ? `${new Date(date).getDate()}/${new Date(date).getMonth() + 1}/${new Date(date).getFullYear()}` : "Details"}</h3>
+            <h3>
+                {date
+                    ? `${new Date(date).getDate()}/${new Date(date).getMonth() + 1}/${new Date(date).getFullYear()}`
+                    : "Details"}
+            </h3>
 
             {pictures.length === 0 ? (
                 <p>Geen foto's om weer te geven</p>
@@ -75,13 +72,15 @@ function LatestCollectionDetail({building}: { building: string }) {
                     //TODO: misschien fixen dat als je klikt op de foto, deze vergroot wordt weergegeven
                     return (
                         <div key={index} className="m-2">
-                            <img src={`${process.env.NEXT_PUBLIC_BASE_API_URL}${picture}`} alt={`Media ${index + 1}`}
-                                 style={{maxWidth: "20%"}}/>
+                            <img
+                                src={`${process.env.NEXT_PUBLIC_BASE_API_URL}${picture}`}
+                                alt={`Media ${index + 1}`}
+                                style={{ maxWidth: "20%" }}
+                            />
                         </div>
                     );
                 })
-            )
-            }
+            )}
 
             <h3>Opmerkingen</h3>
             {remarks.map((remark: RemarkAtBuildingInterface) => {
@@ -93,15 +92,10 @@ function LatestCollectionDetail({building}: { building: string }) {
                             <Card.Text>{remark.remark || "Geen opmerkingen"}</Card.Text>
                         </Card.Body>
                     </Card>
-                )
-            })
-            }
-
+                );
+            })}
         </>
-    )
-
-
+    );
 }
-
 
 export default LatestCollectionDetail;
