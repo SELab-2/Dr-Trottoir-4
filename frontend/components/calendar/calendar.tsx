@@ -15,23 +15,16 @@ import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
 import {User} from "@/lib/user";
 import {Tour} from "@/lib/tour";
-import {formatDate, getALlStudentOnTourFromDate, postStudentOnTour} from "@/lib/student-on-tour";
+import {formatDate, getALlStudentOnTourFromDate, postStudentOnTour, StudentOnTour} from "@/lib/student-on-tour";
 import {handleError} from "@/lib/error";
 import LoadEventsModal from "@/components/calendar/loadEvents";
 import {addDays} from "date-fns";
 
 interface MyEvent extends Event {
     tour: Tour
-    students: User[]
+    student: User
     start: Date
     end: Date
-}
-
-interface Test {
-    id: number,
-    tour: number,
-    student: number,
-    date: Date,
 }
 
 interface Props {
@@ -50,7 +43,7 @@ const MyCalendar: FC<Props> = (props) => {
     const onEventsLoad = ({start_date, end_date}: { start_date: Date, end_date: Date }) => {
         getALlStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
             (res) => {
-                const list: Test[] = res.data
+                const list: StudentOnTour[] = res.data
                 const tours = groupByKey(list, 'tour');
                 for (let a in tours) {
                     const t = parseInt(a);
@@ -100,7 +93,9 @@ const MyCalendar: FC<Props> = (props) => {
                             end.setHours(0)
                         }
                         start.setHours(0)
-                        onEventAdd({tour: tour, students: students, start: start, end: end})
+                        for (let student of students) {
+                            onEventAdd({tour: tour, student: student, start: start, end: end})
+                        }
                     }
                 }
             },
@@ -125,15 +120,15 @@ const MyCalendar: FC<Props> = (props) => {
         setPopupIsOpenEdit(true);
     };
 
-    const onEventEdit = ({tour, students}
-                             : { tour: Tour, students: User[] }) => {
+    const onEventEdit = ({tour, student}
+                             : { tour: Tour, student: User }) => {
         setEvents(currentEvents => {
             return currentEvents.map(currentEvent => {
                 if (currentEvent === selectedEvent) {
                     return {
                         ...currentEvent,
                         tour: tour,
-                        students: students
+                        student: student
                     };
                 }
                 return currentEvent;
@@ -141,16 +136,29 @@ const MyCalendar: FC<Props> = (props) => {
         });
     }
 
-    const onEventAdd = ({tour, students, start, end,}
-                            : { tour: Tour, students: User[], start: Date, end: Date }) => {
+    const onEventAdd = ({tour, student, start, end,}
+                            : { tour: Tour, student: User, start: Date, end: Date }) => {
         setEvents(currentEvents => {
             const newEvent: MyEvent = {
                 tour: tour,
-                students: students,
+                student: student,
                 start: start,
                 end: end
             };
             return [...currentEvents, newEvent];
+        });
+    }
+
+    const onEventsAdd = (eventData: MyEvent[]
+    ) => {
+        setEvents(currentEvents => {
+            const newEvents = eventData.map(event => ({
+                tour: event.tour,
+                student: event.student,
+                start: event.start,
+                end: event.end,
+            }));
+            return [...currentEvents, ...newEvents];
         });
     }
 
@@ -193,23 +201,14 @@ const MyCalendar: FC<Props> = (props) => {
         for (let e in events) {
             const dates = getDaysArray(events[e].start, events[e].end);
             for (let d of dates) {
-                const filtered = events[e].students.reduce((acc: User[], obj: User) => {
-                    // Add the object to the array if it doesn't exist
-                    if (!acc.some((item) => item.id === obj.id)) {
-                        acc.push(obj);
+                postStudentOnTour(events[e].tour.id, events[e].student.id, formatDate(d)).then(
+                    (_) => {
+                    },
+                    (err) => {
+                        const e = handleError(err);
+                        setErrorMessages(e);
                     }
-                    return acc;
-                }, []);
-                for (let s of filtered) { // TODO when endpoint changes send array of data
-                    postStudentOnTour(events[e].tour.id, s.id, formatDate(d)).then(
-                        (_) => {
-                        },
-                        (err) => {
-                            const e = handleError(err);
-                            setErrorMessages(e);
-                        }
-                    );
-                }
+                );
             }
         }
     };
@@ -221,6 +220,7 @@ const MyCalendar: FC<Props> = (props) => {
             <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenLoad(true)}>Kies vorige planning
             </button>
             <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>Sla planning op</button>
+            <button className="btn btn-primary mb-3" onClick={() => console.log(events)}>Events</button>
             {errorMessages.length !== 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>
                     <ul>
@@ -267,6 +267,7 @@ const MyCalendar: FC<Props> = (props) => {
                 isOpen={popupIsOpenAdd}
                 onClose={() => setPopupIsOpenAdd(false)}
                 onSave={onEventAdd}
+                onSaveMultiple= {onEventsAdd}
             />
             <LoadEventsModal
                 isOpen={popupIsOpenLoad}

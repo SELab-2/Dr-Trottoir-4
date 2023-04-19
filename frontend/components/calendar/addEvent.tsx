@@ -6,32 +6,45 @@ import {User} from "@/lib/user";
 import {Tour} from "@/lib/tour";
 
 function AddEventModal(data: any) {
-    const {allStudents, allTours, isOpen, onClose, onSave} = data
+    const {allStudents, allTours, isOpen, onClose, onSave, onSaveMultiple} = data
     const [tour, setTour] = useState<Tour | null>(null);
     const [student, setStudent] = useState<User | null>(null);
     const [start, setStart] = useState(new Date(addDays(startOfWeek(new Date(), {weekStartsOn: 0}), 1).toLocaleString('en', {timeZone: 'America/New_York'})));
     const [checked, setChecked] = useState(true);
-    const [week, setWeek] = useState<User[]>(Array(7).fill(null)); // Week starts on Sunday (index 0)
+    const [week, setWeek] = useState<User[]>(Array(6).fill("")); // Week starts on Sunday (index 0)
 
 
     const handleSave = () => {
+        console.log(week)
+        const end = addDays(start, 5);
+        let data = [];
+        let currentDate = new Date(start);
+        currentDate.setHours(0);
         if (checked) {
-            const end = addDays(start, 5);
-            start.setHours(0);
-            end.setHours(2)
-            let data = {tour: tour, students: Array(7).fill(student), start: start, end: end};
-            onSave(data);
+            while (currentDate <= end) {
+                let nextDate = addDays(currentDate, 1);
+                nextDate.setHours(2);
+                data.push({tour: tour, student: student, start: currentDate, end: nextDate});
+                currentDate = nextDate;
+                currentDate.setHours(0);
+            }
         } else {
-            const end = addDays(start, 5);
-            start.setHours(0);
-            end.setHours(2);
-            let data = {tour: tour, students: week, start: start, end: end};
-            onSave(data);
+            while (currentDate <= end) {
+                let s = week.pop()
+                let nextDate = addDays(currentDate, 1);
+                nextDate.setHours(2);
+                data.push({tour: tour, student: s, start: currentDate, end: nextDate});
+                currentDate = nextDate;
+                currentDate.setHours(0);
+            }
         }
+        console.log(data)
+            onSaveMultiple(data);
         setTour(null);
-        setStudent(null)
+        setStudent(null);
         setStart(new Date(addDays(startOfWeek(startOfMonth(new Date()), {weekStartsOn: 0}), 8).toLocaleString('en', {timeZone: 'America/New_York'})))
-        setWeek(Array(7).fill(null));
+        setWeek(Array(6).fill(student));
+        setChecked(false);
         onClose();
     }
 
@@ -41,7 +54,7 @@ function AddEventModal(data: any) {
     };
 
     const handleCheckChange = () => {
-        setWeek(Array(7).fill(student));
+        setWeek(Array(6).fill(student));
         setChecked(!checked);
     }
 
@@ -62,6 +75,7 @@ function AddEventModal(data: any) {
         const updatedWeek = [...week];
         updatedWeek[index] = allStudents.find((student: User) => student.id === studentID);
         setWeek(updatedWeek);
+        console.log(week)
     }
 
 
@@ -105,7 +119,7 @@ function AddEventModal(data: any) {
                             <div>
                                 <div>
                                     <label>Zondag:</label>
-                                    <select className="form-control" value={week[0].id}
+                                    <select className="form-control" value={week[0]?.id || ''}
                                             onChange={e => updateWeekdayStudent(e, 0)}>
                                         <option value="">-- Selecteer student(e) --</option>
                                         {allStudents.map((student: User) => (
@@ -116,7 +130,7 @@ function AddEventModal(data: any) {
                                 </div>
                                 <div>
                                     <label>Maandag:</label>
-                                    <select className="form-control" value={week[1].id}
+                                    <select className="form-control" value={week[1]?.id || ''}
                                             onChange={e => updateWeekdayStudent(e, 1)}>
                                         <option value="">-- Selecteer student(e) --</option>
                                         {allStudents.map((student: User) => (
@@ -127,7 +141,7 @@ function AddEventModal(data: any) {
                                 </div>
                                 <div>
                                     <label>Dinsdag:</label>
-                                    <select className="form-control" value={week[2].id}
+                                    <select className="form-control" value={week[2]?.id || ''}
                                             onChange={e => updateWeekdayStudent(e, 2)}>
                                         <option value="">-- Selecteer student(e) --</option>
                                         {allStudents.map((student: User) => (
@@ -138,7 +152,7 @@ function AddEventModal(data: any) {
                                 </div>
                                 <div>
                                     <label>Woensdag:</label>
-                                    <select className="form-control" value={week[3].id}
+                                    <select className="form-control" value={week[3]?.id || ''}
                                             onChange={e => updateWeekdayStudent(e, 3)}>
                                         <option value="">-- Selecteer student(e) --</option>
                                         {allStudents.map((student: User) => (
@@ -149,7 +163,7 @@ function AddEventModal(data: any) {
                                 </div>
                                 <div>
                                     <label>Donderdag:</label>
-                                    <select className="form-control" value={week[4].id}
+                                    <select className="form-control" value={week[4]?.id || ''}
                                             onChange={e => updateWeekdayStudent(e, 4)}>
                                         <option value="">-- Selecteer student(e) --</option>
                                         {allStudents.map((student: User) => (
@@ -160,7 +174,7 @@ function AddEventModal(data: any) {
                                 </div>
                                 <div>
                                     <label>Vrijdag:</label>
-                                    <select className="form-control" value={week[5].id}
+                                    <select className="form-control" value={week[5]?.id || ''}
                                             onChange={e => updateWeekdayStudent(e, 5)}>
                                         <option value="">-- Selecteer student(e) --</option>
                                         {allStudents.map((student: User) => (
