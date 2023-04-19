@@ -13,13 +13,13 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import EditEventModal from "@/components/calendar/editEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
-import { User } from "@/lib/user";
-import { Tour } from "@/lib/tour";
 import { getALlStudentOnTourFromDate, postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
-import { handleError } from "@/lib/error";
-import LoadEventsModal from "@/components/calendar/loadEvents";
+import { Tour } from "@/lib/tour";
+import { User } from "@/lib/user";
 import { addDays } from "date-fns";
 import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
+import LoadEventsModal from "@/components/calendar/loadEvents";
 
 interface MyEvent extends Event {
     tour: Tour;
