@@ -171,7 +171,9 @@ const MyCalendar: FC<Props> = (props) => {
                     return {
                         ...currentEvent,
                         start: new Date(start),
-                        end: new Date(end),
+                        startDate: new Date(start),
+                        endDate: new Date(end),
+                        end: new Date(end)
                     };
                 }
                 return currentEvent;
@@ -208,8 +210,6 @@ const MyCalendar: FC<Props> = (props) => {
                     return acc;
                 }, []);
                 for (let s of filtered) {
-                    const testje = [events[e].tour.id, s.id, formatDate(d)]
-                    console.log(testje)
                     postStudentOnTour(events[e].tour.id, s.id, formatDate(d)).then(
                         (_) => {
                             //TODO

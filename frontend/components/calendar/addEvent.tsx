@@ -27,19 +27,17 @@ function AddEventModal(data: any) {
 
     const handleSave = () => {
         if (checked) {
+            const end = addDays(start, 5);
             start.setHours(0);
-            const end = addDays(start, 6);
             let data = { tour: tour, students: Array(7).fill(student), start: start, end: end };
             onSave(data);
             onClose();
         } else {
             week.pop();
+            const end = addDays(start, 5);
             start.setHours(0);
-            const end = addDays(start, 6);
             const split = splitOnValueChange(week).flat();
-            console.log(split)
             let data = { tour: tour, students: split, start: start, end: end };
-            console.log(data)
             onSave(data)
             onClose();
         }

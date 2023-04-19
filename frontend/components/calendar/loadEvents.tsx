@@ -8,8 +8,6 @@ function LoadEventsModal(data: any) {
     const [end_date, setEnddate] = useState("");
 
     const handleSave = () => {
-        console.log(start_date)
-        console.log(end_date)
         onSave({start_date, end_date});
         onClose();
     };

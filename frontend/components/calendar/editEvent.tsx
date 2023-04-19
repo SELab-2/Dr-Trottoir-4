@@ -6,10 +6,8 @@ import {Tour} from "@/lib/tour";
 
 function EditEventModal(data: any) {
     const {event, allStudents, allTours, isOpen, onClose, onSave, onDelete} = data
-    console.log(event)
     const [tour, setTour] = useState<Tour | null>(event.tour);
     const [week, setWeek] = useState<User[]>(event.students); // Week starts on Sunday (index 0)
-    console.log(week)
 
     const handleSave = () => {
         let data = {tour: tour, students: week}
