@@ -178,7 +178,7 @@ class TimeTourViewBase(APIView):
 
 class StartTourView(TimeTourViewBase):
     @extend_schema(
-        responses=post_docs(super().serializer_class)
+        responses=post_docs(TimeTourViewBase.serializer_class)
     )
     def post(self, request, student_on_tour_id):
         return self.set_tour_time(request, student_on_tour_id, 'started_tour')
@@ -186,7 +186,7 @@ class StartTourView(TimeTourViewBase):
 
 class EndTourView(TimeTourViewBase):
     @extend_schema(
-        responses=post_docs(super().serializer_class)
+        responses=post_docs(TimeTourViewBase.serializer_class)
     )
     def post(self, request, student_on_tour_id):
         return self.set_tour_time(request, student_on_tour_id, 'completed_tour')
