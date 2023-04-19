@@ -16,7 +16,17 @@ export interface StudentOnTourStringDate {
     student: number;
 }
 
-export async function getStudentOnTour(studentOnTourId : number) {
+export async function postStudentOnTour(tour: number, student: number, date: string): Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_STUDENT_ON_TOUR}`;
+    return await api.post(request_url, JSON.stringify({tour, student, date}),
+        {
+            headers: {"Content-Type": "application/json"},
+        }
+    );
+}
+
+
+export async function getStudentOnTour(studentOnTourId: number) {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_STUDENT_ON_TOUR}${studentOnTourId}`;
     return await api.get(request_url);
 }

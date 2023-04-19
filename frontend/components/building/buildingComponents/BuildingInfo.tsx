@@ -1,19 +1,20 @@
-import {TiPencil} from "react-icons/ti";
-import React, {useEffect, useState} from "react";
+import { TiPencil } from "react-icons/ti";
+import React, { useEffect, useState } from "react";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
-import {BuildingInterface} from "@/lib/building";
-import {getRegion, RegionInterface} from "@/lib/region";
+import { BuildingInterface } from "@/lib/building";
+import { getRegion, RegionInterface } from "@/lib/region";
 import PatchBuildingAdminModal from "@/components/building/buildingComponents/editModals/PatchBuildingAdminModal";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 
-function BuildingInfo(
-    {
-        building, setBuilding, type
-    }:
-        {
-            building: BuildingInterface; setBuilding: (b: any) => void, type: "syndic" | "admin" | ""
-        }
-) {
+function BuildingInfo({
+    building,
+    setBuilding,
+    type,
+}: {
+    building: BuildingInterface;
+    setBuilding: (b: any) => void;
+    type: "syndic" | "admin" | "";
+}) {
     const router = useRouter();
     const [editBuilding, setEditBuilding] = useState(false);
     const [regionName, setRegionName] = useState("/");
@@ -24,11 +25,11 @@ function BuildingInfo(
         }
     }, [building]);
 
-    useEffect(()=>{
+    useEffect(() => {
         if (type == "admin" && building) {
             router.push(`/admin/data/buildings/edit?building=${building.id}`);
         }
-    }, [editBuilding])
+    }, [editBuilding]);
 
     function get_building_key(key: string) {
         if (building) {
@@ -57,20 +58,21 @@ function BuildingInfo(
 
     return (
         <>
-        {type == "syndic" ? <PatchBuildingSyndicModal
-                show={editBuilding}
-                closeModal={() => setEditBuilding(false)}
-                building={building}
-                setBuilding={setBuilding}
-            /> : null}
+            {type == "syndic" ? (
+                <PatchBuildingSyndicModal
+                    show={editBuilding}
+                    closeModal={() => setEditBuilding(false)}
+                    building={building}
+                    setBuilding={setBuilding}
+                />
+            ) : null}
 
-        {/*type == "admin" ? <PatchBuildingAdminModal
+            {/*type == "admin" ? <PatchBuildingAdminModal
                 show={editBuilding}
                 closeModal={() => setEditBuilding(false)}
                 building={building}
                 setBuilding={setBuilding} />
             : null*/}
-
 
             <h1>
                 Gebouw{" "}
