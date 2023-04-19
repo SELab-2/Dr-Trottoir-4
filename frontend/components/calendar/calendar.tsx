@@ -126,6 +126,7 @@ const MyCalendar: FC<Props> = (props) => {
     }
 
     const onEventSelection = (e: Event) => {
+        console.log(e)
         setSelectedEvent(e);
         setPopupIsOpenEdit(true);
     };

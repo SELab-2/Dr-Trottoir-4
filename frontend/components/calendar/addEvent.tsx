@@ -29,13 +29,14 @@ function AddEventModal(data: any) {
         if (checked) {
             const end = addDays(start, 5);
             start.setHours(0);
+            end.setHours(2)
             let data = { tour: tour, students: Array(7).fill(student), start: start, end: end };
             onSave(data);
             onClose();
         } else {
-            week.pop();
             const end = addDays(start, 5);
             start.setHours(0);
+            end.setHours(2)
             const split = splitOnValueChange(week).flat();
             let data = { tour: tour, students: split, start: start, end: end };
             onSave(data)
