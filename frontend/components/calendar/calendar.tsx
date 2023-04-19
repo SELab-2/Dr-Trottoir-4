@@ -19,7 +19,7 @@ import { getALlStudentOnTourFromDate, postStudentOnTour, StudentOnTour } from "@
 import { handleError } from "@/lib/error";
 import LoadEventsModal from "@/components/calendar/loadEvents";
 import { addDays } from "date-fns";
-import {formatDate} from "@/lib/date";
+import { formatDate } from "@/lib/date";
 
 interface MyEvent extends Event {
     tour: Tour;

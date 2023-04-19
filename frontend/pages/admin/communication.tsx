@@ -1,18 +1,17 @@
 import AdminHeader from "@/components/header/adminHeader";
-import {BuildingComment, getAllBuildingComments} from "@/lib/building-comment";
-import {EmailTemplate, getAllEmailTemplates} from "@/lib/email-template";
-import {ChangeEvent, useEffect, useState} from "react";
+import { BuildingComment, getAllBuildingComments } from "@/lib/building-comment";
+import { EmailTemplate, getAllEmailTemplates } from "@/lib/email-template";
+import { ChangeEvent, useEffect, useState } from "react";
 import styles from "styles/Welcome.module.css";
-import {Button, FloatingLabel, Form} from "react-bootstrap";
+import { Button, FloatingLabel, Form } from "react-bootstrap";
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
-import {BuildingInterface, getAllBuildings} from "@/lib/building";
-import {getAllUsers, User, userSearchString} from "@/lib/user";
+import { BuildingInterface, getAllBuildings } from "@/lib/building";
+import { getAllUsers, User, userSearchString } from "@/lib/user";
 import SyndicAutoComplete from "@/components/autocompleteComponents/syndicAutocomplete";
-import {useRouter} from "next/router";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { useRouter } from "next/router";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DataCommunicationQuery extends ParsedUrlQuery {
     template?: number;
@@ -55,13 +54,13 @@ function AdminCommunication() {
                     replacedName,
                     "address",
                     currentBuilding.street +
-                    " " +
-                    currentBuilding.house_number +
-                    " (" +
-                    currentBuilding.postal_code +
-                    " " +
-                    currentBuilding.city +
-                    ")"
+                        " " +
+                        currentBuilding.house_number +
+                        " (" +
+                        currentBuilding.postal_code +
+                        " " +
+                        currentBuilding.city +
+                        ")"
                 );
                 return replacedAddress;
             }
@@ -79,7 +78,7 @@ function AdminCommunication() {
         const currentSyndic = allSyndics.find((e) => e.id === Number(syndicId));
         await router.push({
             pathname: `data/buildings/`,
-            query: {syndic: currentSyndic?.email},
+            query: { syndic: currentSyndic?.email },
         });
     }
 
@@ -148,12 +147,12 @@ function AdminCommunication() {
     return (
         <>
             <>
-                <AdminHeader/>
+                <AdminHeader />
                 <p className={styles.title}>Communicatie extern</p>
-                <div style={{display: "flex", width: "100%"}}>
-                    <div style={{width: "10%"}}></div>
-                    <div style={{display: "flex", width: "100%"}}>
-                        <div style={{width: "33%"}}>
+                <div style={{ display: "flex", width: "100%" }}>
+                    <div style={{ width: "10%" }}></div>
+                    <div style={{ display: "flex", width: "100%" }}>
+                        <div style={{ width: "33%" }}>
                             <TemplateAutocomplete
                                 value={selectedTemplate}
                                 onChange={setSelectedTemplate}
@@ -161,7 +160,7 @@ function AdminCommunication() {
                                 required={false}
                             ></TemplateAutocomplete>
                         </div>
-                        <div style={{width: "33%"}}>
+                        <div style={{ width: "33%" }}>
                             <SyndicAutoComplete
                                 value={selectedSyndic}
                                 onChange={setSelectedSyndic}
@@ -169,7 +168,7 @@ function AdminCommunication() {
                                 required={false}
                             ></SyndicAutoComplete>
                         </div>
-                        <div style={{width: "33%"}}>
+                        <div style={{ width: "33%" }}>
                             <Button
                                 variant="secondary"
                                 size="lg"
@@ -181,25 +180,25 @@ function AdminCommunication() {
                             </Button>
                         </div>
                     </div>
-                    <div style={{width: "10%"}}></div>
+                    <div style={{ width: "10%" }}></div>
                 </div>
-                <div style={{display: "flex"}}>
-                    <div style={{width: "10%"}}></div>
+                <div style={{ display: "flex" }}>
+                    <div style={{ width: "10%" }}></div>
                     <FloatingLabel
                         controlId="floatingTextarea"
                         label="Email"
                         className="mb-3"
-                        style={{width: "100%"}}
+                        style={{ width: "100%" }}
                     >
                         <Form.Control
                             as="textarea"
                             placeholder="Schrijf je email hier"
-                            style={{height: "400px"}}
+                            style={{ height: "400px" }}
                             value={updatedTemplateText}
                             onChange={handleEditTemplate}
                         />
                     </FloatingLabel>
-                    <div style={{width: "10%"}}></div>
+                    <div style={{ width: "10%" }}></div>
                 </div>
             </>
         </>
