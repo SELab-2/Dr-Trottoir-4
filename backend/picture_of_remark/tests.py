@@ -1,74 +1,98 @@
-from django.test import TestCase
-
-from base.test_settings import backend_url
+from base.models import PictureOfRemark, RemarkAtBuilding
+from base.serializers import PictureOfRemarkSerializer
 from util.data_generators import insert_dummy_remark_at_building, createMemoryFile, insert_dummy_picture_of_remark
-from util.test_tools import get_authenticated_client
+from util.test_tools import BaseTest, BaseAuthTest
 
-f = createMemoryFile("./picture_building/scrambled1.png")
+f = createMemoryFile("./picture_of_remark/scrambled1.png")
+f2 = createMemoryFile("./picture_of_remark/scrambled2.png")
 
 
-class PictureOfRemarkTests(TestCase):
+class PictureOfRemarkTests(BaseTest):
     def __init__(self, methodName="runTest"):
-        self.client = get_authenticated_client()
-        self.base_url = f"{backend_url}/picture-of-remark/"
         super().__init__(methodName)
 
     def test_empty_picture_of_remark(self):
-        # TODO: make the following code generic (Super class)
-        resp = self.client.get(self.base_url + "all", follow=True)
-        assert resp.status_code == 200
-        data = [resp.data[e] for e in resp.data]
-        assert len(data) == 0
+        self.empty_list("picture-of-remark/")
 
     def test_insert_picture_of_remark(self):
-        data = {"picture": f, "remark_at_building": insert_dummy_remark_at_building()}
-        # TODO: make the following code generic (Super class): super().test_insert(data)
-        resp = self.client.post(self.base_url, data, follow=True)
-        assert resp.status_code == 201
-        for key in data:
-            assert key in resp.data
-        assert "id" in resp.data
+        self.data1 = {"picture": f, "remark_at_building": insert_dummy_remark_at_building()}
+        self.insert("picture-of-remark/")
+
+    def test_insert_empty(self):
+        self.insert_empty("picture-of-remark/")
 
     def test_insert_dupe_picture_of_remark(self):
-        data = {"picture": f, "remark_at_building": insert_dummy_remark_at_building()}
-        # TODO: make the following code generic (Super class): super().test_insert_dupe(data)
-        resp = self.client.post(self.base_url, data, follow=True)
-        assert resp.status_code == 201
-        resp = self.client.post(self.base_url, data, follow=True)
-        assert resp.status_code == 400
+        RaB = insert_dummy_remark_at_building()
+        self.data1 = {"picture": f, "remark_at_building": RaB}
+        self.insert_dupe("picture-of-remark/")
 
     def test_get_picture_of_remark(self):
         p_id = insert_dummy_picture_of_remark(picture=f)
-        resp = self.client.get(self.base_url + p_id)
-        assert resp.status_code == 200
+        data = PictureOfRemarkSerializer(PictureOfRemark.objects.get(id=p_id)).data
+        self.get(f"picture-of-remark/{p_id}", data)
 
     def test_get_non_existing(self):
-        # TODO: move this code to the super class
-        resp = self.client.get(self.base_url + "123456")
-        assert resp.status_code == 404
+        self.get_non_existent("picture-of-remark/")
 
     def test_patch_picture_of_remark(self):
         p_id = insert_dummy_picture_of_remark(f)
-        # TODO: add new picture for patch!
-        patch_data = {"picture": f}
-        # TODO: make the following code generic (Super class): super().test_patch(id, patch_data)
-        resp1 = self.client.patch(self.base_url + p_id, patch_data)
-        assert resp1.status_code == 200
-        resp2 = self.client.get(self.base_url + p_id)
-        assert resp2.status_code == 200
-        for k in patch_data:
-            assert k in resp2.data
-        assert "id" in resp2.data
+        RaB = insert_dummy_remark_at_building()
+        self.data1 = {"picture": f2, "remark_at_building": RaB}
+        self.patch(f"picture-of-remark/{p_id}")
+
+    def test_patch_invalid_picture_of_remark(self):
+        RaB = insert_dummy_remark_at_building()
+        self.data1 = {"picture": f, "remark_at_building": RaB}
+        self.patch_invalid(f"picture-of-remark/")
+
+    def test_patch_error_picture_of_remark(self):
+        RaB = insert_dummy_remark_at_building()
+        self.data1 = {"picture": f, "remark_at_building": RaB}
+        self.data2 = {"picture": f2, "remark_at_building": RaB}
+        self.patch_error(f"picture-of-remark/")
 
     def test_remove_picture_of_remark(self):
         p_id = insert_dummy_picture_of_remark(f)
-        # TODO: make the following code generic (Super class): super().test_delete(p_id)
-        resp = self.client.delete(self.base_url + p_id)
-        assert resp.status_code == 204
-        resp = self.client.get(self.base_url + p_id)
-        assert resp.status_code == 404
+        self.remove(f"picture-of-remark/{p_id}")
 
     def test_remove_non_existing_picture_of_remark(self):
-        # TODO: move this code to the super class
-        resp = self.client.delete(self.base_url + "123456")
-        assert resp.status_code == 404
+        self.remove_invalid("picture_of_remark/")
+
+
+class PictureOfRemarkAuthorizationTests(BaseAuthTest):
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
+
+    def test_picture_of_remark_list(self):
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
+        self.list_view("picture-of-remark/", codes)
+
+    def test_insert_picture_of_remark(self):
+        codes = {"Default": 403, "Admin": 201, "Superstudent": 201, "Student": 403, "Syndic": 403}
+        RaB = insert_dummy_remark_at_building()
+        specialStudent = RemarkAtBuilding.objects.get(id=RaB).student_on_tour.student.id
+        self.data1 = {"picture": f, "remark_at_building": RaB}
+        self.insert_view("picture-of-remark/", codes, special=[(specialStudent, 201)])
+
+    def test_get_picture_of_remark(self):
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
+        PoR_id = insert_dummy_picture_of_remark(f)
+        specialStudent = PictureOfRemark.objects.get(id=PoR_id).remark_at_building.student_on_tour.student.id
+        self.get_view(f"picture-of-remark/{PoR_id}", codes, special=[(specialStudent, 200)])
+
+    def test_patch_picture_of_remark(self):
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
+        PoR = insert_dummy_picture_of_remark(f)
+        RaB = insert_dummy_remark_at_building()
+        specialStudent = RemarkAtBuilding.objects.get(id=RaB).student_on_tour.student.id
+        self.data1 = {"picture": f, "remark_at_building": RaB}
+        self.patch_view(f"picture-of-remark/{PoR}", codes, special=[(specialStudent, 200)])
+
+    def test_remove_picture_of_remark(self):
+        # testing the special case where the student of the tour removes the instance is very difficult,
+        # since there are always new instances created and there is no way to access them from here
+        def create():
+            return insert_dummy_picture_of_remark(f)
+
+        codes = {"Default": 403, "Admin": 204, "Superstudent": 204, "Student": 403, "Syndic": 403}
+        self.remove_view("picture-of-remark/", codes, create=create)

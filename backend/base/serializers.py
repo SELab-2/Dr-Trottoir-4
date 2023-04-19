@@ -80,7 +80,7 @@ class RemarkAtBuildingSerializer(serializers.ModelSerializer):
 class PictureOfRemarkSerializer(serializers.ModelSerializer):
     class Meta:
         model = PictureOfRemark
-        fields = ["id", "picture", "remark_at_building"]
+        fields = ["id", "picture", "remark_at_building", "hash"]
         read_only_fields = ["id"]
 
 

@@ -25,6 +25,9 @@ class DefaultBuildingComment(APIView):
 
         set_keys_of_instance(building_comment_instance, data, TRANSLATE)
 
+        if building_comment_instance.building is None:
+            return bad_request("BuildingComment")
+
         self.check_object_permissions(request, building_comment_instance.building)
 
         if r := try_full_clean_and_save(building_comment_instance):

@@ -1,5 +1,5 @@
-import api from "@/lib/api/axios";
 import {AxiosResponse} from "axios";
+import {DateInterval, getFromDate} from "@/lib/date";
 
 export interface GarbageCollectionInterface {
     id: number;
@@ -9,13 +9,18 @@ export interface GarbageCollectionInterface {
 }
 
 
-export const getGarbageCollectionFromBuilding = async (buildingId: number, start: string = "", end: string = ""): Promise<AxiosResponse<any>> => {
-    let request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GARBAGE_COLLECTION_BUILDING}${buildingId}`;
+export const garbageTypes: Record<string, string> = {
+    "GFT": "GFT",
+    "GLS": "Glas",
+    "GRF": "Grof vuil",
+    "KER": "Kerstbomen",
+    "PAP": "Papier",
+    "PMD": "PMD",
+    "RES": "Restafval",
+}
 
-    return await api.get(request_url, {
-        params: {
-            "start-date": start,
-            "end-date": end
-        }
-    });
+
+export async function getGarbageCollectionFromBuilding(buildingId: number, params: DateInterval | null = null): Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GARBAGE_COLLECTION_BUILDING}${buildingId}`;
+    return getFromDate(request_url, params);
 }
