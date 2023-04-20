@@ -20,9 +20,10 @@ export default function ToursList({
 }) {
     return (
         <>
-            {studentOnTours.length > 0 && (
-                <div className="mt-3 mb-1 ms-2 me-2">
-                    <span className="h1 fw-bold">{listTitle}</span>
+            <div className="mt-3 mb-1 ms-2 me-2">
+                <span className="h1 fw-bold">{listTitle}</span>
+                {studentOnTours.length === 0 && <h5 className="mb-1">Er zijn geen rondes om weer te geven.</h5>}
+                {studentOnTours.length > 0 && (
                     <div className="list-group">
                         {studentOnTours.map((el) => {
                             return (
@@ -44,8 +45,8 @@ export default function ToursList({
                             );
                         })}
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </>
     );
 }
