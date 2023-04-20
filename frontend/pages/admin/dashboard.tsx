@@ -95,7 +95,7 @@ function AdminDashboard() {
                 const startDate = new Date(2015, 0, 1);
                 const endDate = new Date();
                 const tourResponse = await getAllTours();
-                const studentOnTourResponse = await getAllStudentOnTourFromDate({startDate, endDate}); // getAllStudentOnTourFromToday();
+                const studentOnTourResponse = await getAllStudentOnTourFromToday();
                 const allUsersResponse = await getAllUsers();
 
                 setTours(tourResponse.data);
