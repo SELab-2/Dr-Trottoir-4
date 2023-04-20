@@ -51,11 +51,6 @@ export default function UserProfile() {
         setShowPasswordModal(false);
     };
 
-    const handlePasswordSubmit = (newPassword: string) => {
-        // Handle the password update logic here
-        console.log("New password:", newPassword);
-    };
-
 
     function setUserInfo(u: User) {
         setRole(getUserRole(u.role.toString()));
@@ -238,7 +233,6 @@ export default function UserProfile() {
                 <PasswordModal
                     show={showPasswordModal}
                     closeModal={closePasswordModal}
-                    onSubmit={handlePasswordSubmit}
                 />
 
 

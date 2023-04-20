@@ -7,13 +7,14 @@ import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
 import { messages } from "@/locales/localizerCalendar";
+import {getAllStudentOnTourFromDate} from "@/lib/student-on-tour";
 
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import EditEventModal from "@/components/calendar/editEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
-import { getALlStudentOnTourFromDate, postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
+import { postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
 import { Tour } from "@/lib/tour";
 import { User } from "@/lib/user";
 import { addDays } from "date-fns";
@@ -42,7 +43,7 @@ const MyCalendar: FC<Props> = (props) => {
     const [events, setEvents] = useState<MyEvent[]>([]);
 
     const onEventsLoad = ({ start_date, end_date }: { start_date: Date; end_date: Date }) => {
-        getALlStudentOnTourFromDate({ startDate: new Date(start_date), endDate: new Date(end_date) }).then(
+        getAllStudentOnTourFromDate({ startDate: new Date(start_date), endDate: new Date(end_date) }).then(
             (res) => {
                 const list: StudentOnTour[] = res.data;
                 const tours = groupByKey(list, "tour");

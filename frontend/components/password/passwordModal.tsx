@@ -7,10 +7,9 @@ import {changePassword} from "@/lib/authentication";
 interface PasswordModalProps {
     show: boolean;
     closeModal: () => void;
-    onSubmit: (password: string) => void;
 }
 
-const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal, onSubmit}) => {
+const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal}) => {
     const [newPassword1, setNewPassword1] = useState<string>("");
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [currentPassword, setCurrentPassword] = useState<string>("");
@@ -47,7 +46,6 @@ const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal, onSubmit
                     new_password1: newPassword1,
                     new_password2: newPassword2
                 });
-                onSubmit(newPassword1);
                 closeModal();
             } catch (error: any) {
                 console.error("An error occurred:", error.request.responseText);
