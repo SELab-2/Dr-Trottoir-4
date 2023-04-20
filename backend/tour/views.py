@@ -151,7 +151,7 @@ class AllBuildingsOnTourView(APIView):
         """
         Get all buildings on a tour with given tour id. The buildings in the response body are ordered by their index.
         """
-        building_instances = Building.objects.filter(buildingontour__tour_id=tour_id).order_by('buildingontour__index')
+        building_instances = Building.objects.filter(buildingontour__tour_id=tour_id).order_by("buildingontour__index")
 
         serializer = BuildingSerializer(building_instances, many=True)
         return get_success(serializer)
