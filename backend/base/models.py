@@ -13,7 +13,7 @@ from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2**31 - 1
+MAX_INT = 2 ** 31 - 1
 
 
 class Region(models.Model):
@@ -310,11 +310,11 @@ class StudentOnTour(models.Model):
         if self.student_id and self.tour_id:
             user = self.student
             if user.role.name.lower() == "syndic":
-                raise ValidationError("A syndic can't do tours")
+                raise ValidationError(_("A syndic can't do tours"))
             tour_region = self.tour.region
             if not self.student.region.all().filter(region=tour_region).exists():
                 raise ValidationError(
-                    "Student ({user_email}) doesn't do tours in this region ({tour_region}).".format(
+                    _("Student ({user_email}) doesn't do tours in this region ({tour_region}).").format(
                         user_email=user.email, tour_region=tour_region
                     )
                 )
@@ -414,9 +414,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-            self.version_number == 0
-            or self.version_number > max_version_number + 1
-            or self.version_number in version_numbers
+                self.version_number == 0
+                or self.version_number > max_version_number + 1
+                or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 
