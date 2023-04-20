@@ -37,11 +37,13 @@ const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal, onSubmit
             setFormErrors(true);
             setErrorMessage("De ingevoerde wachtwoorden komen niet overeen.");
             return;
+        } else if (!password || !currentPassword || !confirmPassword) {
+            setFormErrors(true);
+            setErrorMessage("Gelieve alle velden in te vullen");
         } else {
             onSubmit(password);
             closeModal();
         }
-
     };
 
 
