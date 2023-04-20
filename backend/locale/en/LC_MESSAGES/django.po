@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-14 16:36+0200\n"
+"POT-Creation-Date: 2023-04-20 15:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,19 +52,19 @@ msgstr ""
 msgid "an error has occurred."
 msgstr ""
 
-#: authentication/views.py:50
+#: authentication/views.py:48
 msgid "successful login"
 msgstr ""
 
-#: authentication/views.py:83
+#: authentication/views.py:81
 msgid "refresh of tokens successful"
 msgstr ""
 
-#: authentication/views.py:101
+#: authentication/views.py:99
 msgid "refresh token validation successful"
 msgstr ""
 
-#: authentication/views.py:112
+#: authentication/views.py:110
 msgid "new password has been saved"
 msgstr ""
 
@@ -77,102 +77,111 @@ msgstr ""
 msgid "The maximum rank allowed is {highest_rank}."
 msgstr ""
 
-#: base/models.py:47
+#: base/models.py:48
 msgid "This role name already exists."
 msgstr ""
 
-#: base/models.py:58
+#: base/models.py:59
 msgid "A user already exists with this email."
 msgstr ""
 
-#: base/models.py:82
+#: base/models.py:83
 msgid "This email is already in the lobby."
 msgstr ""
 
-#: base/models.py:86
+#: base/models.py:87
 msgid "This verification code already exists."
 msgstr ""
 
-#: base/models.py:101
+#: base/models.py:102
 msgid ""
 " This email belongs to an INACTIVE user. Instead of trying to register this "
 "user, you can simply reactivate the account."
 msgstr ""
 
-#: base/models.py:103
+#: base/models.py:105
 #, python-brace-format
 msgid "Email already exists in database for a user (id: {user_id}).{addendum}"
 msgstr ""
 
-#: base/models.py:112
+#: base/models.py:116
 msgid "No bus"
 msgstr ""
 
-#: base/models.py:128
+#: base/models.py:132
 msgid "The house number of the building must be positive and not zero."
 msgstr ""
 
-#: base/models.py:135
+#: base/models.py:139
 msgid "Only a user with role \"syndic\" can own a building."
 msgstr ""
 
-#: base/models.py:141
+#: base/models.py:145
 #, python-brace-format
 msgid "{public_id} already exists as public_id of another building"
 msgstr ""
 
-#: base/models.py:152
+#: base/models.py:157
 msgid "A building with this address already exists."
 msgstr ""
 
-#: base/models.py:175
+#: base/models.py:180
 msgid "This comment already exists, and was posted at the exact same time."
 msgstr ""
 
-#: base/models.py:213
+#: base/models.py:218
 msgid ""
 "This type of garbage is already being collected on the same day for this "
 "building."
 msgstr ""
 
-#: base/models.py:238
+#: base/models.py:244
 msgid "There is already a tour with the same name in the region."
 msgstr ""
 
-#: base/models.py:261
+#: base/models.py:267
 #, python-brace-format
 msgid ""
 "The regions for tour ({tour_region}) and building ({building_region}) are "
 "different."
 msgstr ""
 
-#: base/models.py:274
+#: base/models.py:281
 msgid "This building is already on this tour."
 msgstr ""
 
-#: base/models.py:280
+#: base/models.py:287
 msgid "This index is already in use."
 msgstr ""
 
-#: base/models.py:319
+#: base/models.py:313
+msgid "A syndic can't do tours"
+msgstr ""
+
+#: base/models.py:317
+#, python-brace-format
+msgid "Student ({user_email}) doesn't do tours in this region ({tour_region})."
+msgstr ""
+
+#: base/models.py:329
 msgid "The student is already assigned to this tour on this date."
 msgstr ""
 
-#: base/models.py:363
+#: base/models.py:373
 msgid ""
 "This remark was already uploaded to this building by this student on the "
 "tour."
 msgstr ""
 
-#: base/models.py:378
+#: base/models.py:393
 msgid "The building already has this upload."
 msgstr ""
 
-#: base/models.py:414
+#: base/models.py:429
 msgid "The building already has a manual with the same version number"
 msgstr ""
 
-#: base/models.py:431
+#: base/models.py:446
 msgid "The name for this template already exists."
 msgstr ""
 
@@ -222,29 +231,29 @@ msgstr ""
 msgid "You can't create a user of a higher role"
 msgstr ""
 
-#: base/permissions.py:186
+#: base/permissions.py:188
 msgid "You don't have the right permissions to delete this user"
 msgstr ""
 
-#: base/permissions.py:199
+#: base/permissions.py:201
 msgid "You don't have the right permissions to edit this user"
 msgstr ""
 
-#: base/permissions.py:212
+#: base/permissions.py:214
 msgid ""
 "You can't assign a role to yourself or assign a role that is higher than "
 "your own"
 msgstr ""
 
-#: base/permissions.py:231
+#: base/permissions.py:233
 msgid "You can only view manuals that are linked to one of your buildings"
 msgstr ""
 
-#: config/settings.py:231
+#: config/settings.py:236
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: config/settings.py:232
+#: config/settings.py:237
 msgid "English"
 msgstr "Engels"
 
@@ -277,40 +286,40 @@ msgstr ""
 msgid "Superuser must have is_superuser=True."
 msgstr ""
 
-#: util/request_response_util.py:16
+#: util/request_response_util.py:17
 #, python-brace-format
 msgid "The query parameter {name} should be an integer"
 msgstr ""
 
-#: util/request_response_util.py:19 util/request_response_util.py:34
-#: util/request_response_util.py:42 util/request_response_util.py:59
+#: util/request_response_util.py:20 util/request_response_util.py:37
+#: util/request_response_util.py:45 util/request_response_util.py:64
 #, python-brace-format
 msgid "The query parameter {name} is required"
 msgstr ""
 
-#: util/request_response_util.py:30
+#: util/request_response_util.py:31
 #, python-brace-format
 msgid ""
 "The date parameter '{name}': '{param}' hasn't the appropriate form (=YYYY-MM-"
 "DD)."
 msgstr ""
 
-#: util/request_response_util.py:51
+#: util/request_response_util.py:54
 #, python-brace-format
 msgid ""
 "Invalid value for boolean parameter '{name}': '{param}' (true or false "
 "expected)"
 msgstr ""
 
-#: util/request_response_util.py:122
+#: util/request_response_util.py:154
 msgid "{} was not found"
 msgstr ""
 
-#: util/request_response_util.py:126
+#: util/request_response_util.py:158
 msgid "bad input for {}"
 msgstr ""
 
-#: util/request_response_util.py:131
+#: util/request_response_util.py:164
 #, python-brace-format
 msgid "There is no {object1} that is linked to {object2} with given id."
 msgstr ""

@@ -310,11 +310,11 @@ class StudentOnTour(models.Model):
         if self.student_id and self.tour_id:
             user = self.student
             if user.role.name.lower() == "syndic":
-                raise ValidationError("A syndic can't do tours")
+                raise ValidationError(_("A syndic can't do tours"))
             tour_region = self.tour.region
             if not self.student.region.all().filter(region=tour_region).exists():
                 raise ValidationError(
-                    "Student ({user_email}) doesn't do tours in this region ({tour_region}).".format(
+                    _("Student ({user_email}) doesn't do tours in this region ({tour_region}).").format(
                         user_email=user.email, tour_region=tour_region
                     )
                 )
