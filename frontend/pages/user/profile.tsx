@@ -16,7 +16,7 @@ export default function UserProfile() {
     const [email, setEmail] = useState<string>("");
     const [phoneNumber, setPhoneNumber] = useState<string>("");
     const [selectedRegions, setSelectedRegions] = useState<number[]>([]);
-    const [allRegions, setAllRegions] = useState<RegionInterface[]>();
+    const [allRegions, setAllRegions] = useState<RegionInterface[]>([]);
     const [role, setRole] = useState<string>("");
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
@@ -26,16 +26,18 @@ export default function UserProfile() {
         getCurrentUser().then(
             (res) => {
                 const u: User = res.data;
+                if (getUserRole(u.role.toString()) != "Syndic") {
+                    getAllRegions().then((res) => {
+                        const regions: RegionInterface[] = res.data;
+                        setAllRegions(regions);
+                    });
+                }
                 setUserInfo(u);
             },
             (err) => {
                 console.error(err);
             }
         );
-        getAllRegions().then((res) => {
-            const regions: RegionInterface[] = res.data;
-            setAllRegions(regions);
-        });
     }, []);
 
     function setUserInfo(u: User) {
@@ -66,7 +68,7 @@ export default function UserProfile() {
             patchBody["phone_number"] = phoneNumber;
         }
         if (selectedRegions !== user?.region) {
-            patchBody["region"] = JSON.stringify(selectedRegions); // convert list to string
+            patchBody["region"] = selectedRegions; // convert list to string
         }
         patchUser(user.id, patchBody).then(
             (res) => {
@@ -102,7 +104,7 @@ export default function UserProfile() {
                     <button type="button" className="btn-close" onClick={() => setSuccessPatch(false)}></button>
                 </div>
             )}
-            <form>
+            <form className="m-2">
                 <div className="d-flex align-items-center mb-3 pb-1">
                     <i className="fas fa-cubes fa-2x me-3" />
                     <span className="h1 fw-bold mb-0">Profiel</span>
@@ -169,45 +171,47 @@ export default function UserProfile() {
                     <label className="form-label">{`Rol : ${user ? t(getUserRole(user.role.toString())) : ""}`}</label>
                 </div>
 
-                <div className="form-outline mb-4">
-                    <label className="form-label">Regio's waarin u wilt werken:</label>
-                    {allRegions?.map((r: RegionInterface) => {
-                        return (
-                            <div className="form-check" key={r.id}>
-                                <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    value={r.id}
-                                    id={r.id.toString()}
-                                    checked={selectedRegions.some((n: number) => n === r.id)}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                        const regionId = Number(e.target.value);
-                                        const regions = [...selectedRegions];
-                                        if (
-                                            e.target.checked &&
-                                            !selectedRegions.find((el: number) => el === regionId)
-                                        ) {
-                                            regions.push(regionId);
-                                            setSelectedRegions(regions);
-                                        } else if (
-                                            !e.target.checked &&
-                                            selectedRegions.find((el: number) => el === regionId)
-                                        ) {
-                                            const i = regions.indexOf(regionId);
-                                            if (i > -1) {
-                                                regions.splice(i, 1);
+                {allRegions.length > 0 && (
+                    <div className="form-outline mb-4">
+                        <label className="form-label">Regio's waarin u wilt werken:</label>
+                        {allRegions?.map((r: RegionInterface) => {
+                            return (
+                                <div className="form-check" key={r.id}>
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        value={r.id}
+                                        id={r.id.toString()}
+                                        checked={selectedRegions.some((n: number) => n === r.id)}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                            const regionId = Number(e.target.value);
+                                            const regions = [...selectedRegions];
+                                            if (
+                                                e.target.checked &&
+                                                !selectedRegions.find((el: number) => el === regionId)
+                                            ) {
+                                                regions.push(regionId);
+                                                setSelectedRegions(regions);
+                                            } else if (
+                                                !e.target.checked &&
+                                                selectedRegions.find((el: number) => el === regionId)
+                                            ) {
+                                                const i = regions.indexOf(regionId);
+                                                if (i > -1) {
+                                                    regions.splice(i, 1);
+                                                }
+                                                setSelectedRegions(regions);
                                             }
-                                            setSelectedRegions(regions);
-                                        }
-                                    }}
-                                />
-                                <label className="form-check-label" htmlFor={r.id.toString()}>
-                                    {r.region}
-                                </label>
-                            </div>
-                        );
-                    })}
-                </div>
+                                        }}
+                                    />
+                                    <label className="form-check-label" htmlFor={r.id.toString()}>
+                                        {r.region}
+                                    </label>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
             </form>
             <div>
                 <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} onClick={submit}>

@@ -1,3 +1,5 @@
+version: "2.4"
+
 services:
   reverseproxy:
     image: reverseproxy
@@ -61,6 +63,8 @@ services:
 
     volumes:
       - ./backend:/app/backend
+
+    mem_limit: 4g
 
     depends_on:
       web:

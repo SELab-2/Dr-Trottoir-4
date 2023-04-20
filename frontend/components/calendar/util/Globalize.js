@@ -1,7 +1,7 @@
-import {Calendar, globalizeLocalizer} from 'react-big-calendar'
-import globalize from 'globalize'
+import { Calendar, globalizeLocalizer } from "react-big-calendar";
+import globalize from "globalize";
 
-const localizer = globalizeLocalizer(globalize)
+const localizer = globalizeLocalizer(globalize);
 
 const MyCalendar = (props) => (
     <div>
@@ -10,7 +10,7 @@ const MyCalendar = (props) => (
             events={myEventsList}
             startAccessor="start"
             endAccessor="end"
-            style={{height: 500}}
+            style={{ height: 500 }}
         />
     </div>
-)
+);

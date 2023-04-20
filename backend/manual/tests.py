@@ -18,6 +18,9 @@ class ManualTests(BaseTest):
         self.data1 = {"building": b_id, "file": f}
         self.insert("manual/")
 
+    def test_insert_empty(self):
+        self.insert_empty("manual/")
+
     def test_insert_dupe_manual(self):
         b_id = insert_dummy_building()
         self.data1 = {"building": b_id, "file": f, "version_number": 0}

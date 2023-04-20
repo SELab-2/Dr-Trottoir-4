@@ -173,8 +173,10 @@ class CanCreateUser(BasePermission):
         if request.method in ["POST"]:
             data = request_to_dict(request.data)
             if "role" in data.keys():
-                role_instance = Role.objects.filter(id=data["role"])[0]
-                return request.user.role.rank <= role_instance.rank
+                role_instance = Role.objects.filter(id=data["role"]).first()
+                if not role_instance:
+                    return False
+                return request.user.role.rank == 1 or request.user.role.rank <= role_instance.rank
         return True
 
 

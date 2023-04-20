@@ -12,6 +12,9 @@ class RegionTests(BaseTest):
         self.data1 = {"region": "Gent"}
         self.insert("region/")
 
+    def test_insert_empty(self):
+        self.insert_empty("region/")
+
     def test_insert_dupe_region(self):
         self.data1 = {"region": "Gent"}
         self.insert_dupe("region/")

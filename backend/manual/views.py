@@ -1,6 +1,6 @@
-from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.views import APIView
 
 from base.models import Manual, Building
@@ -23,7 +23,7 @@ class Default(APIView):
     serializer_class = ManualSerializer
 
     @extend_schema(responses=post_docs(ManualSerializer))
-    def post(self, request):
+    def post(self, request: Request):
         """
         Create a new manual with data from post
         """
@@ -93,20 +93,13 @@ class ManualBuildingView(APIView):
 
     @extend_schema(
         responses=get_docs(ManualSerializer),
-        parameters=param_docs(
-            {
-                "most-recent": (
-                    "When set to 'true', only the most recent manual will be returned",
-                    False,
-                    OpenApiTypes.BOOL,
-                )
-            }
-        ),
+        parameters=param_docs(get_most_recent_param_docs("manual")),
     )
     def get(self, request, building_id):
         """
         Get all manuals of a building with given id
         """
+
         if not Building.objects.filter(id=building_id):
             return not_found("Building")
 
@@ -121,7 +114,7 @@ class ManualBuildingView(APIView):
             manual_instances = manual_instances.order_by("-version_number").first()
 
         serializer = ManualSerializer(manual_instances, many=not most_recent_only)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_success(serializer)
 
 
 class ManualsView(APIView):
@@ -135,4 +128,4 @@ class ManualsView(APIView):
         instances = Manual.objects.all()
 
         serializer = ManualSerializer(instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_success(serializer)
