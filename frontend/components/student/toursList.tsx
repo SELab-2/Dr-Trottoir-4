@@ -24,7 +24,7 @@ export default function ToursList({
                 <span className="h1 fw-bold">{listTitle}</span>
                 {
                     (studentOnTours.length === 0) && (
-                        <h5 className="mb-1">Er zijn geen ronde om weer te geven.</h5>
+                        <h5 className="mb-1">Er zijn geen rondes om weer te geven.</h5>
                     )
                 }
                 {studentOnTours.length > 0 && (
