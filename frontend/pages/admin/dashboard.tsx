@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import {getAllTours, Tour} from '@/lib/tour';
-import {getAllStudentOnTourFromDate, StudentOnTour} from '@/lib/student-on-tour';
+import {getAllStudentOnTourFromDate, getAllStudentOnTourFromToday, StudentOnTour} from '@/lib/student-on-tour';
 import {getAllUsers, User} from '@/lib/user';
 import AdminHeader from "@/components/header/adminHeader";
 import {withAuthorisation} from "@/components/withAuthorisation";
@@ -95,7 +95,7 @@ function AdminDashboard() {
                 const startDate = new Date(2015, 0, 1);
                 const endDate = new Date();
                 const tourResponse = await getAllTours();
-                const studentOnTourResponse = await getAllStudentOnTourFromDate({startDate, endDate});
+                const studentOnTourResponse = await getAllStudentOnTourFromDate({startDate, endDate}); // getAllStudentOnTourFromToday();
                 const allUsersResponse = await getAllUsers();
 
                 setTours(tourResponse.data);
@@ -139,49 +139,56 @@ function AdminDashboard() {
     return (
         <div>
             <AdminHeader/>
-            <h2>Rondes van vandaag</h2>
-            <table className="table">
-                <thead>
-                <tr>
-                    <th>Ronde</th>
-                    <th>Student</th>
-                    <th>Voortgang</th>
-                </tr>
-                </thead>
-                <tbody>
-                {studentsOnTours.map((studentOnTour) => {
-                    const tour = tours.find((t) => t.id === studentOnTour.tour);
-                    const user = users.find((u) => u.id === studentOnTour.student);
+            {studentsOnTours.length > 0 ? (
+                <>
+                <h2>Rondes van vandaag</h2>
+                <table className="table">
+                    <thead>
+                    <tr>
+                        <th>Ronde</th>
+                        <th>Student</th>
+                        <th>Voortgang</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {studentsOnTours.map((studentOnTour) => {
+                        const tour = tours.find((t) => t.id === studentOnTour.tour);
+                        const user = users.find((u) => u.id === studentOnTour.student);
 
-                    if (!tour || !user) return null;
+                        if (!tour || !user) return null;
 
-                    return (
-                        <tr key={studentOnTour.id}>
-                            <td>{tour.name}</td>
-                            <td>{`${user.first_name} ${user.last_name}`}</td>
-                            <td>
-                                <Box sx={{width: '100%'}}>
-                                    <GreenLinearProgress variant="determinate" value={progressRecord[studentOnTour.id] || 0}/>
-                                </Box>
-                            </td>
-                            <td>
-                                {remarksRecord[studentOnTour.id] > 0 ? (
-                                    <button onClick={() => redirectToRemarksPage(studentOnTour.id)}>
-                                        <LiveField 
-                                            fetcher={() => fetchRemarks(studentOnTour)}
-                                            formatter={getRemarkText}
-                                            interval={3000}
-                                        />
-                                    </button>
-                                ) : (
-                                    "Geen opmerkingen"
-                                )}
-                            </td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
+                        return (
+                            <tr key={studentOnTour.id}>
+                                <td>{tour.name}</td>
+                                <td>{`${user.first_name} ${user.last_name}`}</td>
+                                <td>
+                                    <Box sx={{width: '100%'}}>
+                                        <GreenLinearProgress variant="determinate" value={progressRecord[studentOnTour.id] || 0}/>
+                                    </Box>
+                                </td>
+                                <td>
+                                    {remarksRecord[studentOnTour.id] > 0 ? (
+                                        <button onClick={() => redirectToRemarksPage(studentOnTour.id)}>
+                                            <LiveField 
+                                                fetcher={() => fetchRemarks(studentOnTour)}
+                                                formatter={getRemarkText}
+                                                interval={3000}
+                                            />
+                                        </button>
+                                    ) : (
+                                        "Geen opmerkingen"
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </table>
+                </>
+            ) : (
+                <h2>Geen rondes vandaag</h2>
+            )
+            }
         </div>
 
     );
