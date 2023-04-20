@@ -1,4 +1,6 @@
+from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
+import uuid
 
 from .models import *
 
@@ -6,8 +8,16 @@ from .models import *
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "is_active", "email", "first_name", "last_name",
-                  "phone_number", "region", "role"]
+        fields = [
+            "id",
+            "is_active",
+            "email",
+            "first_name",
+            "last_name",
+            "phone_number",
+            "region",
+            "role",
+        ]
         read_only_fields = ["id", "email"]
 
 
@@ -21,8 +31,20 @@ class RoleSerializer(serializers.ModelSerializer):
 class BuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Building
-        fields = ["id", "city", "postal_code", "street", "house_number", "client_number",
-                  "duration", "syndic", "region", "name"]
+        fields = [
+            "id",
+            "city",
+            "postal_code",
+            "street",
+            "house_number",
+            "bus",
+            "client_number",
+            "duration",
+            "syndic",
+            "region",
+            "name",
+            "public_id",
+        ]
         read_only_fields = ["id"]
 
 
@@ -33,22 +55,39 @@ class BuildingCommentSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
-class PictureBuildingSerializer(serializers.ModelSerializer):
+class EmailTemplateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PictureBuilding
-        fields = ["id", "building", "picture", "description", "timestamp", "type"]
+        model = EmailTemplate
+        fields = ["id", "name", "template"]
+        read_only_fields = ["id"]
 
 
-class StudBuildTourSerializer(serializers.ModelSerializer):
+@extend_schema_serializer(exclude_fields=["verification_code"])
+class LobbySerializer(serializers.ModelSerializer):
     class Meta:
-        model = StudentAtBuildingOnTour
-        fields = ["id", "building_on_tour", "date", "student"]
+        model = Lobby
+        fields = ["id", "email", "verification_code", "role"]
+        read_only_fields = ["id"]
 
 
-class BuildingUrlSerializer(serializers.ModelSerializer):
+class RemarkAtBuildingSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BuildingURL
-        fields = ["id", "first_name_resident", "last_name_resident", "building"]
+        model = RemarkAtBuilding
+        fields = ["id", "building", "timestamp", "remark", "student_on_tour", "type"]
+        read_only_fields = ["id"]
+
+
+class PictureOfRemarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PictureOfRemark
+        fields = ["id", "picture", "remark_at_building", "hash"]
+        read_only_fields = ["id"]
+
+
+class StudOnTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentOnTour
+        fields = ["id", "tour", "date", "student"]
         read_only_fields = ["id"]
 
 
@@ -63,21 +102,43 @@ class ManualSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manual
         fields = ["id", "building", "version_number", "file"]
+        read_only_fields = ["id"]
 
 
 class BuildingTourSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuildingOnTour
         fields = ["id", "building", "tour", "index"]
+        read_only_fields = ["id"]
 
 
 class TourSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
         fields = ["id", "name", "region", "modified_at"]
+        read_only_fields = ["id"]
 
 
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Region
         fields = ["id", "region"]
+        read_only_fields = ["id"]
+
+
+class SuccessSerializer(serializers.Serializer):
+    data = serializers.CharField(max_length=255)
+
+
+class BuildingSwapRequestSerializer(serializers.Serializer):
+    buildingID1 = serializers.IntegerField()
+
+    buildingID2 = serializers.IntegerField()
+
+
+class PublicIdSerializer(serializers.Serializer):
+    public_id = serializers.UUIDField(format="hex")
+
+    def create(self, validated_data):
+        public_id = uuid.uuid4()
+        return {"public_id": public_id}

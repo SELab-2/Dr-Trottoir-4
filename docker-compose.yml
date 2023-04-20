@@ -1,3 +1,5 @@
+version: "2.4"
+
 services:
   reverseproxy:
     image: reverseproxy
@@ -26,13 +28,24 @@ services:
     volumes:
       - ./data/drtrottoir:/var/lib/postgresql/data/
 
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U django -d drtrottoir" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
 
     volumes:
-      - ./frontend:/app/frontend
+      - ./frontend/pages:/app/frontend/pages
+      - ./frontend/components:/app/frontend/components
+      - ./frontend/lib:/app/frontend/lib
+      - ./frontend/public:/app/frontend/public
+      - ./frontend/styles:/app/frontend/styles
+      - ./frontend/locales:/app/frontend/locales
 
     depends_on:
       - backend
@@ -51,5 +64,8 @@ services:
     volumes:
       - ./backend:/app/backend
 
+    mem_limit: 4g
+
     depends_on:
-      - web
+      web:
+        condition: service_healthy

@@ -1,24 +1,27 @@
-from rest_framework import permissions
+from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import Building
-from base.serializers import BuildingSerializer
+from base.permissions import (
+    ReadOnlyOwnerOfBuilding,
+    IsAdmin,
+    IsSuperStudent,
+    ReadOnlyStudent,
+    OwnerWithLimitedPatch,
+    OwnerOfBuilding,
+)
+from base.serializers import BuildingSerializer, PublicIdSerializer
 from util.request_response_util import *
-from drf_spectacular.utils import extend_schema
 
-# TODO:  we don't actually have to work with 'syndic' key, we can also require 'syndic_id' as parameter in body
-#  however, de automatic documentation might be a bit harder?
-TRANSLATE = {"syndic": "syndic_id"}
+TRANSLATE = {"syndic": "syndic_id", "region": "region_id"}
 
 
 class DefaultBuilding(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = BuildingSerializer
 
-    @extend_schema(
-        responses={201: BuildingSerializer,
-                   400: None}
-    )
+    @extend_schema(responses=post_docs(BuildingSerializer))
     def post(self, request):
         """
         Create a new building
@@ -37,13 +40,10 @@ class DefaultBuilding(APIView):
 
 
 class BuildingIndividualView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerWithLimitedPatch]
     serializer_class = BuildingSerializer
 
-    @extend_schema(
-        responses={200: BuildingSerializer,
-                   400: None}
-    )
+    @extend_schema(responses=get_docs(BuildingSerializer))
     def get(self, request, building_id):
         """
         Get info about building with given id
@@ -51,41 +51,39 @@ class BuildingIndividualView(APIView):
         building_instance = Building.objects.filter(id=building_id)
 
         if not building_instance:
-            return bad_request(object_name="Building")
+            return not_found(object_name="Building")
 
         building_instance = building_instance[0]
+        self.check_object_permissions(request, building_instance)
         serializer = BuildingSerializer(building_instance)
         return get_success(serializer)
 
-    @extend_schema(
-        responses={204: None,
-                   400: None}
-    )
+    @extend_schema(responses=delete_docs())
     def delete(self, request, building_id):
         """
         Delete building with given id
         """
         building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
-            return bad_request(object_name="Building")
+            return not_found(object_name="Building")
         building_instance = building_instance[0]
+
+        self.check_object_permissions(request, building_instance)
 
         building_instance.delete()
         return delete_success()
 
-    @extend_schema(
-        responses={200: BuildingSerializer,
-                   400: None}
-    )
+    @extend_schema(responses=patch_docs(BuildingSerializer))
     def patch(self, request, building_id):
         """
         Edit building with given ID
         """
         building_instance = Building.objects.filter(id=building_id)
         if not building_instance:
-            return bad_request(object_name="Building")
+            return not_found(object_name="Building")
 
         building_instance = building_instance[0]
+        self.check_object_permissions(request, building_instance)
         data = request_to_dict(request.data)
 
         set_keys_of_instance(building_instance, data, TRANSLATE)
@@ -96,7 +94,69 @@ class BuildingIndividualView(APIView):
         return patch_success(BuildingSerializer(building_instance))
 
 
+# The building url you can access without account
+class BuildingPublicView(APIView):
+    serializer_class = BuildingSerializer
+
+    @extend_schema(responses=get_docs(BuildingSerializer))
+    def get(self, request, building_public_id):
+        """
+        Get building with the public id
+        """
+        building_instance = Building.objects.filter(public_id=building_public_id)
+
+        if not building_instance:
+            return not_found("Building")
+
+        building_instance = building_instance[0]
+
+        return get_success(BuildingSerializer(building_instance))
+
+
+class BuildingNewPublicId(APIView):
+    serializer_class = BuildingSerializer
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding]
+
+    @extend_schema(
+        description="Generate a new unique uuid as public id for the building.",
+        responses=post_docs(BuildingSerializer),
+    )
+    def post(self, request, building_id):
+        """
+        Generate a new public_id for the building with given id
+        """
+        building_instance = Building.objects.filter(id=building_id)
+
+        if not building_instance:
+            return not_found("Building")
+
+        building_instance = building_instance[0]
+
+        self.check_object_permissions(request, building_instance)
+
+        building_instance.public_id = get_unique_uuid()
+
+        if r := try_full_clean_and_save(building_instance):
+            return r
+
+        return post_success(BuildingSerializer(building_instance))
+
+
+class BuildingGetNewPublicId(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding]
+    serializer_class = PublicIdSerializer
+
+    def get(self, request):
+        """
+        Get a random unique uuid as public id that is still available.
+        Returns a json object with the public_id as key and the uuid as value.
+        """
+        unique_id = get_unique_uuid(lambda x: Building.objects.filter(public_id=x).exists())
+        return Response({"public_id": unique_id}, status=status.HTTP_200_OK)
+
+
 class AllBuildingsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = BuildingSerializer
 
     def get(self, request):
@@ -109,18 +169,34 @@ class AllBuildingsView(APIView):
         return get_success(serializer)
 
 
-class BuildingOwnerView(APIView):
+class AllBuildingsInRegionView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = BuildingSerializer
 
-    @extend_schema(
-        responses={200: BuildingSerializer,
-                   400: None}
-    )
+    @extend_schema(responses=get_docs(BuildingSerializer))
+    def get(self, request, region_id):
+        """
+        Get all buildings in region with given id
+        """
+        building_instances = Building.objects.filter(region_id=region_id)
+
+        serializer = BuildingSerializer(building_instances, many=True)
+        return get_success(serializer)
+
+
+class BuildingOwnerView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyOwnerOfBuilding]
+    serializer_class = BuildingSerializer
+
+    @extend_schema(responses=get_docs(BuildingSerializer))
     def get(self, request, owner_id):
         """
         Get all buildings owned by syndic with given id
         """
         building_instance = Building.objects.filter(syndic=owner_id)
+
+        for b in building_instance:
+            self.check_object_permissions(request, b)
 
         if not building_instance:
             return bad_request_relation("building", "syndic")

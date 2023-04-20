@@ -1,7 +1,9 @@
-from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from base.models import BuildingOnTour
+from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
 from base.serializers import BuildingTourSerializer
 from util.request_response_util import *
 
@@ -9,12 +11,10 @@ TRANSLATE = {"building": "building_id", "tour": "tour_id"}
 
 
 class Default(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = BuildingTourSerializer
 
-    @extend_schema(
-        responses={201: BuildingTourSerializer,
-                   400: None}
-    )
+    @extend_schema(responses=post_docs(BuildingTourSerializer))
     def post(self, request):
         """
         Create a new BuildingOnTour with data from post
@@ -32,12 +32,10 @@ class Default(APIView):
 
 
 class BuildingTourIndividualView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
     serializer_class = BuildingTourSerializer
 
-    @extend_schema(
-        responses={200: BuildingTourSerializer,
-                   400: None}
-    )
+    @extend_schema(responses=get_docs(BuildingTourSerializer))
     def get(self, request, building_tour_id):
         """
         Get info about a BuildingOnTour with given id
@@ -45,15 +43,12 @@ class BuildingTourIndividualView(APIView):
         building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id)
 
         if not building_on_tour_instance:
-            return bad_request("BuildingOnTour")
+            return not_found("BuildingOnTour")
 
         serializer = BuildingTourSerializer(building_on_tour_instance[0])
         return get_success(serializer)
 
-    @extend_schema(
-        responses={200: BuildingTourSerializer,
-                   400: None}
-    )
+    @extend_schema(responses=patch_docs(BuildingTourSerializer))
     def patch(self, request, building_tour_id):
         """
         edit info about a BuildingOnTour with given id
@@ -61,7 +56,7 @@ class BuildingTourIndividualView(APIView):
         building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id)
 
         if not building_on_tour_instance:
-            return bad_request("BuildingOnTour")
+            return not_found("BuildingOnTour")
 
         building_on_tour_instance = building_on_tour_instance[0]
 
@@ -74,10 +69,7 @@ class BuildingTourIndividualView(APIView):
 
         return patch_success(BuildingTourSerializer(building_on_tour_instance))
 
-    @extend_schema(
-        responses={204: None,
-                   400: None}
-    )
+    @extend_schema(responses=delete_docs())
     def delete(self, request, building_tour_id):
         """
         delete a BuildingOnTour from the database
@@ -85,13 +77,28 @@ class BuildingTourIndividualView(APIView):
         building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id)
 
         if not building_on_tour_instance:
-            return bad_request("BuildingOnTour")
+            return not_found("BuildingOnTour")
 
         building_on_tour_instance[0].delete()
         return delete_success()
 
 
+class AllBuilingsOnTourInTourView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
+    serializer_class = BuildingTourSerializer
+
+    @extend_schema(responses=get_docs(BuildingTourSerializer))
+    def get(self, request, tour_id):
+        """
+        Get all BuildingsOnTour with given tour id
+        """
+        building_on_tour_instances = BuildingOnTour.objects.filter(tour_id=tour_id)
+        serializer = BuildingTourSerializer(building_on_tour_instances, many=True)
+        return get_success(serializer)
+
+
 class AllBuildingToursView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
     serializer_class = BuildingTourSerializer
 
     def get(self, request):

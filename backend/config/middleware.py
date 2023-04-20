@@ -6,5 +6,5 @@ class CommonMiddlewareAppendSlashWithoutRedirect(CommonMiddleware):
     # However, Django likes slashes
     # This code adds a slash to URLs without a slash
     def process_request(self, request):
-        if not request.path.endswith('/'):
-            request.path_info = request.path_info + '/'
+        if not request.path.endswith("/"):
+            request.path_info = request.path_info + "/"
