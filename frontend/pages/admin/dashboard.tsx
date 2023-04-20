@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
-import {getAllTours, getBuildingsOfTour, getTour, Tour} from '@/lib/tour';
-import {getAllStudentOnTourFromDate, getProgress, StudentOnTour} from '@/lib/student-on-tour';
-import {getAllUsers, getUserRole, User} from '@/lib/user';
+import {getAllTours, Tour} from '@/lib/tour';
+import {getAllStudentOnTourFromDate, StudentOnTour} from '@/lib/student-on-tour';
+import {getAllUsers, User} from '@/lib/user';
 import AdminHeader from "@/components/header/adminHeader";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import Loading from "@/components/loading";
@@ -10,9 +10,8 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
 import {styled} from '@mui/system';
 import LiveField from '@/components/liveField';
-import { BuildingComment } from '@/lib/building-comment';
 import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from '@/lib/building-on-tour';
-import { getRemarksAtBuildingOfSpecificBuilding, RemarkAtBuilding, RemarkAtBuildingInterface, translateRemartAtBuildingType } from '@/lib/remark-at-building';
+import { getRemarksAtBuildingOfSpecificBuilding, RemarkAtBuildingInterface, translateRemartAtBuildingType } from '@/lib/remark-at-building';
 
 const GreenLinearProgress = styled(LinearProgress)(() => ({
     height: '20px',
@@ -32,7 +31,6 @@ function AdminDashboard() {
     const [progressRecord, setProgressRecord] = useState<Record<string, number>>({});
 
     const getRemarkText = (numberOfRemarks: number) : string => {
-        //const numberOfRemarks = remarksRecord[studentOnTourId];
         let extension = "";
         if (numberOfRemarks > 1) {
             extension = "en";
@@ -44,6 +42,8 @@ function AdminDashboard() {
     const fetchRemarks = async (studentOnTour: StudentOnTour) : Promise<number> => {
         // Fetch remarks based on studentOnTourId
         // Return an array of remarks
+        // TODO change this to query the remarks of a specific student_on_tour
+        // once it is possible
         let remarksCount = 0;
         await getAllBuildingsOnTourWithTourID(studentOnTour.tour).then(
             async (buildingRes) => {
@@ -59,9 +59,6 @@ function AdminDashboard() {
                                     remarksCount++;
                                 }
                             }
-                        },
-                        (remarkErr) => {
-                            // no remarks on the building
                         }
                     )
                 }
@@ -75,12 +72,19 @@ function AdminDashboard() {
 
     const fetchProgress = async (studentOnTourId: number) : Promise<number> => {
         // Fetch progress
+        // TODO update this after the progress can be queried
         return studentOnTourId * 5;
     }
 
-    const redirectToRemarksPage = (studentOnTourId: number) => {
-        // // Redirect to a new page with the studentOnTourId as a parameter
-        // router.push(`/remarks/${studentOnTourId}`);
+    const redirectToRemarksPage = async (studentOnTourId: number) => {
+        // Redirect to the specific tour page
+        await router.push({
+            pathname: `tour/`,
+            query: { 
+                studentOnTour: studentOnTourId,
+
+            },
+        });
     };
 
     useEffect(() => {
@@ -132,7 +136,6 @@ function AdminDashboard() {
             </>
         );
     }
-//TODO right now the progress bar always shows a fixed value of 50%
     return (
         <div>
             <AdminHeader/>
