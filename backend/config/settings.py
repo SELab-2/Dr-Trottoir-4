@@ -103,6 +103,7 @@ REST_AUTH = {
     "USER_DETAILS_SERIALIZER": "base.serializers.UserSerializer",
     "PASSWORD_RESET_SERIALIZER": "authentication.serializers.CustomPasswordResetSerializer",
     "PASSWORD_RESET_USE_SITES_DOMAIN": True,
+    "OLD_PASSWORD_FIELD_ENABLED": True
 }
 
 SIMPLE_JWT = {
