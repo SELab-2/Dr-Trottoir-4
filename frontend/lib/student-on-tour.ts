@@ -41,12 +41,12 @@ export async function getToursOfStudent(studentId: number, params: DateInterval 
     return getFromDate(request_url, params);
 }
 
-export async function getALlStudentOnTourFromDate(params: DateInterval | null = null): Promise<AxiosResponse<any>> {
+export async function getAllStudentOnTourFromDate(params: DateInterval | null = null): Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_STUDENT_ON_TOURS}`;
     return getFromDate(request_url, params);
 }
 
 export async function getAllStudentOnTourFromToday() {
     const date = new Date();
-    return getALlStudentOnTourFromDate({startDate: date, endDate: date});
+    return getAllStudentOnTourFromDate({startDate: date, endDate: date});
 }
