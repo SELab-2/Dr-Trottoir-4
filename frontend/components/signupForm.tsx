@@ -1,15 +1,15 @@
 import styles from "@/styles/Login.module.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import React, {FormEvent, useState} from "react";
-import {useTranslation} from "react-i18next";
-import {useRouter} from "next/router";
+import React, { FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useRouter } from "next/router";
 import signup from "@/lib/signup";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 import PasswordInput from "@/components/password/passwordInput";
 
 function SignupForm() {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const router = useRouter();
     const [firstname, setFirstname] = useState<string>("");
     const [lastname, setLastname] = useState<string>("");
@@ -34,7 +34,7 @@ function SignupForm() {
                     await router.push(
                         {
                             pathname: "/login",
-                            query: {createdAccount: true},
+                            query: { createdAccount: true },
                         },
                         "/login"
                     );
@@ -50,7 +50,7 @@ function SignupForm() {
     return (
         <form onSubmit={handleSubmit}>
             <div className="d-flex align-items-center mb-3 pb-1">
-                <i className="fas fa-cubes fa-2x me-3"/>
+                <i className="fas fa-cubes fa-2x me-3" />
                 <span className="h1 fw-bold mb-0">Sign up.</span>
             </div>
 
@@ -64,7 +64,7 @@ function SignupForm() {
                         <li key={i}>{t(err)}</li>
                     ))}
                 </ul>
-                <button type="button" className="btn-close" data-bs-dismiss="alert"/>
+                <button type="button" className="btn-close" data-bs-dismiss="alert" />
             </div>
 
             <div className="form-outline mb-4">
@@ -148,7 +148,6 @@ function SignupForm() {
                 }}
             />
 
-
             <PasswordInput
                 value={password2}
                 setPassword={setPassword2}
@@ -173,7 +172,6 @@ function SignupForm() {
                     }
                 }}
             />
-
 
             <div className="form-outline mb-4">
                 <label className="form-label">Verificatiecode</label>
