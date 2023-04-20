@@ -1,25 +1,29 @@
 import { useState, useEffect } from "react";
 
 interface LiveFieldProps<T> {
-  fetcher: () => Promise<T>;
-  interval?: number;
-  formatter: (data: T) => string;
+    fetcher: () => Promise<T>;
+    interval?: number;
+    formatter: (data: T) => string;
 }
 
 function LiveField<T>({ fetcher, interval = 1000, formatter }: LiveFieldProps<T>) {
-  const [data, setData] = useState<string>("");
+    const [data, setData] = useState<string>("");
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      fetcher().then((result) => {
-        setData(formatter(result));
-      });
-    }, interval);
+    useEffect(() => {
+        fetcher().then((result) => {
+            setData(formatter(result));
+        });
 
-    return () => clearInterval(intervalId);
-  }, [fetcher, interval, formatter]);
+        const intervalId = setInterval(() => {
+            fetcher().then((result) => {
+                setData(formatter(result));
+            });
+        }, interval);
 
-  return <span>{data}</span>;
+        return () => clearInterval(intervalId);
+    }, [fetcher, interval, formatter]);
+
+    return <span>{data}</span>;
 }
 
 export default LiveField;

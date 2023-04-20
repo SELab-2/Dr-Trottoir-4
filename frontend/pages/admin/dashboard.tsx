@@ -167,6 +167,7 @@ function AdminDashboard() {
                                         <LiveField 
                                             fetcher={() => fetchRemarks(studentOnTour)}
                                             formatter={getRemarkText}
+                                            interval={3000}
                                         />
                                     </button>
                                 ) : (
