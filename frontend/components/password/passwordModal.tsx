@@ -1,15 +1,15 @@
-import React, {useState} from "react";
-import {Button, Modal} from "react-bootstrap";
+import React, { useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 import PasswordInput from "./passwordInput";
 import ErrorMessage from "@/components/errorMessage";
-import {changePassword} from "@/lib/authentication";
+import { changePassword } from "@/lib/authentication";
 
 interface PasswordModalProps {
     show: boolean;
     closeModal: () => void;
 }
 
-const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal}) => {
+const PasswordModal: React.FC<PasswordModalProps> = ({ show, closeModal }) => {
     const [newPassword1, setNewPassword1] = useState<string>("");
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [currentPassword, setCurrentPassword] = useState<string>("");
@@ -18,7 +18,6 @@ const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal}) => {
     const [formErrors, setFormErrors] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>("");
 
-
     const handlePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
@@ -26,7 +25,6 @@ const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal}) => {
     const handleCurrentPasswordVisibility = () => {
         setShowCurrentPassword(!showCurrentPassword);
     };
-
 
     const handleSubmit = async () => {
         if (newPassword1 !== newPassword2) {
@@ -44,7 +42,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal}) => {
                 const res = await changePassword({
                     old_password: currentPassword,
                     new_password1: newPassword1,
-                    new_password2: newPassword2
+                    new_password2: newPassword2,
                 });
                 closeModal();
             } catch (error: any) {
@@ -55,14 +53,13 @@ const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal}) => {
         }
     };
 
-
     return (
         <Modal show={show} onHide={closeModal}>
             <Modal.Header>
                 <Modal.Title>Wijzig wachtwoord</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ErrorMessage formErrors={formErrors} errorMessage={errorMessage} onClose={setFormErrors}/>
+                <ErrorMessage formErrors={formErrors} errorMessage={errorMessage} onClose={setFormErrors} />
                 <PasswordInput
                     value={currentPassword}
                     setPassword={setCurrentPassword}
@@ -70,7 +67,8 @@ const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal}) => {
                     showPassword={showCurrentPassword}
                     label="Huidig wachtwoord:"
                     placeholder="Voer uw huidige wachtwoord in"
-                    showIconButton={true}/>
+                    showIconButton={true}
+                />
                 <PasswordInput
                     value={newPassword1}
                     setPassword={setNewPassword1}
@@ -78,7 +76,8 @@ const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal}) => {
                     showPassword={showPassword}
                     label="Nieuw wachtwoord:"
                     placeholder="Voer uw nieuwe wachtwoord in"
-                    showIconButton={true}/>
+                    showIconButton={true}
+                />
                 <PasswordInput
                     value={newPassword2}
                     setPassword={setNewPassword2}
@@ -86,7 +85,8 @@ const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal}) => {
                     showPassword={false}
                     label="Bevestig nieuw wachtwoord:"
                     placeholder="Voer uw nieuwe wachtwoord opnieuw in"
-                    showIconButton={false}/>
+                    showIconButton={false}
+                />
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" className="btn-light" onClick={closeModal}>
@@ -98,7 +98,6 @@ const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal}) => {
             </Modal.Footer>
         </Modal>
     );
-
 };
 
 export default PasswordModal;
