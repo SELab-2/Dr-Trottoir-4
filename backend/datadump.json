@@ -54,6 +54,14 @@
     }
 },
 {
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 4,
+    "fields": {
+        "token": 39,
+        "blacklisted_at": "2023-04-20T11:13:48.490Z"
+    }
+},
+{
     "model": "base.region",
     "pk": 1,
     "fields": {
@@ -202,7 +210,7 @@
 {
     "model": "base.user",
     "fields": {
-        "password": "pbkdf2_sha256$390000$rrdKSp70K3wd0W7Wm9DB3z$OTQYuQ1MuYWr782bZ29wv2Hhfhf+HDh5edWsAxNahdw=",
+        "password": "pbkdf2_sha256$600000$P8azaB6ftFYdCB1sjJWt1c$NSF9FnmSjZpFerYGmVxA9+XQTD55iV5t8efdgZ47HXU=",
         "last_login": "2023-03-08T14:28:42Z",
         "is_superuser": false,
         "email": "sylvian@test.com",
@@ -1907,17 +1915,6 @@
 },
 {
     "model": "base.studentontour",
-    "pk": 23,
-    "fields": {
-        "tour": 1,
-        "date": "2023-04-21",
-        "student": [
-            "stephan@test.com"
-        ]
-    }
-},
-{
-    "model": "base.studentontour",
     "pk": 24,
     "fields": {
         "tour": 2,
@@ -1980,6 +1977,28 @@
         "timestamp": "2023-04-24T10:34:17Z",
         "remark": "Een bewoner zei me dat er niet gesorteerd wordt.",
         "type": "OP"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 18,
+    "fields": {
+        "student_on_tour": 11,
+        "building": 4,
+        "timestamp": "2023-04-20T11:24:39Z",
+        "remark": "De deur is geblokkeerd.",
+        "type": "OP"
+    }
+},
+{
+    "model": "base.remarkatbuilding",
+    "pk": 19,
+    "fields": {
+        "student_on_tour": 3,
+        "building": 11,
+        "timestamp": "2023-04-20T11:25:16Z",
+        "remark": "Vertrek",
+        "type": "VE"
     }
 },
 {
@@ -2472,6 +2491,43 @@
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MzE4Nzg5OSwiaWF0IjoxNjgxOTc4Mjk5LCJqdGkiOiIzNmUzMGUxZjc5NjQ0YjI1OGJlMmVmNjRkOTljZWRmMCIsInVzZXJfaWQiOjIyfQ.f7M6fSAJY_ysw4DJklVSKRLXwl1PZP7n2LcNgS_SnK4",
         "created_at": "2023-04-20T08:11:39.511Z",
         "expires_at": "2023-05-04T08:11:39Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 39,
+    "fields": {
+        "user": null,
+        "jti": "145872994e244255a65a3f49b2df72a8",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MzE4NzI3OSwiaWF0IjoxNjgxOTc3Njc5LCJqdGkiOiIxNDU4NzI5OTRlMjQ0MjU1YTY1YTNmNDliMmRmNzJhOCIsInVzZXJfaWQiOjIyfQ.YN3kOfCZqPvP0QpaxhfCuurY_o5M7pJbWFW6BQz-MPQ",
+        "created_at": null,
+        "expires_at": "2023-05-04T08:01:19Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 40,
+    "fields": {
+        "user": [
+            "sylvian@test.com"
+        ],
+        "jti": "a1b7f07b8dd54f3390e5b0de93935797",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MzE5ODg2MCwiaWF0IjoxNjgxOTg5MjYwLCJqdGkiOiJhMWI3ZjA3YjhkZDU0ZjMzOTBlNWIwZGU5MzkzNTc5NyIsInVzZXJfaWQiOjV9.RSIgMlFh2MPk0GBxo9j54fbE46swIYoPgZ87t-SOqBU",
+        "created_at": "2023-04-20T11:14:20.839Z",
+        "expires_at": "2023-05-04T11:14:20Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 41,
+    "fields": {
+        "user": [
+            "sylvian@test.com"
+        ],
+        "jti": "df903eaa817843df91b41d86d0e587df",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MzE5OTU1NSwiaWF0IjoxNjgxOTg5OTU1LCJqdGkiOiJkZjkwM2VhYTgxNzg0M2RmOTFiNDFkODZkMGU1ODdkZiIsInVzZXJfaWQiOjV9.u3IaCXSI3a0u9-1RBL9BO8uY2N0E_HhrZYtLKMx6DVk",
+        "created_at": "2023-04-20T11:25:55.285Z",
+        "expires_at": "2023-05-04T11:25:55Z"
     }
 },
 {
@@ -6880,6 +6936,60 @@
         ],
         "object_id": "17",
         "object_repr": "OP for Grote Markt 3, Antwerpen 2000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 300,
+    "fields": {
+        "action_time": "2023-04-20T11:23:36.121Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "23",
+        "object_repr": "stephan@test.com (Student (rank: 3)) at Tour Centrum in region Gent on 2023-04-21",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 301,
+    "fields": {
+        "action_time": "2023-04-20T11:24:52.818Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "18",
+        "object_repr": "OP for Groenenborgerlaan 171, Antwerpen 2000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 302,
+    "fields": {
+        "action_time": "2023-04-20T11:25:25.317Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "remarkatbuilding"
+        ],
+        "object_id": "19",
+        "object_repr": "VE for Veldstraat 2, Gent 9000",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
