@@ -6,6 +6,7 @@ import { AxiosResponse } from "axios";
 import DefaultHeader from "@/components/header/defaultHeader";
 import SyndicFooter from "@/components/footer/syndicFooter";
 import Loading from "@/components/loading";
+import SyndicHeader from "@/components/header/syndicHeader";
 
 function SyndicDashboard() {
     const [id, setId] = useState("");
@@ -39,7 +40,7 @@ function SyndicDashboard() {
 
     return (
         <>
-            <DefaultHeader />
+            <SyndicHeader />
             {loading ? (
                 <Loading />
             ) : (
