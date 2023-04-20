@@ -1,14 +1,15 @@
 import styles from "@/styles/Login.module.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import React, { FormEvent, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useRouter } from "next/router";
+import React, {FormEvent, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {useRouter} from "next/router";
 import signup from "@/lib/signup";
-import { handleError } from "@/lib/error";
+import {handleError} from "@/lib/error";
+import PasswordInput from "@/components/password/passwordInput";
 
 function SignupForm() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const router = useRouter();
     const [firstname, setFirstname] = useState<string>("");
     const [lastname, setLastname] = useState<string>("");
@@ -18,6 +19,11 @@ function SignupForm() {
     const [password2, setPassword2] = useState<string>("");
     const [verificationCode, setVerificationCode] = useState<string>("");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+
+    const handlePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
@@ -28,7 +34,7 @@ function SignupForm() {
                     await router.push(
                         {
                             pathname: "/login",
-                            query: { createdAccount: true },
+                            query: {createdAccount: true},
                         },
                         "/login"
                     );
@@ -44,7 +50,7 @@ function SignupForm() {
     return (
         <form onSubmit={handleSubmit}>
             <div className="d-flex align-items-center mb-3 pb-1">
-                <i className="fas fa-cubes fa-2x me-3" />
+                <i className="fas fa-cubes fa-2x me-3"/>
                 <span className="h1 fw-bold mb-0">Sign up.</span>
             </div>
 
@@ -58,7 +64,7 @@ function SignupForm() {
                         <li key={i}>{t(err)}</li>
                     ))}
                 </ul>
-                <button type="button" className="btn-close" data-bs-dismiss="alert" />
+                <button type="button" className="btn-close" data-bs-dismiss="alert"/>
             </div>
 
             <div className="form-outline mb-4">
@@ -126,52 +132,48 @@ function SignupForm() {
                 />
             </div>
 
-            <div className="form-outline mb-4">
-                <label className="form-label">Wachtwoord</label>
-                <input
-                    type="password"
-                    title="Kies een sterk wachtwoord."
-                    className={`form-control form-control-lg ${styles.input}`}
-                    value={password1}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setPassword1(e.target.value);
-                        e.target.setCustomValidity("");
-                    }}
-                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        e.target.setCustomValidity("Wachtwoord is verplicht.");
-                    }}
-                    required
-                    placeholder="Wachtwoord"
-                />
-            </div>
+            <PasswordInput
+                value={password1}
+                setPassword={setPassword1}
+                handlePasswordVisibility={handlePasswordVisibility}
+                showPassword={showPassword}
+                label="Wachtwoord"
+                placeholder="Wachtwoord"
+                showIconButton={true}
+                customOnInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    e.target.setCustomValidity("");
+                }}
+                customOnInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    e.target.setCustomValidity("Wachtwoord is verplicht.");
+                }}
+            />
 
-            <div className="form-outline mb-4">
-                <label className="form-label">Bevestig wachtwoord</label>
-                <input
-                    type="password"
-                    title="Herhaal het wachtwoord die je hiervoor ingaf."
-                    className={`form-control form-control-lg ${styles.input}`}
-                    value={password2}
-                    onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+
+            <PasswordInput
+                value={password2}
+                setPassword={setPassword2}
+                handlePasswordVisibility={() => null}
+                showPassword={false}
+                label="Bevestig wachtwoord"
+                placeholder="Wachtwoord"
+                showIconButton={false}
+                customOnInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    e.target.setCustomValidity("");
+                    if (password1 !== e.target.value) {
+                        e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
+                    } else {
                         e.target.setCustomValidity("");
-                        setPassword2(e.target.value);
-                        if (password1 !== e.target.value) {
-                            e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
-                        } else {
-                            e.target.setCustomValidity("");
-                        }
-                    }}
-                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        if (password1 !== e.target.value) {
-                            e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
-                        } else {
-                            e.target.setCustomValidity("");
-                        }
-                    }}
-                    required
-                    placeholder="Wachtwoord"
-                />
-            </div>
+                    }
+                }}
+                customOnInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    if (password1 !== e.target.value) {
+                        e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
+                    } else {
+                        e.target.setCustomValidity("");
+                    }
+                }}
+            />
+
 
             <div className="form-outline mb-4">
                 <label className="form-label">Verificatiecode</label>
