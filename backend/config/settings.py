@@ -25,12 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = DJANGO_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# TODO: Possibly get this out of environmental variables docker file!
 DEBUG = True
 
 ALLOWED_HOSTS = ["*", "localhost", "127.0.0.1", "172.17.0.0"]
 
 # Application definition
 DJANGO_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -58,7 +60,10 @@ THIRD_PARTY_APPS = AUTHENTICATION + [
     "drf_spectacular",
 ]
 
-CREATED_APPS = ["base"]
+CREATED_APPS = [
+    "base",
+    "config",
+]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CREATED_APPS
 
@@ -77,7 +82,6 @@ REST_FRAMEWORK = {
 collections.Callable = collections.abc.Callable
 # Use nose to run all tests
 TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
-
 
 NOSE_ARGS = ["--cover-xml", "--cover-xml-file=./coverage.xml"]
 
@@ -189,6 +193,7 @@ DATABASES = {
         # the postgres docker port is exposed to it should be used as well
         # this 'hack' is just to fix the name resolving of 'web'
         # "HOST": "localhost" if "test" in sys.argv else "web",
+        # TODO: Check if "web" still the appropriate host, I expect it should be 'database' now?
         "HOST": "web",
         "PORT": "5432",
     }
@@ -222,8 +227,6 @@ TIME_ZONE = "CET"
 
 USE_I18N = True
 
-USE_TZ = True
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -250,13 +253,13 @@ MEDIA_URL = "/media/"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 20  # 20M
 FILE_UPLOAD_MAX_MEMORY_SIZE = DATA_UPLOAD_MAX_MEMORY_SIZE
 
-#
+# to support websockets
 ASGI_APPLICATION = 'config.asgi.application'
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
+            "hosts": [("127.0.0.1", 6379)],
         },
     },
 }

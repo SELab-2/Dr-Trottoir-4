@@ -1,4 +1,5 @@
 services:
+
   reverseproxy:
     image: reverseproxy
     ports:
@@ -12,11 +13,20 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
     restart: always
 
-  # database
-  web:
+  redis:
+    image: redis:7.2-rc1-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis:/data
+    restart: always
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
+  database:
     image: postgres:15-alpine
     ports:
-      - '5432:5432'
+      - "5432:5432"
 
     environment:
       - POSTGRES_PASSWORD=password
@@ -32,6 +42,67 @@ services:
       timeout: 5s
       retries: 5
 
+
+  backend-wsgi:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    command: [ "gunicorn", "config.wsgi:application", "-b", "localhost:8000" ]
+
+    ports:
+      - 8000:8000
+
+    environment:
+      - DEBUG=False
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=django
+      - POSTGRES_DB=drtrottoir
+
+    volumes:
+      - ./backend:/app/backend-wsgi
+
+    # TODO: update health check to check the right port
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost/api/" ]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  backend-asgi:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    command: [ "daphne", "config.asgi:application", "-b", "localhost", "-p", "9000" ]
+
+    ports:
+      - 9000:9000
+
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - DEBUG=False
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=django
+      - POSTGRES_DB=drtrottoir
+
+    volumes:
+      - ./backend:/app/backend-asgi
+
+    depends_on:
+      backend-wsgi:
+        condition: service_started
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
   frontend:
     build:
       context: ./frontend
@@ -46,22 +117,9 @@ services:
       - ./frontend/locales:/app/frontend/locales
 
     depends_on:
-      - backend
-      - reverseproxy
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=django
-      - POSTGRES_DB=drtrottoir
-
-    volumes:
-      - ./backend:/app/backend
-
-    depends_on:
-      web:
-        condition: service_healthy
+      backend-wsgi:
+        condition: service_started
+      backend-asgi:
+        condition: service_started
+      reverseproxy:
+        condition: service_started
