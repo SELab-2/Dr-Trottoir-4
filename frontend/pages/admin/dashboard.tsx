@@ -12,7 +12,7 @@ import {styled} from '@mui/system';
 import LiveField from '@/components/liveField';
 import { BuildingComment } from '@/lib/building-comment';
 import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from '@/lib/building-on-tour';
-import { getAllRemarksAtBuildingWithBuildingId, getRemarkAtBuilding } from '@/lib/remark-at-building';
+import { getRemarksAtBuildingOfSpecificBuilding, RemarkAtBuilding, RemarkAtBuildingInterface, translateRemartAtBuildingType } from '@/lib/remark-at-building';
 
 const GreenLinearProgress = styled(LinearProgress)(() => ({
     height: '20px',
@@ -31,8 +31,8 @@ function AdminDashboard() {
     const [remarksRecord, setRemarksRecord] = useState<Record<string, number>>({});
     const [progressRecord, setProgressRecord] = useState<Record<string, number>>({});
 
-    const getRemarkText = (studentOnTourId: number) : string => {
-        const numberOfRemarks = remarksRecord[studentOnTourId];
+    const getRemarkText = (numberOfRemarks: number) : string => {
+        //const numberOfRemarks = remarksRecord[studentOnTourId];
         let extension = "";
         if (numberOfRemarks > 1) {
             extension = "en";
@@ -49,10 +49,16 @@ function AdminDashboard() {
             async (buildingRes) => {
                 const buildingsOnTour : BuildingOnTour[] = buildingRes.data;
                 for (const buildingOnTour of buildingsOnTour) {
-                    await getAllRemarksAtBuildingWithBuildingId(buildingOnTour.building).then(
+                    await getRemarksAtBuildingOfSpecificBuilding(buildingOnTour.building).then(
                         (remarkRes) => {
                             // don't actually care about the remark, just the count
-                            remarksCount++;
+                            const remarks : RemarkAtBuildingInterface[] = remarkRes.data;
+                            for (const remark of remarks) {
+                                if (translateRemartAtBuildingType(remark.type) === "Opmerking")
+                                {
+                                    remarksCount++;
+                                }
+                            }
                         },
                         (remarkErr) => {
                             // no remarks on the building
@@ -158,7 +164,10 @@ function AdminDashboard() {
                             <td>
                                 {remarksRecord[studentOnTour.id] > 0 ? (
                                     <button onClick={() => redirectToRemarksPage(studentOnTour.id)}>
-                                        {getRemarkText(studentOnTour.id)}
+                                        <LiveField 
+                                            fetcher={() => fetchRemarks(studentOnTour)}
+                                            formatter={getRemarkText}
+                                        />
                                     </button>
                                 ) : (
                                     "Geen opmerkingen"
