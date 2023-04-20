@@ -1947,6 +1947,50 @@
     }
 },
 {
+    "model": "base.studentontour",
+    "pk": 52,
+    "fields": {
+        "tour": 1,
+        "date": "2023-04-18",
+        "student": [
+            "stanford@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentontour",
+    "pk": 53,
+    "fields": {
+        "tour": 2,
+        "date": "2023-04-17",
+        "student": [
+            "stella@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentontour",
+    "pk": 54,
+    "fields": {
+        "tour": 3,
+        "date": "2023-04-19",
+        "student": [
+            "sten@test.com"
+        ]
+    }
+},
+{
+    "model": "base.studentontour",
+    "pk": 55,
+    "fields": {
+        "tour": 2,
+        "date": "2023-04-18",
+        "student": [
+            "stacey@test.com"
+        ]
+    }
+},
+{
     "model": "base.remarkatbuilding",
     "pk": 15,
     "fields": {
@@ -6990,6 +7034,78 @@
         ],
         "object_id": "19",
         "object_repr": "VE for Veldstraat 2, Gent 9000",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 303,
+    "fields": {
+        "action_time": "2023-04-20T12:51:17.017Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "52",
+        "object_repr": "stanford@test.com (Student (rank: 3)) at Tour Centrum in region Gent on 2023-04-18",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 304,
+    "fields": {
+        "action_time": "2023-04-20T12:51:30.328Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "53",
+        "object_repr": "stella@test.com (Student (rank: 3)) at Tour Grote Markt in region Antwerpen on 2023-04-17",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 305,
+    "fields": {
+        "action_time": "2023-04-20T12:51:49.184Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "54",
+        "object_repr": "sten@test.com (Student (rank: 3)) at Tour UGent Campussen in region Gent on 2023-04-19",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 306,
+    "fields": {
+        "action_time": "2023-04-20T12:52:00.322Z",
+        "user": [
+            "admin@test.com"
+        ],
+        "content_type": [
+            "base",
+            "studentontour"
+        ],
+        "object_id": "55",
+        "object_repr": "stacey@test.com (Student (rank: 3)) at Tour Grote Markt in region Antwerpen on 2023-04-18",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
