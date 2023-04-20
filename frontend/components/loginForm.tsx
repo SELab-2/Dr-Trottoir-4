@@ -14,7 +14,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
-import PasswordInput from "@/components/passwordInput";
+import PasswordInput from "@/components/password/passwordInput";
 
 
 function LoginForm() {
@@ -81,7 +81,7 @@ function LoginForm() {
             <PasswordInput value={password} setPassword={setPassword}
                            handlePasswordVisibility={handlePasswordVisibility} showPassword={showPassword}
                            label={"Wachtwoord"}
-                           placeholder={"Wachtwoord"}></PasswordInput>
+                           placeholder={"Wachtwoord"} showIconButton={true}></PasswordInput>
 
             <div className="pt-1 mb-4">
                 <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} type="submit">

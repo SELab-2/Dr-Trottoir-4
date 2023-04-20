@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { getCurrentUser, getUserRole, patchUser, User } from "@/lib/user";
+import React, {useEffect, useState} from "react";
+import {getCurrentUser, getUserRole, patchUser, User} from "@/lib/user";
 import styles from "@/styles/Login.module.css";
-import { useTranslation } from "react-i18next";
-import { getAllRegions, RegionInterface } from "@/lib/region";
+import {useTranslation} from "react-i18next";
+import {getAllRegions, RegionInterface} from "@/lib/region";
 import AdminHeader from "@/components/header/adminHeader";
 import StudentHeader from "@/components/header/studentHeader";
 import SyndicHeader from "@/components/header/syndicHeader";
-import { handleError } from "@/lib/error";
+import {handleError} from "@/lib/error";
+import PasswordModal from "@/components/password/passwordModal";
+
 
 export default function UserProfile() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [user, setUser] = useState<User | null>(null);
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
@@ -18,6 +20,8 @@ export default function UserProfile() {
     const [selectedRegions, setSelectedRegions] = useState<number[]>([]);
     const [allRegions, setAllRegions] = useState<RegionInterface[]>([]);
     const [role, setRole] = useState<string>("");
+    const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false);
+
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [succesPatch, setSuccessPatch] = useState<boolean>(false);
@@ -39,6 +43,19 @@ export default function UserProfile() {
             }
         );
     }, []);
+
+    const openPasswordModal = () => {
+        setShowPasswordModal(true);
+    };
+    const closePasswordModal = () => {
+        setShowPasswordModal(false);
+    };
+
+    const handlePasswordSubmit = (newPassword: string) => {
+        // Handle the password update logic here
+        console.log("New password:", newPassword);
+    };
+
 
     function setUserInfo(u: User) {
         setRole(getUserRole(u.role.toString()));
@@ -85,9 +102,9 @@ export default function UserProfile() {
 
     return (
         <>
-            {["Admin", "Superstudent"].includes(role) && <AdminHeader />}
-            {"Student" === role && <StudentHeader />}
-            {"Syndic" === role && <SyndicHeader />}
+            {["Admin", "Superstudent"].includes(role) && <AdminHeader/>}
+            {"Student" === role && <StudentHeader/>}
+            {"Syndic" === role && <SyndicHeader/>}
             {errorMessages.length !== 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>
                     <ul>
@@ -106,7 +123,7 @@ export default function UserProfile() {
             )}
             <form className="m-2">
                 <div className="d-flex align-items-center mb-3 pb-1">
-                    <i className="fas fa-cubes fa-2x me-3" />
+                    <i className="fas fa-cubes fa-2x me-3"/>
                     <span className="h1 fw-bold mb-0">Profiel</span>
                 </div>
 
@@ -214,6 +231,17 @@ export default function UserProfile() {
                 )}
             </form>
             <div>
+                <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} onClick={openPasswordModal}>
+                    Wijzig wachtwoord
+                </button>
+
+                <PasswordModal
+                    show={showPasswordModal}
+                    closeModal={closePasswordModal}
+                    onSubmit={handlePasswordSubmit}
+                />
+
+
                 <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} onClick={submit}>
                     Pas aan
                 </button>

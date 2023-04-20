@@ -11,6 +11,7 @@ interface PasswordInputProps {
     showPassword: boolean;
     label: string;
     placeholder: string;
+    showIconButton: boolean;
 }
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
@@ -20,6 +21,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
                                                          showPassword,
                                                          label,
                                                          placeholder,
+                                                         showIconButton,
                                                      }) => {
     return (
         <div className={`form-outline mb-4`}>
@@ -40,18 +42,17 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
                     placeholder={placeholder}
                     style={{paddingRight: '40px'}}
                 />
-                <IconButton
+                {showIconButton && <IconButton
                     onClick={handlePasswordVisibility}
-                    edge="end"
                     style={{
                         position: 'absolute',
                         top: '50%',
-                        right: '12px',
+                        right: '40px',
                         transform: 'translateY(-50%)',
                     }}
                 >
                     {showPassword ? <Visibility/> : <VisibilityOff/>}
-                </IconButton>
+                </IconButton>}
             </div>
         </div>
     );
