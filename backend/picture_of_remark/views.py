@@ -127,7 +127,9 @@ class AllPictureOfRemark(APIView):
 
 
 class PicturesOfRemarkView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | (IsStudent & OwnerAccount)]
+    permission_classes = (
+        []
+    )  # IsAuthenticated, IsAdmin | IsSuperStudent | OwnerAccount | (IsStudent & OwnerAccount)] Residents should also be able to see pictures
     serializer_class = PictureOfRemarkSerializer
 
     @extend_schema(responses=get_docs(serializer_class))
@@ -135,7 +137,7 @@ class PicturesOfRemarkView(APIView):
         """
         Get all pictures on a specific remark
         """
-        pic_of_remark_instances = PictureOfRemark.objects.filter(remark_id=remark_id)
+        pic_of_remark_instances = PictureOfRemark.objects.filter(remark_at_building_id=remark_id)
         if not pic_of_remark_instances:
             return not_found("PictureOfRemark")
 

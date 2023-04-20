@@ -1,5 +1,8 @@
+from django.core.exceptions import BadRequest
 from drf_spectacular.utils import extend_schema
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from base.models import RemarkAtBuilding
@@ -23,6 +26,9 @@ from util.request_response_util import (
     patch_success,
     patch_docs,
     get_docs,
+    param_docs,
+    get_most_recent_param_docs,
+    get_boolean_param,
     post_success,
     bad_request,
 )
@@ -127,16 +133,26 @@ class RemarksAtBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyOwnerOfBuilding]
     serializer_class = RemarkAtBuildingSerializer
 
-    @extend_schema(responses=get_docs(serializer_class))
+    @extend_schema(
+        responses=get_docs(serializer_class), parameters=param_docs(get_most_recent_param_docs("RemarksAtBuilding"))
+    )
     def get(self, request, building_id):
         """
         Get all remarks on a specific building
         """
         remark_at_building_instances = RemarkAtBuilding.objects.filter(building_id=building_id)
-        if not remark_at_building_instances:
-            return not_found("RemarkAtBuilding")
 
-        for r in remark_at_building_instances:
-            self.check_object_permissions(request, r.building)
+        try:
+            most_recent_only = get_boolean_param(request, "most-recent")
+        except BadRequest as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        if most_recent_only:
+            instances = remark_at_building_instances.order_by("-timestamp").first()
+
+            # Now we have the most recent one, but there are more remarks on that same day
+            most_recent_day = str(instances.timestamp.date())
+
+            remark_at_building_instances = remark_at_building_instances.filter(timestamp__gte=most_recent_day)
 
         return get_success(self.serializer_class(remark_at_building_instances, many=True))

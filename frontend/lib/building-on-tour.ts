@@ -13,8 +13,8 @@ export async function getAllBuildingsOnTour() : Promise<AxiosResponse<any>> {
     return await api.get(request_url);
 }
 
-export async function getAllBuildingsOnTourWithTourID(buildingOnTourId : number) : Promise<AxiosResponse<any>> {
-    const request_url : string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_BUILDINGS_ON_TOUR_ID}${buildingOnTourId}`;
+export async function getAllBuildingsOnTourWithTourID(tourId : number) : Promise<AxiosResponse<any>> {
+    const request_url : string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_BUILDINGS_ON_TOUR_ID}${tourId}`;
     return await api.get(request_url);
 }
 

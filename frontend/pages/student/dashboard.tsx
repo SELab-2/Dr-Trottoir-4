@@ -1,13 +1,14 @@
 import StudentHeader from "@/components/header/studentHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useEffect, useState } from "react";
-import { getToursOfStudent, datesEqual, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import { getToursOfStudent, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
 import { getCurrentUser, User } from "@/lib/user";
 import { getTour, Tour } from "@/lib/tour";
 import { getRegion, RegionInterface } from "@/lib/region";
 import ToursList from "@/components/student/toursList";
 import { useRouter } from "next/router";
 import Loading from "@/components/loading";
+import { datesEqual } from "@/lib/date";
 
 // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=32-29&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
 function StudentDashboard() {
@@ -95,11 +96,11 @@ function StudentDashboard() {
         }, console.error);
     }, [user]);
 
-    function redirectToSchedule(studentOnTourId: number, regionId: number): void {
+    function redirectToSchedule(studentOnTourId: number): void {
         router
             .push({
                 pathname: "/student/schedule",
-                query: { regionId, studentOnTourId },
+                query: { studentOnTourId },
             })
             .then();
     }

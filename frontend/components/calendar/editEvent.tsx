@@ -1,22 +1,35 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import { User } from "@/lib/user";
+import { Tour } from "@/lib/tour";
 
 function EditEventModal(data: any) {
-    const { event, isOpen, onClose, onSave, onDelete } = data;
-    const [title, setTitle] = useState(event.title);
+    const { event, allStudents, allTours, isOpen, onClose, onSave, onDelete } = data;
+    const [tour, setTour] = useState<Tour | null>(event.tour);
     const [student, setStudent] = useState(event.student);
-    const [start_time, setStarttime] = useState(event.start_time);
-    const [end_time, setEndtime] = useState(event.end_time);
 
     const handleSave = () => {
-        onSave({ title, student, start_time, end_time });
+        let data = { tour: tour, student: student };
+        onSave(data);
         onClose();
     };
 
     const handleDelete = () => {
         onDelete({ event });
         onClose();
+    };
+
+    const handleTourChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        const tourID = Number(e.target.value);
+        const selectedTour = allTours.find((tour: Tour) => tour.id === tourID);
+        setTour(selectedTour);
+    };
+
+    const handleStudentChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        const studentID = Number(e.target.value);
+        const selectedStudent = allStudents.find((user: User) => user.id === studentID);
+        setStudent(selectedStudent);
     };
 
     return (
@@ -28,41 +41,24 @@ function EditEventModal(data: any) {
                 <form>
                     <div className="form-group">
                         <label>Ronde</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                        />
+                        <select className="form-control" value={tour?.id} onChange={handleTourChange}>
+                            <option value="">-- Selecteer Ronde --</option>
+                            {allTours.map((tour: Tour) => (
+                                <option key={tour.id} value={tour.id}>
+                                    {tour.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <div className="form-group">
                         <label>Student</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={student}
-                            onChange={(e) => setStudent(e.target.value)}
-                        />
-                    </div>
-                    <div className="form-row">
-                        <div className="col">
-                            <label>Start uur:</label>
-                            <input
-                                type="time"
-                                className="form-control"
-                                value={start_time}
-                                onChange={(event) => setStarttime(event.target.value)}
-                            />
-                        </div>
-                        <div className="col">
-                            <label htmlFor="end-time">Eind uur:</label>
-                            <input
-                                type="time"
-                                className="form-control"
-                                value={end_time}
-                                onChange={(event) => setEndtime(event.target.value)}
-                            />
-                        </div>
+                        <select className="form-control" value={student?.id} onChange={handleStudentChange}>
+                            {allStudents.map((user: User) => (
+                                <option key={user.id} value={user.id}>
+                                    {user.first_name} {user.last_name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </form>
             </Modal.Body>
@@ -70,11 +66,8 @@ function EditEventModal(data: any) {
                 <Button variant="danger" onClick={handleDelete}>
                     Delete
                 </Button>
-                <Button variant="secondary" onClick={onClose}>
-                    Close
-                </Button>
                 <Button variant="primary" onClick={handleSave}>
-                    Save Changes
+                    Sla op
                 </Button>
             </Modal.Footer>
         </Modal>

@@ -1,8 +1,12 @@
-import React, { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { Button, Form, Modal } from "react-bootstrap";
-import { BuildingInterface, generateNewPublicId, getNewPublicId, patchBuildingInfo } from "@/lib/building";
-import build from "next/dist/build";
+import { BuildingInterface, BuildingSyndicPostInterface } from "@/lib/building";
+import {
+    getNewPublicIdUtil,
+    handleInputChangeUtil,
+    handleSubmitUtil,
+} from "@/components/building/buildingComponents/editModals/handleUtil";
 
 function PatchBuildingSyndicModal({
     show,
@@ -15,15 +19,11 @@ function PatchBuildingSyndicModal({
     building: BuildingInterface | null;
     setBuilding: (x: any) => void;
 }) {
-    interface formData {
-        name: string;
-        public_id: string;
-    }
-
-    const [formData, setFormData] = useState<formData>({
+    const [formData, setFormData] = useState<BuildingSyndicPostInterface>({
         name: "",
         public_id: "",
     });
+
     const [errorText, setErrorText] = useState("");
 
     useEffect(() => {
@@ -36,66 +36,23 @@ function PatchBuildingSyndicModal({
     const newPublicId = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-        console.log(`Building id is ${building?.id}`);
-
-        getNewPublicId()
-            .then((res) => {
-                //setBuilding(res.data);
-                setFormData({
-                    ...formData,
-                    public_id: res.data.public_id,
-                });
-            })
-            .catch((error) => {
-                //TODO: generieke functie nodig voor error messages
-                console.error(error);
-            });
-    };
-
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        event.preventDefault();
-
-        const name = event.target.name;
-        const value = event.target.value;
-
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-
-        console.log(`handleInputChange is dus gedaan, nu is formData ${JSON.stringify(formData)}`);
+        try {
+            getNewPublicIdUtil(event, formData, setFormData);
+        } catch (error) {
+            //TODO: generic component
+            console.error(JSON.stringify(error));
+        }
     };
 
     const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-        console.log("form data");
-        console.log(formData);
-
-        console.log(`In handleSubmit ${JSON.stringify(formData)}`);
-
-        let toSend: any = {};
-        for (const [key, value] of Object.entries(formData)) {
-            // @ts-ignore
-            if (value && (!building || building[key] != value)) {
-                toSend[key] = value;
-            }
+        try {
+            await handleSubmitUtil(event, formData, building, setBuilding, closeModal);
+        } catch (error: any) {
+            //TODO: generic error component
+            setErrorText(JSON.stringify(error.response.data));
         }
-
-        if (Object.keys(toSend).length === 0) return;
-
-        patchBuildingInfo("" + building?.id, toSend)
-            .then((res) => {
-                setBuilding(res.data);
-                closeModal();
-            })
-            .catch((error) => {
-                // TODO: generieke functie
-                console.log("We hebben een error");
-                setErrorText(error.response.data.detail);
-                console.log(error.response.data.detail);
-                console.log(error);
-            });
     };
 
     return (
@@ -110,7 +67,7 @@ function PatchBuildingSyndicModal({
                                 <Form.Control
                                     name="name"
                                     value={formData.name}
-                                    onChange={handleInputChange}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="Vul de naam van het gebouw in"
                                 />
                             </Form.Group>
@@ -120,7 +77,7 @@ function PatchBuildingSyndicModal({
                                 <Form.Control
                                     name="public_id"
                                     value={formData.public_id}
-                                    onChange={handleInputChange}
+                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                     placeholder="vul het public id van het gebouw in"
                                 />
                                 <Button variant={"success"} size={"sm"} onClick={newPublicId}>
@@ -130,10 +87,15 @@ function PatchBuildingSyndicModal({
                             <Form.Text className="text-muted">
                                 De inwoners van uw gebouw kunnen info over vuilnisophaling zien op de link{" "}
                                 <a
-                                    href={`${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_OWNER_BUILDING}${building?.public_id}`}
+                                    href={
+                                        building?.public_id
+                                            ? `${process.env.NEXT_PUBLIC_HOST}public/building/${building?.public_id}`
+                                            : "#"
+                                    }
                                 >
-                                    `${process.env.NEXT_PUBLIC_BASE_API_URL}$
-                                    {process.env.NEXT_PUBLIC_API_OWNER_BUILDING}${building?.public_id}`
+                                    {`${process.env.NEXT_PUBLIC_HOST}public/building/${
+                                        building?.public_id ? building?.public_id : "<public_id>"
+                                    }`}
                                 </a>
                             </Form.Text>
                         </Form.Group>

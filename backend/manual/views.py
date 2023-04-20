@@ -91,17 +91,30 @@ class ManualBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent | OwnerOfBuilding]
     serializer_class = ManualSerializer
 
-    @extend_schema(responses=get_docs(ManualSerializer))
+    @extend_schema(
+        responses=get_docs(ManualSerializer),
+        parameters=param_docs(get_most_recent_param_docs("manual")),
+    )
     def get(self, request, building_id):
         """
         Get all manuals of a building with given id
         """
+
         if not Building.objects.filter(id=building_id):
             return not_found("Building")
 
+        try:
+            most_recent_only = get_boolean_param(request, "most-recent")
+        except BadRequest as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         manual_instances = Manual.objects.filter(building_id=building_id)
-        serializer = ManualSerializer(manual_instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        if most_recent_only:
+            manual_instances = manual_instances.order_by("-version_number").first()
+
+        serializer = ManualSerializer(manual_instances, many=not most_recent_only)
+        return get_success(serializer)
 
 
 class ManualsView(APIView):
@@ -115,4 +128,4 @@ class ManualsView(APIView):
         instances = Manual.objects.all()
 
         serializer = ManualSerializer(instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_success(serializer)

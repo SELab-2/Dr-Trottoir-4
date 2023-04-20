@@ -52,7 +52,7 @@ export async function getAllUsers(includeInactiveUser: boolean = false): Promise
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
     return await api.get(request_url, {
         params: {
-            "include-inactive": includeInactiveUser
+            "include-inactive-bool": includeInactiveUser
         }
     });
 }

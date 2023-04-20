@@ -13,72 +13,90 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import EditEventModal from "@/components/calendar/editEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
+import { getALlStudentOnTourFromDate, postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
+import { Tour } from "@/lib/tour";
+import { User } from "@/lib/user";
+import { addDays } from "date-fns";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
+import LoadEventsModal from "@/components/calendar/loadEvents";
 
 interface MyEvent extends Event {
-    student: string;
+    tour: Tour;
+    student: User;
     start: Date;
     end: Date;
-    start_time: string;
-    end_time: string;
 }
 
-const MyCalendar: FC = () => {
+interface Props {
+    students: User[];
+    tours: Tour[];
+}
+
+const MyCalendar: FC<Props> = (props) => {
     const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
+    const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-    const [events, setEvents] = useState<MyEvent[]>([
-        // This will be replaced by backend events
-        {
-            title: "Antwerpen",
-            start: new Date(2023, 3, 6),
-            end: new Date(2023, 3, 6),
-            student: "Test1",
-            start_time: "17:00",
-            end_time: "20:00",
-        },
-        {
-            title: "Antwerpen",
-            start: new Date(2023, 3, 6),
-            end: new Date(2023, 3, 6),
-            student: "Test2",
-            start_time: "17:00",
-            end_time: "20:00",
-        },
-        {
-            title: "Antwerpen",
-            start: new Date(2023, 3, 6),
-            end: new Date(2023, 3, 6),
-            student: "Test3",
-            start_time: "17:00",
-            end_time: "20:00",
-        },
-    ]);
+    const [events, setEvents] = useState<MyEvent[]>([]);
+
+    const onEventsLoad = ({ start_date, end_date }: { start_date: Date; end_date: Date }) => {
+        getALlStudentOnTourFromDate({ startDate: new Date(start_date), endDate: new Date(end_date) }).then(
+            (res) => {
+                const list: StudentOnTour[] = res.data;
+                const tours = groupByKey(list, "tour");
+                let data: MyEvent[] = [];
+                for (let a in tours) {
+                    const t = parseInt(a);
+                    const value = tours[t];
+                    let tour: Tour = props.tours.filter(function (tour: Tour) {
+                        return tour.id == t;
+                    })[0];
+                    for (let b in value) {
+                        const v = parseInt(b);
+                        const item = value[v];
+                        let student: User = props.students.filter(function (user: User) {
+                            return user.id == item.student;
+                        })[0];
+                        let start = new Date(item.date);
+                        let end = addDays(start, 1);
+                        start.setHours(0);
+                        end.setHours(0);
+                        data[t] = { tour: tour, student: student, start: start, end: end };
+                    }
+                    data = data.filter(Boolean);
+                    onEventsAdd(data);
+                }
+            },
+            (err) => {
+                console.error(err);
+            }
+        );
+    };
+
+    function groupByKey(array: any[], key: string) {
+        return array.reduce((result, currentValue) => {
+            const groupKey = currentValue[key];
+            (result[groupKey] = result[groupKey] || []).push(currentValue);
+            return result;
+        }, {});
+    }
 
     const onEventSelection = (e: Event) => {
+        console.log(e);
         setSelectedEvent(e);
         setPopupIsOpenEdit(true);
     };
 
-    const onEventEdit = ({
-        title,
-        student,
-        start_time,
-        end_time,
-    }: {
-        title: string;
-        student: string;
-        start_time: string;
-        end_time: string;
-    }) => {
+    const onEventEdit = ({ tour, student }: { tour: Tour; student: User }) => {
         setEvents((currentEvents) => {
             return currentEvents.map((currentEvent) => {
                 if (currentEvent === selectedEvent) {
                     return {
                         ...currentEvent,
-                        title: title,
+                        tour: tour,
                         student: student,
-                        start_time: start_time,
-                        end_time: end_time,
                     };
                 }
                 return currentEvent;
@@ -86,52 +104,25 @@ const MyCalendar: FC = () => {
         });
     };
 
-    const onEventAdd = ({
-        title,
-        student,
-        start,
-        end,
-        start_time,
-        end_time,
-    }: {
-        title: string;
-        student: string;
-        start: Date;
-        end: Date;
-        start_time: string;
-        end_time: string;
-    }) => {
+    const onEventAdd = ({ tour, student, start, end }: { tour: Tour; student: User; start: Date; end: Date }) => {
         setEvents((currentEvents) => {
             const newEvent: MyEvent = {
-                title: title,
+                tour: tour,
                 student: student,
                 start: start,
                 end: end,
-                start_time: start_time,
-                end_time: end_time,
             };
             return [...currentEvents, newEvent];
         });
     };
 
-    const onEventsAdd = (eventData: {
-        title: string;
-        data: {
-            student: string;
-            start: Date;
-            end: Date;
-        }[];
-        start_time: string;
-        end_time: string;
-    }) => {
+    const onEventsAdd = (eventData: MyEvent[]) => {
         setEvents((currentEvents) => {
-            const newEvents = eventData.data.map((event) => ({
-                title: eventData.title,
+            const newEvents = eventData.map((event) => ({
+                tour: event.tour,
                 student: event.student,
                 start: event.start,
                 end: event.end,
-                start_time: eventData.start_time,
-                end_time: eventData.end_time,
             }));
             return [...currentEvents, ...newEvents];
         });
@@ -145,6 +136,8 @@ const MyCalendar: FC = () => {
                     return {
                         ...currentEvent,
                         start: new Date(start),
+                        startDate: new Date(start),
+                        endDate: new Date(end),
                         end: new Date(end),
                     };
                 }
@@ -161,24 +154,49 @@ const MyCalendar: FC = () => {
         });
     };
 
-    const handlePopupOpen = () => {
-        setPopupIsOpenAdd(true);
+    const getDaysArray = function (start: Date, end: Date) {
+        let arr = [];
+        let dt = new Date(start);
+        for (; dt <= new Date(end); dt.setDate(dt.getDate() + 1)) {
+            arr.push(new Date(dt));
+        }
+        return arr;
     };
 
-    const handlePopupCloseEdit = () => {
-        setSelectedEvent(null);
-        setPopupIsOpenEdit(false);
-    };
-
-    const handlePopupCloseAdd = () => {
-        setPopupIsOpenAdd(false);
+    const handleScheduleSave = () => {
+        const toLoad = events.filter(Boolean);
+        for (let e in toLoad) {
+            postStudentOnTour(toLoad[e].tour.id, toLoad[e].student.id, formatDate(toLoad[e].start)).then(
+                (_) => {},
+                (err) => {
+                    const e = handleError(err);
+                    setErrorMessages(e);
+                }
+            );
+        }
     };
 
     return (
         <>
-            <button className="btn btn-primary mb-3" onClick={handlePopupOpen}>
+            <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenAdd(true)}>
                 Voeg ronde toe
             </button>
+            <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenLoad(true)}>
+                Kies vorige planning
+            </button>
+            <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>
+                Sla planning op
+            </button>
+            {errorMessages.length !== 0 && (
+                <div className={"visible alert alert-danger alert-dismissible fade show"}>
+                    <ul>
+                        {errorMessages.map((err, i) => (
+                            <li key={i}>{err}</li>
+                        ))}
+                    </ul>
+                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])} />
+                </div>
+            )}
             <DnDCalendar
                 messages={messages}
                 culture={"nl-BE"}
@@ -194,23 +212,30 @@ const MyCalendar: FC = () => {
                 onEventDrop={onEventResize}
                 onEventResize={onEventResize}
                 resizable
-                defaultDate={new Date(2023, 3, 6)}
             />
             {selectedEvent && (
                 <EditEventModal
                     event={selectedEvent}
+                    allStudents={props.students}
+                    allTours={props.tours}
                     isOpen={popupIsOpenEdit}
-                    onClose={handlePopupCloseEdit}
+                    onClose={() => {
+                        setSelectedEvent(null);
+                        setPopupIsOpenEdit(false);
+                    }}
                     onSave={onEventEdit}
                     onDelete={onEventDelete}
                 />
             )}
             <AddEventModal
+                allStudents={props.students}
+                allTours={props.tours}
                 isOpen={popupIsOpenAdd}
-                onClose={handlePopupCloseAdd}
+                onClose={() => setPopupIsOpenAdd(false)}
                 onSave={onEventAdd}
                 onSaveMultiple={onEventsAdd}
             />
+            <LoadEventsModal isOpen={popupIsOpenLoad} onClose={() => setPopupIsOpenLoad(false)} onSave={onEventsLoad} />
         </>
     );
 };
