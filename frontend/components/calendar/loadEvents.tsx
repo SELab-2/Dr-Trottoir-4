@@ -1,14 +1,14 @@
-import {useState} from 'react';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
+import { useState } from "react";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 function LoadEventsModal(data: any) {
-    const {isOpen, onClose, onSave} = data
+    const { isOpen, onClose, onSave } = data;
     const [start_date, setStartdate] = useState("");
     const [end_date, setEnddate] = useState("");
 
     const handleSave = () => {
-        onSave({start_date, end_date});
+        onSave({ start_date, end_date });
         onClose();
     };
 
@@ -22,13 +22,21 @@ function LoadEventsModal(data: any) {
                     <div className="form-row">
                         <div className="col">
                             <label>Start datum:</label>
-                            <input type="date" className="form-control" value={start_date}
-                                   onChange={(event) => setStartdate(event.target.value)}/>
+                            <input
+                                type="date"
+                                className="form-control"
+                                value={start_date}
+                                onChange={(event) => setStartdate(event.target.value)}
+                            />
                         </div>
                         <div className="col">
                             <label htmlFor="end-time">Eind datum:</label>
-                            <input type="date" className="form-control" value={end_date}
-                                   onChange={(event) => setEnddate(event.target.value)}/>
+                            <input
+                                type="date"
+                                className="form-control"
+                                value={end_date}
+                                onChange={(event) => setEnddate(event.target.value)}
+                            />
                         </div>
                     </div>
                 </form>

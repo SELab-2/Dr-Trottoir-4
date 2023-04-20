@@ -14,8 +14,14 @@ from datetime import timedelta
 from pathlib import Path
 
 from django.utils.translation import gettext_lazy as _
+import os
 
-from .secrets import DJANGO_SECRET_KEY, SECRET_EMAIL_USER, SECRET_EMAIL_USER_PSWD
+try:
+    from .secrets import DJANGO_SECRET_KEY, SECRET_EMAIL_USER, SECRET_EMAIL_USER_PSWD
+except ImportError:
+    DJANGO_SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+    SECRET_EMAIL_USER = os.environ.get("SECRET_EMAIL_USER")
+    SECRET_EMAIL_USER_PSWD = os.environ.get("SECRET_EMAIL_USER_PSWD")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

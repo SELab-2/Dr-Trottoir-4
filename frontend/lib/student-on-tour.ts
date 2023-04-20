@@ -50,3 +50,9 @@ export async function getAllStudentOnTourFromToday() {
     const date = new Date();
     return getAllStudentOnTourFromDate({startDate: date, endDate: date});
 }
+
+// TODO this will be fully implemented once the required endpoint for it exists
+export async function getProgress(studentOnTourId: number){
+    const request_url = "";
+    return 0.5;
+}
