@@ -12,6 +12,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+      - shared-images:/www/api/media
     restart: always
 
   # database
@@ -63,9 +64,14 @@ services:
 
     volumes:
       - ./backend:/app/backend
+      - shared-images:/app/media
 
     mem_limit: 4g
 
     depends_on:
       web:
         condition: service_healthy
+
+volumes:
+  shared-images:
+    name: images

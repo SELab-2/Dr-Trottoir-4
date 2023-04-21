@@ -1,3 +1,5 @@
+import os
+import uuid
 from datetime import date, datetime
 
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -13,7 +15,7 @@ from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2**31 - 1
+MAX_INT = 2 ** 31 - 1
 
 
 class Region(models.Model):
@@ -376,8 +378,14 @@ class RemarkAtBuilding(models.Model):
         ]
 
 
+def get_file_path_image(instance, filename):
+    extension = filename.split(".")[-1]
+    filename = str(uuid.uuid4()) + "." + extension
+    return os.path.join("building_images/", filename)
+
+
 class PictureOfRemark(models.Model):
-    picture = models.ImageField(upload_to="building_pictures/")
+    picture = models.ImageField(upload_to=get_file_path_image)
     remark_at_building = models.ForeignKey(RemarkAtBuilding, on_delete=models.SET_NULL, null=True)
     hash = models.TextField(blank=True, null=True)
 
@@ -414,9 +422,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-            self.version_number == 0
-            or self.version_number > max_version_number + 1
-            or self.version_number in version_numbers
+                self.version_number == 0
+                or self.version_number > max_version_number + 1
+                or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 
