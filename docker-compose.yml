@@ -1,7 +1,8 @@
 services:
 
-  reverseproxy:
-    image: reverseproxy
+  nginx:
+    image: nginx:1.23.4-alpine
+
     ports:
       - 2002:2002
       - 80:80
@@ -11,12 +12,16 @@ services:
       dockerfile: Dockerfile
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-    restart: always
+    depends_on:
+      - backend-asgi
+      - backend-wsgi
+      - frontend
 
   redis:
     image: redis:7.2-rc1-alpine
-    ports:
-      - "6379:6379"
+
+    expose:
+      - 6379
     volumes:
       - ./redis:/data
     restart: always
@@ -25,13 +30,14 @@ services:
 
   database:
     image: postgres:15-alpine
-    ports:
-      - "5432:5432"
+
+    expose:
+      - 5432
 
     environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=django
-      - POSTGRES_DB=drtrottoir
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
 
     volumes:
       - ./data/drtrottoir:/var/lib/postgresql/data/
@@ -48,23 +54,22 @@ services:
       context: ./backend
       dockerfile: Dockerfile
 
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      SECRET_EMAIL_USER: ${SECRET_EMAIL_USER}
+      SECRET_EMAIL_USER_PSWD: ${SECRET_EMAIL_USER_PSWD}
+
     command: [ "gunicorn", "config.wsgi:application", "-b", "localhost:8000" ]
 
-    ports:
-      - 8000:8000
-
-    environment:
-      - DEBUG=False
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=django
-      - POSTGRES_DB=drtrottoir
+    expose:
+      - 8000
 
     volumes:
       - ./backend:/app/backend-wsgi
 
-    # TODO: update health check to check the right port
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost/api/" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8000" ]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -80,22 +85,30 @@ services:
       context: ./backend
       dockerfile: Dockerfile
 
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      SECRET_EMAIL_USER: ${SECRET_EMAIL_USER}
+      SECRET_EMAIL_USER_PSWD: ${SECRET_EMAIL_USER_PSWD}
+      # TODO: strangely the methods in wsgi work without this, check why this isn't the case for asgi
+      DJANGO_SETTINGS_MODULE: config.settings
+
     command: [ "daphne", "config.asgi:application", "-b", "localhost", "-p", "9000" ]
 
-    ports:
-      - 9000:9000
+    expose:
+      - 9000
 
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings
-      - DEBUG=False
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=django
-      - POSTGRES_DB=drtrottoir
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://localhost:9000" ]
+      interval: 1m
+      timeout: 10s
+      retries: 3
 
     volumes:
       - ./backend:/app/backend-asgi
 
     depends_on:
+      # this dependency to backend-wsgi makes sure we don't loop infinitely
       backend-wsgi:
         condition: service_started
       database:
@@ -107,6 +120,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        ENVIRONMENT: ${ENVIRONMENT}
+
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT}
+
+    expose:
+      - 3000
 
     volumes:
       - ./frontend/pages:/app/frontend/pages
@@ -120,6 +141,4 @@ services:
       backend-wsgi:
         condition: service_started
       backend-asgi:
-        condition: service_started
-      reverseproxy:
         condition: service_started

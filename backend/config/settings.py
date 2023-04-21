@@ -10,11 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import collections
+import os
 import sys
 from datetime import timedelta
 from pathlib import Path
-
-from .secrets import DJANGO_SECRET_KEY, SECRET_EMAIL_USER, SECRET_EMAIL_USER_PSWD
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,11 +21,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-SECRET_KEY = DJANGO_SECRET_KEY
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# TODO: Possibly get this out of environmental variables docker file!
-DEBUG = True
+DEBUG = os.environ["ENVIRONMENT"] == "development"
 
 ALLOWED_HOSTS = ["*", "localhost", "127.0.0.1", "172.17.0.0"]
 
@@ -242,8 +239,8 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
-EMAIL_HOST_USER = SECRET_EMAIL_USER
-EMAIL_HOST_PASSWORD = SECRET_EMAIL_USER_PSWD
+EMAIL_HOST_USER = os.environ["SECRET_EMAIL_USER"]
+EMAIL_HOST_PASSWORD = os.environ["SECRET_EMAIL_USER_PSWD"]
 
 # Media
 MEDIA_ROOT = "/app/media"
