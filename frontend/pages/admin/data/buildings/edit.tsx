@@ -64,6 +64,7 @@ function AdminDataBuildingsEdit() {
                     if (manual) {
                         const res2 = await postManual({building: res.data.id, version_number: 0, file: manual});
                     }
+                    goBack();
                 }
                 setShowConfirmation(true);
             } catch (error: any) {
