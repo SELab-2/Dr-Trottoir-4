@@ -62,10 +62,7 @@ function AdminDataBuildingsEdit() {
                 } else {
                     const res = await postBuilding(building);
                     if (manual) {
-                        const pmanual = {building: res.data.id, version_number: 0, file: manual};
-                        console.log(pmanual);
-                        const res2 = await postManual(pmanual);
-                        console.log(res2);
+                        const res2 = await postManual({building: res.data.id, version_number: 0, file: manual});
                     }
                 }
                 setShowConfirmation(true);
