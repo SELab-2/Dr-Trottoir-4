@@ -1,17 +1,18 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { Form } from "react-bootstrap";
-import { getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding } from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { getUserInfo, userSearchString } from "@/lib/user";
+import React, {ChangeEvent, useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {Form} from "react-bootstrap";
+import {getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding} from "@/lib/building";
+import {getRegion} from "@/lib/region";
+import {getUserInfo, userSearchString} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutocomplete";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessage from "@/components/errorMessage";
 import ConfirmationMessage from "@/components/confirmMessage";
+import {postManual} from "@/lib/building-manual";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -60,6 +61,12 @@ function AdminDataBuildingsEdit() {
                     const res = await patchBuilding(building, Number(router.query.building));
                 } else {
                     const res = await postBuilding(building);
+                    if (manual) {
+                        const pmanual = {building: res.data.id, version_number: 0, file: manual};
+                        console.log(pmanual);
+                        const res2 = await postManual(pmanual);
+                        console.log(res2);
+                    }
                 }
                 setShowConfirmation(true);
             } catch (error: any) {
@@ -110,14 +117,14 @@ function AdminDataBuildingsEdit() {
 
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             <div className={styles.container}>
                 <ConfirmationMessage
                     showConfirm={showConfirmation}
                     confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
                     onClose={setShowConfirmation}
                 ></ConfirmationMessage>
-                <ErrorMessage formErrors={formErrors} errorMessage={errorMessage} onClose={setFormErrors} />
+                <ErrorMessage formErrors={formErrors} errorMessage={errorMessage} onClose={setFormErrors}/>
                 <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
                     <Form.Group controlId="buildingName">
                         <Form.Label>Gebouw naam</Form.Label>
