@@ -12,13 +12,12 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import AdminHeader from "@/components/header/adminHeader";
 import {addDays, addHours, endOfWeek} from "date-fns";
 
-
 export default function GarbageCollectionSchedule() {
 
     const [garbageCollection, setGarbageCollection] = useState<GarbageCollectionInterface[]>([]);
 
     useEffect(() => {
-        getFromRange({start : startOfWeek(new Date()), end : endOfWeek(new Date())});
+        getFromRange({start : startOfWeek(new Date(), { weekStartsOn: 1 }), end : endOfWeek(new Date(), { weekStartsOn: 1 })});
     }, []);
 
     const locales = {
@@ -46,6 +45,19 @@ export default function GarbageCollectionSchedule() {
         }, console.error);
     }
 
+    function getGarbageColor(garbageType : string) {
+        const garbageColors: Record<string, string> = {
+            "GFT": "green",
+            "Glas": "gainsboro",
+            "Grof vuil": "sienna",
+            "Kerstbomen": "seagreen",
+            "Papier": "goldenrod",
+            "PMD": "dodgerblue",
+            "Restafval": "dimgrey",
+        };
+        return garbageColors[garbageType] ? garbageColors[garbageType] : "blue";
+    }
+
     return (
         <>
             <AdminHeader/>
@@ -62,9 +74,13 @@ export default function GarbageCollectionSchedule() {
                         start : s,
                         end : e,
                         title : garbageTypes[g.garbage_type]
-                    }
+                    };
                 })}
                 localizer={loc}
+                eventPropGetter={(event) => {
+                    const backgroundColor = getGarbageColor(event.title);
+                    return { style: { backgroundColor, color:"black" } }
+                }}
                 selectable
                 onSelectEvent={() => console.log("hallo")}
                 onRangeChange={getFromRange}
