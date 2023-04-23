@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { Button } from "react-bootstrap";
-import { Delete, Edit, Email, Info } from "@mui/icons-material";
+import { Delete, Edit, Email, Info, CalendarMonth } from "@mui/icons-material";
 import { BuildingView } from "@/types";
 import { getUserInfo } from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
@@ -140,6 +140,13 @@ function AdminDataBuildings() {
         });
     }
 
+    async function routeToGarbageSchedule(buildingView: BuildingView) {
+        await router.push({
+            pathname: `/admin/data/buildings/garbage`,
+            query: { buildingId: buildingView.building_id },
+        });
+    }
+
     return (
         <>
             <AdminHeader />
@@ -201,6 +208,16 @@ function AdminDataBuildings() {
                                 }}
                             >
                                 <Email />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verstuur mail">
+                            <IconButton
+                                onClick={() => {
+                                    const buildingView: BuildingView = row.original;
+                                    routeToGarbageSchedule(buildingView).then();
+                                }}
+                            >
+                                <CalendarMonth />
                             </IconButton>
                         </Tooltip>
                     </Box>
