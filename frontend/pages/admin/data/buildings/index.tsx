@@ -143,7 +143,7 @@ function AdminDataBuildings() {
     async function routeToGarbageSchedule(buildingView: BuildingView) {
         await router.push({
             pathname: `/admin/data/buildings/garbage`,
-            query: { buildingId: buildingView.building_id },
+            query: { building: buildingView.building_id },
         });
     }
 
