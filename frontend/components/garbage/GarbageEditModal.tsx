@@ -37,6 +37,7 @@ export default function GarbageEditModal({
     const [selectedDate, setSelectedDate] = useState<string>(formatDate(new Date()));
     const [garbageType, setGarbageType] = useState<string>("");
 
+    // Get the selected event garbage type & date or empty if selectedEvent is null
     useEffect(() => {
         if (selectedEvent) {
             setSelectedDate(formatDate(selectedEvent.start));
@@ -50,6 +51,7 @@ export default function GarbageEditModal({
         }
     }, [selectedEvent]);
 
+    // Get the date
     useEffect(() => {
         if (!clickedDate) {
             return;
@@ -57,6 +59,7 @@ export default function GarbageEditModal({
         setSelectedDate(formatDate(clickedDate));
     }, [clickedDate]);
 
+    // Remove an collection
     function remove() {
         if (!selectedEvent) {
             setErrorMessages(["Deze ophaling bestaat niet."]);
@@ -73,6 +76,7 @@ export default function GarbageEditModal({
         );
     }
 
+    // Submit the form
     function submit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         if (!garbageType) {
@@ -90,7 +94,7 @@ export default function GarbageEditModal({
             setErrorMessages(["Type bestaat niet."]);
             return;
         }
-        if (selectedEvent) {
+        if (selectedEvent) { // If it is an existing event, patch
             const patchBody: { [name: string]: string | number | number[] } = {};
             if (garbageType != selectedEvent.title) {
                 patchBody["garbage_type"] = t;
@@ -109,7 +113,7 @@ export default function GarbageEditModal({
                     setErrorMessages(handleError(err));
                 }
             );
-        } else {
+        } else { // If it is a new event, post
             postGarbageCollection(building.id, selectedDate, t)
                 .then()
                 .then(

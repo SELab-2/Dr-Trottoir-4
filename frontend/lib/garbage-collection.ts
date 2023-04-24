@@ -69,7 +69,6 @@ export async function duplicateGarbageCollectionSchedule(startDatePeriod: string
     if (buildingIds.length > 0) {
         data["building_ids"] = buildingIds;
     }
-    console.log(data);
     const post_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_DUPLICATE_GARBAGE_COLLECTION}`;
     return await api.post(post_url, data,
         {

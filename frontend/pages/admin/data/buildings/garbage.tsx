@@ -14,7 +14,7 @@ import nlBE from "date-fns/locale/nl-BE";
 import { messages } from "@/locales/localizerCalendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AdminHeader from "@/components/header/adminHeader";
-import { addDays, endOfMonth, startOfMonth } from "date-fns";
+import {add, addDays, endOfMonth, startOfMonth, sub} from "date-fns";
 import { useRouter } from "next/router";
 import { BuildingInterface, getAddress, getAllBuildings } from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
@@ -32,17 +32,20 @@ export default function GarbageCollectionSchedule() {
     const [garbageCollection, setGarbageCollection] = useState<GarbageCollectionInterface[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [selectedBuilding, setSelectedBuilding] = useState<BuildingInterface | null>(null);
+    // Keeps track of the currently displayed range, initialize it to the current month + some extra days
     const [currentRange, setCurrentRange] = useState<{ start: Date; end: Date }>({
-        start: startOfMonth(new Date()),
-        end: endOfMonth(new Date()),
+        start: sub(startOfMonth(new Date()), { days: 7 }),
+        end: add(endOfMonth(new Date()), { days: 7 }),
     });
 
+    // Info for the edit modal
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
     const [selectedEvent, setSelectedEvent] = useState<{ start: Date; title: string; end: Date; id: number } | null>(
         null
     );
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
+    // The duplicate modal
     const [showDuplicateModal, setShowDuplicateModal] = useState<boolean>(false);
 
     useEffect(() => {
@@ -63,6 +66,7 @@ export default function GarbageCollectionSchedule() {
         }, console.error);
     }, [router.isReady]);
 
+    // When a building is assigned, retrieve the schedule with the current range
     useEffect(() => {
         if (!selectedBuilding) {
             return;
@@ -78,34 +82,40 @@ export default function GarbageCollectionSchedule() {
         format,
         parse,
         startOfWeek: () => {
-            return startOfWeek(new Date(), { weekStartsOn: 1 });
+            return startOfWeek(new Date(), { weekStartsOn: 1 }); // A week starts on monday
         },
         getDay,
         locales,
     });
 
+    // Get the garbage collection schedule from a date range
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
         if (!selectedBuilding) {
             setGarbageCollection([]);
             return;
         }
+        // If the range is an array, get the first & last element of the array
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
         let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
 
+        // Set the new range
         setCurrentRange({ start: startDate, end: endDate });
 
+        // Retrieve the schedule
         getGarbageCollectionFromBuilding(selectedBuilding.id, { startDate, endDate }).then((res) => {
             const g: GarbageCollectionInterface[] = res.data;
             setGarbageCollection(g);
         }, console.error);
     }
 
+    // closes the edit modal
     function closeEditModal() {
         setShowEditModal(false);
         setSelectedEvent(null);
         setSelectedDate(null);
     }
 
+    // After a successful patch of an event, change the collection list
     function onPatch(g: GarbageCollectionInterface) {
         setGarbageCollection((prevState) => {
             const i = prevState.findIndex((gar) => gar.id === g.id);
@@ -117,6 +127,7 @@ export default function GarbageCollectionSchedule() {
         });
     }
 
+    // After a successful post of an event, add it to the collections list
     function onPost(g: GarbageCollectionInterface) {
         setGarbageCollection((prevState) => {
             const newState = [...prevState];
@@ -125,6 +136,7 @@ export default function GarbageCollectionSchedule() {
         });
     }
 
+    // After a successful delete of an event, remove it from the collections list
     function onDelete(garbageCollectionId: number) {
         setGarbageCollection((prevState) => {
             const i = prevState.findIndex((gar) => gar.id === garbageCollectionId);
@@ -136,6 +148,7 @@ export default function GarbageCollectionSchedule() {
         });
     }
 
+    // Closes the duplicate modal
     function closeDuplicateModal() {
         setShowDuplicateModal(false);
         getFromRange(currentRange);

@@ -21,6 +21,7 @@ export default function DuplicateGarbageCollectionModal({
     const [endDate, setEndDate] = useState<string>("");
     const [copyToDate, setCopyToDate] = useState<string>(formatDate(new Date()));
 
+    // Submit the duplicate request
     function submit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         if (!startDate) {
@@ -43,6 +44,7 @@ export default function DuplicateGarbageCollectionModal({
         );
     }
 
+    // execute when the modal is hidden
     function onHide() {
         closeModal();
         setCopyToDate(formatDate(new Date()));
