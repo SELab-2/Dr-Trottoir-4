@@ -17,6 +17,7 @@ import AdminHeader from "@/components/header/adminHeader";
 import {addDays, endOfMonth, endOfWeek, startOfMonth} from "date-fns";
 import {useRouter} from "next/router";
 import {BuildingInterface, getAddress, getAllBuildings} from "@/lib/building";
+import GarbageEditModal from "@/components/garbage/GarbageEditModal";
 
 interface ParsedUrlQuery {
 }
@@ -35,6 +36,9 @@ export default function GarbageCollectionSchedule() {
         end: endOfMonth(new Date())
     });
 
+    const [showEditModal, setShowEditModal] = useState<boolean>(false);
+    const [selectedEvent, setSelectedEvent] = useState<{ start: Date, title: string, end: Date, id : number} | null>(null);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
     useEffect(() => {
         const query: DataBuildingQuery = router.query as DataBuildingQuery;
@@ -93,9 +97,37 @@ export default function GarbageCollectionSchedule() {
         }, console.error);
     }
 
+    function closeEditModal() {
+        setShowEditModal(false);
+        setSelectedEvent(null);
+        setSelectedDate(null);
+    }
+
+    function onPatch(g : GarbageCollectionInterface) {
+        setGarbageCollection(prevState => {
+            const i = prevState.findIndex(gar => gar.id === g.id);
+            const newState = [...prevState];
+            if (i > -1) {
+                newState[i] = g;
+            }
+            return newState;
+        });
+    }
+
+    function onPost(g : GarbageCollectionInterface) {
+        setGarbageCollection(prevState => {
+            const newState = [...prevState];
+            newState.push(g);
+            return newState;
+        });
+    }
+
     return (
         <>
             <AdminHeader/>
+            <GarbageEditModal closeModal={closeEditModal} onPatch={onPatch}
+                              onPost={onPost} selectedEvent={selectedEvent}
+                              show={showEditModal} clickedDate={selectedDate} building={selectedBuilding}/>
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-sm text-center">
@@ -133,7 +165,9 @@ export default function GarbageCollectionSchedule() {
                     return {
                         start: s,
                         end: e,
-                        title: garbageTypes[g.garbage_type]
+                        title: garbageTypes[g.garbage_type],
+                        id : g.id,
+                        building : g.building
                     };
                 })}
                 localizer={loc}
@@ -143,8 +177,14 @@ export default function GarbageCollectionSchedule() {
                 }}
                 drilldownView={null}
                 selectable
-                onSelectSlot={(slotInfo) => console.log(slotInfo.start + " - " + slotInfo.end)}
-                onSelectEvent={() => console.log("hallo")}
+                onSelectSlot={(slotInfo) => {
+                    setSelectedDate(slotInfo.start);
+                    setShowEditModal(true);
+                }}
+                onSelectEvent={(event) => {
+                    setSelectedEvent(event);
+                    setShowEditModal(true);
+                }}
                 onRangeChange={getFromRange}
                 views={['month', 'week']}
                 style={{height: "100vh"}}
