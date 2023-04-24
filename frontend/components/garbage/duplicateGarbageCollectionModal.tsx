@@ -1,23 +1,21 @@
-import {Button, Form, Modal} from "react-bootstrap";
-import React, {useState} from "react";
-import {useTranslation} from "react-i18next";
-import {formatDate} from "@/lib/date";
-import {BuildingInterface} from "@/lib/building";
-import {duplicateGarbageCollectionSchedule} from "@/lib/garbage-collection";
-import {handleError} from "@/lib/error";
+import { Button, Form, Modal } from "react-bootstrap";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { formatDate } from "@/lib/date";
+import { BuildingInterface } from "@/lib/building";
+import { duplicateGarbageCollectionSchedule } from "@/lib/garbage-collection";
+import { handleError } from "@/lib/error";
 
-export default function DuplicateGarbageCollectionModal(
-    {
-        show,
-        closeModal,
-        buildings
-    }: {
-        show: boolean;
-        closeModal: () => void;
-        buildings : BuildingInterface[]
-    }
-) {
-    const {t} = useTranslation();
+export default function DuplicateGarbageCollectionModal({
+    show,
+    closeModal,
+    buildings,
+}: {
+    show: boolean;
+    closeModal: () => void;
+    buildings: BuildingInterface[];
+}) {
+    const { t } = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [startDate, setStartDate] = useState<string>("");
     const [endDate, setEndDate] = useState<string>("");
@@ -25,29 +23,32 @@ export default function DuplicateGarbageCollectionModal(
 
     function submit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        if (! startDate) {
+        if (!startDate) {
             setErrorMessages(["Begindatum is niet ingevuld."]);
             return;
         }
-        if (! endDate || new Date(endDate) < new Date(startDate)) {
+        if (!endDate || new Date(endDate) < new Date(startDate)) {
             setErrorMessages(["Einddatum moet na begindatum komen."]);
             return;
         }
         // For now duplicate for all the buildings
-        duplicateGarbageCollectionSchedule(startDate, endDate, copyToDate).then(_ => {
-            onHide();
-        }, err => {
-            setErrorMessages(handleError(err));
-            console.error(err);
-        });
+        duplicateGarbageCollectionSchedule(startDate, endDate, copyToDate).then(
+            (_) => {
+                onHide();
+            },
+            (err) => {
+                setErrorMessages(handleError(err));
+                console.error(err);
+            }
+        );
     }
 
     function onHide() {
-     closeModal();
-     setCopyToDate(formatDate(new Date()));
-     setStartDate("");
-     setEndDate("");
-     setErrorMessages([]);
+        closeModal();
+        setCopyToDate(formatDate(new Date()));
+        setStartDate("");
+        setEndDate("");
+        setErrorMessages([]);
     }
 
     return (
@@ -108,11 +109,9 @@ export default function DuplicateGarbageCollectionModal(
                     >
                         Annuleer
                     </Button>
-                    <Button
-                        variant="primary"
-                        className="btn-dark"
-                        type="submit"
-                    >Dupliceer</Button>
+                    <Button variant="primary" className="btn-dark" type="submit">
+                        Dupliceer
+                    </Button>
                 </Modal.Footer>
             </Form>
         </Modal>

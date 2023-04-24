@@ -1,40 +1,38 @@
-import {Button, Form, Modal} from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import styles from "@/styles/Login.module.css";
-import React, {useEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     deleteGarbageCollection,
     GarbageCollectionInterface,
     garbageTypes,
     patchGarbageCollection,
-    postGarbageCollection
+    postGarbageCollection,
 } from "@/lib/garbage-collection";
-import {BuildingInterface} from "@/lib/building";
-import {formatDate} from "@/lib/date";
-import {handleError} from "@/lib/error";
+import { BuildingInterface } from "@/lib/building";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
 
-export default function GarbageEditModal(
-    {
-        selectedEvent,
-        show,
-        closeModal,
-        onPost,
-        onPatch,
-        onDelete,
-        clickedDate,
-        building
-    }: {
-        selectedEvent: { start: Date, title: string, end: Date, id: number } | null;
-        show: boolean;
-        closeModal: () => void;
-        onPost: (g: GarbageCollectionInterface) => void;
-        onPatch: (g: GarbageCollectionInterface) => void;
-        onDelete: (g: number) => void;
-        clickedDate: Date | null;
-        building: BuildingInterface | null
-    }
-) {
-    const {t} = useTranslation();
+export default function GarbageEditModal({
+    selectedEvent,
+    show,
+    closeModal,
+    onPost,
+    onPatch,
+    onDelete,
+    clickedDate,
+    building,
+}: {
+    selectedEvent: { start: Date; title: string; end: Date; id: number } | null;
+    show: boolean;
+    closeModal: () => void;
+    onPost: (g: GarbageCollectionInterface) => void;
+    onPatch: (g: GarbageCollectionInterface) => void;
+    onDelete: (g: number) => void;
+    clickedDate: Date | null;
+    building: BuildingInterface | null;
+}) {
+    const { t } = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [selectedDate, setSelectedDate] = useState<string>(formatDate(new Date()));
     const [garbageType, setGarbageType] = useState<string>("");
@@ -60,16 +58,19 @@ export default function GarbageEditModal(
     }, [clickedDate]);
 
     function remove() {
-        if (! selectedEvent) {
+        if (!selectedEvent) {
             setErrorMessages(["Deze ophaling bestaat niet."]);
             return;
         }
-        deleteGarbageCollection(selectedEvent.id).then(_ => {
-            onDelete(selectedEvent.id);
-            closeModal();
-        }, err => {
-            setErrorMessages(handleError(err));
-        })
+        deleteGarbageCollection(selectedEvent.id).then(
+            (_) => {
+                onDelete(selectedEvent.id);
+                closeModal();
+            },
+            (err) => {
+                setErrorMessages(handleError(err));
+            }
+        );
     }
 
     function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -82,7 +83,9 @@ export default function GarbageEditModal(
             setErrorMessages(["Gebouw bestaat niet."]);
             return;
         }
-        const t: string | undefined = Object.keys(garbageTypes).find((key: string) => garbageTypes[key] === garbageType);
+        const t: string | undefined = Object.keys(garbageTypes).find(
+            (key: string) => garbageTypes[key] === garbageType
+        );
         if (!t) {
             setErrorMessages(["Type bestaat niet."]);
             return;
@@ -95,23 +98,31 @@ export default function GarbageEditModal(
             if (formatDate(selectedEvent.start) != selectedDate) {
                 patchBody["date"] = selectedDate;
             }
-            patchGarbageCollection(selectedEvent.id, patchBody).then(res => {
-                const g: GarbageCollectionInterface = res.data;
-                onPatch(g);
-                setGarbageType("");
-                closeModal();
-            }, err => {
-                setErrorMessages(handleError(err));
-            });
+            patchGarbageCollection(selectedEvent.id, patchBody).then(
+                (res) => {
+                    const g: GarbageCollectionInterface = res.data;
+                    onPatch(g);
+                    setGarbageType("");
+                    closeModal();
+                },
+                (err) => {
+                    setErrorMessages(handleError(err));
+                }
+            );
         } else {
-            postGarbageCollection(building.id, selectedDate, t).then().then(res => {
-                const g: GarbageCollectionInterface = res.data;
-                onPost(g);
-                setGarbageType("");
-                closeModal();
-            }, err => {
-                setErrorMessages(handleError(err));
-            });
+            postGarbageCollection(building.id, selectedDate, t)
+                .then()
+                .then(
+                    (res) => {
+                        const g: GarbageCollectionInterface = res.data;
+                        onPost(g);
+                        setGarbageType("");
+                        closeModal();
+                    },
+                    (err) => {
+                        setErrorMessages(handleError(err));
+                    }
+                );
         }
     }
 
@@ -150,18 +161,22 @@ export default function GarbageEditModal(
                                 setGarbageType(e.target.value);
                             }}
                         >
-                            <option disabled value="" key=""/>
-                            {
-                                Object.keys(garbageTypes).map((key: string) => {
-                                    const value = garbageTypes[key];
-                                    return (<option value={value} key={value}>{value}</option>);
-                                })
-                            }
+                            <option disabled value="" key="" />
+                            {Object.keys(garbageTypes).map((key: string) => {
+                                const value = garbageTypes[key];
+                                return (
+                                    <option value={value} key={value}>
+                                        {value}
+                                    </option>
+                                );
+                            })}
                         </select>
                     </div>
-                    {
-                        selectedEvent && <Button className="btn-danger" onClick={() => remove()}>Verwijder</Button>
-                    }
+                    {selectedEvent && (
+                        <Button className="btn-danger" onClick={() => remove()}>
+                            Verwijder
+                        </Button>
+                    )}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
@@ -174,11 +189,7 @@ export default function GarbageEditModal(
                     >
                         Annuleer
                     </Button>
-                    <Button
-                        variant="primary"
-                        className="btn-dark"
-                        type="submit"
-                    >
+                    <Button variant="primary" className="btn-dark" type="submit">
                         {selectedEvent ? "Pas aan" : "Voeg toe"}
                     </Button>
                 </Modal.Footer>
