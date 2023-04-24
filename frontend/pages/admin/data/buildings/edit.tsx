@@ -22,9 +22,7 @@ function AdminDataBuildingsEdit() {
     const [postalCode, setPostalCode] = useState<string>("");
     const [street, setStreet] = useState<string>("");
     const [clientNumber, setClientNumber] = useState<string>("");
-    const [region, setRegion] = useState<string>(""); //used for displaying the correct data
     const [regionId, setRegionId] = useState<number>(0); //used for collecting the right id to post/patch
-    const [syndic, setSyndic] = useState<string>(""); //used for displaying the correct data
     const [syndicId, setSyndicId] = useState<number>(0); //used for collecting the right id to post/patch
     const [manual, setManual] = useState<File | null>(null);
     const [duration, setDuration] = useState<string>("00:00");
@@ -90,10 +88,8 @@ function AdminDataBuildingsEdit() {
                 setDuration(res.data.duration);
                 setPublicId(res.data.public_id ?? "");
                 const region = await getRegion(res.data.region);
-                setRegion(region.data.region);
                 setRegionId(region.data.id);
                 const syndic = await getUserInfo(res.data.syndic);
-                setSyndic(userSearchString(syndic.data));
                 setSyndicId(syndic.data.id);
                 return true;
             });
@@ -200,13 +196,11 @@ function AdminDataBuildingsEdit() {
                     </Form.Group>
                     <RegionAutocomplete
                         initialValue={regionId}
-                        onChange={setRegion}
                         setObjectId={setRegionId}
                         required={true}
                     ></RegionAutocomplete>
                     <SyndicAutoCompleteComponent
-                        initialValue={1}
-                        onChange={setSyndic}
+                        initialValue={syndicId}
                         setObjectId={setSyndicId}
                         required={true}
                     ></SyndicAutoCompleteComponent>

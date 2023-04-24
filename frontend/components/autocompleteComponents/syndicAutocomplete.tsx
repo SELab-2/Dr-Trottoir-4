@@ -3,16 +3,13 @@ import { getSyndics, User, userSearchString } from "@/lib/user";
 import AutocompleteComponent, { GenericProps } from "@/components/autocompleteComponents/autocompleteComponent";
 import { extractEmailFromString } from "@/lib/user";
 
-const SyndicAutocomplete: React.FC<GenericProps> = ({ initialValue, onChange, setObjectId, required }) => {
+const SyndicAutocomplete: React.FC<GenericProps> = ({ initialValue, setObjectId, required }) => {
     return (
         <AutocompleteComponent
             initialValue={initialValue}
             label={`Syndicus${required ? "*" : ""}`}
             fetchOptions={getSyndics}
-            onChange={onChange}
             mapping={(user: User) => userSearchString(user)}
-            searchField={"email"}
-            searchTermHandler={extractEmailFromString}
             setObjectId={setObjectId}
         />
     );

@@ -10,37 +10,22 @@ interface Props {
     initialValue: string;
     label: string;
     fetchOptions: () => Promise<AxiosResponse<any>>;
-    onChange: (value: string) => void;
     mapping: (value: any) => any;
-    searchField: string;
-    // a function that takes the displayed input value and extract the search term from it
-    searchTermHandler: (value: string) => string | null;
     setObjectId: (value: any) => void;
 }
 
 export interface GenericProps {
     initialValue: any;
-    onChange: (value: any) => void;
     setObjectId: (value: any) => void;
     required: boolean;
 }
 
-function getIdBySearchTerm(arr: any[], field: string, searchTerm: string | null) {
-    if (searchTerm) {
-        const foundObj = arr.find((obj) => obj[field].toLowerCase() === searchTerm.toLowerCase());
-        return foundObj ? foundObj.id : null;
-    }
-    return null;
-}
 
 const AutocompleteComponent: React.FC<Props> = ({
                                                     initialValue,
                                                     label,
                                                     fetchOptions,
-                                                    onChange,
                                                     mapping,
-                                                    searchField,
-                                                    searchTermHandler,
                                                     setObjectId,
                                                 }) => {
     const [value, setValue] = React.useState<any>();
