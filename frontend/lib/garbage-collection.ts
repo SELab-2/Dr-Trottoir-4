@@ -54,3 +54,8 @@ export async function postGarbageCollection(building : number, date : string, ty
             headers: {"Content-Type": "application/json"},
         });
 }
+
+export async function deleteGarbageCollection(garbageCollectionId : number) {
+    const delete_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GARBAGE_COLLECTION}${garbageCollectionId}`;
+    return await api.delete(delete_url);
+}

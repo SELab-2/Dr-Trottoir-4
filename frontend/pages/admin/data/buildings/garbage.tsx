@@ -37,7 +37,7 @@ export default function GarbageCollectionSchedule() {
     });
 
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
-    const [selectedEvent, setSelectedEvent] = useState<{ start: Date, title: string, end: Date, id : number} | null>(null);
+    const [selectedEvent, setSelectedEvent] = useState<{ start: Date, title: string, end: Date, id: number } | null>(null);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
     useEffect(() => {
@@ -103,7 +103,7 @@ export default function GarbageCollectionSchedule() {
         setSelectedDate(null);
     }
 
-    function onPatch(g : GarbageCollectionInterface) {
+    function onPatch(g: GarbageCollectionInterface) {
         setGarbageCollection(prevState => {
             const i = prevState.findIndex(gar => gar.id === g.id);
             const newState = [...prevState];
@@ -114,10 +114,21 @@ export default function GarbageCollectionSchedule() {
         });
     }
 
-    function onPost(g : GarbageCollectionInterface) {
+    function onPost(g: GarbageCollectionInterface) {
         setGarbageCollection(prevState => {
             const newState = [...prevState];
             newState.push(g);
+            return newState;
+        });
+    }
+
+    function onDelete(garbageCollectionId: number) {
+        setGarbageCollection(prevState => {
+            const i = prevState.findIndex(gar => gar.id === garbageCollectionId);
+            const newState = [...prevState];
+            if (i > -1) {
+                newState.splice(i, 1);
+            }
             return newState;
         });
     }
@@ -126,32 +137,22 @@ export default function GarbageCollectionSchedule() {
         <>
             <AdminHeader/>
             <GarbageEditModal closeModal={closeEditModal} onPatch={onPatch}
-                              onPost={onPost} selectedEvent={selectedEvent}
+                              onPost={onPost} onDelete={onDelete} selectedEvent={selectedEvent}
                               show={showEditModal} clickedDate={selectedDate} building={selectedBuilding}/>
-            <div className="container">
-                <div className="row justify-content-center">
-                    <div className="col-sm text-center">
-                        <select className="form-select" value={selectedBuilding ? selectedBuilding.id : 0}
-                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                    const building = allBuildings.find(b => b.id == parseInt(e.target.value));
-                                    if (!building) {
-                                        return;
-                                    }
-                                    setSelectedBuilding(building);
-                                }}>
-                            <option disabled value={0}></option>
-                            {
-                                allBuildings.map(b => (<option value={b.id} key={b.id}>{getAddress(b)}</option>))
+            <div className="col-md-4">
+                <select className="form-select" value={selectedBuilding ? selectedBuilding.id : 0}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                            const building = allBuildings.find(b => b.id == parseInt(e.target.value));
+                            if (!building) {
+                                return;
                             }
-                        </select>
-                    </div>
-                    <div className="col-sm">
-                        One of three columns
-                    </div>
-                    <div className="col-sm">
-                        One of three columns
-                    </div>
-                </div>
+                            setSelectedBuilding(building);
+                        }}>
+                    <option disabled value={0}></option>
+                    {
+                        allBuildings.map(b => (<option value={b.id} key={b.id}>{getAddress(b)}</option>))
+                    }
+                </select>
             </div>
             <Calendar
                 messages={messages}
@@ -166,8 +167,8 @@ export default function GarbageCollectionSchedule() {
                         start: s,
                         end: e,
                         title: garbageTypes[g.garbage_type],
-                        id : g.id,
-                        building : g.building
+                        id: g.id,
+                        building: g.building
                     };
                 })}
                 localizer={loc}
@@ -178,10 +179,16 @@ export default function GarbageCollectionSchedule() {
                 drilldownView={null}
                 selectable
                 onSelectSlot={(slotInfo) => {
+                    if (!selectedBuilding) {
+                        return;
+                    }
                     setSelectedDate(slotInfo.start);
                     setShowEditModal(true);
                 }}
                 onSelectEvent={(event) => {
+                    if (!selectedBuilding) {
+                        return;
+                    }
                     setSelectedEvent(event);
                     setShowEditModal(true);
                 }}
