@@ -154,7 +154,7 @@ function AdminCommunication() {
                     <div style={{ display: "flex", width: "100%" }}>
                         <div style={{ width: "33%" }}>
                             <TemplateAutocomplete
-                                value={selectedTemplate}
+                                initialValue={selectedTemplate}
                                 onChange={setSelectedTemplate}
                                 setObjectId={setTemplateId}
                                 required={false}
@@ -162,7 +162,7 @@ function AdminCommunication() {
                         </div>
                         <div style={{ width: "33%" }}>
                             <SyndicAutoComplete
-                                value={selectedSyndic}
+                                initialValue={selectedSyndic}
                                 onChange={setSelectedSyndic}
                                 setObjectId={setSyndicId}
                                 required={false}

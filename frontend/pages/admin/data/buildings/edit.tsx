@@ -199,13 +199,13 @@ function AdminDataBuildingsEdit() {
                         />
                     </Form.Group>
                     <RegionAutocomplete
-                        value={region}
+                        initialValue={regionId}
                         onChange={setRegion}
                         setObjectId={setRegionId}
                         required={true}
                     ></RegionAutocomplete>
                     <SyndicAutoCompleteComponent
-                        value={syndic}
+                        initialValue={1}
                         onChange={setSyndic}
                         setObjectId={setSyndicId}
                         required={true}

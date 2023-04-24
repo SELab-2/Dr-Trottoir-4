@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
-import Autocomplete, { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
-import { AxiosResponse } from "axios/index";
-import { Button, Form, Dropdown, InputGroup } from "react-bootstrap";
+import Autocomplete, {AutocompleteRenderInputParams} from "@mui/material/Autocomplete";
+import {AxiosResponse} from "axios/index";
+import {Button, Form, Dropdown, InputGroup} from "react-bootstrap";
 
 //A lot of typings here are any to make the AutocompleteComponentGeneric
 
 interface Props {
-    value: string;
+    initialValue: string;
     label: string;
     fetchOptions: () => Promise<AxiosResponse<any>>;
     onChange: (value: string) => void;
@@ -19,7 +19,7 @@ interface Props {
 }
 
 export interface GenericProps {
-    value: any;
+    initialValue: any;
     onChange: (value: any) => void;
     setObjectId: (value: any) => void;
     required: boolean;
@@ -34,15 +34,16 @@ function getIdBySearchTerm(arr: any[], field: string, searchTerm: string | null)
 }
 
 const AutocompleteComponent: React.FC<Props> = ({
-    value,
-    label,
-    fetchOptions,
-    onChange,
-    mapping,
-    searchField,
-    searchTermHandler,
-    setObjectId,
-}) => {
+                                                    initialValue,
+                                                    label,
+                                                    fetchOptions,
+                                                    onChange,
+                                                    mapping,
+                                                    searchField,
+                                                    searchTermHandler,
+                                                    setObjectId,
+                                                }) => {
+    const [value, setValue] = React.useState<any>();
     const [inputValue, setInputValue] = useState("");
     const [options, setOptions] = useState<string[]>([]);
 
@@ -50,15 +51,25 @@ const AutocompleteComponent: React.FC<Props> = ({
         async function fetch() {
             try {
                 const res = await fetchOptions();
-                const availableOptions = res.data;
+                let availableOptions: any[] = [];
+                for (let data of res.data) {
+                    availableOptions.push({label: mapping(data), id: data.id})
+                }
                 setOptions(availableOptions);
+
+                //Set the initial value to the object with the same id
+                const initialOption = availableOptions.find(option => option.id === initialValue);
+                if (initialOption) {
+                    setValue(initialOption);
+                    setInputValue(initialOption.label)
+                }
             } catch (err) {
                 console.error(err);
             }
         }
 
         fetch().then();
-    }, [fetchOptions]);
+    }, [fetchOptions, initialValue]);
 
     return (
         <>
@@ -67,20 +78,22 @@ const AutocompleteComponent: React.FC<Props> = ({
                 //our option and value are different but without this line it will give warnings as the default
                 //implementations checks whether options === value
                 isOptionEqualToValue={(option: { toString: () => any }, value: { toString: () => any }) => true}
-                value={value}
+                value={value ?? ""}
                 inputValue={inputValue}
                 onChange={(e: React.SyntheticEvent, newValue: any) => {
                     if (newValue) {
-                        setObjectId(getIdBySearchTerm(options, searchField, searchTermHandler(newValue)));
-                        onChange(newValue ?? "");
+                        setValue(newValue);
+                        setObjectId(newValue.id);
                     }
+
                 }}
                 onInputChange={(e: React.SyntheticEvent, newInputValue: string) => {
                     setInputValue(newInputValue);
                 }}
-                options={options.map(mapping)}
+                options={options}
+                getOptionLabel={(option: any) => option.label || ""}
                 renderInput={(params: AutocompleteRenderInputParams) => (
-                    <TextField {...params} variant="outlined" fullWidth />
+                    <TextField {...params} variant="outlined" fullWidth/>
                 )}
             />
         </>

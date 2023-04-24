@@ -2,10 +2,10 @@ import React from "react";
 import { getAllRegions, RegionInterface } from "@/lib/region";
 import AutocompleteComponent, { GenericProps } from "@/components/autocompleteComponents/autocompleteComponent";
 
-const RegionAutocomplete: React.FC<GenericProps> = ({ value, onChange, setObjectId, required }) => {
+const RegionAutocomplete: React.FC<GenericProps> = ({ initialValue, onChange, setObjectId, required }) => {
     return (
         <AutocompleteComponent
-            value={value}
+            initialValue={initialValue}
             label={`Regio${required ? "*" : ""}`}
             fetchOptions={getAllRegions}
             onChange={onChange}
