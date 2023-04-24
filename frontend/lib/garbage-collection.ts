@@ -47,15 +47,32 @@ export async function patchGarbageCollection(garbageCollectionId: number, data: 
         });
 }
 
-export async function postGarbageCollection(building : number, date : string, type : string) {
+export async function postGarbageCollection(building: number, date: string, type: string) {
     const post_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GARBAGE_COLLECTION}`;
-    return await api.post(post_url, {building, date, garbage_type : type},
+    return await api.post(post_url, {building, date, garbage_type: type},
         {
             headers: {"Content-Type": "application/json"},
         });
 }
 
-export async function deleteGarbageCollection(garbageCollectionId : number) {
+export async function deleteGarbageCollection(garbageCollectionId: number) {
     const delete_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GARBAGE_COLLECTION}${garbageCollectionId}`;
     return await api.delete(delete_url);
+}
+
+export async function duplicateGarbageCollectionSchedule(startDatePeriod: string, endDatePeriod: string, startDateCopy: string, buildingIds: number[] = []) {
+    let data: { [name: string]: string | number | number[] } = {
+        start_date_period: startDatePeriod,
+        end_date_period: endDatePeriod,
+        start_date_copy: startDateCopy
+    };
+    if (buildingIds.length > 0) {
+        data["building_ids"] = buildingIds;
+    }
+    console.log(data);
+    const post_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_DUPLICATE_GARBAGE_COLLECTION}`;
+    return await api.post(post_url, data,
+        {
+            headers: {"Content-Type": "application/json"},
+        });
 }

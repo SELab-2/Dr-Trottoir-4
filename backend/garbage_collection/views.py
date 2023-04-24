@@ -208,9 +208,9 @@ class GarbageCollectionDuplicateView(APIView):
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
         # transform them into the appropriate week-days:
-        start_date_period = get_monday_of_week(validated_data.get("start-date-period"))
-        end_date_period = get_sunday_of_week(validated_data.get("end-date-period"))
-        start_date_copy = get_monday_of_week(validated_data.get("start-date-copy"))
+        start_date_period = get_monday_of_week(validated_data.get("start_date_period"))
+        end_date_period = get_sunday_of_week(validated_data.get("end_date_period"))
+        start_date_copy = get_monday_of_week(validated_data.get("start_date_copy"))
 
         if r := validate_duplication_period(start_date_period, end_date_period, start_date_copy):
             return r
@@ -220,7 +220,7 @@ class GarbageCollectionDuplicateView(APIView):
             date__range=[start_date_period, end_date_period]
         )
         # retrieve and apply the optional filtering on buildings
-        building_ids = validated_data.get("building-ids", None)
+        building_ids = validated_data.get("building_ids", None)
         if building_ids:
             garbage_collections_to_duplicate = garbage_collections_to_duplicate.filter(building__id__in=building_ids)
 

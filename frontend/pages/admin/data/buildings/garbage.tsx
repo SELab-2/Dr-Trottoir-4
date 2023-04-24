@@ -14,10 +14,12 @@ import nlBE from "date-fns/locale/nl-BE";
 import {messages} from "@/locales/localizerCalendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AdminHeader from "@/components/header/adminHeader";
-import {addDays, endOfMonth, endOfWeek, startOfMonth} from "date-fns";
+import {addDays, endOfMonth, startOfMonth} from "date-fns";
 import {useRouter} from "next/router";
 import {BuildingInterface, getAddress, getAllBuildings} from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
+import DuplicateGarbageCollectionModal from "@/components/garbage/duplicateGarbageCollectionModal";
+import {Button} from "react-bootstrap";
 
 interface ParsedUrlQuery {
 }
@@ -39,6 +41,8 @@ export default function GarbageCollectionSchedule() {
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
     const [selectedEvent, setSelectedEvent] = useState<{ start: Date, title: string, end: Date, id: number } | null>(null);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+    const [showDuplicateModal, setShowDuplicateModal] = useState<boolean>(false);
 
     useEffect(() => {
         const query: DataBuildingQuery = router.query as DataBuildingQuery;
@@ -133,27 +137,43 @@ export default function GarbageCollectionSchedule() {
         });
     }
 
+    function closeDuplicateModal() {
+        setShowDuplicateModal(false);
+        getFromRange(currentRange);
+    }
+
     return (
         <>
             <AdminHeader/>
+            <DuplicateGarbageCollectionModal closeModal={closeDuplicateModal} show={showDuplicateModal} buildings={allBuildings}/>
             <GarbageEditModal closeModal={closeEditModal} onPatch={onPatch}
                               onPost={onPost} onDelete={onDelete} selectedEvent={selectedEvent}
                               show={showEditModal} clickedDate={selectedDate} building={selectedBuilding}/>
-            <div className="col-md-4">
-                <select className="form-select" value={selectedBuilding ? selectedBuilding.id : 0}
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                            const building = allBuildings.find(b => b.id == parseInt(e.target.value));
-                            if (!building) {
-                                return;
+            <div className="container">
+                <div className="row justify-content-start">
+                    <div className="col-md-4">
+                        <select className="form-select" value={selectedBuilding ? selectedBuilding.id : 0}
+                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                    const building = allBuildings.find(b => b.id == parseInt(e.target.value));
+                                    if (!building) {
+                                        return;
+                                    }
+                                    setSelectedBuilding(building);
+                                }}>
+                            <option disabled value={0}></option>
+                            {
+                                allBuildings.map(b => (<option value={b.id} key={b.id}>{getAddress(b)}</option>))
                             }
-                            setSelectedBuilding(building);
-                        }}>
-                    <option disabled value={0}></option>
-                    {
-                        allBuildings.map(b => (<option value={b.id} key={b.id}>{getAddress(b)}</option>))
-                    }
-                </select>
+                        </select>
+                    </div>
+                    <div className="col-md-4">
+                        <Button variant="primary"
+                                className="btn-dark" onClick={() => setShowDuplicateModal(true)}>Dupliceer
+                            planning</Button>
+                    </div>
+                </div>
             </div>
+
             <Calendar
                 messages={messages}
                 culture={"nl-BE"}

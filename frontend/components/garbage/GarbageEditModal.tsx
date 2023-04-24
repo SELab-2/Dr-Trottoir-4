@@ -1,8 +1,6 @@
 import {Button, Form, Modal} from "react-bootstrap";
 import styles from "@/styles/Login.module.css";
 import React, {useEffect, useState} from "react";
-import {UserView} from "@/types";
-import {Role} from "@/lib/role";
 import {useTranslation} from "react-i18next";
 import {
     deleteGarbageCollection,
