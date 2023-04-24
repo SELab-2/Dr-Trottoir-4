@@ -1,8 +1,5 @@
 FROM node:18-alpine
 
-ARG ENVIRONMENT
-ENV NODE_ENV=$ENVIRONMENT
-
 WORKDIR /app/frontend/
 
 COPY package*.json /app/frontend/
