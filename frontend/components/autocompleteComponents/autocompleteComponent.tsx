@@ -4,7 +4,6 @@ import Autocomplete, {AutocompleteRenderInputParams} from "@mui/material/Autocom
 import {AxiosResponse} from "axios/index";
 import {Form} from "react-bootstrap";
 
-//A lot of typings here are any to make the AutocompleteComponentGeneric
 
 /**
  * The AutocompleteComponent aims to be as generic as possible to suit many use-cases. Therefore, a lot of the typings
