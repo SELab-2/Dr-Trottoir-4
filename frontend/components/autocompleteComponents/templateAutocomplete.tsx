@@ -4,10 +4,10 @@ import AutocompleteComponent, { GenericProps } from "@/components/autocompleteCo
 import { getAllMailTemplates } from "@/lib/emailtemplate";
 import { EmailTemplate } from "@/lib/email-template";
 
-const TemplateAutocomplete: React.FC<GenericProps> = ({ initialValue, setObjectId, required }) => {
+const TemplateAutocomplete: React.FC<GenericProps> = ({ initialId, setObjectId, required }) => {
     return (
         <AutocompleteComponent
-            initialValue={initialValue}
+            initialId={initialId}
             label={`Template${required ? "*" : ""}`}
             fetchOptions={getAllMailTemplates}
             mapping={(template: EmailTemplate) => template.name}

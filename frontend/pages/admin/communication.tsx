@@ -150,14 +150,14 @@ function AdminCommunication() {
                     <div style={{ display: "flex", width: "100%" }}>
                         <div style={{ width: "33%" }}>
                             <TemplateAutocomplete
-                                initialValue={templateId}
+                                initialId={templateId}
                                 setObjectId={setTemplateId}
                                 required={false}
                             ></TemplateAutocomplete>
                         </div>
                         <div style={{ width: "33%" }}>
                             <SyndicAutoComplete
-                                initialValue={syndicId}
+                                initialId={syndicId}
                                 setObjectId={setSyndicId}
                                 required={false}
                             ></SyndicAutoComplete>

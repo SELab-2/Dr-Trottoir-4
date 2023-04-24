@@ -22,8 +22,8 @@ function AdminDataBuildingsEdit() {
     const [postalCode, setPostalCode] = useState<string>("");
     const [street, setStreet] = useState<string>("");
     const [clientNumber, setClientNumber] = useState<string>("");
-    const [regionId, setRegionId] = useState<number>(0); //used for collecting the right id to post/patch
-    const [syndicId, setSyndicId] = useState<number>(0); //used for collecting the right id to post/patch
+    const [regionId, setRegionId] = useState<number>(-1); //used for collecting the right id to post/patch
+    const [syndicId, setSyndicId] = useState<number>(-1); //used for collecting the right id to post/patch
     const [manual, setManual] = useState<File | null>(null);
     const [duration, setDuration] = useState<string>("00:00");
     const [public_id, setPublicId] = useState<string>("");
@@ -195,12 +195,12 @@ function AdminDataBuildingsEdit() {
                         />
                     </Form.Group>
                     <RegionAutocomplete
-                        initialValue={regionId}
+                        initialId={regionId}
                         setObjectId={setRegionId}
                         required={true}
                     ></RegionAutocomplete>
                     <SyndicAutoCompleteComponent
-                        initialValue={syndicId}
+                        initialId={syndicId}
                         setObjectId={setSyndicId}
                         required={true}
                     ></SyndicAutoCompleteComponent>
