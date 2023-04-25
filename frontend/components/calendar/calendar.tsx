@@ -169,10 +169,10 @@ const MyCalendar: FC<Props> = (props) => {
     const onEventsDelete = (event: MyEvent) => {
         console.log("Delete tour");
         console.log(events)
-        const sameTour = events.filter((e) => {
-            return e.tour.id == event.tour.id;
+        const removedTours = events.filter((e) => {
+            return e.tour.id != event.tour.id;
         })
-        console.log(sameTour)
+        setEvents(removedTours)
     };
 
     const handleScheduleSave = () => {
