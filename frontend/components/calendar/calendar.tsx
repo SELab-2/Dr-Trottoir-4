@@ -17,10 +17,9 @@ import AddEventModal from "@/components/calendar/addEvent";
 import { postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
 import { Tour } from "@/lib/tour";
 import { User } from "@/lib/user";
-import { addDays } from "date-fns";
+import {addDays} from "date-fns";
 import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
-import LoadEventsModal from "@/components/calendar/loadEvents";
 
 interface MyEvent extends Event {
     tour: Tour;
@@ -37,10 +36,18 @@ interface Props {
 const MyCalendar: FC<Props> = (props) => {
     const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
-    const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [events, setEvents] = useState<MyEvent[]>([]);
+
+    function getFromRange(range: Date[] | { start: Date; end: Date }) {
+        // If the range is an array, get the first & last element of the array
+        let startDate: Date = Array.isArray(range) ? range[0] : range.start;
+        let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
+        // Set the new range
+        setEvents([]);
+        onEventsLoad({start_date: startDate, end_date: endDate})
+    }
 
     const onEventsLoad = ({ start_date, end_date }: { start_date: Date; end_date: Date }) => {
         getAllStudentOnTourFromDate({ startDate: new Date(start_date), endDate: new Date(end_date) }).then(
@@ -155,15 +162,6 @@ const MyCalendar: FC<Props> = (props) => {
         });
     };
 
-    const getDaysArray = function (start: Date, end: Date) {
-        let arr = [];
-        let dt = new Date(start);
-        for (; dt <= new Date(end); dt.setDate(dt.getDate() + 1)) {
-            arr.push(new Date(dt));
-        }
-        return arr;
-    };
-
     const handleScheduleSave = () => {
         const toLoad = events.filter(Boolean);
         for (let e in toLoad) {
@@ -182,9 +180,6 @@ const MyCalendar: FC<Props> = (props) => {
             <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenAdd(true)}>
                 Voeg ronde toe
             </button>
-            <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenLoad(true)}>
-                Kies vorige planning
-            </button>
             <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>
                 Sla planning op
             </button>
@@ -202,6 +197,7 @@ const MyCalendar: FC<Props> = (props) => {
                 messages={messages}
                 culture={"nl-BE"}
                 defaultView="week"
+                views={['week', 'day', 'agenda']}
                 events={events}
                 components={{ event: CustomDisplay }}
                 localizer={localizer}
@@ -212,6 +208,7 @@ const MyCalendar: FC<Props> = (props) => {
                 timeslots={1}
                 onEventDrop={onEventResize}
                 onEventResize={onEventResize}
+                onRangeChange={getFromRange}
                 resizable
             />
             {selectedEvent && (
@@ -236,7 +233,6 @@ const MyCalendar: FC<Props> = (props) => {
                 onSave={onEventAdd}
                 onSaveMultiple={onEventsAdd}
             />
-            <LoadEventsModal isOpen={popupIsOpenLoad} onClose={() => setPopupIsOpenLoad(false)} onSave={onEventsLoad} />
         </>
     );
 };
