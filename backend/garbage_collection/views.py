@@ -1,5 +1,4 @@
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -231,3 +230,39 @@ class GarbageCollectionDuplicateView(APIView):
             if not GarbageCollection.objects.filter(date=copy_date, building=gc.building).exists():
                 GarbageCollection.objects.create(date=copy_date, building=gc.building, garbage_type=gc.garbage_type)
         return Response({"message": _("successfully copied the garbage collections")}, status=status.HTTP_200_OK)
+
+
+class GarbageCollectionBulkMoveView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = GarbageCollectionSerializer
+
+    def post(self, request):
+        # we support params garbage_type, date, move_to_date and region
+
+        # get the params
+
+        # This is bad code, it should be possible to get "GFT", "GLS" ... from the model directly (a solution could be to put them in an it in the model)
+        garbage_type = get_arbitrary_param(request, "garbage_type",
+                                           allowed_keys={"GFT", "GLS", "GRF", "KER", "PAP", "PMD", "RES"},
+                                           required=True)
+        date = get_date_param(request, "date", required=True)
+        move_to_date = get_date_param(request, "move_to_date", required=True)
+        region = get_id_param(request, "region", required=True)
+
+        # Get all buildings in the given region
+        building_instances = Building.objects.filter(region_id=region)
+
+        # Get all garbage collections with a building in the building_instances and where the garbage_type and date are the given ones
+        garbage_collections_instances = GarbageCollection.objects.filter(garbage_type=garbage_type, date=date,
+                                                                         building_id__in=building_instances)
+
+        # For every garbage_collection in garbage_collection_instances, change the date to move_to_date
+        ids = []
+        for garbage_collection in garbage_collections_instances:
+            garbage_collection.date = move_to_date.date()
+            if r := try_full_clean_and_save(garbage_collection):
+                return r
+            ids.append(garbage_collection.id)
+
+        updated_garbage_collection_instances = GarbageCollection.objects.filter(id__in=ids)
+        return post_success(self.serializer_class(updated_garbage_collection_instances, many=True))
