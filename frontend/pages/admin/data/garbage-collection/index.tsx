@@ -27,6 +27,7 @@ import GarbageCollectionEventComponentWithAddress
 import GarbageCollectionEventComponentWithoutAddress
     from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
 import {getBuildingsOfTour} from "@/lib/tour";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
 interface ParsedUrlQuery {
 }
@@ -36,7 +37,7 @@ interface DataBuildingQuery extends ParsedUrlQuery {
     tour?: number
 }
 
-export default function GarbageCollectionSchedule() {
+function GarbageCollectionSchedule() {
     const router = useRouter();
     const [garbageCollection, setGarbageCollection] = useState<GarbageCollectionInterface[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
@@ -321,3 +322,5 @@ export default function GarbageCollectionSchedule() {
         </>
     );
 }
+
+export default withAuthorisation(GarbageCollectionSchedule, ["Admin", "Superstudent"]);
