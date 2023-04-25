@@ -74,11 +74,11 @@ const MyCalendar: FC<Props> = (props) => {
                         let end = addDays(start, 1);
                         start.setHours(0);
                         end.setHours(0);
-                        data[t] = {tour: tour, student: student, start: start, end: end};
+                        data.push({tour: tour, student: student, start: start, end: end});
                     }
                     data = data.filter(Boolean);
-                    onEventsAdd(data);
                 }
+                onEventsAdd(data);
             },
             (err) => {
                 console.error(err);
@@ -156,20 +156,6 @@ const MyCalendar: FC<Props> = (props) => {
         console.log(resizedEvents)
         onEventDelete(event)
         onEventsAdd(resizedEvents)
-        // setEvents((currentEvents) => {
-        //     return currentEvents.map((currentEvent) => {
-        //         if (currentEvent === event) {
-        //             return {
-        //                 ...currentEvent,
-        //                 start: new Date(start),
-        //                 startDate: new Date(start),
-        //                 endDate: new Date(end),
-        //                 end: new Date(end),
-        //             };
-        //         }
-        //         return currentEvent;
-        //     });
-        // });
     };
 
     const onEventDelete = (event: MyEvent) => {
@@ -178,6 +164,15 @@ const MyCalendar: FC<Props> = (props) => {
                 return currentEvent !== event;
             });
         });
+    };
+
+    const onEventsDelete = (event: MyEvent) => {
+        console.log("Delete tour");
+        console.log(events)
+        const sameTour = events.filter((e) => {
+            return e.tour.id == event.tour.id;
+        })
+        console.log(sameTour)
     };
 
     const handleScheduleSave = () => {
@@ -242,6 +237,7 @@ const MyCalendar: FC<Props> = (props) => {
                     }}
                     onSave={onEventEdit}
                     onDelete={onEventDelete}
+                    onDeleteTour={onEventsDelete}
                 />
             )}
             <AddEventModal

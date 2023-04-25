@@ -5,7 +5,7 @@ import { User } from "@/lib/user";
 import { Tour } from "@/lib/tour";
 
 function EditEventModal(data: any) {
-    const { event, allStudents, allTours, isOpen, onClose, onSave, onDelete } = data;
+    const { event, allStudents, allTours, isOpen, onClose, onSave, onDelete, onDeleteTour} = data;
     const [tour, setTour] = useState<Tour | null>(event.tour);
     const [student, setStudent] = useState(event.student);
 
@@ -16,9 +16,14 @@ function EditEventModal(data: any) {
     };
 
     const handleDelete = () => {
-        onDelete({ event });
+        onDelete(event);
         onClose();
     };
+
+    const handleTourDelete = () => {
+        onDeleteTour(event)
+        onClose();
+    }
 
     const handleTourChange = (e: ChangeEvent<HTMLSelectElement>) => {
         const tourID = Number(e.target.value);
@@ -63,6 +68,9 @@ function EditEventModal(data: any) {
                 </form>
             </Modal.Body>
             <Modal.Footer>
+                <Button variant="danger" onClick={handleTourDelete}>
+                    Delete Ronde
+                </Button>
                 <Button variant="danger" onClick={handleDelete}>
                     Delete
                 </Button>
