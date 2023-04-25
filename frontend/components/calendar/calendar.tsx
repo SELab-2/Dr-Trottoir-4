@@ -1,6 +1,6 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {Calendar, dateFnsLocalizer, Event} from "react-big-calendar";
-import withDragAndDrop, {withDragAndDropProps} from "react-big-calendar/lib/addons/dragAndDrop";
+import withDragAndDrop, {EventInteractionArgs, withDragAndDropProps} from "react-big-calendar/lib/addons/dragAndDrop";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
@@ -16,7 +16,7 @@ import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
 import {Tour} from "@/lib/tour";
 import {User} from "@/lib/user";
-import {addDays} from "date-fns";
+import {addDays, endOfWeek} from "date-fns";
 import {formatDate} from "@/lib/date";
 import {handleError} from "@/lib/error";
 
@@ -39,14 +39,17 @@ const MyCalendar: FC<Props> = (props) => {
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [events, setEvents] = useState<MyEvent[]>([]);
 
+    useEffect(() => {
+        if (props.students.length > 0 && props.tours.length > 0) {
+            getFromRange({start: startOfWeek(new Date()), end: endOfWeek(new Date())});
+        }
+    }, [props.students, props.tours]);
 
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
         // If the range is an array, get the first & last element of the array
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
         let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
 
-        console.log(startDate)
-        console.log(endDate)
         // Set the new range
         setEvents([]);
         onEventsLoad({start_date: startDate, end_date: endDate});
@@ -139,21 +142,19 @@ const MyCalendar: FC<Props> = (props) => {
         });
     };
 
-    const onEventResize: withDragAndDropProps["onEventResize"] = (data) => {
+    // @ts-ignore
+    const onEventResize: withDragAndDropProps["onEventResize"] = (data: EventInteractionArgs<MyEvent>) => {
         const {event, start, end} = data;
-        console.log(start)
-        console.log(end)
         let resizedEvents = [];
         let currentDate = new Date(start);
         currentDate.setHours(0);
         while (currentDate < end) {
             let nextDate = addDays(currentDate, 1);
             nextDate.setHours(2);
-            resizedEvents.push({tour: event?.tour, student: event?.student, start: currentDate, end: nextDate});
+            resizedEvents.push({tour: event.tour, student: event.student, start: currentDate, end: nextDate});
             currentDate = nextDate;
             currentDate.setHours(0);
         }
-        console.log(resizedEvents)
         onEventDelete(event)
         onEventsAdd(resizedEvents)
     };
@@ -167,8 +168,6 @@ const MyCalendar: FC<Props> = (props) => {
     };
 
     const onEventsDelete = (event: MyEvent) => {
-        console.log("Delete tour");
-        console.log(events)
         const removedTours = events.filter((e) => {
             return e.tour.id != event.tour.id;
         })
@@ -210,6 +209,7 @@ const MyCalendar: FC<Props> = (props) => {
             <DnDCalendar
                 messages={messages}
                 culture={"nl-BE"}
+                defaultDate={new Date()}
                 defaultView="week"
                 views={['week', 'day', 'agenda']}
                 events={events}
