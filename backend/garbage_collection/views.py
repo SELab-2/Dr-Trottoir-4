@@ -239,7 +239,20 @@ class GarbageCollectionBulkMoveView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = GarbageCollectionSerializer
 
+    @extend_schema(responses=post_docs(serializer_class), parameters=param_docs(
+        {
+            "garbage_type": ("The type of garbage to move", True, OpenApiTypes.STR),
+            "date": ("The date of the garbage collection to move", True, OpenApiTypes.DATE),
+            "move_to_date": ("The date to move the garbage collection to", True, OpenApiTypes.DATE),
+            "region": ("The region of the garbage collection to move", False, OpenApiTypes.INT),
+            "tour": ("The tour of the garbage collection to move", False, OpenApiTypes.INT),
+            "building": ("A list of building id's of the garbage collection to move", False, OpenApiTypes.STR),
+        }
+    ))
     def post(self, request):
+        """
+        Move a batch of garbage collections to a new date. The batch can be filtered by region, tour and/or buildings.
+        """
         # we support params garbage_type, date, move_to_date and region
 
         # get the params
@@ -264,8 +277,6 @@ class GarbageCollectionBulkMoveView(APIView):
             # TODO: vertaling
             invalid_building_error_message = _("The query param 'building' should be a list of ints")
 
-            print(buildings)
-
             if not re.match(r"\[(\s*\d+\s*,?)+]", buildings):
                 return bad_request_custom_error_message(invalid_building_error_message)
 
@@ -284,8 +295,6 @@ class GarbageCollectionBulkMoveView(APIView):
             buildings_on_tour = Building.objects.filter(buildingontour__tour_id=tour)
             building_instances = building_instances.filter(id__in=buildings_on_tour)
         if buildings:
-            print("We zitter hier in de filter voor buildings")
-            print(buildings)
             building_instances = building_instances.filter(id__in=buildings)
 
         # Filter the garbage_collection_instances on the right buildings
