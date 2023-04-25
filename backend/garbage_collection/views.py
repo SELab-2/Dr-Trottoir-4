@@ -1,3 +1,5 @@
+import re
+
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework.permissions import IsAuthenticated
@@ -232,6 +234,7 @@ class GarbageCollectionDuplicateView(APIView):
         return Response({"message": _("successfully copied the garbage collections")}, status=status.HTTP_200_OK)
 
 
+# TODO: docs
 class GarbageCollectionBulkMoveView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = GarbageCollectionSerializer
@@ -247,14 +250,46 @@ class GarbageCollectionBulkMoveView(APIView):
                                            required=True)
         date = get_date_param(request, "date", required=True)
         move_to_date = get_date_param(request, "move_to_date", required=True)
-        region = get_id_param(request, "region", required=True)
 
-        # Get all buildings in the given region
-        building_instances = Building.objects.filter(region_id=region)
+        # At least one of them should be given
+        region = get_id_param(request, "region", required=False)
+        tour = get_id_param(request, "tour", required=False)
+        buildings = get_arbitrary_param(request, "buildings", required=False)
 
-        # Get all garbage collections with a building in the building_instances and where the garbage_type and date are the given ones
-        garbage_collections_instances = GarbageCollection.objects.filter(garbage_type=garbage_type, date=date,
-                                                                         building_id__in=building_instances)
+        if not region and not tour and not buildings:
+            return bad_request_custom_error_message(
+                _("The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list of id's) should be given"))
+
+        if buildings:
+            # TODO: vertaling
+            invalid_building_error_message = _("The query param 'building' should be a list of ints")
+
+            print(buildings)
+
+            if not re.match(r"\[(\s*\d+\s*,?)+]", buildings):
+                return bad_request_custom_error_message(invalid_building_error_message)
+
+            try:
+                buildings = [int(id_str.rstrip("]").lstrip("[")) for id_str in buildings.split(',')]
+            except ValueError:
+                return bad_request_custom_error_message(invalid_building_error_message)
+
+        # Get all garbage collections with given garbage_type and date
+        garbage_collections_instances = GarbageCollection.objects.filter(garbage_type=garbage_type, date=date)
+
+        building_instances = Building.objects
+        if region:
+            building_instances = building_instances.filter(region_id=region)
+        if tour:
+            buildings_on_tour = Building.objects.filter(buildingontour__tour_id=tour)
+            building_instances = building_instances.filter(id__in=buildings_on_tour)
+        if buildings:
+            print("We zitter hier in de filter voor buildings")
+            print(buildings)
+            building_instances = building_instances.filter(id__in=buildings)
+
+        # Filter the garbage_collection_instances on the right buildings
+        garbage_collections_instances = garbage_collections_instances.filter(building_id__in=building_instances)
 
         # For every garbage_collection in garbage_collection_instances, change the date to move_to_date
         ids = []

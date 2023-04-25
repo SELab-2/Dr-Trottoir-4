@@ -175,6 +175,10 @@ def bad_request(object_name="Object"):
     return Response({"message": _("bad input for {}").format(object_name)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+def bad_request_custom_error_message(err_msg):
+    return Response({"message": err_msg}, status=status.HTTP_400_BAD_REQUEST)
+
+
 def bad_request_relation(object1: str, object2: str):
     return Response(
         {
