@@ -5,7 +5,7 @@ import {
     getGarbageCollectionFromBuilding,
     getGarbageColor,
 } from "@/lib/garbage-collection";
-import {Calendar, dateFnsLocalizer} from "react-big-calendar";
+import {Calendar, dateFnsLocalizer, Event} from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
@@ -21,6 +21,9 @@ import GarbageEditModal from "@/components/garbage/GarbageEditModal";
 import DuplicateGarbageCollectionModal from "@/components/garbage/duplicateGarbageCollectionModal";
 import {Button} from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
+import {GarbageCollectionEvent} from "@/types";
+import CustomDisplay from "@/components/calendar/customEvent";
+import GarbageCollectionEventComponent from "@/components/garbage/GarbageCollectionEventComponent";
 
 interface ParsedUrlQuery {
 }
@@ -42,7 +45,7 @@ export default function GarbageCollectionSchedule() {
 
     // Info for the edit modal
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
-    const [selectedEvent, setSelectedEvent] = useState<{ start: Date; title: string; end: Date; id: number } | null>(
+    const [selectedEvent, setSelectedEvent] = useState<GarbageCollectionEvent | null>(
         null
     );
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -247,17 +250,20 @@ export default function GarbageCollectionSchedule() {
                     let e = addDays(s, 1);
                     s.setHours(0);
                     e.setHours(0);
-                    return {
+                    const b = allBuildings.find(b => b.id === g.building)!;
+                    const event: GarbageCollectionEvent = {
                         start: s,
                         end: e,
-                        title: garbageTypes[g.garbage_type],
+                        garbageType: garbageTypes[g.garbage_type],
                         id: g.id,
-                        building: g.building,
+                        building: b,
                     };
+                    return event;
                 })}
+                components={{ event: GarbageCollectionEventComponent }}
                 localizer={loc}
                 eventPropGetter={(event) => {
-                    const backgroundColor = getGarbageColor(event.title);
+                    const backgroundColor = getGarbageColor(event.garbageType);
                     return {style: {backgroundColor, color: "black"}};
                 }}
                 drilldownView={null}
@@ -269,11 +275,11 @@ export default function GarbageCollectionSchedule() {
                     setSelectedDate(slotInfo.start);
                     setShowEditModal(true);
                 }}
-                onSelectEvent={(event) => {
+                onSelectEvent={(event: GarbageCollectionEvent) => {
                     if (buildingList.length <= 0) {
                         return;
                     }
-                    const building = buildingList.find(b => b.id === event.building);
+                    const building = buildingList.find(b => b.id === event.building.id);
                     if (!building) {
                         return;
                     }

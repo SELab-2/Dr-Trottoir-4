@@ -12,6 +12,7 @@ import {
 import { BuildingInterface } from "@/lib/building";
 import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
+import {GarbageCollectionEvent} from "@/types";
 
 export default function GarbageEditModal({
     selectedEvent,
@@ -23,7 +24,7 @@ export default function GarbageEditModal({
     clickedDate,
     building,
 }: {
-    selectedEvent: { start: Date; title: string; end: Date; id: number } | null;
+    selectedEvent: GarbageCollectionEvent | null;
     show: boolean;
     closeModal: () => void;
     onPost: (g: GarbageCollectionInterface) => void;
@@ -41,7 +42,7 @@ export default function GarbageEditModal({
     useEffect(() => {
         if (selectedEvent) {
             setSelectedDate(formatDate(selectedEvent.start));
-            setGarbageType(selectedEvent.title);
+            setGarbageType(selectedEvent.garbageType);
         } else {
             if (!clickedDate) {
                 setGarbageType("");
