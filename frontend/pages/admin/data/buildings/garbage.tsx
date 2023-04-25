@@ -5,7 +5,7 @@ import {
     getGarbageCollectionFromBuilding,
     getGarbageColor,
 } from "@/lib/garbage-collection";
-import {Calendar, dateFnsLocalizer, Event} from "react-big-calendar";
+import {Calendar, dateFnsLocalizer} from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
@@ -22,7 +22,6 @@ import DuplicateGarbageCollectionModal from "@/components/garbage/duplicateGarba
 import {Button} from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
 import {GarbageCollectionEvent} from "@/types";
-import CustomDisplay from "@/components/calendar/customEvent";
 import GarbageCollectionEventComponent from "@/components/garbage/GarbageCollectionEventComponent";
 
 interface ParsedUrlQuery {
@@ -71,39 +70,46 @@ export default function GarbageCollectionSchedule() {
                 return;
             }
             setSelectedBuilding(matchingBuilding);
+            addBuildingToList(matchingBuilding);
         }, console.error);
     }, [router.isReady]);
 
+    // Add a new building to the schedule
     function addBuildingToList(building: BuildingInterface) {
+        const exists = buildingList.find(b => b.id === building.id);
+        if (exists) {
+            return;
+        }
         setBuildingList(prevState => {
-            const exists = prevState.find(b => b.id === building.id);
             const newList: BuildingInterface[] = [...prevState];
-            if (exists) {
-                return newList;
-            }
             newList.push(building);
             return newList;
         });
+        getGarbageCollectionFromBuilding(building.id, {startDate : currentRange.start, endDate : currentRange.end}).then(res => {
+            const g : GarbageCollectionInterface[] = res.data;
+            setGarbageCollection(prevState => {
+                return [...prevState, ...g];
+            })
+        }, console.error);
     }
 
+    // Remove a building from the schedule
     function removeBuildingFromList(building: BuildingInterface) {
+        const i = buildingList.findIndex((b) => b.id === building.id);
+        if (i < 0) {
+            return;
+        }
         setBuildingList(prevState => {
             const i = prevState.findIndex((b) => b.id === building.id);
             const newState = [...prevState];
-            if (i > -1) {
-                newState.splice(i, 1);
-            }
+            newState.splice(i, 1);
             return newState;
         });
-    }
+        setGarbageCollection(prevState => {
+            return prevState.filter(g => g.building != building.id);
 
-    // When a building is assigned, retrieve the schedule with the current range
-    useEffect(() => {
-        if (!selectedBuilding) {
-            return;
-        }
-        getFromRange(currentRange);
-    }, [selectedBuilding]);
+        });
+    }
 
     const locales = {
         "nl-BE": nlBE,
@@ -127,15 +133,16 @@ export default function GarbageCollectionSchedule() {
         }
         // If the range is an array, get the first & last element of the array
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
-        let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
+        let endDate: Date = Array.isArray(range) ? range[range.length - 1] : range.end;
 
         // Set the new range
         setCurrentRange({start: startDate, end: endDate});
 
         // Retrieve the schedule
-        getGarbageCollectionFromBuilding(selectedBuilding.id, {startDate, endDate}).then((res) => {
-            const g: GarbageCollectionInterface[] = res.data;
-            setGarbageCollection(g);
+        Promise.all(buildingList.map(b => getGarbageCollectionFromBuilding(b.id, {startDate, endDate}))).then((res) => {
+            const g: any[] = res;
+            const data = g.map(el => el.data).flat();
+            setGarbageCollection(data);
         }, console.error);
     }
 

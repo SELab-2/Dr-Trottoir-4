@@ -11,10 +11,10 @@ export default function GarbageCollectionEventComponent(
 ) {
     return (
         <div>
-            <label>{event.garbageType}</label>
+            <label style={{ fontSize: '15px' }}>{event.garbageType}</label>
             <hr className={styles.divider} />
             <div>
-                <label>
+                <label style={{ fontSize: '12px' }}>
                     {getAddress(event.building)}
                 </label>
             </div>
