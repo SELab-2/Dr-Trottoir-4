@@ -7,7 +7,7 @@ const TourAutocomplete: React.FC<GenericProps> = ({ initialId, setObjectId, requ
     return (
         <AutocompleteComponent
             initialId={initialId}
-            label={`Ronde${required ? "*" : ""}`}
+            label={`Selecteer ronde${required ? "*" : ""}`}
             fetchOptions={getAllTours}
             mapping={(tour: Tour) => tour.name}
             setObjectId={setObjectId}

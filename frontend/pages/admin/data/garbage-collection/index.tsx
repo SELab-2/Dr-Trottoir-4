@@ -26,8 +26,10 @@ import GarbageCollectionEventComponentWithAddress
     from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
 import GarbageCollectionEventComponentWithoutAddress
     from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
-import {getBuildingsOfTour} from "@/lib/tour";
+import {getBuildingsOfTour, Tour} from "@/lib/tour";
 import {withAuthorisation} from "@/components/withAuthorisation";
+import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
+import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 
 interface ParsedUrlQuery {
 }
@@ -41,11 +43,14 @@ function GarbageCollectionSchedule() {
     const router = useRouter();
     const [garbageCollection, setGarbageCollection] = useState<GarbageCollectionInterface[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
+    const [allTours, setAllTours] = useState<Tour[]>([]);
     // Keeps track of the currently displayed range, initialize it to the current month + some extra days
     const [currentRange, setCurrentRange] = useState<{ start: Date; end: Date }>({
         start: sub(startOfMonth(new Date()), {days: 7}),
         end: add(endOfMonth(new Date()), {days: 7}),
     });
+    const [latestBuilding, setLatestBuilding] = useState<number>(0);
+    const [latestTour, setLatestTour] = useState<number>(0);
 
     // Info for the edit modal
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
@@ -76,21 +81,46 @@ function GarbageCollectionSchedule() {
                 return;
             }
             if (query.tour) {
-                getBuildingsOfTour(query.tour).then(res => {
-                    const buildings: BuildingInterface[] = res.data;
-                    setBuildingList(buildings);
-                    Promise.all(buildings.map(b => getGarbageCollectionFromBuilding(b.id, {
-                        startDate: currentRange.start,
-                        endDate: currentRange.end
-                    }))).then((res) => {
-                        const g: any[] = res;
-                        const data = g.map(el => el.data).flat();
-                        setGarbageCollection(data);
-                    }, console.error);
-                }, console.error);
+                addBuildingsOfTourToList(query.tour);
             }
         }, console.error);
     }, [router.isReady]);
+
+    useEffect(() => {
+        if (latestBuilding > 0 && allBuildings.length > 0) {
+            const building : BuildingInterface | undefined = allBuildings.find(b => latestBuilding === b.id);
+            if (building) {
+                addBuildingToList(building);
+            }
+        }
+    }, [latestBuilding]);
+
+    useEffect(() => {
+        if (latestTour > 0) {
+            addBuildingsOfTourToList(latestTour)
+        }
+    }, [latestTour]);
+
+    function addBuildingsOfTourToList(tourId : number) {
+        getBuildingsOfTour(tourId).then(res => {
+            const buildings: BuildingInterface[] = res.data;
+            // Get the buildings of the tour that are not already in the list
+            const filteredBuildings : BuildingInterface[] = buildings.filter(b => buildingList.findIndex(bl => bl.id === b.id) === -1);
+            setBuildingList(prevState => {
+                return [...prevState, ...filteredBuildings];
+            });
+            Promise.all(filteredBuildings.map(b => getGarbageCollectionFromBuilding(b.id, {
+                startDate: currentRange.start,
+                endDate: currentRange.end
+            }))).then((res) => {
+                const g: any[] = res;
+                const data = g.map(el => el.data).flat();
+                setGarbageCollection(prevState => {
+                    return [...prevState, ...data];
+                });
+            }, console.error);
+        }, console.error);
+    }
 
     // Add a new building to the schedule
     function addBuildingToList(building: BuildingInterface) {
@@ -235,35 +265,21 @@ function GarbageCollectionSchedule() {
                                   show={showBuildingListModal} removeBuilding={removeBuildingFromList}/>
             <div className="container">
                 <div className="row justify-content-start">
-                    <div className="col-md-4">
-                        <select
-                            className="form-select"
-                            value={buildingList.length > 0 ? buildingList[buildingList.length - 1].id : 0}
-                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                const building = allBuildings.find((b) => b.id == parseInt(e.target.value));
-                                if (!building) {
-                                    return;
-                                }
-                                addBuildingToList(building);
-                            }}
-                        >
-                            <option disabled value={0}></option>
-                            {allBuildings.map((b) => (
-                                <option value={b.id} key={b.id}>
-                                    {getAddress(b)}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="col-md-4">
+                    <div className="col">
                         <Button variant="primary" className="btn-dark" onClick={() => setShowDuplicateModal(true)}>
                             Dupliceer planning
                         </Button>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col">
                         <Button variant="primary" className="btn-dark" onClick={() => setShowBuildingListModal(true)}>
                             {buildingList.length > 0 ? `${buildingList.length} geselecteerde gebouwen` : "Geen gebouwen geselecteerd"}
                         </Button>
+                    </div>
+                    <div className="col">
+                        <BuildingAutocomplete initialId={0} setObjectId={setLatestBuilding} required={false}/>
+                    </div>
+                    <div className="col">
+                        <TourAutocomplete initialId={0} setObjectId={setLatestTour} required={false}/>
                     </div>
                 </div>
             </div>
