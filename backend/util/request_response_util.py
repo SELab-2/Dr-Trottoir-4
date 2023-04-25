@@ -78,7 +78,6 @@ def get_arbitrary_param(request, name, allowed_keys=None, required=False):
             return None
     if allowed_keys:
         if param not in allowed_keys:
-            # TODO: translation
             raise BadRequest(_("The query param {name} must be a value in {allowed_keys}").format(name=name,
                                                                                                   allowed_keys=allowed_keys))
     return param

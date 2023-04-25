@@ -234,7 +234,6 @@ class GarbageCollectionDuplicateView(APIView):
         return Response({"message": _("successfully copied the garbage collections")}, status=status.HTTP_200_OK)
 
 
-# TODO: docs
 class GarbageCollectionBulkMoveView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = GarbageCollectionSerializer
@@ -279,7 +278,6 @@ class GarbageCollectionBulkMoveView(APIView):
                 _("The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list of id's) should be given"))
 
         if buildings:
-            # TODO: vertaling
             invalid_building_error_message = _("The query param 'building' should be a list of ints")
 
             if not re.match(r"\[(\s*\d+\s*,?)+]", buildings):
