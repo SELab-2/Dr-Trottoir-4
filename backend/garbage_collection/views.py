@@ -239,16 +239,21 @@ class GarbageCollectionBulkMoveView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = GarbageCollectionSerializer
 
-    @extend_schema(responses=post_docs(serializer_class), parameters=param_docs(
-        {
-            "garbage_type": ("The type of garbage to move", True, OpenApiTypes.STR),
-            "date": ("The date of the garbage collection to move", True, OpenApiTypes.DATE),
-            "move_to_date": ("The date to move the garbage collection to", True, OpenApiTypes.DATE),
-            "region": ("The region of the garbage collection to move", False, OpenApiTypes.INT),
-            "tour": ("The tour of the garbage collection to move", False, OpenApiTypes.INT),
-            "building": ("A list of building id's of the garbage collection to move", False, OpenApiTypes.STR),
-        }
-    ))
+    @extend_schema(
+        responses={
+            200: serializer_class,
+            400: None
+        },
+        parameters=param_docs(
+            {
+                "garbage_type": ("The type of garbage to move", True, OpenApiTypes.STR),
+                "date": ("The date of the garbage collection to move", True, OpenApiTypes.DATE),
+                "move_to_date": ("The date to move the garbage collection to", True, OpenApiTypes.DATE),
+                "region": ("The region of the garbage collection to move", False, OpenApiTypes.INT),
+                "tour": ("The tour of the garbage collection to move", False, OpenApiTypes.INT),
+                "building": ("A list of building id's of the garbage collection to move", False, OpenApiTypes.STR),
+            }
+        ))
     def post(self, request):
         """
         Move a batch of garbage collections to a new date. The batch can be filtered by region, tour and/or buildings.
@@ -309,4 +314,5 @@ class GarbageCollectionBulkMoveView(APIView):
             ids.append(garbage_collection.id)
 
         updated_garbage_collection_instances = GarbageCollection.objects.filter(id__in=ids)
-        return post_success(self.serializer_class(updated_garbage_collection_instances, many=True))
+        return Response(self.serializer_class(updated_garbage_collection_instances, many=True).data,
+                        status=status.HTTP_200_OK)
