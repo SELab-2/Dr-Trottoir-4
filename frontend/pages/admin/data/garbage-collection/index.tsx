@@ -1,42 +1,39 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     GarbageCollectionInterface,
     garbageTypes,
     getGarbageCollectionFromBuilding,
     getGarbageColor,
 } from "@/lib/garbage-collection";
-import {Calendar, dateFnsLocalizer} from "react-big-calendar";
+import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
-import {messages} from "@/locales/localizerCalendar";
+import { messages } from "@/locales/localizerCalendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AdminHeader from "@/components/header/adminHeader";
-import {add, addDays, endOfMonth, startOfMonth, sub} from "date-fns";
-import {useRouter} from "next/router";
-import {BuildingInterface, getAddress, getAllBuildings} from "@/lib/building";
+import { add, addDays, endOfMonth, startOfMonth, sub } from "date-fns";
+import { useRouter } from "next/router";
+import { BuildingInterface, getAddress, getAllBuildings } from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
 import DuplicateGarbageCollectionModal from "@/components/garbage/duplicateGarbageCollectionModal";
-import {Button} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
-import {GarbageCollectionEvent} from "@/types";
-import GarbageCollectionEventComponentWithAddress
-    from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
-import GarbageCollectionEventComponentWithoutAddress
-    from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
-import {getBuildingsOfTour, Tour} from "@/lib/tour";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { GarbageCollectionEvent } from "@/types";
+import GarbageCollectionEventComponentWithAddress from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
+import GarbageCollectionEventComponentWithoutAddress from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
+import { getBuildingsOfTour, Tour } from "@/lib/tour";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DataBuildingQuery extends ParsedUrlQuery {
     building?: number;
-    tour?: number
+    tour?: number;
 }
 
 function GarbageCollectionSchedule() {
@@ -46,17 +43,15 @@ function GarbageCollectionSchedule() {
     const [allTours, setAllTours] = useState<Tour[]>([]);
     // Keeps track of the currently displayed range, initialize it to the current month + some extra days
     const [currentRange, setCurrentRange] = useState<{ start: Date; end: Date }>({
-        start: sub(startOfMonth(new Date()), {days: 7}),
-        end: add(endOfMonth(new Date()), {days: 7}),
+        start: sub(startOfMonth(new Date()), { days: 7 }),
+        end: add(endOfMonth(new Date()), { days: 7 }),
     });
     const [latestBuilding, setLatestBuilding] = useState<number>(0);
     const [latestTour, setLatestTour] = useState<number>(0);
 
     // Info for the edit modal
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
-    const [selectedEvent, setSelectedEvent] = useState<GarbageCollectionEvent | null>(
-        null
-    );
+    const [selectedEvent, setSelectedEvent] = useState<GarbageCollectionEvent | null>(null);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
     // The duplicate modal
@@ -88,7 +83,7 @@ function GarbageCollectionSchedule() {
 
     useEffect(() => {
         if (latestBuilding > 0 && allBuildings.length > 0) {
-            const building : BuildingInterface | undefined = allBuildings.find(b => latestBuilding === b.id);
+            const building: BuildingInterface | undefined = allBuildings.find((b) => latestBuilding === b.id);
             if (building) {
                 addBuildingToList(building);
             }
@@ -97,25 +92,31 @@ function GarbageCollectionSchedule() {
 
     useEffect(() => {
         if (latestTour > 0) {
-            addBuildingsOfTourToList(latestTour)
+            addBuildingsOfTourToList(latestTour);
         }
     }, [latestTour]);
 
-    function addBuildingsOfTourToList(tourId : number) {
-        getBuildingsOfTour(tourId).then(res => {
+    function addBuildingsOfTourToList(tourId: number) {
+        getBuildingsOfTour(tourId).then((res) => {
             const buildings: BuildingInterface[] = res.data;
             // Get the buildings of the tour that are not already in the list
-            const filteredBuildings : BuildingInterface[] = buildings.filter(b => buildingList.findIndex(bl => bl.id === b.id) === -1);
-            setBuildingList(prevState => {
+            const filteredBuildings: BuildingInterface[] = buildings.filter(
+                (b) => buildingList.findIndex((bl) => bl.id === b.id) === -1
+            );
+            setBuildingList((prevState) => {
                 return [...prevState, ...filteredBuildings];
             });
-            Promise.all(filteredBuildings.map(b => getGarbageCollectionFromBuilding(b.id, {
-                startDate: currentRange.start,
-                endDate: currentRange.end
-            }))).then((res) => {
+            Promise.all(
+                filteredBuildings.map((b) =>
+                    getGarbageCollectionFromBuilding(b.id, {
+                        startDate: currentRange.start,
+                        endDate: currentRange.end,
+                    })
+                )
+            ).then((res) => {
                 const g: any[] = res;
-                const data = g.map(el => el.data).flat();
-                setGarbageCollection(prevState => {
+                const data = g.map((el) => el.data).flat();
+                setGarbageCollection((prevState) => {
                     return [...prevState, ...data];
                 });
             }, console.error);
@@ -124,23 +125,23 @@ function GarbageCollectionSchedule() {
 
     // Add a new building to the schedule
     function addBuildingToList(building: BuildingInterface) {
-        const exists = buildingList.find(b => b.id === building.id);
+        const exists = buildingList.find((b) => b.id === building.id);
         if (exists) {
             return;
         }
-        setBuildingList(prevState => {
+        setBuildingList((prevState) => {
             const newList: BuildingInterface[] = [...prevState];
             newList.push(building);
             return newList;
         });
         getGarbageCollectionFromBuilding(building.id, {
             startDate: currentRange.start,
-            endDate: currentRange.end
-        }).then(res => {
+            endDate: currentRange.end,
+        }).then((res) => {
             const g: GarbageCollectionInterface[] = res.data;
-            setGarbageCollection(prevState => {
+            setGarbageCollection((prevState) => {
                 return [...prevState, ...g];
-            })
+            });
         }, console.error);
     }
 
@@ -150,15 +151,14 @@ function GarbageCollectionSchedule() {
         if (i < 0) {
             return;
         }
-        setBuildingList(prevState => {
+        setBuildingList((prevState) => {
             const i = prevState.findIndex((b) => b.id === building.id);
             const newState = [...prevState];
             newState.splice(i, 1);
             return newState;
         });
-        setGarbageCollection(prevState => {
-            return prevState.filter(g => g.building != building.id);
-
+        setGarbageCollection((prevState) => {
+            return prevState.filter((g) => g.building != building.id);
         });
     }
 
@@ -170,7 +170,7 @@ function GarbageCollectionSchedule() {
         format,
         parse,
         startOfWeek: () => {
-            return startOfWeek(new Date(), {weekStartsOn: 1}); // A week starts on monday
+            return startOfWeek(new Date(), { weekStartsOn: 1 }); // A week starts on monday
         },
         getDay,
         locales,
@@ -187,14 +187,17 @@ function GarbageCollectionSchedule() {
         let endDate: Date = Array.isArray(range) ? range[range.length - 1] : range.end;
 
         // Set the new range
-        setCurrentRange({start: startDate, end: endDate});
+        setCurrentRange({ start: startDate, end: endDate });
 
         // Retrieve the schedule
-        Promise.all(buildingList.map(b => getGarbageCollectionFromBuilding(b.id, {startDate, endDate}))).then((res) => {
-            const g: any[] = res;
-            const data = g.map(el => el.data).flat();
-            setGarbageCollection(data);
-        }, console.error);
+        Promise.all(buildingList.map((b) => getGarbageCollectionFromBuilding(b.id, { startDate, endDate }))).then(
+            (res) => {
+                const g: any[] = res;
+                const data = g.map((el) => el.data).flat();
+                setGarbageCollection(data);
+            },
+            console.error
+        );
     }
 
     // closes the edit modal
@@ -245,7 +248,7 @@ function GarbageCollectionSchedule() {
 
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <DuplicateGarbageCollectionModal
                 closeModal={closeDuplicateModal}
                 show={showDuplicateModal}
@@ -261,8 +264,12 @@ function GarbageCollectionSchedule() {
                 clickedDate={selectedDate}
                 buildings={buildingList}
             />
-            <SelectedBuildingList buildings={buildingList} closeModal={() => setShowBuildingListModal(false)}
-                                  show={showBuildingListModal} removeBuilding={removeBuildingFromList}/>
+            <SelectedBuildingList
+                buildings={buildingList}
+                closeModal={() => setShowBuildingListModal(false)}
+                show={showBuildingListModal}
+                removeBuilding={removeBuildingFromList}
+            />
             <div className="container">
                 <div className="row justify-content-start">
                     <div className="col">
@@ -272,14 +279,16 @@ function GarbageCollectionSchedule() {
                     </div>
                     <div className="col">
                         <Button variant="primary" className="btn-dark" onClick={() => setShowBuildingListModal(true)}>
-                            {buildingList.length > 0 ? `${buildingList.length} geselecteerde gebouwen` : "Geen gebouwen geselecteerd"}
+                            {buildingList.length > 0
+                                ? `${buildingList.length} geselecteerde gebouwen`
+                                : "Geen gebouwen geselecteerd"}
                         </Button>
                     </div>
                     <div className="col">
-                        <BuildingAutocomplete initialId={0} setObjectId={setLatestBuilding} required={false}/>
+                        <BuildingAutocomplete initialId={0} setObjectId={setLatestBuilding} required={false} />
                     </div>
                     <div className="col">
-                        <TourAutocomplete initialId={0} setObjectId={setLatestTour} required={false}/>
+                        <TourAutocomplete initialId={0} setObjectId={setLatestTour} required={false} />
                     </div>
                 </div>
             </div>
@@ -293,7 +302,7 @@ function GarbageCollectionSchedule() {
                     let e = addDays(s, 1);
                     s.setHours(0);
                     e.setHours(0);
-                    const b = allBuildings.find(b => b.id === g.building)!;
+                    const b = allBuildings.find((b) => b.id === g.building)!;
                     const event: GarbageCollectionEvent = {
                         start: s,
                         end: e,
@@ -303,11 +312,16 @@ function GarbageCollectionSchedule() {
                     };
                     return event;
                 })}
-                components={{event: buildingList.length > 1 ? GarbageCollectionEventComponentWithAddress : GarbageCollectionEventComponentWithoutAddress}}
+                components={{
+                    event:
+                        buildingList.length > 1
+                            ? GarbageCollectionEventComponentWithAddress
+                            : GarbageCollectionEventComponentWithoutAddress,
+                }}
                 localizer={loc}
                 eventPropGetter={(event) => {
                     const backgroundColor = getGarbageColor(event.garbageType);
-                    return {style: {backgroundColor, color: "black"}};
+                    return { style: { backgroundColor, color: "black" } };
                 }}
                 drilldownView={null}
                 selectable
@@ -322,7 +336,7 @@ function GarbageCollectionSchedule() {
                     if (buildingList.length <= 0) {
                         return;
                     }
-                    const building = buildingList.find(b => b.id === event.building.id);
+                    const building = buildingList.find((b) => b.id === event.building.id);
                     if (!building) {
                         return;
                     }
@@ -331,7 +345,7 @@ function GarbageCollectionSchedule() {
                 }}
                 onRangeChange={getFromRange}
                 views={["month", "week"]}
-                style={{height: "100vh"}}
+                style={{ height: "100vh" }}
                 step={60}
                 timeslots={1}
             />
