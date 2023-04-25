@@ -107,7 +107,7 @@ function AdminDataBuildings() {
     async function routeToEditView(buildingView: BuildingView) {
         await router.push({
             pathname: `${router.pathname}/edit`,
-            query: { building: buildingView.building_id },
+            query: { building: buildingView.building_id},
         });
     }
 
