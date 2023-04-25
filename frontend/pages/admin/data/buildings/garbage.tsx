@@ -22,8 +22,8 @@ import DuplicateGarbageCollectionModal from "@/components/garbage/duplicateGarba
 import {Button} from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
 import {GarbageCollectionEvent} from "@/types";
-import GarbageCollectionEventComponent from "@/components/garbage/GarbageCollectionEventComponent";
-import GarbageCollectionEventSingle from "@/components/garbage/GarbageCollectionEventSingle";
+import GarbageCollectionEventComponentWithAddress from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
+import GarbageCollectionEventComponentWithoutAddress from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
 
 interface ParsedUrlQuery {
 }
@@ -265,7 +265,7 @@ export default function GarbageCollectionSchedule() {
                     };
                     return event;
                 })}
-                components={{ event: buildingList.length > 1 ? GarbageCollectionEventComponent : GarbageCollectionEventSingle}}
+                components={{ event: buildingList.length > 1 ? GarbageCollectionEventComponentWithAddress : GarbageCollectionEventComponentWithoutAddress}}
                 localizer={loc}
                 eventPropGetter={(event) => {
                     const backgroundColor = getGarbageColor(event.garbageType);

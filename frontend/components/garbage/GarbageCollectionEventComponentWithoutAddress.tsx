@@ -2,7 +2,7 @@ import {GarbageCollectionEvent} from "@/types";
 import styles from "@/components/calendar/calendar.module.css";
 import {getAddress} from "@/lib/building";
 
-export default function GarbageCollectionEventSingle(
+export default function GarbageCollectionEventComponentWithoutAddress(
     {
         event
     }: {

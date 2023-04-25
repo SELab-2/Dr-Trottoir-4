@@ -140,8 +140,14 @@ export default function GarbageEditModal({
         closeModal();
     }
 
+    function onShow() {
+        if (buildings.length === 1 && ! selectedEvent) {
+            setSelectedBuilding(buildings[0]);
+        }
+    }
+
     return (
-        <Modal show={show} onHide={() => close()}>
+        <Modal show={show} onHide={() => close()} onShow={onShow}>
             <Modal.Header>
                 <Modal.Title>{selectedEvent ? "Pas ophaling aan" : "Voeg ophaling toe"}</Modal.Title>
             </Modal.Header>
