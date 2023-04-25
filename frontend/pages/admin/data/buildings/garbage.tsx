@@ -23,6 +23,7 @@ import {Button} from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
 import {GarbageCollectionEvent} from "@/types";
 import GarbageCollectionEventComponent from "@/components/garbage/GarbageCollectionEventComponent";
+import GarbageCollectionEventSingle from "@/components/garbage/GarbageCollectionEventSingle";
 
 interface ParsedUrlQuery {
 }
@@ -35,7 +36,6 @@ export default function GarbageCollectionSchedule() {
     const router = useRouter();
     const [garbageCollection, setGarbageCollection] = useState<GarbageCollectionInterface[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
-    const [selectedBuilding, setSelectedBuilding] = useState<BuildingInterface | null>(null);
     // Keeps track of the currently displayed range, initialize it to the current month + some extra days
     const [currentRange, setCurrentRange] = useState<{ start: Date; end: Date }>({
         start: sub(startOfMonth(new Date()), {days: 7}),
@@ -61,7 +61,7 @@ export default function GarbageCollectionSchedule() {
         getAllBuildings().then((res) => {
             const d: BuildingInterface[] = res.data;
             setAllBuildings(d);
-            // If a query is passed, set the correct selectedBuilding
+            // If a query is passed, set add building to list
             if (!query.building) {
                 return;
             }
@@ -69,7 +69,6 @@ export default function GarbageCollectionSchedule() {
             if (!matchingBuilding) {
                 return;
             }
-            setSelectedBuilding(matchingBuilding);
             addBuildingToList(matchingBuilding);
         }, console.error);
     }, [router.isReady]);
@@ -127,7 +126,7 @@ export default function GarbageCollectionSchedule() {
 
     // Get the garbage collection schedule from a date range
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
-        if (!selectedBuilding) {
+        if (buildingList.length <= 0) {
             setGarbageCollection([]);
             return;
         }
@@ -198,7 +197,7 @@ export default function GarbageCollectionSchedule() {
             <DuplicateGarbageCollectionModal
                 closeModal={closeDuplicateModal}
                 show={showDuplicateModal}
-                buildings={allBuildings}
+                buildings={buildingList}
             />
             <GarbageEditModal
                 closeModal={closeEditModal}
@@ -208,7 +207,7 @@ export default function GarbageCollectionSchedule() {
                 selectedEvent={selectedEvent}
                 show={showEditModal}
                 clickedDate={selectedDate}
-                building={selectedBuilding}
+                buildings={buildingList}
             />
             <SelectedBuildingList buildings={buildingList} closeModal={() => setShowBuildingListModal(false)}
                                   show={showBuildingListModal} removeBuilding={removeBuildingFromList}/>
@@ -217,13 +216,12 @@ export default function GarbageCollectionSchedule() {
                     <div className="col-md-4">
                         <select
                             className="form-select"
-                            value={selectedBuilding ? selectedBuilding.id : 0}
+                            value={buildingList.length > 0 ? buildingList[buildingList.length - 1].id : 0}
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                 const building = allBuildings.find((b) => b.id == parseInt(e.target.value));
                                 if (!building) {
                                     return;
                                 }
-                                setSelectedBuilding(building);
                                 addBuildingToList(building);
                             }}
                         >
@@ -267,7 +265,7 @@ export default function GarbageCollectionSchedule() {
                     };
                     return event;
                 })}
-                components={{ event: GarbageCollectionEventComponent }}
+                components={{ event: buildingList.length > 1 ? GarbageCollectionEventComponent : GarbageCollectionEventSingle}}
                 localizer={loc}
                 eventPropGetter={(event) => {
                     const backgroundColor = getGarbageColor(event.garbageType);
@@ -290,7 +288,6 @@ export default function GarbageCollectionSchedule() {
                     if (!building) {
                         return;
                     }
-                    setSelectedBuilding(building);
                     setSelectedEvent(event);
                     setShowEditModal(true);
                 }}
