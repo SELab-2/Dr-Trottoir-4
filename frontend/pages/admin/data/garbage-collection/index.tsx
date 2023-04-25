@@ -16,7 +16,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import AdminHeader from "@/components/header/adminHeader";
 import {add, addDays, endOfMonth, startOfMonth, sub} from "date-fns";
 import {useRouter} from "next/router";
-import {BuildingInterface, getAddress, getAllBuildings} from "@/lib/building";
+import {BuildingInterface, getAllBuildings} from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
 import DuplicateGarbageCollectionModal from "@/components/garbage/duplicateGarbageCollectionModal";
 import {Button} from "react-bootstrap";
@@ -26,7 +26,7 @@ import GarbageCollectionEventComponentWithAddress
     from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
 import GarbageCollectionEventComponentWithoutAddress
     from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
-import {getBuildingsOfTour, Tour} from "@/lib/tour";
+import {getBuildingsOfTour} from "@/lib/tour";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
@@ -43,14 +43,14 @@ function GarbageCollectionSchedule() {
     const router = useRouter();
     const [garbageCollection, setGarbageCollection] = useState<GarbageCollectionInterface[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
-    const [allTours, setAllTours] = useState<Tour[]>([]);
+    const [tourList, setTourList] = useState<{ [tourId: number]: BuildingInterface[] }>({});
     // Keeps track of the currently displayed range, initialize it to the current month + some extra days
     const [currentRange, setCurrentRange] = useState<{ start: Date; end: Date }>({
         start: sub(startOfMonth(new Date()), {days: 7}),
         end: add(endOfMonth(new Date()), {days: 7}),
     });
-    const [latestBuilding, setLatestBuilding] = useState<number>(0);
-    const [latestTour, setLatestTour] = useState<number>(0);
+    const [searchedBuilding, setSearchedBuilding] = useState<number>(0);
+    const [searchedTour, setSearchedTour] = useState<number>(0);
 
     // Info for the edit modal
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
@@ -86,29 +86,38 @@ function GarbageCollectionSchedule() {
         }, console.error);
     }, [router.isReady]);
 
+    // Add the searched building to the list
     useEffect(() => {
-        if (latestBuilding > 0 && allBuildings.length > 0) {
-            const building : BuildingInterface | undefined = allBuildings.find(b => latestBuilding === b.id);
+        if (searchedBuilding > 0 && allBuildings.length > 0) {
+            const building: BuildingInterface | undefined = allBuildings.find(b => searchedBuilding === b.id);
             if (building) {
                 addBuildingToList(building);
             }
         }
-    }, [latestBuilding]);
+    }, [searchedBuilding]);
 
+    // Add the buildings of a searched tour to the list
     useEffect(() => {
-        if (latestTour > 0) {
-            addBuildingsOfTourToList(latestTour)
+        if (searchedTour > 0) {
+            addBuildingsOfTourToList(searchedTour);
         }
-    }, [latestTour]);
+    }, [searchedTour]);
 
-    function addBuildingsOfTourToList(tourId : number) {
+    // Adds the garbage schedule for all the buildings of a given tour
+    function addBuildingsOfTourToList(tourId: number) {
         getBuildingsOfTour(tourId).then(res => {
             const buildings: BuildingInterface[] = res.data;
+            setTourList(prevState => {
+                const newState = {...prevState};
+                newState[tourId] = buildings;
+                return newState;
+            });
             // Get the buildings of the tour that are not already in the list
-            const filteredBuildings : BuildingInterface[] = buildings.filter(b => buildingList.findIndex(bl => bl.id === b.id) === -1);
+            const filteredBuildings: BuildingInterface[] = buildings.filter(b => buildingList.findIndex(bl => bl.id === b.id) === -1);
             setBuildingList(prevState => {
                 return [...prevState, ...filteredBuildings];
             });
+            // Get the garbage collection for all the buildings
             Promise.all(filteredBuildings.map(b => getGarbageCollectionFromBuilding(b.id, {
                 startDate: currentRange.start,
                 endDate: currentRange.end
@@ -160,21 +169,41 @@ function GarbageCollectionSchedule() {
             return prevState.filter(g => g.building != building.id);
 
         });
+        // Check if a building was in a tour
+        setTourList(prevState => {
+            const newState: { [p: number]: BuildingInterface[] } = {...prevState};
+            const entries = Object.entries(newState);
+            for (const [tourId, buildings] of entries) {
+                if (buildings.some(b => b.id === building.id)) {
+                    delete newState[+tourId];
+                }
+            }
+            return newState;
+        });
     }
 
-    const locales = {
-        "nl-BE": nlBE,
-    };
+    // Remove a tour from the garbage collection
+    function removeTourBuildings(tourId: number) {
+        // Check if a building was in a tour
+        setTourList(prevState => {
+            const newState: { [p: number]: BuildingInterface[] } = {...prevState};
+            delete newState[tourId];
+            return newState;
+        });
+        getBuildingsOfTour(tourId).then(res => {
+            const tourBuildings: BuildingInterface[] = res.data;
 
-    const loc = dateFnsLocalizer({
-        format,
-        parse,
-        startOfWeek: () => {
-            return startOfWeek(new Date(), {weekStartsOn: 1}); // A week starts on monday
-        },
-        getDay,
-        locales,
-    });
+            setBuildingList(prevState => {
+                const newState : BuildingInterface[] = [...prevState];
+                return newState.filter(b => ! tourBuildings.some(tb => tb.id === b.id));
+            });
+
+            setGarbageCollection(prevState => {
+                const newState : GarbageCollectionInterface[] = [...prevState];
+                return newState.filter(g => ! tourBuildings.some(b => g.building === b.id));
+            });
+        }, console.error);
+    }
 
     // Get the garbage collection schedule from a date range
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
@@ -243,6 +272,18 @@ function GarbageCollectionSchedule() {
         getFromRange(currentRange);
     }
 
+    const loc = dateFnsLocalizer({
+        format,
+        parse,
+        startOfWeek: () => {
+            return startOfWeek(new Date(), {weekStartsOn: 1}); // A week starts on monday
+        },
+        getDay,
+        locales: {
+            "nl-BE": nlBE,
+        }
+    });
+
     return (
         <>
             <AdminHeader/>
@@ -262,7 +303,8 @@ function GarbageCollectionSchedule() {
                 buildings={buildingList}
             />
             <SelectedBuildingList buildings={buildingList} closeModal={() => setShowBuildingListModal(false)}
-                                  show={showBuildingListModal} removeBuilding={removeBuildingFromList}/>
+                                  show={showBuildingListModal} removeBuilding={removeBuildingFromList}
+                                  removeTour={removeTourBuildings} selectedTours={tourList}/>
             <div className="container">
                 <div className="row justify-content-start">
                     <div className="col">
@@ -276,10 +318,10 @@ function GarbageCollectionSchedule() {
                         </Button>
                     </div>
                     <div className="col">
-                        <BuildingAutocomplete initialId={0} setObjectId={setLatestBuilding} required={false}/>
+                        <BuildingAutocomplete initialId={0} setObjectId={setSearchedBuilding} required={false}/>
                     </div>
                     <div className="col">
-                        <TourAutocomplete initialId={0} setObjectId={setLatestTour} required={false}/>
+                        <TourAutocomplete initialId={0} setObjectId={setSearchedTour} required={false}/>
                     </div>
                 </div>
             </div>
