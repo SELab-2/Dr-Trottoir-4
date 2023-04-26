@@ -57,13 +57,13 @@ services:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       SECRET_EMAIL_USER: ${SECRET_EMAIL_USER}
       SECRET_EMAIL_USER_PSWD: ${SECRET_EMAIL_USER_PSWD}
-    command: [ "gunicorn", "config.wsgi:application", "-b", "localhost:8000" ]
+    command: [ "gunicorn", "config.wsgi:application", "-b", "0.0.0.0:8000" ]
     expose:
       - 8000
     volumes:
       - ./backend:/app/backend-wsgi
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8000/api/" ]
+      test: [ "CMD", "curl", "-f", "http://0.0.0.0:8000/api/" ]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -84,7 +84,7 @@ services:
       SECRET_EMAIL_USER_PSWD: ${SECRET_EMAIL_USER_PSWD}
       # TODO: strangely the methods in wsgi work without this, check why this isn't the case for asgi
       DJANGO_SETTINGS_MODULE: config.settings
-    command: [ "daphne", "config.asgi:application", "-b", "localhost", "-p", "9000" ]
+    command: [ "daphne", "config.asgi:application", "-b", "0.0.0.0", "-p", "9000" ]
     expose:
       - 9000
     volumes:
