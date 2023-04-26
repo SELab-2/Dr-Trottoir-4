@@ -109,13 +109,13 @@ function GarbageCollectionSchedule() {
     }, [searchedTour]);
 
     // Adds the garbage schedule for all the buildings in a region
-    function addBuildingsOfRegion(buildings : BuildingInterface[], regionId: number) {
-        const buildingsInRegion : BuildingInterface[] = buildings.filter(b => +b.region === +regionId);
+    function addBuildingsOfRegion(buildings: BuildingInterface[], regionId: number) {
+        const buildingsInRegion: BuildingInterface[] = buildings.filter((b) => +b.region === +regionId);
         setBuildingList((prevState) => {
             return [...prevState, ...buildingsInRegion];
         });
         Promise.all(
-            buildingsInRegion.map(b =>
+            buildingsInRegion.map((b) =>
                 getGarbageCollectionFromBuilding(b.id, {
                     startDate: currentRange.start,
                     endDate: currentRange.end,
@@ -442,7 +442,7 @@ function GarbageCollectionSchedule() {
                 }}
                 onRangeChange={getFromRange}
                 views={["month", "week"]}
-                style={{ height: "100vh"  }}
+                style={{ height: "100vh" }}
                 step={60}
                 timeslots={1}
             />
