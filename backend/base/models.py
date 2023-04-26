@@ -289,8 +289,8 @@ class StudentOnTour(models.Model):
     student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     started_tour = models.DateTimeField(null=True, blank=True)
     completed_tour = models.DateTimeField(null=True, blank=True)
-    current_building_index = models.IntegerField()
-    max_building_index = models.IntegerField()  # gets set by a signal
+    current_building_index = models.IntegerField(default=0)
+    max_building_index = models.IntegerField(null=True, blank=True)  # gets set by a signal
 
     """
     A syndic can't do tours, so we need to check that a student assigned to the building on the tour is not a syndic.
