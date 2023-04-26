@@ -183,15 +183,15 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "drtrottoir",
-        "USER": "django",
-        "PASSWORD": "password",
+        "NAME": os.environ["POSTGRES_DB"],
+        "USER": os.environ["POSTGRES_USER"],
+        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
         # since testing is run outside the docker, we need a localhost db
         # the postgres docker port is exposed to it should be used as well
         # this 'hack' is just to fix the name resolving of 'web'
         # "HOST": "localhost" if "test" in sys.argv else "web",
         # TODO: Check if "web" still the appropriate host, I expect it should be 'database' now?
-        "HOST": "web",
+        "HOST": "database",
         "PORT": "5432",
     }
 }
@@ -256,7 +256,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [("redis", 6379)],
         },
     },
 }
