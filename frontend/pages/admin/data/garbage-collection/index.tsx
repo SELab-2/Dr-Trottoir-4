@@ -28,6 +28,7 @@ import { getBuildingsOfTour } from "@/lib/tour";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
+import BulkOperationModal from "@/components/garbage/BulkOperationModal";
 
 interface ParsedUrlQuery {}
 
@@ -56,7 +57,12 @@ function GarbageCollectionSchedule() {
 
     // The duplicate modal
     const [showDuplicateModal, setShowDuplicateModal] = useState<boolean>(false);
+
+    // The building list modal
     const [showBuildingListModal, setShowBuildingListModal] = useState<boolean>(false);
+
+    // The bulk operation modal
+    const [showBulkOperationModal, setShowBulkOperationModal] = useState<boolean>(false);
 
     const [buildingList, setBuildingList] = useState<BuildingInterface[]>([]);
 
@@ -275,6 +281,11 @@ function GarbageCollectionSchedule() {
         getFromRange(currentRange);
     }
 
+    function closeBulkOperationModal() {
+        setShowBulkOperationModal(false);
+        getFromRange(currentRange);
+    }
+
     function removeAllBuildings() {
         setGarbageCollection([]);
         setBuildingList([]);
@@ -301,6 +312,7 @@ function GarbageCollectionSchedule() {
                 show={showDuplicateModal}
                 buildings={buildingList}
             />
+            <BulkOperationModal buildings={buildingList} closeModal={closeBulkOperationModal} show={showBulkOperationModal}/>
             <GarbageEditModal
                 closeModal={closeEditModal}
                 onPatch={onPatch}
@@ -325,6 +337,11 @@ function GarbageCollectionSchedule() {
                     <div className="col">
                         <Button variant="primary" className="btn-dark" onClick={() => setShowDuplicateModal(true)}>
                             Dupliceer planning
+                        </Button>
+                    </div>
+                    <div className="col">
+                        <Button variant="primary" className="btn-dark" onClick={() => setShowBulkOperationModal(true)}>
+                            Bulk operatie
                         </Button>
                     </div>
                     <div className="col">
