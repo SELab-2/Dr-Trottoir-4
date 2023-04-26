@@ -3,8 +3,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { RegionInterface, getAllRegions, postRegion, patchRegion, deleteRegion } from "@/lib/region";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
-import { Box, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import {Edit, Delete, CalendarMonth} from "@mui/icons-material";
 import { useRouter } from "next/router";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import { Button } from "react-bootstrap";
@@ -73,6 +73,14 @@ function AdminDataRegions() {
         }
     }
 
+    // Route to the garbage view of all the buildings in the region
+    async function routeToGarbageSchedule(regionView: RegionView) {
+        await router.push({
+            pathname: `/admin/data/garbage-collection`,
+            query: { region: regionView.id },
+        });
+    }
+
     return (
         <>
             <AdminHeader />
@@ -115,6 +123,16 @@ function AdminDataRegions() {
                                 }}
                             >
                                 <Delete />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Vuilophaling">
+                            <IconButton
+                                onClick={() => {
+                                    const regionView: RegionView = row.original;
+                                    routeToGarbageSchedule(regionView).then();
+                                }}
+                            >
+                                <CalendarMonth />
                             </IconButton>
                         </Tooltip>
                     </Box>

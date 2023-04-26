@@ -35,6 +35,7 @@ interface ParsedUrlQuery {}
 interface DataBuildingQuery extends ParsedUrlQuery {
     building?: number;
     tour?: number;
+    region?: number;
 }
 
 function GarbageCollectionSchedule() {
@@ -84,6 +85,9 @@ function GarbageCollectionSchedule() {
             if (query.tour) {
                 addBuildingsOfTourToList(query.tour);
             }
+            if (query.region) {
+                addBuildingsOfRegion(d, query.region);
+            }
         }, console.error);
     }, [router.isReady]);
 
@@ -103,6 +107,30 @@ function GarbageCollectionSchedule() {
             addBuildingsOfTourToList(searchedTour);
         }
     }, [searchedTour]);
+
+    // Adds the garbage schedule for all the buildings in a region
+    function addBuildingsOfRegion(buildings : BuildingInterface[], regionId: number) {
+        console.log(regionId);
+        console.log(buildings);
+        const buildingsInRegion : BuildingInterface[] = buildings.filter(b => +b.region === +regionId);
+        setBuildingList((prevState) => {
+            return [...prevState, ...buildingsInRegion];
+        });
+        Promise.all(
+            buildingsInRegion.map(b =>
+                getGarbageCollectionFromBuilding(b.id, {
+                    startDate: currentRange.start,
+                    endDate: currentRange.end,
+                })
+            )
+        ).then((res) => {
+            const g: any[] = res;
+            const data = g.map((el) => el.data).flat();
+            setGarbageCollection((prevState) => {
+                return [...prevState, ...data];
+            });
+        }, console.error);
+    }
 
     // Adds the garbage schedule for all the buildings of a given tour
     function addBuildingsOfTourToList(tourId: number) {
@@ -416,7 +444,7 @@ function GarbageCollectionSchedule() {
                 }}
                 onRangeChange={getFromRange}
                 views={["month", "week"]}
-                style={{ height: "100vh" }}
+                style={{ height: "100vh"  }}
                 step={60}
                 timeslots={1}
             />

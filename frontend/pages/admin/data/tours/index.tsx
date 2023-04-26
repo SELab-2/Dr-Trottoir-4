@@ -209,11 +209,11 @@ function AdminDataTours() {
                         buildings && (
                             <>
                                 <label>Gebouwen op deze tour:</label>
-                                <ul>
+                                <ol>
                                     {buildings.map((building: BuildingInterface, index: number) => (
                                         <li key={`${building.id}-${index}`}>{getAddress(building)}</li>
                                     ))}
-                                </ul>
+                                </ol>
                             </>
                         )
                     );
