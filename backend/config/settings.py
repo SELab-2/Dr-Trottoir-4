@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import collections
 import os
 import sys
+from django.utils.translation import gettext_lazy as _
 from datetime import timedelta
 from pathlib import Path
 
@@ -88,6 +89,8 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "This is the documentation for the Dr-Trottoir API",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    # TODO: Ask @Seppe what this line does and if it's still necessary
+    "SCHEMA_PATH_PREFIX_INSERT": "/api",
     # OTHER SETTINGS
 }
 
@@ -104,6 +107,8 @@ REST_AUTH = {
     "USER_DETAILS_SERIALIZER": "base.serializers.UserSerializer",
     "PASSWORD_RESET_SERIALIZER": "authentication.serializers.CustomPasswordResetSerializer",
     "PASSWORD_RESET_USE_SITES_DOMAIN": True,
+    "OLD_PASSWORD_FIELD_ENABLED": True,
+    "LOGOUT_ON_PASSWORD_CHANGE": False,
 }
 
 SIMPLE_JWT = {
@@ -140,6 +145,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / "locale/",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = False
@@ -190,7 +200,6 @@ DATABASES = {
         # the postgres docker port is exposed to it should be used as well
         # this 'hack' is just to fix the name resolving of 'web'
         # "HOST": "localhost" if "test" in sys.argv else "web",
-        # TODO: Check if "web" still the appropriate host, I expect it should be 'database' now?
         "HOST": "database",
         "PORT": "5432",
     }
@@ -217,12 +226,25 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
 
-USE_TZ = True
-TIME_ZONE = "CET"
 
 USE_I18N = True
+
+LANGUAGE_COOKIE_AGE = 3600
+LANGUAGE_COOKIE_NAME = "language-cookie"
+
+LANGUAGE_CODE = "nl"
+
+LANGUAGES = [
+    ("nl", _("Dutch")),
+    ("en", _("English")),
+]
+
+TIME_ZONE = "CET"
+
+USE_TZ = True
+
+USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

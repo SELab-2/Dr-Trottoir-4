@@ -16,6 +16,9 @@ class GarbageCollectionTests(BaseTest):
         self.data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}
         self.insert("garbage-collection/")
 
+    def test_insert_empty(self):
+        self.insert_empty("garbage-collection/")
+
     def test_insert_dupe_garbage(self):
         b_id = insert_dummy_building()
         self.data1 = {"building": b_id, "date": "2023-03-08", "garbage_type": "RES"}

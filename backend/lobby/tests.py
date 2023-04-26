@@ -16,6 +16,9 @@ class LobbyTests(BaseTest):
         self.data1 = {"email": "test_lobby@example.com", "role": r_id}
         self.insert("lobby/")
 
+    def test_insert_empty(self):
+        self.insert_empty("lobby/")
+
     def test_insert_dupe_lobby(self):
         r_id = insert_dummy_role("Student")
         self.data1 = {"email": "test_lobby@example.com", "role": r_id}

@@ -1,10 +1,21 @@
 import { TiPencil } from "react-icons/ti";
 import React, { useEffect, useState } from "react";
-import PatchBuildingSyndicModal from "@/components/syndic/building/PatchBuildingSyndicModal";
+import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
 import { BuildingInterface } from "@/lib/building";
 import { getRegion, RegionInterface } from "@/lib/region";
+import PatchBuildingAdminModal from "@/components/building/buildingComponents/editModals/PatchBuildingAdminModal";
+import { useRouter } from "next/router";
 
-function BuildingSyndicInfo({ building, setBuilding }: { building: BuildingInterface; setBuilding: (b: any) => void }) {
+function BuildingInfo({
+    building,
+    setBuilding,
+    type,
+}: {
+    building: BuildingInterface;
+    setBuilding: (b: any) => void;
+    type: "syndic" | "admin" | "";
+}) {
+    const router = useRouter();
     const [editBuilding, setEditBuilding] = useState(false);
     const [regionName, setRegionName] = useState("/");
 
@@ -13,6 +24,12 @@ function BuildingSyndicInfo({ building, setBuilding }: { building: BuildingInter
             get_region_name("region");
         }
     }, [building]);
+
+    useEffect(() => {
+        if (type == "admin" && building) {
+            router.push(`/admin/data/buildings/edit?building=${building.id}`);
+        }
+    }, [editBuilding]);
 
     function get_building_key(key: string) {
         if (building) {
@@ -41,16 +58,26 @@ function BuildingSyndicInfo({ building, setBuilding }: { building: BuildingInter
 
     return (
         <>
-            <PatchBuildingSyndicModal
+            {type == "syndic" ? (
+                <PatchBuildingSyndicModal
+                    show={editBuilding}
+                    closeModal={() => setEditBuilding(false)}
+                    building={building}
+                    setBuilding={setBuilding}
+                />
+            ) : null}
+
+            {/*type == "admin" ? <PatchBuildingAdminModal
                 show={editBuilding}
                 closeModal={() => setEditBuilding(false)}
                 building={building}
-                setBuilding={setBuilding}
-            />
+                setBuilding={setBuilding} />
+            : null*/}
 
             <h1>
                 Gebouw{" "}
                 <TiPencil
+                    className={"clickable"}
                     onClick={(e) => {
                         e.preventDefault();
                         setEditBuilding(true);
@@ -72,4 +99,4 @@ function BuildingSyndicInfo({ building, setBuilding }: { building: BuildingInter
     );
 }
 
-export default BuildingSyndicInfo;
+export default BuildingInfo;

@@ -2,10 +2,9 @@
 
 /* Reset default margin, padding, and border for all elements */
 * {
-    margin: 0;
-    padding: 0;
-    border: none;
     box-sizing: border-box;
+    padding: 0;
+    margin: 0;
 }
 
 /* Define font and font size for the whole document */
@@ -45,7 +44,7 @@ Button:hover, button:hover {
 
 /* Style for all links */
 a {
-    color: dodgerblue;
+    color: inherit;
     text-decoration: none;
 }
 
@@ -76,8 +75,20 @@ input:focus {
     box-shadow: 0 0 0 0.1rem lightgray;
 }
 
-/* Icon Styles */
+@media (prefers-color-scheme: light) {
+    html {
+        color-scheme: light;
+    }
+}
 
+.rbc-time-view .rbc-label {
+    display: none !important;
+}
+
+.rbc-time-view .rbc-allday-cell {
+    height: calc(90vh) !important;
+    max-height: unset !important;
+}
 /* Style for all icons */
 .icon {
     display: inline-block;
@@ -86,4 +97,16 @@ input:focus {
     cursor: pointer;
     background-repeat: no-repeat;
     background-size: 100%;
+}
+
+.rbc-time-view .rbc-time-content {
+    display: none !important;
+}
+
+.rbc-time-view .rbc-time-slot {
+    height: 30px !important;
+}
+
+.clickable {
+    cursor: pointer;
 }

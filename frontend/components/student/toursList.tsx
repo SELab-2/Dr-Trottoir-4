@@ -16,25 +16,19 @@ export default function ToursList({
     studentOnTours: StudentOnTour[];
     allTours: Record<number, Tour>;
     allRegions: Record<number, RegionInterface>;
-    onSelect: (studentOnTourId: number, regionId: number) => void;
+    onSelect: (studentOnTourId: number) => void;
 }) {
     return (
         <>
-            {studentOnTours.length > 0 && (
-                <div className="mt-3 mb-1 ml-2">
-                    <span className="h1 fw-bold">{listTitle}</span>
+            <div className="mt-3 mb-1 ms-2 me-2">
+                <span className="h1 fw-bold">{listTitle}</span>
+                {studentOnTours.length === 0 && <h5 className="mb-1">Er zijn geen rondes om weer te geven.</h5>}
+                {studentOnTours.length > 0 && (
                     <div className="list-group">
                         {studentOnTours.map((el) => {
                             return (
                                 <a
-                                    onClick={() =>
-                                        onSelect(
-                                            el.id,
-                                            allTours[el.tour] && allRegions[allTours[el.tour].region]
-                                                ? allRegions[allTours[el.tour].region].id
-                                                : 0
-                                        )
-                                    }
+                                    onClick={() => onSelect(el.id)}
                                     className="list-group-item list-group-item-action"
                                     key={el.id}
                                 >
@@ -51,8 +45,8 @@ export default function ToursList({
                             );
                         })}
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </>
     );
 }

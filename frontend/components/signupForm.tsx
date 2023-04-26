@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import signup from "@/lib/signup";
 import { handleError } from "@/lib/error";
+import PasswordInput from "@/components/password/passwordInput";
 
 function SignupForm() {
     const { t } = useTranslation();
@@ -18,6 +19,11 @@ function SignupForm() {
     const [password2, setPassword2] = useState<string>("");
     const [verificationCode, setVerificationCode] = useState<string>("");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+
+    const handlePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
@@ -126,52 +132,46 @@ function SignupForm() {
                 />
             </div>
 
-            <div className="form-outline mb-4">
-                <label className="form-label">Wachtwoord</label>
-                <input
-                    type="password"
-                    title="Kies een sterk wachtwoord."
-                    className={`form-control form-control-lg ${styles.input}`}
-                    value={password1}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setPassword1(e.target.value);
-                        e.target.setCustomValidity("");
-                    }}
-                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        e.target.setCustomValidity("Wachtwoord is verplicht.");
-                    }}
-                    required
-                    placeholder="Wachtwoord"
-                />
-            </div>
+            <PasswordInput
+                value={password1}
+                setPassword={setPassword1}
+                handlePasswordVisibility={handlePasswordVisibility}
+                showPassword={showPassword}
+                label="Wachtwoord"
+                placeholder="Wachtwoord"
+                showIconButton={true}
+                customOnInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    e.target.setCustomValidity("");
+                }}
+                customOnInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    e.target.setCustomValidity("Wachtwoord is verplicht.");
+                }}
+            />
 
-            <div className="form-outline mb-4">
-                <label className="form-label">Bevestig wachtwoord</label>
-                <input
-                    type="password"
-                    title="Herhaal het wachtwoord die je hiervoor ingaf."
-                    className={`form-control form-control-lg ${styles.input}`}
-                    value={password2}
-                    onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+            <PasswordInput
+                value={password2}
+                setPassword={setPassword2}
+                handlePasswordVisibility={() => null}
+                showPassword={false}
+                label="Bevestig wachtwoord"
+                placeholder="Wachtwoord"
+                showIconButton={false}
+                customOnInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    e.target.setCustomValidity("");
+                    if (password1 !== e.target.value) {
+                        e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
+                    } else {
                         e.target.setCustomValidity("");
-                        setPassword2(e.target.value);
-                        if (password1 !== e.target.value) {
-                            e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
-                        } else {
-                            e.target.setCustomValidity("");
-                        }
-                    }}
-                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        if (password1 !== e.target.value) {
-                            e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
-                        } else {
-                            e.target.setCustomValidity("");
-                        }
-                    }}
-                    required
-                    placeholder="Wachtwoord"
-                />
-            </div>
+                    }
+                }}
+                customOnInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    if (password1 !== e.target.value) {
+                        e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
+                    } else {
+                        e.target.setCustomValidity("");
+                    }
+                }}
+            />
 
             <div className="form-outline mb-4">
                 <label className="form-label">Verificatiecode</label>

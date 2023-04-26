@@ -3,7 +3,6 @@ from dj_rest_auth.jwt_auth import (
     set_jwt_refresh_cookie,
     set_jwt_cookies,
 )
-from dj_rest_auth.utils import jwt_encode
 from dj_rest_auth.views import LoginView, PasswordChangeView
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
@@ -40,14 +39,13 @@ class CustomSignUpView(APIView):
         lobby_instance.delete()
         # create the response
         response = Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
-        set_jwt_cookies(*jwt_encode(user))
         return response
 
 
 class CustomLoginView(LoginView):
     def get_response(self):
         data = {
-            "message": "successful login",
+            "message": _("successful login"),
             "user": UserSerializer(self.user).data,
         }
         response = Response(data, status=status.HTTP_200_OK)
@@ -98,7 +96,7 @@ class CustomTokenVerifyView(TokenVerifyView):
         except TokenError as e:
             raise InvalidToken(e.args[0])
 
-        return Response({"message": "refresh token validation successful"}, status=status.HTTP_200_OK)
+        return Response({"message": _("refresh token validation successful")}, status=status.HTTP_200_OK)
 
 
 class CustomPasswordChangeView(PasswordChangeView):

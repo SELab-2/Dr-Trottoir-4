@@ -1,13 +1,14 @@
 import StudentHeader from "@/components/header/studentHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useEffect, useState } from "react";
-import getStudentOnTour, { datesEqual, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import { getToursOfStudent, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
 import { getCurrentUser, User } from "@/lib/user";
 import { getTour, Tour } from "@/lib/tour";
 import { getRegion, RegionInterface } from "@/lib/region";
 import ToursList from "@/components/student/toursList";
 import { useRouter } from "next/router";
 import Loading from "@/components/loading";
+import { datesEqual } from "@/lib/date";
 
 // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=32-29&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
 function StudentDashboard() {
@@ -37,7 +38,7 @@ function StudentDashboard() {
 
         const nextMonth: Date = new Date();
         nextMonth.setMonth(nextMonth.getMonth() + 1);
-        getStudentOnTour(user.id, { startDate: monthAgo, endDate: nextMonth }).then(async (res) => {
+        getToursOfStudent(user.id, { startDate: monthAgo, endDate: nextMonth }).then(async (res) => {
             // Some cache to recognize duplicate tours (to not do unnecessary requests)
             const t: Record<number, Tour> = {};
             const r: Record<number, RegionInterface> = {};
@@ -95,11 +96,11 @@ function StudentDashboard() {
         }, console.error);
     }, [user]);
 
-    function redirectToSchedule(studentOnTourId: number, regionId: number): void {
+    function redirectToSchedule(studentOnTourId: number): void {
         router
             .push({
                 pathname: "/student/schedule",
-                query: { regionId, studentOnTourId },
+                query: { studentOnTourId },
             })
             .then();
     }

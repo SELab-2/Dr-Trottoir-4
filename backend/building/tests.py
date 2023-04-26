@@ -27,6 +27,9 @@ class BuildingTests(BaseTest):
         }
         self.insert("building/")
 
+    def test_insert_empty(self):
+        self.insert_empty("building/")
+
     def test_insert_dupe_building(self):
         r_id = insert_dummy_region()
         s_id = insert_dummy_syndic()

@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { Button } from "react-bootstrap";
-import { Delete, Edit, Email } from "@mui/icons-material";
+import { Delete, Edit, Email, Info } from "@mui/icons-material";
 import { BuildingView } from "@/types";
 import { getUserInfo } from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
@@ -133,6 +133,13 @@ function AdminDataBuildings() {
         });
     }
 
+    async function routeToIndividualView(buildingView: BuildingView) {
+        await router.push({
+            pathname: `/admin/building`,
+            query: { id: buildingView.building_id },
+        });
+    }
+
     return (
         <>
             <AdminHeader />
@@ -155,6 +162,16 @@ function AdminDataBuildings() {
                 initialState={{ columnVisibility: { building_id: false } }}
                 renderRowActions={({ row }) => (
                     <Box sx={{ display: "flex", gap: "1rem" }}>
+                        <Tooltip arrow placement="left" title="Details">
+                            <IconButton
+                                onClick={() => {
+                                    const buildingView: BuildingView = row.original;
+                                    routeToIndividualView(buildingView).then();
+                                }}
+                            >
+                                <Info />
+                            </IconButton>
+                        </Tooltip>
                         <Tooltip arrow placement="left" title="Pas aan">
                             <IconButton
                                 onClick={() => {
