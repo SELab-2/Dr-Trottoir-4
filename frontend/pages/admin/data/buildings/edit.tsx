@@ -1,11 +1,11 @@
-import React, {ChangeEvent, useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import {Form} from "react-bootstrap";
-import {getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding} from "@/lib/building";
-import {getRegion} from "@/lib/region";
-import {getUserInfo, userSearchString} from "@/lib/user";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { Form } from "react-bootstrap";
+import { getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding } from "@/lib/building";
+import { getRegion } from "@/lib/region";
+import { getUserInfo, userSearchString } from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutocomplete";
 import PDFUploader from "@/components/pdfUploader";
@@ -101,14 +101,14 @@ function AdminDataBuildingsEdit() {
 
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <div className={styles.container}>
                 <ConfirmationMessage
                     showConfirm={showConfirmation}
                     confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
                     onClose={setShowConfirmation}
                 />
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                 <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
                     <Form.Group controlId="buildingName">
                         <Form.Label>Gebouw naam</Form.Label>

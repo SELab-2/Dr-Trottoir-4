@@ -54,7 +54,7 @@ function SignupForm() {
                 <i className="fas fa-cubes fa-2x me-3" />
                 <span className="h1 fw-bold mb-0">Sign up.</span>
             </div>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <div className="form-outline mb-4">
                 <label className="form-label">Voornaam</label>
                 <input

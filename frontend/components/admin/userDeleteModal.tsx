@@ -44,7 +44,7 @@ export function UserDeleteModal({
             <Modal.Header>
                 <Modal.Title>Verwijder gebruiker</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 Bent u zeker dat u gebruiker {selectedUser?.first_name} {selectedUser?.last_name} ({selectedUser?.email}
                 ) wil verwijderen?

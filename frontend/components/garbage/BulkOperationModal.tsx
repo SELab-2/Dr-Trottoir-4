@@ -66,7 +66,7 @@ export default function BulkOperationModal({
             <Modal.Header>
                 <Modal.Title>Bulk operatie voor geselecteerde gebouwen</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <div className="form-row">

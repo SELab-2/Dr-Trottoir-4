@@ -45,7 +45,7 @@ export function DeleteEmailModal({
             <Modal.Header>
                 <Modal.Title>Verwijder template:</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>Bent u zeker dat u template {selectedMail?.name} wil verwijderen?</Modal.Body>
             <Modal.Footer>
                 <Button

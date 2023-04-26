@@ -283,7 +283,7 @@ export default function StudentBuilding() {
                         </>
                     )}
                 </div>
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                 <Form onSubmit={handleSubmit}>
                     <span className="h1 mt-2">{typeNames[step]}</span>
                     <div className="mb-2 mt-2">

@@ -404,7 +404,7 @@ function AdminDataToursEdit() {
                 setSelectedTour={setTourView}
                 onDelete={closeAndRouteDeleteModal}
             />
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <MaterialReactTable
                 columns={columnsBuildingOnTourView}
                 data={buildingsOnTourView}

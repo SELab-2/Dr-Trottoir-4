@@ -1,7 +1,7 @@
-import {Button, Form, Modal} from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import styles from "@/styles/Login.module.css";
-import React, {useEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     deleteGarbageCollection,
     GarbageCollectionInterface,
@@ -9,22 +9,22 @@ import {
     patchGarbageCollection,
     postGarbageCollection,
 } from "@/lib/garbage-collection";
-import {BuildingInterface, getAddress} from "@/lib/building";
-import {formatDate} from "@/lib/date";
-import {handleError} from "@/lib/error";
-import {GarbageCollectionEvent} from "@/types";
+import { BuildingInterface, getAddress } from "@/lib/building";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
+import { GarbageCollectionEvent } from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function GarbageEditModal({
-                                             selectedEvent,
-                                             show,
-                                             closeModal,
-                                             onPost,
-                                             onPatch,
-                                             onDelete,
-                                             clickedDate,
-                                             buildings,
-                                         }: {
+    selectedEvent,
+    show,
+    closeModal,
+    onPost,
+    onPatch,
+    onDelete,
+    clickedDate,
+    buildings,
+}: {
     selectedEvent: GarbageCollectionEvent | null;
     show: boolean;
     closeModal: () => void;
@@ -34,7 +34,7 @@ export default function GarbageEditModal({
     clickedDate: Date | null;
     buildings: BuildingInterface[];
 }) {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [selectedDate, setSelectedDate] = useState<string>(formatDate(new Date()));
     const [garbageType, setGarbageType] = useState<string>("");
@@ -99,7 +99,8 @@ export default function GarbageEditModal({
             setErrorMessages(["Geen gebouw geselecteerd."]);
             return;
         }
-        if (selectedEvent) { // If it is an existing event, patch
+        if (selectedEvent) {
+            // If it is an existing event, patch
             const patchBody: { [name: string]: string | number | number[] } = {};
             if (garbageType != selectedEvent.title) {
                 patchBody["garbage_type"] = t;
@@ -120,18 +121,18 @@ export default function GarbageEditModal({
                     setErrorMessages(handleError(err));
                 }
             );
-        } else { // If it is a new event, post
-            postGarbageCollection(selectedBuilding.id, selectedDate, t)
-                .then(
-                    (res) => {
-                        const g: GarbageCollectionInterface = res.data;
-                        onPost(g);
-                        close();
-                    },
-                    (err) => {
-                        setErrorMessages(handleError(err));
-                    }
-                );
+        } else {
+            // If it is a new event, post
+            postGarbageCollection(selectedBuilding.id, selectedDate, t).then(
+                (res) => {
+                    const g: GarbageCollectionInterface = res.data;
+                    onPost(g);
+                    close();
+                },
+                (err) => {
+                    setErrorMessages(handleError(err));
+                }
+            );
         }
     }
 
@@ -142,7 +143,7 @@ export default function GarbageEditModal({
     }
 
     function onShow() {
-        if (buildings.length === 1 && ! selectedEvent) {
+        if (buildings.length === 1 && !selectedEvent) {
             setSelectedBuilding(buildings[0]);
         }
     }
@@ -152,7 +153,7 @@ export default function GarbageEditModal({
             <Modal.Header>
                 <Modal.Title>{selectedEvent ? "Pas ophaling aan" : "Voeg ophaling toe"}</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <div className="form-outline mb-4">
@@ -170,17 +171,21 @@ export default function GarbageEditModal({
                             className={`form-select form-control form-control-lg ${styles.input}`}
                             value={selectedBuilding ? selectedBuilding.id.toString() : ""}
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                const foundBuilding: BuildingInterface | undefined = buildings.find(b => b.id.toString() === e.target.value);
+                                const foundBuilding: BuildingInterface | undefined = buildings.find(
+                                    (b) => b.id.toString() === e.target.value
+                                );
                                 if (!foundBuilding) {
                                     return;
                                 }
                                 setSelectedBuilding(foundBuilding);
                             }}
                         >
-                            <option disabled value="" key=""/>
-                            {buildings.map((b: BuildingInterface) =>
-                                <option value={b.id.toString()} key={b.id.toString()}>{getAddress(b)}</option>
-                            )}
+                            <option disabled value="" key="" />
+                            {buildings.map((b: BuildingInterface) => (
+                                <option value={b.id.toString()} key={b.id.toString()}>
+                                    {getAddress(b)}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className="form-outline mb-4">
@@ -192,7 +197,7 @@ export default function GarbageEditModal({
                                 setGarbageType(e.target.value);
                             }}
                         >
-                            <option disabled value="" key=""/>
+                            <option disabled value="" key="" />
                             {Object.keys(garbageTypes).map((key: string) => {
                                 const value = garbageTypes[key];
                                 return (

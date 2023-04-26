@@ -98,7 +98,7 @@ export default function UserProfile() {
             {["Admin", "Superstudent"].includes(role) && <AdminHeader />}
             {"Student" === role && <StudentHeader />}
             {"Syndic" === role && <SyndicHeader />}
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             {succesPatch && (
                 <div className={"visible alert alert-success alert-dismissible fade show"}>
                     <strong>Succes!</strong> Uw profiel werd met succes gewijzigd!

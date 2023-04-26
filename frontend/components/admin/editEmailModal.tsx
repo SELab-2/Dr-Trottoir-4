@@ -78,7 +78,7 @@ export default function ({
             }}
         >
             <Modal.Header closeButton>{edit ? "Bewerk template" : "Nieuwe template"}</Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 <Form>
                     <div className="form-outline mb-4">

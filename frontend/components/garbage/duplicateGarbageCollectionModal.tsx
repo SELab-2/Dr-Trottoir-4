@@ -59,7 +59,7 @@ export default function DuplicateGarbageCollectionModal({
             <Modal.Header>
                 <Modal.Title>Dupliceer vuilophaling schema voor geselecteerde gebouwen</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <div className="form-row">

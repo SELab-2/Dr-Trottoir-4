@@ -43,7 +43,7 @@ export function TourDeleteModal({
             <Modal.Header>
                 <Modal.Title>Verwijder ronde</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>Bent u zeker dat u ronde {selectedTour?.name} wil verwijderen?</Modal.Body>
             <Modal.Footer>
                 <Button

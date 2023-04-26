@@ -140,7 +140,7 @@ export default function EditLobbyModal({
             </Modal.Header>
             <Form onSubmit={changeLobby}>
                 <Modal.Body>
-                    <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                    <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                     <div className="card-body p-4 p-lg-5 text-black">
                         <div className="form-outline mb-4">
                             <label className="form-label">Email:</label>

@@ -73,7 +73,7 @@ export default function RemarkModal({
                 <Modal.Title>Welke opmerking heeft u?</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                 <Form>
                     <textarea
                         className={`form-control form-control-lg`}

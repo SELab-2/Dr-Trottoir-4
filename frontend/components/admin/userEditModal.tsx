@@ -60,7 +60,7 @@ export function UserEditModal({
             <Modal.Header>
                 <Modal.Title>Pas gebruiker aan</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 <div className="card-body p-4 p-lg-5 text-black">
                     <form>
