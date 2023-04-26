@@ -91,7 +91,7 @@ export async function bulkMoveGarbageCollectionSchedule(
     } else if (tour) {
         params["tour"] = tour;
     } else if (buildings) {
-        params["buildings"] = "[" + buildings.toString() + "]";
+        params["buildings"] = JSON.stringify(buildings);
     }
     const post_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_MOVE_GARBAGE_COLLECTION}`;
     return await api.post(post_url, {},
