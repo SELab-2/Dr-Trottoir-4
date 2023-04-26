@@ -247,7 +247,7 @@ class GarbageCollectionBulkMoveView(APIView):
                 "move_to_date": ("The date to move the garbage collection to", True, OpenApiTypes.DATE),
                 "region": ("The region of the garbage collection to move", False, OpenApiTypes.INT),
                 "tour": ("The tour of the garbage collection to move", False, OpenApiTypes.INT),
-                "building": ("A list of building id's of the garbage collection to move", False, OpenApiTypes.STR),
+                "buildings": ("A list of building id's of the garbage collection to move", False, OpenApiTypes.STR),
             }
         ),
     )
