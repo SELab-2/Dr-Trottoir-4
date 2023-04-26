@@ -1,21 +1,21 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
     bulkMoveGarbageCollectionSchedule,
     duplicateGarbageCollectionSchedule,
-    garbageTypes
+    garbageTypes,
 } from "@/lib/garbage-collection";
-import {handleError} from "@/lib/error";
-import {formatDate} from "@/lib/date";
-import {Button, Form, Modal} from "react-bootstrap";
-import {addDays} from "date-fns";
-import {BuildingInterface} from "@/lib/building";
+import { handleError } from "@/lib/error";
+import { formatDate } from "@/lib/date";
+import { Button, Form, Modal } from "react-bootstrap";
+import { addDays } from "date-fns";
+import { BuildingInterface } from "@/lib/building";
 import styles from "@/styles/Login.module.css";
 
 export default function BulkOperationModal({
-                                               show,
-                                               buildings,
-                                               closeModal,
-                                           }: {
+    show,
+    buildings,
+    closeModal,
+}: {
     show: boolean;
     buildings: BuildingInterface[];
     closeModal: () => void;
@@ -40,11 +40,15 @@ export default function BulkOperationModal({
             setErrorMessages(["Er is geen type aangeduid."]);
         }
         // For now duplicate for all the buildings
-        bulkMoveGarbageCollectionSchedule(garbageType, dateToMove, moveToDate, buildings.map(b => b.id))
-            .then(
-                _ => onHide(),
-                err => setErrorMessages(handleError(err))
-            );
+        bulkMoveGarbageCollectionSchedule(
+            garbageType,
+            dateToMove,
+            moveToDate,
+            buildings.map((b) => b.id)
+        ).then(
+            (_) => onHide(),
+            (err) => setErrorMessages(handleError(err))
+        );
     }
 
     // execute when the modal is hidden
@@ -102,7 +106,7 @@ export default function BulkOperationModal({
                                 setGarbageType(e.target.value);
                             }}
                         >
-                            <option disabled value="" key=""/>
+                            <option disabled value="" key="" />
                             {Object.keys(garbageTypes).map((key: string) => {
                                 const value = garbageTypes[key];
                                 return (
