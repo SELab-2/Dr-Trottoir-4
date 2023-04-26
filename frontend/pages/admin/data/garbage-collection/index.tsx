@@ -110,8 +110,6 @@ function GarbageCollectionSchedule() {
 
     // Adds the garbage schedule for all the buildings in a region
     function addBuildingsOfRegion(buildings : BuildingInterface[], regionId: number) {
-        console.log(regionId);
-        console.log(buildings);
         const buildingsInRegion : BuildingInterface[] = buildings.filter(b => +b.region === +regionId);
         setBuildingList((prevState) => {
             return [...prevState, ...buildingsInRegion];
