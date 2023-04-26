@@ -10,6 +10,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { addDays } from "date-fns";
 import { BuildingInterface } from "@/lib/building";
 import styles from "@/styles/Login.module.css";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function BulkOperationModal({
     show,
@@ -65,16 +66,7 @@ export default function BulkOperationModal({
             <Modal.Header>
                 <Modal.Title>Bulk operatie voor geselecteerde gebouwen</Modal.Title>
             </Modal.Header>
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{err}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <div className="form-row">

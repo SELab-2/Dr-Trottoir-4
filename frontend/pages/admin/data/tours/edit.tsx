@@ -16,6 +16,7 @@ import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
 import { BuildingNotOnTourView, BuildingOnTourView, TourView } from "@/types";
 import { TourDeleteModal } from "@/components/admin/tourDeleteModal";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 interface ParsedUrlQuery {}
 
@@ -403,16 +404,7 @@ function AdminDataToursEdit() {
                 setSelectedTour={setTourView}
                 onDelete={closeAndRouteDeleteModal}
             />
-            {errorMessages.length > 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err: string, index: number) => (
-                            <li key={index}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])} />
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <MaterialReactTable
                 columns={columnsBuildingOnTourView}
                 data={buildingsOnTourView}

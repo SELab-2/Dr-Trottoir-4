@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import signup from "@/lib/signup";
 import { handleError } from "@/lib/error";
 import PasswordInput from "@/components/password/passwordInput";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 function SignupForm() {
     const { t } = useTranslation();
@@ -53,20 +54,7 @@ function SignupForm() {
                 <i className="fas fa-cubes fa-2x me-3" />
                 <span className="h1 fw-bold mb-0">Sign up.</span>
             </div>
-
-            <div
-                className={
-                    errorMessages.length !== 0 ? "visible alert alert-danger alert-dismissible fade show" : "invisible"
-                }
-            >
-                <ul>
-                    {errorMessages.map((err, i) => (
-                        <li key={i}>{t(err)}</li>
-                    ))}
-                </ul>
-                <button type="button" className="btn-close" data-bs-dismiss="alert" />
-            </div>
-
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <div className="form-outline mb-4">
                 <label className="form-label">Voornaam</label>
                 <input

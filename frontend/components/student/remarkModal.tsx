@@ -5,6 +5,7 @@ import { postRemarkAtBuilding, RemarkAtBuilding, remarkTypes } from "@/lib/remar
 import { postPictureOfRemark } from "@/lib/picture-of-remark";
 import { StudentOnTour } from "@/lib/student-on-tour";
 import { BuildingInterface } from "@/lib/building";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function RemarkModal({
     show,
@@ -72,16 +73,7 @@ export default function RemarkModal({
                 <Modal.Title>Welke opmerking heeft u?</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {errorMessages.length > 0 && (
-                    <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                        <ul>
-                            {errorMessages.map((err: string, index: number) => (
-                                <li key={index}>{err}</li>
-                            ))}
-                        </ul>
-                        <button type="button" className="btn-close" onClick={() => setErrorMessages([])} />
-                    </div>
-                )}
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <Form>
                     <textarea
                         className={`form-control form-control-lg`}

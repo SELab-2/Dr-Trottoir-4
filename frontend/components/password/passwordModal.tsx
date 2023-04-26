@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import PasswordInput from "./passwordInput";
-import ErrorMessage from "@/components/errorMessage";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { changePassword } from "@/lib/authentication";
 
 interface PasswordModalProps {
@@ -59,7 +59,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ show, closeModal }) => {
                 <Modal.Title>Wijzig wachtwoord</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ErrorMessage formErrors={formErrors} errorMessage={errorMessage} onClose={setFormErrors} />
+                <ErrorMessageAlert formErrors={formErrors} errorMessages={errorMessage} onClose={setFormErrors} />
                 <PasswordInput
                     value={currentPassword}
                     setPassword={setCurrentPassword}

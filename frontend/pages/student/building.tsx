@@ -13,6 +13,7 @@ import StudentHeader from "@/components/header/studentHeader";
 import { BuildingManual, getManualPath, getManualsForBuilding } from "@/lib/building-manual";
 import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 import BuildingOverview from "@/components/student/buildingOverview";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 interface ParsedUrlQuery {}
 
@@ -282,17 +283,7 @@ export default function StudentBuilding() {
                         </>
                     )}
                 </div>
-
-                {errorMessages.length > 0 && (
-                    <div className="visible alert alert-danger alert-dismissible fade show mt-2 mb-2">
-                        <ul>
-                            {errorMessages.map((err: string, index: number) => (
-                                <li key={index}>{err}</li>
-                            ))}
-                        </ul>
-                        <button type="button" className="btn-close" onClick={() => setErrorMessages([])} />
-                    </div>
-                )}
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <Form onSubmit={handleSubmit}>
                     <span className="h1 mt-2">{typeNames[step]}</span>
                     <div className="mb-2 mt-2">

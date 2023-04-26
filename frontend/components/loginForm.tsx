@@ -15,6 +15,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import PasswordInput from "@/components/password/passwordInput";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 
 function LoginForm() {
@@ -57,16 +58,7 @@ function LoginForm() {
                     <button type="button" className="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             )}
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <div className="form-outline mb-4">
                 <label className="form-label">E-mailadres</label>
                 <input

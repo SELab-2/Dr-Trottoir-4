@@ -4,6 +4,7 @@ import { UserView } from "@/types";
 import { handleError } from "@/lib/error";
 import { useTranslation } from "react-i18next";
 import { deleteMailTemplate, Emailtemplate } from "@/lib/emailtemplate";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export function DeleteEmailModal({
     show,
@@ -44,16 +45,7 @@ export function DeleteEmailModal({
             <Modal.Header>
                 <Modal.Title>Verwijder template:</Modal.Title>
             </Modal.Header>
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <Modal.Body>Bent u zeker dat u template {selectedMail?.name} wil verwijderen?</Modal.Body>
             <Modal.Footer>
                 <Button

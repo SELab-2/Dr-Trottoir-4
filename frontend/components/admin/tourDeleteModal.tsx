@@ -4,6 +4,7 @@ import { deleteTour } from "@/lib/tour";
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export function TourDeleteModal({
     show,
@@ -42,16 +43,7 @@ export function TourDeleteModal({
             <Modal.Header>
                 <Modal.Title>Verwijder ronde</Modal.Title>
             </Modal.Header>
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <Modal.Body>Bent u zeker dat u ronde {selectedTour?.name} wil verwijderen?</Modal.Body>
             <Modal.Footer>
                 <Button

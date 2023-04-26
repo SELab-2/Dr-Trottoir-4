@@ -1,16 +1,16 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { Form } from "react-bootstrap";
-import { getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding } from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { getUserInfo, userSearchString } from "@/lib/user";
+import React, {ChangeEvent, useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {Form} from "react-bootstrap";
+import {getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding} from "@/lib/building";
+import {getRegion} from "@/lib/region";
+import {getUserInfo, userSearchString} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutocomplete";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
-import ErrorMessage from "@/components/errorMessage";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
 
 function AdminDataBuildingsEdit() {
@@ -28,18 +28,16 @@ function AdminDataBuildingsEdit() {
     const [duration, setDuration] = useState<string>("00:00");
     const [public_id, setPublicId] = useState<string>("");
     const [validated, setValidated] = useState<boolean>(false);
-    const [formErrors, setFormErrors] = useState<boolean>(false);
     const [durationInMinutes, setDurationInMinutes] = useState<number>(0);
-    const [errorMessage, setErrorMessage] = useState<string>("");
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
     const router = useRouter();
 
     const handleSubmit = async () => {
         const form = document.getElementById("buildingForm") as HTMLFormElement;
-        setErrorMessage(requiredFieldsNotFilledMessage);
+        setErrorMessages([requiredFieldsNotFilledMessage]);
         if (form.checkValidity()) {
-            setFormErrors(false);
             const building = {
                 syndic: syndicId,
                 name: name,
@@ -63,11 +61,8 @@ function AdminDataBuildingsEdit() {
             } catch (error: any) {
                 setShowConfirmation(false);
                 console.error("An error occurred:", error.request.responseText);
-                setErrorMessage(error.request.responseText);
-                setFormErrors(true);
+                setErrorMessages([error.request.responseText]);
             }
-        } else {
-            setFormErrors(true);
         }
     };
 
@@ -76,7 +71,7 @@ function AdminDataBuildingsEdit() {
     };
 
     useEffect(() => {
-        setErrorMessage(requiredFieldsNotFilledMessage);
+        setErrorMessages([requiredFieldsNotFilledMessage]);
         if (router.query.building) {
             getBuildingInfo(Number(router.query.building)).then(async (res) => {
                 setStreet(res.data.street);
@@ -97,23 +92,23 @@ function AdminDataBuildingsEdit() {
     }, [router.isReady]);
 
     useEffect(() => {
-        if (formErrors) {
+        if (errorMessages.length > 0) {
             setShowConfirmation(false);
         } else if (showConfirmation) {
-            setFormErrors(false);
+            setErrorMessages([]);
         }
     });
 
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             <div className={styles.container}>
                 <ConfirmationMessage
                     showConfirm={showConfirmation}
                     confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
                     onClose={setShowConfirmation}
-                ></ConfirmationMessage>
-                <ErrorMessage formErrors={formErrors} errorMessage={errorMessage} onClose={setFormErrors} />
+                />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
                     <Form.Group controlId="buildingName">
                         <Form.Label>Gebouw naam</Form.Label>

@@ -5,6 +5,7 @@ import { formatDate } from "@/lib/date";
 import { BuildingInterface } from "@/lib/building";
 import { duplicateGarbageCollectionSchedule } from "@/lib/garbage-collection";
 import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function DuplicateGarbageCollectionModal({
     show,
@@ -58,16 +59,7 @@ export default function DuplicateGarbageCollectionModal({
             <Modal.Header>
                 <Modal.Title>Dupliceer vuilophaling schema voor geselecteerde gebouwen</Modal.Title>
             </Modal.Header>
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <div className="form-row">

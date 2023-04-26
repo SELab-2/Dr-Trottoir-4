@@ -13,6 +13,7 @@ import {BuildingInterface, getAddress} from "@/lib/building";
 import {formatDate} from "@/lib/date";
 import {handleError} from "@/lib/error";
 import {GarbageCollectionEvent} from "@/types";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function GarbageEditModal({
                                              selectedEvent,
@@ -151,16 +152,7 @@ export default function GarbageEditModal({
             <Modal.Header>
                 <Modal.Title>{selectedEvent ? "Pas ophaling aan" : "Voeg ophaling toe"}</Modal.Title>
             </Modal.Header>
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <div className="form-outline mb-4">
