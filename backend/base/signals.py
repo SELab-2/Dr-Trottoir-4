@@ -18,7 +18,7 @@ def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs
         # Broadcast update to websocket
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            'student_on_tour_%s' % student_on_tour.id,
+            f'student_on_tour_{student_on_tour.id}',
             {
                 'type': 'progress_update',
                 'current_building_index': student_on_tour.current_building_index,
@@ -28,6 +28,10 @@ def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs
 
 @receiver(post_save, sender=StudentOnTour)
 def student_on_tour_update(sender, instance, update_fields, **kwargs):
+    # we only want to start the tour if the max building index has been set.
+    if not instance.max_building_index:
+        return
+
     if 'started_tour' in update_fields:
         event_type = 'student_on_tour_started'
     elif 'completed_tour' in update_fields:
@@ -47,7 +51,7 @@ def student_on_tour_update(sender, instance, update_fields, **kwargs):
 
 @receiver(post_save, sender=StudentOnTour)
 def set_max_building_index(sender, instance: StudentOnTour, created, **kwargs):
-    if instance.started_tour:
+    if not instance.max_building_index and instance.started_tour:
         max_index = instance.tour.buildingontour_set.aggregate(Max('index'))['index__max']
         instance.max_building_index = max_index
         instance.save()
