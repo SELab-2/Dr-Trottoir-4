@@ -1,26 +1,23 @@
-import React, {useState} from "react";
-import {duplicateGarbageCollectionSchedule, garbageTypes} from "@/lib/garbage-collection";
-import {handleError} from "@/lib/error";
-import {formatDate} from "@/lib/date";
-import {Button, Form, Modal} from "react-bootstrap";
-import {addDays} from "date-fns";
-import {BuildingInterface} from "@/lib/building";
+import React, { useState } from "react";
+import { duplicateGarbageCollectionSchedule, garbageTypes } from "@/lib/garbage-collection";
+import { handleError } from "@/lib/error";
+import { formatDate } from "@/lib/date";
+import { Button, Form, Modal } from "react-bootstrap";
+import { addDays } from "date-fns";
+import { BuildingInterface } from "@/lib/building";
 import styles from "@/styles/Login.module.css";
 
-export default function BulkOperationModal(
-    {
-        show,
-        buildings,
-        closeModal
-    } : {
-        show : boolean,
-        buildings : BuildingInterface[],
-        closeModal : () => void
-    }
-) {
-
+export default function BulkOperationModal({
+    show,
+    buildings,
+    closeModal,
+}: {
+    show: boolean;
+    buildings: BuildingInterface[];
+    closeModal: () => void;
+}) {
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
-    const [dateToMove, setDateToMove] = useState<string>(formatDate(new Date()))
+    const [dateToMove, setDateToMove] = useState<string>(formatDate(new Date()));
     const [moveToDate, setMoveToDate] = useState<string>(formatDate(addDays(new Date(), 1)));
     const [garbageType, setGarbageType] = useState<string>("");
 
@@ -35,7 +32,7 @@ export default function BulkOperationModal(
             setErrorMessages(["Einddatum is niet ingevuld."]);
             return;
         }
-        if (! garbageType) {
+        if (!garbageType) {
             setErrorMessages(["Er is geen type aangeduid."]);
         }
         // For now duplicate for all the buildings
@@ -98,7 +95,7 @@ export default function BulkOperationModal(
                                 setGarbageType(e.target.value);
                             }}
                         >
-                            <option disabled value="" key=""/>
+                            <option disabled value="" key="" />
                             {Object.keys(garbageTypes).map((key: string) => {
                                 const value = garbageTypes[key];
                                 return (

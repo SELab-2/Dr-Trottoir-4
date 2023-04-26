@@ -312,7 +312,11 @@ function GarbageCollectionSchedule() {
                 show={showDuplicateModal}
                 buildings={buildingList}
             />
-            <BulkOperationModal buildings={buildingList} closeModal={closeBulkOperationModal} show={showBulkOperationModal}/>
+            <BulkOperationModal
+                buildings={buildingList}
+                closeModal={closeBulkOperationModal}
+                show={showBulkOperationModal}
+            />
             <GarbageEditModal
                 closeModal={closeEditModal}
                 onPatch={onPatch}
