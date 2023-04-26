@@ -4,7 +4,6 @@ import React, {useEffect, useState} from "react";
 import {IconButton, Tooltip} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 import {getAllTours, Tour} from "@/lib/tour";
-import tours from "@/pages/admin/data/tours";
 
 export default function SelectedBuildingList(
     {
@@ -13,14 +12,16 @@ export default function SelectedBuildingList(
         buildings,
         selectedTours,
         removeBuilding,
-        removeTour
+        removeTour,
+        removeAllBuildings
     }: {
         show: boolean;
         closeModal: () => void
         buildings: BuildingInterface[];
         selectedTours: { [tourId: number]: BuildingInterface[] }
         removeBuilding: (b: BuildingInterface) => void
-        removeTour : (t : number) => void
+        removeTour : (t : number) => void,
+        removeAllBuildings : () => void
     }) {
 
     const [allTours, setAllTours] = useState<Tour[]>([]);
@@ -80,6 +81,12 @@ export default function SelectedBuildingList(
                         }
                     </ul>
                 </div>
+                <Button className="btn-danger" onClick={() => {
+                    removeAllBuildings()
+                    closeModal();
+                }}>
+                    Verwijder alle gebouwen
+                </Button>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="primary" className="btn-dark" onClick={() => closeModal()}>

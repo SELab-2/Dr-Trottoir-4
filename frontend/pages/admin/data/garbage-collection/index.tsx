@@ -272,6 +272,12 @@ function GarbageCollectionSchedule() {
         getFromRange(currentRange);
     }
 
+    function removeAllBuildings() {
+        setGarbageCollection([]);
+        setBuildingList([]);
+        setTourList({});
+    }
+
     const loc = dateFnsLocalizer({
         format,
         parse,
@@ -304,7 +310,7 @@ function GarbageCollectionSchedule() {
             />
             <SelectedBuildingList buildings={buildingList} closeModal={() => setShowBuildingListModal(false)}
                                   show={showBuildingListModal} removeBuilding={removeBuildingFromList}
-                                  removeTour={removeTourBuildings} selectedTours={tourList}/>
+                                  removeTour={removeTourBuildings} selectedTours={tourList} removeAllBuildings={removeAllBuildings}/>
             <div className="container">
                 <div className="row justify-content-start">
                     <div className="col">
