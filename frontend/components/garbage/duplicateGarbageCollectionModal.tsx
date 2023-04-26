@@ -56,7 +56,7 @@ export default function DuplicateGarbageCollectionModal({
     return (
         <Modal show={show} onHide={() => onHide()}>
             <Modal.Header>
-                <Modal.Title>Dupliceer vuilophaling schema</Modal.Title>
+                <Modal.Title>Dupliceer vuilophaling schema voor geselecteerde gebouwen</Modal.Title>
             </Modal.Header>
             {errorMessages.length !== 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>

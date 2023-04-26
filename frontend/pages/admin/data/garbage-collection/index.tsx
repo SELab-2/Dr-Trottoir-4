@@ -194,13 +194,13 @@ function GarbageCollectionSchedule() {
             const tourBuildings: BuildingInterface[] = res.data;
 
             setBuildingList(prevState => {
-                const newState : BuildingInterface[] = [...prevState];
-                return newState.filter(b => ! tourBuildings.some(tb => tb.id === b.id));
+                const newState: BuildingInterface[] = [...prevState];
+                return newState.filter(b => !tourBuildings.some(tb => tb.id === b.id));
             });
 
             setGarbageCollection(prevState => {
-                const newState : GarbageCollectionInterface[] = [...prevState];
-                return newState.filter(g => ! tourBuildings.some(b => g.building === b.id));
+                const newState: GarbageCollectionInterface[] = [...prevState];
+                return newState.filter(g => !tourBuildings.some(b => g.building === b.id));
             });
         }, console.error);
     }
@@ -310,7 +310,8 @@ function GarbageCollectionSchedule() {
             />
             <SelectedBuildingList buildings={buildingList} closeModal={() => setShowBuildingListModal(false)}
                                   show={showBuildingListModal} removeBuilding={removeBuildingFromList}
-                                  removeTour={removeTourBuildings} selectedTours={tourList} removeAllBuildings={removeAllBuildings}/>
+                                  removeTour={removeTourBuildings} selectedTours={tourList}
+                                  removeAllBuildings={removeAllBuildings}/>
             <div className="container">
                 <div className="row justify-content-start">
                     <div className="col">
