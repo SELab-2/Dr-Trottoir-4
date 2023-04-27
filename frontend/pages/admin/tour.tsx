@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
+
 import { getAllTours, Tour } from "@/lib/tour";
 import { getAllStudentOnTourFromDate, getAllStudentOnTourFromToday, StudentOnTour } from "@/lib/student-on-tour";
-import { getAllUsers, User } from "@/lib/user";
+import { getAllUsers, User, userSearchString } from "@/lib/user";
 import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import { BuildingInterface } from "@/lib/building";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useRouter } from "next/router";
+import AdminHeader from "@/components/header/adminHeader";
+import Loading from "@/components/loading";
 
 interface ParsedUrlQuery {}
 
@@ -29,7 +32,8 @@ function AdminTour() {
     const [studentId, setStudentId] = useState("");
     const [tourId, setTourId] = useState("");
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
-
+    const [loading, setLoading] = useState(true);
+    
     useEffect(() => {
         try {
             getAllTours().then(
@@ -76,14 +80,25 @@ function AdminTour() {
             (sot) => sot.student === selectedStudent.id && sot.tour === selectedTour.id
         );
         setStudentOnTour(foundStudentOnTour || null);
+        setLoading(false);
         }
+        
     }, [selectedStudent, selectedTour, studentsOnTours]);
+
+    if (loading) {
+        return (
+            <>
+                <AdminHeader />
+                <Loading />
+            </>
+        );
+    }
 
     return (
         <div>
         <div>
             <StudentAutocomplete
-            value={selectedStudent}
+            value={userSearchString(selectedStudent || students[0])}
             onChange={setSelectedStudent}
             setObjectId={setStudentId}
             required={true}
