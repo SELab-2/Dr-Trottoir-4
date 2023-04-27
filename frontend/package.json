@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/node": "18.15.11",
+    "@types/node": "18.16.1",
     "@types/react": "18.0.31",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
