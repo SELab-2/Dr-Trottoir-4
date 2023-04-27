@@ -31,6 +31,7 @@ import {withAuthorisation} from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import BulkOperationModal from "@/components/garbage/BulkOperationModal";
+import Select from "react-select";
 
 interface ParsedUrlQuery {}
 
@@ -353,7 +354,7 @@ function GarbageCollectionSchedule() {
                     </div>
                     <div className="col">
                         <Button variant="primary" className="btn-dark" onClick={() => setShowBulkOperationModal(true)}>
-                            Bulk operatie
+                            Verplaats ophaling
                         </Button>
                     </div>
                     <div className="col">

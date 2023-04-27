@@ -165,20 +165,23 @@ export default function GarbageEditModal({
                         selectedEvent && (
                             <div className="form-outline mb-4">
                                 <label className="form-label">Gebouw:</label>
-                                <select
-                                    className={`form-select form-control form-control-lg ${styles.input}`}
-                                    value={selectedBuildings.length > 0 ? selectedBuildings[0].toString() : ""}
-                                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                        setSelectedBuildings([+e.target.value]);
-                                    }}
-                                >
-                                    <option disabled value="" key=""/>
-                                    {buildings.map((b: BuildingInterface) => (
-                                        <option value={b.id.toString()} key={b.id.toString()}>
-                                            {getAddress(b)}
-                                        </option>
-                                    ))}
-                                </select>
+                                <Select
+                                    options={buildings.map(b => {
+                                            return {value: b.id, label: getAddress(b)}
+                                        }
+                                    )}
+                                    value={selectedBuildings.length > 0 ?
+                                        {
+                                            value: selectedBuildings[0],
+                                            label: buildings.find(b => b.id === selectedBuildings[0]) ?
+                                                getAddress(buildings.find(b => b.id === selectedBuildings[0])!) : ""
+                                        } :
+                                        {}}
+                                    onChange={s => {
+                                        if (s && s.value) {
+                                            setSelectedBuildings([s.value]);
+                                        }
+                                    }} placeholder={"Selecteer gebouw"}/>
                             </div>
                         )
                     }
@@ -197,23 +200,18 @@ export default function GarbageEditModal({
                     }
                     <div className="form-outline mb-4">
                         <label className="form-label">Type:</label>
-                        <select
-                            className={`form-select form-control form-control-lg ${styles.input}`}
-                            value={garbageType ? garbageType : ""}
-                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                setGarbageType(e.target.value);
-                            }}
-                        >
-                            <option disabled value="" key=""/>
-                            {Object.keys(garbageTypes).map((key: string) => {
-                                const value = garbageTypes[key];
-                                return (
-                                    <option value={value} key={value}>
-                                        {value}
-                                    </option>
-                                );
+                        <Select
+                            options={Object.keys(garbageTypes).map((key: string) => {
+                                const v = garbageTypes[key];
+                                return {value: v, label: v};
                             })}
-                        </select>
+                            value={garbageType ? {value: garbageType, label: garbageType} : {}}
+                            onChange={s => {
+                                if (s && s.value) {
+                                    setGarbageType(s.value);
+                                }
+                            }}
+                        />
                     </div>
                     {selectedEvent && (
                         <Button className="btn-danger" onClick={() => remove()}>
