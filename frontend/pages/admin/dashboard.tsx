@@ -77,12 +77,13 @@ function AdminDashboard() {
         return studentOnTourId * 5;
     };
 
-    const redirectToRemarksPage = async (studentOnTourId: number) => {
+    const redirectToRemarksPage = async (studentOnTour: StudentOnTour) => {
         // Redirect to the specific tour page
         await router.push({
             pathname: `tour/`,
             query: {
-                studentOnTour: studentOnTourId,
+                student: studentOnTour.student,
+                tour: studentOnTour.tour,
             },
         });
     };
@@ -171,7 +172,7 @@ function AdminDashboard() {
                                         </td>
                                         <td>
                                             {remarksRecord[studentOnTour.id] > 0 ? (
-                                                <button onClick={() => redirectToRemarksPage(studentOnTour.id)}>
+                                                <button onClick={() => redirectToRemarksPage(studentOnTour)}>
                                                     <LiveField
                                                         fetcher={() => fetchRemarks(studentOnTour)}
                                                         formatter={getRemarkText}
