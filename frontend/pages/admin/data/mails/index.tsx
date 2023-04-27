@@ -28,7 +28,7 @@ export default function AdminDataMails() {
                 header: "Acties",
                 id: "actions",
                 enableColumnActions: false,
-                Cell: ({row}) => (
+                Cell: ({ row }) => (
                     <Box>
                         <Tooltip arrow placement="right" title="Pas aan">
                             <IconButton
@@ -39,7 +39,7 @@ export default function AdminDataMails() {
                                     setShowEditModal(true);
                                 }}
                             >
-                                <Edit/>
+                                <Edit />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -50,7 +50,7 @@ export default function AdminDataMails() {
                                     setShowDeleteModal(true);
                                 }}
                             >
-                                <Delete/>
+                                <Delete />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verstuur mail">
@@ -60,12 +60,12 @@ export default function AdminDataMails() {
                                     routeToCommunication(emailtemplate).then();
                                 }}
                             >
-                                <Email/>
+                                <Email />
                             </IconButton>
                         </Tooltip>
                     </Box>
-                )
-            }
+                ),
+            },
         ],
         []
     );

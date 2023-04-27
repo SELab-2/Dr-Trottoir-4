@@ -85,7 +85,8 @@ function AdminDataUsers() {
                                 <Delete />
                             </IconButton>
                         </Tooltip>
-                    </Box>),
+                    </Box>
+                ),
                 enableColumnActions: false,
             },
         ],

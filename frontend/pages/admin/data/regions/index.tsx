@@ -56,7 +56,7 @@ function AdminDataRegions() {
                             </IconButton>
                         </Tooltip>
                     </Box>
-                )
+                ),
             },
         ],
         []
