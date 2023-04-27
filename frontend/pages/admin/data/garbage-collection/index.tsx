@@ -1,31 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     GarbageCollectionInterface,
     garbageTypes,
     getGarbageCollectionFromBuilding,
     getGarbageColor,
 } from "@/lib/garbage-collection";
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import {Calendar, dateFnsLocalizer} from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
-import { messages } from "@/locales/localizerCalendar";
+import {messages} from "@/locales/localizerCalendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AdminHeader from "@/components/header/adminHeader";
-import { add, addDays, endOfMonth, startOfMonth, sub } from "date-fns";
-import { useRouter } from "next/router";
-import { BuildingInterface, getAllBuildings } from "@/lib/building";
+import {add, addDays, endOfMonth, startOfMonth, sub} from "date-fns";
+import {useRouter} from "next/router";
+import {BuildingInterface, getAllBuildings} from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
 import DuplicateGarbageCollectionModal from "@/components/garbage/duplicateGarbageCollectionModal";
-import { Button } from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
-import { GarbageCollectionEvent } from "@/types";
-import GarbageCollectionEventComponentWithAddress from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
-import GarbageCollectionEventComponentWithoutAddress from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
-import { getBuildingsOfTour } from "@/lib/tour";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {GarbageCollectionEvent} from "@/types";
+import GarbageCollectionEventComponentWithAddress
+    from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
+import GarbageCollectionEventComponentWithoutAddress
+    from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
+import {getBuildingsOfTour} from "@/lib/tour";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import BulkOperationModal from "@/components/garbage/BulkOperationModal";
@@ -79,7 +81,7 @@ function GarbageCollectionSchedule() {
                 if (!matchingBuilding) {
                     return;
                 }
-                addBuildingToList(matchingBuilding);
+                addBuildingsToList([matchingBuilding]);
                 return;
             }
             if (query.tour) {
@@ -96,7 +98,7 @@ function GarbageCollectionSchedule() {
         if (searchedBuilding > 0 && allBuildings.length > 0) {
             const building: BuildingInterface | undefined = allBuildings.find((b) => searchedBuilding === b.id);
             if (building) {
-                addBuildingToList(building);
+                addBuildingsToList([building]);
             }
         }
     }, [searchedBuilding]);
@@ -139,49 +141,31 @@ function GarbageCollectionSchedule() {
                 newState[tourId] = buildings;
                 return newState;
             });
-            // Get the buildings of the tour that are not already in the list
-            const filteredBuildings: BuildingInterface[] = buildings.filter(
-                (b) => buildingList.findIndex((bl) => bl.id === b.id) === -1
-            );
-            setBuildingList((prevState) => {
-                return [...prevState, ...filteredBuildings];
-            });
-            // Get the garbage collection for all the buildings
-            Promise.all(
-                filteredBuildings.map((b) =>
-                    getGarbageCollectionFromBuilding(b.id, {
-                        startDate: currentRange.start,
-                        endDate: currentRange.end,
-                    })
-                )
-            ).then((res) => {
-                const g: any[] = res;
-                const data = g.map((el) => el.data).flat();
-                setGarbageCollection((prevState) => {
-                    return [...prevState, ...data];
-                });
-            }, console.error);
+            addBuildingsToList(buildings);
         }, console.error);
     }
 
-    // Add a new building to the schedule
-    function addBuildingToList(building: BuildingInterface) {
-        const exists = buildingList.find((b) => b.id === building.id);
-        if (exists) {
-            return;
-        }
+    function addBuildingsToList(buildings : BuildingInterface[]) {
+        // Get the buildings of the tour that are not already in the list
+        const filteredBuildings: BuildingInterface[] = buildings.filter(
+            (b) => buildingList.findIndex((bl) => bl.id === b.id) === -1
+        );
         setBuildingList((prevState) => {
-            const newList: BuildingInterface[] = [...prevState];
-            newList.push(building);
-            return newList;
+            return [...prevState, ...filteredBuildings];
         });
-        getGarbageCollectionFromBuilding(building.id, {
-            startDate: currentRange.start,
-            endDate: currentRange.end,
-        }).then((res) => {
-            const g: GarbageCollectionInterface[] = res.data;
+        // Get the garbage collection for all the buildings
+        Promise.all(
+            filteredBuildings.map((b) =>
+                getGarbageCollectionFromBuilding(b.id, {
+                    startDate: currentRange.start,
+                    endDate: currentRange.end,
+                })
+            )
+        ).then((res) => {
+            const g: any[] = res;
+            const data = g.map((el) => el.data).flat();
             setGarbageCollection((prevState) => {
-                return [...prevState, ...g];
+                return [...prevState, ...data];
             });
         }, console.error);
     }
@@ -281,11 +265,9 @@ function GarbageCollectionSchedule() {
     }
 
     // After a successful post of an event, add it to the collections list
-    function onPost(g: GarbageCollectionInterface) {
+    function onPost(g: GarbageCollectionInterface[]) {
         setGarbageCollection((prevState) => {
-            const newState = [...prevState];
-            newState.push(g);
-            return newState;
+            return [...prevState, ...g];
         });
     }
 
