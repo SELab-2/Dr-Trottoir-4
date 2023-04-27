@@ -58,6 +58,36 @@ function AdminDataUsers() {
                 id: "isActive",
                 header: "Actief",
             },
+            {
+                header: "Acties",
+                id: "actions",
+                Cell: ({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                        <Tooltip arrow placement="left" title="Pas aan">
+                            <IconButton
+                                onClick={() => {
+                                    const user: UserView = row.original;
+                                    setSelectedUser(user);
+                                    setShowEditModal(true);
+                                }}
+                            >
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verwijder">
+                            <IconButton
+                                onClick={() => {
+                                    const user: UserView = row.original;
+                                    setSelectedUser(user);
+                                    setShowDeleteModal(true);
+                                }}
+                            >
+                                <Delete />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>),
+                enableColumnActions: false,
+            },
         ],
         []
     );
@@ -136,26 +166,20 @@ function AdminDataUsers() {
                 setSelectedUser={setSelectedUser}
             />
             <MaterialReactTable
-                displayColumnDefOptions={{
-                    "mrt-row-actions": {
-                        muiTableHeadCellProps: {
-                            align: "center",
-                        },
-                        header: "Acties",
-                    },
-                }}
                 enablePagination={false}
                 enableBottomToolbar={false}
                 columns={columns}
                 data={allUserViews}
                 state={{ isLoading: loading }}
-                editingMode="modal" //default
-                enableEditing
                 enableRowNumbers
                 enableHiding={false}
+                enableRowActions={false}
                 initialState={{ columnVisibility: { userId: false } }}
                 renderTopToolbarCustomActions={() => (
                     <div className="form-check form-switch">
+                        <label className="form-check-label" htmlFor="switchCheckbox">
+                            Inclusief inactieve gebruikers
+                        </label>
                         <input
                             className="form-check-input"
                             type="checkbox"
@@ -165,36 +189,7 @@ function AdminDataUsers() {
                                 setInactiveUsers(!inactiveUsers);
                             }}
                         />
-                        <label className="form-check-label" htmlFor="switchCheckbox">
-                            Inclusief inactieve gebruikers
-                        </label>
                     </div>
-                )}
-                renderRowActions={({ row }) => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
-                        <Tooltip arrow placement="left" title="Pas aan">
-                            <IconButton
-                                onClick={() => {
-                                    const user: UserView = row.original;
-                                    setSelectedUser(user);
-                                    setShowEditModal(true);
-                                }}
-                            >
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip arrow placement="right" title="Verwijder">
-                            <IconButton
-                                onClick={() => {
-                                    const user: UserView = row.original;
-                                    setSelectedUser(user);
-                                    setShowDeleteModal(true);
-                                }}
-                            >
-                                <Delete />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
                 )}
             />
         </>

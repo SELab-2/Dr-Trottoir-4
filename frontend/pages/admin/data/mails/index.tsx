@@ -24,6 +24,48 @@ export default function AdminDataMails() {
                 accessorKey: "name", //access nested data with dot notation
                 header: "Naam",
             },
+            {
+                header: "Acties",
+                id: "actions",
+                enableColumnActions: false,
+                Cell: ({row}) => (
+                    <Box>
+                        <Tooltip arrow placement="right" title="Pas aan">
+                            <IconButton
+                                onClick={() => {
+                                    const emailtemplate: Emailtemplate = row.original;
+                                    setSelectedTemplate(emailtemplate);
+                                    setEditMail(true);
+                                    setShowEditModal(true);
+                                }}
+                            >
+                                <Edit/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verwijder">
+                            <IconButton
+                                onClick={() => {
+                                    const emailtemplate: Emailtemplate = row.original;
+                                    setSelectedTemplate(emailtemplate);
+                                    setShowDeleteModal(true);
+                                }}
+                            >
+                                <Delete/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verstuur mail">
+                            <IconButton
+                                onClick={() => {
+                                    const emailtemplate: Emailtemplate = row.original;
+                                    routeToCommunication(emailtemplate).then();
+                                }}
+                            >
+                                <Email/>
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                )
+            }
         ],
         []
     );
@@ -76,62 +118,16 @@ export default function AdminDataMails() {
                 setMail={setSelectedTemplate}
             />
             <MaterialReactTable
-                displayColumnDefOptions={{
-                    "mrt-row-actions": {
-                        muiTableHeadCellProps: {
-                            align: "center",
-                            size: "small",
-                        },
-                        header: "Acties",
-                    },
-                }}
                 enablePagination={false}
                 enableBottomToolbar={false}
                 columns={columns}
                 data={emailTemplates}
                 state={{ isLoading: loading }}
-                enableEditing
-                renderRowActions={({ row }) => (
-                    <Box>
-                        <Tooltip arrow placement="right" title="Pas aan">
-                            <IconButton
-                                onClick={() => {
-                                    const emailtemplate: Emailtemplate = row.original;
-                                    setSelectedTemplate(emailtemplate);
-                                    setEditMail(true);
-                                    setShowEditModal(true);
-                                }}
-                            >
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip arrow placement="right" title="Verwijder">
-                            <IconButton
-                                onClick={() => {
-                                    const emailtemplate: Emailtemplate = row.original;
-                                    setSelectedTemplate(emailtemplate);
-                                    setShowDeleteModal(true);
-                                }}
-                            >
-                                <Delete />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip arrow placement="right" title="Verstuur mail">
-                            <IconButton
-                                onClick={() => {
-                                    const emailtemplate: Emailtemplate = row.original;
-                                    routeToCommunication(emailtemplate).then();
-                                }}
-                            >
-                                <Email />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                )}
                 renderDetailPanel={({ row }) => {
                     const emailtemplate: Emailtemplate = row.original;
                     return <pre>{emailtemplate.template}</pre>;
                 }}
+                enableRowActions={false}
                 renderTopToolbarCustomActions={() => (
                     <Button
                         onClick={() => {

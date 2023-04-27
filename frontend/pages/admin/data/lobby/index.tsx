@@ -1,18 +1,18 @@
-import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
-import { Box, IconButton, Tooltip } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
-import React, { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { deleteLobby, getAllInLobby, Lobby } from "@/lib/lobby";
+import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
+import {Box, IconButton, Tooltip} from "@mui/material";
+import {Delete, Edit} from "@mui/icons-material";
+import React, {useEffect, useMemo, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {deleteLobby, getAllInLobby, Lobby} from "@/lib/lobby";
 import AdminHeader from "@/components/header/adminHeader";
-import { getUserRole } from "@/lib/user";
-import { Button } from "react-bootstrap";
+import {getUserRole} from "@/lib/user";
+import {Button} from "react-bootstrap";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import EditLobbyModal from "@/components/admin/editLobbyModal";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
 function LobbyPage() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [lobbies, setLobbies] = useState<Lobby[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [showCreateLobbyModal, setShowCreateLobbyModal] = useState<boolean>(false);
@@ -21,28 +21,57 @@ function LobbyPage() {
 
     // The columns for the lobby table
     const columns = useMemo<MRT_ColumnDef<Lobby>[]>(
-        () => [
-            {
-                accessorKey: "email",
-                header: "E-mail",
-            },
-            {
-                accessorKey: "verification_code",
-                header: "Verificatie code",
-            },
-            {
-                accessorFn: (lobby: Lobby) => t(getUserRole(lobby.role.toString())),
-                id: "translatedRole",
-                header: "Rol",
-            },
-            {
-                accessorKey: "id",
-                header: "lobbyId",
-                editable: "never",
-            },
-        ],
-        []
-    );
+            () => [
+                {
+                    accessorKey: "email",
+                    header: "E-mail",
+                },
+                {
+                    accessorKey: "verification_code",
+                    header: "Verificatie code",
+                },
+                {
+                    accessorFn: (lobby: Lobby) => t(getUserRole(lobby.role.toString())),
+                    id: "translatedRole",
+                    header: "Rol",
+                },
+                {
+                    accessorKey: "id",
+                    header: "lobbyId",
+                    editable: "never",
+                },
+                {
+                    header: "Acties",
+                    id: "actions",
+                    enableColumnActions: false,
+                    Cell: ({row}) => (
+                        <Box sx={{display: "flex", gap: "1rem"}}>
+                            <Tooltip arrow placement="left" title="Pas aan">
+                                <IconButton
+                                    onClick={() => {
+                                        const lobby: Lobby = row.original;
+                                        setShowCreateLobbyModal(true);
+                                        setSelectedLobby(lobby);
+                                    }}
+                                >
+                                    <Edit/>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip arrow placement="right" title="Verwijder">
+                                <IconButton
+                                    onClick={() => {
+                                        const lobby: Lobby = row.original;
+                                        setShowRemoveDialog(true);
+                                        setSelectedLobby(lobby);
+                                    }}
+                                >
+                                    <Delete/>
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                    )
+                }
+            ], []);
 
     useEffect(() => {
         // Get all the lobbies & roles.
@@ -126,7 +155,7 @@ function LobbyPage() {
 
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             <DeleteConfirmationDialog
                 open={showRemoveDialog}
                 title="Verwijder uit lobby"
@@ -147,23 +176,14 @@ function LobbyPage() {
                 onNewVerificationCode={afterNewVerificationPost}
             />
             <MaterialReactTable
-                displayColumnDefOptions={{
-                    "mrt-row-actions": {
-                        muiTableHeadCellProps: {
-                            align: "center",
-                        },
-                        header: "Acties",
-                    },
-                }}
                 enablePagination={false}
                 enableBottomToolbar={false}
                 columns={columns}
                 data={lobbies}
-                editingMode="modal" //default
-                state={{ isLoading: loading }}
-                enableEditing
+                state={{isLoading: loading}}
                 enableHiding={false}
-                initialState={{ columnVisibility: { id: false } }}
+                enableRowActions={false}
+                initialState={{columnVisibility: {id: false}}}
                 renderTopToolbarCustomActions={() => (
                     <Button
                         variant="primary"
@@ -175,32 +195,7 @@ function LobbyPage() {
                         Voeg toe aan lobby
                     </Button>
                 )}
-                renderRowActions={({ row }) => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
-                        <Tooltip arrow placement="left" title="Pas aan">
-                            <IconButton
-                                onClick={() => {
-                                    const lobby: Lobby = row.original;
-                                    setShowCreateLobbyModal(true);
-                                    setSelectedLobby(lobby);
-                                }}
-                            >
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip arrow placement="right" title="Verwijder">
-                            <IconButton
-                                onClick={() => {
-                                    const lobby: Lobby = row.original;
-                                    setShowRemoveDialog(true);
-                                    setSelectedLobby(lobby);
-                                }}
-                            >
-                                <Delete />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                )}
+                enableColumnActions={false}
             />
         </>
     );
