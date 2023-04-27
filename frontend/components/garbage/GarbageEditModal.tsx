@@ -1,7 +1,5 @@
-import { Button, Form, Modal } from "react-bootstrap";
-import styles from "@/styles/Login.module.css";
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import {Button, Form, Modal} from "react-bootstrap";
+import React, {useEffect, useState} from "react";
 import {
     deleteGarbageCollection,
     GarbageCollectionInterface,
@@ -9,23 +7,28 @@ import {
     patchGarbageCollection,
     postGarbageCollection,
 } from "@/lib/garbage-collection";
-import { BuildingInterface, getAddress } from "@/lib/building";
-import { formatDate } from "@/lib/date";
-import { handleError } from "@/lib/error";
-import { GarbageCollectionEvent } from "@/types";
+import {BuildingInterface, getAddress} from "@/lib/building";
+import {formatDate} from "@/lib/date";
+import {handleError} from "@/lib/error";
+import {GarbageCollectionEvent} from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import Select from "react-select";
 
+interface OptionType {
+    value: number,
+    label: string
+}
+
 export default function GarbageEditModal({
-    selectedEvent,
-    show,
-    closeModal,
-    onPost,
-    onPatch,
-    onDelete,
-    clickedDate,
-    buildings,
-}: {
+                                             selectedEvent,
+                                             show,
+                                             closeModal,
+                                             onPost,
+                                             onPatch,
+                                             onDelete,
+                                             clickedDate,
+                                             buildings,
+                                         }: {
     selectedEvent: GarbageCollectionEvent | null;
     show: boolean;
     closeModal: () => void;
@@ -38,14 +41,23 @@ export default function GarbageEditModal({
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [selectedDate, setSelectedDate] = useState<string>(formatDate(new Date()));
     const [garbageType, setGarbageType] = useState<string>("");
-    const [selectedBuildings, setSelectedBuildings] = useState<number[]>([]);
+    const [selectedBuildings, setSelectedBuildings] = useState<OptionType[]>([]);
+    const [selectedAll, setSelectedAll] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (buildings.length > 0 && selectedBuildings.length === buildings.length) {
+            setSelectedAll(true);
+        } else {
+            setSelectedAll(false);
+        }
+    }, [selectedBuildings]);
 
     // Get the selected event garbage type & date or empty if selectedEvent is null
     useEffect(() => {
         if (selectedEvent) {
             setSelectedDate(formatDate(selectedEvent.start));
             setGarbageType(selectedEvent.garbageType);
-            setSelectedBuildings([selectedEvent.building.id]);
+            setSelectedBuildings([{value : selectedEvent.building.id, label : getAddress(selectedEvent.building)}]);
         } else {
             if (!clickedDate) {
                 setGarbageType("");
@@ -101,9 +113,9 @@ export default function GarbageEditModal({
         }
         if (selectedEvent) {
             // If it is an existing event, patch
-            const selectedBuildingId: number = selectedBuildings[0];
+            const selectedBuildingId: number = selectedBuildings[0].value;
             const patchBody: { [name: string]: string | number | number[] } = {};
-            if (garbageType != selectedEvent.title) {
+            if (garbageType != selectedEvent.garbageType) {
                 patchBody["garbage_type"] = t;
             }
             if (formatDate(selectedEvent.start) != selectedDate) {
@@ -124,7 +136,7 @@ export default function GarbageEditModal({
             );
         } else {
             // Do a post for all the selected buildings
-            Promise.all(selectedBuildings.map((bId) => postGarbageCollection(bId, selectedDate, t))).then(
+            Promise.all(selectedBuildings.map((bId) => postGarbageCollection(bId.value, selectedDate, t))).then(
                 (res) => {
                     const g: any[] = res;
                     const data: GarbageCollectionInterface[] = g.map((el) => el.data).flat();
@@ -141,7 +153,19 @@ export default function GarbageEditModal({
     function close() {
         setSelectedBuildings([]);
         setGarbageType("");
+        setSelectedAll(false);
         closeModal();
+    }
+
+    function changeSelectAll() {
+        if (selectedAll) {
+            setSelectedBuildings([]);
+        } else {
+            setSelectedBuildings(buildings.map(b => {
+                return { value : b.id, label: getAddress(b)};
+            }));
+        }
+        setSelectedAll(!selectedAll);
     }
 
     return (
@@ -149,7 +173,7 @@ export default function GarbageEditModal({
             <Modal.Header>
                 <Modal.Title>{selectedEvent ? "Pas ophaling aan" : "Voeg ophaling(en) toe"}</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <div className="form-outline mb-4">
@@ -166,21 +190,12 @@ export default function GarbageEditModal({
                             <label className="form-label">Gebouw:</label>
                             <Select
                                 options={buildings.map((b) => {
-                                    return { value: b.id, label: getAddress(b) };
+                                    return {value: b.id, label: getAddress(b)};
                                 })}
-                                value={
-                                    selectedBuildings.length > 0
-                                        ? {
-                                              value: selectedBuildings[0],
-                                              label: buildings.find((b) => b.id === selectedBuildings[0])
-                                                  ? getAddress(buildings.find((b) => b.id === selectedBuildings[0])!)
-                                                  : "",
-                                          }
-                                        : {}
-                                }
+                                value={selectedBuildings}
                                 onChange={(s) => {
                                     if (s && s.value) {
-                                        setSelectedBuildings([s.value]);
+                                        setSelectedBuildings([s]);
                                     }
                                 }}
                                 placeholder={"Selecteer gebouw"}
@@ -188,28 +203,38 @@ export default function GarbageEditModal({
                         </div>
                     )}
                     {!selectedEvent && (
-                        <div className="form-outline mb-4">
-                            <label className="form-label">Gebouw(en):</label>
-                            <Select
-                                options={buildings.map((b) => {
-                                    return { value: b.id, label: getAddress(b) };
-                                })}
-                                onChange={(selects) => {
-                                    setSelectedBuildings(selects.map((e) => e.value));
-                                }}
-                                isMulti={true}
-                                placeholder={"Selecteer gebouw(en)"}
-                            />
-                        </div>
+                        <>
+                            <div className="form-outline mb-4">
+                                <label className="form-label">Gebouw(en):</label>
+                                <Select
+                                    options={buildings.map((b) => {
+                                        return {value: b.id, label: getAddress(b)};
+                                    })}
+                                    value={selectedBuildings}
+                                    onChange={(selects) => {
+                                        setSelectedBuildings(selects.map(s => s));
+                                    }}
+                                    isMulti={true}
+                                    placeholder={"Selecteer gebouw(en)"}
+                                />
+                            </div>
+                            <div className="form-outline mb-4">
+                                <input className="form-check-input" type="checkbox" checked={selectedAll}
+                                       onChange={() => changeSelectAll()} id="selectAllCheck"/>
+                                <label className="form-check-label" htmlFor="selectAllCheck">
+                                    Selecteer alle gebouwen
+                                </label>
+                            </div>
+                        </>
                     )}
                     <div className="form-outline mb-4">
                         <label className="form-label">Type:</label>
                         <Select
                             options={Object.keys(garbageTypes).map((key: string) => {
                                 const v = garbageTypes[key];
-                                return { value: v, label: v };
+                                return {value: v, label: v};
                             })}
-                            value={garbageType ? { value: garbageType, label: garbageType } : {}}
+                            value={garbageType ? {value: garbageType, label: garbageType} : {}}
                             onChange={(s) => {
                                 if (s && s.value) {
                                     setGarbageType(s.value);
