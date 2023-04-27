@@ -11,7 +11,7 @@ function AddEventModal(data: any) {
     const [student, setStudent] = useState<User | null>(null);
     const [start, setStart] = useState(
         new Date(
-            addDays(startOfWeek(new Date(), { weekStartsOn: 0 }), 1).toLocaleString("en", {
+            startOfWeek(new Date(), { weekStartsOn: 1 }).toLocaleString("en", {
                 timeZone: "America/New_York",
             })
         )

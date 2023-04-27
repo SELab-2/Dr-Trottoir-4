@@ -19,6 +19,7 @@ import {User} from "@/lib/user";
 import {addDays, endOfWeek} from "date-fns";
 import {formatDate} from "@/lib/date";
 import {handleError} from "@/lib/error";
+import LoadEventsModal from "@/components/calendar/loadEvents";
 
 interface MyEvent extends Event {
     tour: Tour;
@@ -35,9 +36,15 @@ interface Props {
 const MyCalendar: FC<Props> = (props) => {
     const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
+    const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [events, setEvents] = useState<MyEvent[]>([]);
+    const [rendered, setRendered] = useState<string[]>([])
+    const [range, setRange] = useState({
+        start: startOfWeek(new Date()),
+        end: endOfWeek(new Date()),
+    });
 
     useEffect(() => {
         if (props.students.length > 0 && props.tours.length > 0) {
@@ -49,10 +56,12 @@ const MyCalendar: FC<Props> = (props) => {
         // If the range is an array, get the first & last element of the array
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
         let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
-
+        setRange({start: startDate, end: endDate})
         // Set the new range
-        setEvents([]);
-        onEventsLoad({start_date: startDate, end_date: endDate});
+        if (!rendered.includes(startDate.toISOString())) {
+            setRendered([...rendered, startDate.toISOString()])
+            onEventsLoad({start_date: startDate, end_date: endDate});
+        }
     }
 
     const onEventsLoad = ({start_date, end_date}: { start_date: Date; end_date: Date }) => {
@@ -97,8 +106,24 @@ const MyCalendar: FC<Props> = (props) => {
         }, {});
     }
 
+
+    const onEventsCopy = (start: Date, diff: number) => {
+        let newEvents: MyEvent[] = []
+        for (let e of events) {
+            if (e.start >= range.start && e.start <= range.end) {
+                newEvents.push({
+                    tour: e.tour,
+                    student: e.student,
+                    start: addDays(e.start, diff),
+                    end: addDays(e.end, diff)
+                })
+            }
+        }
+        onEventsAdd(newEvents);
+        setRendered([...rendered, start.toISOString()])
+    };
+
     const onEventSelection = (e: Event) => {
-        console.log(e);
         setSelectedEvent(e);
         setPopupIsOpenEdit(true);
     };
@@ -169,9 +194,10 @@ const MyCalendar: FC<Props> = (props) => {
 
     const onEventsDelete = (event: MyEvent) => {
         const removedTours = events.filter((e) => {
-            return e.tour.id != event.tour.id;
+            return e.tour.id == event.tour.id && e.start >= range.start && e.start <= range.end;
         })
-        setEvents(removedTours)
+        const updatedEvents = events.filter(e => !removedTours.includes(e));
+        setEvents(updatedEvents)
     };
 
     const handleScheduleSave = () => {
@@ -195,6 +221,11 @@ const MyCalendar: FC<Props> = (props) => {
             </button>
             <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>
                 Sla planning op
+            </button>
+            <button className="btn btn-primary mb-3" onClick={() => {
+                setPopupIsOpenLoad(true)
+            }}>
+                Kopieer naar nieuwe week
             </button>
             {errorMessages.length !== 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>
@@ -247,6 +278,12 @@ const MyCalendar: FC<Props> = (props) => {
                 onClose={() => setPopupIsOpenAdd(false)}
                 onSave={onEventAdd}
                 onSaveMultiple={onEventsAdd}
+            />
+            <LoadEventsModal
+                range={range}
+                isOpen={popupIsOpenLoad}
+                onClose={() => setPopupIsOpenLoad(false)}
+                onSave={onEventsCopy}
             />
         </>
     );
