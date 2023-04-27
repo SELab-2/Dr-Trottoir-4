@@ -1,7 +1,7 @@
-import {Button, Form, Modal} from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import styles from "@/styles/Login.module.css";
-import React, {useEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     deleteGarbageCollection,
     GarbageCollectionInterface,
@@ -9,23 +9,23 @@ import {
     patchGarbageCollection,
     postGarbageCollection,
 } from "@/lib/garbage-collection";
-import {BuildingInterface, getAddress} from "@/lib/building";
-import {formatDate} from "@/lib/date";
-import {handleError} from "@/lib/error";
-import {GarbageCollectionEvent} from "@/types";
+import { BuildingInterface, getAddress } from "@/lib/building";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
+import { GarbageCollectionEvent } from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import Select from "react-select";
 
 export default function GarbageEditModal({
-                                             selectedEvent,
-                                             show,
-                                             closeModal,
-                                             onPost,
-                                             onPatch,
-                                             onDelete,
-                                             clickedDate,
-                                             buildings,
-                                         }: {
+    selectedEvent,
+    show,
+    closeModal,
+    onPost,
+    onPatch,
+    onDelete,
+    clickedDate,
+    buildings,
+}: {
     selectedEvent: GarbageCollectionEvent | null;
     show: boolean;
     closeModal: () => void;
@@ -124,7 +124,7 @@ export default function GarbageEditModal({
             );
         } else {
             // Do a post for all the selected buildings
-            Promise.all(selectedBuildings.map(bId => postGarbageCollection(bId, selectedDate, t))).then(
+            Promise.all(selectedBuildings.map((bId) => postGarbageCollection(bId, selectedDate, t))).then(
                 (res) => {
                     const g: any[] = res;
                     const data: GarbageCollectionInterface[] = g.map((el) => el.data).flat();
@@ -149,7 +149,7 @@ export default function GarbageEditModal({
             <Modal.Header>
                 <Modal.Title>{selectedEvent ? "Pas ophaling aan" : "Voeg ophaling(en) toe"}</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <div className="form-outline mb-4">
@@ -161,52 +161,56 @@ export default function GarbageEditModal({
                             onChange={(event) => setSelectedDate(event.target.value)}
                         />
                     </div>
-                    {
-                        selectedEvent && (
-                            <div className="form-outline mb-4">
-                                <label className="form-label">Gebouw:</label>
-                                <Select
-                                    options={buildings.map(b => {
-                                            return {value: b.id, label: getAddress(b)}
-                                        }
-                                    )}
-                                    value={selectedBuildings.length > 0 ?
-                                        {
-                                            value: selectedBuildings[0],
-                                            label: buildings.find(b => b.id === selectedBuildings[0]) ?
-                                                getAddress(buildings.find(b => b.id === selectedBuildings[0])!) : ""
-                                        } :
-                                        {}}
-                                    onChange={s => {
-                                        if (s && s.value) {
-                                            setSelectedBuildings([s.value]);
-                                        }
-                                    }} placeholder={"Selecteer gebouw"}/>
-                            </div>
-                        )
-                    }
-                    {
-                        !selectedEvent && (
-                            <div className="form-outline mb-4">
-                                <label className="form-label">Gebouw(en):</label>
-                                <Select options={buildings.map(b => {
-                                    return {value: b.id, label: getAddress(b)}
-                                })} onChange={selects => {
-                                    setSelectedBuildings(selects.map(e => e.value));
-                                }} isMulti={true}
-                                        placeholder={"Selecteer gebouw(en)"}/>
-                            </div>
-                        )
-                    }
+                    {selectedEvent && (
+                        <div className="form-outline mb-4">
+                            <label className="form-label">Gebouw:</label>
+                            <Select
+                                options={buildings.map((b) => {
+                                    return { value: b.id, label: getAddress(b) };
+                                })}
+                                value={
+                                    selectedBuildings.length > 0
+                                        ? {
+                                              value: selectedBuildings[0],
+                                              label: buildings.find((b) => b.id === selectedBuildings[0])
+                                                  ? getAddress(buildings.find((b) => b.id === selectedBuildings[0])!)
+                                                  : "",
+                                          }
+                                        : {}
+                                }
+                                onChange={(s) => {
+                                    if (s && s.value) {
+                                        setSelectedBuildings([s.value]);
+                                    }
+                                }}
+                                placeholder={"Selecteer gebouw"}
+                            />
+                        </div>
+                    )}
+                    {!selectedEvent && (
+                        <div className="form-outline mb-4">
+                            <label className="form-label">Gebouw(en):</label>
+                            <Select
+                                options={buildings.map((b) => {
+                                    return { value: b.id, label: getAddress(b) };
+                                })}
+                                onChange={(selects) => {
+                                    setSelectedBuildings(selects.map((e) => e.value));
+                                }}
+                                isMulti={true}
+                                placeholder={"Selecteer gebouw(en)"}
+                            />
+                        </div>
+                    )}
                     <div className="form-outline mb-4">
                         <label className="form-label">Type:</label>
                         <Select
                             options={Object.keys(garbageTypes).map((key: string) => {
                                 const v = garbageTypes[key];
-                                return {value: v, label: v};
+                                return { value: v, label: v };
                             })}
-                            value={garbageType ? {value: garbageType, label: garbageType} : {}}
-                            onChange={s => {
+                            value={garbageType ? { value: garbageType, label: garbageType } : {}}
+                            onChange={(s) => {
                                 if (s && s.value) {
                                     setGarbageType(s.value);
                                 }
