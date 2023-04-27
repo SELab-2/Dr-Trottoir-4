@@ -7,6 +7,7 @@ import AdminHeader from "@/components/header/adminHeader";
 import StudentHeader from "@/components/header/studentHeader";
 import SyndicHeader from "@/components/header/syndicHeader";
 import { handleError } from "@/lib/error";
+import PasswordModal from "@/components/password/passwordModal";
 
 export default function UserProfile() {
     const { t } = useTranslation();
@@ -18,6 +19,7 @@ export default function UserProfile() {
     const [selectedRegions, setSelectedRegions] = useState<number[]>([]);
     const [allRegions, setAllRegions] = useState<RegionInterface[]>([]);
     const [role, setRole] = useState<string>("");
+    const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false);
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [succesPatch, setSuccessPatch] = useState<boolean>(false);
@@ -39,6 +41,13 @@ export default function UserProfile() {
             }
         );
     }, []);
+
+    const openPasswordModal = () => {
+        setShowPasswordModal(true);
+    };
+    const closePasswordModal = () => {
+        setShowPasswordModal(false);
+    };
 
     function setUserInfo(u: User) {
         setRole(getUserRole(u.role.toString()));
@@ -214,6 +223,12 @@ export default function UserProfile() {
                 )}
             </form>
             <div>
+                <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} onClick={openPasswordModal}>
+                    Wijzig wachtwoord
+                </button>
+
+                <PasswordModal show={showPasswordModal} closeModal={closePasswordModal} />
+
                 <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} onClick={submit}>
                     Pas aan
                 </button>
