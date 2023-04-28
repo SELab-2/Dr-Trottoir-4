@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-20 15:19+0200\n"
+"POT-Creation-Date: 2023-04-28 21:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -249,11 +249,11 @@ msgstr ""
 msgid "You can only view manuals that are linked to one of your buildings"
 msgstr ""
 
-#: config/settings.py:236
+#: config/settings.py:238
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: config/settings.py:237
+#: config/settings.py:239
 msgid "English"
 msgstr "Engels"
 
@@ -270,7 +270,7 @@ msgid ""
 "period"
 msgstr ""
 
-#: garbage_collection/views.py:233
+#: garbage_collection/views.py:232
 msgid "successfully copied the garbage collections"
 msgstr ""
 

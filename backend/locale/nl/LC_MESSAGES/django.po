@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-20 15:19+0200\n"
+"POT-Creation-Date: 2023-04-28 21:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -264,11 +264,11 @@ msgstr ""
 "Je kan enkel handleidingen bekijken die gelinkt zijn aan een van je eigen "
 "gebouwen"
 
-#: config/settings.py:236
+#: config/settings.py:238
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: config/settings.py:237
+#: config/settings.py:239
 msgid "English"
 msgstr "Engels"
 
@@ -276,9 +276,7 @@ msgstr "Engels"
 msgid ""
 "the start date of the period can't be in a later week than the week of the "
 "end date"
-msgstr ""
-"de start datum van de periode mag niet in een latere week zijn dan de week "
-"van de eind datum"
+msgstr "de startdatum van de periode kan niet in een latere week zijn dan de einddatum"
 
 #: garbage_collection/views.py:178
 msgid ""
@@ -286,12 +284,12 @@ msgid ""
 "minimum, in the week immediately following the end date of the original "
 "period"
 msgstr ""
-"de startdatum van de periode naar waar je wil kopiëren moet minstens de week "
-"direct volgend op de einddatum van de oorspronkelijke periode zijn"
+"de startdatum van de periode waarnaar je wilt kopiëren moet, op zijn minst, "
+"in de week direct volgend na de einddatum van de originele periode liggen"
 
-#: garbage_collection/views.py:233
+#: garbage_collection/views.py:232
 msgid "successfully copied the garbage collections"
-msgstr "de afvalophalingen werden succesvol gekopieerd"
+msgstr "de vuilnisophalingen zijn succesvol gekopieerd"
 
 #: users/managers.py:16
 msgid "Email is required"
@@ -533,7 +531,7 @@ msgstr ""
 
 #: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:130
 msgid "This field cannot be null."
-msgstr "Dit veld mag nie null zijn"
+msgstr "Dit veld mag niet null zijn"
 
 #: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:131
 msgid "This field cannot be blank."
