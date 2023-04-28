@@ -88,7 +88,8 @@ class PictureOfRemarkSerializer(serializers.ModelSerializer):
 class StudOnTourSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentOnTour
-        fields = ["id", "tour", "date", "student", "started_tour", "completed_tour"]
+        fields = ["id", "tour", "date", "student", "started_tour", "completed_tour", "current_building_index",
+                  "max_building_index"]
         read_only_fields = ["id"]
 
 
