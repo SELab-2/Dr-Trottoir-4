@@ -3,9 +3,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { RegionInterface, getAllRegions, postRegion, patchRegion, deleteRegion } from "@/lib/region";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
-import { Box, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
-import { useRouter } from "next/router";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import { Button } from "react-bootstrap";
 import RegionModal, { ModalMode } from "@/components/regionModal";
@@ -13,7 +12,6 @@ import RegionModal, { ModalMode } from "@/components/regionModal";
 interface RegionView extends RegionInterface {}
 
 function AdminDataRegions() {
-    const router = useRouter();
     const [regions, setRegions] = useState<RegionView[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedRegion, setSelectedRegion] = useState<RegionView | null>(null);
@@ -27,6 +25,38 @@ function AdminDataRegions() {
             {
                 accessorKey: "region",
                 header: "Regio naam",
+            },
+            {
+                header: "Acties",
+                id: "actions",
+                enableColumnActions: false,
+                Cell: ({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                        <Tooltip arrow placement="left" title="Edit">
+                            <IconButton
+                                onClick={() => {
+                                    const region: RegionView = row.original;
+                                    setSelectedRegion(region);
+                                    setRegionName(region.region);
+                                    setEditDialogOpen(true);
+                                }}
+                            >
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verwijder">
+                            <IconButton
+                                onClick={() => {
+                                    const regionView: RegionView = row.original;
+                                    setSelectedRegion(regionView);
+                                    setDeleteDialogOpen(true);
+                                }}
+                            >
+                                <Delete />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                ),
             },
         ],
         []
@@ -77,48 +107,13 @@ function AdminDataRegions() {
         <>
             <AdminHeader />
             <MaterialReactTable
-                displayColumnDefOptions={{
-                    "mrt-row-actions": {
-                        muiTableHeadCellProps: {
-                            align: "center",
-                        },
-                        header: "Acties",
-                    },
-                }}
                 enablePagination={false}
                 enableBottomToolbar={false}
                 columns={columns}
                 data={regions}
                 state={{ isLoading: loading }}
-                enableEditing
                 enableHiding={false}
-                renderRowActions={({ row }) => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
-                        <Tooltip arrow placement="left" title="Edit">
-                            <IconButton
-                                onClick={() => {
-                                    const region: RegionView = row.original;
-                                    setSelectedRegion(region);
-                                    setRegionName(region.region);
-                                    setEditDialogOpen(true);
-                                }}
-                            >
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip arrow placement="right" title="Verwijder">
-                            <IconButton
-                                onClick={() => {
-                                    const regionView: RegionView = row.original;
-                                    setSelectedRegion(regionView);
-                                    setDeleteDialogOpen(true);
-                                }}
-                            >
-                                <Delete />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                )}
+                enableRowActions={false}
                 renderTopToolbarCustomActions={() => (
                     <Button onClick={() => setAddDialogOpen(true)} variant="warning">
                         Maak nieuwe regio aan
