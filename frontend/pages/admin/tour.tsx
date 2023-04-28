@@ -21,16 +21,19 @@ interface DataAdminTourQuery extends ParsedUrlQuery {
 
 function AdminTour() {
     const router = useRouter();
-    const [tours, setTours] = useState<Tour[]>([]);
-    const [studentsOnTours, setStudentsOnTours] = useState<StudentOnTour[]>([]);
-    const [students, setStudents] = useState<User[]>([]);
-    const [selectedStudent, setSelectedStudent] = useState<User | null>(null);
-    const [selectedTour, setSelectedTour] = useState<Tour | null>(null);
+    const [allTours, setAllTours] = useState<Tour[]>([]);
+    const [allStudentsOnTour, setAllStudentsOnTour] = useState<StudentOnTour[]>([]);
+    const [allStudents, setAllStudents] = useState<User[]>([]);
+    const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
+    const [selectedStudentId, setSelectedStudentId] = useState<number>(0);
+    const [selectedStudentName, setSelectedStudentName] = useState<string>("");
+    const [selectedTourId, setSelectedTourId] = useState<number>(0);
+    const [selectedTourName, setSelectedTourName] = useState<string>("");
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().substring(0, 10));
-    const [studentOnTour, setStudentOnTour] = useState<StudentOnTour | null>(null);
-    const [buildings, setBuildings] = useState<BuildingInterface[]>([]);
-    const [studentId, setStudentId] = useState("");
-    const [tourId, setTourId] = useState("");
+    const [studentOnTourId, setStudentOnTourId] = useState<number>(0);
+    // const [studentId, setStudentId] = useState("");
+    // const [tourId, setTourId] = useState("");
+
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
     
@@ -39,24 +42,26 @@ function AdminTour() {
             getAllTours().then(
                 (res) => {
                     const tours: Tour[] = res.data;
-                    setTours(tours);
+                    setAllTours(tours);
                     let currentTour = tours[0];
                     if (query.tour) {
                         currentTour = tours.find(e => e.id === +[query.tour]) || tours[0];
                     }
-                    setSelectedTour(currentTour);
+                    setSelectedTourId(currentTour.id);
+                    setSelectedTourName(currentTour.name);
                 }
             );
 
             getAllUsers().then(
                 (res) => {
                     const students: User[] = res.data;
-                    setStudents(students);
+                    setAllStudents(students);
                     let currentStudent = students[0];
                     if (query.student) {
                         currentStudent = students.find(e => e.id === +[query.student]) || students[0];
                     }
-                    setSelectedStudent(currentStudent);
+                    setSelectedStudentId(currentStudent.id);
+                    setSelectedStudentName(userSearchString(currentStudent));
                 }
             );
         } catch(error) {
@@ -66,24 +71,24 @@ function AdminTour() {
 
     useEffect(() => {
         const fetchBuildings = async () => {
-            if (selectedTour) {
-                const response = await getAllBuildingsOnTourWithTourID(selectedTour.id);
-                setBuildings(response.data);
+            if (selectedTourId) {
+                const response = await getAllBuildingsOnTourWithTourID(selectedTourId);
+                setAllBuildings(response.data);
             }
         };
         fetchBuildings();
-    }, [selectedTour]);
+    }, [selectedTourId]);
 
     useEffect(() => {
-        if (selectedStudent && selectedTour) {
-        const foundStudentOnTour = studentsOnTours.find(
-            (sot) => sot.student === selectedStudent.id && sot.tour === selectedTour.id
+        if (selectedStudentId && selectedTourId) {
+        const foundStudentOnTour = allStudentsOnTour.find(
+            (sot) => sot.student === selectedStudentId && sot.tour === selectedTourId
         );
-        setStudentOnTour(foundStudentOnTour || null);
+        setStudentOnTourId(foundStudentOnTour?.id || 0);
         setLoading(false);
         }
         
-    }, [selectedStudent, selectedTour, studentsOnTours]);
+    }, [selectedStudentId, selectedTourId, allStudentsOnTour]);
 
     if (loading) {
         return (
@@ -98,15 +103,15 @@ function AdminTour() {
         <div>
         <div>
             <StudentAutocomplete
-            value={userSearchString(selectedStudent || students[0])}
-            onChange={setSelectedStudent}
-            setObjectId={setStudentId}
+            value={selectedStudentName}
+            onChange={setSelectedStudentName}
+            setObjectId={setSelectedStudentId}
             required={true}
             />
             <TourAutocomplete
-            value={selectedTour}
-            onChange={setSelectedTour}
-            setObjectId={setTourId}
+            value={selectedTourName}
+            onChange={setSelectedTourName}
+            setObjectId={setSelectedTourId}
             required={true}
             />
             <input
@@ -116,14 +121,14 @@ function AdminTour() {
             />
         </div>
 
-        {studentOnTour && (
+        {studentOnTourId && (
             <div style={{ display: "flex" }}>
             <div style={{ width: "20%" }}>
                 <h2>Tour Details</h2>
                 {/* Display the tour details */}
-                <p>Tour Name: {studentOnTour.tour}</p>
+                <p>Tour Name: {selectedTourName}</p>
                 <p>
-                Student Name: {studentOnTour.student}
+                Student Name: {selectedStudentName}
                 </p>
                 {/* Add any other relevant information */}
                 <p>Datum: {selectedDate}</p>
@@ -143,7 +148,7 @@ function AdminTour() {
                     </tr>
                 </thead>
                 <tbody>
-                    {buildings.map((building) => {
+                    {allBuildings.map((building) => {
                     // Populate the table with the building details
                     // Replace the placeholders with actual data from your backend
                     return (
