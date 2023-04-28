@@ -22,10 +22,10 @@ class CustomAllAuthPasswordResetForm(AllAuthPasswordResetForm):
 
             host_domain = Site.objects.filter(id=config.settings.SITE_ID).first()
             if not host_domain:
-                host_domain = 'localhost'
+                host_domain = "localhost"
             else:
                 host_domain = host_domain.name
-            url = host_domain + '/reset-password' + '?uid=' + user_pk_to_url_str(user) + '&token=' + temp_key
+            url = host_domain + "/reset-password" + "?uid=" + user_pk_to_url_str(user) + "&token=" + temp_key
             context = {
                 "current_site": current_site,
                 "user": user,
