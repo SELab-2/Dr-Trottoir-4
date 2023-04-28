@@ -1,4 +1,5 @@
 from django.core.exceptions import BadRequest
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -31,6 +32,9 @@ from util.request_response_util import (
     get_boolean_param,
     post_success,
     bad_request,
+    get_id_param,
+    get_arbitrary_param,
+    bad_request_custom_error_message,
 )
 
 TRANSLATE = {
@@ -121,11 +125,43 @@ class AllRemarkAtBuilding(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = RemarkAtBuildingSerializer
 
+    @extend_schema(
+        responses={
+            200: serializer_class,
+            400: None
+        },
+        parameters=param_docs(
+            {
+                "student-on-tour": ("The StudentOnTour id", False, OpenApiTypes.INT),
+                "building": ("The Building id", False, OpenApiTypes.INT),
+                "type": ("The type of the garbage", False, OpenApiTypes.STR),
+            }
+        )
+    )
     def get(self, request):
         """
         Get all remarks for each building
         """
+
+        # We support the params student-on-tour, building, and type
+        try:
+            student_on_tour_id = get_id_param(request, "student-on-tour", required=False)
+            building_id = get_id_param(request, "building", required=False)
+            garbage_type = get_arbitrary_param(request, "type", allowed_keys={"AA", "BI", "VE", "OP"},
+                                               required=False)
+        except BadRequest as e:
+            return bad_request_custom_error_message(str(e))
+
         remark_at_building_instances = RemarkAtBuilding.objects.all()
+
+        # Query params are specified, so filter the queryset
+        if student_on_tour_id:
+            remark_at_building_instances = remark_at_building_instances.filter(student_on_tour_id=student_on_tour_id)
+        if building_id:
+            remark_at_building_instances = remark_at_building_instances.filter(building_id=building_id)
+        if garbage_type:
+            remark_at_building_instances = remark_at_building_instances.filter(type=garbage_type)
+
         return get_success(self.serializer_class(remark_at_building_instances, many=True))
 
 
