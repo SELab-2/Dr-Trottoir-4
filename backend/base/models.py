@@ -300,7 +300,7 @@ class StudentOnTour(models.Model):
     student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     started_tour = models.DateTimeField(null=True, blank=True)
     completed_tour = models.DateTimeField(null=True, blank=True)
-    current_building_index = models.IntegerField(default=0)
+    current_building_index = models.IntegerField(default=0, blank=True)
     max_building_index = models.IntegerField(null=True, blank=True)  # gets set by a signal
 
     """
