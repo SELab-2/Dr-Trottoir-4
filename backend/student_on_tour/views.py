@@ -1,4 +1,4 @@
-from drf_spectacular.types import OpenApiTypes
+import pytz
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -170,8 +170,9 @@ class TimeTourViewBase(APIView):
 
         self.check_object_permissions(request, student_on_tour_instance.student)
 
-        setattr(student_on_tour_instance, field_name, datetime.now())
-        student_on_tour_instance.save(update_fields=field_name)
+        tz = pytz.timezone(config.settings.TIME_ZONE)
+        setattr(student_on_tour_instance, field_name, datetime.now(tz))
+        student_on_tour_instance.save(update_fields=[field_name])
 
         return post_success(self.serializer_class(student_on_tour_instance))
 
