@@ -126,17 +126,14 @@ class AllRemarkAtBuilding(APIView):
     serializer_class = RemarkAtBuildingSerializer
 
     @extend_schema(
-        responses={
-            200: serializer_class,
-            400: None
-        },
+        responses={200: serializer_class, 400: None},
         parameters=param_docs(
             {
                 "student-on-tour": ("The StudentOnTour id", False, OpenApiTypes.INT),
                 "building": ("The Building id", False, OpenApiTypes.INT),
                 "type": ("The type of the garbage", False, OpenApiTypes.STR),
             }
-        )
+        ),
     )
     def get(self, request):
         """
@@ -147,8 +144,7 @@ class AllRemarkAtBuilding(APIView):
         try:
             student_on_tour_id = get_id_param(request, "student-on-tour", required=False)
             building_id = get_id_param(request, "building", required=False)
-            garbage_type = get_arbitrary_param(request, "type", allowed_keys={"AA", "BI", "VE", "OP"},
-                                               required=False)
+            garbage_type = get_arbitrary_param(request, "type", allowed_keys={"AA", "BI", "VE", "OP"}, required=False)
         except BadRequest as e:
             return bad_request_custom_error_message(str(e))
 
