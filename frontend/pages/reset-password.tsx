@@ -6,7 +6,7 @@ import Image from "next/image";
 import filler_image from "@/public/filler_image.png";
 import styles from "@/styles/Login.module.css";
 import PasswordInput from "@/components/password/passwordInput";
-import {changePassword} from "@/lib/authentication";
+import {changePassword, resetPassword} from "@/lib/authentication";
 import {Button} from "react-bootstrap";
 import ErrorMessage from "@/components/errorMessage";
 
@@ -34,13 +34,18 @@ export default function ResetPasswordPage() {
         } else if (!newPassword1 || !newPassword2) {
             setFormErrors(true);
             setErrorMessage("Gelieve alle velden in te vullen");
+        } else if (!token || !uid) {
+            setFormErrors(true);
+            setErrorMessage("Gelieve de link te gebruiken die u heeft onvangen via email om uw wachtwoord opnieuw in te stellen");
         } else {
             try {
-                // const res = await changePassword({
-                //     old_password: currentPassword,
-                //     new_password1: newPassword1,
-                //     new_password2: newPassword2,
-                // });
+                await router.push("/login");
+                const res = await resetPassword({
+                    new_password1: newPassword1,
+                    new_password2: newPassword2,
+                    uid: uid.toString(),
+                    token: token.toString()
+                });
             } catch (error: any) {
                 console.error("An error occurred:", error.request.responseText);
                 setErrorMessage(error.request.responseText);
@@ -67,7 +72,8 @@ export default function ResetPasswordPage() {
                                     <div className="card-body p-4 p-lg-5 text-black">
                                         <h2>Nieuw wachtwoord instellen</h2>
                                         <br/>
-                                        <ErrorMessage formErrors={formErrors} errorMessage={errorMessage} onClose={setFormErrors} />
+                                        <ErrorMessage formErrors={formErrors} errorMessage={errorMessage}
+                                                      onClose={setFormErrors}/>
                                         <PasswordInput
                                             value={newPassword1}
                                             setPassword={setNewPassword1}
@@ -86,6 +92,10 @@ export default function ResetPasswordPage() {
                                             placeholder="Voer uw nieuwe wachtwoord opnieuw in"
                                             showIconButton={false}
                                         />
+                                        <a className="small text-muted" href="/login">
+                                            Terug naar login
+                                        </a>
+                                        <br/>
                                         <Button variant="primary" className="btn-dark" onClick={handleSubmit}>
                                             Opslaan
                                         </Button>
