@@ -241,9 +241,6 @@ LANGUAGES = [
 ]
 
 TIME_ZONE = "CET"
-
-USE_TZ = True
-
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
