@@ -1,7 +1,7 @@
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db.models import Max
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from base.models import StudentOnTour, RemarkAtBuilding
@@ -20,7 +20,7 @@ def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs
         async_to_sync(channel_layer.group_send)(
             f'student_on_tour_{student_on_tour.id}',
             {
-                'type': 'progress_update',
+                'type': 'progress.update',
                 'current_building_index': student_on_tour.current_building_index,
             }
         )
@@ -28,14 +28,13 @@ def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs
 
 @receiver(post_save, sender=StudentOnTour)
 def student_on_tour_update(sender, instance, update_fields, **kwargs):
-    # we only want to start the tour if the max building index has been set.
-    if not instance.max_building_index:
+    if not update_fields:
         return
 
     if 'started_tour' in update_fields:
-        event_type = 'student_on_tour_started'
+        event_type = 'student.on.tour.started'
     elif 'completed_tour' in update_fields:
-        event_type = 'student_on_tour_completed_tour'
+        event_type = 'student.on.tour.completed'
     else:
         return
 
@@ -48,10 +47,8 @@ def student_on_tour_update(sender, instance, update_fields, **kwargs):
         }
     )
 
-
-@receiver(post_save, sender=StudentOnTour)
-def set_max_building_index(sender, instance: StudentOnTour, created, **kwargs):
+@receiver(pre_save, sender=StudentOnTour)
+def set_max_building_index(sender, instance: StudentOnTour, **kwargs):
     if not instance.max_building_index and instance.started_tour:
         max_index = instance.tour.buildingontour_set.aggregate(Max('index'))['index__max']
         instance.max_building_index = max_index
-        instance.save()
