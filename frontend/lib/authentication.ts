@@ -29,7 +29,7 @@ export async function changePassword(passwordInterface: ChangePasswordInterface)
 }
 
 export async function resetPassword(passwordInterface: ResetPasswordInterface): Promise<AxiosResponse<any>> {
-    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_RESET_PASSWORD_CONFIRM}/${passwordInterface.uid}/${passwordInterface.token}`;
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_RESET_PASSWORD_CONFIRM}${passwordInterface.uid}/${passwordInterface.token}`;
     return await api.post(request_url, JSON.stringify(passwordInterface),
         {
             headers: {"Content-Type": "application/json"},

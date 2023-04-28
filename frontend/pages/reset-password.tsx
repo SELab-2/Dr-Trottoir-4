@@ -40,6 +40,8 @@ export default function ResetPasswordPage() {
         } else {
             try {
                 await router.push("/login");
+                console.log(uid);
+                console.log(token);
                 const res = await resetPassword({
                     new_password1: newPassword1,
                     new_password2: newPassword2,
@@ -47,6 +49,7 @@ export default function ResetPasswordPage() {
                     token: token.toString()
                 });
             } catch (error: any) {
+                //TODO replace this with the new error message component once it's available
                 console.error("An error occurred:", error.request.responseText);
                 setErrorMessage(error.request.responseText);
                 setFormErrors(true);
