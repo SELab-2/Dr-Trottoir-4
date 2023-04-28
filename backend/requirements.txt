@@ -16,7 +16,7 @@ djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 idna==3.4
 oauthlib==3.2.2
-phonenumbers==8.13.10
+phonenumbers==8.13.11
 psycopg2-binary==2.9.6
 pycparser==2.21
 PyJWT==2.6.0
