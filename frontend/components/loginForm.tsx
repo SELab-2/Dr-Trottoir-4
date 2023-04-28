@@ -89,7 +89,7 @@ function LoginForm() {
                 </button>
             </div>
 
-            <a className="small text-muted" href="/reset-password">
+            <a className="small text-muted" href="/forgot-password">
                 Wachtwoord vergeten?
             </a>
             <p className="mb-5 pb-lg-2">
