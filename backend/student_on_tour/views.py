@@ -87,6 +87,26 @@ class StudentOnTourBulk(APIView):
 
         return post_success(serializer=dummy)
 
+    @extend_schema(
+        description="DELETE body consists of an ids component that is a list of Student-Tour instances. "
+                    "This enables the frontend to remove assignments in a schedule in 1 request instead of multiple."
+                    "If a remove fails, the previous removes will **NOT** be undone."
+                    """
+                    <h3> special</h3>
+                    <br/>**Request body for bulk remove:**<br/>
+                    <i>
+                        {
+                            "ids":
+                                [
+                                    0,
+                                    1,
+                                    3
+                                ]
+                        }
+                    </i>""",
+        request=StudOnTourSerializer,
+        responses={200: SuccessSerializer, 400: None},
+    )
     def delete(self, request):
         data = request_to_dict(request.data)
         """
@@ -101,8 +121,17 @@ class StudentOnTourBulk(APIView):
             ]
         }
         """
-        print(data)
-        return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+        for d in data["ids"]:
+            print(d)
+            student_on_tour_instance = StudentOnTour.objects.filter(id=d).first()
+            if not student_on_tour_instance:
+                return not_found("StudentOnTour")
+            student_on_tour_instance.delete()
+
+        dummy = type("", (), {})()
+        dummy.data = {"data": "success"}
+
+        return post_success(serializer=dummy)
 
     def patch(self, request):
         data = request_to_dict(request.data)
