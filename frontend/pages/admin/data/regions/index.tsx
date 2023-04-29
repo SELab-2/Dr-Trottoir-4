@@ -4,7 +4,8 @@ import { RegionInterface, getAllRegions, postRegion, patchRegion, deleteRegion }
 import { withAuthorisation } from "@/components/withAuthorisation";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Edit, Delete, CalendarMonth } from "@mui/icons-material";
+import { useRouter } from "next/router";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import { Button } from "react-bootstrap";
 import RegionModal, { ModalMode } from "@/components/regionModal";
@@ -12,6 +13,7 @@ import RegionModal, { ModalMode } from "@/components/regionModal";
 interface RegionView extends RegionInterface {}
 
 function AdminDataRegions() {
+    const router = useRouter();
     const [regions, setRegions] = useState<RegionView[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedRegion, setSelectedRegion] = useState<RegionView | null>(null);
@@ -53,6 +55,16 @@ function AdminDataRegions() {
                                 }}
                             >
                                 <Delete />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Vuilophaling">
+                            <IconButton
+                                onClick={() => {
+                                    const regionView: RegionView = row.original;
+                                    routeToGarbageSchedule(regionView).then();
+                                }}
+                            >
+                                <CalendarMonth />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -101,6 +113,14 @@ function AdminDataRegions() {
                 console.error(error);
             }
         }
+    }
+
+    // Route to the garbage view of all the buildings in the region
+    async function routeToGarbageSchedule(regionView: RegionView) {
+        await router.push({
+            pathname: `/admin/data/garbage-collection`,
+            query: { region: regionView.id },
+        });
     }
 
     return (

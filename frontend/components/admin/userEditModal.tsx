@@ -6,6 +6,7 @@ import { getAllRoles, Role } from "@/lib/role";
 import { patchUser } from "@/lib/user";
 import { useTranslation } from "react-i18next";
 import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export function UserEditModal({
     show,
@@ -59,16 +60,7 @@ export function UserEditModal({
             <Modal.Header>
                 <Modal.Title>Pas gebruiker aan</Modal.Title>
             </Modal.Header>
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 <div className="card-body p-4 p-lg-5 text-black">
                     <form>

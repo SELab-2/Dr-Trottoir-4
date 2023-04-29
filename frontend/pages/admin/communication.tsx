@@ -23,8 +23,6 @@ function AdminCommunication() {
     const [allComments, setAllComments] = useState<BuildingComment[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [allSyndics, setAllSyndics] = useState<User[]>([]);
-    const [selectedTemplate, setSelectedTemplate] = useState("");
-    const [selectedSyndic, setSelectedSyndic] = useState("");
 
     const [templateText, setTemplateText] = useState("");
     const [updatedTemplateText, setUpdatedTemplateText] = useState("");
@@ -91,7 +89,6 @@ function AdminCommunication() {
                 if (query.template) {
                     currentTemplate = emailTemplates.find((e) => e.id === Number(query.template)) || emailTemplates[0];
                 }
-                setSelectedTemplate(currentTemplate.name);
                 setTemplateId(currentTemplate.id.toString());
                 setTemplateText(currentTemplate.template);
             },
@@ -118,7 +115,6 @@ function AdminCommunication() {
             if (query.syndic) {
                 currentSyndic = users.find((e) => e.email === query.syndic) || users[0];
             }
-            setSelectedSyndic(userSearchString(currentSyndic));
             setSyndicId(currentSyndic.id.toString());
         });
 
@@ -154,16 +150,14 @@ function AdminCommunication() {
                     <div style={{ display: "flex", width: "100%" }}>
                         <div style={{ width: "33%" }}>
                             <TemplateAutocomplete
-                                value={selectedTemplate}
-                                onChange={setSelectedTemplate}
+                                initialId={templateId}
                                 setObjectId={setTemplateId}
                                 required={false}
                             ></TemplateAutocomplete>
                         </div>
                         <div style={{ width: "33%" }}>
                             <SyndicAutoComplete
-                                value={selectedSyndic}
-                                onChange={setSelectedSyndic}
+                                initialId={syndicId}
                                 setObjectId={setSyndicId}
                                 required={false}
                             ></SyndicAutoComplete>
