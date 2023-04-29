@@ -35,7 +35,7 @@ class StudentOnTourBulk(APIView):
     serializer_class = StudOnTourSerializer
 
     @extend_schema(
-        description="POST body consists of a list of a data component that is a list of Student-Tour instances. "
+        description="POST body consists of a data component that is a list of Student-Tour instances. "
                     "This enables the frontend to save a schedule in 1 request instead of multiple. "
                     "If a save fails, all the previous saves will be undone as well.",
         request=StudOnTourSerializer,
@@ -133,6 +133,24 @@ class StudentOnTourBulk(APIView):
 
         return post_success(serializer=dummy)
 
+    @extend_schema(
+        description="PATCH body is a map of ids on Student-Tour instances (with new data). "
+                    "This enables the frontend to edit a schedule in 1 request instead of multiple. "
+                    "If a save fails, the previous saves will **NOT** be undone.",
+        request=StudOnTourSerializer,
+        responses={200: SuccessSerializer, 400: None},
+        examples=[
+            OpenApiExample(
+                "Request body for bulk edit",
+                value={
+                    0: {"tour": 0, "student": 3, "date": "2023-04-28"},
+                    1: {"tour": 1, "student": 2, "date": "2023-04-28"},
+                },
+                description="**note that the ids should be strings, not integers**",
+                request_only=True,
+            )
+        ],
+    )
     def patch(self, request):
         data = request_to_dict(request.data)
         """
@@ -142,8 +160,21 @@ class StudentOnTourBulk(APIView):
             // more of this
         }
         """
-        print(data)
-        return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+        for StudentOnTour_id in data:
+            print(StudentOnTour_id)
+            student_on_tour_instance = StudentOnTour.objects.filter(id=StudentOnTour_id).first()
+            if not student_on_tour_instance:
+                return not_found("StudentOnTour")
+            print(student_on_tour_instance)
+            set_keys_of_instance(student_on_tour_instance, data[StudentOnTour_id], TRANSLATE)
+            print(student_on_tour_instance)
+            if r := try_full_clean_and_save(student_on_tour_instance):
+                return r
+
+        dummy = type("", (), {})()
+        dummy.data = {"data": "success"}
+
+        return post_success(serializer=dummy)
 
 
 class TourPerStudentView(APIView):
