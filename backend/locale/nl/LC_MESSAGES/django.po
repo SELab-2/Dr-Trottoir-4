@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-29 15:14+0200\n"
+"POT-Creation-Date: 2023-04-29 15:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -265,9 +265,11 @@ msgstr ""
 "gebouwen"
 
 #: base/permissions.py:243
-msgid "You cannot edit buildings on a tour when a student is actively doing the tour"
+msgid ""
+"You cannot edit buildings on a tour when a student is actively doing the tour"
 msgstr ""
-"Je kan geen gebouwen bewerken op een ronde wanneer een student actief is op de ronde"
+"Je kan geen gebouwen bewerken op een ronde wanneer een student actief is op "
+"de ronde"
 
 #: config/settings.py:239
 msgid "Dutch"
@@ -298,13 +300,15 @@ msgstr ""
 msgid "successfully copied the garbage collections"
 msgstr "de afvalophalingen werden succesvol gekopieerd"
 
-#: garbage_collection/views.py:278
+#: garbage_collection/views.py:276
 msgid ""
 "The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list "
 "of id's) should be given"
-msgstr "De parameter(s) 'region' (id) en/of 'tour' (id) en/of 'buildings' (lijst van id's) moet(en) gegeven worden"
+msgstr ""
+"De parameter(s) 'region' (id) en/of 'tour' (id) en/of 'buildings' (lijst van "
+"id's) moet(en) gegeven worden"
 
-#: garbage_collection/views.py:281
+#: garbage_collection/views.py:280
 #, fuzzy
 #| msgid "The query parameter {name} should be an integer"
 msgid "The query param 'building' should be a list of ints"
@@ -329,7 +333,7 @@ msgstr "De query parameter {name} moet een getal zijn"
 
 #: util/request_response_util.py:21 util/request_response_util.py:38
 #: util/request_response_util.py:46 util/request_response_util.py:65
-#: util/request_response_util.py:76
+#: util/request_response_util.py:77
 #, python-brace-format
 msgid "The query parameter {name} is required"
 msgstr "De query parameter {name} is vereist"
@@ -351,22 +355,21 @@ msgid ""
 msgstr ""
 "Ongeldige booleaanse parameter '{name}': '{param}' (true of false verwacht)"
 
-#: util/request_response_util.py:155
-#: util/request_response_util.py:81
+#: util/request_response_util.py:83
 #, fuzzy, python-brace-format
 #| msgid "The query parameter {name} should be an integer"
 msgid "The query param {name} must be a value in {allowed_keys}"
 msgstr "De query parameter {name} moet een waarde in {allowed_keys} zijn"
 
-#: util/request_response_util.py:170
+#: util/request_response_util.py:174
 msgid "{} was not found"
 msgstr "{} werd niet gevonden"
 
-#: util/request_response_util.py:174
+#: util/request_response_util.py:178
 msgid "bad input for {}"
 msgstr "slechte input voor {}"
 
-#: util/request_response_util.py:184
+#: util/request_response_util.py:188
 #, python-brace-format
 msgid "There is no {object1} that is linked to {object2} with given id."
 msgstr "Er is geen {object1} dat gelinkt is aan {object2} met de gegeven id."

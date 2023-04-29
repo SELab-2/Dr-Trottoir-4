@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-29 15:14+0200\n"
+"POT-Creation-Date: 2023-04-29 15:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -279,13 +279,13 @@ msgstr ""
 msgid "successfully copied the garbage collections"
 msgstr ""
 
-#: garbage_collection/views.py:278
+#: garbage_collection/views.py:276
 msgid ""
 "The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list "
 "of id's) should be given"
 msgstr ""
 
-#: garbage_collection/views.py:281
+#: garbage_collection/views.py:280
 msgid "The query param 'building' should be a list of ints"
 msgstr ""
 
@@ -327,20 +327,20 @@ msgid ""
 "expected)"
 msgstr ""
 
-#: util/request_response_util.py:81
+#: util/request_response_util.py:83
 #, python-brace-format
 msgid "The query param {name} must be a value in {allowed_keys}"
 msgstr ""
 
-#: util/request_response_util.py:155
+#: util/request_response_util.py:174
 msgid "{} was not found"
 msgstr ""
 
-#: util/request_response_util.py:174
+#: util/request_response_util.py:178
 msgid "bad input for {}"
 msgstr ""
 
-#: util/request_response_util.py:184
+#: util/request_response_util.py:188
 #, python-brace-format
 msgid "There is no {object1} that is linked to {object2} with given id."
 msgstr ""
