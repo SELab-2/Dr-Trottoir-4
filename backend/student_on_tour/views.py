@@ -31,6 +31,71 @@ class Default(APIView):
         return post_success(StudOnTourSerializer(student_on_tour_instance))
 
 
+class StudentOnTourBulk(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin|IsSuperStudent]
+    serializer_class = StudOnTourSerializer
+
+    def post(self, request):
+        data = request_to_dict(request.data)
+        """
+        data should look like this:
+        {
+            data:
+            [
+                {Tour:x, student:x, date: x},
+                {Tour:x2, student:x, date: x2},
+                // more of this
+            ]
+        }
+        """
+        list_done = []
+        for d in data["data"]:
+            print(d)
+            student_on_tour_instance = StudentOnTour()
+
+            set_keys_of_instance(student_on_tour_instance, d, TRANSLATE)
+
+            if r := try_full_clean_and_save(student_on_tour_instance):
+                for elem in list_done:
+                    elem.delete()
+                return r
+            list_done.append(student_on_tour_instance)
+
+        dummy = type("", (), {})()
+        dummy.data = {"data": "success"}
+
+        return post_success(serializer=dummy)
+
+    def delete(self, request):
+        data = request_to_dict(request.data)
+        """
+        data should look like this:
+        {
+        ids:
+            [
+                id1,
+                id2,
+                id3,
+                ...
+            ]
+        }
+        """
+        print(data)
+        return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    def patch(self, request):
+        data = request_to_dict(request.data)
+        """
+        data should look like this:
+        {
+            id1: {tour:x, student: y, date:z},
+            // more of this
+        }
+        """
+        print(data)
+        return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+
 class TourPerStudentView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | (IsStudent & OwnerAccount)]
     serializer_class = StudOnTourSerializer
