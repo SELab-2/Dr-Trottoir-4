@@ -38,6 +38,7 @@ const MyCalendar: FC<Props> = (props) => {
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
     const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
+    const [successMessage, setSuccessMessage] = useState<string>("");
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [events, setEvents] = useState<MyEvent[]>([]);
     const [rendered, setRendered] = useState<string[]>([])
@@ -76,7 +77,7 @@ const MyCalendar: FC<Props> = (props) => {
                     const t = parseInt(a);
                     const value = tours[t];
                     // @ts-ignore
-                    let tour: Tour = props.tours.find((tour: Tour) =>tour.id === t);
+                    let tour: Tour = props.tours.find((tour: Tour) => tour.id === t);
                     for (let b in value) {
                         const v = parseInt(b);
                         const item = value[v];
@@ -124,7 +125,6 @@ const MyCalendar: FC<Props> = (props) => {
     };
 
     const onEventSelection = (e: Event) => {
-        console.log(e)
         setSelectedEvent(e);
         setPopupIsOpenEdit(true);
     };
@@ -144,17 +144,6 @@ const MyCalendar: FC<Props> = (props) => {
         });
     };
 
-    const onEventAdd = ({tour, student, start, end}: { tour: Tour; student: User; start: Date; end: Date }) => {
-        setEvents((currentEvents) => {
-            const newEvent: MyEvent = {
-                tour: tour,
-                student: student,
-                start: start,
-                end: end,
-            };
-            return [...currentEvents, newEvent];
-        });
-    };
 
     const onEventsAdd = (eventData: MyEvent[]) => {
         setEvents((currentEvents) => {
@@ -206,23 +195,21 @@ const MyCalendar: FC<Props> = (props) => {
         for (let e in toLoad) {
             postStudentOnTour(toLoad[e].tour.id, toLoad[e].student.id, formatDate(toLoad[e].start)).then(
                 (_) => {
+                    setSuccessMessage("Succes! Planning is opgeslagen.")
                 },
                 (err) => {
                     const e = handleError(err);
-                    setErrorMessages(e);
+                    setErrorMessages([...errorMessages, e[0]]);
                 }
             );
         }
     };
 
-    const test = () => {
-        setPopupIsOpenAdd(true)
-         console.log(range.start)
-    }
 
     return (
         <>
-            <button className="btn btn-primary mb-3" onClick={test}>
+            <div>
+                <button className="btn btn-primary mb-3" onClick={() => {setPopupIsOpenAdd(true)}}>
                 Voeg ronde toe
             </button>
             <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>
@@ -233,6 +220,12 @@ const MyCalendar: FC<Props> = (props) => {
             }}>
                 Kopieer naar nieuwe week
             </button>
+            {successMessage && (
+                <div className={"visible alert alert-success alert-dismissible fade show"}>
+                    <p>{successMessage}</p>
+                    <button type="button" className="btn-close" data-bs-dismiss="alert" onClick={() => setSuccessMessage("")}/>
+                </div>
+            )}
             {errorMessages.length !== 0 && (
                 <div className={"visible alert alert-danger alert-dismissible fade show"}>
                     <ul>
@@ -243,6 +236,7 @@ const MyCalendar: FC<Props> = (props) => {
                     <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
                 </div>
             )}
+            </div>
             <DnDCalendar
                 messages={messages}
                 culture={"nl-BE"}

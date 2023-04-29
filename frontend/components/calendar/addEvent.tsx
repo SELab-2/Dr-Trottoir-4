@@ -162,7 +162,7 @@ function AddEventModal(data: any) {
                             <li key={i}>{t(err)}</li>
                         ))}
                     </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
+                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
                 </div>
             )}
             <Modal.Body>
