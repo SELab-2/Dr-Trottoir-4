@@ -4,7 +4,7 @@ import { RegionInterface, getAllRegions, postRegion, patchRegion, deleteRegion }
 import { withAuthorisation } from "@/components/withAuthorisation";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
-import {Edit, Delete, CalendarMonth} from "@mui/icons-material";
+import { Edit, Delete, CalendarMonth } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import { Button } from "react-bootstrap";
