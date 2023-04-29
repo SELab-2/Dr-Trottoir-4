@@ -231,10 +231,6 @@ class ProgressTourView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = ProgressTourSerializer
 
-    @sync_to_async
-    def perform_authentication(self, request):
-        super().perform_authentication(request)
-
     @extend_schema(responses=get_docs(serializer_class))
     def get(self, request, student_on_tour_id):
         student_on_tour = StudentOnTour.objects.get(id=student_on_tour_id)
