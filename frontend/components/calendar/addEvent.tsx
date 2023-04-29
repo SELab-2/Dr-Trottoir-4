@@ -1,4 +1,4 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import {addDays} from "date-fns";
@@ -6,6 +6,7 @@ import {User} from "@/lib/user";
 import {Tour} from "@/lib/tour";
 import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
+import {useTranslation} from "react-i18next";
 
 function AddEventModal(data: any) {
     const {allStudents, allTours, isOpen, onClose, onSaveMultiple} = data;
@@ -27,6 +28,8 @@ function AddEventModal(data: any) {
     const [thursdayId, setThursdayId] = useState(-1);
     const [friday, setFriday] = useState<User | null>(null);
     const [fridayId, setFridayId] = useState(-1);
+    const { t } = useTranslation();
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const handleSave = () => {
         const currentStudent: User = allStudents.find((student: User) => student.id === studentId);
@@ -92,7 +95,7 @@ function AddEventModal(data: any) {
             resetStates();
             onClose();
         } else {
-            //TODO errormessages
+            setErrorMessages(["Start datum mag niet leeg zijn."]);
         }
     };
 
@@ -145,10 +148,23 @@ function AddEventModal(data: any) {
 
 
     return (
-        <Modal show={isOpen} onHide={onClose}>
+        <Modal show={isOpen} onHide={() => {
+                onClose();
+                setErrorMessages([]);
+            }}>
             <Modal.Header closeButton>
                 <Modal.Title>Voeg ronde toe</Modal.Title>
             </Modal.Header>
+            {errorMessages.length !== 0 && (
+                <div className={"visible alert alert-danger alert-dismissible fade show"}>
+                    <ul>
+                        {errorMessages.map((err, i) => (
+                            <li key={i}>{t(err)}</li>
+                        ))}
+                    </ul>
+                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
+                </div>
+            )}
             <Modal.Body>
                 <form>
                     <div className="form-group">
