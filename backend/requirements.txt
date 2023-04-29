@@ -16,7 +16,7 @@ djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 idna==3.4
 oauthlib==3.2.2
-phonenumbers==8.13.10
+phonenumbers==8.13.11
 psycopg2-binary==2.9.6
 pycparser==2.21
 PyJWT==2.6.0
@@ -30,4 +30,4 @@ urllib3==1.26.15
 Pillow==9.5.0
 drf-spectacular==0.26.2
 django-nose==1.4.7
-coverage==7.2.3
+coverage==7.2.4
