@@ -42,8 +42,8 @@ const MyCalendar: FC<Props> = (props) => {
     const [events, setEvents] = useState<MyEvent[]>([]);
     const [rendered, setRendered] = useState<string[]>([])
     const [range, setRange] = useState({
-        start: startOfWeek(new Date()),
-        end: endOfWeek(new Date()),
+        start: startOfWeek(new Date(), {weekStartsOn: 1}),
+        end: endOfWeek(new Date(), {weekStartsOn: 1}),
     });
 
     useEffect(() => {
@@ -57,6 +57,8 @@ const MyCalendar: FC<Props> = (props) => {
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
         let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
         setRange({start: startDate, end: endDate})
+        console.log(startDate)
+        console.log(endDate)
         // Set the new range
         if (!rendered.includes(startDate.toISOString())) {
             setRendered([...rendered, startDate.toISOString()])
@@ -73,15 +75,13 @@ const MyCalendar: FC<Props> = (props) => {
                 for (let a in tours) {
                     const t = parseInt(a);
                     const value = tours[t];
-                    let tour: Tour = props.tours.filter(function (tour: Tour) {
-                        return tour.id == t;
-                    })[0];
+                    // @ts-ignore
+                    let tour: Tour = props.tours.find((tour: Tour) =>tour.id === t);
                     for (let b in value) {
                         const v = parseInt(b);
                         const item = value[v];
-                        let student: User = props.students.filter(function (user: User) {
-                            return user.id == item.student;
-                        })[0];
+                        // @ts-ignore
+                        let student: User = props.students.find((student: User) => student.id === item.student);
                         let start = new Date(item.date);
                         let end = addDays(start, 1);
                         start.setHours(0);
@@ -124,6 +124,7 @@ const MyCalendar: FC<Props> = (props) => {
     };
 
     const onEventSelection = (e: Event) => {
+        console.log(e)
         setSelectedEvent(e);
         setPopupIsOpenEdit(true);
     };
@@ -214,9 +215,14 @@ const MyCalendar: FC<Props> = (props) => {
         }
     };
 
+    const test = () => {
+        setPopupIsOpenAdd(true)
+         console.log(range.start)
+    }
+
     return (
         <>
-            <button className="btn btn-primary mb-3" onClick={() => setPopupIsOpenAdd(true)}>
+            <button className="btn btn-primary mb-3" onClick={test}>
                 Voeg ronde toe
             </button>
             <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>
@@ -272,11 +278,11 @@ const MyCalendar: FC<Props> = (props) => {
                 />
             )}
             <AddEventModal
+                first_day={range.start}
                 allStudents={props.students}
                 allTours={props.tours}
                 isOpen={popupIsOpenAdd}
                 onClose={() => setPopupIsOpenAdd(false)}
-                onSave={onEventAdd}
                 onSaveMultiple={onEventsAdd}
             />
             <LoadEventsModal

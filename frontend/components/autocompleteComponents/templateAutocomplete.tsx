@@ -12,7 +12,7 @@ const TemplateAutocomplete: React.FC<GenericProps> = ({ value, onChange, setObje
             fetchOptions={getAllMailTemplates}
             onChange={onChange}
             mapping={(template: EmailTemplate) => template.name}
-            searchField={"name"}
+            searchField={"email"}
             searchTermHandler={(value) => value}
             setObjectId={setObjectId}
         />

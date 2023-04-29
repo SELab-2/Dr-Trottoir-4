@@ -1,89 +1,148 @@
-import { ChangeEvent, useState } from "react";
+import {useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { addDays, startOfMonth, startOfWeek } from "date-fns";
-import { User } from "@/lib/user";
-import { Tour } from "@/lib/tour";
+import {addDays} from "date-fns";
+import {User} from "@/lib/user";
+import {Tour} from "@/lib/tour";
+import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
+import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 
 function AddEventModal(data: any) {
-    const { allStudents, allTours, isOpen, onClose, onSave, onSaveMultiple } = data;
+    const {allStudents, allTours, isOpen, onClose, onSaveMultiple} = data;
     const [tour, setTour] = useState<Tour | null>(null);
+    const [tourId, setTourId] = useState(-1);
     const [student, setStudent] = useState<User | null>(null);
-    const [start, setStart] = useState(
-        new Date(
-            startOfWeek(new Date(), { weekStartsOn: 1 }).toLocaleString("en", {
-                timeZone: "America/New_York",
-            })
-        )
-    );
+    const [studentId, setStudentId] = useState(-1);
+    const [start, setStart] = useState<Date | null>(null);
     const [checked, setChecked] = useState(true);
-    const [week, setWeek] = useState<User[]>(Array(6).fill(null)); // Week starts on Sunday (index 0)
+    const [sunday, setSunday] = useState<User | null>(null);
+    const [sundayId, setSundayId] = useState(-1);
+    const [monday, setMonday] = useState<User | null>(null);
+    const [mondayId, setMondayId] = useState(-1);
+    const [tuesday, setTuesday] = useState<User | null>(null);
+    const [tuesdayId, setTuesdayId] = useState(-1);
+    const [wednesday, setWednesday] = useState<User | null>(null);
+    const [wednesdayId, setWednesdayId] = useState(-1);
+    const [thursday, setThursday] = useState<User | null>(null);
+    const [thursdayId, setThursdayId] = useState(-1);
+    const [friday, setFriday] = useState<User | null>(null);
+    const [fridayId, setFridayId] = useState(-1);
 
     const handleSave = () => {
-        const end = addDays(start, 5);
-        let data = [];
-        let currentDate = new Date(start);
-        currentDate.setHours(0);
-        if (checked) {
-            while (currentDate <= end) {
-                let nextDate = addDays(currentDate, 1);
-                nextDate.setHours(2);
-                data.push({ tour: tour, student: student, start: currentDate, end: nextDate });
-                currentDate = nextDate;
-                currentDate.setHours(0);
+        const currentStudent: User = allStudents.find((student: User) => student.id === studentId);
+        const currentTour: Tour = allTours.find((tour: Tour) => tour.id === tourId);
+        if (start !== null) {
+            const end = addDays(start, 5);
+            let data = [];
+            let currentDate = start;
+            currentDate.setHours(0);
+            if (checked) {
+                while (currentDate <= end) {
+                    let nextDate = addDays(currentDate, 1);
+                    nextDate.setHours(0);
+                    data.push({tour: currentTour, student: currentStudent, start: currentDate, end: nextDate});
+                    currentDate = nextDate;
+                    currentDate.setHours(0);
+                }
+            } else {
+                let dates = getDayTimestamps(start)
+                data.push({
+                    tour: currentTour,
+                    student: allStudents.find((student: User) => student.id === sundayId),
+                    start: dates.current,
+                    end: dates.next
+                })
+                dates = getDayTimestamps(dates.next)
+                data.push({
+                    tour: currentTour,
+                    student: allStudents.find((student: User) => student.id === mondayId),
+                    start: dates.current,
+                    end: dates.next
+                })
+                dates = getDayTimestamps(dates.next)
+                data.push({
+                    tour: currentTour,
+                    student: allStudents.find((student: User) => student.id === tuesdayId),
+                    start: dates.current,
+                    end: dates.next
+                })
+                dates = getDayTimestamps(dates.next)
+                data.push({
+                    tour: currentTour,
+                    student: allStudents.find((student: User) => student.id === wednesdayId),
+                    start: dates.current,
+                    end: dates.next
+                })
+                dates = getDayTimestamps(dates.next)
+                data.push({
+                    tour: currentTour,
+                    student: allStudents.find((student: User) => student.id === thursdayId),
+                    start: dates.current,
+                    end: dates.next
+                })
+                dates = getDayTimestamps(dates.next)
+                data.push({
+                    tour: currentTour,
+                    student: allStudents.find((student: User) => student.id === fridayId),
+                    start: dates.current,
+                    end: dates.next
+                })
             }
+            onSaveMultiple(data);
+            resetStates();
+            onClose();
         } else {
-            while (currentDate <= end) {
-                let s = week.pop();
-                let nextDate = addDays(currentDate, 1);
-                nextDate.setHours(2);
-                data.push({ tour: tour, student: s, start: currentDate, end: nextDate });
-                currentDate = nextDate;
-                currentDate.setHours(0);
-            }
+            //TODO errormessages
         }
-        onSaveMultiple(data);
+    };
+
+    const getDayTimestamps = (date: Date) => {
+        let current = date;
+        current.setHours(0);
+        let next = addDays(current, 1);
+        next.setHours(0);
+        return {current, next}
+    }
+
+    const resetStates = () => {
         setTour(null);
         setStudent(null);
-        setStart(
-            new Date(
-                addDays(startOfWeek(startOfMonth(new Date()), { weekStartsOn: 0 }), 8).toLocaleString("en", {
-                    timeZone: "America/New_York",
-                })
-            )
-        );
-        setWeek(Array(6).fill(null));
+        setStart(null);
+        setSunday(null);
+        setSundayId(-1);
+        setMonday(null);
+        setMondayId(-1);
+        setTuesday(null);
+        setTuesdayId(-1);
+        setWednesday(null);
+        setWednesdayId(-1);
+        setThursday(null);
+        setThursdayId(-1);
+        setFriday(null);
+        setFridayId(-1);
         setChecked(true);
-        onClose();
-    };
+    }
 
     const handleStartDateChange = (e: { target: { value: string | number | Date } }) => {
         setStart(new Date(e.target.value));
     };
 
     const handleCheckChange = () => {
-        setWeek(Array(6).fill(student));
+        setSunday(student);
+        setSundayId(studentId);
+        setMonday(student);
+        setMondayId(studentId);
+        setTuesday(student);
+        setTuesdayId(studentId);
+        setWednesday(student);
+        setWednesdayId(studentId);
+        setThursday(student);
+        setThursdayId(studentId);
+        setFriday(student);
+        setFridayId(studentId);
         setChecked(!checked);
     };
 
-    const handleStudentChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        const studentID = Number(e.target.value);
-        const selectedStudent = allStudents.find((student: User) => student.id === studentID);
-        setStudent(selectedStudent);
-    };
-
-    const handleTourChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        const tourID = Number(e.target.value);
-        const selectedTour = allTours.find((tour: Tour) => tour.id === tourID);
-        setTour(selectedTour);
-    };
-
-    const updateWeekdayStudent = (e: ChangeEvent<HTMLSelectElement>, index: number) => {
-        const studentID = Number(e.target.value);
-        const updatedWeek = [...week];
-        updatedWeek[index] = allStudents.find((student: User) => student.id === studentID);
-        setWeek(updatedWeek);
-    };
 
     return (
         <Modal show={isOpen} onHide={onClose}>
@@ -93,131 +152,90 @@ function AddEventModal(data: any) {
             <Modal.Body>
                 <form>
                     <div className="form-group">
-                        <label>Ronde</label>
-                        <select className="form-control" value={tour?.id} onChange={handleTourChange}>
-                            <option value="">-- Selecteer Ronde --</option>
-                            {allTours.map((tour: Tour) => (
-                                <option key={tour.id} value={tour.id}>
-                                    {tour.name}
-                                </option>
-                            ))}
-                        </select>
+                        <TourAutocomplete
+                            value={tour}
+                            onChange={setTour}
+                            setObjectId={setTourId}
+                            required={true}
+                        />
                     </div>
                     <div className="form-group">
-                        <label>Student</label>
-                        <select className="form-control" value={student?.id} onChange={handleStudentChange}>
-                            <option value="">-- Selecteer student(e) --</option>
-                            {allStudents.map((student: User) => (
-                                <option key={student.id} value={student.id}>
-                                    {student.first_name} {student.last_name}
-                                </option>
-                            ))}
-                        </select>
+                        <label>Student*</label>
+                        <StudentAutocomplete
+                            value={student}
+                            onChange={setStudent}
+                            setObjectId={setStudentId}
+                            required={true}
+                        />
                     </div>
                     <div className="form-row">
                         <div className="col">
-                            <label htmlFor="start-time">Start datum:</label>
+                            <label>Start datum:</label>
                             <input
                                 type="date"
-                                value={start.toISOString().substring(0, 10)}
+                                value={start ? start.toISOString().substring(0, 10) : ""}
                                 onChange={handleStartDateChange}
                                 className="form-control"
                             />
                         </div>
                         <label>
-                            <input type="checkbox" checked={checked} onChange={handleCheckChange} />1 student per week
+                            <input type="checkbox" checked={checked} onChange={handleCheckChange}/>1 student per week
                         </label>
                         {!checked && (
                             <div>
                                 <div>
-                                    <label>Zondag:</label>
-                                    <select
-                                        className="form-control"
-                                        value={week[0]?.id || ""}
-                                        onChange={(e) => updateWeekdayStudent(e, 0)}
-                                    >
-                                        <option value="">-- Selecteer student(e) --</option>
-                                        {allStudents.map((student: User) => (
-                                            <option key={student.id} value={student.id}>
-                                                {student.first_name} {student.last_name}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <label>Zondag</label>
+                                    <StudentAutocomplete
+                                        value={sunday}
+                                        onChange={setSunday}
+                                        setObjectId={setSundayId}
+                                        required={false}
+                                    />
                                 </div>
                                 <div>
-                                    <label>Maandag:</label>
-                                    <select
-                                        className="form-control"
-                                        value={week[1]?.id || ""}
-                                        onChange={(e) => updateWeekdayStudent(e, 1)}
-                                    >
-                                        <option value="">-- Selecteer student(e) --</option>
-                                        {allStudents.map((student: User) => (
-                                            <option key={student.id} value={student.id}>
-                                                {student.first_name} {student.last_name}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <label>Maandag</label>
+                                    <StudentAutocomplete
+                                        value={monday}
+                                        onChange={setMonday}
+                                        setObjectId={setMondayId}
+                                        required={false}
+                                    />
                                 </div>
                                 <div>
-                                    <label>Dinsdag:</label>
-                                    <select
-                                        className="form-control"
-                                        value={week[2]?.id || ""}
-                                        onChange={(e) => updateWeekdayStudent(e, 2)}
-                                    >
-                                        <option value="">-- Selecteer student(e) --</option>
-                                        {allStudents.map((student: User) => (
-                                            <option key={student.id} value={student.id}>
-                                                {student.first_name} {student.last_name}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <label>Dinsdag</label>
+                                    <StudentAutocomplete
+                                        value={tuesday}
+                                        onChange={setTuesday}
+                                        setObjectId={setTuesdayId}
+                                        required={false}
+                                    />
                                 </div>
                                 <div>
-                                    <label>Woensdag:</label>
-                                    <select
-                                        className="form-control"
-                                        value={week[3]?.id || ""}
-                                        onChange={(e) => updateWeekdayStudent(e, 3)}
-                                    >
-                                        <option value="">-- Selecteer student(e) --</option>
-                                        {allStudents.map((student: User) => (
-                                            <option key={student.id} value={student.id}>
-                                                {student.first_name} {student.last_name}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <label>Woensdag</label>
+                                    <StudentAutocomplete
+                                        value={wednesday}
+                                        onChange={setWednesday}
+                                        setObjectId={setWednesdayId}
+                                        required={false}
+                                    />
                                 </div>
                                 <div>
-                                    <label>Donderdag:</label>
-                                    <select
-                                        className="form-control"
-                                        value={week[4]?.id || ""}
-                                        onChange={(e) => updateWeekdayStudent(e, 4)}
-                                    >
-                                        <option value="">-- Selecteer student(e) --</option>
-                                        {allStudents.map((student: User) => (
-                                            <option key={student.id} value={student.id}>
-                                                {student.first_name} {student.last_name}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <label>Donderdag</label>
+                                    <StudentAutocomplete
+                                        value={thursday}
+                                        onChange={setThursday}
+                                        setObjectId={setThursdayId}
+                                        required={false}
+                                    />
                                 </div>
                                 <div>
-                                    <label>Vrijdag:</label>
-                                    <select
-                                        className="form-control"
-                                        value={week[5]?.id || ""}
-                                        onChange={(e) => updateWeekdayStudent(e, 5)}
-                                    >
-                                        <option value="">-- Selecteer student(e) --</option>
-                                        {allStudents.map((student: User) => (
-                                            <option key={student.id} value={student.id}>
-                                                {student.first_name} {student.last_name}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <label>Vrijdag</label>
+                                    <StudentAutocomplete
+                                        value={friday}
+                                        onChange={setFriday}
+                                        setObjectId={setFridayId}
+                                        required={false}
+                                    />
                                 </div>
                             </div>
                         )}
