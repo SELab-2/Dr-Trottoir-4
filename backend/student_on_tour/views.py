@@ -1,11 +1,10 @@
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiExample
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import StudentOnTour
 from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount, IsStudent
-from base.serializers import StudOnTourSerializer
+from base.serializers import StudOnTourSerializer, SuccessSerializer
 from util.request_response_util import *
 
 TRANSLATE = {"tour": "tour_id", "student": "student_id"}
@@ -32,13 +31,35 @@ class Default(APIView):
 
 
 class StudentOnTourBulk(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin|IsSuperStudent]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = StudOnTourSerializer
 
+    @extend_schema(
+        description="POST body consists of a list of a data component that is a list of Student-Tour instances. "
+                    "This enables the frontend to save a schedule in 1 request instead of multiple. "
+                    "If a save fails, all the previous saves will be undone as well.",
+        request=StudOnTourSerializer,
+        responses={200: SuccessSerializer, 400: None},
+        examples=[
+            OpenApiExample(
+                "Request body for bulk add",
+                value={
+                    "data":
+                        [
+                            {"tour": 0, "student": 3, "date": "2023-04-28"},
+                            {"tour": 1, "student": 2, "date": "2023-04-28"},
+
+                        ]
+                },
+                description="",
+                request_only=True,
+            )
+        ],
+    )
     def post(self, request):
         data = request_to_dict(request.data)
         """
-        data should look like this:
+        request body should look like this:
         {
             data:
             [
@@ -69,7 +90,7 @@ class StudentOnTourBulk(APIView):
     def delete(self, request):
         data = request_to_dict(request.data)
         """
-        data should look like this:
+        request body should look like this:
         {
         ids:
             [
@@ -86,7 +107,7 @@ class StudentOnTourBulk(APIView):
     def patch(self, request):
         data = request_to_dict(request.data)
         """
-        data should look like this:
+        request body should look like this:
         {
             id1: {tour:x, student: y, date:z},
             // more of this
