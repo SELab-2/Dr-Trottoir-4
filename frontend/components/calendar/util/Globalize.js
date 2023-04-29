@@ -1,4 +1,4 @@
-import {Calendar, globalizeLocalizer} from "react-big-calendar";
+import { Calendar, globalizeLocalizer } from "react-big-calendar";
 import globalize from "globalize";
 
 const localizer = globalizeLocalizer(globalize);

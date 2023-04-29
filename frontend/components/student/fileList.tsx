@@ -1,5 +1,5 @@
-import {IconButton, Tooltip} from "@mui/material";
-import {Delete} from "@mui/icons-material";
+import { IconButton, Tooltip } from "@mui/material";
+import { Delete } from "@mui/icons-material";
 import React from "react";
 
 export function FileList({ files, handleRemoveFile }: { files: File[]; handleRemoveFile: (index: number) => void }) {
@@ -14,7 +14,7 @@ export function FileList({ files, handleRemoveFile }: { files: File[]; handleRem
                         </a>
                         <Tooltip arrow placement="right" title="Verwijder">
                             <IconButton onClick={() => handleRemoveFile(index)}>
-                                <Delete/>
+                                <Delete />
                             </IconButton>
                         </Tooltip>
                     </li>

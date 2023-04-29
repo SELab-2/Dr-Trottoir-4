@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import {verifyToken} from "@/lib/authentication";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { verifyToken } from "@/lib/authentication";
 import setSessionStorage from "@/lib/storage";
-import {getCurrentUser, getUserRole, User} from "@/lib/user";
+import { getCurrentUser, getUserRole, User } from "@/lib/user";
 
 /**
  * This wraps a component where authorisation is required

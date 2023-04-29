@@ -1,9 +1,9 @@
-import {ChangeEvent, useState} from "react";
+import { ChangeEvent, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import {addDays, startOfMonth, startOfWeek} from "date-fns";
-import {User} from "@/lib/user";
-import {Tour} from "@/lib/tour";
+import { addDays, startOfMonth, startOfWeek } from "date-fns";
+import { User } from "@/lib/user";
+import { Tour } from "@/lib/tour";
 
 function AddEventModal(data: any) {
     const { allStudents, allTours, isOpen, onClose, onSave, onSaveMultiple } = data;

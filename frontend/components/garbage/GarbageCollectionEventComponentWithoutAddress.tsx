@@ -1,15 +1,9 @@
-import {GarbageCollectionEvent} from "@/types";
+import { GarbageCollectionEvent } from "@/types";
 
-export default function GarbageCollectionEventComponentWithoutAddress(
-    {
-        event
-    }: {
-        event: GarbageCollectionEvent
-    }
-) {
+export default function GarbageCollectionEventComponentWithoutAddress({ event }: { event: GarbageCollectionEvent }) {
     return (
         <div>
-            <label style={{fontSize: '15px'}}>{event.garbageType}</label>
+            <label style={{ fontSize: "15px" }}>{event.garbageType}</label>
         </div>
     );
 }

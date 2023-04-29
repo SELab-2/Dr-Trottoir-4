@@ -1,24 +1,24 @@
-import React, {FC, useState} from "react";
-import {Calendar, dateFnsLocalizer, Event} from "react-big-calendar";
-import withDragAndDrop, {withDragAndDropProps} from "react-big-calendar/lib/addons/dragAndDrop";
+import React, { FC, useState } from "react";
+import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
+import withDragAndDrop, { withDragAndDropProps } from "react-big-calendar/lib/addons/dragAndDrop";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
-import {messages} from "@/locales/localizerCalendar";
-import {getAllStudentOnTourFromDate, postStudentOnTour, StudentOnTour} from "@/lib/student-on-tour";
+import { messages } from "@/locales/localizerCalendar";
+import { getAllStudentOnTourFromDate, postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
 
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import EditEventModal from "@/components/calendar/editEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
-import {Tour} from "@/lib/tour";
-import {User} from "@/lib/user";
-import {addDays} from "date-fns";
-import {formatDate} from "@/lib/date";
-import {handleError} from "@/lib/error";
+import { Tour } from "@/lib/tour";
+import { User } from "@/lib/user";
+import { addDays } from "date-fns";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
 import LoadEventsModal from "@/components/calendar/loadEvents";
 
 interface MyEvent extends Event {

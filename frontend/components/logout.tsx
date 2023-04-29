@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import {logout} from "@/lib/logout";
-import {useRouter} from "next/router";
-import {Button, Modal} from "react-bootstrap";
+import React, { useState } from "react";
+import { logout } from "@/lib/logout";
+import { useRouter } from "next/router";
+import { Button, Modal } from "react-bootstrap";
 
 function Logout() {
     const router = useRouter();

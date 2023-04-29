@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {getCurrentUser, getUserRole, patchUser, User} from "@/lib/user";
+import React, { useEffect, useState } from "react";
+import { getCurrentUser, getUserRole, patchUser, User } from "@/lib/user";
 import styles from "@/styles/Login.module.css";
-import {useTranslation} from "react-i18next";
-import {getAllRegions, RegionInterface} from "@/lib/region";
+import { useTranslation } from "react-i18next";
+import { getAllRegions, RegionInterface } from "@/lib/region";
 import AdminHeader from "@/components/header/adminHeader";
 import StudentHeader from "@/components/header/studentHeader";
 import SyndicHeader from "@/components/header/syndicHeader";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 import PasswordModal from "@/components/password/passwordModal";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 

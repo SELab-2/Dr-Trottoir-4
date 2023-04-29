@@ -1,5 +1,5 @@
 import React from "react";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import SyndicHeader from "@/components/header/syndicHeader";
 import SyndicFooter from "@/components/footer/syndicFooter";
 import BuildingPage from "@/components/building/BuildingPage";

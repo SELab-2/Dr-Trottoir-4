@@ -1,6 +1,6 @@
 import React from "react";
-import {getAllRegions, RegionInterface} from "@/lib/region";
-import AutocompleteComponent, {GenericProps} from "@/components/autocompleteComponents/autocompleteComponent";
+import { getAllRegions, RegionInterface } from "@/lib/region";
+import AutocompleteComponent, { GenericProps } from "@/components/autocompleteComponents/autocompleteComponent";
 
 const RegionAutocomplete: React.FC<GenericProps> = ({ initialId, setObjectId, required }) => {
     return (

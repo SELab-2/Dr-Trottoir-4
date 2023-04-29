@@ -1,9 +1,9 @@
-import {Button, Modal} from "react-bootstrap";
-import React, {useState} from "react";
-import {UserView} from "@/types";
-import {deleteUser} from "@/lib/user";
-import {handleError} from "@/lib/error";
-import {useTranslation} from "react-i18next";
+import { Button, Modal } from "react-bootstrap";
+import React, { useState } from "react";
+import { UserView } from "@/types";
+import { deleteUser } from "@/lib/user";
+import { handleError } from "@/lib/error";
+import { useTranslation } from "react-i18next";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export function UserDeleteModal({

@@ -1,14 +1,14 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, {useEffect, useMemo, useState} from "react";
-import {BuildingInterface, deleteBuilding, getAddress, getAllBuildings} from "@/lib/building";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {useRouter} from "next/router";
-import MaterialReactTable, {type MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {Button} from "react-bootstrap";
-import {CalendarMonth, Delete, Edit, Email, Info} from "@mui/icons-material";
-import {BuildingView} from "@/types";
-import {getUserInfo} from "@/lib/user";
+import React, { useEffect, useMemo, useState } from "react";
+import { BuildingInterface, deleteBuilding, getAddress, getAllBuildings } from "@/lib/building";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { useRouter } from "next/router";
+import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { Button } from "react-bootstrap";
+import { CalendarMonth, Delete, Edit, Email, Info } from "@mui/icons-material";
+import { BuildingView } from "@/types";
+import { getUserInfo } from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 
 interface ParsedUrlQuery {}

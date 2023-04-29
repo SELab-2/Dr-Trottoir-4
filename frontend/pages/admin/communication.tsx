@@ -1,15 +1,15 @@
 import AdminHeader from "@/components/header/adminHeader";
-import {BuildingComment, getAllBuildingComments} from "@/lib/building-comment";
-import {EmailTemplate, getAllEmailTemplates} from "@/lib/email-template";
-import {ChangeEvent, useEffect, useState} from "react";
+import { BuildingComment, getAllBuildingComments } from "@/lib/building-comment";
+import { EmailTemplate, getAllEmailTemplates } from "@/lib/email-template";
+import { ChangeEvent, useEffect, useState } from "react";
 import styles from "styles/Welcome.module.css";
-import {Button, FloatingLabel, Form} from "react-bootstrap";
+import { Button, FloatingLabel, Form } from "react-bootstrap";
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
-import {BuildingInterface, getAllBuildings} from "@/lib/building";
-import {getAllUsers, User} from "@/lib/user";
+import { BuildingInterface, getAllBuildings } from "@/lib/building";
+import { getAllUsers, User } from "@/lib/user";
 import SyndicAutoComplete from "@/components/autocompleteComponents/syndicAutocomplete";
-import {useRouter} from "next/router";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { useRouter } from "next/router";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
 interface ParsedUrlQuery {}
 

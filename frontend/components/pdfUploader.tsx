@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styles from "@/styles//PDFUploader.module.css";
-import {Form} from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 interface Props {
     onUpload: (file: File) => void;

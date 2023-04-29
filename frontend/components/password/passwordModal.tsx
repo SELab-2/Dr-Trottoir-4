@@ -1,8 +1,8 @@
-import React, {useState} from "react";
-import {Button, Modal} from "react-bootstrap";
+import React, { useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 import PasswordInput from "./passwordInput";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {changePassword} from "@/lib/authentication";
+import { changePassword } from "@/lib/authentication";
 
 interface PasswordModalProps {
     show: boolean;

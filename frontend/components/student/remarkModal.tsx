@@ -1,10 +1,10 @@
-import {Button, Form, Modal} from "react-bootstrap";
-import React, {useState} from "react";
-import {FileList} from "@/components/student/fileList";
-import {postRemarkAtBuilding, RemarkAtBuilding, remarkTypes} from "@/lib/remark-at-building";
-import {postPictureOfRemark} from "@/lib/picture-of-remark";
-import {StudentOnTour} from "@/lib/student-on-tour";
-import {BuildingInterface} from "@/lib/building";
+import { Button, Form, Modal } from "react-bootstrap";
+import React, { useState } from "react";
+import { FileList } from "@/components/student/fileList";
+import { postRemarkAtBuilding, RemarkAtBuilding, remarkTypes } from "@/lib/remark-at-building";
+import { postPictureOfRemark } from "@/lib/picture-of-remark";
+import { StudentOnTour } from "@/lib/student-on-tour";
+import { BuildingInterface } from "@/lib/building";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function RemarkModal({

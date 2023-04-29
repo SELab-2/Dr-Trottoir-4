@@ -1,7 +1,7 @@
-import {useRouter} from "next/router";
-import React, {useEffect, useState} from "react";
-import {BuildingInterface, getBuildingInfo} from "@/lib/building";
-import {AxiosResponse} from "axios/index";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { BuildingInterface, getBuildingInfo } from "@/lib/building";
+import { AxiosResponse } from "axios/index";
 import BuildingInfo from "@/components/building/buildingComponents/BuildingInfo";
 import LatestCollectionDetail from "@/components/building/buildingComponents/LatestCollectionDetail";
 import LatestCollections from "@/components/building/buildingComponents/LatestCollections";

@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
 interface LiveFieldProps<T> {
     fetcher: () => Promise<T>;

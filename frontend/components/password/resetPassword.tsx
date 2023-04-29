@@ -1,4 +1,4 @@
-import React, {FormEvent, useState} from "react";
+import React, { FormEvent, useState } from "react";
 import PasswordInput from "@/components/password/passwordInput";
 import styles from "@/styles/Login.module.css";
 
@@ -26,7 +26,7 @@ function ResetPassword() {
     return (
         <form onSubmit={handleSubmit}>
             <div className="d-flex align-items-center mb-3 pb-1">
-                <i className="fas fa-cubes fa-2x me-3"/>
+                <i className="fas fa-cubes fa-2x me-3" />
                 <span className="h1 fw-bold mb-0">Reset Password.</span>
             </div>
 
@@ -65,10 +65,7 @@ function ResetPassword() {
             />
 
             <div className="pt-1 mb-4">
-                <button
-                    className={`btn btn-dark btn-lg btn-block ${styles.button}`}
-                    type="submit"
-                >
+                <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} type="submit">
                     Reset Password
                 </button>
             </div>

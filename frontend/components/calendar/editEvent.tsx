@@ -1,8 +1,8 @@
-import {ChangeEvent, useState} from "react";
+import { ChangeEvent, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import {User} from "@/lib/user";
-import {Tour} from "@/lib/tour";
+import { User } from "@/lib/user";
+import { Tour } from "@/lib/tour";
 
 function EditEventModal(data: any) {
     const { event, allStudents, allTours, isOpen, onClose, onSave, onDelete } = data;

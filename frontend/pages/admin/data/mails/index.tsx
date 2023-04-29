@@ -1,13 +1,13 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, {useEffect, useMemo, useState} from "react";
-import {Emailtemplate, getAllMailTemplates} from "@/lib/emailtemplate";
-import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {Delete, Edit, Email} from "@mui/icons-material";
-import {Button} from "react-bootstrap";
-import {useRouter} from "next/router";
+import React, { useEffect, useMemo, useState } from "react";
+import { Emailtemplate, getAllMailTemplates } from "@/lib/emailtemplate";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { Delete, Edit, Email } from "@mui/icons-material";
+import { Button } from "react-bootstrap";
+import { useRouter } from "next/router";
 import EditEmailModal from "@/components/admin/editEmailModal";
-import {DeleteEmailModal} from "@/components/admin/deleteEmailModal";
+import { DeleteEmailModal } from "@/components/admin/deleteEmailModal";
 
 export default function AdminDataMails() {
     const router = useRouter();

@@ -1,11 +1,11 @@
 import styles from "@/styles/Login.module.css";
-import React, {FormEvent, useState} from "react";
-import {useTranslation} from "react-i18next";
-import {useRouter} from "next/router";
+import React, { FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useRouter } from "next/router";
 import login from "@/lib/login";
 import setSessionStorage from "@/lib/storage";
-import {getRoleDirection} from "@/lib/reroute";
-import {handleError} from "@/lib/error";
+import { getRoleDirection } from "@/lib/reroute";
+import { handleError } from "@/lib/error";
 import Link from "next/link";
 import PasswordInput from "@/components/password/passwordInput";
 import ErrorMessageAlert from "@/components/errorMessageAlert";

@@ -1,33 +1,31 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     GarbageCollectionInterface,
     garbageTypes,
     getGarbageCollectionFromBuilding,
     getGarbageColor,
 } from "@/lib/garbage-collection";
-import {Calendar, dateFnsLocalizer} from "react-big-calendar";
+import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
-import {messages} from "@/locales/localizerCalendar";
+import { messages } from "@/locales/localizerCalendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AdminHeader from "@/components/header/adminHeader";
-import {add, addDays, endOfMonth, startOfMonth, sub} from "date-fns";
-import {useRouter} from "next/router";
-import {BuildingInterface, getAllBuildings} from "@/lib/building";
+import { add, addDays, endOfMonth, startOfMonth, sub } from "date-fns";
+import { useRouter } from "next/router";
+import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
 import DuplicateGarbageCollectionModal from "@/components/garbage/duplicateGarbageCollectionModal";
-import {Button} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
-import {GarbageCollectionEvent} from "@/types";
-import GarbageCollectionEventComponentWithAddress
-    from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
-import GarbageCollectionEventComponentWithoutAddress
-    from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
-import {getBuildingsOfTour} from "@/lib/tour";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { GarbageCollectionEvent } from "@/types";
+import GarbageCollectionEventComponentWithAddress from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
+import GarbageCollectionEventComponentWithoutAddress from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
+import { getBuildingsOfTour } from "@/lib/tour";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import BulkOperationModal from "@/components/garbage/BulkOperationModal";

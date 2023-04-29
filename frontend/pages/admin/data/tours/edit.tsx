@@ -1,21 +1,21 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {useRouter} from "next/router";
-import {getAllRegions, getRegion, RegionInterface} from "@/lib/region";
-import {getTour, patchTour, postTour, swapBuildingsOnTour, Tour} from "@/lib/tour";
-import {BuildingInterface, getAllBuildings} from "@/lib/building";
-import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
-import MaterialReactTable, {MRT_ColumnDef, MRT_Row} from "material-react-table";
-import {Box, Tooltip} from "@mui/material";
-import {Button} from "react-bootstrap";
+import React, { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import { getAllRegions, getRegion, RegionInterface } from "@/lib/region";
+import { getTour, patchTour, postTour, swapBuildingsOnTour, Tour } from "@/lib/tour";
+import { BuildingInterface, getAllBuildings } from "@/lib/building";
+import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
+import MaterialReactTable, { MRT_ColumnDef, MRT_Row } from "material-react-table";
+import { Box, Tooltip } from "@mui/material";
+import { Button } from "react-bootstrap";
 import SaveIcon from "@mui/icons-material/Save";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {Delete} from "@mui/icons-material";
-import {useTranslation} from "react-i18next";
-import {handleError} from "@/lib/error";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { Delete } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
+import { handleError } from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
-import {BuildingNotOnTourView, BuildingOnTourView, TourView} from "@/types";
-import {TourDeleteModal} from "@/components/admin/tourDeleteModal";
+import { BuildingNotOnTourView, BuildingOnTourView, TourView } from "@/types";
+import { TourDeleteModal } from "@/components/admin/tourDeleteModal";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 interface ParsedUrlQuery {}

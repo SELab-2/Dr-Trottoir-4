@@ -1,7 +1,7 @@
-import {Button, Modal} from "react-bootstrap";
-import React, {useState} from "react";
-import {BuildingInterface, getAddress} from "@/lib/building";
-import {RemarkAtBuilding} from "@/lib/remark-at-building";
+import { Button, Modal } from "react-bootstrap";
+import React, { useState } from "react";
+import { BuildingInterface, getAddress } from "@/lib/building";
+import { RemarkAtBuilding } from "@/lib/remark-at-building";
 
 export default function BuildingOverview({
     show,

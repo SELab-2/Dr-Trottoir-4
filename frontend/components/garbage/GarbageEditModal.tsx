@@ -1,5 +1,5 @@
-import {Button, Form, Modal} from "react-bootstrap";
-import React, {useEffect, useState} from "react";
+import { Button, Form, Modal } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
 import {
     deleteGarbageCollection,
     GarbageCollectionInterface,
@@ -7,10 +7,10 @@ import {
     patchGarbageCollection,
     postGarbageCollection,
 } from "@/lib/garbage-collection";
-import {BuildingInterface, getAddress} from "@/lib/building";
-import {formatDate} from "@/lib/date";
-import {handleError} from "@/lib/error";
-import {GarbageCollectionEvent} from "@/types";
+import { BuildingInterface, getAddress } from "@/lib/building";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
+import { GarbageCollectionEvent } from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import Select from "react-select";
 

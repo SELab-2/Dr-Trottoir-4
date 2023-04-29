@@ -1,8 +1,8 @@
 import React from "react";
 
-import AutocompleteComponent, {GenericProps} from "@/components/autocompleteComponents/autocompleteComponent";
-import {getAllMailTemplates} from "@/lib/emailtemplate";
-import {EmailTemplate} from "@/lib/email-template";
+import AutocompleteComponent, { GenericProps } from "@/components/autocompleteComponents/autocompleteComponent";
+import { getAllMailTemplates } from "@/lib/emailtemplate";
+import { EmailTemplate } from "@/lib/email-template";
 
 const TemplateAutocomplete: React.FC<GenericProps> = ({ initialId, setObjectId, required }) => {
     return (

@@ -1,15 +1,15 @@
-import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {Delete, Edit} from "@mui/icons-material";
-import React, {useEffect, useMemo, useState} from "react";
-import {useTranslation} from "react-i18next";
-import {deleteLobby, getAllInLobby, Lobby} from "@/lib/lobby";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { deleteLobby, getAllInLobby, Lobby } from "@/lib/lobby";
 import AdminHeader from "@/components/header/adminHeader";
-import {getUserRole} from "@/lib/user";
-import {Button} from "react-bootstrap";
+import { getUserRole } from "@/lib/user";
+import { Button } from "react-bootstrap";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import EditLobbyModal from "@/components/admin/editLobbyModal";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
 function LobbyPage() {
     const { t } = useTranslation();
