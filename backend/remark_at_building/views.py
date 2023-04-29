@@ -122,7 +122,7 @@ class RemarkAtBuildingIndividualView(APIView):
 
 
 class AllRemarkAtBuilding(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent]
     serializer_class = RemarkAtBuildingSerializer
 
     @extend_schema(
@@ -137,7 +137,7 @@ class AllRemarkAtBuilding(APIView):
     )
     def get(self, request):
         """
-        Get all remarks for each building
+        Get all remarks for each building. A students only see their own remarks.
         """
 
         # We support the params student-on-tour, building, and type
@@ -157,6 +157,10 @@ class AllRemarkAtBuilding(APIView):
             remark_at_building_instances = remark_at_building_instances.filter(building_id=building_id)
         if garbage_type:
             remark_at_building_instances = remark_at_building_instances.filter(type=garbage_type)
+
+        # A student should only be able to see their own remarks
+        if request.user.role.name.lower() == "student":
+            remark_at_building_instances = remark_at_building_instances.filter(student_on_tour__student=request.user.id)
 
         return get_success(self.serializer_class(remark_at_building_instances, many=True))
 
