@@ -21,14 +21,7 @@ import {formatDate} from "@/lib/date";
 import {handleError} from "@/lib/error";
 import LoadEventsModal from "@/components/calendar/loadEvents";
 import {colors} from "@/components/calendar/colors";
-import {useTranslation} from "react-i18next";
-
-interface MyEvent extends Event {
-    tour: Tour;
-    student: User;
-    start: Date;
-    end: Date;
-}
+import {MyEvent} from "@/types";
 
 interface Props {
     students: User[];
@@ -217,11 +210,6 @@ const MyCalendar: FC<Props> = (props) => {
         setTourColors(col);
     }
 
-    const getTourColor = (tour: Tour) => {
-        return tourColors[tour.id]
-    }
-
-
     return (
         <>
             <div>
@@ -264,8 +252,8 @@ const MyCalendar: FC<Props> = (props) => {
                 views={['week', 'day', 'agenda']}
                 events={events}
                 components={{event: CustomDisplay}}
-                eventPropGetter={(event) => {
-                    const backgroundColor = getTourColor(event.tour);
+                eventPropGetter={(event : any) => {
+                    const backgroundColor = tourColors[event.tour.id];
                     return {style: {backgroundColor, color: "white"}};
                 }}
                 localizer={localizer}

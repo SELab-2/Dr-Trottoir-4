@@ -1,3 +1,7 @@
+import {Event} from "react-big-calendar";
+import {Tour} from "@/lib/tour";
+import {User} from "@/lib/user";
+
 export type Login = {
     email: string;
     password: string;
@@ -60,4 +64,11 @@ export type UserView = {
     phone_number : string;
     userId : number;
     isActive : boolean;
+}
+
+export interface MyEvent extends Event {
+    tour: Tour;
+    student: User;
+    start: Date;
+    end: Date;
 }
