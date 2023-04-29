@@ -13,6 +13,7 @@ import RegionModal, { ModalMode } from "@/components/regionModal";
 interface RegionView extends RegionInterface {}
 
 function AdminDataRegions() {
+    const router = useRouter();
     const [regions, setRegions] = useState<RegionView[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedRegion, setSelectedRegion] = useState<RegionView | null>(null);
@@ -54,6 +55,16 @@ function AdminDataRegions() {
                                 }}
                             >
                                 <Delete />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Vuilophaling">
+                            <IconButton
+                                onClick={() => {
+                                    const regionView: RegionView = row.original;
+                                    routeToGarbageSchedule(regionView).then();
+                                }}
+                            >
+                                <CalendarMonth />
                             </IconButton>
                         </Tooltip>
                     </Box>

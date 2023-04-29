@@ -91,6 +91,16 @@ function AdminDataBuildings() {
                                 <Email />
                             </IconButton>
                         </Tooltip>
+                        <Tooltip arrow placement="right" title="Vuilophaling">
+                            <IconButton
+                                onClick={() => {
+                                    const buildingView: BuildingView = row.original;
+                                    routeToGarbageSchedule(buildingView).then();
+                                }}
+                            >
+                                <CalendarMonth />
+                            </IconButton>
+                        </Tooltip>
                     </Box>
                 ),
             },
