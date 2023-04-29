@@ -20,6 +20,8 @@ import {addDays, endOfWeek} from "date-fns";
 import {formatDate} from "@/lib/date";
 import {handleError} from "@/lib/error";
 import LoadEventsModal from "@/components/calendar/loadEvents";
+import {colors} from "@/components/calendar/colors";
+import {useTranslation} from "react-i18next";
 
 interface MyEvent extends Event {
     tour: Tour;
@@ -40,8 +42,9 @@ const MyCalendar: FC<Props> = (props) => {
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [successMessage, setSuccessMessage] = useState<string>("");
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+    const [tourColors, setTourColors] = useState<{ [key: number]: string }>({});
     const [events, setEvents] = useState<MyEvent[]>([]);
-    const [rendered, setRendered] = useState<string[]>([])
+    const [rendered, setRendered] = useState<string[]>([]);
     const [range, setRange] = useState({
         start: startOfWeek(new Date(), {weekStartsOn: 1}),
         end: endOfWeek(new Date(), {weekStartsOn: 1}),
@@ -49,6 +52,7 @@ const MyCalendar: FC<Props> = (props) => {
 
     useEffect(() => {
         if (props.students.length > 0 && props.tours.length > 0) {
+            assignColors(props.tours);
             getFromRange({start: startOfWeek(new Date()), end: endOfWeek(new Date())});
         }
     }, [props.students, props.tours]);
@@ -58,8 +62,6 @@ const MyCalendar: FC<Props> = (props) => {
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
         let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
         setRange({start: startDate, end: endDate})
-        console.log(startDate)
-        console.log(endDate)
         // Set the new range
         if (!rendered.includes(startDate.toISOString())) {
             setRendered([...rendered, startDate.toISOString()])
@@ -94,6 +96,8 @@ const MyCalendar: FC<Props> = (props) => {
                 onEventsAdd(data);
             },
             (err) => {
+                const e = handleError(err);
+                setErrorMessages(e);
                 console.error(err);
             }
         );
@@ -205,37 +209,52 @@ const MyCalendar: FC<Props> = (props) => {
         }
     };
 
+    const assignColors = (tours: Tour[]) => {
+        const col : { [key: number]: string } = {}
+        for (let tour in tours) {
+            col[tours[tour].id] = colors[tour]
+        }
+        setTourColors(col);
+    }
+
+    const getTourColor = (tour: Tour) => {
+        return tourColors[tour.id]
+    }
+
 
     return (
         <>
             <div>
-                <button className="btn btn-primary mb-3" onClick={() => {setPopupIsOpenAdd(true)}}>
-                Voeg ronde toe
-            </button>
-            <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>
-                Sla planning op
-            </button>
-            <button className="btn btn-primary mb-3" onClick={() => {
-                setPopupIsOpenLoad(true)
-            }}>
-                Kopieer naar nieuwe week
-            </button>
-            {successMessage && (
-                <div className={"visible alert alert-success alert-dismissible fade show"}>
-                    <p>{successMessage}</p>
-                    <button type="button" className="btn-close" data-bs-dismiss="alert" onClick={() => setSuccessMessage("")}/>
-                </div>
-            )}
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{err}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
-                </div>
-            )}
+                <button className="btn btn-primary mb-3" onClick={() => {
+                    setPopupIsOpenAdd(true)
+                }}>
+                    Voeg ronde toe
+                </button>
+                <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>
+                    Sla planning op
+                </button>
+                <button className="btn btn-primary mb-3" onClick={() => {
+                    setPopupIsOpenLoad(true)
+                }}>
+                    Kopieer naar nieuwe week
+                </button>
+                {successMessage && (
+                    <div className={"visible alert alert-success alert-dismissible fade show"}>
+                        <p>{successMessage}</p>
+                        <button type="button" className="btn-close" data-bs-dismiss="alert"
+                                onClick={() => setSuccessMessage("")}/>
+                    </div>
+                )}
+                {errorMessages.length !== 0 && (
+                    <div className={"visible alert alert-danger alert-dismissible fade show"}>
+                        <ul>
+                            {errorMessages.map((err, i) => (
+                                <li key={i}>{err}</li>
+                            ))}
+                        </ul>
+                        <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
+                    </div>
+                )}
             </div>
             <DnDCalendar
                 messages={messages}
@@ -245,6 +264,10 @@ const MyCalendar: FC<Props> = (props) => {
                 views={['week', 'day', 'agenda']}
                 events={events}
                 components={{event: CustomDisplay}}
+                eventPropGetter={(event) => {
+                    const backgroundColor = getTourColor(event.tour);
+                    return {style: {backgroundColor, color: "white"}};
+                }}
                 localizer={localizer}
                 selectable
                 onSelectEvent={onEventSelection}
