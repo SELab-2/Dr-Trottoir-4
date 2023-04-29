@@ -240,7 +240,7 @@ class ReadOnlyManualFromSyndic(BasePermission):
 
 
 class NoStudentWorkingOnTour(BasePermission):
-    message = "You cannot edit buildings on a tour when a student is actively doing the tour"
+    message = _("You cannot edit buildings on a tour when a student is actively doing the tour")
 
     def has_object_permission(self, request, view, obj: Tour):
         if request.method not in SAFE_METHODS:
