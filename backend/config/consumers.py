@@ -61,14 +61,20 @@ class AllStudentOnTourConsumer(AsyncWebsocketConsumer):
 
     # receive message from room group
     async def student_on_tour_started(self, event):
-        student_on_tour = event["student_on_tour"]
+        student_on_tour_id = event["student_on_tour_id"]
 
         # send message to WebSocket
-        await self.send(text_data=json.dumps(student_on_tour))
+        await self.send(text_data=json.dumps({
+            'state': 'started',
+            'student_on_tour_id': student_on_tour_id
+        }))
 
     # receive message from room group
     async def student_on_tour_completed(self, event):
-        student_on_tour = event["student_on_tour"]
+        student_on_tour_id = event["student_on_tour_id"]
 
         # send message to WebSocket
-        await self.send(text_data=json.dumps(student_on_tour))
+        await self.send(text_data=json.dumps({
+            'state': 'completed',
+            'student_on_tour_id': student_on_tour_id
+        }))

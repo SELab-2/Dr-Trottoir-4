@@ -26,27 +26,6 @@ def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs
         )
 
 
-@receiver(post_save, sender=StudentOnTour)
-def student_on_tour_update(sender, instance, update_fields, **kwargs):
-    if not update_fields:
-        return
-
-    if 'started_tour' in update_fields:
-        event_type = 'student.on.tour.started'
-    elif 'completed_tour' in update_fields:
-        event_type = 'student.on.tour.completed'
-    else:
-        return
-
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        'student_on_tour_updates',
-        {
-            'type': event_type,
-            'student_on_tour': instance,
-        }
-    )
-
 @receiver(pre_save, sender=StudentOnTour)
 def set_max_building_index(sender, instance: StudentOnTour, **kwargs):
     if not instance.max_building_index and instance.started_tour:
