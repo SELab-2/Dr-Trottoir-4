@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { Button } from "react-bootstrap";
-import { Delete, Edit } from "@mui/icons-material";
+import { CalendarMonth, Delete, Edit } from "@mui/icons-material";
 import { BuildingInterface, getAddress } from "@/lib/building";
 import { TourView } from "@/types";
 import { TourDeleteModal } from "@/components/admin/tourDeleteModal";
@@ -40,6 +40,46 @@ function AdminDataTours() {
             {
                 accessorKey: "tour_id", //normal accessorKey
                 header: "tour_id",
+            },
+            {
+                header: "Acties",
+                id: "actions",
+                enableColumnActions: false,
+                Cell: ({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                        <Tooltip arrow placement="left" title="Pas aan">
+                            <IconButton
+                                onClick={() => {
+                                    const tourView: TourView = row.original;
+                                    routeToEditView(tourView).then();
+                                }}
+                            >
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verwijder">
+                            <IconButton
+                                onClick={() => {
+                                    const tourView: TourView = row.original;
+                                    setSelectedTour(tourView);
+                                    setShowDeleteModal(true);
+                                }}
+                            >
+                                <Delete />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Vuilophaling">
+                            <IconButton
+                                onClick={() => {
+                                    const tourView: TourView = row.original;
+                                    routeToGarbageSchedule(tourView).then();
+                                }}
+                            >
+                                <CalendarMonth />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                ),
             },
         ],
         []
@@ -99,8 +139,7 @@ function AdminDataTours() {
         setBuildingsOfTour([]);
         getBuildingsOfTour(tourID).then(
             (res) => {
-                const buildings: BuildingInterface[] = res.data;
-                buildingsOfTour[tourID] = buildings;
+                buildingsOfTour[tourID] = res.data;
                 setBuildingsOfTour(buildingsOfTour);
             },
             (err) => {
@@ -131,6 +170,13 @@ function AdminDataTours() {
         setSelectedTour(null);
     }
 
+    async function routeToGarbageSchedule(tourView: TourView) {
+        await router.push({
+            pathname: `/admin/data/garbage-collection`,
+            query: { tour: tourView.tour_id },
+        });
+    }
+
     return (
         <>
             <AdminHeader />
@@ -142,49 +188,16 @@ function AdminDataTours() {
                 onDelete={closeDeleteModal}
             />
             <MaterialReactTable
-                displayColumnDefOptions={{
-                    "mrt-row-actions": {
-                        muiTableHeadCellProps: {
-                            align: "center",
-                        },
-                        header: "Acties",
-                    },
-                }}
                 enablePagination={false}
                 enableBottomToolbar={false}
                 columns={columns}
                 data={tourViews}
                 state={{ isLoading: loading }}
-                enableEditing
                 enableRowNumbers
                 // Don't show the tour_id
                 enableHiding={false}
+                enableRowActions={false}
                 initialState={{ columnVisibility: { tour_id: false } }}
-                renderRowActions={({ row }) => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
-                        <Tooltip arrow placement="left" title="Pas aan">
-                            <IconButton
-                                onClick={() => {
-                                    const tourView: TourView = row.original;
-                                    routeToEditView(tourView).then();
-                                }}
-                            >
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip arrow placement="right" title="Verwijder">
-                            <IconButton
-                                onClick={() => {
-                                    const tourView: TourView = row.original;
-                                    setSelectedTour(tourView);
-                                    setShowDeleteModal(true);
-                                }}
-                            >
-                                <Delete />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                )}
                 renderDetailPanel={({ row }) => {
                     const tourView: TourView = row.original;
                     const buildings: BuildingInterface[] = buildingsOfTour[tourView.tour_id];
@@ -192,11 +205,11 @@ function AdminDataTours() {
                         buildings && (
                             <>
                                 <label>Gebouwen op deze tour:</label>
-                                <ul>
+                                <ol>
                                     {buildings.map((building: BuildingInterface, index: number) => (
                                         <li key={`${building.id}-${index}`}>{getAddress(building)}</li>
                                     ))}
-                                </ul>
+                                </ol>
                             </>
                         )
                     );
