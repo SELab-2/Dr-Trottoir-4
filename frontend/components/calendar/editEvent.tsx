@@ -1,16 +1,22 @@
 import { ChangeEvent, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { User } from "@/lib/user";
+import {User, userSearchString} from "@/lib/user";
 import { Tour } from "@/lib/tour";
+import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
+import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 
 function EditEventModal(data: any) {
     const { event, allStudents, allTours, isOpen, onClose, onSave, onDelete, onDeleteTour} = data;
-    const [tour, setTour] = useState<Tour | null>(event.tour);
-    const [student, setStudent] = useState(event.student);
+    const [tour, setTour] = useState(event.tour.name);
+    const [tourId, setTourId] = useState(event.tour.id);
+    const [student, setStudent] = useState(userSearchString(event.student));
+    const [studentId, setStudentId] = useState(event.student.id);
 
     const handleSave = () => {
-        let data = { tour: tour, student: student };
+        const currentStudent: User = allStudents.find((student: User) => student.id === studentId);
+        const currentTour: Tour = allTours.find((tour: Tour) => tour.id === tourId);
+        let data = { tour: currentTour, student: currentStudent };
         onSave(data);
         onClose();
     };
@@ -25,18 +31,6 @@ function EditEventModal(data: any) {
         onClose();
     }
 
-    const handleTourChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        const tourID = Number(e.target.value);
-        const selectedTour = allTours.find((tour: Tour) => tour.id === tourID);
-        setTour(selectedTour);
-    };
-
-    const handleStudentChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        const studentID = Number(e.target.value);
-        const selectedStudent = allStudents.find((user: User) => user.id === studentID);
-        setStudent(selectedStudent);
-    };
-
     return (
         <Modal show={isOpen} onHide={onClose}>
             <Modal.Header closeButton>
@@ -46,24 +40,21 @@ function EditEventModal(data: any) {
                 <form>
                     <div className="form-group">
                         <label>Ronde</label>
-                        <select className="form-control" value={tour?.id} onChange={handleTourChange}>
-                            <option value="">-- Selecteer Ronde --</option>
-                            {allTours.map((tour: Tour) => (
-                                <option key={tour.id} value={tour.id}>
-                                    {tour.name}
-                                </option>
-                            ))}
-                        </select>
+                        <TourAutocomplete
+                            value={tour}
+                            onChange={setTour}
+                            setObjectId={setTourId}
+                            required={true}
+                        />
                     </div>
                     <div className="form-group">
                         <label>Student</label>
-                        <select className="form-control" value={student?.id} onChange={handleStudentChange}>
-                            {allStudents.map((user: User) => (
-                                <option key={user.id} value={user.id}>
-                                    {user.first_name} {user.last_name}
-                                </option>
-                            ))}
-                        </select>
+                        <StudentAutocomplete
+                            value={student}
+                            onChange={setStudent}
+                            setObjectId={setStudentId}
+                            required={true}
+                        />
                     </div>
                 </form>
             </Modal.Body>
