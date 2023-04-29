@@ -1,14 +1,14 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, { useEffect, useMemo, useState } from "react";
-import { RegionInterface, getAllRegions, postRegion, patchRegion, deleteRegion } from "@/lib/region";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
-import { Box, IconButton, Tooltip } from "@mui/material";
-import { Edit, Delete, CalendarMonth } from "@mui/icons-material";
-import { useRouter } from "next/router";
+import React, {useEffect, useMemo, useState} from "react";
+import {deleteRegion, getAllRegions, patchRegion, postRegion, RegionInterface} from "@/lib/region";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import MaterialReactTable, {type MRT_ColumnDef} from "material-react-table";
+import {Box, IconButton, Tooltip} from "@mui/material";
+import {CalendarMonth, Delete, Edit} from "@mui/icons-material";
+import {useRouter} from "next/router";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
-import { Button } from "react-bootstrap";
-import RegionModal, { ModalMode } from "@/components/regionModal";
+import {Button} from "react-bootstrap";
+import RegionModal, {ModalMode} from "@/components/regionModal";
 
 interface RegionView extends RegionInterface {}
 

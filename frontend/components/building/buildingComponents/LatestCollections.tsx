@@ -1,5 +1,5 @@
-import { GarbageCollectionInterface, getGarbageCollectionFromBuilding } from "@/lib/garbage-collection";
-import { useEffect, useState } from "react";
+import {GarbageCollectionInterface, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
+import {useEffect, useState} from "react";
 
 function LatestCollections({ building }: { building: number }) {
     const [collections, setCollections] = useState<GarbageCollectionInterface[]>([]);

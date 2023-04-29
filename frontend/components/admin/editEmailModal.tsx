@@ -1,8 +1,8 @@
-import { Emailtemplate, patchMailTemplate, postMailTemplate } from "@/lib/emailtemplate";
-import React, { useState } from "react";
-import { Button, Form, Modal } from "react-bootstrap";
-import { useTranslation } from "react-i18next";
-import { handleError } from "@/lib/error";
+import {Emailtemplate, patchMailTemplate, postMailTemplate} from "@/lib/emailtemplate";
+import React, {useState} from "react";
+import {Button, Form, Modal} from "react-bootstrap";
+import {useTranslation} from "react-i18next";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function ({

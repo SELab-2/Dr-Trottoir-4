@@ -1,5 +1,5 @@
 import api from "@/lib/api/axios";
-import { AxiosResponse } from "axios";
+import {AxiosResponse} from "axios";
 
 export interface EmailTemplate {
     id: number,

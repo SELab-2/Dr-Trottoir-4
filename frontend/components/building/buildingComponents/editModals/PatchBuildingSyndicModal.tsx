@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { Button, Form, Modal } from "react-bootstrap";
-import { BuildingInterface, BuildingSyndicPostInterface } from "@/lib/building";
+import React, {useEffect, useState} from "react";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {Button, Form, Modal} from "react-bootstrap";
+import {BuildingInterface, BuildingSyndicPostInterface} from "@/lib/building";
 import {
     getNewPublicIdUtil,
     handleInputChangeUtil,

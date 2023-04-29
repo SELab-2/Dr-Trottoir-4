@@ -1,9 +1,9 @@
-import { TourView, UserView } from "@/types";
-import { useTranslation } from "react-i18next";
-import { deleteTour } from "@/lib/tour";
-import React, { useState } from "react";
-import { Button, Modal } from "react-bootstrap";
-import { handleError } from "@/lib/error";
+import {TourView} from "@/types";
+import {useTranslation} from "react-i18next";
+import {deleteTour} from "@/lib/tour";
+import React, {useState} from "react";
+import {Button, Modal} from "react-bootstrap";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export function TourDeleteModal({

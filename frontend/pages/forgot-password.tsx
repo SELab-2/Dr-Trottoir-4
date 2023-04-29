@@ -5,7 +5,6 @@ import styles from "@/styles/Login.module.css";
 import Image from "next/image";
 import filler_image from "@/public/filler_image.png";
 import reset from "@/lib/reset";
-import {Button} from "bootstrap";
 
 export default function ForgotPassword() {
     const router = useRouter();

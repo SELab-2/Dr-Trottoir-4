@@ -1,10 +1,10 @@
-import { Button, Form, Modal } from "react-bootstrap";
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { formatDate } from "@/lib/date";
-import { BuildingInterface } from "@/lib/building";
-import { duplicateGarbageCollectionSchedule } from "@/lib/garbage-collection";
-import { handleError } from "@/lib/error";
+import {Button, Form, Modal} from "react-bootstrap";
+import React, {useState} from "react";
+import {useTranslation} from "react-i18next";
+import {formatDate} from "@/lib/date";
+import {BuildingInterface} from "@/lib/building";
+import {duplicateGarbageCollectionSchedule} from "@/lib/garbage-collection";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function DuplicateGarbageCollectionModal({

@@ -1,6 +1,6 @@
 import React from "react";
-import AutocompleteComponent, { GenericProps } from "@/components/autocompleteComponents/autocompleteComponent";
-import { BuildingInterface, getAddress, getAllBuildings } from "@/lib/building";
+import AutocompleteComponent, {GenericProps} from "@/components/autocompleteComponents/autocompleteComponent";
+import {BuildingInterface, getAddress, getAllBuildings} from "@/lib/building";
 
 const BuildingAutocomplete: React.FC<GenericProps> = ({ initialId, setObjectId, required }) => {
     return (

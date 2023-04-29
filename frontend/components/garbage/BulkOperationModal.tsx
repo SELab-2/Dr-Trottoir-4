@@ -1,14 +1,10 @@
-import React, { useState } from "react";
-import {
-    bulkMoveGarbageCollectionSchedule,
-    duplicateGarbageCollectionSchedule,
-    garbageTypes,
-} from "@/lib/garbage-collection";
-import { handleError } from "@/lib/error";
-import { formatDate } from "@/lib/date";
-import { Button, Form, Modal } from "react-bootstrap";
-import { addDays } from "date-fns";
-import { BuildingInterface } from "@/lib/building";
+import React, {useState} from "react";
+import {bulkMoveGarbageCollectionSchedule, garbageTypes,} from "@/lib/garbage-collection";
+import {handleError} from "@/lib/error";
+import {formatDate} from "@/lib/date";
+import {Button, Form, Modal} from "react-bootstrap";
+import {addDays} from "date-fns";
+import {BuildingInterface} from "@/lib/building";
 import styles from "@/styles/Login.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 

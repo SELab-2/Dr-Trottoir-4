@@ -1,11 +1,11 @@
-import { Button, Modal } from "react-bootstrap";
+import {Button, Modal} from "react-bootstrap";
 import styles from "@/styles/Login.module.css";
-import React, { useEffect, useState } from "react";
-import { UserView } from "@/types";
-import { getAllRoles, Role } from "@/lib/role";
-import { patchUser } from "@/lib/user";
-import { useTranslation } from "react-i18next";
-import { handleError } from "@/lib/error";
+import React, {useEffect, useState} from "react";
+import {UserView} from "@/types";
+import {getAllRoles, Role} from "@/lib/role";
+import {patchUser} from "@/lib/user";
+import {useTranslation} from "react-i18next";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export function UserEditModal({

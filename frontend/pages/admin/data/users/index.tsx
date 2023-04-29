@@ -1,15 +1,15 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, { useEffect, useMemo, useState } from "react";
-import { getAllUsers, getUserRole, User } from "@/lib/user";
-import { getAllRegions, RegionInterface } from "@/lib/region";
-import { UserView } from "@/types";
-import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
-import { Box, IconButton, Tooltip } from "@mui/material";
-import { Delete, Edit, Check, Clear } from "@mui/icons-material";
-import { useTranslation } from "react-i18next";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { UserEditModal } from "@/components/admin/userEditModal";
-import { UserDeleteModal } from "@/components/admin/userDeleteModal";
+import React, {useEffect, useMemo, useState} from "react";
+import {getAllUsers, getUserRole, User} from "@/lib/user";
+import {getAllRegions, RegionInterface} from "@/lib/region";
+import {UserView} from "@/types";
+import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
+import {Box, IconButton, Tooltip} from "@mui/material";
+import {Check, Clear, Delete, Edit} from "@mui/icons-material";
+import {useTranslation} from "react-i18next";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {UserEditModal} from "@/components/admin/userEditModal";
+import {UserDeleteModal} from "@/components/admin/userDeleteModal";
 
 function AdminDataUsers() {
     const { t } = useTranslation();

@@ -1,6 +1,6 @@
-import { StudentOnTour } from "@/lib/student-on-tour";
-import { Tour } from "@/lib/tour";
-import { RegionInterface } from "@/lib/region";
+import {StudentOnTour} from "@/lib/student-on-tour";
+import {Tour} from "@/lib/tour";
+import {RegionInterface} from "@/lib/region";
 
 /**
  * A component for the list of the tours a student is/was assigned to

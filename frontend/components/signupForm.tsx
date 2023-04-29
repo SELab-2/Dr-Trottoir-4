@@ -1,11 +1,11 @@
 import styles from "@/styles/Login.module.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import React, { FormEvent, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useRouter } from "next/router";
+import React, {FormEvent, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {useRouter} from "next/router";
 import signup from "@/lib/signup";
-import { handleError } from "@/lib/error";
+import {handleError} from "@/lib/error";
 import PasswordInput from "@/components/password/passwordInput";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 

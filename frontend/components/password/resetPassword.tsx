@@ -1,5 +1,4 @@
 import React, {FormEvent, useState} from "react";
-import {useRouter} from "next/router";
 import PasswordInput from "@/components/password/passwordInput";
 import styles from "@/styles/Login.module.css";
 

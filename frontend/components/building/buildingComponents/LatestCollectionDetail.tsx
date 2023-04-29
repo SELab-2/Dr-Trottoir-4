@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {
     getRemarksAtBuildingOfSpecificBuilding,
     RemarkAtBuildingInterface,
     translateRemartAtBuildingType,
 } from "@/lib/remark-at-building";
-import { Card } from "react-bootstrap";
-import { getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
+import {Card} from "react-bootstrap";
+import {getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface} from "@/lib/picture-of-remark";
 
 function LatestCollectionDetail({ building }: { building: number }) {
     const [remarks, setRemarks] = useState<RemarkAtBuildingInterface[]>([]);

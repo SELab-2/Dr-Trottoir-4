@@ -1,8 +1,8 @@
 import AdminHeader from "@/components/header/adminHeader";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { LocationOn, Schedule, School } from "@mui/icons-material";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {LocationOn, Schedule, School} from "@mui/icons-material";
 import Link from "next/link";
-import { Card, Col, Container, Row } from "react-bootstrap";
+import {Card, Col, Container, Row} from "react-bootstrap";
 import styles from "styles/Welcome.module.css";
 
 function AdminAnalysis() {

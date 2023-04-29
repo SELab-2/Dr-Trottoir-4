@@ -1,12 +1,12 @@
-import { Button, Form, Modal } from "react-bootstrap";
+import {Button, Form, Modal} from "react-bootstrap";
 import styles from "@/styles/Login.module.css";
-import React, { FormEvent, useEffect, useState } from "react";
-import { getAllRoles, Role } from "@/lib/role";
-import { IconButton } from "@mui/material";
-import { Replay } from "@mui/icons-material";
-import { addToLobby, Lobby, newVerificationCode, patchLobby } from "@/lib/lobby";
-import { useTranslation } from "react-i18next";
-import { handleError } from "@/lib/error";
+import React, {FormEvent, useEffect, useState} from "react";
+import {getAllRoles, Role} from "@/lib/role";
+import {IconButton} from "@mui/material";
+import {Replay} from "@mui/icons-material";
+import {addToLobby, Lobby, newVerificationCode, patchLobby} from "@/lib/lobby";
+import {useTranslation} from "react-i18next";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function EditLobbyModal({
