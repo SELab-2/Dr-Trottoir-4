@@ -162,8 +162,7 @@ class AllView(APIView):
         except BadRequest as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = StudOnTourSerializer(stud_on_tour_instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return get_success(StudOnTourSerializer(stud_on_tour_instances, many=True))
 
 
 class TimeTourViewBase(APIView):
@@ -230,5 +229,4 @@ class ProgressTourView(APIView):
     @extend_schema(responses=get_docs(serializer_class))
     def get(self, request, student_on_tour_id):
         student_on_tour = StudentOnTour.objects.get(id=student_on_tour_id)
-        serializer = ProgressTourSerializer(student_on_tour)
-        return Response(serializer.data)
+        return get_success(ProgressTourSerializer(student_on_tour))
