@@ -86,11 +86,10 @@ NOSE_ARGS = ["--cover-xml", "--cover-xml-file=./coverage.xml"]
 # drf-spectacular settings
 SPECTACULAR_SETTINGS = {
     "TITLE": "Dr-Trottoir API",
-    "DESCRIPTION": "This is the documentation for the Dr-Trottoir API",
+    "DESCRIPTION": "This is the documentation for the Dr-Trottoir API. You can access this API directly by using port "
+                   "2002.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
-    # TODO: Ask @Seppe what this line does and if it's still necessary
-    "SCHEMA_PATH_PREFIX_INSERT": "/api",
     # OTHER SETTINGS
 }
 
@@ -225,7 +224,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
-
 
 
 USE_I18N = True
