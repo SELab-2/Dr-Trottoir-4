@@ -87,7 +87,7 @@ NOSE_ARGS = ["--cover-xml", "--cover-xml-file=./coverage.xml"]
 SPECTACULAR_SETTINGS = {
     "TITLE": "Dr-Trottoir API",
     "DESCRIPTION": "This is the documentation for the Dr-Trottoir API. You can access this API directly by using port "
-                   "2002.",
+    "2002.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
@@ -268,7 +268,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 20  # 20M
 FILE_UPLOAD_MAX_MEMORY_SIZE = DATA_UPLOAD_MAX_MEMORY_SIZE
 
 # to support websockets
-ASGI_APPLICATION = 'config.asgi.application'
+ASGI_APPLICATION = "config.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
