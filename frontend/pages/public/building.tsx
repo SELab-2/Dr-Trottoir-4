@@ -10,9 +10,8 @@ function PublicBuilding() {
             <BaseHeader/>
             <BuildingPage type={"public"}/>
         </>
-    )
+    );
 
 }
 
 export default PublicBuilding;
-
