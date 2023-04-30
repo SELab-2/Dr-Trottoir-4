@@ -202,29 +202,25 @@ class TimeTourViewBase(APIView):
         await student_on_tour_instance.asave()
         channel_layer = get_channel_layer()
         await channel_layer.group_send(
-            'student_on_tour_updates',
+            "student_on_tour_updates",
             {
-                'type': event_type,
-                'student_on_tour_id': student_on_tour_instance.id,
-            }
+                "type": event_type,
+                "student_on_tour_id": student_on_tour_instance.id,
+            },
         )
         return post_success(self.serializer_class(student_on_tour_instance))
 
 
 class StartTourView(TimeTourViewBase):
-    @extend_schema(
-        responses=post_docs(TimeTourViewBase.serializer_class)
-    )
+    @extend_schema(responses=post_docs(TimeTourViewBase.serializer_class))
     async def post(self, request, student_on_tour_id):
-        return await self.set_tour_time(request, student_on_tour_id, 'started_tour', 'student.on.tour.started')
+        return await self.set_tour_time(request, student_on_tour_id, "started_tour", "student.on.tour.started")
 
 
 class EndTourView(TimeTourViewBase):
-    @extend_schema(
-        responses=post_docs(TimeTourViewBase.serializer_class)
-    )
+    @extend_schema(responses=post_docs(TimeTourViewBase.serializer_class))
     async def post(self, request, student_on_tour_id):
-        return await self.set_tour_time(request, student_on_tour_id, 'completed_tour', 'student.on.tour.completed')
+        return await self.set_tour_time(request, student_on_tour_id, "completed_tour", "student.on.tour.completed")
 
 
 class ProgressTourView(APIView):
