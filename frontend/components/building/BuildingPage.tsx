@@ -1,18 +1,19 @@
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { BuildingInterface, getBuildingInfo } from "@/lib/building";
-import { AxiosResponse } from "axios/index";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {BuildingInterface, getBuildingInfo, getBuildingInfoByPublicId} from "@/lib/building";
+import {AxiosResponse} from "axios/index";
 import BuildingInfo from "@/components/building/buildingComponents/BuildingInfo";
 import LatestCollectionDetail from "@/components/building/buildingComponents/LatestCollectionDetail";
 import LatestCollections from "@/components/building/buildingComponents/LatestCollections";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DashboardQuery extends ParsedUrlQuery {
     id?: string;
 }
 
-function BuildingPage({ type }: { type: "syndic" | "admin" | "" }) {
+function BuildingPage({type}: { type: "syndic" | "admin" | "public" }) {
     const router = useRouter();
     const query = router.query as DashboardQuery;
 
@@ -20,13 +21,23 @@ function BuildingPage({ type }: { type: "syndic" | "admin" | "" }) {
     const [building, setBuilding] = useState<BuildingInterface>(null);
 
     async function fetchBuilding() {
-        getBuildingInfo(Number(query.id))
-            .then((buildings: AxiosResponse<any>) => {
-                setBuilding(buildings.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        if (type !== "public" /*&& /^\d+$/.test(query.id+"")*/) {
+            getBuildingInfo(Number(query.id))
+                .then((buildings: AxiosResponse) => {
+                    setBuilding(buildings.data);
+                })
+                .catch((error) => {
+                    console.error(error);  //TODO: error component?
+                });
+        } else {
+            getBuildingInfoByPublicId(query.id)
+                .then((buildings: AxiosResponse) => {
+                    setBuilding(buildings.data);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
     }
 
     useEffect(() => {
@@ -40,15 +51,15 @@ function BuildingPage({ type }: { type: "syndic" | "admin" | "" }) {
 
     return (
         <>
-            <div style={{ display: "flex" }}>
-                <div style={{ flex: "1" }}>
-                    <BuildingInfo building={building} setBuilding={setBuilding} type={type} />
+            <div style={{display: "flex"}}>
+                <div style={{flex: "1"}}>
+                    <BuildingInfo building={building} setBuilding={setBuilding} type={type}/>
                 </div>
-                <div style={{ flex: "1" }}>
-                    <LatestCollectionDetail building={building ? building.id : 0} />
+                <div style={{flex: "1"}}>
+                    <LatestCollectionDetail building={building ? building.id : 0}/>
                 </div>
-                <div style={{ flex: "1" }}>
-                    <LatestCollections building={building ? building.id : 0} />
+                <div style={{flex: "1"}}>
+                    <LatestCollections building={building ? building.id : 0}/>
                 </div>
             </div>
         </>

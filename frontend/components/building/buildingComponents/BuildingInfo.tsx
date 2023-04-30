@@ -1,19 +1,18 @@
-import { TiPencil } from "react-icons/ti";
-import React, { useEffect, useState } from "react";
+import {TiPencil} from "react-icons/ti";
+import React, {useEffect, useState} from "react";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
-import { BuildingInterface } from "@/lib/building";
-import { getRegion, RegionInterface } from "@/lib/region";
-import PatchBuildingAdminModal from "@/components/building/buildingComponents/editModals/PatchBuildingAdminModal";
-import { useRouter } from "next/router";
+import {BuildingInterface} from "@/lib/building";
+import {getRegion} from "@/lib/region";
+import {useRouter} from "next/router";
 
 function BuildingInfo({
-    building,
-    setBuilding,
-    type,
-}: {
+                          building,
+                          setBuilding,
+                          type,
+                      }: {
     building: BuildingInterface;
     setBuilding: (b: any) => void;
-    type: "syndic" | "admin" | "";
+    type: "syndic" | "admin" | "public";
 }) {
     const router = useRouter();
     const [editBuilding, setEditBuilding] = useState(false);
@@ -76,13 +75,15 @@ function BuildingInfo({
 
             <h1>
                 Gebouw{" "}
-                <TiPencil
-                    className={"clickable"}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        setEditBuilding(true);
-                    }}
-                ></TiPencil>
+                {type == "syndic" ? (
+                    <TiPencil
+                        className={"clickable"}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setEditBuilding(true);
+                        }}
+                    ></TiPencil>
+                ) : null}
             </h1>
             <p>ID: {get_building_key("id")} </p>
             <p>Naam: {get_building_key("name")}</p>
