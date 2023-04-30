@@ -91,7 +91,7 @@ function BuildingInfo({
             <p>Straat: {get_building_key("street")}</p>
             <p>Nr: {get_building_key("house_number")}</p>
             <p>Bus: {get_building_key("bus")}</p>
-            <p>RegionInterface: {regionName} </p>
+            <p>Region: {regionName} </p>
             <p>Werktijd: {get_building_key("duration")}</p>
             <p>Client id: {get_building_key("client_id")}</p>
             <p>Public id: {get_building_key("public_id")}</p>
