@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-28 21:26+0200\n"
+"POT-Creation-Date: 2023-05-01 15:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -257,21 +257,31 @@ msgstr "Nederlands"
 msgid "English"
 msgstr "Engels"
 
-#: garbage_collection/views.py:170
+#: garbage_collection/views.py:171
 msgid ""
 "the start date of the period can't be in a later week than the week of the "
 "end date"
 msgstr ""
 
-#: garbage_collection/views.py:178
+#: garbage_collection/views.py:179
 msgid ""
 "the start date of the period to which you want to copy must be, at a "
 "minimum, in the week immediately following the end date of the original "
 "period"
 msgstr ""
 
-#: garbage_collection/views.py:232
+#: garbage_collection/views.py:233
 msgid "successfully copied the garbage collections"
+msgstr ""
+
+#: garbage_collection/views.py:275
+msgid ""
+"The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list "
+"of id's) should be given"
+msgstr ""
+
+#: garbage_collection/views.py:279
+msgid "The query param 'building' should be a list of ints"
 msgstr ""
 
 #: users/managers.py:16
@@ -293,6 +303,7 @@ msgstr ""
 
 #: util/request_response_util.py:20 util/request_response_util.py:37
 #: util/request_response_util.py:45 util/request_response_util.py:64
+#: util/request_response_util.py:76
 #, python-brace-format
 msgid "The query parameter {name} is required"
 msgstr ""
@@ -311,15 +322,20 @@ msgid ""
 "expected)"
 msgstr ""
 
-#: util/request_response_util.py:154
+#: util/request_response_util.py:82
+#, python-brace-format
+msgid "The query param {name} must be a value in {allowed_keys}"
+msgstr ""
+
+#: util/request_response_util.py:173
 msgid "{} was not found"
 msgstr ""
 
-#: util/request_response_util.py:158
+#: util/request_response_util.py:177
 msgid "bad input for {}"
 msgstr ""
 
-#: util/request_response_util.py:164
+#: util/request_response_util.py:187
 #, python-brace-format
 msgid "There is no {object1} that is linked to {object2} with given id."
 msgstr ""

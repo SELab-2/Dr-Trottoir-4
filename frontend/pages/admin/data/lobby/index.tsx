@@ -40,6 +40,37 @@ function LobbyPage() {
                 header: "lobbyId",
                 editable: "never",
             },
+            {
+                header: "Acties",
+                id: "actions",
+                enableColumnActions: false,
+                Cell: ({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                        <Tooltip arrow placement="left" title="Pas aan">
+                            <IconButton
+                                onClick={() => {
+                                    const lobby: Lobby = row.original;
+                                    setShowCreateLobbyModal(true);
+                                    setSelectedLobby(lobby);
+                                }}
+                            >
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verwijder">
+                            <IconButton
+                                onClick={() => {
+                                    const lobby: Lobby = row.original;
+                                    setShowRemoveDialog(true);
+                                    setSelectedLobby(lobby);
+                                }}
+                            >
+                                <Delete />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                ),
+            },
         ],
         []
     );
@@ -147,22 +178,13 @@ function LobbyPage() {
                 onNewVerificationCode={afterNewVerificationPost}
             />
             <MaterialReactTable
-                displayColumnDefOptions={{
-                    "mrt-row-actions": {
-                        muiTableHeadCellProps: {
-                            align: "center",
-                        },
-                        header: "Acties",
-                    },
-                }}
                 enablePagination={false}
                 enableBottomToolbar={false}
                 columns={columns}
                 data={lobbies}
-                editingMode="modal" //default
                 state={{ isLoading: loading }}
-                enableEditing
                 enableHiding={false}
+                enableRowActions={false}
                 initialState={{ columnVisibility: { id: false } }}
                 renderTopToolbarCustomActions={() => (
                     <Button
@@ -175,32 +197,7 @@ function LobbyPage() {
                         Voeg toe aan lobby
                     </Button>
                 )}
-                renderRowActions={({ row }) => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
-                        <Tooltip arrow placement="left" title="Pas aan">
-                            <IconButton
-                                onClick={() => {
-                                    const lobby: Lobby = row.original;
-                                    setShowCreateLobbyModal(true);
-                                    setSelectedLobby(lobby);
-                                }}
-                            >
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip arrow placement="right" title="Verwijder">
-                            <IconButton
-                                onClick={() => {
-                                    const lobby: Lobby = row.original;
-                                    setShowRemoveDialog(true);
-                                    setSelectedLobby(lobby);
-                                }}
-                            >
-                                <Delete />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                )}
+                enableColumnActions={false}
             />
         </>
     );
