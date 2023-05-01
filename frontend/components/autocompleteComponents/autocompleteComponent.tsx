@@ -1,9 +1,8 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
-import Autocomplete, {AutocompleteRenderInputParams} from "@mui/material/Autocomplete";
-import {AxiosResponse} from "axios/index";
-import {Form} from "react-bootstrap";
-
+import Autocomplete, { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
+import { AxiosResponse } from "axios/index";
+import { Form } from "react-bootstrap";
 
 /**
  * The AutocompleteComponent aims to be as generic as possible to suit many use-cases. Therefore, a lot of the typings
@@ -33,14 +32,7 @@ export interface GenericProps {
     required: boolean;
 }
 
-
-const AutocompleteComponent: React.FC<Props> = ({
-                                                    initialId,
-                                                    label,
-                                                    fetchOptions,
-                                                    mapping,
-                                                    setObjectId,
-                                                }) => {
+const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions, mapping, setObjectId }) => {
     const [value, setValue] = React.useState<any>();
     const [inputValue, setInputValue] = useState("");
     const [options, setOptions] = useState<string[]>([]);
@@ -51,15 +43,15 @@ const AutocompleteComponent: React.FC<Props> = ({
                 const res = await fetchOptions();
                 let availableOptions: any[] = [];
                 for (let data of res.data) {
-                    availableOptions.push({label: mapping(data), id: data.id})
+                    availableOptions.push({ label: mapping(data), id: data.id });
                 }
                 setOptions(availableOptions);
 
                 //Set the initial value to the object with the same id
-                const initialOption = availableOptions.find(option => option.id === initialId);
+                const initialOption = availableOptions.find((option) => option.id === initialId);
                 if (initialOption) {
                     setValue(initialOption);
-                    setInputValue(initialOption.label)
+                    setInputValue(initialOption.label);
                 }
             } catch (err) {
                 console.error(err);
@@ -83,7 +75,6 @@ const AutocompleteComponent: React.FC<Props> = ({
                         setValue(newValue);
                         setObjectId(newValue.id);
                     }
-
                 }}
                 onInputChange={(e: React.SyntheticEvent, newInputValue: string) => {
                     setInputValue(newInputValue);
@@ -91,7 +82,7 @@ const AutocompleteComponent: React.FC<Props> = ({
                 options={options}
                 getOptionLabel={(option: any) => option.label || ""}
                 renderInput={(params: AutocompleteRenderInputParams) => (
-                    <TextField {...params} variant="outlined" fullWidth/>
+                    <TextField {...params} variant="outlined" fullWidth />
                 )}
             />
         </>
