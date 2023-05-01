@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import React, {useEffect, useState} from "react";
+import {Button, Form} from "react-bootstrap";
 import RemarkModal from "@/components/student/remarkModal";
-import { FileList } from "@/components/student/fileList";
-import { postRemarkAtBuilding, RemarkAtBuilding, remarkTypes } from "@/lib/remark-at-building";
-import { postPictureOfRemark } from "@/lib/picture-of-remark";
-import { useRouter } from "next/router";
-import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
-import { getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
-import { GarbageCollectionInterface, garbageTypes, getGarbageCollectionFromBuilding } from "@/lib/garbage-collection";
-import { BuildingComment, getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
+import {FileList} from "@/components/student/fileList";
+import {postRemarkAtBuilding, RemarkAtBuilding, remarkTypes} from "@/lib/remark-at-building";
+import {postPictureOfRemark} from "@/lib/picture-of-remark";
+import {useRouter} from "next/router";
+import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
+import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import {GarbageCollectionInterface, garbageTypes, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
+import {BuildingComment, getAllBuildingCommentsByBuildingID} from "@/lib/building-comment";
 import StudentHeader from "@/components/header/studentHeader";
-import { BuildingManual, getManualPath, getManualsForBuilding } from "@/lib/building-manual";
-import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
+import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/building-manual";
+import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
 import BuildingOverview from "@/components/student/buildingOverview";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import {addDays, subDays} from "date-fns";
+import {formatDate} from "@/lib/date";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DataBuildingIdQuery extends ParsedUrlQuery {
     studentOnTourId?: number;
@@ -48,7 +51,7 @@ export default function StudentBuilding() {
 
     // The necessary info of a building
     const [building, setBuilding] = useState<BuildingInterface | null>(null);
-    const [garbageCollections, setGarbageCollections] = useState<GarbageCollectionInterface[]>([]);
+    const [garbageCollections, setGarbageCollections] = useState<{[p: string]: GarbageCollectionInterface[]}>({});
     const [buildingComments, setBuildingComments] = useState<BuildingComment[]>([]);
     const [manual, setManual] = useState<BuildingManual | null>(null);
     const [buildingsOnTour, setBuildingsOnTour] = useState<BuildingOnTour[]>([]);
@@ -107,9 +110,21 @@ export default function StudentBuilding() {
 
     // Get the garbage collection for a building for today
     function getGarbageCollection(buildingId: number) {
-        getGarbageCollectionFromBuilding(buildingId, { startDate: new Date(), endDate: new Date() }).then((res) => {
+        const startDate = subDays(new Date(), 1);
+        const endDate = addDays(new Date(), 1);
+        getGarbageCollectionFromBuilding(buildingId, {
+            startDate: startDate,
+            endDate: endDate
+        }).then((res) => {
             const col: GarbageCollectionInterface[] = res.data;
-            setGarbageCollections(col);
+
+            const grouped: {[p: string]: GarbageCollectionInterface[]} =
+                col.reduce((accumulator: { [key: string]: GarbageCollectionInterface[] }, current) => {
+                    const d: string = new Date(current.date).toISOString().split('T')[0];
+                    (accumulator[d] = accumulator[d] || []).push(current);
+                    return accumulator;
+                }, {})
+            setGarbageCollections(grouped);
         }, console.error);
     }
 
@@ -188,7 +203,8 @@ export default function StudentBuilding() {
         ).then((res) => {
             const remark: RemarkAtBuilding = res.data;
             files.forEach((f: File) => {
-                postPictureOfRemark(f, remark.id).then((_) => {}, console.error);
+                postPictureOfRemark(f, remark.id).then((_) => {
+                }, console.error);
             });
 
             // remove all data
@@ -219,7 +235,7 @@ export default function StudentBuilding() {
             router
                 .push({
                     pathname: "/student/schedule",
-                    query: { studentOnTourId },
+                    query: {studentOnTourId},
                 })
                 .then();
         } else {
@@ -229,7 +245,7 @@ export default function StudentBuilding() {
 
     return (
         <>
-            <StudentHeader />
+            <StudentHeader/>
             <div className="m-2">
                 <RemarkModal
                     onHide={() => setShowRemarkModal(false)}
@@ -247,15 +263,28 @@ export default function StudentBuilding() {
                     <div className="card-body">
                         <h5 className="card-title">{building ? getAddress(building) : ""}</h5>
                         {
-                            <ul>
-                                {garbageCollections.map((gar: GarbageCollectionInterface) => (
-                                    <li key={gar.id} className="card-subtitle mb-2 text-muted">
-                                        {garbageTypes[gar.garbage_type]
-                                            ? garbageTypes[gar.garbage_type]
-                                            : gar.garbage_type}
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className="row">
+                                {
+                                    Object.keys(garbageCollections).sort((a, b) => new Date(a).getTime() - new Date(b).getTime()).map(key => {
+                                        const col = garbageCollections[key];
+                                        return (
+                                            <div className="col" key={key}>
+                                                <span>{new Date(key).toLocaleDateString('en-GB')}</span>
+                                                <ul>
+                                                    {col.map((gar: GarbageCollectionInterface) => (
+                                                        <li key={gar.id} className="card-subtitle mb-2 text-muted">
+                                                            {garbageTypes[gar.garbage_type]
+                                                                ? garbageTypes[gar.garbage_type]
+                                                                : gar.garbage_type}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        );
+                                    })
+
+                                }
+                            </div>
                         }
                     </div>
                     {buildingComments.length > 0 && (
@@ -275,7 +304,7 @@ export default function StudentBuilding() {
                             <h5>Handleiding van gebouw:</h5>
                             <ul className="list-group list-group-flush">
                                 <li className="list-group-item">
-                                    <a href={manual.file} download style={{ textDecoration: "underline" }}>
+                                    <a href={manual.file} download style={{textDecoration: "underline"}}>
                                         Handleiding
                                     </a>
                                 </li>
@@ -283,7 +312,7 @@ export default function StudentBuilding() {
                         </>
                     )}
                 </div>
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <Form onSubmit={handleSubmit}>
                     <span className="h1 mt-2">{typeNames[step]}</span>
                     <div className="mb-2 mt-2">
@@ -307,7 +336,7 @@ export default function StudentBuilding() {
                         />
                     </div>
 
-                    <FileList files={files} handleRemoveFile={handleRemoveFile} />
+                    <FileList files={files} handleRemoveFile={handleRemoveFile}/>
                     <Button
                         variant="primary"
                         className="btn-danger d-inline-block"
