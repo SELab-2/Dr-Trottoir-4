@@ -14,7 +14,7 @@ export function FileList({ files, handleRemoveFile }: { files: File[]; handleRem
                         </a>
                         <Tooltip arrow placement="right" title="Verwijder">
                             <IconButton onClick={() => handleRemoveFile(index)}>
-                                <Delete />
+                                <Delete/>
                             </IconButton>
                         </Tooltip>
                     </li>

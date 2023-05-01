@@ -209,9 +209,9 @@ class GarbageCollectionDuplicateView(APIView):
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
         # transform them into the appropriate week-days:
-        start_date_period = get_monday_of_week(validated_data.get("start-date-period"))
-        end_date_period = get_sunday_of_week(validated_data.get("end-date-period"))
-        start_date_copy = get_monday_of_week(validated_data.get("start-date-copy"))
+        start_date_period = get_monday_of_week(validated_data.get("start_date_period"))
+        end_date_period = get_sunday_of_week(validated_data.get("end_date_period"))
+        start_date_copy = get_monday_of_week(validated_data.get("start_date_copy"))
 
         if r := validate_duplication_period(start_date_period, end_date_period, start_date_copy):
             return r
@@ -221,7 +221,7 @@ class GarbageCollectionDuplicateView(APIView):
             date__range=[start_date_period, end_date_period]
         )
         # retrieve and apply the optional filtering on buildings
-        building_ids = validated_data.get("building-ids", None)
+        building_ids = validated_data.get("building_ids", None)
         if building_ids:
             garbage_collections_to_duplicate = garbage_collections_to_duplicate.filter(building__id__in=building_ids)
 
@@ -239,10 +239,7 @@ class GarbageCollectionBulkMoveView(APIView):
     serializer_class = GarbageCollectionSerializer
 
     @extend_schema(
-        responses={
-            200: serializer_class,
-            400: None
-        },
+        responses={200: serializer_class, 400: None},
         parameters=param_docs(
             {
                 "garbage_type": ("The type of garbage to move", True, OpenApiTypes.STR),
@@ -250,9 +247,10 @@ class GarbageCollectionBulkMoveView(APIView):
                 "move_to_date": ("The date to move the garbage collection to", True, OpenApiTypes.DATE),
                 "region": ("The region of the garbage collection to move", False, OpenApiTypes.INT),
                 "tour": ("The tour of the garbage collection to move", False, OpenApiTypes.INT),
-                "building": ("A list of building id's of the garbage collection to move", False, OpenApiTypes.STR),
+                "buildings": ("A list of building id's of the garbage collection to move", False, OpenApiTypes.STR),
             }
-        ))
+        ),
+    )
     def post(self, request):
         """
         Move a batch of garbage collections to a new date. The batch can be filtered by region, tour and/or buildings.
@@ -262,9 +260,9 @@ class GarbageCollectionBulkMoveView(APIView):
         # get the params
 
         # This is bad code, it should be possible to get "GFT", "GLS" ... from the model directly (a solution could be to put them in an it in the model)
-        garbage_type = get_arbitrary_param(request, "garbage_type",
-                                           allowed_keys={"GFT", "GLS", "GRF", "KER", "PAP", "PMD", "RES"},
-                                           required=True)
+        garbage_type = get_arbitrary_param(
+            request, "garbage_type", allowed_keys={"GFT", "GLS", "GRF", "KER", "PAP", "PMD", "RES"}, required=True
+        )
         date = get_date_param(request, "date", required=True)
         move_to_date = get_date_param(request, "move_to_date", required=True)
 
@@ -275,7 +273,8 @@ class GarbageCollectionBulkMoveView(APIView):
 
         if not region and not tour and not buildings:
             return bad_request_custom_error_message(
-                _("The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list of id's) should be given"))
+                _("The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list of id's) should be given")
+            )
 
         if buildings:
             invalid_building_error_message = _("The query param 'building' should be a list of ints")
@@ -284,7 +283,7 @@ class GarbageCollectionBulkMoveView(APIView):
                 return bad_request_custom_error_message(invalid_building_error_message)
 
             try:
-                buildings = [int(id_str.rstrip("]").lstrip("[")) for id_str in buildings.split(',')]
+                buildings = [int(id_str.rstrip("]").lstrip("[")) for id_str in buildings.split(",")]
             except ValueError:
                 return bad_request_custom_error_message(invalid_building_error_message)
 
@@ -312,5 +311,6 @@ class GarbageCollectionBulkMoveView(APIView):
             ids.append(garbage_collection.id)
 
         updated_garbage_collection_instances = GarbageCollection.objects.filter(id__in=ids)
-        return Response(self.serializer_class(updated_garbage_collection_instances, many=True).data,
-                        status=status.HTTP_200_OK)
+        return Response(
+            self.serializer_class(updated_garbage_collection_instances, many=True).data, status=status.HTTP_200_OK
+        )
