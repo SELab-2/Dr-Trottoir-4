@@ -25,8 +25,8 @@ export default function BuildingInfoView(
     return (
         <div className="list-group">
             <div className="list-group-item">
-                <span className="font-weight-bold h5">{building ? getAddress(building) : ""}</span>
-                <p>{building ? `Gebouw ${currentIndex + 1}/${amountOfBuildings}` : ""}</p>
+                <span className="h4 fw-bold">{building ? getAddress(building) : ""}</span>
+                <p className="mb-0">{building ? `Gebouw ${currentIndex + 1}/${amountOfBuildings}` : ""}</p>
             </div>
             <div className="list-group-item m-0 p-0" style={{display: "flex"}}>
                 {
@@ -68,7 +68,7 @@ export default function BuildingInfoView(
                     buildingComments.length > 0 &&
                     <>
                         <p className="fw-bold mb-0">Opmerkingen bij dit gebouw:</p>
-                        <ul className="mt-0">
+                        <ul className="mt-0 mb-0">
                             {buildingComments.map((bc: BuildingComment) => (
                                 <li key={bc.id}>
                                     {bc.comment}

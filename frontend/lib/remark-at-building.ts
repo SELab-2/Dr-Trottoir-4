@@ -72,7 +72,17 @@ export async function postRemarkAtBuilding(buildingId: number, studentOnTourId: 
     });
 }
 
-export async function getRemarksOfStudentOnTourAtBuilding(buildingId : number, studentOnTourId : number, type: "AA" | "BI" | "VE" | "OP" | null=null) {
+export async function patchRemarkAtBuilding(remarkId: number, remark: string, lastModified: Date = new Date()): Promise<AxiosResponse<any>> {
+    const patch_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_REMARK_AT_BUILDING}${remarkId}`;
+    return await api.patch(patch_url, {
+        remark: remark,
+        timestamp: lastModified.toISOString(),
+    }, {
+        headers: {"Content-Type": "application/json"},
+    });
+}
+
+export async function getRemarksOfStudentOnTourAtBuilding(buildingId: number, studentOnTourId: number, type: "AA" | "BI" | "VE" | "OP" | null = null) {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_REMARKS}`;
     return await api.get(request_url, {
         params: type ? {

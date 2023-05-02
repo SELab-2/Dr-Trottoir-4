@@ -3,7 +3,7 @@ import {Button, Form} from "react-bootstrap";
 import RemarkModal from "@/components/student/remarkModal";
 import {FileList} from "@/components/student/fileList";
 import {
-    getRemarksOfStudentOnTourAtBuilding,
+    getRemarksOfStudentOnTourAtBuilding, patchRemarkAtBuilding,
     postRemarkAtBuilding,
     RemarkAtBuilding,
     remarkTypes
@@ -29,6 +29,9 @@ import {getBuildingsOfTour} from "@/lib/tour";
 import {FileListElement} from "@/types";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import BuildingInfoView from "@/components/student/buildingInfoView";
+import Comment from '@mui/icons-material/Comment';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import ArrowForward from '@mui/icons-material/ArrowForward';
 
 interface ParsedUrlQuery {
 }
@@ -56,9 +59,6 @@ function StudentBuilding() {
 
     const [picturesAtStep, setPicturesAtStep] = useState<FileListElement[]>([]);
     const [stepDescription, setStepDescription] = useState<string>("");
-
-    // Registry for time, when a first picture is uploaded, that time is used & send to db
-    const [timeRegistry, setTimeRegistry] = useState<Date | null>(null);
 
     const [showRemarkModal, setShowRemarkModal] = useState<boolean>(false);
 
@@ -159,13 +159,13 @@ function StudentBuilding() {
             endDate: endDate
         }).then((res) => {
             const col: GarbageCollectionInterface[] = res.data;
-            const grouped : {[p: string]: GarbageCollectionInterface[]} = {};
+            const grouped: { [p: string]: GarbageCollectionInterface[] } = {};
             grouped [startDate.toISOString().split('T')[0]] = [];
             grouped [new Date().toISOString().split('T')[0]] = [];
             grouped [endDate.toISOString().split('T')[0]] = [];
 
             col.forEach(g => {
-               const dateString : string = new Date(g.date).toISOString().split('T')[0]
+                const dateString: string = new Date(g.date).toISOString().split('T')[0]
                 grouped [dateString].push(g);
             });
 
@@ -218,23 +218,41 @@ function StudentBuilding() {
             setErrorMessages(["U moet ten minste 1 foto uploaden."]);
             return;
         }
-        if (picturesAtStep) {
-            // Post a remark & pictures with the remark for a building by a student on a tour.
+        if (stepRemark) { // PATCH the remark
+            console.log("Patch");
+            if (stepDescription != stepRemark.remark) {
+                patchRemarkAtBuilding(stepRemark.id, stepDescription).then().catch(console.error);
+            }
+            picturesAtStep.forEach((f: FileListElement) => {
+                if (f.file && !f.pictureId) {
+                    postPictureOfRemark(f.file, stepRemark.id).then().catch(console.error);
+                }
+            });
+            if (step === finalStep) {
+                setStep(0);
+                setCurrentIndex(currentIndex + 1);
+            } else {
+                setStep(step + 1);
+            }
+        } else { // POST
+            let timeRegistry = new Date();
+            const newPictures = picturesAtStep.filter(p => p.file);
+            if (newPictures.length > 0) {
+                timeRegistry = new Date(newPictures[0].file!.lastModified);
+            }
             postRemarkAtBuilding(
                 building.id,
                 studentOnTour.id,
                 stepDescription,
-                timeRegistry ? timeRegistry : new Date(),
+                timeRegistry,
                 typeRemarks[step]
             ).then((res) => {
                 const remark: RemarkAtBuilding = res.data;
                 picturesAtStep.forEach((f: FileListElement) => {
-                    if (f.file) {
-                        postPictureOfRemark(f.file, remark.id).then((_) => {
-                        }, console.error);
+                    if (f.file && !f.pictureId) {
+                        postPictureOfRemark(f.file, remark.id).catch(console.error);
                     }
                 });
-
                 if (step === finalStep) {
                     setStep(0);
                     setCurrentIndex(currentIndex + 1);
@@ -242,27 +260,6 @@ function StudentBuilding() {
                     setStep(step + 1);
                 }
             }, console.error);
-        } else {
-            if (step === finalStep) {
-                if (currentIndex + 1 === buildingsOnTour.length) {
-                    if (!studentOnTour) {
-                        return;
-                    }
-                    alert("Einde van tour");
-                    const studentOnTourId: number = studentOnTour.id;
-                    router
-                        .push({
-                            pathname: "/student/schedule",
-                            query: {studentOnTourId},
-                        })
-                        .then();
-                } else {
-                    setStep(0);
-                    setCurrentIndex(currentIndex + 1);
-                }
-            } else {
-                setStep(step + 1);
-            }
         }
     }
 
@@ -271,7 +268,6 @@ function StudentBuilding() {
         setPicturesAtStep([]);
         setStepRemark(null);
         setPicturesAtStep([]);
-        setTimeRegistry(null);
         setErrorMessages([]);
         setStepDescription("");
     }
@@ -297,13 +293,13 @@ function StudentBuilding() {
             />
             <div className="m-2">
                 <BuildingInfoView manual={manual} building={building}
-                currentIndex={currentIndex}
-                amountOfBuildings={buildingsOnTour.length}
-                garbageCollections={garbageCollections}
-                buildingComments={buildingComments}/>
+                                  currentIndex={currentIndex}
+                                  amountOfBuildings={buildingsOnTour.length}
+                                  garbageCollections={garbageCollections}
+                                  buildingComments={buildingComments}/>
                 <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <Form onSubmit={handleSubmit} className="mt-2 mb-2">
-                    <span className="h5 mt-2">{typeNames[step]}</span>
+                    <span className="h5 fw-bold mt-2">{typeNames[step]}</span>
                     <div className="mb-2 mt-2">
                         <label className="form-label">Beschrijving (optioneel):</label>
                         <textarea
@@ -316,33 +312,36 @@ function StudentBuilding() {
 
                     <FileList files={picturesAtStep} setFiles={setPicturesAtStep} optional={false}/>
 
-                    <Button
-                        variant="primary"
-                        className="btn-danger d-inline-block"
-                        onClick={() => setShowRemarkModal(true)}
-                    >
-                        Maak een opmerking
-                    </Button>
-                    {
-                        (step > 0 || currentIndex > 0) &&
+
+                    <div className="btn-group d-flex gap-0" role="group">
+                        {
+                            (step > 0 || currentIndex > 0) &&
+                            <Button
+                                variant="primary"
+                                className="btn-dark"
+                                onClick={() => {
+                                    if (step === 0) {
+                                        setCurrentIndex(currentIndex - 1);
+                                        setStep(2);
+                                        return;
+                                    }
+                                    setStep(step - 1);
+                                }}
+                            ><ArrowBack/>
+                            </Button>
+                        }
                         <Button
                             variant="primary"
-                            className="btn-dark d-inline-block"
-                            onClick={() => {
-                                if (step === 0) {
-                                    setCurrentIndex(currentIndex - 1);
-                                    setStep(2);
-                                    return;
-                                }
-                                setStep(step - 1);
-                            }}
-                        >{step === 0 ? "Vorige gebouw" : "Vorige stap"}</Button>
-                    }
-                    <Button
-                        variant="primary"
-                        className="btn-dark d-inline-block"
-                        type="submit"
-                    >{getNextStepText()}</Button>
+                            className="btn-dark"
+                            onClick={() => setShowRemarkModal(true)}
+                        ><Comment/></Button>
+                        <Button
+                            variant="primary"
+                            className="btn-dark"
+                            type="submit"
+                        ><ArrowForward/></Button>
+                    </div>
+
                 </Form>
             </div>
         </>

@@ -357,6 +357,10 @@ class RemarkAtBuilding(models.Model):
         super().clean()
         if not self.timestamp:
             self.timestamp = datetime.now()
+        if self.type == "AA" or self.type == "BI" or type == "VE":
+            remark_instances = RemarkAtBuilding.objects.filter(building=self.building, student_on_tour=self.student_on_tour, type=self.type)
+            if remark_instances.count() == 1:
+                raise ValidationError("There already exists a remark of this type from this student on tour at this building.")
 
     def __str__(self):
         return f"{self.type} for {self.building}"

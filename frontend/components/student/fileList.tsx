@@ -2,6 +2,7 @@ import {IconButton, Tooltip} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 import React from "react";
 import {FileListElement} from "@/types";
+import {deletePictureOfRemark} from "@/lib/picture-of-remark";
 
 export function FileList(
     {
@@ -18,10 +19,10 @@ export function FileList(
     // Handle when a file is selected
     function handleFileAdd(event: React.ChangeEvent<HTMLInputElement>) {
         const newFiles: FileList | null = event.target.files;
-        if (! newFiles || newFiles.length <= 0) {
+        if (!newFiles || newFiles.length <= 0) {
             return;
         }
-        const f : File = newFiles[0];
+        const f: File = newFiles[0];
         setFiles([...files, {
             url: URL.createObjectURL(f),
             file: f,
@@ -32,9 +33,13 @@ export function FileList(
     // Remove a file from the list of selected files
     function handleRemoveFile(index: number) {
         const el: FileListElement = files[index];
-        if (!el.file) {
+        if (!el.file && el.pictureId) {
             console.log("Delete request");
-            // Do delete request
+            deletePictureOfRemark(el.pictureId).then(_ => {
+                const newFiles = [...files];
+                newFiles.splice(index, 1);
+                setFiles(newFiles);
+            }, console.error);
         } else {
             const newFiles = [...files];
             newFiles.splice(index, 1);
