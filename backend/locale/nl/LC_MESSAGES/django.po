@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-25 22:55+0200\n"
+"POT-Creation-Date: 2023-05-01 15:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -277,8 +277,8 @@ msgid ""
 "the start date of the period can't be in a later week than the week of the "
 "end date"
 msgstr ""
-"de start datum van de periode mag niet in een latere week zijn dan de week "
-"van de eind datum"
+"de startdatum van de periode kan niet in een latere week zijn dan de "
+"einddatum"
 
 #: garbage_collection/views.py:179
 msgid ""
@@ -286,20 +286,22 @@ msgid ""
 "minimum, in the week immediately following the end date of the original "
 "period"
 msgstr ""
-"de startdatum van de periode naar waar je wil kopiëren moet minstens de week "
-"direct volgend op de einddatum van de oorspronkelijke periode zijn"
+"de startdatum van de periode waarnaar je wilt kopiëren moet, op zijn minst, "
+"in de week direct volgend na de einddatum van de originele periode liggen"
 
-#: garbage_collection/views.py:234
+#: garbage_collection/views.py:233
 msgid "successfully copied the garbage collections"
-msgstr "de afvalophalingen werden succesvol gekopieerd"
+msgstr "de vuilnisophalingen zijn succesvol gekopieerd"
 
-#: garbage_collection/views.py:278
+#: garbage_collection/views.py:275
 msgid ""
 "The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list "
 "of id's) should be given"
-msgstr "De parameter(s) 'region' (id) en/of 'tour' (id) en/of 'buildings' (lijst van id's) moet(en) gegeven worden"
+msgstr ""
+"De parameter(s) 'region' (id) en/of 'tour' (id) en/of 'buildings' (lijst van "
+"id's) moet(en) gegeven worden"
 
-#: garbage_collection/views.py:281
+#: garbage_collection/views.py:279
 #, fuzzy
 #| msgid "The query parameter {name} should be an integer"
 msgid "The query param 'building' should be a list of ints"
@@ -346,21 +348,21 @@ msgid ""
 msgstr ""
 "Ongeldige booleaanse parameter '{name}': '{param}' (true of false verwacht)"
 
-#: util/request_response_util.py:81
+#: util/request_response_util.py:82
 #, fuzzy, python-brace-format
 #| msgid "The query parameter {name} should be an integer"
 msgid "The query param {name} must be a value in {allowed_keys}"
 msgstr "De query parameter {name} moet een waarde in {allowed_keys} zijn"
 
-#: util/request_response_util.py:170
+#: util/request_response_util.py:173
 msgid "{} was not found"
 msgstr "{} werd niet gevonden"
 
-#: util/request_response_util.py:174
+#: util/request_response_util.py:177
 msgid "bad input for {}"
 msgstr "slechte input voor {}"
 
-#: util/request_response_util.py:184
+#: util/request_response_util.py:187
 #, python-brace-format
 msgid "There is no {object1} that is linked to {object2} with given id."
 msgstr "Er is geen {object1} dat gelinkt is aan {object2} met de gegeven id."
@@ -552,7 +554,7 @@ msgstr ""
 
 #: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:130
 msgid "This field cannot be null."
-msgstr "Dit veld mag nie null zijn"
+msgstr "Dit veld mag niet null zijn"
 
 #: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:131
 msgid "This field cannot be blank."
