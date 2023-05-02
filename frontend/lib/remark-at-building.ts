@@ -71,3 +71,17 @@ export async function postRemarkAtBuilding(buildingId: number, studentOnTourId: 
         headers: {"Content-Type": "application/json"},
     });
 }
+
+export async function getRemarksOfStudentOnTourAtBuilding(buildingId : number, studentOnTourId : number, type: "AA" | "BI" | "VE" | "OP" | null=null) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_REMARKS}`;
+    return await api.get(request_url, {
+        params: type ? {
+            "building": buildingId,
+            "student-on-tour": studentOnTourId,
+            "type": type
+        } : {
+            "building": buildingId,
+            "student-on-tour": studentOnTourId
+        }
+    });
+}
