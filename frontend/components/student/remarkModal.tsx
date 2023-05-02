@@ -6,6 +6,7 @@ import { postPictureOfRemark } from "@/lib/picture-of-remark";
 import { StudentOnTour } from "@/lib/student-on-tour";
 import { BuildingInterface } from "@/lib/building";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import {FileListElement} from "@/types";
 
 export default function RemarkModal({
     show,
@@ -20,24 +21,10 @@ export default function RemarkModal({
 }) {
     // Files for remarks at a building
     const [remark, setRemark] = useState<string>("");
-    const [remarkFiles, setRemarkFiles] = useState<File[]>([]);
+    const [remarkFiles, setRemarkFiles] = useState<FileListElement[]>([]);
     const type: string = remarkTypes["remark"];
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
-
-    function handleRemarkFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-        const newFiles: FileList | null = event.target.files;
-        if (!newFiles) {
-            return;
-        }
-        setRemarkFiles([...remarkFiles, newFiles[0]]);
-    }
-
-    function handleRemoveRemarkFile(index: number) {
-        const newFiles = [...remarkFiles];
-        newFiles.splice(index, 1);
-        setRemarkFiles(newFiles);
-    }
 
     function closeModal() {
         setRemark("");
@@ -56,8 +43,10 @@ export default function RemarkModal({
 
         postRemarkAtBuilding(building.id, studentOnTour.id, remark, new Date(), type).then((res) => {
             const remark: RemarkAtBuilding = res.data;
-            remarkFiles.forEach((f: File) => {
-                postPictureOfRemark(f, remark.id).then((_) => {}, console.error);
+            remarkFiles.forEach((f: FileListElement) => {
+                if (f.file) {
+                    postPictureOfRemark(f.file, remark.id).then((_) => {}, console.error);
+                }
             });
 
             setRemark("");
@@ -80,16 +69,7 @@ export default function RemarkModal({
                         value={remark}
                         onChange={(e) => setRemark(e.target.value)}
                     />
-                    <div>
-                        <label className="form-label">Upload foto's bij uw opmerking (optioneel)</label>
-                        <input
-                            className="form-control"
-                            type="file"
-                            onChange={handleRemarkFileChange}
-                            accept="image/*"
-                        />
-                    </div>
-                    <FileList files={remarkFiles} handleRemoveFile={handleRemoveRemarkFile} />
+                    <FileList files={remarkFiles} optional setFiles={setRemarkFiles}/>
                 </Form>
             </Modal.Body>
             <Modal.Footer>

@@ -23,3 +23,6 @@ export async function postPictureOfRemark(picture: File, remarkId: number): Prom
     });
 }
 
+export function getPicturePath(relativePath : string) {
+    return `${process.env.NEXT_PUBLIC_BASE_API_URL}${relativePath}`
+}

@@ -117,4 +117,4 @@ function StudentSchedule() {
     );
 }
 
-export default withAuthorisation(StudentSchedule, ["Student"]);
+export default withAuthorisation(StudentSchedule, ["Student", "Admin", "Superstudent"]);

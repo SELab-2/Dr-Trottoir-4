@@ -8,17 +8,27 @@ import {
     RemarkAtBuilding,
     remarkTypes
 } from "@/lib/remark-at-building";
-import {postPictureOfRemark} from "@/lib/picture-of-remark";
+import {
+    getPictureOfRemarkOfSpecificRemark, getPicturePath,
+    PictureOfRemarkInterface,
+    postPictureOfRemark
+} from "@/lib/picture-of-remark";
 import {useRouter} from "next/router";
-import {BuildingInterface, getAddress} from "@/lib/building";
+import {BuildingInterface} from "@/lib/building";
 import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
-import {GarbageCollectionInterface, garbageTypes, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
+import {
+    GarbageCollectionInterface,
+    getGarbageCollectionFromBuilding,
+} from "@/lib/garbage-collection";
 import {BuildingComment, getAllBuildingCommentsByBuildingID} from "@/lib/building-comment";
 import StudentHeader from "@/components/header/studentHeader";
 import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/building-manual";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import {addDays, subDays} from "date-fns";
 import {getBuildingsOfTour} from "@/lib/tour";
+import {FileListElement} from "@/types";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import BuildingInfoView from "@/components/student/buildingInfoView";
 
 interface ParsedUrlQuery {
 }
@@ -30,7 +40,7 @@ interface DataBuildingIdQuery extends ParsedUrlQuery {
 /**
  * This page receives a studentOnTourId & buildingId, otherwise nothing is displayed
  */
-export default function StudentBuilding() {
+function StudentBuilding() {
     const router = useRouter();
     const typeNames: string[] = ["Aankomst", "Binnen", "Vertrek"];
     const typeRemarks: string[] = [remarkTypes["arrival"], remarkTypes["inside"], remarkTypes["leaving"]];
@@ -44,7 +54,7 @@ export default function StudentBuilding() {
     const finalStep = 2;
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
-    const [files, setFiles] = useState<File[]>([]);
+    const [picturesAtStep, setPicturesAtStep] = useState<FileListElement[]>([]);
     const [stepDescription, setStepDescription] = useState<string>("");
 
     // Registry for time, when a first picture is uploaded, that time is used & send to db
@@ -54,11 +64,13 @@ export default function StudentBuilding() {
 
     // The necessary info of a building
     const [building, setBuilding] = useState<BuildingInterface | null>(null);
-    const [garbageCollections, setGarbageCollections] = useState<{[p: string]: GarbageCollectionInterface[]}>({});
+    const [garbageCollections, setGarbageCollections] = useState<{ [p: string]: GarbageCollectionInterface[] }>({});
     const [buildingComments, setBuildingComments] = useState<BuildingComment[]>([]);
     const [manual, setManual] = useState<BuildingManual | null>(null);
     const [buildingsOnTour, setBuildingsOnTour] = useState<BuildingInterface[]>([]);
-    const [uploadedRemarks, setUploadedRemarks] = useState<RemarkAtBuilding[]>([]);
+    const [stepRemark, setStepRemark] = useState<RemarkAtBuilding | null>(null); // for remarks : AA, VE, BI
+
+    const [globalRemarks, setGlobalRemarks] = useState<RemarkAtBuilding[]>([]); // for remark OP
 
     useEffect(() => {
         const query: DataBuildingIdQuery = router.query as DataBuildingIdQuery;
@@ -84,31 +96,50 @@ export default function StudentBuilding() {
         if (buildingsOnTour.length === 0) {
             return;
         }
-        // Set is last building flag on true
-        if (currentIndex + 1 == buildingsOnTour.length) {
-            setIsLastBuilding(true);
-        }
         getBuildingInfoAtIndex();
     }, [currentIndex, buildingsOnTour]);
 
     useEffect(() => {
-        if (! studentOnTour || ! building) {
+        if (!studentOnTour || !building) {
             return;
         }
         changeStep();
-        const stepType : {[key: number] : "AA" | "BI" | "VE" | "OP"} = {
-            0 : "AA",
-            1 : "BI",
-            2 : "VE"
+        const stepType: { [key: number]: "AA" | "BI" | "VE" } = {
+            0: "AA",
+            1: "BI",
+            2: "VE"
         };
+
         const type = stepType[step];
-        if (type){
+
+        if (type) { // Check if there are already remarks for this type
             getRemarksOfStudentOnTourAtBuilding(building.id, studentOnTour.id, type).then(res => {
-                const r : RemarkAtBuilding[] = res.data;
-                console.log(r);
-                setUploadedRemarks(r);
+                const r: RemarkAtBuilding[] = res.data;
+                if (r.length > 0) {
+                    setStepRemark(r[0]);
+                    setStepDescription(r[0].remark);
+                    getPictureOfRemarkOfSpecificRemark(r[0].id).then(p => {
+                        const pictures: PictureOfRemarkInterface[] = p.data;
+                        setPicturesAtStep(pictures.map(picture => {
+                            return {
+                                url: getPicturePath(picture.picture),
+                                pictureId: picture.id,
+                                file: null
+                            };
+                        }));
+                    }, console.error);
+                }
             }, console.error);
         }
+
+        getRemarksOfStudentOnTourAtBuilding(building.id, studentOnTour.id, "OP").then(res => {
+            const r: RemarkAtBuilding[] = res.data;
+            if (r.length > 0) {
+                setGlobalRemarks(r);
+            } else {
+                setGlobalRemarks([]);
+            }
+        }, console.error);
     }, [step, building])
 
     // Get the buildings on a tour
@@ -128,13 +159,16 @@ export default function StudentBuilding() {
             endDate: endDate
         }).then((res) => {
             const col: GarbageCollectionInterface[] = res.data;
+            const grouped : {[p: string]: GarbageCollectionInterface[]} = {};
+            grouped [startDate.toISOString().split('T')[0]] = [];
+            grouped [new Date().toISOString().split('T')[0]] = [];
+            grouped [endDate.toISOString().split('T')[0]] = [];
 
-            const grouped: {[p: string]: GarbageCollectionInterface[]} =
-                col.reduce((accumulator: { [key: string]: GarbageCollectionInterface[] }, current) => {
-                    const d: string = new Date(current.date).toISOString().split('T')[0];
-                    (accumulator[d] = accumulator[d] || []).push(current);
-                    return accumulator;
-                }, {})
+            col.forEach(g => {
+               const dateString : string = new Date(g.date).toISOString().split('T')[0]
+                grouped [dateString].push(g);
+            });
+
             setGarbageCollections(grouped);
         }, console.error);
     }
@@ -173,25 +207,6 @@ export default function StudentBuilding() {
         return true;
     }
 
-    // Handle when a file is selected
-    function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-        if (!timeRegistry) {
-            setTimeRegistry(new Date());
-        }
-        const newFiles: FileList | null = event.target.files;
-        if (!newFiles) {
-            return;
-        }
-        setFiles([...files, newFiles[0]]);
-    }
-
-    // Remove a file from the list of selected files
-    function handleRemoveFile(index: number) {
-        const newFiles = [...files];
-        newFiles.splice(index, 1);
-        setFiles(newFiles);
-    }
-
     // Handle the submit event
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -199,11 +214,11 @@ export default function StudentBuilding() {
             return;
         }
         // There must be 1 picture to upload at minimum
-        if (files.length === 0 && uploadedRemarks.length === 0) {
+        if (picturesAtStep.length === 0) {
             setErrorMessages(["U moet ten minste 1 foto uploaden."]);
             return;
         }
-        if (files) {
+        if (picturesAtStep) {
             // Post a remark & pictures with the remark for a building by a student on a tour.
             postRemarkAtBuilding(
                 building.id,
@@ -213,9 +228,11 @@ export default function StudentBuilding() {
                 typeRemarks[step]
             ).then((res) => {
                 const remark: RemarkAtBuilding = res.data;
-                files.forEach((f: File) => {
-                    postPictureOfRemark(f, remark.id).then((_) => {
-                    }, console.error);
+                picturesAtStep.forEach((f: FileListElement) => {
+                    if (f.file) {
+                        postPictureOfRemark(f.file, remark.id).then((_) => {
+                        }, console.error);
+                    }
                 });
 
                 if (step === finalStep) {
@@ -228,7 +245,7 @@ export default function StudentBuilding() {
         } else {
             if (step === finalStep) {
                 if (currentIndex + 1 === buildingsOnTour.length) {
-                    if (! studentOnTour) {
+                    if (!studentOnTour) {
                         return;
                     }
                     alert("Einde van tour");
@@ -251,78 +268,42 @@ export default function StudentBuilding() {
 
     function changeStep() {
         // remove all data
-        setFiles([]);
+        setPicturesAtStep([]);
+        setStepRemark(null);
+        setPicturesAtStep([]);
         setTimeRegistry(null);
         setErrorMessages([]);
         setStepDescription("");
     }
 
+    function getNextStepText() {
+        if (currentIndex + 1 === buildingsOnTour.length && step === 2) {
+            return "Beëindig tour";
+        }
+        if (step === 2) {
+            return "Volgende gebouw";
+        }
+        return "Volgende stap";
+    }
+
     return (
         <>
             <StudentHeader/>
+            <RemarkModal
+                onHide={() => setShowRemarkModal(false)}
+                show={showRemarkModal}
+                studentOnTour={studentOnTour}
+                building={building}
+            />
             <div className="m-2">
-                <RemarkModal
-                    onHide={() => setShowRemarkModal(false)}
-                    show={showRemarkModal}
-                    studentOnTour={studentOnTour}
-                    building={building}
-                />
-                <div className="card">
-                    <div className="card-body">
-                        <h5 className="card-title">{building ? getAddress(building) : ""}</h5>
-                        {
-                            <div className="row">
-                                {
-                                    Object.keys(garbageCollections).sort((a, b) => new Date(a).getTime() - new Date(b).getTime()).map(key => {
-                                        const col = garbageCollections[key];
-                                        return (
-                                            <div className="col" key={key}>
-                                                <span>{new Date(key).toLocaleDateString('en-GB')}</span>
-                                                <ul>
-                                                    {col.map((gar: GarbageCollectionInterface) => (
-                                                        <li key={gar.id} className="card-subtitle mb-2 text-muted">
-                                                            {garbageTypes[gar.garbage_type]
-                                                                ? garbageTypes[gar.garbage_type]
-                                                                : gar.garbage_type}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        );
-                                    })
-
-                                }
-                            </div>
-                        }
-                    </div>
-                    {buildingComments.length > 0 && (
-                        <>
-                            <h5>Opmerkingen bij dit gebouw:</h5>
-                            <ul className="list-group list-group-flush">
-                                {buildingComments.map((bc: BuildingComment) => (
-                                    <li className="list-group-item" key={bc.id}>
-                                        {bc.comment}
-                                    </li>
-                                ))}
-                            </ul>
-                        </>
-                    )}
-                    {manual && (
-                        <>
-                            <h5>Handleiding van gebouw:</h5>
-                            <ul className="list-group list-group-flush">
-                                <li className="list-group-item">
-                                    <a href={manual.file} download style={{textDecoration: "underline"}}>
-                                        Handleiding
-                                    </a>
-                                </li>
-                            </ul>
-                        </>
-                    )}
-                </div>
+                <BuildingInfoView manual={manual} building={building}
+                currentIndex={currentIndex}
+                amountOfBuildings={buildingsOnTour.length}
+                garbageCollections={garbageCollections}
+                buildingComments={buildingComments}/>
                 <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
-                <Form onSubmit={handleSubmit}>
-                    <span className="h1 mt-2">{typeNames[step]}</span>
+                <Form onSubmit={handleSubmit} className="mt-2 mb-2">
+                    <span className="h5 mt-2">{typeNames[step]}</span>
                     <div className="mb-2 mt-2">
                         <label className="form-label">Beschrijving (optioneel):</label>
                         <textarea
@@ -331,20 +312,10 @@ export default function StudentBuilding() {
                             onChange={(e) => setStepDescription(e.target.value)}
                         ></textarea>
                     </div>
-                    <div>
-                        <label className="form-label">Upload één of meerdere foto's:</label>
-                        <input
-                            className="form-control"
-                            type="file"
-                            onChange={(e) => {
-                                handleFileChange(e);
-                                e.target.value = ""; // reset the value of the input field
-                            }}
-                            accept="image/*"
-                        />
-                    </div>
 
-                    <FileList files={files} handleRemoveFile={handleRemoveFile}/>
+
+                    <FileList files={picturesAtStep} setFiles={setPicturesAtStep} optional={false}/>
+
                     <Button
                         variant="primary"
                         className="btn-danger d-inline-block"
@@ -371,9 +342,11 @@ export default function StudentBuilding() {
                         variant="primary"
                         className="btn-dark d-inline-block"
                         type="submit"
-                    >Volgende stap</Button>
+                    >{getNextStepText()}</Button>
                 </Form>
             </div>
         </>
     );
 }
+
+export default withAuthorisation(StudentBuilding, ["Student", "Admin", "Superstudent"]);

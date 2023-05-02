@@ -134,4 +134,4 @@ function StudentDashboard() {
     );
 }
 
-export default withAuthorisation(StudentDashboard, ["Student"]);
+export default withAuthorisation(StudentDashboard, ["Student", "Admin", "Superstudent"]);

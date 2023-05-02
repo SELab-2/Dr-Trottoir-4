@@ -72,3 +72,9 @@ export interface GarbageCollectionEvent extends Event {
     building: BuildingInterface,
     garbageType: string
 }
+
+export interface FileListElement {
+    url : string;
+    file : File | null;
+    pictureId : number | null;
+}
