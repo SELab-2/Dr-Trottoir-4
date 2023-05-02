@@ -160,13 +160,15 @@ function StudentBuilding() {
         }).then((res) => {
             const col: GarbageCollectionInterface[] = res.data;
             const grouped: { [p: string]: GarbageCollectionInterface[] } = {};
-            grouped [startDate.toISOString().split('T')[0]] = [];
-            grouped [new Date().toISOString().split('T')[0]] = [];
-            grouped [endDate.toISOString().split('T')[0]] = [];
+            grouped[startDate.toISOString().split('T')[0]] = [];
+            grouped[new Date().toISOString().split('T')[0]] = [];
+            grouped[endDate.toISOString().split('T')[0]] = [];
 
             col.forEach(g => {
                 const dateString: string = new Date(g.date).toISOString().split('T')[0]
-                grouped [dateString].push(g);
+                if (grouped[dateString]) {
+                    grouped[dateString].push(g);
+                }
             });
 
             setGarbageCollections(grouped);
