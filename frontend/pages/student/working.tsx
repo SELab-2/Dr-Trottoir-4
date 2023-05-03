@@ -14,7 +14,7 @@ import {
     postPictureOfRemark
 } from "@/lib/picture-of-remark";
 import {useRouter} from "next/router";
-import {BuildingInterface, getAddress} from "@/lib/building";
+import {BuildingInterface} from "@/lib/building";
 import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
 import StudentHeader from "@/components/header/studentHeader";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
@@ -34,7 +34,7 @@ interface DataBuildingIdQuery extends ParsedUrlQuery {
 /**
  * This page receives a studentOnTourId & buildingId, otherwise nothing is displayed
  */
-function StudentBuilding() {
+function StudentWorking() {
     const router = useRouter();
     const typeNames: string[] = ["Aankomst", "Binnen", "Vertrek"];
     const typeRemarks: string[] = [remarkTypes["arrival"], remarkTypes["inside"], remarkTypes["leaving"]];
@@ -112,6 +112,7 @@ function StudentBuilding() {
         return b;
     }
 
+    // Get the global remarks of a building RemarkAtBuilding.type === "OP"
     function getGlobalRemarksOfBuilding(buildingId: number) {
         if (!studentOnTour) {
             return;
@@ -126,6 +127,7 @@ function StudentBuilding() {
         }, console.error);
     }
 
+    // Get the remark of a step
     function getRemarkInfo(buildingId: number, step: number) {
         if (!studentOnTour) {
             return;
@@ -208,7 +210,7 @@ function StudentBuilding() {
         setStepDescription("");
     }
 
-    // Progress by one step
+    // Go one step forward
     function increaseStep() {
         changeStep();
         // if step is 2, we go to next building or finish the tour
@@ -248,15 +250,7 @@ function StudentBuilding() {
         }
     }
 
-    function redirectToSchedule(studentOnTourId: number): void {
-        router
-            .push({
-                pathname: "/student/schedule",
-                query: {studentOnTourId},
-            })
-            .then();
-    }
-
+    // Go one step back
     function decreaseStep() {
         changeStep();
         if (progress.currentIndex > 0 && progress.step === 0) { // Go to previous building
@@ -287,12 +281,14 @@ function StudentBuilding() {
         }
     }
 
+    // Add a global remark to the list
     function afterPostGlobalRemark(remark : RemarkAtBuilding) {
         setGlobalRemarks(prevState => {
             return [...prevState, remark];
         });
     }
 
+    // Change the global remark after a patch request
     function afterPatchGlobalRemark(remark : RemarkAtBuilding) {
         setGlobalRemarks(prevState => {
             const index = prevState.findIndex(r => r.id === remark.id);
@@ -305,6 +301,7 @@ function StudentBuilding() {
         });
     }
 
+    // Remove the global remark of a building after a delete request
     function afterDeleteGlobalRemark(remark: RemarkAtBuilding) {
         setGlobalRemarks(prevState => {
             const index = prevState.findIndex(r => r.id === remark.id);
@@ -317,6 +314,15 @@ function StudentBuilding() {
         });
     }
 
+    // Redirect to the schedule page
+    function redirectToSchedule(studentOnTourId: number): void {
+        router
+            .push({
+                pathname: "/student/schedule",
+                query: {studentOnTourId},
+            })
+            .then();
+    }
 
     /**
      * 2 functions that render the correct icons
@@ -419,4 +425,4 @@ function StudentBuilding() {
     );
 }
 
-export default withAuthorisation(StudentBuilding, ["Student", "Admin", "Superstudent"]);
+export default withAuthorisation(StudentWorking, ["Student", "Admin", "Superstudent"]);

@@ -10,6 +10,9 @@ import React, {useEffect, useState} from "react";
 import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/building-manual";
 import {addDays, subDays} from "date-fns";
 
+/**
+ * The info that is displayed when a student is doing a tour
+ */
 export default function BuildingInfoView(
     {
         building,

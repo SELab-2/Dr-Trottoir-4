@@ -62,12 +62,13 @@ function StudentSchedule() {
         }
     }, [router.isReady]);
 
+
     async function routeToFirstBuilding() {
         if (buildings.length === 0) {
             return;
         }
         await router.push({
-            pathname: `/student/building`,
+            pathname: `/student/working`,
             query: {studentOnTourId: studentOnTour?.id},
         });
     }
