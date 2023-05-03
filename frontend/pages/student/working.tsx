@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {Button, ButtonGroup, Form} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, ButtonGroup, Form } from "react-bootstrap";
 import RemarkModal from "@/components/student/remarkModal";
 import { FileList } from "@/components/student/fileList";
 import {
@@ -398,8 +398,7 @@ function StudentWorking() {
                     <FileList files={picturesAtStep} setFiles={setPicturesAtStep} optional={false} editable />
 
                     <ButtonGroup className="d-flex gap-0 m-0" role="group">
-                        {
-                            (progress.step > 0 || progress.currentIndex > 0) &&
+                        {(progress.step > 0 || progress.currentIndex > 0) && (
                             <Button
                                 variant="primary"
                                 className="btn-dark"
@@ -409,17 +408,13 @@ function StudentWorking() {
                             >
                                 {getPreviousStepIcon()}
                             </Button>
-                        }
-                        <Button
-                            variant="primary"
-                            className="btn-dark"
-                            onClick={() => setShowRemarkModal(true)}
-                        ><Comment/></Button>
-                        <Button
-                            variant="primary"
-                            className="btn-dark"
-                            type="submit"
-                        >{getNextStepIcon()}</Button>
+                        )}
+                        <Button variant="primary" className="btn-dark" onClick={() => setShowRemarkModal(true)}>
+                            <Comment />
+                        </Button>
+                        <Button variant="primary" className="btn-dark" type="submit">
+                            {getNextStepIcon()}
+                        </Button>
                     </ButtonGroup>
                 </Form>
                 {globalRemarks.length > 0 && (
