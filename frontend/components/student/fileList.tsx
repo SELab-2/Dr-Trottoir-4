@@ -8,11 +8,13 @@ export function FileList(
     {
         files,
         setFiles,
-        optional
+        optional,
+        editable
     }: {
         files: FileListElement[],
         setFiles: (f: FileListElement[]) => void,
-        optional: boolean
+        optional: boolean,
+        editable: boolean
     }
 ) {
 
@@ -34,7 +36,6 @@ export function FileList(
     function handleRemoveFile(index: number) {
         const el: FileListElement = files[index];
         if (!el.file && el.pictureId) {
-            console.log("Delete request");
             deletePictureOfRemark(el.pictureId).then(_ => {
                 const newFiles = [...files];
                 newFiles.splice(index, 1);
@@ -49,18 +50,21 @@ export function FileList(
 
     return (
         <>
-            <div>
-                <label className="form-label">{`Upload foto's ${optional ? "(Optioneel)" : ""}:`}</label>
-                <input
-                    className="form-control"
-                    type="file"
-                    onChange={(e) => {
-                        handleFileAdd(e);
-                        e.target.value = ""; // reset the value of the input field
-                    }}
-                    accept="image/*"
-                />
-            </div>
+            {
+                editable &&
+                <div>
+                    <label className="form-label">{`Upload foto's ${optional ? "(Optioneel)" : ""}:`}</label>
+                    <input
+                        className="form-control"
+                        type="file"
+                        onChange={(e) => {
+                            handleFileAdd(e);
+                            e.target.value = ""; // reset the value of the input field
+                        }}
+                        accept="image/*"
+                    />
+                </div>
+            }
             <ul>
                 {files.map((fileEl, index) => {
                     return (
@@ -68,11 +72,14 @@ export function FileList(
                             <a href={fileEl.url} download style={{textDecoration: "underline", color: "royalblue"}}>
                                 {`upload_${index + 1}`}
                             </a>
-                            <Tooltip arrow placement="right" title="Verwijder">
-                                <IconButton onClick={() => handleRemoveFile(index)}>
-                                    <Delete/>
-                                </IconButton>
-                            </Tooltip>
+                            {
+                                editable &&
+                                <Tooltip arrow placement="right" title="Verwijder">
+                                    <IconButton onClick={() => handleRemoveFile(index)}>
+                                        <Delete/>
+                                    </IconButton>
+                                </Tooltip>
+                            }
                         </li>
                     );
                 })}

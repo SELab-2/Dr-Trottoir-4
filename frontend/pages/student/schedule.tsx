@@ -1,15 +1,17 @@
 import StudentHeader from "@/components/header/studentHeader";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { getBuildingsOfTour, getTour, Tour } from "@/lib/tour";
-import { getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
-import { getRegion, RegionInterface } from "@/lib/region";
-import { BuildingInterface, getAddress } from "@/lib/building";
-import { Button } from "react-bootstrap";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { datesEqual } from "@/lib/date";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {getBuildingsOfTour, getTour, Tour} from "@/lib/tour";
+import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import {getRegion, RegionInterface} from "@/lib/region";
+import {BuildingInterface, getAddress} from "@/lib/building";
+import {Button} from "react-bootstrap";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {datesEqual} from "@/lib/date";
+import FinishedBuildingModal from "@/components/student/finishedBuildingModal";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DataScheduleQuery extends ParsedUrlQuery {
     studentOnTourId?: number;
@@ -21,6 +23,8 @@ function StudentSchedule() {
     const [studentOnTour, setStudentOnTour] = useState<StudentOnTour | null>(null);
     const [region, setRegion] = useState<string>("");
     const [buildings, setBuildings] = useState<BuildingInterface[]>([]);
+    const [showFinishedBuildingModal, setShowFinishedBuildingModal] = useState<boolean>(false);
+    const [selectedBuilding, setSelectedBuilding] = useState<BuildingInterface | null>(null);
 
     useEffect(() => {
         const query: DataScheduleQuery = router.query as DataScheduleQuery;
@@ -64,13 +68,15 @@ function StudentSchedule() {
         }
         await router.push({
             pathname: `/student/building`,
-            query: { studentOnTourId: studentOnTour?.id },
+            query: {studentOnTourId: studentOnTour?.id},
         });
     }
 
     return (
         <>
-            <StudentHeader />
+            <StudentHeader/>
+            <FinishedBuildingModal onHide={() => setShowFinishedBuildingModal(false)} show={showFinishedBuildingModal} building={selectedBuilding}
+                                   setBuilding={setSelectedBuilding} studentOnTour={studentOnTour}/>
             <div className="mt-3 mb-1 ms-2 me-2">
                 <span className="h1 fw-bold">{tour ? `Ronde ${tour?.name}` : ""}</span>
                 <p className="h5 fw-bold">{region ? `Regio ${region}` : ""}</p>
@@ -81,7 +87,12 @@ function StudentSchedule() {
                         <div className="list-group">
                             {buildings.map((el: BuildingInterface, index: number) => {
                                 return (
-                                    <a className="list-group-item list-group-item-action" key={`${el.id}-${index}`}>
+                                    <a className="list-group-item list-group-item-action" key={`${el.id}-${index}`}
+                                       onClick={() => {
+                                           setSelectedBuilding(el);
+                                           setShowFinishedBuildingModal(true);
+                                       }}
+                                    >
                                         <div className="d-flex w-100 justify-content-between">
                                             <h5 className="mb-1">{getAddress(el)}</h5>
                                             <small>{index + 1}</small>

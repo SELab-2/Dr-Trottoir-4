@@ -128,7 +128,7 @@ export default function RemarkModal({
                 <Form>
                     <Form.Control as="textarea" rows={3} value={remark}
                                   onChange={(e) => setRemark(e.target.value)}/>
-                    <FileList files={remarkFiles} optional setFiles={setRemarkFiles}/>
+                    <FileList files={remarkFiles} optional setFiles={setRemarkFiles} editable/>
                 </Form>
                 {
                     selectedRemark &&

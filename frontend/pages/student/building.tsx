@@ -368,9 +368,7 @@ function StudentBuilding() {
                         ></textarea>
                     </div>
 
-
-                    <FileList files={picturesAtStep} setFiles={setPicturesAtStep} optional={false}/>
-
+                    <FileList files={picturesAtStep} setFiles={setPicturesAtStep} optional={false} editable/>
 
                     <div className="btn-group d-flex gap-0 m-0" role="group">
                         {

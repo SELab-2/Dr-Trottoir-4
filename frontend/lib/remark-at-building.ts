@@ -43,10 +43,11 @@ export const remarkTypes = {
 }
 
 export interface RemarkAtBuilding {
-    id: number
+    id: number,
     remark: string,
-    student_on_tour: number
-    timestamp: string
+    student_on_tour: number,
+    timestamp: string,
+    type: string
 }
 
 export async function getRemarksOfBuilding(buildingId: number): Promise<AxiosResponse<any>> {
