@@ -8,6 +8,7 @@ import StudentHeader from "@/components/header/studentHeader";
 import SyndicHeader from "@/components/header/syndicHeader";
 import { handleError } from "@/lib/error";
 import PasswordModal from "@/components/password/passwordModal";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function UserProfile() {
     const { t } = useTranslation();
@@ -97,16 +98,7 @@ export default function UserProfile() {
             {["Admin", "Superstudent"].includes(role) && <AdminHeader />}
             {"Student" === role && <StudentHeader />}
             {"Syndic" === role && <SyndicHeader />}
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             {succesPatch && (
                 <div className={"visible alert alert-success alert-dismissible fade show"}>
                     <strong>Succes!</strong> Uw profiel werd met succes gewijzigd!

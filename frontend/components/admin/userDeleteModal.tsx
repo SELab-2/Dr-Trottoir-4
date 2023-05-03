@@ -4,6 +4,7 @@ import { UserView } from "@/types";
 import { deleteUser } from "@/lib/user";
 import { handleError } from "@/lib/error";
 import { useTranslation } from "react-i18next";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export function UserDeleteModal({
     show,
@@ -43,16 +44,7 @@ export function UserDeleteModal({
             <Modal.Header>
                 <Modal.Title>Verwijder gebruiker</Modal.Title>
             </Modal.Header>
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 Bent u zeker dat u gebruiker {selectedUser?.first_name} {selectedUser?.last_name} ({selectedUser?.email}
                 ) wil verwijderen?

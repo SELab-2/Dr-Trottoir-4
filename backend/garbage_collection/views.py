@@ -1,5 +1,6 @@
+import re
+
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -175,8 +176,7 @@ def validate_duplication_period(start_period: datetime, end_period: datetime, st
         return Response(
             {
                 "message": _(
-                    "the start date of the period to which you want to copy must be, at a minimum, in the week "
-                    "immediately following the end date of the original period"
+                    "the start date of the period to which you want to copy must be, at a minimum, in the week immediately following the end date of the original period"
                 )
             },
             status=status.HTTP_400_BAD_REQUEST,
@@ -208,9 +208,9 @@ class GarbageCollectionDuplicateView(APIView):
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
         # transform them into the appropriate week-days:
-        start_date_period = get_monday_of_week(validated_data.get("start-date-period"))
-        end_date_period = get_sunday_of_week(validated_data.get("end-date-period"))
-        start_date_copy = get_monday_of_week(validated_data.get("start-date-copy"))
+        start_date_period = get_monday_of_week(validated_data.get("start_date_period"))
+        end_date_period = get_sunday_of_week(validated_data.get("end_date_period"))
+        start_date_copy = get_monday_of_week(validated_data.get("start_date_copy"))
 
         if r := validate_duplication_period(start_date_period, end_date_period, start_date_copy):
             return r
@@ -220,7 +220,7 @@ class GarbageCollectionDuplicateView(APIView):
             date__range=[start_date_period, end_date_period]
         )
         # retrieve and apply the optional filtering on buildings
-        building_ids = validated_data.get("building-ids", None)
+        building_ids = validated_data.get("building_ids", None)
         if building_ids:
             garbage_collections_to_duplicate = garbage_collections_to_duplicate.filter(building__id__in=building_ids)
 
@@ -231,3 +231,85 @@ class GarbageCollectionDuplicateView(APIView):
             if not GarbageCollection.objects.filter(date=copy_date, building=gc.building).exists():
                 GarbageCollection.objects.create(date=copy_date, building=gc.building, garbage_type=gc.garbage_type)
         return Response({"message": _("successfully copied the garbage collections")}, status=status.HTTP_200_OK)
+
+
+class GarbageCollectionBulkMoveView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = GarbageCollectionSerializer
+
+    @extend_schema(
+        responses={200: serializer_class, 400: None},
+        parameters=param_docs(
+            {
+                "garbage_type": ("The type of garbage to move", True, OpenApiTypes.STR),
+                "date": ("The date of the garbage collection to move", True, OpenApiTypes.DATE),
+                "move_to_date": ("The date to move the garbage collection to", True, OpenApiTypes.DATE),
+                "region": ("The region of the garbage collection to move", False, OpenApiTypes.INT),
+                "tour": ("The tour of the garbage collection to move", False, OpenApiTypes.INT),
+                "buildings": ("A list of building id's of the garbage collection to move", False, OpenApiTypes.STR),
+            }
+        ),
+    )
+    def post(self, request):
+        """
+        Move a batch of garbage collections to a new date. The batch can be filtered by region, tour and/or buildings.
+        """
+        # we support params garbage_type, date, move_to_date and region
+
+        # get the params
+
+        # This is bad code, it should be possible to get "GFT", "GLS" ... from the model directly (a solution could be to put them in an it in the model)
+        garbage_type = get_arbitrary_param(
+            request, "garbage_type", allowed_keys={"GFT", "GLS", "GRF", "KER", "PAP", "PMD", "RES"}, required=True
+        )
+        date = get_date_param(request, "date", required=True)
+        move_to_date = get_date_param(request, "move_to_date", required=True)
+
+        # At least one of them should be given
+        region = get_id_param(request, "region", required=False)
+        tour = get_id_param(request, "tour", required=False)
+        buildings = get_arbitrary_param(request, "buildings", required=False)
+
+        if not region and not tour and not buildings:
+            return bad_request_custom_error_message(
+                _("The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list of id's) should be given")
+            )
+
+        if buildings:
+            invalid_building_error_message = _("The query param 'building' should be a list of ints")
+
+            if not re.match(r"\[(\s*\d+\s*,?)+]", buildings):
+                return bad_request_custom_error_message(invalid_building_error_message)
+
+            try:
+                buildings = [int(id_str.rstrip("]").lstrip("[")) for id_str in buildings.split(",")]
+            except ValueError:
+                return bad_request_custom_error_message(invalid_building_error_message)
+
+        # Get all garbage collections with given garbage_type and date
+        garbage_collections_instances = GarbageCollection.objects.filter(garbage_type=garbage_type, date=date)
+
+        building_instances = Building.objects
+        if region:
+            building_instances = building_instances.filter(region_id=region)
+        if tour:
+            buildings_on_tour = Building.objects.filter(buildingontour__tour_id=tour)
+            building_instances = building_instances.filter(id__in=buildings_on_tour)
+        if buildings:
+            building_instances = building_instances.filter(id__in=buildings)
+
+        # Filter the garbage_collection_instances on the right buildings
+        garbage_collections_instances = garbage_collections_instances.filter(building_id__in=building_instances)
+
+        # For every garbage_collection in garbage_collection_instances, change the date to move_to_date
+        ids = []
+        for garbage_collection in garbage_collections_instances:
+            garbage_collection.date = move_to_date.date()
+            if r := try_full_clean_and_save(garbage_collection):
+                return r
+            ids.append(garbage_collection.id)
+
+        updated_garbage_collection_instances = GarbageCollection.objects.filter(id__in=ids)
+        return Response(
+            self.serializer_class(updated_garbage_collection_instances, many=True).data, status=status.HTTP_200_OK
+        )
