@@ -11,8 +11,7 @@ export interface BuildingManual {
 }
 
 export interface BuildingManualPostInterface {
-    building: number,
-    version_number: number,
+    building: string,
     file: File
 }
 
@@ -30,7 +29,6 @@ export function getManualPath(relativePath: string) {
 export async function postManual(manual: BuildingManualPostInterface): Promise<AxiosResponse<any>> {
     const formdata = new FormData();
     formdata.set("building", manual.building.toString());
-    formdata.set("version_number", manual.version_number.toString());
     formdata.set("file", manual.file);
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_MANUAL}`;
     return await api.post(request_url, formdata,

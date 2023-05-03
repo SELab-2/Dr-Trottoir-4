@@ -12,6 +12,7 @@ import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
+import {postManual} from "@/lib/building-manual";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -52,11 +53,15 @@ function AdminDataBuildingsEdit() {
                 public_id: public_id,
             };
             try {
+                console.log(router.query.building);
                 if (router.query.building) {
                     const res = await patchBuilding(building, Number(router.query.building));
                 } else {
                     const res = await postBuilding(building);
                 }
+                // if (manual){
+                //     postManual({building:router.query.building, file:manual})
+                // }
                 setShowConfirmation(true);
             } catch (error: any) {
                 setShowConfirmation(false);
