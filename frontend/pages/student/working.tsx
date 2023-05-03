@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form} from "react-bootstrap";
+import {Button, ButtonGroup, Form} from "react-bootstrap";
 import RemarkModal from "@/components/student/remarkModal";
 import {FileList} from "@/components/student/fileList";
 import {
@@ -365,19 +365,19 @@ function StudentWorking() {
                 <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <Form onSubmit={handleSubmit} className="mt-2 mb-2">
                     <span className="h5 fw-bold mt-2">{typeNames[progress.step]}</span>
-                    <div className="mb-2 mt-2">
-                        <label className="form-label">Beschrijving (optioneel):</label>
+                    <Form.Group className="mb-2 mt-2">
+                        <Form.Label className="form-label">Beschrijving (optioneel):</Form.Label>
                         <Form.Control
                             as="textarea"
                             rows={2}
                             value={stepDescription}
                             onChange={(e) => setStepDescription(e.target.value)}
                         />
-                    </div>
+                    </Form.Group>
 
                     <FileList files={picturesAtStep} setFiles={setPicturesAtStep} optional={false} editable/>
 
-                    <div className="btn-group d-flex gap-0 m-0" role="group">
+                    <ButtonGroup className="d-flex gap-0 m-0" role="group">
                         {
                             (progress.step > 0 || progress.currentIndex > 0) &&
                             <Button
@@ -399,7 +399,7 @@ function StudentWorking() {
                             className="btn-dark"
                             type="submit"
                         >{getNextStepIcon()}</Button>
-                    </div>
+                    </ButtonGroup>
                 </Form>
                 {
                     globalRemarks.length > 0 && (
