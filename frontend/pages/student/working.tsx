@@ -1,31 +1,37 @@
+<<<<<<< HEAD
 import React, {useEffect, useState} from "react";
 import {Button, ButtonGroup, Form} from "react-bootstrap";
+=======
+import React, { useEffect, useState } from "react";
+import { Button, Form } from "react-bootstrap";
+>>>>>>> 5b627638a50348133a1e32a72b55c2e57f109a37
 import RemarkModal from "@/components/student/remarkModal";
-import {FileList} from "@/components/student/fileList";
+import { FileList } from "@/components/student/fileList";
 import {
-    getRemarksOfStudentOnTourAtBuilding, patchRemarkAtBuilding,
+    getRemarksOfStudentOnTourAtBuilding,
+    patchRemarkAtBuilding,
     postRemarkAtBuilding,
     RemarkAtBuilding,
-    remarkTypes
+    remarkTypes,
 } from "@/lib/remark-at-building";
 import {
-    getPictureOfRemarkOfSpecificRemark, getPicturePath,
+    getPictureOfRemarkOfSpecificRemark,
+    getPicturePath,
     PictureOfRemarkInterface,
-    postPictureOfRemark
+    postPictureOfRemark,
 } from "@/lib/picture-of-remark";
-import {useRouter} from "next/router";
-import {BuildingInterface} from "@/lib/building";
-import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import { useRouter } from "next/router";
+import { BuildingInterface } from "@/lib/building";
+import { getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
 import StudentHeader from "@/components/header/studentHeader";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {getBuildingsOfTour} from "@/lib/tour";
-import {FileListElement, Progress} from "@/types";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { getBuildingsOfTour } from "@/lib/tour";
+import { FileListElement, Progress } from "@/types";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import BuildingInfoView from "@/components/student/buildingInfoView";
-import {ArrowBack, ArrowForward, Comment, Apartment, AssignmentTurnedIn} from "@mui/icons-material";
+import { ArrowBack, ArrowForward, Comment, Apartment, AssignmentTurnedIn } from "@mui/icons-material";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DataBuildingIdQuery extends ParsedUrlQuery {
     studentOnTourId?: number;
@@ -92,8 +98,8 @@ function StudentWorking() {
             const bot: BuildingInterface[] = res.data;
             setBuildingsOnTour(bot);
             // Set the max index of the progress
-            setProgress(prevState => {
-                const newState = {...prevState};
+            setProgress((prevState) => {
+                const newState = { ...prevState };
                 newState.maxIndex = bot.length - 1;
                 return newState;
             });
@@ -117,7 +123,7 @@ function StudentWorking() {
         if (!studentOnTour) {
             return;
         }
-        getRemarksOfStudentOnTourAtBuilding(buildingId, studentOnTour.id, "OP").then(res => {
+        getRemarksOfStudentOnTourAtBuilding(buildingId, studentOnTour.id, "OP").then((res) => {
             const r: RemarkAtBuilding[] = res.data;
             if (r.length > 0) {
                 setGlobalRemarks(r);
@@ -135,26 +141,28 @@ function StudentWorking() {
         const stepType: { [key: number]: "AA" | "BI" | "VE" } = {
             0: "AA",
             1: "BI",
-            2: "VE"
+            2: "VE",
         };
         const type = stepType[step];
         if (!type) {
             return;
         }
-        getRemarksOfStudentOnTourAtBuilding(buildingId, studentOnTour.id, type).then(res => {
+        getRemarksOfStudentOnTourAtBuilding(buildingId, studentOnTour.id, type).then((res) => {
             const r: RemarkAtBuilding[] = res.data;
             if (r.length > 0) {
                 setStepRemark(r[0]);
                 setStepDescription(r[0].remark);
-                getPictureOfRemarkOfSpecificRemark(r[0].id).then(p => {
+                getPictureOfRemarkOfSpecificRemark(r[0].id).then((p) => {
                     const pictures: PictureOfRemarkInterface[] = p.data;
-                    setPicturesAtStep(pictures.map(picture => {
-                        return {
-                            url: getPicturePath(picture.picture),
-                            pictureId: picture.id,
-                            file: null
-                        };
-                    }));
+                    setPicturesAtStep(
+                        pictures.map((picture) => {
+                            return {
+                                url: getPicturePath(picture.picture),
+                                pictureId: picture.id,
+                                file: null,
+                            };
+                        })
+                    );
                 }, console.error);
             }
         }, console.error);
@@ -171,7 +179,8 @@ function StudentWorking() {
             setErrorMessages(["U moet ten minste 1 foto uploaden."]);
             return;
         }
-        if (stepRemark) { // PATCH the remark
+        if (stepRemark) {
+            // PATCH the remark
             if (stepDescription != stepRemark.remark) {
                 patchRemarkAtBuilding(stepRemark.id, stepDescription).then().catch(console.error);
             }
@@ -181,7 +190,8 @@ function StudentWorking() {
                 }
             });
             increaseStep();
-        } else { // POST
+        } else {
+            // POST
             let timeRegistry = new Date();
             postRemarkAtBuilding(
                 building.id,
@@ -215,12 +225,14 @@ function StudentWorking() {
         changeStep();
         // if step is 2, we go to next building or finish the tour
         if (progress.step === 2) {
-            if (progress.currentIndex === progress.maxIndex) { // finish
+            if (progress.currentIndex === progress.maxIndex) {
+                // finish
                 // route back to schedule
                 if (studentOnTour) {
                     redirectToSchedule(studentOnTour.id);
                 }
-            } else { // next building
+            } else {
+                // next building
                 const newIndex = progress.currentIndex + 1;
                 const newStep = 0;
                 const b = getBuidingAtIndex(newIndex);
@@ -228,8 +240,8 @@ function StudentWorking() {
                     getRemarkInfo(b.id, newStep);
                     getGlobalRemarksOfBuilding(b.id);
                 }
-                setProgress(prevState => {
-                    const newState: Progress = {...prevState};
+                setProgress((prevState) => {
+                    const newState: Progress = { ...prevState };
                     newState.step = newStep;
                     newState.currentIndex = newIndex;
                     return newState;
@@ -242,8 +254,8 @@ function StudentWorking() {
             }
             const newStep = progress.step + 1;
             getRemarkInfo(building.id, newStep);
-            setProgress(prevState => {
-                const newState: Progress = {...prevState};
+            setProgress((prevState) => {
+                const newState: Progress = { ...prevState };
                 newState.step = newStep;
                 return newState;
             });
@@ -253,7 +265,8 @@ function StudentWorking() {
     // Go one step back
     function decreaseStep() {
         changeStep();
-        if (progress.currentIndex > 0 && progress.step === 0) { // Go to previous building
+        if (progress.currentIndex > 0 && progress.step === 0) {
+            // Go to previous building
             const newIndex = progress.currentIndex - 1;
             const newStep = 2;
             const b = getBuidingAtIndex(newIndex);
@@ -261,8 +274,8 @@ function StudentWorking() {
                 getRemarkInfo(b.id, newStep);
                 getGlobalRemarksOfBuilding(b.id);
             }
-            setProgress(prevState => {
-                const newState: Progress = {...prevState};
+            setProgress((prevState) => {
+                const newState: Progress = { ...prevState };
                 newState.step = newStep;
                 newState.currentIndex = newIndex;
                 return newState;
@@ -273,8 +286,8 @@ function StudentWorking() {
             }
             const newStep = progress.step - 1;
             getRemarkInfo(building.id, newStep);
-            setProgress(prevState => {
-                const newState: Progress = {...prevState};
+            setProgress((prevState) => {
+                const newState: Progress = { ...prevState };
                 newState.step = newStep;
                 return newState;
             });
@@ -282,16 +295,16 @@ function StudentWorking() {
     }
 
     // Add a global remark to the list
-    function afterPostGlobalRemark(remark : RemarkAtBuilding) {
-        setGlobalRemarks(prevState => {
+    function afterPostGlobalRemark(remark: RemarkAtBuilding) {
+        setGlobalRemarks((prevState) => {
             return [...prevState, remark];
         });
     }
 
     // Change the global remark after a patch request
-    function afterPatchGlobalRemark(remark : RemarkAtBuilding) {
-        setGlobalRemarks(prevState => {
-            const index = prevState.findIndex(r => r.id === remark.id);
+    function afterPatchGlobalRemark(remark: RemarkAtBuilding) {
+        setGlobalRemarks((prevState) => {
+            const index = prevState.findIndex((r) => r.id === remark.id);
             if (index < 0) {
                 return prevState;
             }
@@ -303,8 +316,8 @@ function StudentWorking() {
 
     // Remove the global remark of a building after a delete request
     function afterDeleteGlobalRemark(remark: RemarkAtBuilding) {
-        setGlobalRemarks(prevState => {
-            const index = prevState.findIndex(r => r.id === remark.id);
+        setGlobalRemarks((prevState) => {
+            const index = prevState.findIndex((r) => r.id === remark.id);
             if (index < 0) {
                 return prevState;
             }
@@ -319,7 +332,7 @@ function StudentWorking() {
         router
             .push({
                 pathname: "/student/schedule",
-                query: {studentOnTourId},
+                query: { studentOnTourId },
             })
             .then();
     }
@@ -329,24 +342,34 @@ function StudentWorking() {
      */
     function getNextStepIcon() {
         if (progress.currentIndex + 1 === buildingsOnTour.length && progress.step === 2) {
-            return <AssignmentTurnedIn/>;
+            return <AssignmentTurnedIn />;
         }
         if (progress.step === 2) {
-            return <><Apartment/><ArrowForward/></>;
+            return (
+                <>
+                    <Apartment />
+                    <ArrowForward />
+                </>
+            );
         }
-        return <ArrowForward/>;
+        return <ArrowForward />;
     }
 
     function getPreviousStepIcon() {
         if (progress.step === 0) {
-            return <><ArrowBack/><Apartment/></>;
+            return (
+                <>
+                    <ArrowBack />
+                    <Apartment />
+                </>
+            );
         }
-        return <ArrowBack/>;
+        return <ArrowBack />;
     }
 
     return (
         <>
-            <StudentHeader/>
+            <StudentHeader />
             <RemarkModal
                 onHide={() => setShowRemarkModal(false)}
                 show={showRemarkModal}
@@ -359,10 +382,12 @@ function StudentWorking() {
                 onDelete={afterDeleteGlobalRemark}
             />
             <div className="m-2">
-                <BuildingInfoView building={building}
-                                  currentIndex={progress.currentIndex}
-                                  amountOfBuildings={buildingsOnTour.length}/>
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                <BuildingInfoView
+                    building={building}
+                    currentIndex={progress.currentIndex}
+                    amountOfBuildings={buildingsOnTour.length}
+                />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                 <Form onSubmit={handleSubmit} className="mt-2 mb-2">
                     <span className="h5 fw-bold mt-2">{typeNames[progress.step]}</span>
                     <Form.Group className="mb-2 mt-2">
@@ -375,7 +400,7 @@ function StudentWorking() {
                         />
                     </Form.Group>
 
-                    <FileList files={picturesAtStep} setFiles={setPicturesAtStep} optional={false} editable/>
+                    <FileList files={picturesAtStep} setFiles={setPicturesAtStep} optional={false} editable />
 
                     <ButtonGroup className="d-flex gap-0 m-0" role="group">
                         {
@@ -386,7 +411,8 @@ function StudentWorking() {
                                 onClick={() => {
                                     decreaseStep();
                                 }}
-                            >{getPreviousStepIcon()}
+                            >
+                                {getPreviousStepIcon()}
                             </Button>
                         }
                         <Button
@@ -401,26 +427,26 @@ function StudentWorking() {
                         >{getNextStepIcon()}</Button>
                     </ButtonGroup>
                 </Form>
-                {
-                    globalRemarks.length > 0 && (
-                        <>
-                            <span className="h6 fw-bold">Mijn algemene opmerkingen:</span>
-                            <ul>
-                                {
-                                    globalRemarks.map((remark, index) => (
-                                        <li key={index}>
-                                            <a style={{color: "royalblue"}} onClick={() => {
-                                                setSelectedGlobalRemark(remark);
-                                                setShowRemarkModal(true);
-                                            }}>
-                                                {`Opmerking ${index + 1}`}</a>
-                                        </li>
-                                    ))
-                                }
-                            </ul>
-                        </>
-                    )
-                }
+                {globalRemarks.length > 0 && (
+                    <>
+                        <span className="h6 fw-bold">Mijn algemene opmerkingen:</span>
+                        <ul>
+                            {globalRemarks.map((remark, index) => (
+                                <li key={index}>
+                                    <a
+                                        style={{ color: "royalblue" }}
+                                        onClick={() => {
+                                            setSelectedGlobalRemark(remark);
+                                            setShowRemarkModal(true);
+                                        }}
+                                    >
+                                        {`Opmerking ${index + 1}`}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </>
+                )}
             </div>
         </>
     );
