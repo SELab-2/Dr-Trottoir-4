@@ -367,11 +367,12 @@ function StudentWorking() {
                     <span className="h5 fw-bold mt-2">{typeNames[progress.step]}</span>
                     <div className="mb-2 mt-2">
                         <label className="form-label">Beschrijving (optioneel):</label>
-                        <textarea
-                            className={`form-control form-control-lg`}
+                        <Form.Control
+                            as="textarea"
+                            rows={2}
                             value={stepDescription}
                             onChange={(e) => setStepDescription(e.target.value)}
-                        ></textarea>
+                        />
                     </div>
 
                     <FileList files={picturesAtStep} setFiles={setPicturesAtStep} optional={false} editable/>
