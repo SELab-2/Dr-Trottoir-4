@@ -65,7 +65,7 @@ export default function FinishedBuildingModal(
             <Modal.Body>
                 {
                     ["AA", "BI", "VE", "OP"].map((t, index) => (
-                        <div className="m-2">
+                        <div className="ms-2 me-2" key={index}>
                             {
                                 getRemarksOfType(t).length > 0 &&
                                 <>

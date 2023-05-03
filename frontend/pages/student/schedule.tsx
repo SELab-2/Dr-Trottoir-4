@@ -89,8 +89,12 @@ function StudentSchedule() {
                                 return (
                                     <a className="list-group-item list-group-item-action" key={`${el.id}-${index}`}
                                        onClick={() => {
-                                           setSelectedBuilding(el);
-                                           setShowFinishedBuildingModal(true);
+                                           if (studentOnTour
+                                               && ! datesEqual(new Date(), new Date(studentOnTour?.date))
+                                               && new Date(studentOnTour?.date) < new Date()) {
+                                               setSelectedBuilding(el);
+                                               setShowFinishedBuildingModal(true);
+                                           }
                                        }}
                                     >
                                         <div className="d-flex w-100 justify-content-between">
