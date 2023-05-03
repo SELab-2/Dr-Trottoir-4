@@ -78,3 +78,9 @@ export interface FileListElement {
     file : File | null;
     pictureId : number | null;
 }
+
+export interface Progress {
+    step : number;
+    currentIndex : number;
+    maxIndex : number;
+}

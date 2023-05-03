@@ -82,6 +82,11 @@ export async function patchRemarkAtBuilding(remarkId: number, remark: string, la
     });
 }
 
+export async function deleteRemarkAtBuilding(remarkId: number): Promise<AxiosResponse<any>> {
+    const delete_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_REMARK_AT_BUILDING}${remarkId}`;
+    return await api.delete(delete_url);
+}
+
 export async function getRemarksOfStudentOnTourAtBuilding(buildingId: number, studentOnTourId: number, type: "AA" | "BI" | "VE" | "OP" | null = null) {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_REMARKS}`;
     return await api.get(request_url, {

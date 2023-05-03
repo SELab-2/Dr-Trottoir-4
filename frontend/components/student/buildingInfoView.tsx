@@ -1,26 +1,85 @@
 import {BuildingInterface, getAddress} from "@/lib/building";
-import {GarbageCollectionInterface, garbageTypes, getGarbageColor} from "@/lib/garbage-collection";
-import {BuildingComment} from "@/lib/building-comment";
-import React from "react";
-import {BuildingManual} from "@/lib/building-manual";
+import {
+    GarbageCollectionInterface,
+    garbageTypes,
+    getGarbageCollectionFromBuilding,
+    getGarbageColor
+} from "@/lib/garbage-collection";
+import {BuildingComment, getAllBuildingCommentsByBuildingID} from "@/lib/building-comment";
+import React, {useEffect, useState} from "react";
+import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/building-manual";
+import {addDays, subDays} from "date-fns";
 
 export default function BuildingInfoView(
     {
         building,
         currentIndex,
         amountOfBuildings,
-        garbageCollections,
-        manual,
-        buildingComments
     }: {
         building: BuildingInterface | null,
         currentIndex: number,
-        amountOfBuildings: number,
-        garbageCollections: { [p: string]: GarbageCollectionInterface[] },
-        manual: BuildingManual | null,
-        buildingComments: BuildingComment[]
+        amountOfBuildings: number
     }
 ) {
+
+    const [garbageCollections, setGarbageCollections] = useState<{ [p: string]: GarbageCollectionInterface[] }>({});
+    const [buildingComments, setBuildingComments] = useState<BuildingComment[]>([]);
+    const [manual, setManual] = useState<BuildingManual | null>(null);
+
+    useEffect(() => {
+        if (! building) {
+            return;
+        }
+        getGarbageCollection(building.id);
+        getBuildingComments(building.id);
+        getBuildingManual(building.id);
+    }, [building]);
+
+    // Get the garbage collection for a building for today
+    function getGarbageCollection(buildingId: number) {
+        const startDate = subDays(new Date(), 1);
+        const endDate = addDays(new Date(), 1);
+        getGarbageCollectionFromBuilding(buildingId, {
+            startDate: startDate,
+            endDate: endDate
+        }).then((res) => {
+            const col: GarbageCollectionInterface[] = res.data;
+            const grouped: { [p: string]: GarbageCollectionInterface[] } = {};
+            grouped[startDate.toISOString().split('T')[0]] = [];
+            grouped[new Date().toISOString().split('T')[0]] = [];
+            grouped[endDate.toISOString().split('T')[0]] = [];
+
+            col.forEach(g => {
+                const dateString: string = new Date(g.date).toISOString().split('T')[0]
+                if (grouped[dateString]) {
+                    grouped[dateString].push(g);
+                }
+            });
+
+            setGarbageCollections(grouped);
+        }, console.error);
+    }
+
+    // Get the comments of a building
+    function getBuildingComments(buildingId: number) {
+        getAllBuildingCommentsByBuildingID(buildingId).then((res) => {
+            const bc: BuildingComment[] = res.data;
+            setBuildingComments(bc);
+        }, console.error);
+    }
+
+    // Get the manual for a building
+    function getBuildingManual(buildingId: number) {
+        getManualsForBuilding(buildingId).then((res) => {
+            const manuals: BuildingManual[] = res.data;
+            if (manuals.length === 0) {
+                return;
+            }
+            const m: BuildingManual = manuals[0];
+            m.file = getManualPath(m.file);
+            setManual(m);
+        }, console.error);
+    }
 
     return (
         <div className="list-group">
@@ -75,7 +134,7 @@ export default function BuildingInfoView(
                 {
                     buildingComments.length > 0 &&
                     <>
-                        <p className="fw-bold mb-0">Opmerkingen bij dit gebouw:</p>
+                        <p className="fw-bold mb-0">Opmerkingen van superstudent/admin:</p>
                         <ul className="mt-0 mb-0">
                             {buildingComments.map((bc: BuildingComment) => (
                                 <li key={bc.id}>
