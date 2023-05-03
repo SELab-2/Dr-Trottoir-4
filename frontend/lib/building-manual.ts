@@ -11,7 +11,7 @@ export interface BuildingManual {
 }
 
 export interface BuildingManualPostInterface {
-    building: string,
+    building: number,
     file: File
 }
 

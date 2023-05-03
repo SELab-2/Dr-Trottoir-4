@@ -1,11 +1,11 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { Form } from "react-bootstrap";
-import { getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding } from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { getUserInfo, userSearchString } from "@/lib/user";
+import React, {ChangeEvent, useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {Form} from "react-bootstrap";
+import {getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding} from "@/lib/building";
+import {getRegion} from "@/lib/region";
+import {getUserInfo, userSearchString} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/syndicAutocomplete";
 import PDFUploader from "@/components/pdfUploader";
@@ -37,7 +37,6 @@ function AdminDataBuildingsEdit() {
 
     const handleSubmit = async () => {
         const form = document.getElementById("buildingForm") as HTMLFormElement;
-        setErrorMessages([requiredFieldsNotFilledMessage]);
         if (form.checkValidity()) {
             const building = {
                 syndic: syndicId,
@@ -54,20 +53,24 @@ function AdminDataBuildingsEdit() {
             };
             try {
                 console.log(router.query.building);
+                let buildingId = Number(router.query.building);
                 if (router.query.building) {
                     const res = await patchBuilding(building, Number(router.query.building));
                 } else {
                     const res = await postBuilding(building);
+                    buildingId = res.data.id;
                 }
-                // if (manual){
-                //     postManual({building:router.query.building, file:manual})
-                // }
+                if (manual) {
+                    await postManual({building: buildingId, file: manual})
+                }
                 setShowConfirmation(true);
             } catch (error: any) {
                 setShowConfirmation(false);
                 console.error("An error occurred:", error.request.responseText);
                 setErrorMessages([error.request.responseText]);
             }
+        } else {
+            setErrorMessages([requiredFieldsNotFilledMessage]);
         }
     };
 
@@ -76,7 +79,6 @@ function AdminDataBuildingsEdit() {
     };
 
     useEffect(() => {
-        setErrorMessages([requiredFieldsNotFilledMessage]);
         if (router.query.building) {
             getBuildingInfo(Number(router.query.building)).then(async (res) => {
                 setStreet(res.data.street);
@@ -106,14 +108,14 @@ function AdminDataBuildingsEdit() {
 
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             <div className={styles.container}>
                 <ConfirmationMessage
                     showConfirm={showConfirmation}
                     confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
                     onClose={setShowConfirmation}
                 />
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
                     <Form.Group controlId="buildingName">
                         <Form.Label>Gebouw naam</Form.Label>
@@ -204,7 +206,7 @@ function AdminDataBuildingsEdit() {
                         setObjectId={setSyndicId}
                         required={true}
                     ></SyndicAutoCompleteComponent>
-                    {!router.query.building && <PDFUploader onUpload={setManual}></PDFUploader>}
+                    <PDFUploader onUpload={setManual}></PDFUploader>
                 </Form>
                 <button onClick={goBack} className="ml-2">
                     Terug
