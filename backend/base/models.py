@@ -371,7 +371,7 @@ class RemarkAtBuilding(models.Model):
                 Lower("remark"),
                 "building",
                 "student_on_tour",
-                "timestamp",
+                "timestamp", "type",
                 name="unique_remark_for_building",
                 violation_error_message=_(
                     "This remark was already uploaded to this building by this student on the tour."

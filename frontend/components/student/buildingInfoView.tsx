@@ -40,6 +40,14 @@ export default function BuildingInfoView(
                                     <p className="text-center m-0 p-0"
                                        style={{borderBottom: "1px solid #ccc"}}>{new Date(key).toLocaleDateString("en-GB")}</p>
                                     {
+                                        col.length === 0 &&
+                                        <p key={0} style={{
+                                            color: "black"
+                                        }} className="text-center m-0 p-0">
+                                            Geen ophaling
+                                        </p>
+                                    }
+                                    {
                                         col.map((gar: GarbageCollectionInterface) => (
                                             <p key={gar.id} style={{
                                                 backgroundColor: getGarbageColor(garbageTypes[gar.garbage_type]),
