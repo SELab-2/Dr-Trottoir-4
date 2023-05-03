@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import React, {useEffect, useState} from "react";
 import {Button, ButtonGroup, Form} from "react-bootstrap";
-=======
-import React, { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
->>>>>>> 5b627638a50348133a1e32a72b55c2e57f109a37
 import RemarkModal from "@/components/student/remarkModal";
 import { FileList } from "@/components/student/fileList";
 import {
