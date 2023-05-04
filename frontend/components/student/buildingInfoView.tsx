@@ -9,7 +9,11 @@ import {BuildingComment, getAllBuildingCommentsByBuildingID} from "@/lib/buildin
 import React, {useEffect, useState} from "react";
 import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/building-manual";
 import {addDays, subDays} from "date-fns";
+import {ListGroup, ListGroupItem} from "react-bootstrap";
 
+/**
+ * The info that is displayed when a student is doing a tour
+ */
 export default function BuildingInfoView(
     {
         building,
@@ -82,12 +86,12 @@ export default function BuildingInfoView(
     }
 
     return (
-        <div className="list-group">
-            <div className="list-group-item">
+        <ListGroup>
+            <ListGroupItem>
                 <span className="h4 fw-bold">{building ? getAddress(building) : ""}</span>
                 <p className="mb-0">{building ? `Gebouw ${currentIndex + 1}/${amountOfBuildings}` : ""}</p>
-            </div>
-            <div className="list-group-item m-0 p-0" style={{display: "flex"}}>
+            </ListGroupItem>
+            <ListGroupItem className="m-0 p-0" style={{display: "flex"}}>
                 {
                     Object.keys(garbageCollections)
                         .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
@@ -123,8 +127,8 @@ export default function BuildingInfoView(
                         })
 
                 }
-            </div>
-            <div className="list-group-item">
+            </ListGroupItem>
+            <ListGroupItem>
                 {
                     manual &&
                     <a href={manual.file} download style={{textDecoration: "underline", color: "royalblue"}}>
@@ -144,8 +148,8 @@ export default function BuildingInfoView(
                         </ul>
                     </>
                 }
-            </div>
-        </div>
+            </ListGroupItem>
+        </ListGroup>
     );
 
 }

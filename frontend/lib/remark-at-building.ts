@@ -73,11 +73,10 @@ export async function postRemarkAtBuilding(buildingId: number, studentOnTourId: 
     });
 }
 
-export async function patchRemarkAtBuilding(remarkId: number, remark: string, lastModified: Date = new Date()): Promise<AxiosResponse<any>> {
+export async function patchRemarkAtBuilding(remarkId: number, remark: string): Promise<AxiosResponse<any>> {
     const patch_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_REMARK_AT_BUILDING}${remarkId}`;
     return await api.patch(patch_url, {
-        remark: remark,
-        timestamp: lastModified.toISOString(),
+        remark: remark
     }, {
         headers: {"Content-Type": "application/json"},
     });
