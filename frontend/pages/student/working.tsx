@@ -386,7 +386,7 @@ function StudentWorking() {
                 <Form onSubmit={handleSubmit} className="mt-2 mb-2">
                     <span className="h5 fw-bold mt-2">{typeNames[progress.step]}</span>
                     <Form.Group className="mb-2 mt-2">
-                        <Form.Label className="form-label">Beschrijving (optioneel):</Form.Label>
+                        <Form.Label>Beschrijving (optioneel):</Form.Label>
                         <Form.Control
                             as="textarea"
                             rows={2}
