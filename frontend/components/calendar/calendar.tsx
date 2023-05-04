@@ -7,7 +7,13 @@ import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
 import {messages} from "@/locales/localizerCalendar";
-import {getAllStudentOnTourFromDate, postStudentOnTour, StudentOnTour} from "@/lib/student-on-tour";
+import {
+    deleteBulkStudentOnTour,
+    getAllStudentOnTourFromDate, patchBulkStudentOnTour,
+    postBulkStudentOnTour,
+    postStudentOnTour,
+    StudentOnTour
+} from "@/lib/student-on-tour";
 
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -45,6 +51,7 @@ const MyCalendar: FC<Props> = (props) => {
     });
 
     useEffect(() => {
+        console.log("useEffect");
         if (props.students.length > 0 && props.tours.length > 0) {
             assignColors(props.tours);
             getFromRange({start: startOfWeek(new Date()), end: endOfWeek(new Date())});
@@ -52,11 +59,9 @@ const MyCalendar: FC<Props> = (props) => {
     }, [props.students, props.tours]);
 
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
-        // If the range is an array, get the first & last element of the array
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
         let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
         setRange({start: startDate, end: endDate})
-        // Set the new range
         if (!rendered.includes(startDate.toISOString())) {
             setRendered([...rendered, startDate.toISOString()])
             onEventsLoad({start_date: startDate, end_date: endDate});
@@ -64,6 +69,7 @@ const MyCalendar: FC<Props> = (props) => {
     }
 
     const onEventsLoad = ({start_date, end_date}: { start_date: Date; end_date: Date }) => {
+        console.log("onEventsLoad");
         getAllStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
             (res) => {
                 const list: StudentOnTour[] = res.data;
@@ -204,6 +210,7 @@ const MyCalendar: FC<Props> = (props) => {
                 return event.id
             }
         });
+        // @ts-ignore
         const newIDs : number[] = deletedIDs.filter(Boolean);
         setEvents(updatedEvents);
         setDeletedEvents([...deletedEvents, ...newIDs]);
@@ -217,21 +224,48 @@ const MyCalendar: FC<Props> = (props) => {
         const patch = toLoad.filter((event : MyEvent) => {
             return event.id !== null && event.edit;
         })
-        console.log(post);
-        console.log(patch);
-        console.log(deletedEvents);
 
-        // for (let e in toLoad) {
-        //     postStudentOnTour(toLoad[e].tour.id, toLoad[e].student.id, formatDate(toLoad[e].start)).then(
-        //         (_) => {
-        //             setSuccessMessage("Succes! Planning is opgeslagen.")
-        //         },
-        //         (err) => {
-        //             const e = handleError(err);
-        //             setErrorMessages([...errorMessages, e[0]]);
-        //         }
-        //     );
-        // }
+        const post_data = post.map((myEvent : MyEvent) => {
+           return {tour: myEvent.tour.id, student: myEvent.student.id, date: formatDate(myEvent.start)}
+        });
+
+        const patch_data = patch.map((myEvent : MyEvent) => {
+            if (myEvent.id !== null) {
+                let id : string = (myEvent.id).toString()
+                return {[id]: {tour: myEvent.tour.id, student: myEvent.student.id, date: formatDate(myEvent.start)}}
+            }
+        });
+        const right_patch_format = patch_data.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+
+        postBulkStudentOnTour(post_data).then(
+                (_) => {
+                setSuccessMessage("Nieuwe planning opgeslagen.")
+            },
+            (err) => {
+                const e = handleError(err);
+                setErrorMessages([...errorMessages, ...e]);
+            }
+        );
+        patchBulkStudentOnTour(right_patch_format).then(
+                    (_) => {
+                setSuccessMessage("Aanpassingen aan planning opgeslagen.")
+            },
+            (err) => {
+                const e = handleError(err);
+                setErrorMessages([...errorMessages, ...e]);
+                console.log([...errorMessages, ...e])
+            }
+        );
+        deleteBulkStudentOnTour(deletedEvents).then(
+                    (_) => {
+                setSuccessMessage("Verwijderingen zijn doorgevoerd.")
+            },
+            (err) => {
+                const e = handleError(err);
+                setErrorMessages([...errorMessages, ...e]);
+                console.log([...errorMessages, ...e])
+            }
+        );
     };
 
     const assignColors = (tours: Tour[]) => {

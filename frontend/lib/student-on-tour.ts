@@ -20,7 +20,7 @@ export interface StudentOnTourStringDate {
 export interface StudentOnTourPost {
     tour: number;
     student: number;
-    date: Date;
+    date: string;
 }
 
 export async function postStudentOnTour(tour: number, student: number, date: string): Promise<AxiosResponse<any>> {
@@ -34,14 +34,14 @@ export async function postStudentOnTour(tour: number, student: number, date: str
 
 export async function postBulkStudentOnTour(data : StudentOnTourPost[]) {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_STUDENT_ON_TOUR}`;
-    return await api.post(request_url, JSON.stringify(data),
+    return await api.post(request_url, JSON.stringify({data: data}),
         {
             headers: {"Content-Type": "application/json"},
         }
     );
 }
 
-export async function patchBulkStudentOnTour(data : StudentOnTour[]) {
+export async function patchBulkStudentOnTour(data : any) {
     //TODO to right format
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_STUDENT_ON_TOUR}`;
     return await api.patch(request_url, JSON.stringify(data),
@@ -53,7 +53,8 @@ export async function patchBulkStudentOnTour(data : StudentOnTour[]) {
 
 export async function deleteBulkStudentOnTour(data : number[]) {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_STUDENT_ON_TOUR}`;
-    return await api.delete(request_url, { data: JSON.stringify(data) });
+    console.log({ data: {"ids": data }})
+    return await api.delete(request_url, { data: JSON.stringify({ids: data })});
 }
 
 export async function getStudentOnTour(studentOnTourId: number) {

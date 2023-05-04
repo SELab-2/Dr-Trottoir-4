@@ -2,7 +2,7 @@ import AdminHeader from "@/components/header/adminHeader";
 import React, { useEffect, useMemo, useState } from "react";
 import { RegionInterface, getAllRegions, postRegion, patchRegion, deleteRegion } from "@/lib/region";
 import { withAuthorisation } from "@/components/withAuthorisation";
-import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
