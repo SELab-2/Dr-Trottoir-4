@@ -5,11 +5,11 @@ import { getTour, patchTour, postTour, swapBuildingsOnTour, Tour } from "@/lib/t
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 import MaterialReactTable, { MRT_ColumnDef, MRT_Row } from "material-react-table";
-import { Box, Tooltip } from "@mui/material";
+import {Box, IconButton, Tooltip} from "@mui/material";
 import { Button } from "react-bootstrap";
 import SaveIcon from "@mui/icons-material/Save";
 import { withAuthorisation } from "@/components/withAuthorisation";
-import { Delete } from "@mui/icons-material";
+import {Add, Delete, Remove} from "@mui/icons-material";
 import { handleError } from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
@@ -473,7 +473,7 @@ function AdminDataToursEdit() {
                             muiTableHeadCellProps: {
                                 align: "center",
                             },
-                            header: "Acties",
+                            header: "Verwijder",
                         },
                     }}
                     enablePagination={false}
@@ -503,15 +503,14 @@ function AdminDataToursEdit() {
                     renderRowActions={({ row }) => (
                         <Box sx={{ display: "flex", gap: "1rem" }}>
                             <Tooltip arrow placement="left" title="Verwijder van ronde">
-                                <Button
-                                    variant="warning"
+                                <IconButton
                                     onClick={() => {
                                         const buildingOnTourView: BuildingOnTourView = row.original;
                                         removeFromBuildingOnTour(buildingOnTourView);
                                     }}
                                 >
-                                    -
-                                </Button>
+                                    <Remove/>
+                                </IconButton>
                             </Tooltip>
                         </Box>
                     )}
@@ -526,7 +525,7 @@ function AdminDataToursEdit() {
                             muiTableHeadCellProps: {
                                 align: "center",
                             },
-                            header: "Acties",
+                            header: "Voeg toe",
                         },
                     }}
                     enablePagination={false}
@@ -538,15 +537,14 @@ function AdminDataToursEdit() {
                     renderRowActions={({ row }) => (
                         <Box sx={{ display: "flex", gap: "1rem" }}>
                             <Tooltip arrow placement="left" title="Voeg toe aan ronde">
-                                <Button
-                                    variant="warning"
+                                <IconButton
                                     onClick={() => {
                                         const bnot: BuildingNotOnTourView = row.original;
                                         addToBuildingOnTour(bnot);
                                     }}
                                 >
-                                    +
-                                </Button>
+                                    <Add/>
+                                </IconButton>
                             </Tooltip>
                         </Box>
                     )}
