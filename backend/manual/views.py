@@ -25,7 +25,8 @@ class Default(APIView):
     @extend_schema(responses=post_docs(ManualSerializer))
     def post(self, request: Request):
         """
-        Create a new manual with data from post
+        Create a new manual with data from post.
+        You do not need to provide a version number. If none is given, the backend will provide one for you.
         """
         data = request_to_dict(request.data)
         manual_instance = Manual()
