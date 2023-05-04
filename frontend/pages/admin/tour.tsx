@@ -6,7 +6,7 @@ import { getAllUsers, User, userSearchString } from "@/lib/user";
 import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
-import { BuildingInterface } from "@/lib/building";
+import { BuildingInterface, getBuildingInfo } from "@/lib/building";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useRouter } from "next/router";
 import AdminHeader from "@/components/header/adminHeader";
@@ -24,6 +24,7 @@ function AdminTour() {
     const [allTours, setAllTours] = useState<Tour[]>([]);
     const [allStudentsOnTour, setAllStudentsOnTour] = useState<StudentOnTour[]>([]);
     const [allStudents, setAllStudents] = useState<User[]>([]);
+    const [allBuildingsOnTour, setAllBuildingsOnTour] = useState<BuildingOnTour[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [selectedStudentId, setSelectedStudentId] = useState<number>(0);
     const [selectedStudentName, setSelectedStudentName] = useState<string>("");
@@ -70,14 +71,31 @@ function AdminTour() {
     }, [router.isReady]);
 
     useEffect(() => {
-        const fetchBuildings = async () => {
+        const fetchBuildingsOnTour = async () => {
             if (selectedTourId) {
                 const response = await getAllBuildingsOnTourWithTourID(selectedTourId);
-                setAllBuildings(response.data);
+                setAllBuildingsOnTour(response.data);
+            }
+        };
+        fetchBuildingsOnTour();
+    }, [selectedTourId]);
+
+    useEffect(() => {
+        const fetchBuildings = async () => {
+            if (allBuildingsOnTour) {
+                const buildingPromises = allBuildingsOnTour.map((buildingOnTour) => getBuildingInfo(buildingOnTour.building));
+    
+                try {
+                    const buildingResponses = await Promise.all(buildingPromises);
+                    const fetchedBuildings = buildingResponses.map((response) => response.data);
+                    setAllBuildings(fetchedBuildings);
+                } catch (error) {
+                    console.error('Error fetching buildings:', error);
+                }
             }
         };
         fetchBuildings();
-    }, [selectedTourId]);
+    }, [allBuildingsOnTour]);
 
     useEffect(() => {
         if (selectedStudentId && selectedTourId) {
@@ -120,7 +138,6 @@ function AdminTour() {
             onChange={(e) => setSelectedDate(e.target.value)}
             />
         </div>
-
         {studentOnTourId && (
             <div style={{ display: "flex" }}>
             <div style={{ width: "20%" }}>
