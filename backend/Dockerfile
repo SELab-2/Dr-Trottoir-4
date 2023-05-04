@@ -1,6 +1,8 @@
 FROM python:3.11-alpine
 
+# prevents python from writing pyc files to disc
 ENV PYTHONUNBUFFERED 1
+# prevents python from buffering stdout and stderr
 ENV PYTHONDONTWRITEBYTECODE 1
 
 WORKDIR /app/backend
@@ -16,5 +18,4 @@ RUN apk add --virtual .build-deps --no-cache postgresql-dev gcc python3-dev musl
 
 COPY . /app/backend/
 
-CMD [ "python", "manage.py", "runserver", "0.0.0.0:8000" ]
 

@@ -1,15 +1,15 @@
-import {TiPencil} from "react-icons/ti";
-import React, {useEffect, useState} from "react";
+import { TiPencil } from "react-icons/ti";
+import React, { useEffect, useState } from "react";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
-import {BuildingInterface} from "@/lib/building";
-import {getRegion} from "@/lib/region";
-import {useRouter} from "next/router";
+import { BuildingInterface } from "@/lib/building";
+import { getRegion } from "@/lib/region";
+import { useRouter } from "next/router";
 
 function BuildingInfo({
-                          building,
-                          setBuilding,
-                          type,
-                      }: {
+    building,
+    setBuilding,
+    type,
+}: {
     building: BuildingInterface;
     setBuilding: (b: any) => void;
     type: "syndic" | "admin" | "public";
