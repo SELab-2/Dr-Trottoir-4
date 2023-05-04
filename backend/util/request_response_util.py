@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter
 from rest_framework import status
+from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 
 
@@ -64,6 +65,25 @@ def get_list_param(request, name, required=False):
             raise BadRequest(_("The query parameter {name} is required").format(name=name))
         else:
             return None
+    return param
+
+
+def get_arbitrary_param(request, name, allowed_keys=None, required=False):
+    if allowed_keys is None:
+        allowed_keys = set()
+    param = request.GET.get(name, None)
+    if not param:
+        if required:
+            raise BadRequest(_("The query parameter {name} is required").format(name=name))
+        else:
+            return None
+    if allowed_keys:
+        if param not in allowed_keys:
+            raise BadRequest(
+                _("The query param {name} must be a value in {allowed_keys}").format(
+                    name=name, allowed_keys=allowed_keys
+                )
+            )
     return param
 
 
@@ -156,6 +176,10 @@ def not_found(object_name="Object"):
 
 def bad_request(object_name="Object"):
     return Response({"message": _("bad input for {}").format(object_name)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+def bad_request_custom_error_message(err_msg):
+    return Response({"message": err_msg}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def bad_request_relation(object1: str, object2: str):

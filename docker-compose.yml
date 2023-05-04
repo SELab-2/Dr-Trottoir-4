@@ -1,44 +1,89 @@
 version: "2.4"
 
 services:
-  reverseproxy:
-    image: reverseproxy
+
+  nginx:
+    image: nginx:1.23.4-alpine
     ports:
       - 2002:2002
       - 80:80
       - 443:443
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT}
     build:
       context: ./nginx
       dockerfile: Dockerfile
+      args:
+        ENVIRONMENT: ${ENVIRONMENT}
+
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - backend
+      - frontend
+
+  redis:
+    image: redis:7.2-rc1-alpine
+    expose:
+      - 6379
+    volumes:
+      - ./redis:/data
     restart: always
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
 
-  # database
-  web:
+  database:
     image: postgres:15-alpine
-    ports:
-      - '5432:5432'
-
+    expose:
+      - 5432
     environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=django
-      - POSTGRES_DB=drtrottoir
-
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./data/drtrottoir:/var/lib/postgresql/data/
-
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U django -d drtrottoir" ]
       interval: 5s
       timeout: 5s
       retries: 5
 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      SECRET_EMAIL_USER: ${SECRET_EMAIL_USER}
+      SECRET_EMAIL_USER_PSWD: ${SECRET_EMAIL_USER_PSWD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      DJANGO_SETTINGS_MODULE: config.settings
+    command: [ "daphne", "config.asgi:application", "-b", "0.0.0.0", "-p", "8000" ]
+    expose:
+      - 9000
+    volumes:
+      - ./backend:/app/backend
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    links:
+      - database
+      - redis
+
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        ENVIRONMENT: ${ENVIRONMENT}
 
+    expose:
+      - 3000
     volumes:
       - ./frontend/pages:/app/frontend/pages
       - ./frontend/components:/app/frontend/components
@@ -46,26 +91,6 @@ services:
       - ./frontend/public:/app/frontend/public
       - ./frontend/styles:/app/frontend/styles
       - ./frontend/locales:/app/frontend/locales
-
     depends_on:
-      - backend
-      - reverseproxy
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=django
-      - POSTGRES_DB=drtrottoir
-
-    volumes:
-      - ./backend:/app/backend
-
-    mem_limit: 4g
-
-    depends_on:
-      web:
-        condition: service_healthy
+      backend:
+        condition: service_started

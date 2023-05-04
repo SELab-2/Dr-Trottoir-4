@@ -97,7 +97,7 @@ class RemarkAtBuildingAuthorizationTests(BaseAuthTest):
         super().__init__(methodName)
 
     def test_remark_at_building_list(self):
-        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 200, "Syndic": 403}
         self.list_view("remark-at-building/", codes)
 
     def test_insert_remark_at_building(self):
