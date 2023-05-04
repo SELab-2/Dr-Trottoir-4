@@ -233,7 +233,7 @@ class ReadOnlyManualFromSyndic(BasePermission):
     message = _("You can only view manuals that are linked to one of your buildings")
 
     def has_permission(self, request, view):
-        return request.user.role.name == "syndic" and request.method in SAFE_METHODS
+        return request.user.role.name.lower() == "syndic" and request.method in SAFE_METHODS
 
     def has_object_permission(self, request, view, obj: Manual):
         return request.user.id == obj.building.syndic_id

@@ -42,7 +42,7 @@ function ManualView() {
                 <p>Kon de handleiding niet laden</p>
             ) : (
                 <div style={{
-                    height: "90vh",
+                    height: "88vh",
                     width: "100vw",
                     display: "flex",
                     justifyContent: "center",

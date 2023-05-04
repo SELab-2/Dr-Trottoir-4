@@ -107,10 +107,10 @@ function BuildingInfo({
 
             <br/>
 
-            {query.id ? (
+            {query.id && type != "public" ? (
                 <>
                     <h3>Handleiding</h3>
-                    <ManualList id={query.id}/>
+                    <ManualList id={query.id} type={type}/>
                 </>
             ) : null}
 
