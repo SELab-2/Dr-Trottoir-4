@@ -1,17 +1,11 @@
-import {GarbageCollectionEvent} from "@/types";
+import { GarbageCollectionEvent } from "@/types";
 import styles from "@/components/calendar/calendar.module.css";
-import {getAddress} from "@/lib/building";
+import { getAddress } from "@/lib/building";
 
-export default function GarbageCollectionEventComponentWithoutAddress(
-    {
-        event
-    }: {
-        event: GarbageCollectionEvent
-    }
-) {
+export default function GarbageCollectionEventComponentWithoutAddress({ event }: { event: GarbageCollectionEvent }) {
     return (
         <div>
-            <label style={{fontSize: '15px'}}>{event.garbageType}</label>
+            <label style={{ fontSize: "15px" }}>{event.garbageType}</label>
         </div>
     );
 }
