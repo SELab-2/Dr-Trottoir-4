@@ -8,7 +8,7 @@ import { addToLobby, Lobby, newVerificationCode, patchLobby } from "@/lib/lobby"
 import { useTranslation } from "react-i18next";
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {UserView} from "@/types";
+import { UserView } from "@/types";
 import Select from "react-select";
 
 export default function EditLobbyModal({
@@ -160,13 +160,10 @@ export default function EditLobbyModal({
                         <div className="form-outline mb-4">
                             <label className="form-label">Rol:</label>
                             <Select
-                                options={
-                                    allRoles.map((role: Role) => {
-                                            return {value: role.name, label: t(role.name) as string}
-                                        }
-                                    )
-                                }
-                                value={role ? {value: role, label: t(role)} : {}}
+                                options={allRoles.map((role: Role) => {
+                                    return { value: role.name, label: t(role.name) as string };
+                                })}
+                                value={role ? { value: role, label: t(role) } : {}}
                                 onChange={(s) => {
                                     if (s && s.value) {
                                         setRole(s.value);
