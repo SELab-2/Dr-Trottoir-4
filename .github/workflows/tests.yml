@@ -18,30 +18,18 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.events.pull_request.head.repo.full_name }}
 
+      - name: 'Create .env file'
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+
       - name: Build Docker
         run: docker-compose build
-        env:
-          ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
-          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          SECRET_EMAIL_USER: ${{ secrets.SECRET_EMAIL_USER }}
-          SECRET_EMAIL_USER_PSWD: ${{ secrets.SECRET_EMAIL_USER_PSWD }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
 
       - name: Run Tests
         run: |
           docker-compose run --name backend_test backend python manage.py test picture_of_remark/tests.py users/tests.py remark_at_building/tests.py lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role,remark_at_building,picture_of_remark,users --with-xunit --xunit-file=/app/coverage.xml
           docker cp backend_test:/app/coverage.xml coverage.xml
           docker-compose down
-        env:
-          ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
-          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          SECRET_EMAIL_USER: ${{ secrets.SECRET_EMAIL_USER }}
-          SECRET_EMAIL_USER_PSWD: ${{ secrets.SECRET_EMAIL_USER_PSWD }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2.6.1
