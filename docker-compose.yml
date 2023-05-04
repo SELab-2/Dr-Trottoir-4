@@ -79,9 +79,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      args:
-        ENVIRONMENT: ${ENVIRONMENT}
-
+    command: sh -c 'if [ "${ENVIRONMENT}" = "production" ]; then npm start; else npm run dev; fi'
     expose:
       - 3000
     volumes:
