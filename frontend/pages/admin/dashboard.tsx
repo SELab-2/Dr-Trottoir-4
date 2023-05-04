@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getAllTours, Tour } from "@/lib/tour";
-import { getAllStudentOnTourFromDate, getAllStudentOnTourFromToday, StudentOnTour } from "@/lib/student-on-tour";
+import { getAllStudentOnTourFromDate, getAllStudentOnTourFromToday, getStudentOnTour, getStudentOnTourProgress, StudentOnTour } from "@/lib/student-on-tour";
 import { getAllUsers, User } from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
@@ -16,6 +16,15 @@ import {
     RemarkAtBuildingInterface,
     translateRemartAtBuildingType,
 } from "@/lib/remark-at-building";
+
+interface WebSocketsResponse {
+    current_building_index: number;
+}
+
+interface ProgressResponse {
+    current_building_index: number;
+    max_building_index: number;
+}
 
 const GreenLinearProgress = styled(LinearProgress)(() => ({
     height: "20px",
@@ -33,6 +42,8 @@ function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [remarksRecord, setRemarksRecord] = useState<Record<string, number>>({});
     const [progressRecord, setProgressRecord] = useState<Record<string, number>>({});
+    const [currentBuildingIndex, setCurrentBuildingIndex] = useState<Record<string, number>>({});
+    const [maxBuildingIndex, setMaxBuildingIndex] = useState<Record<string, number>>({});
 
     const getRemarkText = (numberOfRemarks: number): string => {
         let extension = "";
@@ -41,6 +52,45 @@ function AdminDashboard() {
         }
 
         return `${numberOfRemarks} opmerking${extension}`;
+    };
+
+    const setupWebSocketForStudentOnTour = (studentOnTourId: number) => {
+        const ws = new WebSocket(`ws://localhost:2002/ws/student-on-tour/${studentOnTourId}/`);
+      
+        ws.addEventListener("open", (event) => {
+          console.log(`WebSocket connection opened for studentOnTourId: ${studentOnTourId}`);
+        });
+      
+        ws.addEventListener("message", (event) => {
+          const data : WebSocketsResponse = JSON.parse(event.data); 
+          currentBuildingIndex[studentOnTourId] = data.current_building_index;
+          console.log(`New current_building_index for ${studentOnTourId}: ${data.current_building_index}`);
+        });
+      
+        ws.addEventListener("close", (event) => {
+          console.log(`WebSocket connection closed for studentOnTourId: ${studentOnTourId}`);
+        });
+      
+        ws.addEventListener("error", (event) => {
+          console.error(`WebSocket error for studentOnTourId: ${studentOnTourId}`, event);
+        });
+      
+        return ws;
+      };
+
+    const setInitialProgress = async (studentOnTourId: number) => {
+        await getStudentOnTourProgress(studentOnTourId).then(
+            (res) => {
+                const data : ProgressResponse = res.data;
+                maxBuildingIndex[studentOnTourId] = data.max_building_index;
+                currentBuildingIndex[studentOnTourId] = data.current_building_index;
+            },
+            (err) => {
+                console.error(err);
+            }
+
+        )
+
     };
 
     const fetchRemarks = async (studentOnTour: StudentOnTour): Promise<number> => {
@@ -69,12 +119,6 @@ function AdminDashboard() {
             }
         );
         return remarksCount;
-    };
-
-    const fetchProgress = async (studentOnTourId: number): Promise<number> => {
-        // Fetch progress
-        // TODO update this after the progress can be queried
-        return studentOnTourId * 5;
     };
 
     const redirectToRemarksPage = async (studentOnTour: StudentOnTour) => {
@@ -111,22 +155,35 @@ function AdminDashboard() {
     }, []);
 
     useEffect(() => {
+        if (!studentsOnTours.length) return;
+
+        const webSocketConnections : WebSocket[] = [];
+
+        studentsOnTours.forEach(async (studentOnTour) => {
+            await setInitialProgress(studentOnTour.id);
+
+            const ws = setupWebSocketForStudentOnTour(studentOnTour.id);
+            webSocketConnections.push(ws);
+        });
+
         setLoading(false);
-        const fetchData = async () => {
-            const newRemarks: Record<string, number> = {};
-            const newProgress: Record<string, number> = {};
-            for (const studentOnTour of studentsOnTours) {
-                const remarks = await fetchRemarks(studentOnTour);
-                const progress = await fetchProgress(studentOnTour.id);
 
-                newRemarks[studentOnTour.id] = remarks;
-                newProgress[studentOnTour.id] = progress;
-            }
-            setRemarksRecord(newRemarks);
-            setProgressRecord(newProgress);
-        };
+        return () => {
+            webSocketConnections.forEach((ws) => ws.close());
+        }
 
-        fetchData();
+        // const fetchData = async () => {
+        //     const newRemarks: Record<string, number> = {};
+        //     for (const studentOnTour of studentsOnTours) {
+        //         const remarks = await fetchRemarks(studentOnTour);
+        //         setInitialProgress(studentOnTour.id);
+
+        //         newRemarks[studentOnTour.id] = remarks;
+        //     }
+        //     setRemarksRecord(newRemarks);
+        // };
+
+        // fetchData();
     }, [tours, studentsOnTours, users]);
 
     if (loading) {
@@ -166,11 +223,11 @@ function AdminDashboard() {
                                             <Box sx={{ width: "100%" }}>
                                                 <GreenLinearProgress
                                                     variant="determinate"
-                                                    value={progressRecord[studentOnTour.id] || 0}
+                                                    value={maxBuildingIndex[studentOnTour.id] / currentBuildingIndex[studentOnTour.id] || 0}
                                                 />
                                             </Box>
                                         </td>
-                                        <td>
+                                        {/* <td>
                                             {remarksRecord[studentOnTour.id] > 0 ? (
                                                 <button onClick={() => redirectToRemarksPage(studentOnTour)}>
                                                     <LiveField
@@ -182,7 +239,7 @@ function AdminDashboard() {
                                             ) : (
                                                 "Geen opmerkingen"
                                             )}
-                                        </td>
+                                        </td> */}
                                     </tr>
                                 );
                             })}

@@ -51,8 +51,7 @@ export async function getAllStudentOnTourFromToday() {
     return getAllStudentOnTourFromDate({startDate: date, endDate: date});
 }
 
-// TODO this will be fully implemented once the required endpoint for it exists
-export async function getProgress(studentOnTourId: number){
-    const request_url = "";
-    return 0.5;
+export async function getStudentOnTourProgress(studentOnTourId: number){
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_STUDENT_ON_TOUR}${studentOnTourId}/progress/`;
+    return await api.get(request_url);
 }
