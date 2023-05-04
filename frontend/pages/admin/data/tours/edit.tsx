@@ -5,11 +5,11 @@ import { getTour, patchTour, postTour, swapBuildingsOnTour, Tour } from "@/lib/t
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 import MaterialReactTable, { MRT_ColumnDef, MRT_Row } from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import { Button } from "react-bootstrap";
 import SaveIcon from "@mui/icons-material/Save";
 import { withAuthorisation } from "@/components/withAuthorisation";
-import {Add, Delete, Remove} from "@mui/icons-material";
+import { Add, Delete, Remove } from "@mui/icons-material";
 import { handleError } from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
 import styles from "@/styles/Login.module.css";
@@ -509,7 +509,7 @@ function AdminDataToursEdit() {
                                         removeFromBuildingOnTour(buildingOnTourView);
                                     }}
                                 >
-                                    <Remove/>
+                                    <Remove />
                                 </IconButton>
                             </Tooltip>
                         </Box>
@@ -543,7 +543,7 @@ function AdminDataToursEdit() {
                                         addToBuildingOnTour(bnot);
                                     }}
                                 >
-                                    <Add/>
+                                    <Add />
                                 </IconButton>
                             </Tooltip>
                         </Box>
