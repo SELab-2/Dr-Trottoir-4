@@ -4,6 +4,12 @@ import PatchBuildingSyndicModal from "@/components/building/buildingComponents/e
 import {BuildingInterface} from "@/lib/building";
 import {getRegion} from "@/lib/region";
 import {useRouter} from "next/router";
+import ManualList from "@/components/manual/ManualList";
+
+
+interface BuildingQuery {
+    id?: string;
+}
 
 function BuildingInfo({
                           building,
@@ -15,6 +21,8 @@ function BuildingInfo({
     type: "syndic" | "admin" | "public";
 }) {
     const router = useRouter();
+    const query = router.query as BuildingQuery;
+
     const [editBuilding, setEditBuilding] = useState(false);
     const [regionName, setRegionName] = useState("/");
 
@@ -96,6 +104,17 @@ function BuildingInfo({
             <p>Werktijd: {get_building_key("duration")}</p>
             <p>Client id: {get_building_key("client_id")}</p>
             <p>Public id: {get_building_key("public_id")}</p>
+
+            <br/>
+
+            {query.id ? (
+                <>
+                    <h3>Handleiding</h3>
+                    <ManualList id={query.id}/>
+                </>
+            ) : null}
+
+
         </>
     );
 }
