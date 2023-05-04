@@ -426,6 +426,7 @@ function AdminDataToursEdit() {
                                 }
                             }}
                             placeholder={"Selecteer regio"}
+                            menuPortalTarget={document.querySelector('body')}
                         />
                     </>
                 )}
