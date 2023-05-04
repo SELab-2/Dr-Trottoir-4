@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import StudentHeader from "@/components/header/studentHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
-import {WorkingView} from "@/components/student/workingView";
+import { WorkingView } from "@/components/student/workingView";
 
 interface ParsedUrlQuery {}
 
@@ -24,11 +24,10 @@ function StudentWorking() {
         }
     }, [router.isReady]);
 
-
     return (
         <>
             <StudentHeader />
-            <WorkingView studentOnTourId={studentOnTourId} redirectTo="/student/overview"/>
+            <WorkingView studentOnTourId={studentOnTourId} redirectTo="/student/overview" />
         </>
     );
 }

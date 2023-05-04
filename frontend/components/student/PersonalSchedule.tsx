@@ -1,19 +1,13 @@
 import ToursList from "@/components/student/toursList";
-import {useEffect, useState} from "react";
-import {getCurrentUser, User} from "@/lib/user";
-import {getToursOfStudent, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
-import {getTour, Tour} from "@/lib/tour";
-import {getRegion, RegionInterface} from "@/lib/region";
-import {datesEqual} from "@/lib/date";
-import {useRouter} from "next/router";
+import { useEffect, useState } from "react";
+import { getCurrentUser, User } from "@/lib/user";
+import { getToursOfStudent, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import { getTour, Tour } from "@/lib/tour";
+import { getRegion, RegionInterface } from "@/lib/region";
+import { datesEqual } from "@/lib/date";
+import { useRouter } from "next/router";
 
-export default function PersonalSchedule(
-    {
-        redirectTo
-    } : {
-        redirectTo : string
-    }
-) {
+export default function PersonalSchedule({ redirectTo }: { redirectTo: string }) {
     const router = useRouter();
 
     const [user, setUser] = useState<User | null>(null);
@@ -105,7 +99,6 @@ export default function PersonalSchedule(
             })
             .then();
     }
-
 
     return (
         <>

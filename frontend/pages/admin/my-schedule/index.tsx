@@ -1,15 +1,14 @@
 import PersonalSchedule from "@/components/student/PersonalSchedule";
 import AdminHeader from "@/components/header/adminHeader";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 function MySchedule() {
     return (
         <>
             <AdminHeader />
-            <PersonalSchedule redirectTo="/admin/my-schedule/overview"/>
+            <PersonalSchedule redirectTo="/admin/my-schedule/overview" />
         </>
     );
 }

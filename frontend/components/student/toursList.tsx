@@ -1,7 +1,7 @@
 import { StudentOnTour } from "@/lib/student-on-tour";
 import { Tour } from "@/lib/tour";
 import { RegionInterface } from "@/lib/region";
-import {ListGroup, ListGroupItem} from "react-bootstrap";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 
 /**
  * A component for the list of the tours a student is/was assigned to
@@ -28,12 +28,7 @@ export default function ToursList({
                     <ListGroup>
                         {studentOnTours.map((el) => {
                             return (
-                                <ListGroupItem
-                                    as="a"
-                                    action
-                                    onClick={() => onSelect(el.id)}
-                                    key={el.id}
-                                >
+                                <ListGroupItem as="a" action onClick={() => onSelect(el.id)} key={el.id}>
                                     <div className="d-flex w-100 justify-content-between">
                                         <h5 className="mb-1">{allTours[el.tour] ? allTours[el.tour].name : ""}</h5>
                                         <small>{el.date.toLocaleDateString("en-GB")}</small>

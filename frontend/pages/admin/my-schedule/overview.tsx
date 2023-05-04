@@ -1,11 +1,10 @@
 import AdminHeader from "@/components/header/adminHeader";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import PlannedBuildingList from "@/components/student/PlannedBuildingList";
-import {useRouter} from "next/router";
-import {useEffect, useState} from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DataScheduleQuery extends ParsedUrlQuery {
     studentOnTourId?: number;
@@ -14,7 +13,6 @@ interface DataScheduleQuery extends ParsedUrlQuery {
 function MyTourOverview() {
     const router = useRouter();
     const [studentOnTourId, setStudentOnTourId] = useState<number | null>(null);
-
 
     useEffect(() => {
         const query: DataScheduleQuery = router.query as DataScheduleQuery;
@@ -26,7 +24,7 @@ function MyTourOverview() {
     return (
         <>
             <AdminHeader />
-            <PlannedBuildingList redirectTo="/admin/my-schedule/working" studentOnTourId={studentOnTourId}/>
+            <PlannedBuildingList redirectTo="/admin/my-schedule/working" studentOnTourId={studentOnTourId} />
         </>
     );
 }

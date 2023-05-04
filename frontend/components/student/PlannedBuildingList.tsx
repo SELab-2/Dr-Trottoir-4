@@ -1,22 +1,20 @@
 import FinishedBuildingModal from "@/components/student/finishedBuildingModal";
-import {Button, ListGroup, ListGroupItem} from "react-bootstrap";
-import {BuildingInterface, getAddress} from "@/lib/building";
-import {datesEqual} from "@/lib/date";
-import React, {useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
-import {getBuildingsOfTour, getTour, Tour} from "@/lib/tour";
-import {getRegion, RegionInterface} from "@/lib/region";
+import { Button, ListGroup, ListGroupItem } from "react-bootstrap";
+import { BuildingInterface, getAddress } from "@/lib/building";
+import { datesEqual } from "@/lib/date";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import { getBuildingsOfTour, getTour, Tour } from "@/lib/tour";
+import { getRegion, RegionInterface } from "@/lib/region";
 
-export default function PlannedBuildingList(
-    {
-        studentOnTourId,
-        redirectTo
-    }: {
-        studentOnTourId: number | null;
-        redirectTo: string
-    }
-) {
+export default function PlannedBuildingList({
+    studentOnTourId,
+    redirectTo,
+}: {
+    studentOnTourId: number | null;
+    redirectTo: string;
+}) {
     const router = useRouter();
 
     const [tour, setTour] = useState<Tour | null>(null);
@@ -68,15 +66,19 @@ export default function PlannedBuildingList(
         }
         await router.push({
             pathname: redirectTo,
-            query: {studentOnTourId: studentOnTour?.id},
+            query: { studentOnTourId: studentOnTour?.id },
         });
     }
 
     return (
         <>
-            <FinishedBuildingModal onHide={() => setShowFinishedBuildingModal(false)} show={showFinishedBuildingModal}
-                                   building={selectedBuilding}
-                                   setBuilding={setSelectedBuilding} studentOnTour={studentOnTour}/>
+            <FinishedBuildingModal
+                onHide={() => setShowFinishedBuildingModal(false)}
+                show={showFinishedBuildingModal}
+                building={selectedBuilding}
+                setBuilding={setSelectedBuilding}
+                studentOnTour={studentOnTour}
+            />
             <div className="mt-3 mb-1 ms-2 me-2">
                 <span className="h1 fw-bold">{tour ? `Ronde ${tour?.name}` : ""}</span>
                 <p className="h5 fw-bold">{region ? `Regio ${region}` : ""}</p>
@@ -92,9 +94,11 @@ export default function PlannedBuildingList(
                                         action
                                         key={`${el.id}-${index}`}
                                         onClick={() => {
-                                            if (studentOnTour
-                                                && !datesEqual(new Date(), new Date(studentOnTour?.date))
-                                                && new Date(studentOnTour?.date) < new Date()) {
+                                            if (
+                                                studentOnTour &&
+                                                !datesEqual(new Date(), new Date(studentOnTour?.date)) &&
+                                                new Date(studentOnTour?.date) < new Date()
+                                            ) {
                                                 setSelectedBuilding(el);
                                                 setShowFinishedBuildingModal(true);
                                             }
