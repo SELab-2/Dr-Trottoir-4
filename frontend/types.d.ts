@@ -67,8 +67,10 @@ export type UserView = {
 }
 
 export interface MyEvent extends Event {
+    id : number | null;
     tour: Tour;
     student: User;
     start: Date;
     end: Date;
+    edit: boolean;
 }
