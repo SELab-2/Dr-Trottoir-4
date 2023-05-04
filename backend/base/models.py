@@ -119,7 +119,7 @@ class Building(models.Model):
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
-    public_id = models.CharField(max_length=32, blank=True, null=True)
+    public_id = models.CharField(max_length=32, blank=True, null=True, unique=True)
 
     """
     Only a syndic can own a building, not a student.

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { Button, Form, Modal } from "react-bootstrap";
-import { BuildingInterface, BuildingSyndicPostInterface } from "@/lib/building";
+import React, {useEffect, useState} from "react";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {Button, Form, Modal} from "react-bootstrap";
+import {BuildingInterface, BuildingSyndicPostInterface} from "@/lib/building";
 import {
     getNewPublicIdUtil,
     handleInputChangeUtil,
@@ -9,11 +9,11 @@ import {
 } from "@/components/building/buildingComponents/editModals/handleUtil";
 
 function PatchBuildingSyndicModal({
-    show,
-    closeModal,
-    building,
-    setBuilding,
-}: {
+                                      show,
+                                      closeModal,
+                                      building,
+                                      setBuilding,
+                                  }: {
     show: boolean;
     closeModal: () => void;
     building: BuildingInterface | null;
@@ -89,11 +89,11 @@ function PatchBuildingSyndicModal({
                                 <a
                                     href={
                                         building?.public_id
-                                            ? `${process.env.NEXT_PUBLIC_HOST}public/building/${building?.public_id}`
-                                            : "#"
+                                            ? `/public/building?id=${building?.public_id}`
+                                            : ""
                                     }
                                 >
-                                    {`${process.env.NEXT_PUBLIC_HOST}public/building/${
+                                    {`${process.env.NEXT_PUBLIC_HOST}/public/building?id=${
                                         building?.public_id ? building?.public_id : "<public_id>"
                                     }`}
                                 </a>
@@ -101,7 +101,7 @@ function PatchBuildingSyndicModal({
                         </Form.Group>
 
                         {/*TODO: below line should probably a custom component with a state boolean*/}
-                        <div style={{ background: "red" }}>{errorText}</div>
+                        <div style={{background: "red"}}>{errorText}</div>
 
                         <Button
                             variant="danger"
