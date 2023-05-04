@@ -121,14 +121,12 @@ function AdminTour() {
         <div>
         <div>
             <StudentAutocomplete
-            value={selectedStudentName}
-            onChange={setSelectedStudentName}
+            initialId={selectedStudentId}
             setObjectId={setSelectedStudentId}
             required={true}
             />
             <TourAutocomplete
-            value={selectedTourName}
-            onChange={setSelectedTourName}
+            initialId={selectedTourId}
             setObjectId={setSelectedTourId}
             required={true}
             />
