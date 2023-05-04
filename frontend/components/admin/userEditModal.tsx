@@ -7,7 +7,7 @@ import { patchUser } from "@/lib/user";
 import { useTranslation } from "react-i18next";
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {RegionInterface} from "@/lib/region";
+import { RegionInterface } from "@/lib/region";
 import Select from "react-select";
 
 export function UserEditModal({
@@ -141,21 +141,18 @@ export function UserEditModal({
                         <div className="form-outline mb-4">
                             <label className="form-label">Rol:</label>
                             <Select
-                                options={
-                                    allRoles.map((role: Role) => {
-                                            return {value: role.name, label: t(role.name) as string}
-                                        }
-                                    )
-                                }
-                                value={selectedUser ? {value: selectedUser.role, label: t(selectedUser.role)} : {}}
+                                options={allRoles.map((role: Role) => {
+                                    return { value: role.name, label: t(role.name) as string };
+                                })}
+                                value={selectedUser ? { value: selectedUser.role, label: t(selectedUser.role) } : {}}
                                 onChange={(s) => {
                                     if (s && s.value) {
                                         setSelectedUser((prevState: UserView | null) =>
                                             prevState
                                                 ? {
-                                                    ...prevState,
-                                                    role: s.value
-                                                }
+                                                      ...prevState,
+                                                      role: s.value,
+                                                  }
                                                 : null
                                         );
                                     }
