@@ -1,11 +1,10 @@
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiExample
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import StudentOnTour
 from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount, IsStudent
-from base.serializers import StudOnTourSerializer
+from base.serializers import StudOnTourSerializer, SuccessSerializer
 from util.request_response_util import *
 
 TRANSLATE = {"tour": "tour_id", "student": "student_id"}
@@ -29,6 +28,151 @@ class Default(APIView):
             return r
 
         return post_success(StudOnTourSerializer(student_on_tour_instance))
+
+
+class StudentOnTourBulk(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    serializer_class = StudOnTourSerializer
+
+    @extend_schema(
+        description="POST body consists of a data component that is a list of Student-Tour instances. "
+        "This enables the frontend to save a schedule in 1 request instead of multiple. "
+        "If a save fails, all the previous saves will be undone as well.",
+        request=StudOnTourSerializer,
+        responses={200: SuccessSerializer, 400: None},
+        examples=[
+            OpenApiExample(
+                "Request body for bulk add",
+                value={
+                    "data": [
+                        {"tour": 0, "student": 3, "date": "2023-04-28"},
+                        {"tour": 1, "student": 2, "date": "2023-04-28"},
+                    ]
+                },
+                description="",
+                request_only=True,
+            )
+        ],
+    )
+    def post(self, request):
+        data = request_to_dict(request.data)
+        """
+        request body should look like this:
+        {
+            data:
+            [
+                {Tour:x, student:x, date: x},
+                {Tour:x2, student:x, date: x2},
+                // more of this
+            ]
+        }
+        """
+        list_done = []
+        for d in data["data"]:
+            print(d)
+            student_on_tour_instance = StudentOnTour()
+
+            set_keys_of_instance(student_on_tour_instance, d, TRANSLATE)
+
+            if r := try_full_clean_and_save(student_on_tour_instance):
+                for elem in list_done:
+                    elem.delete()
+                return r
+            list_done.append(student_on_tour_instance)
+
+        dummy = type("", (), {})()
+        dummy.data = {"data": "success"}
+
+        return post_success(serializer=dummy)
+
+    @extend_schema(
+        description="DELETE body consists of an ids component that is a list of Student-Tour instances. "
+        "This enables the frontend to remove assignments in a schedule in 1 request instead of multiple."
+        "If a remove fails, the previous removes will **NOT** be undone."
+        """
+                    <h3> special</h3>
+                    <br/>**Request body for bulk remove:**<br/>
+                    <i>
+                        {
+                            "ids":
+                                [
+                                    0,
+                                    1,
+                                    3
+                                ]
+                        }
+                    </i>""",
+        request=StudOnTourSerializer,
+        responses={200: SuccessSerializer, 400: None},
+    )
+    def delete(self, request):
+        data = request_to_dict(request.data)
+        """
+        request body should look like this:
+        {
+        ids:
+            [
+                id1,
+                id2,
+                id3,
+                ...
+            ]
+        }
+        """
+        for d in data["ids"]:
+            print(d)
+            student_on_tour_instance = StudentOnTour.objects.filter(id=d).first()
+            if not student_on_tour_instance:
+                return not_found("StudentOnTour")
+            student_on_tour_instance.delete()
+
+        dummy = type("", (), {})()
+        dummy.data = {"data": "success"}
+
+        return post_success(serializer=dummy)
+
+    @extend_schema(
+        description="PATCH body is a map of ids on Student-Tour instances (with new data). "
+        "This enables the frontend to edit a schedule in 1 request instead of multiple. "
+        "If a save fails, the previous saves will **NOT** be undone.",
+        request=StudOnTourSerializer,
+        responses={200: SuccessSerializer, 400: None},
+        examples=[
+            OpenApiExample(
+                "Request body for bulk edit",
+                value={
+                    0: {"tour": 0, "student": 3, "date": "2023-04-28"},
+                    1: {"tour": 1, "student": 2, "date": "2023-04-28"},
+                },
+                description="**note that the ids should be strings, not integers**",
+                request_only=True,
+            )
+        ],
+    )
+    def patch(self, request):
+        data = request_to_dict(request.data)
+        """
+        request body should look like this:
+        {
+            id1: {tour:x, student: y, date:z},
+            // more of this
+        }
+        """
+        for StudentOnTour_id in data:
+            print(StudentOnTour_id)
+            student_on_tour_instance = StudentOnTour.objects.filter(id=StudentOnTour_id).first()
+            if not student_on_tour_instance:
+                return not_found("StudentOnTour")
+            print(student_on_tour_instance)
+            set_keys_of_instance(student_on_tour_instance, data[StudentOnTour_id], TRANSLATE)
+            print(student_on_tour_instance)
+            if r := try_full_clean_and_save(student_on_tour_instance):
+                return r
+
+        dummy = type("", (), {})()
+        dummy.data = {"data": "success"}
+
+        return post_success(serializer=dummy)
 
 
 class TourPerStudentView(APIView):
