@@ -9,9 +9,9 @@ import nlBE from "date-fns/locale/nl-BE";
 import {messages} from "@/locales/localizerCalendar";
 import {
     deleteBulkStudentOnTour,
-    getAllStudentOnTourFromDate, patchBulkStudentOnTour,
+    getAllStudentOnTourFromDate,
+    patchBulkStudentOnTour,
     postBulkStudentOnTour,
-    postStudentOnTour,
     StudentOnTour
 } from "@/lib/student-on-tour";
 
@@ -39,7 +39,7 @@ const MyCalendar: FC<Props> = (props) => {
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
     const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
-    const [successMessage, setSuccessMessage] = useState<string>("");
+    const [successMessages, setSuccessMessages] = useState<string[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [tourColors, setTourColors] = useState<{ [key: number]: string }>({});
     const [events, setEvents] = useState<MyEvent[]>([]);
@@ -76,26 +76,35 @@ const MyCalendar: FC<Props> = (props) => {
                 for (let a in tours) {
                     const t = parseInt(a);
                     const value = tours[t];
-                    // @ts-ignore
-                    let tour: Tour = props.tours.find((tour: Tour) => tour.id === t);
-                    for (let b in value) {
-                        const v = parseInt(b);
-                        const item = value[v];
-                        // @ts-ignore
-                        let student: User = props.students.find((student: User) => student.id === item.student);
-                        let start = new Date(item.date);
-                        let end = addDays(start, 1);
-                        start.setHours(0);
-                        end.setHours(0);
-                        data.push({id: item.id, tour: tour, student: student, start: start, end: end, edit: false});
+                    let tour: Tour | undefined = props.tours.find((tour: Tour) => tour.id === t);
+                    if (tour !== undefined) {
+                        for (let b in value) {
+                            const v = parseInt(b);
+                            const item = value[v];
+                            let student: User | undefined = props.students.find((student: User) => student.id === item.student);
+                            if (student !== undefined) {
+                                let start = new Date(item.date);
+                                let end = addDays(start, 1);
+                                start.setHours(0);
+                                end.setHours(0);
+                                data.push({
+                                    id: item.id,
+                                    tour: tour,
+                                    student: student,
+                                    start: start,
+                                    end: end,
+                                    edit: false
+                                });
+                            }
+                        }
+                        data = data.filter(Boolean);
                     }
-                    data = data.filter(Boolean);
                 }
                 onEventsAdd(data);
             },
             (err) => {
                 const e = handleError(err);
-                setErrorMessages(e);
+                setErrorMessages([...errorMessages, ...e]);
                 console.error(err);
             }
         );
@@ -126,6 +135,7 @@ const MyCalendar: FC<Props> = (props) => {
         }
         onEventsAdd(newEvents);
         setRendered([...rendered, start.toISOString()])
+        setSuccessMessages([...successMessages, `Gekopieerd naar week van ${formatDate(start)}`])
     };
 
     const onEventSelection = (e: Event) => {
@@ -164,6 +174,7 @@ const MyCalendar: FC<Props> = (props) => {
         });
     };
 
+    // @ts-ignore
     const onEventResize: withDragAndDropProps["onEventResize"] = (args: EventInteractionArgs<MyEvent>) => {
         const {event, start, end} = args;
         let resizedEvents = [];
@@ -173,24 +184,29 @@ const MyCalendar: FC<Props> = (props) => {
             let nextDate = addDays(currentDate, 1);
             nextDate.setHours(2);
             if (formatDate(currentDate) !== formatDate(event.start)) {
-                resizedEvents.push({id: null, tour: event.tour, student: event.student, start: currentDate, end: nextDate, edit: false});
+                resizedEvents.push({
+                    id: null,
+                    tour: event.tour,
+                    student: event.student,
+                    start: currentDate,
+                    end: nextDate,
+                    edit: false
+                });
             }
             currentDate = nextDate;
             currentDate.setHours(0);
         }
         onEventsAdd(resizedEvents)
-        console.log(event)
-        console.log(resizedEvents)
     };
 
     const onEventDelete = (event: MyEvent) => {
-        const deleted : MyEvent | undefined = events.find((currentEvent : MyEvent) => {
+        const deleted: MyEvent | undefined = events.find((currentEvent: MyEvent) => {
             if (currentEvent == event) {
                 return currentEvent.id
             }
         });
         if (deleted != undefined && deleted.id != null) {
-             setDeletedEvents([...deletedEvents, deleted.id]);
+            setDeletedEvents([...deletedEvents, deleted.id]);
         }
         setEvents((currentEvents) => {
             return currentEvents.filter((currentEvent) => {
@@ -203,14 +219,14 @@ const MyCalendar: FC<Props> = (props) => {
         const removedTours = events.filter((e) => {
             return e.tour.id == event.tour.id && e.start >= range.start && e.start <= range.end;
         });
-        const updatedEvents : MyEvent[] = events.filter(e => !removedTours.includes(e));
-        const deletedIDs : (number| undefined)[] = removedTours.map((event) => {
+        const updatedEvents: MyEvent[] = events.filter(e => !removedTours.includes(e));
+        const deletedIDs: (number | undefined)[] = removedTours.map((event) => {
             if (event != undefined && event.id != null) {
                 return event.id
             }
         });
         // @ts-ignore
-        const newIDs : number[] = deletedIDs.filter(Boolean);
+        const newIDs: number[] = deletedIDs.filter(Boolean);
         setEvents(updatedEvents);
         setDeletedEvents([...deletedEvents, ...newIDs]);
     };
@@ -220,53 +236,62 @@ const MyCalendar: FC<Props> = (props) => {
         const post = toLoad.filter((event: MyEvent) => {
             return event.id == null;
         });
-        const patch = toLoad.filter((event : MyEvent) => {
-            return event.id !== null && event.edit;
+        const patch = toLoad.filter((event: MyEvent) => {
+            return event.id !== null && event.id !== undefined && event.edit;
         })
-        const post_data = post.map((myEvent : MyEvent) => {
-           return {tour: myEvent.tour.id, student: myEvent.student.id, date: formatDate(myEvent.start)}
+        const post_data = post.map((myEvent: MyEvent) => {
+            return {tour: myEvent.tour.id, student: myEvent.student.id, date: formatDate(myEvent.start)}
         });
 
-        const patch_data = patch.map((myEvent : MyEvent) => {
-            if (myEvent.id !== null) {
-                let id : string = (myEvent.id).toString()
+        const patch_data = patch.map((myEvent: MyEvent) => {
+            if (myEvent.id !== null && myEvent.id !== undefined) {
+                let id: string = (myEvent.id).toString()
                 return {[id]: {tour: myEvent.tour.id, student: myEvent.student.id, date: formatDate(myEvent.start)}}
             }
         });
-        const right_patch_format = patch_data.reduce((acc, curr) => ({ ...acc, ...curr }), {});
-
-        postBulkStudentOnTour(post_data).then(
-            (_) => {
-                setSuccessMessage("Nieuwe planning opgeslagen.")
-            },
-            (err) => {
-                const e = handleError(err);
-                setErrorMessages([...errorMessages, ...e]);
-            }
-        );
-        patchBulkStudentOnTour(right_patch_format).then(
-            (_) => {
-                setSuccessMessage("Aanpassingen aan planning opgeslagen.")
-            },
-            (err) => {
-                const e = handleError(err);
-                setErrorMessages([...errorMessages, ...e]);
-                console.log([...errorMessages, ...e])
-            }
-        );
-        deleteBulkStudentOnTour(deletedEvents).then(
-            (_) => {
-                setSuccessMessage("Verwijderingen zijn doorgevoerd.")
-            },
-            (err) => {
-                const e = handleError(err);
-                setErrorMessages([...errorMessages, ...e]);
-            }
-        );
+        const right_patch_format = patch_data.reduce((acc, curr) => ({...acc, ...curr}), {});
+        let messages: string[] = []
+        if (post.length !== 0) {
+            postBulkStudentOnTour(post_data).then(
+                (_) => {
+                    messages.push("Nieuwe planning opgeslagen.");
+                    setSuccessMessages([...successMessages, ...messages])
+                },
+                (err) => {
+                    const e = handleError(err);
+                    setErrorMessages([...errorMessages, ...e]);
+                }
+            );
+        }
+        if (patch.length != 0) {
+            patchBulkStudentOnTour(right_patch_format).then(
+                (_) => {
+                    messages.push("Aanpassingen aan planning opgeslagen.")
+                    setSuccessMessages([...successMessages, ...messages])
+                },
+                (err) => {
+                    const e = handleError(err);
+                    setErrorMessages([...errorMessages, ...e]);
+                    console.log([...errorMessages, ...e])
+                }
+            );
+        }
+        if (deletedEvents.length !== 0) {
+            deleteBulkStudentOnTour(deletedEvents).then(
+                (_) => {
+                    messages.push("Verwijderingen zijn doorgevoerd.")
+                    setSuccessMessages([...successMessages, ...messages])
+                },
+                (err) => {
+                    const e = handleError(err);
+                    setErrorMessages([...errorMessages, ...e]);
+                }
+            );
+        }
     };
 
     const assignColors = (tours: Tour[]) => {
-        const col : { [key: number]: string } = {}
+        const col: { [key: number]: string } = {}
         for (let tour in tours) {
             col[tours[tour].id] = colors[tour]
         }
@@ -276,25 +301,30 @@ const MyCalendar: FC<Props> = (props) => {
     return (
         <>
             <div>
-                <button className="btn btn-primary mb-3" onClick={() => {
-                    setPopupIsOpenAdd(true)
-                }}>
-                    Voeg ronde toe
-                </button>
-                <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>
-                    Sla planning op
-                </button>
-                <button className="btn btn-primary mb-3" onClick={() => {
-                    setPopupIsOpenLoad(true)
-                }}>
-                    Kopieer naar nieuwe week
-                </button>
-                <button className="btn btn-primary mb-3" onClick={() => {console.log(events); console.log(deletedEvents)}}>Events</button>
-                {successMessage && (
+                <div>
+                    <button className="btn btn-primary mb-3" onClick={() => {
+                        setPopupIsOpenAdd(true)
+                    }}>
+                        Voeg ronde toe
+                    </button>
+                    <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>
+                        Sla planning op
+                    </button>
+                    <button className="btn btn-primary mb-3" onClick={() => {
+                        setPopupIsOpenLoad(true)
+                    }}>
+                        Kopieer naar nieuwe week
+                    </button>
+                </div>
+                {successMessages.length !== 0 && (
                     <div className={"visible alert alert-success alert-dismissible fade show"}>
-                        <p>{successMessage}</p>
+                        <ul>
+                            {successMessages.map((suc, i) => (
+                                <li key={i}>{suc}</li>
+                            ))}
+                        </ul>
                         <button type="button" className="btn-close" data-bs-dismiss="alert"
-                                onClick={() => setSuccessMessage("")}/>
+                                onClick={() => setSuccessMessages([])}/>
                     </div>
                 )}
                 {errorMessages.length !== 0 && (
@@ -316,7 +346,7 @@ const MyCalendar: FC<Props> = (props) => {
                 views={['week', 'day', 'agenda']}
                 events={events}
                 components={{event: CustomDisplay}}
-                eventPropGetter={(event : any) => {
+                eventPropGetter={(event: any) => {
                     const backgroundColor = tourColors[event.tour.id];
                     return {style: {backgroundColor, color: "white"}};
                 }}

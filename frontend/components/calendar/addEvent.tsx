@@ -7,6 +7,7 @@ import {Tour} from "@/lib/tour";
 import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import {useTranslation} from "react-i18next";
+import {formatDate} from "@/lib/date";
 
 function AddEventModal(data: any) {
     const {allStudents, allTours, isOpen, onClose, onSaveMultiple} = data;
@@ -189,7 +190,7 @@ function AddEventModal(data: any) {
                             <label>Start datum:</label>
                             <input
                                 type="date"
-                                value={start ? start.toISOString().substring(0, 10) : ""}
+                                value={start ? formatDate(start) : ""}
                                 onChange={handleStartDateChange}
                                 className="form-control"
                             />
