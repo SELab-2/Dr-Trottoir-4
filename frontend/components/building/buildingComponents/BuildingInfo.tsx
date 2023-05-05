@@ -1,22 +1,20 @@
-import {TiPencil} from "react-icons/ti";
-import React, {useEffect, useState} from "react";
+import { TiPencil } from "react-icons/ti";
+import React, { useEffect, useState } from "react";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
-import {BuildingInterface} from "@/lib/building";
-import {getRegion} from "@/lib/region";
-import {useRouter} from "next/router";
+import { BuildingInterface } from "@/lib/building";
+import { getRegion } from "@/lib/region";
+import { useRouter } from "next/router";
 import ManualList from "@/components/manual/ManualList";
-
 
 interface BuildingQuery {
     id?: string;
 }
 
-
 function BuildingInfo({
-                          building,
-                          setBuilding,
-                          type,
-                      }: {
+    building,
+    setBuilding,
+    type,
+}: {
     building: BuildingInterface;
     setBuilding: (b: any) => void;
     type: "syndic" | "admin" | "public";
@@ -106,16 +104,14 @@ function BuildingInfo({
             <p>Client id: {get_building_key("client_id")}</p>
             <p>Public id: {get_building_key("public_id")}</p>
 
-            <br/>
+            <br />
 
             {query.id && type != "public" ? (
                 <>
                     <h3>Handleiding</h3>
-                    <ManualList id={query.id} type={type}/>
+                    <ManualList id={query.id} type={type} />
                 </>
             ) : null}
-
-
         </>
     );
 }
