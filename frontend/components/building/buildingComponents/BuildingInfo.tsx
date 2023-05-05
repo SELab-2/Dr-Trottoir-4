@@ -11,6 +11,7 @@ interface BuildingQuery {
     id?: string;
 }
 
+
 function BuildingInfo({
                           building,
                           setBuilding,

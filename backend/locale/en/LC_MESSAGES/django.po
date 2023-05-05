@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-01 15:30+0200\n"
+"POT-Creation-Date: 2023-05-03 15:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -154,34 +154,34 @@ msgstr ""
 msgid "This index is already in use."
 msgstr ""
 
-#: base/models.py:313
+#: base/models.py:317
 msgid "A syndic can't do tours"
 msgstr ""
 
-#: base/models.py:317
+#: base/models.py:321
 #, python-brace-format
 msgid "Student ({user_email}) doesn't do tours in this region ({tour_region})."
 msgstr ""
 
-#: base/models.py:329
+#: base/models.py:342
 msgid "The student is already assigned to this tour on this date."
 msgstr ""
 
-#: base/models.py:373
+#: base/models.py:386
 msgid ""
 "This remark was already uploaded to this building by this student on the "
 "tour."
 msgstr ""
 
-#: base/models.py:393
+#: base/models.py:406
 msgid "The building already has this upload."
 msgstr ""
 
-#: base/models.py:429
+#: base/models.py:442
 msgid "The building already has a manual with the same version number"
 msgstr ""
 
-#: base/models.py:446
+#: base/models.py:459
 msgid "The name for this template already exists."
 msgstr ""
 
@@ -249,11 +249,16 @@ msgstr ""
 msgid "You can only view manuals that are linked to one of your buildings"
 msgstr ""
 
-#: config/settings.py:238
+#: base/permissions.py:243
+msgid ""
+"You cannot edit buildings on a tour when a student is actively doing the tour"
+msgstr ""
+
+#: config/settings.py:237
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: config/settings.py:239
+#: config/settings.py:238
 msgid "English"
 msgstr "Engels"
 
@@ -296,46 +301,46 @@ msgstr ""
 msgid "Superuser must have is_superuser=True."
 msgstr ""
 
-#: util/request_response_util.py:17
+#: util/request_response_util.py:18
 #, python-brace-format
 msgid "The query parameter {name} should be an integer"
 msgstr ""
 
-#: util/request_response_util.py:20 util/request_response_util.py:37
-#: util/request_response_util.py:45 util/request_response_util.py:64
-#: util/request_response_util.py:76
+#: util/request_response_util.py:21 util/request_response_util.py:38
+#: util/request_response_util.py:46 util/request_response_util.py:65
+#: util/request_response_util.py:77
 #, python-brace-format
 msgid "The query parameter {name} is required"
 msgstr ""
 
-#: util/request_response_util.py:31
+#: util/request_response_util.py:32
 #, python-brace-format
 msgid ""
 "The date parameter '{name}': '{param}' hasn't the appropriate form (=YYYY-MM-"
 "DD)."
 msgstr ""
 
-#: util/request_response_util.py:54
+#: util/request_response_util.py:55
 #, python-brace-format
 msgid ""
 "Invalid value for boolean parameter '{name}': '{param}' (true or false "
 "expected)"
 msgstr ""
 
-#: util/request_response_util.py:82
+#: util/request_response_util.py:83
 #, python-brace-format
 msgid "The query param {name} must be a value in {allowed_keys}"
 msgstr ""
 
-#: util/request_response_util.py:173
+#: util/request_response_util.py:174
 msgid "{} was not found"
 msgstr ""
 
-#: util/request_response_util.py:177
+#: util/request_response_util.py:178
 msgid "bad input for {}"
 msgstr ""
 
-#: util/request_response_util.py:187
+#: util/request_response_util.py:188
 #, python-brace-format
 msgid "There is no {object1} that is linked to {object2} with given id."
 msgstr ""
