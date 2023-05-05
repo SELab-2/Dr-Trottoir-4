@@ -24,8 +24,8 @@ function AdminCommunication() {
 
     const [templateText, setTemplateText] = useState("");
     const [updatedTemplateText, setUpdatedTemplateText] = useState("");
-    const [templateId, setTemplateId] = useState("");
-    const [userId, setUserId] = useState("");
+    const [templateId, setTemplateId] = useState<number>();
+    const [userId, setUserId] = useState<number>();
     const router = useRouter();
     const query: DataCommunicationQuery = router.query as DataCommunicationQuery;
 
@@ -68,8 +68,8 @@ function AdminCommunication() {
         setUpdatedTemplateText(changedVariablesText);
     };
 
-    async function routeToBuildings(syndicId: string) {
-        const currentUser = allUsers.find((e) => e.id === Number(syndicId));
+    async function routeToBuildings(syndicId: number) {
+        const currentUser = allUsers.find((e) => e.id === syndicId);
         await router.push({
             pathname: `data/buildings/`,
             query: { syndic: currentUser?.email },
@@ -83,9 +83,9 @@ function AdminCommunication() {
                 setAllTemplates(emailTemplates);
                 let currentTemplate = emailTemplates[0];
                 if (query.template) {
-                    currentTemplate = emailTemplates.find((e) => e.id === Number(query.template)) || emailTemplates[0];
+                    currentTemplate = emailTemplates.find((e) => e.id === query.template) || emailTemplates[0];
                 }
-                setTemplateId(currentTemplate.id.toString());
+                setTemplateId(currentTemplate.id);
                 setTemplateText(currentTemplate.template);
             },
             (err) => {
@@ -98,9 +98,9 @@ function AdminCommunication() {
             setAllUsers(users);
             let currentUser = users[0];
             if (query.user) {
-                currentUser = users.find((e) => e.id == Number(query.user)) || users[0];
+                currentUser = users.find((e) => e.id == query.user) || users[0];
             }
-            setUserId(currentUser.id.toString());
+            setUserId(currentUser.id);
         });
 
         getAllBuildings().then((res) => {
@@ -113,7 +113,7 @@ function AdminCommunication() {
         const changedVariablesText = fillInVariables(templateText);
         setUpdatedTemplateText(changedVariablesText);
 
-        const template = allTemplates.find((e) => e.id === Number(templateId));
+        const template = allTemplates.find((e) => e.id === templateId);
         if (template) {
             setTemplateText(template.template);
         }
@@ -154,7 +154,9 @@ function AdminCommunication() {
                                 variant="secondary"
                                 size="lg"
                                 onClick={() => {
-                                    routeToBuildings(userId).then();
+                                    if (userId) {
+                                        routeToBuildings(userId).then();
+                                    }
                                 }}
                             >
                                 Gebouw
@@ -162,7 +164,7 @@ function AdminCommunication() {
                         </div>
                         <div style={{ width: "33%" }}>
                             <a
-                                href={`mailto:${getSelectedUserMail()}?body=${templateText.replace(/\n/g, "%0D%0A")}`}
+                                href={`mailto:${getSelectedUserMail()}?body=${updatedTemplateText.replace(/\n/g, "%0D%0A")}`}
                                 onClick={() => console.log()}
                                 style={{ textDecoration: "underline", color: "royalblue" }}
                             >
