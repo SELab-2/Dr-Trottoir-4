@@ -2,15 +2,15 @@ import AdminHeader from "@/components/header/adminHeader";
 import React, { useEffect, useMemo, useState } from "react";
 import { getAllUsers, getUserRole, User } from "@/lib/user";
 import { getAllRegions, RegionInterface } from "@/lib/region";
-import {UserView} from "@/types";
+import { UserView } from "@/types";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
-import {Delete, Edit, Check, Clear, Email} from "@mui/icons-material";
+import { Delete, Edit, Check, Clear, Email } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { UserEditModal } from "@/components/admin/userEditModal";
 import { UserDeleteModal } from "@/components/admin/userDeleteModal";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 
 function AdminDataUsers() {
     const router = useRouter();

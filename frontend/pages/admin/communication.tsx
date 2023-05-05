@@ -1,14 +1,14 @@
 import AdminHeader from "@/components/header/adminHeader";
-import {EmailTemplate, getAllEmailTemplates} from "@/lib/email-template";
-import {ChangeEvent, useEffect, useState} from "react";
+import { EmailTemplate, getAllEmailTemplates } from "@/lib/email-template";
+import { ChangeEvent, useEffect, useState } from "react";
 import styles from "styles/Welcome.module.css";
-import {Button, FloatingLabel, Form} from "react-bootstrap";
+import { Button, FloatingLabel, Form } from "react-bootstrap";
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
-import {BuildingInterface, getAllBuildings} from "@/lib/building";
-import {getAllUsers, User} from "@/lib/user";
+import { BuildingInterface, getAllBuildings } from "@/lib/building";
+import { getAllUsers, User } from "@/lib/user";
 import UserAutoComplete from "@/components/autocompleteComponents/userAutocomplete";
-import {useRouter} from "next/router";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { useRouter } from "next/router";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
 interface ParsedUrlQuery {}
 
@@ -39,23 +39,19 @@ function AdminCommunication() {
         if (currentUser) {
             const currentBuilding = allBuildings.find((e) => e.syndic === currentUser.id);
 
-            const replacedName = replaceVariable(
-                input,
-                "name",
-                currentUser.first_name + " " + currentUser.last_name
-            );
+            const replacedName = replaceVariable(input, "name", currentUser.first_name + " " + currentUser.last_name);
             if (currentBuilding) {
                 return replaceVariable(
                     replacedName,
                     "address",
                     currentBuilding.street +
-                    " " +
-                    currentBuilding.house_number +
-                    " (" +
-                    currentBuilding.postal_code +
-                    " " +
-                    currentBuilding.city +
-                    ")"
+                        " " +
+                        currentBuilding.house_number +
+                        " (" +
+                        currentBuilding.postal_code +
+                        " " +
+                        currentBuilding.city +
+                        ")"
                 );
             }
         }
