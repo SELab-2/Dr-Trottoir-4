@@ -160,7 +160,10 @@ function AdminCommunication() {
                         </div>
                         <div style={{ width: "33%" }}>
                             <a
-                                href={`mailto:${getSelectedUserMail()}?body=${updatedTemplateText.replace(/\n/g, "%0D%0A")}`}
+                                href={`mailto:${getSelectedUserMail()}?body=${updatedTemplateText.replace(
+                                    /\n/g,
+                                    "%0D%0A"
+                                )}`}
                                 onClick={() => console.log()}
                                 style={{ textDecoration: "underline", color: "royalblue" }}
                             >
