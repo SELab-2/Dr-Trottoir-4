@@ -164,22 +164,23 @@ const MyCalendar: FC<Props> = (props) => {
         });
     };
 
-    // @ts-ignore
-    //TODO nog aanpassen bestaande event nog met id de rest zonder
-    const onEventResize: withDragAndDropProps["onEventResize"] = (data: EventInteractionArgs<MyEvent>) => {
-        const {event, start, end} = data;
+    const onEventResize: withDragAndDropProps["onEventResize"] = (args: EventInteractionArgs<MyEvent>) => {
+        const {event, start, end} = args;
         let resizedEvents = [];
         let currentDate = new Date(start);
         currentDate.setHours(0);
         while (currentDate < end) {
             let nextDate = addDays(currentDate, 1);
             nextDate.setHours(2);
-            resizedEvents.push({id: null, tour: event.tour, student: event.student, start: currentDate, end: nextDate, edit: false});
+            if (formatDate(currentDate) !== formatDate(event.start)) {
+                resizedEvents.push({id: null, tour: event.tour, student: event.student, start: currentDate, end: nextDate, edit: false});
+            }
             currentDate = nextDate;
             currentDate.setHours(0);
         }
-        onEventDelete(event)
         onEventsAdd(resizedEvents)
+        console.log(event)
+        console.log(resizedEvents)
     };
 
     const onEventDelete = (event: MyEvent) => {
