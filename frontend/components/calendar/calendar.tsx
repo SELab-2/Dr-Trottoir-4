@@ -29,6 +29,8 @@ import LoadEventsModal from "@/components/calendar/loadEvents";
 import {colors} from "@/components/calendar/colors";
 import styles from "./calendar.module.css";
 import {MyEvent} from "@/types";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import SuccessMessageAlert from "@/components/successMessageAlert";
 
 interface Props {
     students: User[];
@@ -316,27 +318,8 @@ const MyCalendar: FC<Props> = (props) => {
                         Kopieer planning
                     </button>
                 </div>
-                {successMessages.length !== 0 && (
-                    <div className={"visible alert alert-success alert-dismissible fade show"}>
-                        <ul>
-                            {successMessages.map((suc, i) => (
-                                <li key={i}>{suc}</li>
-                            ))}
-                        </ul>
-                        <button type="button" className="btn-close" data-bs-dismiss="alert"
-                                onClick={() => setSuccessMessages([])}/>
-                    </div>
-                )}
-                {errorMessages.length !== 0 && (
-                    <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                        <ul>
-                            {errorMessages.map((err, i) => (
-                                <li key={i}>{err}</li>
-                            ))}
-                        </ul>
-                        <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
-                    </div>
-                )}
+                <SuccessMessageAlert successmessages={successMessages} setSuccessMessages={setSuccessMessages} />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             </div>
             <DnDCalendar
                 messages={messages}

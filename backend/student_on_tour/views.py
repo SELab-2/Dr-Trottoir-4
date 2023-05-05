@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiExample
 import asyncio
 
 import pytz
@@ -10,6 +11,7 @@ from rest_framework.views import APIView
 import config.settings
 from base.models import StudentOnTour, User
 from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount, IsStudent
+from base.serializers import StudOnTourSerializer, SuccessSerializer
 from base.serializers import StudOnTourSerializer, ProgressTourSerializer
 from util.request_response_util import *
 

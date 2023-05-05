@@ -8,6 +8,7 @@ import StudentAutocomplete from "@/components/autocompleteComponents/studentAuto
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import {useTranslation} from "react-i18next";
 import {formatDate} from "@/lib/date";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 function AddEventModal(data: any) {
     const {allStudents, allTours, isOpen, onClose, onSaveMultiple} = data;
@@ -139,16 +140,7 @@ function AddEventModal(data: any) {
             <Modal.Header closeButton>
                 <Modal.Title>Voeg ronde toe</Modal.Title>
             </Modal.Header>
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}/>
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 <form>
                     <div className="form-group">
