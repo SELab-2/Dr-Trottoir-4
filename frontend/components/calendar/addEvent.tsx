@@ -11,23 +11,15 @@ import {formatDate} from "@/lib/date";
 
 function AddEventModal(data: any) {
     const {allStudents, allTours, isOpen, onClose, onSaveMultiple} = data;
-    const [tour, setTour] = useState<Tour | null>(null);
     const [tourId, setTourId] = useState(-1);
-    const [student, setStudent] = useState<User | null>(null);
     const [studentId, setStudentId] = useState(-1);
     const [start, setStart] = useState<Date | null>(null);
     const [checked, setChecked] = useState(true);
-    const [sunday, setSunday] = useState<User | null>(null);
     const [sundayId, setSundayId] = useState(-1);
-    const [monday, setMonday] = useState<User | null>(null);
     const [mondayId, setMondayId] = useState(-1);
-    const [tuesday, setTuesday] = useState<User | null>(null);
     const [tuesdayId, setTuesdayId] = useState(-1);
-    const [wednesday, setWednesday] = useState<User | null>(null);
     const [wednesdayId, setWednesdayId] = useState(-1);
-    const [thursday, setThursday] = useState<User | null>(null);
     const [thursdayId, setThursdayId] = useState(-1);
-    const [friday, setFriday] = useState<User | null>(null);
     const [fridayId, setFridayId] = useState(-1);
     const {t} = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
@@ -113,20 +105,12 @@ function AddEventModal(data: any) {
     }
 
     const resetStates = () => {
-        setTour(null);
-        setStudent(null);
         setStart(null);
-        setSunday(null);
         setSundayId(-1);
-        setMonday(null);
         setMondayId(-1);
-        setTuesday(null);
         setTuesdayId(-1);
-        setWednesday(null);
         setWednesdayId(-1);
-        setThursday(null);
         setThursdayId(-1);
-        setFriday(null);
         setFridayId(-1);
         setChecked(true);
     }
@@ -136,17 +120,11 @@ function AddEventModal(data: any) {
     };
 
     const handleCheckChange = () => {
-        setSunday(student);
         setSundayId(studentId);
-        setMonday(student);
         setMondayId(studentId);
-        setTuesday(student);
         setTuesdayId(studentId);
-        setWednesday(student);
         setWednesdayId(studentId);
-        setThursday(student);
         setThursdayId(studentId);
-        setFriday(student);
         setFridayId(studentId);
         setChecked(!checked);
         setErrorMessages([]);
@@ -175,8 +153,7 @@ function AddEventModal(data: any) {
                 <form>
                     <div className="form-group">
                         <TourAutocomplete
-                            value={tour}
-                            onChange={setTour}
+                            initialId={tourId}
                             setObjectId={setTourId}
                             required={true}
                         />
@@ -184,8 +161,7 @@ function AddEventModal(data: any) {
                     <div className="form-group">
                         <label>Student*</label>
                         <StudentAutocomplete
-                            value={student}
-                            onChange={setStudent}
+                            initialId={studentId}
                             setObjectId={setStudentId}
                             required={true}
                         />
@@ -208,55 +184,49 @@ function AddEventModal(data: any) {
                                 <div>
                                     <label>Zondag</label>
                                     <StudentAutocomplete
-                                        value={sunday}
-                                        onChange={setSunday}
+                                        initialId={sundayId}
                                         setObjectId={setSundayId}
-                                        required={false}
+                                        required={true}
                                     />
                                 </div>
                                 <div>
                                     <label>Maandag</label>
                                     <StudentAutocomplete
-                                        value={monday}
-                                        onChange={setMonday}
+                                        initialId={mondayId}
                                         setObjectId={setMondayId}
-                                        required={false}
+                                        required={true}
                                     />
                                 </div>
                                 <div>
                                     <label>Dinsdag</label>
                                     <StudentAutocomplete
-                                        value={tuesday}
-                                        onChange={setTuesday}
+                                        initialId={tuesdayId}
                                         setObjectId={setTuesdayId}
-                                        required={false}
+                                        required={true}
                                     />
                                 </div>
                                 <div>
                                     <label>Woensdag</label>
                                     <StudentAutocomplete
-                                        value={wednesday}
-                                        onChange={setWednesday}
+                                        initialId={wednesdayId}
                                         setObjectId={setWednesdayId}
-                                        required={false}
+                                        required={true}
                                     />
                                 </div>
                                 <div>
                                     <label>Donderdag</label>
                                     <StudentAutocomplete
-                                        value={thursday}
-                                        onChange={setThursday}
+                                        initialId={thursdayId}
                                         setObjectId={setThursdayId}
-                                        required={false}
+                                        required={true}
                                     />
                                 </div>
                                 <div>
                                     <label>Vrijdag</label>
                                     <StudentAutocomplete
-                                        value={friday}
-                                        onChange={setFriday}
+                                        initialId={fridayId}
                                         setObjectId={setFridayId}
-                                        required={false}
+                                        required={true}
                                     />
                                 </div>
                             </div>
