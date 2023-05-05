@@ -1,18 +1,18 @@
-import React, {FC, useEffect, useState} from "react";
-import {Calendar, dateFnsLocalizer, Event} from "react-big-calendar";
-import withDragAndDrop, {EventInteractionArgs, withDragAndDropProps} from "react-big-calendar/lib/addons/dragAndDrop";
+import React, { FC, useEffect, useState } from "react";
+import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
+import withDragAndDrop, { EventInteractionArgs, withDragAndDropProps } from "react-big-calendar/lib/addons/dragAndDrop";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
-import {messages} from "@/locales/localizerCalendar";
+import { messages } from "@/locales/localizerCalendar";
 import {
     deleteBulkStudentOnTour,
     getAllStudentOnTourFromDate,
     patchBulkStudentOnTour,
     postBulkStudentOnTour,
-    StudentOnTour
+    StudentOnTour,
 } from "@/lib/student-on-tour";
 
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
@@ -20,15 +20,15 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import EditEventModal from "@/components/calendar/editEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
-import {Tour} from "@/lib/tour";
-import {User} from "@/lib/user";
-import {addDays, endOfWeek} from "date-fns";
-import {formatDate} from "@/lib/date";
-import {handleError} from "@/lib/error";
+import { Tour } from "@/lib/tour";
+import { User } from "@/lib/user";
+import { addDays, endOfWeek } from "date-fns";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
 import LoadEventsModal from "@/components/calendar/loadEvents";
-import {colors} from "@/components/calendar/colors";
+import { colors } from "@/components/calendar/colors";
 import styles from "./calendar.module.css";
-import {MyEvent} from "@/types";
+import { MyEvent } from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import SuccessMessageAlert from "@/components/successMessageAlert";
 
@@ -49,29 +49,29 @@ const MyCalendar: FC<Props> = (props) => {
     const [deletedEvents, setDeletedEvents] = useState<number[]>([]);
     const [rendered, setRendered] = useState<string[]>([]);
     const [range, setRange] = useState({
-        start: startOfWeek(new Date(), {weekStartsOn: 1}),
-        end: endOfWeek(new Date(), {weekStartsOn: 1}),
+        start: startOfWeek(new Date(), { weekStartsOn: 1 }),
+        end: endOfWeek(new Date(), { weekStartsOn: 1 }),
     });
 
     useEffect(() => {
         if (props.students.length > 0 && props.tours.length > 0) {
             assignColors(props.tours);
-            getFromRange({start: startOfWeek(new Date()), end: endOfWeek(new Date())});
+            getFromRange({ start: startOfWeek(new Date()), end: endOfWeek(new Date()) });
         }
     }, [props.students, props.tours]);
 
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
         let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
-        setRange({start: startDate, end: endDate})
+        setRange({ start: startDate, end: endDate });
         if (!rendered.includes(startDate.toISOString())) {
-            setRendered([...rendered, startDate.toISOString()])
-            onEventsLoad({start_date: startDate, end_date: endDate});
+            setRendered([...rendered, startDate.toISOString()]);
+            onEventsLoad({ start_date: startDate, end_date: endDate });
         }
     }
 
-    const onEventsLoad = ({start_date, end_date}: { start_date: Date; end_date: Date }) => {
-        getAllStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
+    const onEventsLoad = ({ start_date, end_date }: { start_date: Date; end_date: Date }) => {
+        getAllStudentOnTourFromDate({ startDate: new Date(start_date), endDate: new Date(end_date) }).then(
             (res) => {
                 const list: StudentOnTour[] = res.data;
                 const tours = groupByKey(list, "tour");
@@ -84,7 +84,9 @@ const MyCalendar: FC<Props> = (props) => {
                         for (let b in value) {
                             const v = parseInt(b);
                             const item = value[v];
-                            let student: User | undefined = props.students.find((student: User) => student.id === item.student);
+                            let student: User | undefined = props.students.find(
+                                (student: User) => student.id === item.student
+                            );
                             if (student !== undefined) {
                                 let start = new Date(item.date);
                                 let end = addDays(start, 1);
@@ -96,7 +98,7 @@ const MyCalendar: FC<Props> = (props) => {
                                     student: student,
                                     start: start,
                                     end: end,
-                                    edit: false
+                                    edit: false,
                                 });
                             }
                         }
@@ -121,9 +123,8 @@ const MyCalendar: FC<Props> = (props) => {
         }, {});
     }
 
-
     const onEventsCopy = (start: Date, diff: number) => {
-        let newEvents: MyEvent[] = []
+        let newEvents: MyEvent[] = [];
         for (let e of events) {
             if (e.start >= range.start && e.start <= range.end) {
                 newEvents.push({
@@ -132,13 +133,13 @@ const MyCalendar: FC<Props> = (props) => {
                     student: e.student,
                     start: addDays(e.start, diff),
                     end: addDays(e.end, diff),
-                    edit: false
-                })
+                    edit: false,
+                });
             }
         }
         onEventsAdd(newEvents);
-        setRendered([...rendered, start.toISOString()])
-        setSuccessMessages([...successMessages, `Gekopieerd naar week van ${formatDate(start)}`])
+        setRendered([...rendered, start.toISOString()]);
+        setSuccessMessages([...successMessages, `Gekopieerd naar week van ${formatDate(start)}`]);
     };
 
     const onEventSelection = (e: Event) => {
@@ -146,7 +147,7 @@ const MyCalendar: FC<Props> = (props) => {
         setPopupIsOpenEdit(true);
     };
 
-    const onEventEdit = ({tour, student}: { tour: Tour; student: User }) => {
+    const onEventEdit = ({ tour, student }: { tour: Tour; student: User }) => {
         setEvents((currentEvents) => {
             return currentEvents.map((currentEvent) => {
                 if (currentEvent === selectedEvent) {
@@ -154,14 +155,13 @@ const MyCalendar: FC<Props> = (props) => {
                         ...currentEvent,
                         tour: tour,
                         student: student,
-                        edit: true
+                        edit: true,
                     };
                 }
                 return currentEvent;
             });
         });
     };
-
 
     const onEventsAdd = (eventData: MyEvent[]) => {
         setEvents((currentEvents) => {
@@ -171,7 +171,7 @@ const MyCalendar: FC<Props> = (props) => {
                 student: event.student,
                 start: event.start,
                 end: event.end,
-                edit: false
+                edit: false,
             }));
             return [...currentEvents, ...newEvents];
         });
@@ -179,7 +179,7 @@ const MyCalendar: FC<Props> = (props) => {
 
     // @ts-ignore
     const onEventResize: withDragAndDropProps["onEventResize"] = (args: EventInteractionArgs<MyEvent>) => {
-        const {event, start, end} = args;
+        const { event, start, end } = args;
         let resizedEvents = [];
         let currentDate = new Date(start);
         currentDate.setHours(0);
@@ -193,19 +193,19 @@ const MyCalendar: FC<Props> = (props) => {
                     student: event.student,
                     start: currentDate,
                     end: nextDate,
-                    edit: false
+                    edit: false,
                 });
             }
             currentDate = nextDate;
             currentDate.setHours(0);
         }
-        onEventsAdd(resizedEvents)
+        onEventsAdd(resizedEvents);
     };
 
     const onEventDelete = (event: MyEvent) => {
         const deleted: MyEvent | undefined = events.find((currentEvent: MyEvent) => {
             if (currentEvent == event) {
-                return currentEvent.id
+                return currentEvent.id;
             }
         });
         if (deleted != undefined && deleted.id != null) {
@@ -222,10 +222,10 @@ const MyCalendar: FC<Props> = (props) => {
         const removedTours = events.filter((e) => {
             return e.tour.id == event.tour.id && e.start >= range.start && e.start <= range.end;
         });
-        const updatedEvents: MyEvent[] = events.filter(e => !removedTours.includes(e));
+        const updatedEvents: MyEvent[] = events.filter((e) => !removedTours.includes(e));
         const deletedIDs: (number | undefined)[] = removedTours.map((event) => {
             if (event != undefined && event.id != null) {
-                return event.id
+                return event.id;
             }
         });
         // @ts-ignore
@@ -241,24 +241,26 @@ const MyCalendar: FC<Props> = (props) => {
         });
         const patch = toLoad.filter((event: MyEvent) => {
             return event.id !== null && event.id !== undefined && event.edit;
-        })
+        });
         const post_data = post.map((myEvent: MyEvent) => {
-            return {tour: myEvent.tour.id, student: myEvent.student.id, date: formatDate(myEvent.start)}
+            return { tour: myEvent.tour.id, student: myEvent.student.id, date: formatDate(myEvent.start) };
         });
 
         const patch_data = patch.map((myEvent: MyEvent) => {
             if (myEvent.id !== null && myEvent.id !== undefined) {
-                let id: string = (myEvent.id).toString()
-                return {[id]: {tour: myEvent.tour.id, student: myEvent.student.id, date: formatDate(myEvent.start)}}
+                let id: string = myEvent.id.toString();
+                return {
+                    [id]: { tour: myEvent.tour.id, student: myEvent.student.id, date: formatDate(myEvent.start) },
+                };
             }
         });
-        const right_patch_format = patch_data.reduce((acc, curr) => ({...acc, ...curr}), {});
-        let messages: string[] = []
+        const right_patch_format = patch_data.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+        let messages: string[] = [];
         if (post.length !== 0) {
             postBulkStudentOnTour(post_data).then(
                 (_) => {
                     messages.push("Nieuwe planning opgeslagen.");
-                    setSuccessMessages([...successMessages, ...messages])
+                    setSuccessMessages([...successMessages, ...messages]);
                 },
                 (err) => {
                     const e = handleError(err);
@@ -269,8 +271,8 @@ const MyCalendar: FC<Props> = (props) => {
         if (patch.length != 0) {
             patchBulkStudentOnTour(right_patch_format).then(
                 (_) => {
-                    messages.push("Aanpassingen aan planning opgeslagen.")
-                    setSuccessMessages([...successMessages, ...messages])
+                    messages.push("Aanpassingen aan planning opgeslagen.");
+                    setSuccessMessages([...successMessages, ...messages]);
                 },
                 (err) => {
                     const e = handleError(err);
@@ -281,8 +283,8 @@ const MyCalendar: FC<Props> = (props) => {
         if (deletedEvents.length !== 0) {
             deleteBulkStudentOnTour(deletedEvents).then(
                 (_) => {
-                    messages.push("Verwijderingen zijn doorgevoerd.")
-                    setSuccessMessages([...successMessages, ...messages])
+                    messages.push("Verwijderingen zijn doorgevoerd.");
+                    setSuccessMessages([...successMessages, ...messages]);
                 },
                 (err) => {
                     const e = handleError(err);
@@ -293,28 +295,34 @@ const MyCalendar: FC<Props> = (props) => {
     };
 
     const assignColors = (tours: Tour[]) => {
-        const col: { [key: number]: string } = {}
+        const col: { [key: number]: string } = {};
         for (let tour in tours) {
-            col[tours[tour].id] = colors[tour]
+            col[tours[tour].id] = colors[tour];
         }
         setTourColors(col);
-    }
+    };
 
     return (
         <>
             <div>
                 <div>
-                    <button className={styles.button} onClick={() => {
-                        setPopupIsOpenAdd(true)
-                    }}>
+                    <button
+                        className={styles.button}
+                        onClick={() => {
+                            setPopupIsOpenAdd(true);
+                        }}
+                    >
                         Voeg ronde toe
                     </button>
                     <button className={styles.button} onClick={handleScheduleSave}>
                         Sla planning op
                     </button>
-                    <button className={styles.button} onClick={() => {
-                        setPopupIsOpenLoad(true)
-                    }}>
+                    <button
+                        className={styles.button}
+                        onClick={() => {
+                            setPopupIsOpenLoad(true);
+                        }}
+                    >
                         Kopieer planning
                     </button>
                 </div>
@@ -326,17 +334,17 @@ const MyCalendar: FC<Props> = (props) => {
                 culture={"nl-BE"}
                 defaultDate={new Date()}
                 defaultView="week"
-                views={['week', 'day', 'agenda']}
+                views={["week", "day", "agenda"]}
                 events={events}
-                components={{event: CustomDisplay}}
+                components={{ event: CustomDisplay }}
                 eventPropGetter={(event: any) => {
                     const backgroundColor = tourColors[event.tour.id];
-                    return {style: {backgroundColor, color: "white"}};
+                    return { style: { backgroundColor, color: "white" } };
                 }}
                 localizer={localizer}
                 selectable
                 onSelectEvent={onEventSelection}
-                style={{height: "100vh"}}
+                style={{ height: "100vh" }}
                 step={60}
                 timeslots={1}
                 onEventDrop={onEventResize}
@@ -385,7 +393,7 @@ const localizer = dateFnsLocalizer({
     format,
     parse,
     startOfWeek: () => {
-        return startOfWeek(new Date(), {weekStartsOn: 0});
+        return startOfWeek(new Date(), { weekStartsOn: 0 });
     },
     getDay,
     locales,
