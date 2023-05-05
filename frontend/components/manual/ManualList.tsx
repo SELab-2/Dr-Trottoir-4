@@ -1,9 +1,7 @@
-import {useEffect, useState} from "react";
-import {getManualsFromBuilding, ManualInterface} from "@/lib/manual";
+import { useEffect, useState } from "react";
+import { getManualsFromBuilding, ManualInterface } from "@/lib/manual";
 
-function ManualList({id, type}: { id: number | string, type: "syndic" | "admin" | "public" }) {
-
-
+function ManualList({ id, type }: { id: number | string; type: "syndic" | "admin" | "public" }) {
     const [manuals, setManuals] = useState<ManualInterface[]>([]);
 
     useEffect(() => {
@@ -12,7 +10,7 @@ function ManualList({id, type}: { id: number | string, type: "syndic" | "admin" 
 
     async function fetchManuals() {
         if (type == "public") {
-            return
+            return;
         }
 
         getManualsFromBuilding(id)
@@ -25,7 +23,6 @@ function ManualList({id, type}: { id: number | string, type: "syndic" | "admin" 
                 } else {
                     setManuals(manuals_data);
                 }
-
             })
             .catch((error) => {
                 console.error(error);
@@ -34,26 +31,24 @@ function ManualList({id, type}: { id: number | string, type: "syndic" | "admin" 
 
     return (
         <>
-            {
-                manuals && manuals.length > 0 ? (
-                    <ul>
-                        {manuals.map((manual: ManualInterface) => (
-                            <li key={manual.id}>
-                                <a href={`/${type}/manual?id=${manual.id}`} style={{textDecoration: 'underline', color: 'blue'}}>
-                                    Versie {manual.version_number}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>Er zijn geen handleidingen voor dit gebouw</p>
-                )
-            }
-
+            {manuals && manuals.length > 0 ? (
+                <ul>
+                    {manuals.map((manual: ManualInterface) => (
+                        <li key={manual.id}>
+                            <a
+                                href={`/${type}/manual?id=${manual.id}`}
+                                style={{ textDecoration: "underline", color: "blue" }}
+                            >
+                                Versie {manual.version_number}
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>Er zijn geen handleidingen voor dit gebouw</p>
+            )}
         </>
     );
-
 }
 
 export default ManualList;
-
