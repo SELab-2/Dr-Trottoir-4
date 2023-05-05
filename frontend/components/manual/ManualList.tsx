@@ -34,9 +34,6 @@ function ManualList({id, type}: { id: number | string, type: "syndic" | "admin" 
 
     return (
         <>
-            TODO: moet editable zijn voor admins (op de edit page). Syndics moeten de meest recente zien. Residents
-            mogen ze helemaal niet zien
-
             {
                 manuals && manuals.length > 0 ? (
                     <ul>
