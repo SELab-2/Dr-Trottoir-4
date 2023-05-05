@@ -18,7 +18,7 @@ function ManualList({id, type}: { id: number | string, type: "syndic" | "admin" 
         getManualsFromBuilding(id)
             .then((manuals) => {
                 let manuals_data = manuals.data;
-                manuals_data.sort((a: ManualInterface, b: ManualInterface) => a.version_number - b.version_number);
+                manuals_data.sort((a: ManualInterface, b: ManualInterface) => b.version_number - a.version_number);
 
                 if (type == "syndic" && manuals_data.length > 0) {
                     setManuals([manuals_data[0]]);
