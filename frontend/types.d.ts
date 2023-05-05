@@ -32,6 +32,7 @@ export type BuildingView = {
     address: string;
     building_id: number;
     syndic_email: string;
+    syndicId: number;
 };
 
 export type BuildingOnTourView = {
