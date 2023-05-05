@@ -126,12 +126,12 @@ function AdminDataBuildings() {
                 const buildings: BuildingInterface[] = (await getAllBuildings()).data;
                 const buildingViews: BuildingView[] = [];
 
-                let cache: Record<string, { syndic: number, syndicEmail: string}> = {};
+                let cache: Record<string, { syndic: number; syndicEmail: string }> = {};
 
                 for (const building of buildings) {
                     const s = building.syndic.toString();
                     let syndicEmail: string;
-                    let syndicId : number;
+                    let syndicId: number;
                     if (s in cache) {
                         syndicEmail = cache[s].syndicEmail;
                         syndicId = cache[s].syndic;
@@ -140,7 +140,7 @@ function AdminDataBuildings() {
                         const res = await getUserInfo(building.syndic.toString());
                         syndicEmail = res.data.email;
                         syndicId = res.data.id;
-                        cache[s] = {syndic: syndicId, syndicEmail: syndicEmail};
+                        cache[s] = { syndic: syndicId, syndicEmail: syndicEmail };
                     }
 
                     if (!query.syndic || (query.syndic && query.syndic === syndicEmail)) {
