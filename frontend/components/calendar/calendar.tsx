@@ -27,6 +27,7 @@ import {formatDate} from "@/lib/date";
 import {handleError} from "@/lib/error";
 import LoadEventsModal from "@/components/calendar/loadEvents";
 import {colors} from "@/components/calendar/colors";
+import styles from "./calendar.module.css";
 import {MyEvent} from "@/types";
 
 interface Props {
@@ -272,7 +273,6 @@ const MyCalendar: FC<Props> = (props) => {
                 (err) => {
                     const e = handleError(err);
                     setErrorMessages([...errorMessages, ...e]);
-                    console.log([...errorMessages, ...e])
                 }
             );
         }
@@ -302,18 +302,18 @@ const MyCalendar: FC<Props> = (props) => {
         <>
             <div>
                 <div>
-                    <button className="btn btn-primary mb-3" onClick={() => {
+                    <button className={styles.button} onClick={() => {
                         setPopupIsOpenAdd(true)
                     }}>
                         Voeg ronde toe
                     </button>
-                    <button className="btn btn-primary mb-3" onClick={handleScheduleSave}>
+                    <button className={styles.button} onClick={handleScheduleSave}>
                         Sla planning op
                     </button>
-                    <button className="btn btn-primary mb-3" onClick={() => {
+                    <button className={styles.button} onClick={() => {
                         setPopupIsOpenLoad(true)
                     }}>
-                        Kopieer naar nieuwe week
+                        Kopieer planning
                     </button>
                 </div>
                 {successMessages.length !== 0 && (

@@ -29,74 +29,78 @@ function AddEventModal(data: any) {
     const [thursdayId, setThursdayId] = useState(-1);
     const [friday, setFriday] = useState<User | null>(null);
     const [fridayId, setFridayId] = useState(-1);
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const handleSave = () => {
         const currentStudent: User = allStudents.find((student: User) => student.id === studentId);
         const currentTour: Tour = allTours.find((tour: Tour) => tour.id === tourId);
-        if (start !== null) {
-            const end = addDays(start, 5);
-            let data = [];
-            let currentDate = start;
-            currentDate.setHours(0);
-            if (checked) {
-                while (currentDate <= end) {
-                    let nextDate = addDays(currentDate, 1);
-                    nextDate.setHours(0);
-                    data.push({tour: currentTour, student: currentStudent, start: currentDate, end: nextDate});
-                    currentDate = nextDate;
-                    currentDate.setHours(0);
-                }
-            } else {
-                let dates = getDayTimestamps(start)
-                data.push({
-                    tour: currentTour,
-                    student: allStudents.find((student: User) => student.id === sundayId),
-                    start: dates.current,
-                    end: dates.next
-                })
-                dates = getDayTimestamps(dates.next)
-                data.push({
-                    tour: currentTour,
-                    student: allStudents.find((student: User) => student.id === mondayId),
-                    start: dates.current,
-                    end: dates.next
-                })
-                dates = getDayTimestamps(dates.next)
-                data.push({
-                    tour: currentTour,
-                    student: allStudents.find((student: User) => student.id === tuesdayId),
-                    start: dates.current,
-                    end: dates.next
-                })
-                dates = getDayTimestamps(dates.next)
-                data.push({
-                    tour: currentTour,
-                    student: allStudents.find((student: User) => student.id === wednesdayId),
-                    start: dates.current,
-                    end: dates.next
-                })
-                dates = getDayTimestamps(dates.next)
-                data.push({
-                    tour: currentTour,
-                    student: allStudents.find((student: User) => student.id === thursdayId),
-                    start: dates.current,
-                    end: dates.next
-                })
-                dates = getDayTimestamps(dates.next)
-                data.push({
-                    tour: currentTour,
-                    student: allStudents.find((student: User) => student.id === fridayId),
-                    start: dates.current,
-                    end: dates.next
-                })
-            }
-            onSaveMultiple(data);
-            resetStates();
-            onClose();
+        if (tourId === -1 || studentId === -1) {
+            setErrorMessages([...errorMessages, "Ronde of student is leeg."]);
         } else {
-            setErrorMessages(["Start datum mag niet leeg zijn."]);
+            if (start !== null) {
+                const end = addDays(start, 5);
+                let data = [];
+                let currentDate = start;
+                currentDate.setHours(0);
+                if (checked) {
+                    while (currentDate <= end) {
+                        let nextDate = addDays(currentDate, 1);
+                        nextDate.setHours(0);
+                        data.push({tour: currentTour, student: currentStudent, start: currentDate, end: nextDate});
+                        currentDate = nextDate;
+                        currentDate.setHours(0);
+                    }
+                } else {
+                    let dates = getDayTimestamps(start)
+                    data.push({
+                        tour: currentTour,
+                        student: allStudents.find((student: User) => student.id === sundayId),
+                        start: dates.current,
+                        end: dates.next
+                    })
+                    dates = getDayTimestamps(dates.next)
+                    data.push({
+                        tour: currentTour,
+                        student: allStudents.find((student: User) => student.id === mondayId),
+                        start: dates.current,
+                        end: dates.next
+                    })
+                    dates = getDayTimestamps(dates.next)
+                    data.push({
+                        tour: currentTour,
+                        student: allStudents.find((student: User) => student.id === tuesdayId),
+                        start: dates.current,
+                        end: dates.next
+                    })
+                    dates = getDayTimestamps(dates.next)
+                    data.push({
+                        tour: currentTour,
+                        student: allStudents.find((student: User) => student.id === wednesdayId),
+                        start: dates.current,
+                        end: dates.next
+                    })
+                    dates = getDayTimestamps(dates.next)
+                    data.push({
+                        tour: currentTour,
+                        student: allStudents.find((student: User) => student.id === thursdayId),
+                        start: dates.current,
+                        end: dates.next
+                    })
+                    dates = getDayTimestamps(dates.next)
+                    data.push({
+                        tour: currentTour,
+                        student: allStudents.find((student: User) => student.id === fridayId),
+                        start: dates.current,
+                        end: dates.next
+                    })
+                }
+                onSaveMultiple(data);
+                resetStates();
+                onClose();
+            } else {
+                setErrorMessages([...errorMessages, "Start datum mag niet leeg zijn."]);
+            }
         }
     };
 
@@ -145,14 +149,15 @@ function AddEventModal(data: any) {
         setFriday(student);
         setFridayId(studentId);
         setChecked(!checked);
+        setErrorMessages([]);
     };
 
 
     return (
         <Modal show={isOpen} onHide={() => {
-                onClose();
-                setErrorMessages([]);
-            }}>
+            resetStates();
+            onClose();
+        }}>
             <Modal.Header closeButton>
                 <Modal.Title>Voeg ronde toe</Modal.Title>
             </Modal.Header>

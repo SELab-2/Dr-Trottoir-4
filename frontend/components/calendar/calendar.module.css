@@ -12,4 +12,28 @@
     margin: 2px;
 }
 
+.button {
+    height: 50px;
+    width: 150px;
+    margin: 5px;
+    outline: 0;
+    cursor: pointer;
+    border: 2px solid #000;
+    border-radius: 5px;
+    color: #fff;
+    background: #000;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    padding: 5px 10px;
+    text-align: center;
+    transition: ease-in 0.2s;
+}
+
+/* Style for buttons when hovering */
+.button:hover {
+    color: #000;
+    background: rgb(255, 218, 87);
+}
+
 
