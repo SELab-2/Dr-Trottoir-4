@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { Button } from "react-bootstrap";
-import { Delete, Edit } from "@mui/icons-material";
+import { CalendarMonth, Delete, Edit } from "@mui/icons-material";
 import { BuildingInterface, getAddress } from "@/lib/building";
 import { TourView } from "@/types";
 import { TourDeleteModal } from "@/components/admin/tourDeleteModal";
@@ -66,6 +66,16 @@ function AdminDataTours() {
                                 }}
                             >
                                 <Delete />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Vuilophaling">
+                            <IconButton
+                                onClick={() => {
+                                    const tourView: TourView = row.original;
+                                    routeToGarbageSchedule(tourView).then();
+                                }}
+                            >
+                                <CalendarMonth />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -160,6 +170,13 @@ function AdminDataTours() {
         setSelectedTour(null);
     }
 
+    async function routeToGarbageSchedule(tourView: TourView) {
+        await router.push({
+            pathname: `/admin/data/garbage-collection`,
+            query: { tour: tourView.tour_id },
+        });
+    }
+
     return (
         <>
             <AdminHeader />
@@ -188,11 +205,11 @@ function AdminDataTours() {
                         buildings && (
                             <>
                                 <label>Gebouwen op deze tour:</label>
-                                <ul>
+                                <ol>
                                     {buildings.map((building: BuildingInterface, index: number) => (
                                         <li key={`${building.id}-${index}`}>{getAddress(building)}</li>
                                     ))}
-                                </ul>
+                                </ol>
                             </>
                         )
                     );

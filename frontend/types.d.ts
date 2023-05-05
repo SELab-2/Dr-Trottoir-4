@@ -1,6 +1,7 @@
 import {Event} from "react-big-calendar";
 import {Tour} from "@/lib/tour";
 import {User} from "@/lib/user";
+import {BuildingInterface} from "@/lib/building";
 
 export type Login = {
     email: string;
@@ -73,4 +74,12 @@ export interface MyEvent extends Event {
     start: Date;
     end: Date;
     edit: boolean;
+}
+
+export interface GarbageCollectionEvent extends Event {
+    start: Date,
+    end: Date,
+    id: number,
+    building: BuildingInterface,
+    garbageType: string
 }
