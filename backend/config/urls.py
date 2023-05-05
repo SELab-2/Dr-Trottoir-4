@@ -28,7 +28,6 @@ from garbage_collection import urls as garbage_collection_urls
 from lobby import urls as email_whitelist_urls
 from manual import urls as manual_urls
 from picture_of_remark import urls as picture_of_remark_urls
-
 # from picture_building import urls as picture_building_urls
 from region import urls as region_urls
 from remark_at_building import urls as remark_at_building_urls
@@ -43,7 +42,7 @@ urlpatterns = [
     path("", RootDefault.as_view()),
     path("admin/", admin.site.urls),
     path("docs/", SpectacularAPIView.as_view(), name="schema"),
-    path("docs/ui/", SpectacularSwaggerView.as_view(url="/api/docs"), name="swagger-ui"),
+    path("docs/ui/", SpectacularSwaggerView.as_view(url="/docs"), name="swagger-ui"),
     path("authentication/", include(authentication_urls)),
     path("manual/", include(manual_urls)),
     # path("picture-building/", include(picture_building_urls)),
