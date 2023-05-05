@@ -51,7 +51,6 @@ const MyCalendar: FC<Props> = (props) => {
     });
 
     useEffect(() => {
-        console.log("useEffect");
         if (props.students.length > 0 && props.tours.length > 0) {
             assignColors(props.tours);
             getFromRange({start: startOfWeek(new Date()), end: endOfWeek(new Date())});
@@ -69,7 +68,6 @@ const MyCalendar: FC<Props> = (props) => {
     }
 
     const onEventsLoad = ({start_date, end_date}: { start_date: Date; end_date: Date }) => {
-        console.log("onEventsLoad");
         getAllStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
             (res) => {
                 const list: StudentOnTour[] = res.data;
@@ -224,7 +222,6 @@ const MyCalendar: FC<Props> = (props) => {
         const patch = toLoad.filter((event : MyEvent) => {
             return event.id !== null && event.edit;
         })
-
         const post_data = post.map((myEvent : MyEvent) => {
            return {tour: myEvent.tour.id, student: myEvent.student.id, date: formatDate(myEvent.start)}
         });
@@ -238,7 +235,7 @@ const MyCalendar: FC<Props> = (props) => {
         const right_patch_format = patch_data.reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
         postBulkStudentOnTour(post_data).then(
-                (_) => {
+            (_) => {
                 setSuccessMessage("Nieuwe planning opgeslagen.")
             },
             (err) => {
@@ -247,7 +244,7 @@ const MyCalendar: FC<Props> = (props) => {
             }
         );
         patchBulkStudentOnTour(right_patch_format).then(
-                    (_) => {
+            (_) => {
                 setSuccessMessage("Aanpassingen aan planning opgeslagen.")
             },
             (err) => {
@@ -257,13 +254,12 @@ const MyCalendar: FC<Props> = (props) => {
             }
         );
         deleteBulkStudentOnTour(deletedEvents).then(
-                    (_) => {
+            (_) => {
                 setSuccessMessage("Verwijderingen zijn doorgevoerd.")
             },
             (err) => {
                 const e = handleError(err);
                 setErrorMessages([...errorMessages, ...e]);
-                console.log([...errorMessages, ...e])
             }
         );
     };

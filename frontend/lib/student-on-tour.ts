@@ -53,8 +53,7 @@ export async function patchBulkStudentOnTour(data : any) {
 
 export async function deleteBulkStudentOnTour(data : number[]) {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_STUDENT_ON_TOUR}`;
-    console.log({ data: {"ids": data }})
-    return await api.delete(request_url, { data: JSON.stringify({ids: data })});
+    return await api.delete(request_url, { data: {ids: data }});
 }
 
 export async function getStudentOnTour(studentOnTourId: number) {
