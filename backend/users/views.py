@@ -139,8 +139,8 @@ class AllUsersView(APIView):
 
     @extend_schema(
         description="GET all users in the database. There is the possibility to filter as well. You can filter on "
-        "various parameters. If the parameter name includes 'list' then you can add multiple entries of "
-        "those in the url.",
+                    "various parameters. If the parameter name includes 'list' then you can add multiple entries of "
+                    "those in the url. For example: ?region-id-list[]=1&region-id-list[]=2&include-role-name-list[]=Admin&",
         parameters=param_docs(
             {
                 "region-id-list": ("Filter by region ids", False, OpenApiTypes.INT),
