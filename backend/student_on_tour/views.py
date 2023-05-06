@@ -69,7 +69,6 @@ class StudentOnTourBulk(APIView):
         """
         list_done = []
         for d in data["data"]:
-            print(d)
             student_on_tour_instance = StudentOnTour()
 
             set_keys_of_instance(student_on_tour_instance, d, TRANSLATE)
