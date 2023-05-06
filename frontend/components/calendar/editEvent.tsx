@@ -51,7 +51,7 @@ function EditEventModal(data: any) {
                         <TourAutocomplete
                             initialId={tourId}
                             setObjectId={setTourId}
-                            required={true}
+                            required={false}
                         />
                     </div>
                     <div className="form-group">
@@ -59,7 +59,7 @@ function EditEventModal(data: any) {
                         <TourUserAutocomplete
                             initialId={studentId}
                             setObjectId={setStudentId}
-                            required={true}
+                            required={false}
                         />
                     </div>
                 </form>

@@ -6,7 +6,7 @@ const TourUserAutocomplete: React.FC<GenericProps> = ({ initialId, setObjectId, 
     return (
         <AutocompleteComponent
             initialId={initialId}
-            label={`Selecteer student${required ? "*" : ""}`}
+            label={""}
             fetchOptions={getTourUsers}
             mapping={(user: User) => userSearchString(user)}
             setObjectId={setObjectId}

@@ -161,11 +161,11 @@ function AddTourModal(data: any) {
             <Modal.Body>
                 <form>
                     <div className="form-group">
-                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={true}/>
+                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false}/>
                     </div>
                     <div className="form-group">
-                        <label>Student*</label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} required={true}/>
+                        <label>Selecteer student</label>
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} required={false}/>
                     </div>
                     <div className="form-row">
                         <div className="col">
@@ -187,7 +187,7 @@ function AddTourModal(data: any) {
                                     <TourUserAutocomplete
                                         initialId={sundayId}
                                         setObjectId={setSundayId}
-                                        required={true}
+                                        required={false}
                                     />
                                 </div>
                                 <div>
@@ -195,7 +195,7 @@ function AddTourModal(data: any) {
                                     <TourUserAutocomplete
                                         initialId={mondayId}
                                         setObjectId={setMondayId}
-                                        required={true}
+                                        required={false}
                                     />
                                 </div>
                                 <div>
@@ -203,7 +203,7 @@ function AddTourModal(data: any) {
                                     <TourUserAutocomplete
                                         initialId={tuesdayId}
                                         setObjectId={setTuesdayId}
-                                        required={true}
+                                        required={false}
                                     />
                                 </div>
                                 <div>
@@ -211,7 +211,7 @@ function AddTourModal(data: any) {
                                     <TourUserAutocomplete
                                         initialId={wednesdayId}
                                         setObjectId={setWednesdayId}
-                                        required={true}
+                                        required={false}
                                     />
                                 </div>
                                 <div>
@@ -219,7 +219,7 @@ function AddTourModal(data: any) {
                                     <TourUserAutocomplete
                                         initialId={thursdayId}
                                         setObjectId={setThursdayId}
-                                        required={true}
+                                        required={false}
                                     />
                                 </div>
                                 <div>
@@ -227,7 +227,7 @@ function AddTourModal(data: any) {
                                     <TourUserAutocomplete
                                         initialId={fridayId}
                                         setObjectId={setFridayId}
-                                        required={true}
+                                        required={false}
                                     />
                                 </div>
                             </div>
@@ -237,10 +237,10 @@ function AddTourModal(data: any) {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onClose}>
-                    Close
+                    Sluit
                 </Button>
                 <Button variant="primary" onClick={handleSave}>
-                    Save Changes
+                    Sla op
                 </Button>
             </Modal.Footer>
         </Modal>
