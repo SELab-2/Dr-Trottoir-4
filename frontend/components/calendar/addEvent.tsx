@@ -1,16 +1,16 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import {addDays, startOfWeek} from "date-fns";
+import { addDays, startOfWeek } from "date-fns";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import {formatDate} from "@/lib/date";
+import { formatDate } from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { postStudentOnTour} from "@/lib/student-on-tour";
-import {handleError} from "@/lib/error";
+import { postStudentOnTour } from "@/lib/student-on-tour";
+import { handleError } from "@/lib/error";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
 function AddEventModal(data: any) {
-    const {isOpen, onClose, reload} = data;
+    const { isOpen, onClose, reload } = data;
     const [tourId, setTourId] = useState(-1);
     const [studentId, setStudentId] = useState(-1);
     const [date, setDate] = useState<Date | null>(null);
@@ -23,23 +23,21 @@ function AddEventModal(data: any) {
             if (date !== null) {
                 postStudentOnTour(tourId, studentId, formatDate(date)).then(
                     (_) => {
-                            const start = startOfWeek(date)
-                            const end = addDays(start, 6)
-                            reload(start, end);
-                            onClose();
-
+                        const start = startOfWeek(date);
+                        const end = addDays(start, 6);
+                        reload(start, end);
+                        onClose();
                     },
                     (err) => {
                         const e = handleError(err);
                         setErrorMessages([...errorMessages, ...e]);
                     }
-                )
+                );
             } else {
                 setErrorMessages([...errorMessages, "Start datum mag niet leeg zijn."]);
             }
         }
     };
-
 
     const handleStartDateChange = (e: { target: { value: string | number | Date } }) => {
         setDate(new Date(e.target.value));
@@ -49,14 +47,14 @@ function AddEventModal(data: any) {
         <Modal
             show={isOpen}
             onHide={() => {
-                setDate(null)
+                setDate(null);
                 onClose();
             }}
         >
             <Modal.Header closeButton>
                 <Modal.Title>Voeg rondedag toe</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 <form>
                     <div className="form-group">
