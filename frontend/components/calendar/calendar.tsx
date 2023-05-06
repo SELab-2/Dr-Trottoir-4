@@ -203,11 +203,11 @@ const MyCalendar: FC<Props> = (props) => {
     };
 
     // @ts-ignore
-    const onEventDragAndDrop : withDragAndDropProps["onEventDrop"] = (args: EventInteractionArgs<MyEvent>) => {
-        const {event, start, end} = args;
+    const onEventDragAndDrop: withDragAndDropProps["onEventDrop"] = (args: EventInteractionArgs<MyEvent>) => {
+        const { event, start, end } = args;
         event.start = new Date(start);
         event.end = new Date(end);
-    }
+    };
 
     const onEventDelete = (event: MyEvent) => {
         const deleted: MyEvent | undefined = events.find((currentEvent: MyEvent) => {
