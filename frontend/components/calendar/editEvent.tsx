@@ -1,12 +1,12 @@
 import React, {useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import {patchStudentOnTour} from "@/lib/student-on-tour";
 import {formatDate} from "@/lib/date";
+import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
 function EditEventModal(data: any) {
     const {event, isOpen, onClose, onDelete, onDeleteTour, editEvent} = data;
@@ -56,7 +56,7 @@ function EditEventModal(data: any) {
                     </div>
                     <div className="form-group">
                         <label>Student</label>
-                        <StudentAutocomplete
+                        <TourUserAutocomplete
                             initialId={studentId}
                             setObjectId={setStudentId}
                             required={true}

@@ -23,7 +23,7 @@ import EditEventModal from "@/components/calendar/editEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
 import {Tour} from "@/lib/tour";
-import {User} from "@/lib/user";
+import {getTourUsers, User} from "@/lib/user";
 import {addDays, endOfWeek} from "date-fns";
 import {formatDate} from "@/lib/date";
 import {handleError} from "@/lib/error";
@@ -36,7 +36,7 @@ import SuccessMessageAlert from "@/components/successMessageAlert";
 import AddTourModal from "@/components/calendar/addTour";
 
 interface Props {
-    students: User[];
+    tourUsers: User[];
     tours: Tour[];
 }
 
@@ -57,11 +57,11 @@ const MyCalendar: FC<Props> = (props) => {
         });
 
         useEffect(() => {
-            if (props.students.length > 0 && props.tours.length > 0) {
+            if (props.tourUsers.length > 0 && props.tours.length > 0) {
                 assignColors(props.tours);
                 getFromRange({start: startOfWeek(new Date()), end: endOfWeek(new Date())});
             }
-        }, [props.students, props.tours]);
+        }, [props.tourUsers, props.tours]);
 
         function getFromRange(range: Date[] | { start: Date; end: Date }) {
             let startDate: Date = Array.isArray(range) ? range[0] : range.start;
@@ -112,7 +112,7 @@ const MyCalendar: FC<Props> = (props) => {
                             for (let b in value) {
                                 const v = parseInt(b);
                                 const item = value[v];
-                                let student: User | undefined = props.students.find(
+                                let student: User | undefined = props.tourUsers.find(
                                     (student: User) => student.id === item.student
                                 );
                                 if (student !== undefined) {
@@ -191,7 +191,7 @@ const MyCalendar: FC<Props> = (props) => {
             date.setHours(0);
             end.setHours(0);
             const currentTour: Tour | undefined = props.tours.find((t: Tour) => t.id === tour)
-            const currentStudent: User | undefined = props.students.find((s: User) => s.id === student)
+            const currentStudent: User | undefined = props.tourUsers.find((s: User) => s.id === student)
             if (currentTour !== undefined && currentStudent !== undefined) {
                 setEvents((currentEvents) => {
                     return currentEvents.map((currentEvent) => {
@@ -237,7 +237,6 @@ const MyCalendar: FC<Props> = (props) => {
             const {event, start} = args;
             patchStudentOnTour(event.id, event.tour.id, event.student.id, formatDate(new Date(start))).then(
                 (res) => {
-                    console.log(res.data)
                     onEventEdit(event.id, event.tour.id, event.student.id, new Date(res.data.date))
                 },
                 (err) => {

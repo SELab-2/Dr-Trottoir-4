@@ -1,17 +1,17 @@
 import React from "react";
-import { getAllUsers, User, userSearchString } from "@/lib/user";
+import {getTourUsers, User, userSearchString} from "@/lib/user";
 import AutocompleteComponent, { GenericProps } from "@/components/autocompleteComponents/autocompleteComponent";
 
-const StudentAutocomplete: React.FC<GenericProps> = ({ initialId, setObjectId, required }) => {
+const TourUserAutocomplete: React.FC<GenericProps> = ({ initialId, setObjectId, required }) => {
     return (
         <AutocompleteComponent
             initialId={initialId}
             label={`Selecteer student${required ? "*" : ""}`}
-            fetchOptions={getAllUsers}
+            fetchOptions={getTourUsers}
             mapping={(user: User) => userSearchString(user)}
             setObjectId={setObjectId}
         />
     );
 };
 
-export default StudentAutocomplete;
+export default TourUserAutocomplete;

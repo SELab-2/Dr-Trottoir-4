@@ -2,12 +2,12 @@ import React, {useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import {addDays, startOfWeek} from "date-fns";
-import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import {formatDate} from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {postBulkStudentOnTour, postStudentOnTour, StudentOnTourPost} from "@/lib/student-on-tour";
+import { postStudentOnTour} from "@/lib/student-on-tour";
 import {handleError} from "@/lib/error";
+import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
 function AddEventModal(data: any) {
     const {isOpen, onClose, reload} = data;
@@ -64,7 +64,7 @@ function AddEventModal(data: any) {
                     </div>
                     <div className="form-group">
                         <label>Student*</label>
-                        <StudentAutocomplete initialId={studentId} setObjectId={setStudentId} required={true}/>
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} required={true}/>
                     </div>
                     <div className="form-row">
                         <div className="col">

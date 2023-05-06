@@ -2,12 +2,12 @@ import React, {useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import {addDays} from "date-fns";
-import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import {formatDate} from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import {postBulkStudentOnTour, StudentOnTourPost} from "@/lib/student-on-tour";
 import {handleError} from "@/lib/error";
+import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
 function AddTourModal(data: any) {
     const {isOpen, onClose, reload} = data;
@@ -165,7 +165,7 @@ function AddTourModal(data: any) {
                     </div>
                     <div className="form-group">
                         <label>Student*</label>
-                        <StudentAutocomplete initialId={studentId} setObjectId={setStudentId} required={true}/>
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} required={true}/>
                     </div>
                     <div className="form-row">
                         <div className="col">
@@ -184,7 +184,7 @@ function AddTourModal(data: any) {
                             <div>
                                 <div>
                                     <label>Zondag</label>
-                                    <StudentAutocomplete
+                                    <TourUserAutocomplete
                                         initialId={sundayId}
                                         setObjectId={setSundayId}
                                         required={true}
@@ -192,7 +192,7 @@ function AddTourModal(data: any) {
                                 </div>
                                 <div>
                                     <label>Maandag</label>
-                                    <StudentAutocomplete
+                                    <TourUserAutocomplete
                                         initialId={mondayId}
                                         setObjectId={setMondayId}
                                         required={true}
@@ -200,7 +200,7 @@ function AddTourModal(data: any) {
                                 </div>
                                 <div>
                                     <label>Dinsdag</label>
-                                    <StudentAutocomplete
+                                    <TourUserAutocomplete
                                         initialId={tuesdayId}
                                         setObjectId={setTuesdayId}
                                         required={true}
@@ -208,7 +208,7 @@ function AddTourModal(data: any) {
                                 </div>
                                 <div>
                                     <label>Woensdag</label>
-                                    <StudentAutocomplete
+                                    <TourUserAutocomplete
                                         initialId={wednesdayId}
                                         setObjectId={setWednesdayId}
                                         required={true}
@@ -216,7 +216,7 @@ function AddTourModal(data: any) {
                                 </div>
                                 <div>
                                     <label>Donderdag</label>
-                                    <StudentAutocomplete
+                                    <TourUserAutocomplete
                                         initialId={thursdayId}
                                         setObjectId={setThursdayId}
                                         required={true}
@@ -224,7 +224,7 @@ function AddTourModal(data: any) {
                                 </div>
                                 <div>
                                     <label>Vrijdag</label>
-                                    <StudentAutocomplete
+                                    <TourUserAutocomplete
                                         initialId={fridayId}
                                         setObjectId={setFridayId}
                                         required={true}
