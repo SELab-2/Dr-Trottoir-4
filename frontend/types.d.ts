@@ -73,7 +73,6 @@ export interface MyEvent extends Event {
     student: User;
     start: Date;
     end: Date;
-    edit: boolean;
 }
 
 export interface GarbageCollectionEvent extends Event {

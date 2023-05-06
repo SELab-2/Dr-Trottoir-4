@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { addDays } from "date-fns";
-import { User } from "@/lib/user";
-import { Tour } from "@/lib/tour";
+import {addDays} from "date-fns";
+import {User} from "@/lib/user";
+import {Tour} from "@/lib/tour";
 import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import { useTranslation } from "react-i18next";
-import { formatDate } from "@/lib/date";
+import {useTranslation} from "react-i18next";
+import {formatDate} from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import {postBulkStudentOnTour, StudentOnTourPost} from "@/lib/student-on-tour";
+import {handleError} from "@/lib/error";
 
 function AddEventModal(data: any) {
-    const { allStudents, allTours, isOpen, onClose, onSaveMultiple } = data;
+    const {allStudents, allTours, isOpen, onClose, reload} = data;
     const [tourId, setTourId] = useState(-1);
     const [studentId, setStudentId] = useState(-1);
     const [start, setStart] = useState<Date | null>(null);
@@ -22,7 +24,7 @@ function AddEventModal(data: any) {
     const [wednesdayId, setWednesdayId] = useState(-1);
     const [thursdayId, setThursdayId] = useState(-1);
     const [fridayId, setFridayId] = useState(-1);
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const handleSave = () => {
@@ -40,7 +42,7 @@ function AddEventModal(data: any) {
                     while (currentDate <= end) {
                         let nextDate = addDays(currentDate, 1);
                         nextDate.setHours(0);
-                        data.push({ tour: currentTour, student: currentStudent, start: currentDate, end: nextDate });
+                        data.push({tour: currentTour, student: currentStudent, start: currentDate, end: nextDate});
                         currentDate = nextDate;
                         currentDate.setHours(0);
                     }
@@ -88,13 +90,32 @@ function AddEventModal(data: any) {
                         end: dates.next,
                     });
                 }
-                onSaveMultiple(data);
-                resetStates();
-                onClose();
+                handleEventSave(data);
             } else {
                 setErrorMessages([...errorMessages, "Start datum mag niet leeg zijn."]);
             }
         }
+    };
+
+    const handleEventSave = (data: { tour: Tour, student: User, start: Date, end: Date }[]) => {
+        const post_data: StudentOnTourPost[] = data.map((event: { tour: Tour, student: User, start: Date, end: Date }) => {
+            return {tour: event.tour.id, student: event.student.id, date: formatDate(event.start)};
+        });
+        postBulkStudentOnTour(post_data).then(
+            (_) => {
+                //onSaveMultiple(data);
+                if (start !== null) {
+                    const end = addDays(start, 5);
+                    resetStates();
+                    reload(start, end);
+                    onClose();
+                }
+            },
+            (err) => {
+                const e = handleError(err);
+                setErrorMessages([...errorMessages, ...e]);
+            }
+        )
     };
 
     const getDayTimestamps = (date: Date) => {
@@ -102,7 +123,7 @@ function AddEventModal(data: any) {
         current.setHours(0);
         let next = addDays(current, 1);
         next.setHours(0);
-        return { current, next };
+        return {current, next};
     };
 
     const resetStates = () => {
@@ -142,15 +163,15 @@ function AddEventModal(data: any) {
             <Modal.Header closeButton>
                 <Modal.Title>Voeg ronde toe</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <Modal.Body>
                 <form>
                     <div className="form-group">
-                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={true} />
+                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={true}/>
                     </div>
                     <div className="form-group">
                         <label>Student*</label>
-                        <StudentAutocomplete initialId={studentId} setObjectId={setStudentId} required={true} />
+                        <StudentAutocomplete initialId={studentId} setObjectId={setStudentId} required={true}/>
                     </div>
                     <div className="form-row">
                         <div className="col">
@@ -163,7 +184,7 @@ function AddEventModal(data: any) {
                             />
                         </div>
                         <label>
-                            <input type="checkbox" checked={checked} onChange={handleCheckChange} />1 student per week
+                            <input type="checkbox" checked={checked} onChange={handleCheckChange}/>1 student per week
                         </label>
                         {!checked && (
                             <div>
