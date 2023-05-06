@@ -29,5 +29,5 @@ export async function deletePictureOfRemark(pictureOfRemarkId : number): Promise
 }
 
 export function getPicturePath(relativePath : string) {
-    return `${process.env.NEXT_PUBLIC_BASE_API_URL}${relativePath}`
+    return `${process.env.NEXT_PUBLIC_BASE_API_URL}${relativePath.substring(1)}` // Remove first / of relativePath
 }
