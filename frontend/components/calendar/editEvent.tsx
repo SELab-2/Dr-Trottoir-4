@@ -1,15 +1,15 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {patchStudentOnTour} from "@/lib/student-on-tour";
-import {formatDate} from "@/lib/date";
+import { patchStudentOnTour } from "@/lib/student-on-tour";
+import { formatDate } from "@/lib/date";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
 function EditEventModal(data: any) {
-    const {event, isOpen, onClose, onDelete, onDeleteTour, editEvent} = data;
+    const { event, isOpen, onClose, onDelete, onDeleteTour, editEvent } = data;
     const [tourId, setTourId] = useState(event.tour.id);
     const [studentId, setStudentId] = useState(event.student.id);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
@@ -34,33 +34,31 @@ function EditEventModal(data: any) {
     };
 
     const handleTourDelete = () => {
-        onDeleteTour(event)
+        onDeleteTour(event);
         onClose();
-    }
+    };
 
     return (
-        <Modal show={isOpen} onHide={() => {setErrorMessages([]);onClose()}}>
+        <Modal
+            show={isOpen}
+            onHide={() => {
+                setErrorMessages([]);
+                onClose();
+            }}
+        >
             <Modal.Header closeButton>
                 <Modal.Title>Bewerk Ronde</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 <form>
                     <div className="form-group">
                         <label>Ronde</label>
-                        <TourAutocomplete
-                            initialId={tourId}
-                            setObjectId={setTourId}
-                            required={true}
-                        />
+                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={true} />
                     </div>
                     <div className="form-group">
                         <label>Student</label>
-                        <TourUserAutocomplete
-                            initialId={studentId}
-                            setObjectId={setStudentId}
-                            required={true}
-                        />
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} required={true} />
                     </div>
                 </form>
             </Modal.Body>

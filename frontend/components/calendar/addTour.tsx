@@ -1,16 +1,16 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import {addDays} from "date-fns";
+import { addDays } from "date-fns";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import {formatDate} from "@/lib/date";
+import { formatDate } from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {postBulkStudentOnTour, StudentOnTourPost} from "@/lib/student-on-tour";
-import {handleError} from "@/lib/error";
+import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour";
+import { handleError } from "@/lib/error";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
 function AddTourModal(data: any) {
-    const {isOpen, onClose, reload} = data;
+    const { isOpen, onClose, reload } = data;
     const [tourId, setTourId] = useState(-1);
     const [studentId, setStudentId] = useState(-1);
     const [start, setStart] = useState<Date | null>(null);
@@ -36,7 +36,7 @@ function AddTourModal(data: any) {
                     while (currentDate <= end) {
                         let nextDate = addDays(currentDate, 1);
                         nextDate.setHours(0);
-                        data.push({tour: tourId, student: studentId, start: currentDate, end: nextDate});
+                        data.push({ tour: tourId, student: studentId, start: currentDate, end: nextDate });
                         currentDate = nextDate;
                         currentDate.setHours(0);
                     }
@@ -91,10 +91,12 @@ function AddTourModal(data: any) {
         }
     };
 
-    const handleEventSave = (data: { tour: number, student: number, start: Date, end: Date }[]) => {
-        const post_data: StudentOnTourPost[] = data.map((event: { tour: number, student: number, start: Date, end: Date }) => {
-            return {tour: event.tour, student: event.student, date: formatDate(event.start)};
-        });
+    const handleEventSave = (data: { tour: number; student: number; start: Date; end: Date }[]) => {
+        const post_data: StudentOnTourPost[] = data.map(
+            (event: { tour: number; student: number; start: Date; end: Date }) => {
+                return { tour: event.tour, student: event.student, date: formatDate(event.start) };
+            }
+        );
         postBulkStudentOnTour(post_data).then(
             (_) => {
                 //onSaveMultiple(data);
@@ -109,7 +111,7 @@ function AddTourModal(data: any) {
                 const e = handleError(err);
                 setErrorMessages([...errorMessages, ...e]);
             }
-        )
+        );
     };
 
     const getDayTimestamps = (date: Date) => {
@@ -117,7 +119,7 @@ function AddTourModal(data: any) {
         current.setHours(0);
         let next = addDays(current, 1);
         next.setHours(0);
-        return {current, next};
+        return { current, next };
     };
 
     const resetStates = () => {
@@ -157,15 +159,15 @@ function AddTourModal(data: any) {
             <Modal.Header closeButton>
                 <Modal.Title>Voeg ronde toe</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 <form>
                     <div className="form-group">
-                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={true}/>
+                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={true} />
                     </div>
                     <div className="form-group">
                         <label>Student*</label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} required={true}/>
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} required={true} />
                     </div>
                     <div className="form-row">
                         <div className="col">
@@ -178,7 +180,7 @@ function AddTourModal(data: any) {
                             />
                         </div>
                         <label>
-                            <input type="checkbox" checked={checked} onChange={handleCheckChange}/>1 student per week
+                            <input type="checkbox" checked={checked} onChange={handleCheckChange} />1 student per week
                         </label>
                         {!checked && (
                             <div>
