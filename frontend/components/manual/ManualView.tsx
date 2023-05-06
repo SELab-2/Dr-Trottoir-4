@@ -27,7 +27,7 @@ function ManualView() {
         }
         getManual(Number(query.id))
             .then((manual: AxiosResponse) => {
-                setFile(`${process.env.NEXT_PUBLIC_BASE_API_URL}${manual.data.file}`);
+                setFile(`${process.env.NEXT_PUBLIC_BASE_API_URL}${manual.data.file.slice(1)}`);
             })
             .catch((error) => {
                 //TODO: error component

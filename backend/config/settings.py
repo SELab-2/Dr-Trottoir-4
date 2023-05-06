@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import collections
 import os
-import sys
-from django.utils.translation import gettext_lazy as _
 from datetime import timedelta
 from pathlib import Path
+
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -87,7 +87,7 @@ NOSE_ARGS = ["--cover-xml", "--cover-xml-file=./coverage.xml"]
 SPECTACULAR_SETTINGS = {
     "TITLE": "Dr-Trottoir API",
     "DESCRIPTION": "This is the documentation for the Dr-Trottoir API. You can access this API directly by using port "
-    "2002.",
+                   "2002.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
@@ -143,7 +143,8 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'csp.middleware.CSPMiddleware',
     "django.middleware.locale.LocaleMiddleware",
 ]
 
@@ -267,10 +268,11 @@ MEDIA_URL = "/media/"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 20  # 20M
 FILE_UPLOAD_MAX_MEMORY_SIZE = DATA_UPLOAD_MAX_MEMORY_SIZE
 
-
 # Used for embedding PDFs
-X_FRAME_OPTIONS = "SAMEORIGIN"
-
+# X_FRAME_OPTIONS = "SAMEORIGIN"
+# X_FRAME_OPTIONS = f'ALLOW-FROM {"http://localhost/" if os.environ["ENVIRONMENT"] == "development" else "https://sel2-4.ugent.be"}'
+CSP_FRAME_ANCESTORS = (
+"'self'", 'http://localhost:2002', 'http://localhost', 'https://sel2-4.ugent.be', 'https://sel2-4.ugent.be:2002')
 
 # to support websockets
 ASGI_APPLICATION = "config.asgi.application"
