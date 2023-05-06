@@ -1,6 +1,6 @@
 from rest_framework.permissions import BasePermission
 
-from base.models import Building, User, Role, Manual
+from base.models import Building, User, Role, Manual, Tour, StudentOnTour
 from util.request_response_util import request_to_dict
 from django.utils.translation import gettext_lazy as _
 
@@ -237,3 +237,17 @@ class ReadOnlyManualFromSyndic(BasePermission):
 
     def has_object_permission(self, request, view, obj: Manual):
         return request.user.id == obj.building.syndic_id
+
+
+class NoStudentWorkingOnTour(BasePermission):
+    message = _("You cannot edit buildings on a tour when a student is actively doing the tour")
+
+    def has_object_permission(self, request, view, obj: Tour):
+        if request.method not in SAFE_METHODS:
+            active_student_on_tour = StudentOnTour.objects.filter(
+                tour=obj,
+                started_tour__isnull=False,
+                completed_tour__isnull=True
+            ).first()
+            return active_student_on_tour is None
+        return True
