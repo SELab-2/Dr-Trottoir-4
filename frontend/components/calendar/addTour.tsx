@@ -163,12 +163,11 @@ function AddTourModal(data: any) {
             <Modal.Body>
                 <form>
                     <div className="form-group">
-                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false}/>
+                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false} />
                     </div>
                     <div className="form-group">
                         <label>Selecteer student</label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} required={false}/>
-
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} required={false} />
                     </div>
                     <div className="form-row">
                         <div className="col">

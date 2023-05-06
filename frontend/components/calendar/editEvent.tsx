@@ -54,19 +54,11 @@ function EditEventModal(data: any) {
                 <form>
                     <div className="form-group">
                         <label>Ronde</label>
-                        <TourAutocomplete
-                            initialId={tourId}
-                            setObjectId={setTourId}
-                            required={false}
-                        />
+                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false} />
                     </div>
                     <div className="form-group">
                         <label>Student</label>
-                        <TourUserAutocomplete
-                            initialId={studentId}
-                            setObjectId={setStudentId}
-                            required={false}
-                        />
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} required={false} />
                     </div>
                 </form>
             </Modal.Body>
