@@ -2,18 +2,15 @@ import React, {useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import {addDays} from "date-fns";
-import {User} from "@/lib/user";
-import {Tour} from "@/lib/tour";
 import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import {useTranslation} from "react-i18next";
 import {formatDate} from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import {postBulkStudentOnTour, StudentOnTourPost} from "@/lib/student-on-tour";
 import {handleError} from "@/lib/error";
 
 function AddEventModal(data: any) {
-    const {allStudents, allTours, isOpen, onClose, reload} = data;
+    const {isOpen, onClose, reload} = data;
     const [tourId, setTourId] = useState(-1);
     const [studentId, setStudentId] = useState(-1);
     const [start, setStart] = useState<Date | null>(null);
@@ -24,12 +21,9 @@ function AddEventModal(data: any) {
     const [wednesdayId, setWednesdayId] = useState(-1);
     const [thursdayId, setThursdayId] = useState(-1);
     const [fridayId, setFridayId] = useState(-1);
-    const {t} = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const handleSave = () => {
-        const currentStudent: User = allStudents.find((student: User) => student.id === studentId);
-        const currentTour: Tour = allTours.find((tour: Tour) => tour.id === tourId);
         if (tourId === -1 || studentId === -1) {
             setErrorMessages([...errorMessages, "Ronde of student is leeg."]);
         } else {
@@ -42,50 +36,50 @@ function AddEventModal(data: any) {
                     while (currentDate <= end) {
                         let nextDate = addDays(currentDate, 1);
                         nextDate.setHours(0);
-                        data.push({tour: currentTour, student: currentStudent, start: currentDate, end: nextDate});
+                        data.push({tour: tourId, student: studentId, start: currentDate, end: nextDate});
                         currentDate = nextDate;
                         currentDate.setHours(0);
                     }
                 } else {
                     let dates = getDayTimestamps(start);
                     data.push({
-                        tour: currentTour,
-                        student: allStudents.find((student: User) => student.id === sundayId),
+                        tour: tourId,
+                        student: sundayId,
                         start: dates.current,
                         end: dates.next,
                     });
                     dates = getDayTimestamps(dates.next);
                     data.push({
-                        tour: currentTour,
-                        student: allStudents.find((student: User) => student.id === mondayId),
+                        tour: tourId,
+                        student: mondayId,
                         start: dates.current,
                         end: dates.next,
                     });
                     dates = getDayTimestamps(dates.next);
                     data.push({
-                        tour: currentTour,
-                        student: allStudents.find((student: User) => student.id === tuesdayId),
+                        tour: tourId,
+                        student: tuesdayId,
                         start: dates.current,
                         end: dates.next,
                     });
                     dates = getDayTimestamps(dates.next);
                     data.push({
-                        tour: currentTour,
-                        student: allStudents.find((student: User) => student.id === wednesdayId),
+                        tour: tourId,
+                        student: wednesdayId,
                         start: dates.current,
                         end: dates.next,
                     });
                     dates = getDayTimestamps(dates.next);
                     data.push({
-                        tour: currentTour,
-                        student: allStudents.find((student: User) => student.id === thursdayId),
+                        tour: tourId,
+                        student: thursdayId,
                         start: dates.current,
                         end: dates.next,
                     });
                     dates = getDayTimestamps(dates.next);
                     data.push({
-                        tour: currentTour,
-                        student: allStudents.find((student: User) => student.id === fridayId),
+                        tour: tourId,
+                        student: fridayId,
                         start: dates.current,
                         end: dates.next,
                     });
@@ -97,9 +91,9 @@ function AddEventModal(data: any) {
         }
     };
 
-    const handleEventSave = (data: { tour: Tour, student: User, start: Date, end: Date }[]) => {
-        const post_data: StudentOnTourPost[] = data.map((event: { tour: Tour, student: User, start: Date, end: Date }) => {
-            return {tour: event.tour.id, student: event.student.id, date: formatDate(event.start)};
+    const handleEventSave = (data: { tour: number, student: number, start: Date, end: Date }[]) => {
+        const post_data: StudentOnTourPost[] = data.map((event: { tour: number, student: number, start: Date, end: Date }) => {
+            return {tour: event.tour, student: event.student, date: formatDate(event.start)};
         });
         postBulkStudentOnTour(post_data).then(
             (_) => {

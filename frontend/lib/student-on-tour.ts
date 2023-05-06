@@ -32,6 +32,20 @@ export async function postStudentOnTour(tour: number, student: number, date: str
     );
 }
 
+export async function patchStudentOnTour(id: number, tour: number, student: number, date: string) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_STUDENT_ON_TOUR}${id}`;
+    return await api.patch(request_url, JSON.stringify({tour, student, date}),
+        {
+            headers: {"Content-Type": "application/json"},
+        }
+    );
+}
+
+export async function deleteStudentOnTour(id: number) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_STUDENT_ON_TOUR}${id}`;
+    return await api.delete(request_url);
+}
+
 export async function postBulkStudentOnTour(data : StudentOnTourPost[]) {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_STUDENT_ON_TOUR}`;
     return await api.post(request_url, JSON.stringify({data: data}),

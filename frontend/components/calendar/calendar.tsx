@@ -8,7 +8,10 @@ import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
 import {messages} from "@/locales/localizerCalendar";
 import {
+    deleteBulkStudentOnTour,
+    deleteStudentOnTour,
     getAllStudentOnTourFromDate,
+    patchStudentOnTour,
     postBulkStudentOnTour,
     StudentOnTour,
     StudentOnTourPost,
@@ -37,372 +40,297 @@ interface Props {
 }
 
 const MyCalendar: FC<Props> = (props) => {
-    const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
-    const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
-    const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
-    const [errorMessages, setErrorMessages] = useState<string[]>([]);
-    const [successMessages, setSuccessMessages] = useState<string[]>([]);
-    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-    const [tourColors, setTourColors] = useState<{ [key: number]: string }>({});
-    const [events, setEvents] = useState<MyEvent[]>([]);
-    const [deletedEvents, setDeletedEvents] = useState<number[]>([]);
-    const [rendered, setRendered] = useState<string[]>([]);
-    const [range, setRange] = useState({
-        start: startOfWeek(new Date(), {weekStartsOn: 1}),
-        end: endOfWeek(new Date(), {weekStartsOn: 1}),
-    });
-
-    useEffect(() => {
-        if (props.students.length > 0 && props.tours.length > 0) {
-            assignColors(props.tours);
-            getFromRange({start: startOfWeek(new Date()), end: endOfWeek(new Date())});
-        }
-    }, [props.students, props.tours]);
-
-    function getFromRange(range: Date[] | { start: Date; end: Date }) {
-        let startDate: Date = Array.isArray(range) ? range[0] : range.start;
-        let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
-        setRange({start: startDate, end: endDate});
-        if (!rendered.includes(startDate.toISOString())) {
-            setRendered([...rendered, startDate.toISOString()]);
-            onEventsLoad({start_date: startDate, end_date: endDate});
-        }
-    }
-
-    function reload(start: Date, end: Date) {
-        const remove_for_reload = events.filter((e) => {
-            return e.start >= start && e.start <= end;
+        const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
+        const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
+        const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
+        const [errorMessages, setErrorMessages] = useState<string[]>([]);
+        const [successMessages, setSuccessMessages] = useState<string[]>([]);
+        const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+        const [tourColors, setTourColors] = useState<{ [key: number]: string }>({});
+        const [events, setEvents] = useState<MyEvent[]>([]);
+        const [rendered, setRendered] = useState<string[]>([]);
+        const [range, setRange] = useState({
+            start: startOfWeek(new Date(), {weekStartsOn: 1}),
+            end: endOfWeek(new Date(), {weekStartsOn: 1}),
         });
-        const updatedEvents: MyEvent[] = events.filter((e) => !remove_for_reload.includes(e));
-        setEvents(updatedEvents);
-        onEventsLoad({start_date: start, end_date: end});
-    }
 
-    function postEvents(start: Date, end: Date, data : StudentOnTourPost[]) {
-        postBulkStudentOnTour(data).then(
-            (_) => {
-                reload(start, end);
-            },
-            (err) => {
-                const e = handleError(err);
-                setErrorMessages([...errorMessages, ...e]);
+        useEffect(() => {
+            if (props.students.length > 0 && props.tours.length > 0) {
+                assignColors(props.tours);
+                getFromRange({start: startOfWeek(new Date()), end: endOfWeek(new Date())});
             }
-        );
-    }
+        }, [props.students, props.tours]);
 
-    const onEventsLoad = ({start_date, end_date}: { start_date: Date; end_date: Date }) => {
-        getAllStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
-            (res) => {
-                const list: StudentOnTour[] = res.data;
-                console.log(list)
-                const tours = groupByKey(list, "tour");
-                let data: MyEvent[] = [];
-                for (let a in tours) {
-                    const t = parseInt(a);
-                    const value = tours[t];
-                    let tour: Tour | undefined = props.tours.find((tour: Tour) => tour.id === t);
-                    if (tour !== undefined) {
-                        for (let b in value) {
-                            const v = parseInt(b);
-                            const item = value[v];
-                            let student: User | undefined = props.students.find(
-                                (student: User) => student.id === item.student
-                            );
-                            if (student !== undefined) {
-                                let start = new Date(item.date);
-                                let end = addDays(start, 1);
-                                start.setHours(0);
-                                end.setHours(0);
-                                data.push({
-                                    id: item.id,
-                                    tour: tour,
-                                    student: student,
-                                    start: start,
-                                    end: end,
-                                });
-                            }
-                        }
-                        data = data.filter(Boolean);
-                    }
-                }
-                onEventsAdd(data);
-            },
-            (err) => {
-                const e = handleError(err);
-                setErrorMessages([...errorMessages, ...e]);
-                console.error(err);
-            }
-        );
-    };
-
-    function groupByKey(array: any[], key: string) {
-        return array.reduce((result, currentValue) => {
-            const groupKey = currentValue[key];
-            (result[groupKey] = result[groupKey] || []).push(currentValue);
-            return result;
-        }, {});
-    }
-
-    const onEventsCopy = (start: Date, diff: number) => {
-        let newEvents: StudentOnTourPost[] = [];
-        for (let e of events) {
-            if (e.start >= range.start && e.start <= range.end) {
-                newEvents.push({
-                    tour: e.tour.id,
-                    student: e.student.id,
-                    date: formatDate(addDays(e.start, diff))
-                });
+        function getFromRange(range: Date[] | { start: Date; end: Date }) {
+            let startDate: Date = Array.isArray(range) ? range[0] : range.start;
+            let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
+            setRange({start: startDate, end: endDate});
+            if (!rendered.includes(startDate.toISOString())) {
+                setRendered([...rendered, startDate.toISOString()]);
+                onEventsLoad({start_date: startDate, end_date: endDate});
             }
         }
-        const end = addDays(start, 6);
-        postEvents(start, end, newEvents);
-        setRendered([...rendered, start.toISOString()]);
-        reload(start, end);
-        setSuccessMessages([...successMessages, `Gekopieerd naar week van ${formatDate(start)}`]);
-    };
 
-    const onEventSelection = (e: Event) => {
-        setSelectedEvent(e);
-        setPopupIsOpenEdit(true);
-    };
-
-    const onEventEdit = ({tour, student}: { tour: Tour; student: User }) => {
-        setEvents((currentEvents) => {
-            return currentEvents.map((currentEvent) => {
-                if (currentEvent === selectedEvent) {
-                    return {
-                        ...currentEvent,
-                        tour: tour,
-                        student: student,
-                        edit: true,
-                    };
-                }
-                return currentEvent;
+        function reload(start: Date | null, end: Date | null) {
+            if (start === null && end === null) {
+                start = range.start
+                end = range.end
+            }
+            const remove_for_reload = events.filter((e) => {
+                return e.start >= start! && e.start <= end!;
             });
-        });
-    };
+            const updatedEvents: MyEvent[] = events.filter((e) => !remove_for_reload.includes(e));
+            setEvents(updatedEvents);
+            onEventsLoad({start_date: start!, end_date: end!});
+        }
 
-    const onEventsAdd = (eventData: MyEvent[]) => {
-        setEvents((currentEvents) => {
-            const newEvents = eventData.map((event) => ({
-                id: event.id,
-                tour: event.tour,
-                student: event.student,
-                start: event.start,
-                end: event.end
-            }));
-            return [...currentEvents, ...newEvents];
-        });
-    };
+        function postEvents(start: Date, end: Date, data: StudentOnTourPost[]) {
+            postBulkStudentOnTour(data).then(
+                (_) => {
+                    reload(start, end);
+                },
+                (err) => {
+                    const e = handleError(err);
+                    setErrorMessages([...errorMessages, ...e]);
+                }
+            );
+        }
 
-    // @ts-ignore
-    const onEventResize: withDragAndDropProps["onEventResize"] = (args: EventInteractionArgs<MyEvent>) => {
-        const {event, start, end} = args;
-        let resizedEvents: StudentOnTourPost[] = [];
-        let currentDate = new Date(start);
-        currentDate.setHours(0);
-        while (currentDate < end) {
-            let nextDate = addDays(currentDate, 1);
-            nextDate.setHours(2);
-            if (formatDate(currentDate) !== formatDate(event.start)) {
-                resizedEvents.push({
-                    tour: event.tour.id,
-                    student: event.student.id,
-                    date: formatDate(currentDate),
-                });
+        const onEventsLoad = ({start_date, end_date}: { start_date: Date; end_date: Date }) => {
+            getAllStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
+                (res) => {
+                    const list: StudentOnTour[] = res.data;
+                    const tours = groupByKey(list, "tour");
+                    let data: MyEvent[] = [];
+                    for (let a in tours) {
+                        const t = parseInt(a);
+                        const value = tours[t];
+                        let tour: Tour | undefined = props.tours.find((tour: Tour) => tour.id === t);
+                        if (tour !== undefined) {
+                            for (let b in value) {
+                                const v = parseInt(b);
+                                const item = value[v];
+                                let student: User | undefined = props.students.find(
+                                    (student: User) => student.id === item.student
+                                );
+                                if (student !== undefined) {
+                                    let start = new Date(item.date);
+                                    let end = addDays(start, 1);
+                                    start.setHours(0);
+                                    end.setHours(0);
+                                    data.push({
+                                        id: item.id,
+                                        tour: tour,
+                                        student: student,
+                                        start: start,
+                                        end: end,
+                                    });
+                                }
+                            }
+                            data = data.filter(Boolean);
+                        }
+                    }
+                    onEventsAdd(data);
+                },
+                (err) => {
+                    const e = handleError(err);
+                    setErrorMessages([...errorMessages, ...e]);
+                    console.error(err);
+                }
+            );
+        };
+
+        function groupByKey(array: any[], key: string) {
+            return array.reduce((result, currentValue) => {
+                const groupKey = currentValue[key];
+                (result[groupKey] = result[groupKey] || []).push(currentValue);
+                return result;
+            }, {});
+        }
+
+        const onEventsCopy = (start: Date, diff: number) => {
+            let newEvents: StudentOnTourPost[] = [];
+            for (let e of events) {
+                if (e.start >= range.start && e.start <= range.end) {
+                    newEvents.push({
+                        tour: e.tour.id,
+                        student: e.student.id,
+                        date: formatDate(addDays(e.start, diff))
+                    });
+                }
             }
-            currentDate = nextDate;
+            const end = addDays(start, 6);
+            postEvents(start, end, newEvents);
+            setRendered([...rendered, start.toISOString()]);
+            reload(start, end);
+            setSuccessMessages([...successMessages, `Gekopieerd naar week van ${formatDate(start)}`]);
+        };
+
+        const onEventSelection = (e: Event) => {
+            setSelectedEvent(e);
+            setPopupIsOpenEdit(true);
+        };
+
+        const onEventsAdd = (eventData: MyEvent[]) => {
+            setEvents((currentEvents) => {
+                const newEvents = eventData.map((event) => ({
+                    id: event.id,
+                    tour: event.tour,
+                    student: event.student,
+                    start: event.start,
+                    end: event.end
+                }));
+                return [...currentEvents, ...newEvents];
+            });
+        };
+
+        // @ts-ignore
+        const onEventResize: withDragAndDropProps["onEventResize"] = (args: EventInteractionArgs<MyEvent>) => {
+            const {event, start, end} = args;
+            let resizedEvents: StudentOnTourPost[] = [];
+            let currentDate = new Date(start);
             currentDate.setHours(0);
-        }
-        postEvents(range.start, range.end, resizedEvents);
-};
-
-// @ts-ignore
-const onEventDragAndDrop: withDragAndDropProps["onEventDrop"] = (args: EventInteractionArgs<MyEvent>) => {
-    const {event, start, end} = args;
-    event.start = new Date(start);
-    event.end = new Date(end);
-}
-
-const onEventDelete = (event: MyEvent) => {
-    const deleted: MyEvent | undefined = events.find((currentEvent: MyEvent) => {
-        if (currentEvent == event) {
-            return currentEvent.id;
-        }
-    });
-    if (deleted != undefined && deleted.id != null) {
-        setDeletedEvents([...deletedEvents, deleted.id]);
-    }
-    setEvents((currentEvents) => {
-        return currentEvents.filter((currentEvent) => {
-            return currentEvent !== event;
-        });
-    });
-};
-
-const onEventsDelete = (event: MyEvent) => {
-    const removedTours = events.filter((e) => {
-        return e.tour.id == event.tour.id && e.start >= range.start && e.start <= range.end;
-    });
-    const updatedEvents: MyEvent[] = events.filter((e) => !removedTours.includes(e));
-    const deletedIDs: (number | undefined)[] = removedTours.map((event) => {
-        if (event != undefined && event.id != null) {
-            return event.id;
-        }
-    });
-    // @ts-ignore
-    const newIDs: number[] = deletedIDs.filter(Boolean);
-    setEvents(updatedEvents);
-    setDeletedEvents([...deletedEvents, ...newIDs]);
-};
-
-/*const handleScheduleSave = () => {
-    const toLoad = events.filter(Boolean);
-    const post = toLoad.filter((event: MyEvent) => {
-        return event.id == null;
-    });
-    const patch = toLoad.filter((event: MyEvent) => {
-        return event.id !== null && event.id !== undefined;
-    });
-    const post_data = post.map((myEvent: MyEvent) => {
-        return { tour: myEvent.tour.id, student: myEvent.student.id, date: formatDate(myEvent.start) };
-    });
-
-    const patch_data = patch.map((myEvent: MyEvent) => {
-        if (myEvent.id !== null && myEvent.id !== undefined) {
-            let id: string = myEvent.id.toString();
-            return {
-                [id]: { tour: myEvent.tour.id, student: myEvent.student.id, date: formatDate(myEvent.start) },
-            };
-        }
-    });
-    const right_patch_format = patch_data.reduce((acc, curr) => ({ ...acc, ...curr }), {});
-    let messages: string[] = [];
-    if (post.length !== 0) {
-        postBulkStudentOnTour(post_data).then(
-            (_) => {
-                messages.push("Nieuwe planning opgeslagen.");
-                setSuccessMessages([...successMessages, ...messages]);
-            },
-            (err) => {
-                const e = handleError(err);
-                setErrorMessages([...errorMessages, ...e]);
+            while (currentDate < end) {
+                let nextDate = addDays(currentDate, 1);
+                nextDate.setHours(2);
+                if (formatDate(currentDate) !== formatDate(event.start)) {
+                    resizedEvents.push({
+                        tour: event.tour.id,
+                        student: event.student.id,
+                        date: formatDate(currentDate),
+                    });
+                }
+                currentDate = nextDate;
+                currentDate.setHours(0);
             }
-        );
-    }
-    if (patch.length != 0) {
-        patchBulkStudentOnTour(right_patch_format).then(
-            (_) => {
-                messages.push("Aanpassingen aan planning opgeslagen.");
-                setSuccessMessages([...successMessages, ...messages]);
-            },
-            (err) => {
-                const e = handleError(err);
-                setErrorMessages([...errorMessages, ...e]);
-            }
-        );
-    }
-    if (deletedEvents.length !== 0) {
-        deleteBulkStudentOnTour(deletedEvents).then(
-            (_) => {
-                messages.push("Verwijderingen zijn doorgevoerd.");
-                setSuccessMessages([...successMessages, ...messages]);
-            },
-            (err) => {
-                const e = handleError(err);
-                setErrorMessages([...errorMessages, ...e]);
-            }
-        );
-    }
-};*/
+            postEvents(range.start, range.end, resizedEvents);
+        };
 
-const assignColors = (tours: Tour[]) => {
-    const col: { [key: number]: string } = {};
-    for (let tour in tours) {
-        col[tours[tour].id] = colors[tour];
-    }
-    setTourColors(col);
-};
+        // @ts-ignore
+        const onEventDragAndDrop: withDragAndDropProps["onEventDrop"] = (args: EventInteractionArgs<MyEvent>) => {
+            const {event, start} = args;
+            patchStudentOnTour(event.id, event.tour.id, event.student.id, formatDate(new Date(start))).then(
+                (_) => {
+                    reload(range.start, range.end);
+                },
+                (err) => {
+                    const e = handleError(err);
+                    setErrorMessages([...errorMessages, ...e]);
+                }
+            )
+        }
 
-return (
-    <>
-        <div>
-            <div>
-                <button
-                    className={styles.button}
-                    onClick={() => {
-                        setPopupIsOpenAdd(true);
+        const onEventDelete = (event: MyEvent) => {
+            deleteStudentOnTour(event.id).then(
+                (_) => {
+                    reload(range.start, range.end);
+                },
+                (err) => {
+                    const e = handleError(err);
+                    setErrorMessages([...errorMessages, ...e]);
+                }
+            )
+        };
+
+        const onEventsDelete = (event: MyEvent) => {
+            const removedTours : number[] = events.filter((e) => {
+                return e.tour.id == event.tour.id && e.start >= range.start && e.start <= range.end;
+            }).map((event : MyEvent) => {
+                return event.id;
+            });
+            deleteBulkStudentOnTour(removedTours).then(
+                (_) => {
+                    reload(range.start, range.end);
+                },
+                (err) => {
+                    const e = handleError(err);
+                    setErrorMessages([...errorMessages, ...e]);
+                }
+            );
+        };
+
+        const assignColors = (tours: Tour[]) => {
+            const col: { [key: number]: string } = {};
+            for (let tour in tours) {
+                col[tours[tour].id] = colors[tour];
+            }
+            setTourColors(col);
+        };
+
+        return (
+            <>
+                <div>
+                    <div>
+                        <button
+                            className={styles.button}
+                            onClick={() => {
+                                setPopupIsOpenAdd(true);
+                            }}
+                        >
+                            Voeg ronde toe
+                        </button>
+                        <button
+                            className={styles.button}
+                            onClick={() => {
+                                setPopupIsOpenLoad(true);
+                            }}
+                        >
+                            Kopieer planning
+                        </button>
+                    </div>
+                    <SuccessMessageAlert successmessages={successMessages} setSuccessMessages={setSuccessMessages}/>
+                    <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                </div>
+                <DnDCalendar
+                    messages={messages}
+                    culture={"nl-BE"}
+                    defaultDate={new Date()}
+                    defaultView="week"
+                    views={["week", "day", "agenda"]}
+                    events={events}
+                    components={{event: CustomDisplay}}
+                    eventPropGetter={(event: any) => {
+                        const backgroundColor = tourColors[event.tour.id];
+                        return {style: {backgroundColor, color: "white"}};
                     }}
-                >
-                    Voeg ronde toe
-                </button>
-                <button
-                    className={styles.button}
-                    onClick={() => {
-                        setPopupIsOpenLoad(true);
-                    }}
-                >
-                    Kopieer planning
-                </button>
-            </div>
-            <SuccessMessageAlert successmessages={successMessages} setSuccessMessages={setSuccessMessages}/>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
-        </div>
-        <DnDCalendar
-            messages={messages}
-            culture={"nl-BE"}
-            defaultDate={new Date()}
-            defaultView="week"
-            views={["week", "day", "agenda"]}
-            events={events}
-            components={{event: CustomDisplay}}
-            eventPropGetter={(event: any) => {
-                const backgroundColor = tourColors[event.tour.id];
-                return {style: {backgroundColor, color: "white"}};
-            }}
-            localizer={localizer}
-            selectable
-            onSelectEvent={onEventSelection}
-            style={{height: "100vh"}}
-            step={60}
-            timeslots={1}
-            onEventDrop={onEventDragAndDrop}
-            onEventResize={onEventResize}
-            onRangeChange={getFromRange}
-            resizable
-        />
-        {selectedEvent && (
-            <EditEventModal
-                event={selectedEvent}
-                allStudents={props.students}
-                allTours={props.tours}
-                isOpen={popupIsOpenEdit}
-                onClose={() => {
-                    setSelectedEvent(null);
-                    setPopupIsOpenEdit(false);
-                }}
-                onSave={onEventEdit}
-                onDelete={onEventDelete}
-                onDeleteTour={onEventsDelete}
-            />
-        )}
-        <AddEventModal
-            first_day={range.start}
-            allStudents={props.students}
-            allTours={props.tours}
-            isOpen={popupIsOpenAdd}
-            onClose={() => setPopupIsOpenAdd(false)}
-            reload={reload}
-        />
-        <LoadEventsModal
-            range={range}
-            isOpen={popupIsOpenLoad}
-            onClose={() => setPopupIsOpenLoad(false)}
-            onSave={onEventsCopy}
-        />
-    </>
-);
-}
+                    localizer={localizer}
+                    selectable
+                    onSelectEvent={onEventSelection}
+                    style={{height: "100vh"}}
+                    step={60}
+                    timeslots={1}
+                    onEventDrop={onEventDragAndDrop}
+                    onEventResize={onEventResize}
+                    onRangeChange={getFromRange}
+                    resizable
+                />
+                {selectedEvent && (
+                    <EditEventModal
+                        event={selectedEvent}
+                        isOpen={popupIsOpenEdit}
+                        onClose={() => {
+                            setSelectedEvent(null);
+                            setPopupIsOpenEdit(false);
+                        }}
+                        onDelete={onEventDelete}
+                        onDeleteTour={onEventsDelete}
+                        reload={reload}
+                    />
+                )}
+                <AddEventModal
+                    isOpen={popupIsOpenAdd}
+                    onClose={() => setPopupIsOpenAdd(false)}
+                    reload={reload}
+                />
+                <LoadEventsModal
+                    range={range}
+                    isOpen={popupIsOpenLoad}
+                    onClose={() => setPopupIsOpenLoad(false)}
+                    onSave={onEventsCopy}
+                />
+            </>
+        );
+    }
 ;
 
 const locales = {

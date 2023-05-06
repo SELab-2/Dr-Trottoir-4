@@ -1,23 +1,31 @@
-import { useState } from "react";
+import React, {useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import {User, userSearchString} from "@/lib/user";
-import { Tour } from "@/lib/tour";
 import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import SyndicAutoComplete from "@/components/autocompleteComponents/syndicAutocomplete";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import {patchStudentOnTour} from "@/lib/student-on-tour";
+import {formatDate} from "@/lib/date";
 
 function EditEventModal(data: any) {
-    const { event, allStudents, allTours, isOpen, onClose, onSave, onDelete, onDeleteTour} = data;
+    const {event, isOpen, onClose, onDelete, onDeleteTour, reload} = data;
     const [tourId, setTourId] = useState(event.tour.id);
     const [studentId, setStudentId] = useState(event.student.id);
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const handleSave = () => {
-        const currentStudent: User = allStudents.find((student: User) => student.id === studentId);
-        const currentTour: Tour = allTours.find((tour: Tour) => tour.id === tourId);
-        let data = { tour: currentTour, student: currentStudent };
-        onSave(data);
-        onClose();
+        patchStudentOnTour(event.id, tourId, studentId, formatDate(event.start)).then(
+            (_) => {
+                reload(null, null);
+                setErrorMessages([]);
+                onClose();
+            },
+            (err) => {
+                const e = handleError(err);
+                setErrorMessages([...errorMessages, ...e]);
+            }
+        );
     };
 
     const handleDelete = () => {
@@ -31,27 +39,28 @@ function EditEventModal(data: any) {
     }
 
     return (
-        <Modal show={isOpen} onHide={onClose}>
+        <Modal show={isOpen} onHide={() => {setErrorMessages([]);onClose()}}>
             <Modal.Header closeButton>
                 <Modal.Title>Bewerk Ronde</Modal.Title>
             </Modal.Header>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <Modal.Body>
                 <form>
                     <div className="form-group">
                         <label>Ronde</label>
                         <TourAutocomplete
-                                initialId={tourId}
-                                setObjectId={setTourId}
-                                required={true}
-                            />
+                            initialId={tourId}
+                            setObjectId={setTourId}
+                            required={true}
+                        />
                     </div>
                     <div className="form-group">
                         <label>Student</label>
                         <StudentAutocomplete
-                                initialId={studentId}
-                                setObjectId={setStudentId}
-                                required={true}
-                            />
+                            initialId={studentId}
+                            setObjectId={setStudentId}
+                            required={true}
+                        />
                     </div>
                 </form>
             </Modal.Body>
