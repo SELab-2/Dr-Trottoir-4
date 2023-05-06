@@ -33,6 +33,7 @@ import styles from "./calendar.module.css";
 import {MyEvent} from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import SuccessMessageAlert from "@/components/successMessageAlert";
+import AddTourModal from "@/components/calendar/addTour";
 
 interface Props {
     students: User[];
@@ -42,6 +43,7 @@ interface Props {
 const MyCalendar: FC<Props> = (props) => {
         const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
         const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
+        const [popupIsOpenAddTour, setPopupIsOpenAddTour] = useState(false);
         const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
         const [errorMessages, setErrorMessages] = useState<string[]>([]);
         const [successMessages, setSuccessMessages] = useState<string[]>([]);
@@ -184,6 +186,30 @@ const MyCalendar: FC<Props> = (props) => {
             });
         };
 
+        const onEventEdit = (id: number, tour: number, student: number, date: Date) => {
+            let end = addDays(date, 1);
+            date.setHours(0);
+            end.setHours(0);
+            const currentTour: Tour | undefined = props.tours.find((t: Tour) => t.id === tour)
+            const currentStudent: User | undefined = props.students.find((s: User) => s.id === student)
+            if (currentTour !== undefined && currentStudent !== undefined) {
+                setEvents((currentEvents) => {
+                    return currentEvents.map((currentEvent) => {
+                        if (currentEvent.id === id) {
+                            return {
+                                ...currentEvent,
+                                tour: currentTour,
+                                student: currentStudent,
+                                start: date,
+                                end: end
+                            };
+                        }
+                        return currentEvent;
+                    });
+                });
+            }
+        }
+
         // @ts-ignore
         const onEventResize: withDragAndDropProps["onEventResize"] = (args: EventInteractionArgs<MyEvent>) => {
             const {event, start, end} = args;
@@ -210,8 +236,9 @@ const MyCalendar: FC<Props> = (props) => {
         const onEventDragAndDrop: withDragAndDropProps["onEventDrop"] = (args: EventInteractionArgs<MyEvent>) => {
             const {event, start} = args;
             patchStudentOnTour(event.id, event.tour.id, event.student.id, formatDate(new Date(start))).then(
-                (_) => {
-                    reload(range.start, range.end);
+                (res) => {
+                    console.log(res.data)
+                    onEventEdit(event.id, event.tour.id, event.student.id, new Date(res.data.date))
                 },
                 (err) => {
                     const e = handleError(err);
@@ -223,7 +250,11 @@ const MyCalendar: FC<Props> = (props) => {
         const onEventDelete = (event: MyEvent) => {
             deleteStudentOnTour(event.id).then(
                 (_) => {
-                    reload(range.start, range.end);
+                    setEvents((currentEvents) => {
+                        return currentEvents.filter((currentEvent) => {
+                            return currentEvent !== event;
+                        });
+                    });
                 },
                 (err) => {
                     const e = handleError(err);
@@ -233,14 +264,15 @@ const MyCalendar: FC<Props> = (props) => {
         };
 
         const onEventsDelete = (event: MyEvent) => {
-            const removedTours : number[] = events.filter((e) => {
+            const removedTours: MyEvent[] = events.filter((e) => {
                 return e.tour.id == event.tour.id && e.start >= range.start && e.start <= range.end;
-            }).map((event : MyEvent) => {
+            })
+            deleteBulkStudentOnTour(removedTours.map((event: MyEvent) => {
                 return event.id;
-            });
-            deleteBulkStudentOnTour(removedTours).then(
+            })).then(
                 (_) => {
-                    reload(range.start, range.end);
+                    const updatedEvents: MyEvent[] = events.filter(e => !removedTours.includes(e));
+                    setEvents(updatedEvents);
                 },
                 (err) => {
                     const e = handleError(err);
@@ -248,6 +280,7 @@ const MyCalendar: FC<Props> = (props) => {
                 }
             );
         };
+
 
         const assignColors = (tours: Tour[]) => {
             const col: { [key: number]: string } = {};
@@ -264,10 +297,18 @@ const MyCalendar: FC<Props> = (props) => {
                         <button
                             className={styles.button}
                             onClick={() => {
-                                setPopupIsOpenAdd(true);
+                                setPopupIsOpenAddTour(true);
                             }}
                         >
                             Voeg ronde toe
+                        </button>
+                        <button
+                            className={styles.button}
+                            onClick={() => {
+                                setPopupIsOpenAdd(true);
+                            }}
+                        >
+                            Voeg rondedag toe
                         </button>
                         <button
                             className={styles.button}
@@ -314,9 +355,14 @@ const MyCalendar: FC<Props> = (props) => {
                         }}
                         onDelete={onEventDelete}
                         onDeleteTour={onEventsDelete}
-                        reload={reload}
+                        editEvent={onEventEdit}
                     />
                 )}
+                <AddTourModal
+                    isOpen={popupIsOpenAddTour}
+                    onClose={() => setPopupIsOpenAddTour(false)}
+                    reload={reload}
+                />
                 <AddEventModal
                     isOpen={popupIsOpenAdd}
                     onClose={() => setPopupIsOpenAdd(false)}

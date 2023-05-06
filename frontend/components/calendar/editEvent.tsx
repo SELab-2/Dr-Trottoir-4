@@ -9,15 +9,15 @@ import {patchStudentOnTour} from "@/lib/student-on-tour";
 import {formatDate} from "@/lib/date";
 
 function EditEventModal(data: any) {
-    const {event, isOpen, onClose, onDelete, onDeleteTour, reload} = data;
+    const {event, isOpen, onClose, onDelete, onDeleteTour, editEvent} = data;
     const [tourId, setTourId] = useState(event.tour.id);
     const [studentId, setStudentId] = useState(event.student.id);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const handleSave = () => {
         patchStudentOnTour(event.id, tourId, studentId, formatDate(event.start)).then(
-            (_) => {
-                reload(null, null);
+            (res) => {
+                editEvent(event.id, res.data.tour, res.data.student, event.start);
                 setErrorMessages([]);
                 onClose();
             },
