@@ -1,5 +1,6 @@
 from datetime import date, datetime
 
+import pytz
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.exceptions import ValidationError
@@ -9,6 +10,7 @@ from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
+import config.settings as settings
 from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
@@ -369,7 +371,8 @@ class RemarkAtBuilding(models.Model):
     def clean(self):
         super().clean()
         if not self.timestamp:
-            self.timestamp = datetime.now()
+            tz = pytz.timezone(settings.TIME_ZONE)
+            self.timestamp = datetime.now(tz)
 
     def __str__(self):
         return f"{self.type} for {self.building}"
