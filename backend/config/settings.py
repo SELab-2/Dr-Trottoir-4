@@ -87,7 +87,7 @@ NOSE_ARGS = ["--cover-xml", "--cover-xml-file=./coverage.xml"]
 SPECTACULAR_SETTINGS = {
     "TITLE": "Dr-Trottoir API",
     "DESCRIPTION": "This is the documentation for the Dr-Trottoir API. You can access this API directly by using port "
-                   "2002.",
+    "2002.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
@@ -144,7 +144,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     # "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'csp.middleware.CSPMiddleware',
+    "csp.middleware.CSPMiddleware",
     "django.middleware.locale.LocaleMiddleware",
 ]
 
@@ -272,7 +272,12 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = DATA_UPLOAD_MAX_MEMORY_SIZE
 # X_FRAME_OPTIONS = "SAMEORIGIN"
 # X_FRAME_OPTIONS = f'ALLOW-FROM {"http://localhost/" if os.environ["ENVIRONMENT"] == "development" else "https://sel2-4.ugent.be"}'
 CSP_FRAME_ANCESTORS = (
-"'self'", 'http://localhost:2002', 'http://localhost', 'https://sel2-4.ugent.be', 'https://sel2-4.ugent.be:2002')
+    "'self'",
+    "http://localhost:2002",
+    "http://localhost",
+    "https://sel2-4.ugent.be",
+    "https://sel2-4.ugent.be:2002",
+)
 
 # to support websockets
 ASGI_APPLICATION = "config.asgi.application"
