@@ -177,10 +177,43 @@ const MyCalendar: FC<Props> = (props) => {
                     id: event.id,
                     tour: event.tour,
                     student: event.student,
+<<<<<<< HEAD
                     start: event.start,
                     end: event.end
                 }));
                 return [...currentEvents, ...newEvents];
+=======
+                    start: currentDate,
+                    end: nextDate,
+                    edit: false,
+                });
+            }
+            currentDate = nextDate;
+            currentDate.setHours(0);
+        }
+        onEventsAdd(resizedEvents);
+    };
+
+    // @ts-ignore
+    const onEventDragAndDrop: withDragAndDropProps["onEventDrop"] = (args: EventInteractionArgs<MyEvent>) => {
+        const { event, start, end } = args;
+        event.start = new Date(start);
+        event.end = new Date(end);
+    };
+
+    const onEventDelete = (event: MyEvent) => {
+        const deleted: MyEvent | undefined = events.find((currentEvent: MyEvent) => {
+            if (currentEvent == event) {
+                return currentEvent.id;
+            }
+        });
+        if (deleted != undefined && deleted.id != null) {
+            setDeletedEvents([...deletedEvents, deleted.id]);
+        }
+        setEvents((currentEvents) => {
+            return currentEvents.filter((currentEvent) => {
+                return currentEvent !== event;
+>>>>>>> 0977ad585c07d9d99f18767f9757dc3db29f4f3d
             });
         };
 
