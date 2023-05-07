@@ -335,6 +335,7 @@ const MyCalendar: FC<Props> = (props) => {
                     return { style: { backgroundColor, color: "white" } };
                 }}
                 localizer={localizer}
+                drilldownView={null}
                 selectable
                 onSelectEvent={onEventSelection}
                 style={{ height: "100vh" }}
