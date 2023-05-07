@@ -52,7 +52,6 @@ function AdminDataBuildingsEdit() {
                 public_id: public_id,
             };
             try {
-                console.log(router.query.building);
                 let buildingId = Number(router.query.building);
                 if (router.query.building) {
                     const res = await patchBuilding(building, Number(router.query.building));
