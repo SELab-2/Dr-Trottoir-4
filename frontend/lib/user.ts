@@ -76,6 +76,16 @@ export async function getStudents() {
     });
 }
 
+export async function getTourUsers(includeInactiveUser: boolean = false) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
+    return await api.get(request_url, {
+        params: {
+            "include-inactive-bool": includeInactiveUser,
+            "include-role-name-list": "[student, admin, superstudent]"
+        }
+    });
+}
+
 export async function getTourUsersFromRegion(tourId: number | null, includeInactiveUser: boolean = false) {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
     if (tourId) {

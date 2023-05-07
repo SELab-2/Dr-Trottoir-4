@@ -6,6 +6,7 @@ import ErrorMessageAlert from "@/components/errorMessageAlert";
 import {postBulkStudentOnTour, StudentOnTourPost} from "@/lib/student-on-tour";
 import {formatDate} from "@/lib/date";
 import {handleError} from "@/lib/error";
+import WeekPicker from "@/components/calendar/weekPicker";
 
 function LoadEventsModal(data: any) {
     const {range, events, isOpen, onClose, onSave} = data;
@@ -75,7 +76,7 @@ function LoadEventsModal(data: any) {
                             <input
                                 type="date"
                                 className="form-control"
-                                value={start_date.toISOString().substring(0, 10)}
+                                value={formatDate(start_date)}
                                 onChange={handleStartDateChange}
                             />
                         </div>
@@ -84,7 +85,7 @@ function LoadEventsModal(data: any) {
                             <input
                                 type="date"
                                 className="form-control"
-                                value={end_date.toISOString().substring(0, 10)}
+                                value={formatDate(end_date)}
                                 onChange={handleEndDateChange}
                             />
                         </div>
