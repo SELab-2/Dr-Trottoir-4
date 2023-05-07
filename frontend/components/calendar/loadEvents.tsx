@@ -3,9 +3,9 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { addDays, endOfWeek, startOfWeek } from "date-fns";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {postBulkStudentOnTour, StudentOnTourPost} from "@/lib/student-on-tour";
-import {formatDate} from "@/lib/date";
-import {handleError} from "@/lib/error";
+import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
 
 function LoadEventsModal(data: any) {
     const { range, events, isOpen, onClose, onSave } = data;
