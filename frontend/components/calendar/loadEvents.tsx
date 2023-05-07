@@ -1,23 +1,26 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import {addDays, endOfWeek, startOfWeek} from "date-fns";
+import { addDays, endOfWeek, startOfWeek } from "date-fns";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {postBulkStudentOnTour, StudentOnTourPost} from "@/lib/student-on-tour";
-import {formatDate} from "@/lib/date";
-import {handleError} from "@/lib/error";
+import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
 
 function LoadEventsModal(data: any) {
-    const {range, events, isOpen, onClose, onSave} = data;
-    const [start_date, setStart] = useState(new Date(
-        startOfWeek(new Date(), {weekStartsOn: 1}).toLocaleString("en", {
-            timeZone: "America/New_York",
-        })));
+    const { range, events, isOpen, onClose, onSave } = data;
+    const [start_date, setStart] = useState(
+        new Date(
+            startOfWeek(new Date(), { weekStartsOn: 1 }).toLocaleString("en", {
+                timeZone: "America/New_York",
+            })
+        )
+    );
     const [end_date, setEnd] = useState(endOfWeek(start_date));
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
-        setEnd(endOfWeek(start_date))
+        setEnd(endOfWeek(start_date));
     }, [start_date]);
 
     const handleSave = () => {
@@ -38,10 +41,13 @@ function LoadEventsModal(data: any) {
             (_) => {
                 if (start_date !== null) {
                     onSave(start_date, end_date);
-                    setStart(new Date(
-                        startOfWeek(new Date(), {weekStartsOn: 1}).toLocaleString("en", {
-                            timeZone: "America/New_York",
-                        })));
+                    setStart(
+                        new Date(
+                            startOfWeek(new Date(), { weekStartsOn: 1 }).toLocaleString("en", {
+                                timeZone: "America/New_York",
+                            })
+                        )
+                    );
                     setEnd(addDays(start_date, 6));
                     onClose();
                 }
@@ -66,7 +72,7 @@ function LoadEventsModal(data: any) {
             <Modal.Header closeButton>
                 <Modal.Title>Kopieer deze week naar</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 <form>
                     <div className="form-row">

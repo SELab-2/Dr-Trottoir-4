@@ -168,9 +168,9 @@ function AddTourModal(data: any) {
                     </div>
                     {checked && (
                         <div className="form-group">
-                        <label>Selecteer student</label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId} />
-                    </div>
+                            <label>Selecteer student</label>
+                            <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId} />
+                        </div>
                     )}
                     <div className="form-row">
                         <div className="col">
