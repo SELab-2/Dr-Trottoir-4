@@ -80,7 +80,6 @@ export async function getTourUsersFromRegion(tourId: number | null, includeInact
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
     if (tourId) {
         const res = await getTour(tourId);
-        console.log(res.data.region);
         return await api.get(request_url, {
             params: {
                 "region-id-list": [res.data.region],
