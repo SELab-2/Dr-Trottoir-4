@@ -47,27 +47,26 @@ function EditEventModal(data: any) {
             }}
         >
             <Modal.Header closeButton>
-                <Modal.Title>Bewerk Ronde</Modal.Title>
+                <Modal.Title>Bewerk Ronde dag</Modal.Title>
             </Modal.Header>
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 <form>
                     <div className="form-group">
-                        <label>Ronde</label>
                         <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false} />
                     </div>
                     <div className="form-group">
-                        <label>Student</label>
+                        <label>Selecteer student</label>
                         <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId} />
                     </div>
                 </form>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="danger" onClick={handleTourDelete}>
-                    Delete Ronde
+                    Verwijder Ronde
                 </Button>
                 <Button variant="danger" onClick={handleDelete}>
-                    Delete
+                    Verwijder
                 </Button>
                 <Button variant="primary" onClick={handleSave}>
                     Sla op

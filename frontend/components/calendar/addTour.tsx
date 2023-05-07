@@ -11,7 +11,7 @@ import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersA
 
 function AddTourModal(data: any) {
     const { isOpen, onClose, reload } = data;
-    const [tourId, setTourId] = useState(-1);
+    const [tourId, setTourId] = useState(null);
     const [studentId, setStudentId] = useState(-1);
     const [start, setStart] = useState<Date | null>(null);
     const [checked, setChecked] = useState(true);
@@ -24,7 +24,7 @@ function AddTourModal(data: any) {
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const handleSave = () => {
-        if (tourId === -1 || studentId === -1) {
+        if (tourId === null || studentId === -1) {
             setErrorMessages([...errorMessages, "Ronde of student is leeg."]);
         } else {
             if (start !== null) {
@@ -99,7 +99,6 @@ function AddTourModal(data: any) {
         );
         postBulkStudentOnTour(post_data).then(
             (_) => {
-                //onSaveMultiple(data);
                 if (start !== null) {
                     const end = addDays(start, 5);
                     resetStates();
@@ -130,7 +129,10 @@ function AddTourModal(data: any) {
         setWednesdayId(-1);
         setThursdayId(-1);
         setFridayId(-1);
+        setStudentId(-1);
+        setTourId(null);
         setChecked(true);
+        setErrorMessages([]);
     };
 
     const handleStartDateChange = (e: { target: { value: string | number | Date } }) => {
@@ -145,7 +147,6 @@ function AddTourModal(data: any) {
         setThursdayId(studentId);
         setFridayId(studentId);
         setChecked(!checked);
-        setErrorMessages([]);
     };
 
     return (
@@ -165,10 +166,12 @@ function AddTourModal(data: any) {
                     <div className="form-group">
                         <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false} />
                     </div>
-                    <div className="form-group">
+                    {checked && (
+                        <div className="form-group">
                         <label>Selecteer student</label>
                         <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId} />
                     </div>
+                    )}
                     <div className="form-row">
                         <div className="col">
                             <label>Start datum:</label>

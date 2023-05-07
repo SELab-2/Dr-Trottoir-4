@@ -47,6 +47,8 @@ function AddEventModal(data: any) {
         <Modal
             show={isOpen}
             onHide={() => {
+                setTourId(-1);
+                setStudentId(-1);
                 setDate(null);
                 onClose();
             }}

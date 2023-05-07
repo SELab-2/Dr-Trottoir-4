@@ -23,7 +23,7 @@ import EditEventModal from "@/components/calendar/editEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
 import { Tour } from "@/lib/tour";
-import { getTourUsers, User } from "@/lib/user";
+import { User } from "@/lib/user";
 import { addDays, endOfWeek } from "date-fns";
 import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
@@ -150,22 +150,10 @@ const MyCalendar: FC<Props> = (props) => {
         }, {});
     }
 
-    const onEventsCopy = (start: Date, diff: number) => {
-        let newEvents: StudentOnTourPost[] = [];
-        for (let e of events) {
-            if (e.start >= range.start && e.start <= range.end) {
-                newEvents.push({
-                    tour: e.tour.id,
-                    student: e.student.id,
-                    date: formatDate(addDays(e.start, diff)),
-                });
-            }
-        }
-        const end = addDays(start, 6);
-        postEvents(start, end, newEvents);
+    const onEventsCopy = (start: Date, end: Date) => {
         setRendered([...rendered, start.toISOString()]);
         reload(start, end);
-        setSuccessMessages([...successMessages, `Gekopieerd naar week van ${formatDate(start)}`]);
+        setSuccessMessages([`Gekopieerd naar week van ${formatDate(start)}`]);
     };
 
     const onEventSelection = (e: Event) => {
@@ -327,7 +315,7 @@ const MyCalendar: FC<Props> = (props) => {
                 culture={"nl-BE"}
                 defaultDate={new Date()}
                 defaultView="week"
-                views={["week", "day", "agenda"]}
+                views={["week", "day"]}
                 events={events}
                 components={{ event: CustomDisplay }}
                 eventPropGetter={(event: any) => {
@@ -363,6 +351,7 @@ const MyCalendar: FC<Props> = (props) => {
             <AddEventModal isOpen={popupIsOpenAdd} onClose={() => setPopupIsOpenAdd(false)} reload={reload} />
             <LoadEventsModal
                 range={range}
+                events={events}
                 isOpen={popupIsOpenLoad}
                 onClose={() => setPopupIsOpenLoad(false)}
                 onSave={onEventsCopy}
