@@ -1,8 +1,6 @@
 import React from "react";
-import {getTourUsers, getTourUsersFromRegion, User, userSearchString} from "@/lib/user";
-import AutocompleteComponent, {
-    TourUserProps
-} from "@/components/autocompleteComponents/autocompleteComponent";
+import { getTourUsers, getTourUsersFromRegion, User, userSearchString } from "@/lib/user";
+import AutocompleteComponent, { TourUserProps } from "@/components/autocompleteComponents/autocompleteComponent";
 
 const TourUserAutocomplete: React.FC<TourUserProps> = ({ initialId, setObjectId, tourId = null }) => {
     return (
