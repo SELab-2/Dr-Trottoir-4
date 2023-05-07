@@ -276,7 +276,27 @@ CSP_FRAME_ANCESTORS = (
     "http://localhost:2002",
     "http://localhost",
     "https://sel2-4.ugent.be",
+    "https://sel2-4.ugent.be:2002"
+)
+CSP_DEFAULT_SRC = (
+    "'self'",
+    "http://localhost:2002",
+    "http://localhost",
+    "https://sel2-4.ugent.be",
     "https://sel2-4.ugent.be:2002",
+    "https://*.jsdelivr.net",
+    "data:",
+)
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "https://*.jsdelivr.net",
+    "'unsafe-inline'",
+    # "'unsafe-eval'"
+)
+CSP_STYLE_SRC_ELEM = (
+    "'self'",
+    "https://*.jsdelivr.net",
+    "'unsafe-inline'"
 )
 
 # to support websockets
