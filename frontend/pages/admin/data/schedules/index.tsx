@@ -2,7 +2,7 @@ import AdminHeader from "@/components/header/adminHeader";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { getAllTours, Tour } from "@/lib/tour";
-import { getAllUsers, getTourUsers, User } from "@/lib/user";
+import {getAllUsers, getTourUsers, getTourUsersFromRegion, User} from "@/lib/user";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import Loading from "@/components/loading";
 import MyCalendar from "@/components/calendar/calendar";
@@ -21,7 +21,7 @@ function AdminDataSchedule() {
 
     // Get all the active students
     function getTourAllUsers() {
-        getTourUsers(false).then(
+        getTourUsersFromRegion(null, false).then(
             (res) => {
                 setAllTourUsers(res.data);
             },

@@ -167,7 +167,7 @@ function AddTourModal(data: any) {
                     </div>
                     <div className="form-group">
                         <label>Selecteer student</label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} required={false} />
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId} />
                     </div>
                     <div className="form-row">
                         <div className="col">
@@ -189,7 +189,7 @@ function AddTourModal(data: any) {
                                     <TourUserAutocomplete
                                         initialId={sundayId}
                                         setObjectId={setSundayId}
-                                        required={false}
+                                        tourId={tourId}
                                     />
                                 </div>
                                 <div>
@@ -197,7 +197,7 @@ function AddTourModal(data: any) {
                                     <TourUserAutocomplete
                                         initialId={mondayId}
                                         setObjectId={setMondayId}
-                                        required={false}
+                                        tourId={tourId}
                                     />
                                 </div>
                                 <div>
@@ -205,7 +205,7 @@ function AddTourModal(data: any) {
                                     <TourUserAutocomplete
                                         initialId={tuesdayId}
                                         setObjectId={setTuesdayId}
-                                        required={false}
+                                        tourId={tourId}
                                     />
                                 </div>
                                 <div>
@@ -213,7 +213,7 @@ function AddTourModal(data: any) {
                                     <TourUserAutocomplete
                                         initialId={wednesdayId}
                                         setObjectId={setWednesdayId}
-                                        required={false}
+                                        tourId={tourId}
                                     />
                                 </div>
                                 <div>
@@ -221,7 +221,7 @@ function AddTourModal(data: any) {
                                     <TourUserAutocomplete
                                         initialId={thursdayId}
                                         setObjectId={setThursdayId}
-                                        required={false}
+                                        tourId={tourId}
                                     />
                                 </div>
                                 <div>
@@ -229,7 +229,7 @@ function AddTourModal(data: any) {
                                     <TourUserAutocomplete
                                         initialId={fridayId}
                                         setObjectId={setFridayId}
-                                        required={false}
+                                        tourId={tourId}
                                     />
                                 </div>
                             </div>

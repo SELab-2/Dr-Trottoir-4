@@ -62,7 +62,7 @@ function AddEventModal(data: any) {
                     </div>
                     <div className="form-group">
                         <label>Selecteer student</label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} required={false} />
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId} />
                     </div>
                     <div className="form-row">
                         <div className="col">

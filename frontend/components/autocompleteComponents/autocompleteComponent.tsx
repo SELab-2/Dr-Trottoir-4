@@ -32,6 +32,12 @@ export interface GenericProps {
     required: boolean;
 }
 
+export interface TourUserProps {
+    initialId: any;
+    setObjectId: (value: any) => void;
+    tourId?: number | null;
+}
+
 const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions, mapping, setObjectId }) => {
     const [value, setValue] = React.useState<any>();
     const [inputValue, setInputValue] = useState("");
