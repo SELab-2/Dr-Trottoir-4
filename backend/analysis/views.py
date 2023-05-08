@@ -37,30 +37,22 @@ class WorkedHoursAnalysis(APIView):
             200: OpenApiResponse(
                 description="All worked hours for each student for a certain period",
                 response=inline_serializer(
-                    name='WorkedHoursAnalysisResponse',
+                    name="WorkedHoursAnalysisResponse",
                     fields={
                         "student_id": serializers.IntegerField(),
                         "worked_minutes": serializers.IntegerField(),
-                        "student_on_tour_ids": serializers.ListField(child=serializers.IntegerField())
-                    }
+                        "student_on_tour_ids": serializers.ListField(child=serializers.IntegerField()),
+                    },
                 ),
                 examples=[
                     OpenApiExample(
                         "Successful Response 1",
-                        value={
-                            "student_id": 6,
-                            "worked_minutes": 112,
-                            "student_on_tour_ids": [1, 6, 9, 56, 57]
-                        }
+                        value={"student_id": 6, "worked_minutes": 112, "student_on_tour_ids": [1, 6, 9, 56, 57]},
                     ),
                     OpenApiExample(
                         "Successful Response 2",
-                        value={
-                            "student_id": 7,
-                            "worked_minutes": 70,
-                            "student_on_tour_ids": [2, 26]
-                        }
-                    )
+                        value={"student_id": 7, "worked_minutes": 70, "student_on_tour_ids": [2, 26]},
+                    ),
                 ],
             ),
         },
@@ -96,14 +88,14 @@ class StudentOnTourAnalysis(APIView):
             200: OpenApiResponse(
                 description="A list of buildings and their timings on this student on tour",
                 response=inline_serializer(
-                    name='DetailedStudentOnTourTimings',
+                    name="DetailedStudentOnTourTimings",
                     fields={
                         "building_id": serializers.IntegerField(),
                         "expected_duration_in_seconds": serializers.IntegerField(),
                         "arrival_time": serializers.DateTimeField(),
                         "departure_time": serializers.DateTimeField(),
                         "duration_in_seconds": serializers.IntegerField(),
-                    }
+                    },
                 ),
                 examples=[
                     OpenApiExample(
@@ -125,7 +117,7 @@ class StudentOnTourAnalysis(APIView):
                             "departure_time": "2023-05-08T08:08:11.714000Z",
                             "duration_in_seconds": 7,
                         },
-                    )
+                    ),
                 ],
             ),
         },
