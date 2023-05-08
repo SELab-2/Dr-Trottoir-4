@@ -23,7 +23,7 @@ class WorkedHoursAnalysis(APIView):
             {
                 "start-date": ("Filter by start-date", True, OpenApiTypes.DATE),
                 "end-date": ("Filter by end-date", True, OpenApiTypes.DATE),
-                "region": ("Filter by region", False, OpenApiTypes.STR),
+                "region_id": ("Filter by region id", False, OpenApiTypes.INT),
             }
         ),
         responses={200: OpenApiResponse(
@@ -66,7 +66,7 @@ class WorkedHoursAnalysis(APIView):
         filters = {
             "start_date": get_filter_object("date__gte", required=True),
             "end_date": get_filter_object("date__lte", required=True),
-            "region": get_filter_object("tour__region"),
+            "region_id": get_filter_object("tour__region__id"),
         }
 
         try:
