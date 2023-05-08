@@ -9,7 +9,7 @@ from base.models import StudentOnTour, RemarkAtBuilding
 def validate_student_on_tours(student_on_tours):
     # raise an error if the student_on_tours queryset is not provided
     if student_on_tours is None:
-        raise serializers.ValidationError('student_on_tours must be provided to serialize data')
+        raise serializers.ValidationError("student_on_tours must be provided to serialize data")
 
     return student_on_tours
 
@@ -35,14 +35,14 @@ class WorkedHoursAnalysisSerializer(serializers.BaseSerializer):
 
             # if we've seen this student before, update their worked hours and student_on_tour_ids
             if student_id in student_data:
-                student_data[student_id]['worked_minutes'] += worked_minutes
-                student_data[student_id]['student_on_tour_ids'].append(sot.id)
+                student_data[student_id]["worked_minutes"] += worked_minutes
+                student_data[student_id]["student_on_tour_ids"].append(sot.id)
             # otherwise, add a new entry for this student
             else:
                 student_data[student_id] = {
-                    'student_id': student_id,
-                    'worked_minutes': worked_minutes,
-                    'student_on_tour_ids': [sot.id],
+                    "student_id": student_id,
+                    "worked_minutes": worked_minutes,
+                    "student_on_tour_ids": [sot.id],
                 }
 
         # return the list of student data dictionaries
@@ -61,25 +61,27 @@ class StudentOnTourAnalysisSerializer(serializers.BaseSerializer):
                 # Convert the TimeField to a datetime object with today's date
                 today = datetime.today()
                 transformed_datetime = datetime.combine(today, rab.building.duration)
-                expected_duration_in_seconds = transformed_datetime.time().second + (
-                            transformed_datetime.time().minute * 60) + (
-                                                       transformed_datetime.time().hour * 3600)
+                expected_duration_in_seconds = (
+                    transformed_datetime.time().second
+                    + (transformed_datetime.time().minute * 60)
+                    + (transformed_datetime.time().hour * 3600)
+                )
                 building_data[building_id] = {
-                    'building_id': building_id,
-                    'expected_duration_in_seconds': expected_duration_in_seconds,
+                    "building_id": building_id,
+                    "expected_duration_in_seconds": expected_duration_in_seconds,
                 }
 
-            if rab.type == 'AA':
-                building_data[building_id]['arrival_time'] = rab.timestamp
-            elif rab.type == 'VE':
-                building_data[building_id]['departure_time'] = rab.timestamp
+            if rab.type == "AA":
+                building_data[building_id]["arrival_time"] = rab.timestamp
+            elif rab.type == "VE":
+                building_data[building_id]["departure_time"] = rab.timestamp
 
         for building_id, building_info in building_data.items():
             # calculate the duration of the visit
-            if 'arrival_time' in building_info and 'departure_time' in building_info:
-                duration = building_info['departure_time'] - building_info['arrival_time']
+            if "arrival_time" in building_info and "departure_time" in building_info:
+                duration = building_info["departure_time"] - building_info["arrival_time"]
                 # add the duration in seconds to the building info
-                building_info['duration_in_seconds'] = round(duration.total_seconds())
+                building_info["duration_in_seconds"] = round(duration.total_seconds())
 
         # return the list of building data dictionaries
         return list(building_data.values())

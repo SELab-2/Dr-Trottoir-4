@@ -9,8 +9,14 @@ from rest_framework.views import APIView
 from analysis.serializers import WorkedHoursAnalysisSerializer, StudentOnTourAnalysisSerializer
 from base.models import StudentOnTour, RemarkAtBuilding
 from base.permissions import IsAdmin, IsSuperStudent
-from util.request_response_util import get_success, get_filter_object, filter_instances, \
-    bad_request_custom_error_message, not_found, param_docs
+from util.request_response_util import (
+    get_success,
+    get_filter_object,
+    filter_instances,
+    bad_request_custom_error_message,
+    not_found,
+    param_docs,
+)
 
 
 class WorkedHoursAnalysis(APIView):
@@ -26,37 +32,22 @@ class WorkedHoursAnalysis(APIView):
                 "region_id": ("Filter by region id", False, OpenApiTypes.INT),
             }
         ),
-        responses={200: OpenApiResponse(
-            description="All worked hours for each student for a certain period",
-            examples=[
-                OpenApiExample(
-                    "Successful Response",
-                    value=[
-                        [
-                            {
-                                "student_id": 6,
-                                "worked_minutes": 112,
-                                "student_on_tour_ids": [
-                                    1,
-                                    6,
-                                    9,
-                                    56,
-                                    57
-                                ]
-                            },
-                            {
-                                "student_id": 7,
-                                "worked_minutes": 70,
-                                "student_on_tour_ids": [
-                                    2,
-                                    26
-                                ]
-                            },
-                        ]
-                    ]
-                )
-            ]
-        )},
+        responses={
+            200: OpenApiResponse(
+                description="All worked hours for each student for a certain period",
+                examples=[
+                    OpenApiExample(
+                        "Successful Response",
+                        value=[
+                            [
+                                {"student_id": 6, "worked_minutes": 112, "student_on_tour_ids": [1, 6, 9, 56, 57]},
+                                {"student_id": 7, "worked_minutes": 70, "student_on_tour_ids": [2, 26]},
+                            ]
+                        ],
+                    )
+                ],
+            )
+        },
     )
     def get(self, request):
         """
@@ -97,20 +88,20 @@ class StudentOnTourAnalysis(APIView):
                                 "expected_duration_in_seconds": 2700,
                                 "arrival_time": "2023-05-08T08:01:52.264000Z",
                                 "departure_time": "2023-05-08T08:07:49.868000Z",
-                                "duration_in_seconds": 358
+                                "duration_in_seconds": 358,
                             },
                             {
                                 "building_id": 11,
                                 "expected_duration_in_seconds": 3600,
                                 "arrival_time": "2023-05-08T08:08:04.693000Z",
                                 "departure_time": "2023-05-08T08:08:11.714000Z",
-                                "duration_in_seconds": 7
+                                "duration_in_seconds": 7,
                             },
-                        ]
+                        ],
                     )
-                ]
+                ],
             )
-        }
+        },
     )
     def get(self, request, student_on_tour_id):
         """
