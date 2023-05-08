@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from typing import List
 
 from rest_framework import serializers
@@ -58,7 +58,16 @@ class StudentOnTourAnalysisSerializer(serializers.BaseSerializer):
             building_id = rab.building.id
             # add a dict if we haven't seen this building before
             if building_id not in building_data:
-                building_data[building_id] = {'building_id': building_id}
+                # Convert the TimeField to a datetime object with today's date
+                today = datetime.today()
+                transformed_datetime = datetime.combine(today, rab.building.duration)
+                expected_duration_in_seconds = transformed_datetime.time().second + (
+                            transformed_datetime.time().minute * 60) + (
+                                                       transformed_datetime.time().hour * 3600)
+                building_data[building_id] = {
+                    'building_id': building_id,
+                    'expected_duration_in_seconds': expected_duration_in_seconds,
+                }
 
             if rab.type == 'AA':
                 building_data[building_id]['arrival_time'] = rab.timestamp

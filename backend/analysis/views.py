@@ -93,23 +93,19 @@ class StudentOnTourAnalysis(APIView):
                         "Successful Response",
                         value=[
                             {
+                                "building_id": 2,
+                                "expected_duration_in_seconds": 2700,
+                                "arrival_time": "2023-05-08T08:01:52.264000Z",
+                                "departure_time": "2023-05-08T08:07:49.868000Z",
+                                "duration_in_seconds": 358
+                            },
+                            {
                                 "building_id": 11,
+                                "expected_duration_in_seconds": 3600,
                                 "arrival_time": "2023-05-08T08:08:04.693000Z",
                                 "departure_time": "2023-05-08T08:08:11.714000Z",
                                 "duration_in_seconds": 7
                             },
-                            {
-                                "building_id": 12,
-                                "arrival_time": "2023-05-08T08:09:03.561000Z",
-                                "departure_time": "2023-05-08T08:09:12.887000Z",
-                                "duration_in_seconds": 9
-                            },
-                            {
-                                "building_id": 13,
-                                "arrival_time": "2023-05-08T08:10:01.986000Z",
-                                "departure_time": "2023-05-08T08:10:10.586000Z",
-                                "duration_in_seconds": 8
-                            }
                         ]
                     )
                 ]
