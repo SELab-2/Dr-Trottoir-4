@@ -6,7 +6,7 @@ import {
     remarkTypes,
 } from "@/lib/remark-at-building";
 import React, {useEffect, useState} from "react";
-import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import {endStudentOnTour, getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
 import {FileListElement, Progress} from "@/types";
 import {BuildingInterface} from "@/lib/building";
 import {getBuildingsOfTour} from "@/lib/tour";
@@ -71,6 +71,11 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                 started_tour: sots.started_tour,
                 completed_tour: sots.completed_tour,
             };
+            if (sot.completed_tour) { // Tour is completed, redirect to no access
+                router.replace("/no-access").then((_) => {
+                    console.error("No access");
+                });
+            }
             setProgress({
                 step: 0,
                 currentIndex: sot.current_building_index,
@@ -320,6 +325,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
 
     // Redirect to the schedule page
     function redirectToSchedule(studentOnTourId: number): void {
+        endStudentOnTour(studentOnTourId).catch(() => {});
         router
             .push({
                 pathname: redirectTo,

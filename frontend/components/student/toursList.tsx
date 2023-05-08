@@ -22,10 +22,10 @@ export default function ToursList({
 
     function getColor(sot : StudentOnTour) {
         if (sot.completed_tour) {
-            return "red";
+            return "lightgreen";
         } else {
             if (sot.current_building_index === 0) {
-                return "green";
+                return "lightblue";
             } else {
                 return "orange";
             }
