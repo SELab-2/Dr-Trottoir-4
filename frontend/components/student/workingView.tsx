@@ -16,13 +16,13 @@ import {
     PictureOfRemarkInterface,
     postPictureOfRemark,
 } from "@/lib/picture-of-remark";
-import {Apartment, ArrowBack, ArrowForward, AssignmentTurnedIn, Comment} from "@mui/icons-material";
-import {useRouter} from "next/router";
+import { Apartment, ArrowBack, ArrowForward, AssignmentTurnedIn, Comment } from "@mui/icons-material";
+import { useRouter } from "next/router";
 import RemarkModal from "@/components/student/remarkModal";
 import BuildingInfoView from "@/components/student/buildingInfoView";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {Button, ButtonGroup, Form} from "react-bootstrap";
-import {FileList} from "@/components/student/fileList";
+import { Button, ButtonGroup, Form } from "react-bootstrap";
+import { FileList } from "@/components/student/fileList";
 
 export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: string; studentOnTourId: number | null }) {
     const router = useRouter();
@@ -96,10 +96,12 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
 
     // Get the buildings on a tour
     function getBuildingsOnTour(tourId: number) {
-        getBuildingsOfTour(tourId).then((res) => {
-            const bot: BuildingInterface[] = res.data;
-            setBuildingsOnTour(bot);
-        }).catch(_ =>{});
+        getBuildingsOfTour(tourId)
+            .then((res) => {
+                const bot: BuildingInterface[] = res.data;
+                setBuildingsOnTour(bot);
+            })
+            .catch((_) => {});
     }
 
     // Get the buildingInfo at the currentIndex
@@ -119,14 +121,16 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
         if (!studentOnTour) {
             return;
         }
-        getRemarksOfStudentOnTourAtBuilding(buildingId, studentOnTour.id, "OP").then((res) => {
-            const r: RemarkAtBuilding[] = res.data;
-            if (r.length > 0) {
-                setGlobalRemarks(r);
-            } else {
-                setGlobalRemarks([]);
-            }
-        }).catch(_ =>{});
+        getRemarksOfStudentOnTourAtBuilding(buildingId, studentOnTour.id, "OP")
+            .then((res) => {
+                const r: RemarkAtBuilding[] = res.data;
+                if (r.length > 0) {
+                    setGlobalRemarks(r);
+                } else {
+                    setGlobalRemarks([]);
+                }
+            })
+            .catch((_) => {});
     }
 
     // Get the remark of a step
@@ -143,25 +147,29 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
         if (!type) {
             return;
         }
-        getRemarksOfStudentOnTourAtBuilding(buildingId, studentOnTour.id, type).then((res) => {
-            const r: RemarkAtBuilding[] = res.data;
-            if (r.length > 0) {
-                setStepRemark(r[0]);
-                setStepDescription(r[0].remark);
-                getPictureOfRemarkOfSpecificRemark(r[0].id).then((p) => {
-                    const pictures: PictureOfRemarkInterface[] = p.data;
-                    setPicturesAtStep(
-                        pictures.map((picture) => {
-                            return {
-                                url: getPicturePath(picture.picture),
-                                pictureId: picture.id,
-                                file: null,
-                            };
+        getRemarksOfStudentOnTourAtBuilding(buildingId, studentOnTour.id, type)
+            .then((res) => {
+                const r: RemarkAtBuilding[] = res.data;
+                if (r.length > 0) {
+                    setStepRemark(r[0]);
+                    setStepDescription(r[0].remark);
+                    getPictureOfRemarkOfSpecificRemark(r[0].id)
+                        .then((p) => {
+                            const pictures: PictureOfRemarkInterface[] = p.data;
+                            setPicturesAtStep(
+                                pictures.map((picture) => {
+                                    return {
+                                        url: getPicturePath(picture.picture),
+                                        pictureId: picture.id,
+                                        file: null,
+                                    };
+                                })
+                            );
                         })
-                    );
-                }).catch(_ =>{});
-            }
-        }).catch(_ =>{});
+                        .catch((_) => {});
+                }
+            })
+            .catch((_) => {});
     }
 
     // Handle the submit event
@@ -195,15 +203,17 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                 stepDescription,
                 timeRegistry,
                 typeRemarks[progress.step]
-            ).then((res) => {
-                const remark: RemarkAtBuilding = res.data;
-                picturesAtStep.forEach((f: FileListElement) => {
-                    if (f.file && !f.pictureId) {
-                        postPictureOfRemark(f.file, remark.id).catch(console.error);
-                    }
-                });
-                increaseStep();
-            }).catch(_ =>{});
+            )
+                .then((res) => {
+                    const remark: RemarkAtBuilding = res.data;
+                    picturesAtStep.forEach((f: FileListElement) => {
+                        if (f.file && !f.pictureId) {
+                            postPictureOfRemark(f.file, remark.id).catch(console.error);
+                        }
+                    });
+                    increaseStep();
+                })
+                .catch((_) => {});
         }
     }
 
