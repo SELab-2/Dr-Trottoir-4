@@ -6,7 +6,7 @@ import {
     remarkTypes,
 } from "@/lib/remark-at-building";
 import React, { useEffect, useState } from "react";
-import { getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import {endStudentOnTour, getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
 import { FileListElement, Progress } from "@/types";
 import { BuildingInterface } from "@/lib/building";
 import { getBuildingsOfTour } from "@/lib/tour";
@@ -66,14 +66,32 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                 student: sots.student,
                 tour: sots.tour,
                 date: new Date(sots.date),
+                max_building_index: sots.max_building_index - 1,
+                current_building_index: sots.current_building_index <= 0 ? 0 : sots.current_building_index - 1,
+                started_tour: sots.started_tour,
+                completed_tour: sots.completed_tour,
             };
+            if (sot.completed_tour) { // Tour is completed, redirect to no access
+                router.replace("/no-access").then((_) => {
+                    console.error("No access");
+                });
+            }
+            setProgress({
+                step: 0,
+                currentIndex: sot.current_building_index,
+                maxIndex: sot.max_building_index,
+            });
             setStudentOnTour(sot);
             getBuildingsOnTour(sots.tour);
         }, console.error);
     }, [studentOnTourId]);
 
     useEffect(() => {
-        getBuidingAtIndex(0); // Set the initial info when the buildings of the tour are retrieved
+        if (! studentOnTour) {
+            return;
+        }
+        // Set the initial info when the buildings of the tour are retrieved
+        getBuidingAtIndex(studentOnTour.current_building_index);
     }, [studentOnTour, buildingsOnTour]);
 
     // Get the buildings on a tour
@@ -81,12 +99,6 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
         getBuildingsOfTour(tourId).then((res) => {
             const bot: BuildingInterface[] = res.data;
             setBuildingsOnTour(bot);
-            // Set the max index of the progress
-            setProgress((prevState) => {
-                const newState = { ...prevState };
-                newState.maxIndex = bot.length - 1;
-                return newState;
-            });
         }, console.error);
     }
 
@@ -313,19 +325,18 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
 
     // Redirect to the schedule page
     function redirectToSchedule(studentOnTourId: number): void {
-        router
-            .push({
+        endStudentOnTour(studentOnTourId).catch(console.error);
+        router.push({
                 pathname: redirectTo,
-                query: { studentOnTourId },
-            })
-            .then();
+                query: {studentOnTourId},
+            }).then();
     }
 
     /**
      * 2 functions that render the correct icons
      */
     function getNextStepIcon() {
-        if (progress.currentIndex + 1 === buildingsOnTour.length && progress.step === 2) {
+        if (progress.currentIndex === progress.maxIndex && progress.step === 2) {
             return <AssignmentTurnedIn />;
         }
         if (progress.step === 2) {

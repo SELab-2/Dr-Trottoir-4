@@ -4,7 +4,7 @@ import { BuildingInterface, getAddress } from "@/lib/building";
 import { datesEqual } from "@/lib/date";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import {getStudentOnTour, startStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
 import { getBuildingsOfTour, getTour, Tour } from "@/lib/tour";
 import { getRegion, RegionInterface } from "@/lib/region";
 
@@ -56,18 +56,34 @@ export default function PlannedBuildingList({
                 student: sots.student,
                 tour: sots.tour,
                 date: new Date(sots.date),
+                max_building_index: sots.max_building_index,
+                current_building_index: sots.current_building_index,
+                started_tour: sots.started_tour,
+                completed_tour: sots.completed_tour,
             });
         }, console.error);
     }, [studentOnTourId]);
 
     async function routeToFirstBuilding() {
-        if (buildings.length === 0) {
+        if (buildings.length === 0 || ! studentOnTourId) {
             return;
         }
-        await router.push({
-            pathname: redirectTo,
-            query: { studentOnTourId: studentOnTour?.id },
-        });
+        startStudentOnTour(studentOnTourId).then(async _ => {
+            await router.push({
+                pathname: redirectTo,
+                query: {studentOnTourId: studentOnTour?.id},
+            });
+        }, console.error);
+    }
+
+    function getStartButtonText() {
+        if (! studentOnTour) {
+            return "";
+        }
+        if (studentOnTour.started_tour && ! studentOnTour.completed_tour) {
+            return "Doe verder met deze ronde";
+        }
+        return "Start deze ronde";
     }
 
     return (
@@ -118,7 +134,7 @@ export default function PlannedBuildingList({
                 <div className="mt-1">
                     {(studentOnTour ? datesEqual(new Date(), studentOnTour?.date) : false) && (
                         <Button variant="primary" className="btn-dark" onClick={() => routeToFirstBuilding().then()}>
-                            Start deze ronde
+                            {getStartButtonText()}
                         </Button>
                     )}
                     {studentOnTour &&
@@ -129,8 +145,8 @@ export default function PlannedBuildingList({
                             )}`}</p>
                         )}
                     {studentOnTour &&
-                        !datesEqual(new Date(), studentOnTour.date) &&
-                        new Date() > studentOnTour.date && (
+                        ((!datesEqual(new Date(), studentOnTour.date) &&
+                        new Date() > studentOnTour.date) || studentOnTour.completed_tour) && (
                             <p>{`U hebt deze ronde afgewerkt op ${studentOnTour.date.toLocaleDateString("en-GB")}.`}</p>
                         )}
                 </div>
