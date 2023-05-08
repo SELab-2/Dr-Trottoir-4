@@ -82,7 +82,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
     }, [studentOnTourId]);
 
     useEffect(() => {
-        if (! studentOnTour) {
+        if (!studentOnTour) {
             return;
         }
         // Set the initial info when the buildings of the tour are retrieved
@@ -320,10 +320,12 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
 
     // Redirect to the schedule page
     function redirectToSchedule(studentOnTourId: number): void {
-        router.push({
+        router
+            .push({
                 pathname: redirectTo,
-                query: {studentOnTourId},
-            }).then();
+                query: { studentOnTourId },
+            })
+            .then();
     }
 
     /**
