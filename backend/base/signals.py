@@ -1,13 +1,10 @@
-from datetime import datetime
-
-import pytz
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db.models import Max
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from django.utils import timezone
 
-import config.settings
 from base.models import StudentOnTour, RemarkAtBuilding
 
 
@@ -22,8 +19,7 @@ def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs
         # since we only start calculating worked time from the moment we arrive at the first building
         # we recalculate the start time of the tour
         if student_on_tour.current_building_index == 1:
-            tz = pytz.timezone(config.settings.TIME_ZONE)
-            student_on_tour.started_tour = datetime.now(tz)
+            student_on_tour.started_tour = timezone.now()
 
         student_on_tour.save()
 
@@ -38,8 +34,7 @@ def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs
         )
     elif (instance.type == RemarkAtBuilding.VERTREK and
           student_on_tour.current_building_index == student_on_tour.max_building_index):
-        tz = pytz.timezone(config.settings.TIME_ZONE)
-        student_on_tour.completed_tour = datetime.now(tz)
+        student_on_tour.completed_tour = timezone.now()
         student_on_tour.save()
 
         # Broadcast update to websocket
