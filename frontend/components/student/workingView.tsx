@@ -71,11 +71,6 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                 started_tour: sots.started_tour,
                 completed_tour: sots.completed_tour,
             };
-            if (sot.completed_tour) { // Tour is completed, redirect to no access
-                router.replace("/no-access").then((_) => {
-                    console.error("No access");
-                });
-            }
             setProgress({
                 step: 0,
                 currentIndex: sot.current_building_index,
@@ -325,7 +320,6 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
 
     // Redirect to the schedule page
     function redirectToSchedule(studentOnTourId: number): void {
-        endStudentOnTour(studentOnTourId).catch(console.error);
         router.push({
                 pathname: redirectTo,
                 query: {studentOnTourId},
