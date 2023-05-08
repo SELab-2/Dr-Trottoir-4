@@ -21,8 +21,9 @@ export function handleError(error: any): string[] {
     } else if (errorRes && errorRes.status === 403) {
         const errorData: [any, string][] = Object.entries(errorRes.data);
         return errorData.map((val) => val[1]);
+    } else if (errorRes.status >= 500) {
+        return ["Er zijn momenteel server problemen, probeer later opnieuw."];
     } else {
-        console.error(error);
         return [];
     }
 }

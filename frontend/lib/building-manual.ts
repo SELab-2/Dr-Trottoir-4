@@ -17,5 +17,5 @@ export async function getManualsForBuilding(buildingId: number): Promise<AxiosRe
 }
 
 export function getManualPath(relativePath : string) {
-    return `${process.env.NEXT_PUBLIC_BASE_API_URL}${relativePath}`
+    return `${process.env.NEXT_PUBLIC_BASE_API_URL}${relativePath.substring(1)}` // Remove first / of relativePath
 }
