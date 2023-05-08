@@ -6,7 +6,7 @@ import {
     remarkTypes,
 } from "@/lib/remark-at-building";
 import React, { useEffect, useState } from "react";
-import {endStudentOnTour, getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import { endStudentOnTour, getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
 import { FileListElement, Progress } from "@/types";
 import { BuildingInterface } from "@/lib/building";
 import { getBuildingsOfTour } from "@/lib/tour";
@@ -82,7 +82,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
     }, [studentOnTourId]);
 
     useEffect(() => {
-        if (! studentOnTour) {
+        if (!studentOnTour) {
             return;
         }
         // Set the initial info when the buildings of the tour are retrieved
@@ -320,10 +320,12 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
 
     // Redirect to the schedule page
     function redirectToSchedule(studentOnTourId: number): void {
-        router.push({
+        router
+            .push({
                 pathname: redirectTo,
-                query: {studentOnTourId},
-            }).then();
+                query: { studentOnTourId },
+            })
+            .then();
     }
 
     /**
