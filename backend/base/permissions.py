@@ -245,9 +245,7 @@ class NoStudentWorkingOnTour(BasePermission):
     def has_object_permission(self, request, view, obj: Tour):
         if request.method not in SAFE_METHODS:
             active_student_on_tour = StudentOnTour.objects.filter(
-                tour=obj,
-                started_tour__isnull=False,
-                completed_tour__isnull=True
+                tour=obj, started_tour__isnull=False, completed_tour__isnull=True
             ).first()
             return active_student_on_tour is None
         return True

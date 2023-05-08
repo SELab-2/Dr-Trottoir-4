@@ -30,11 +30,11 @@ def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs
         # Broadcast update to websocket
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            f'student_on_tour_{student_on_tour.id}',
+            f"student_on_tour_{student_on_tour.id}",
             {
-                'type': 'progress.update',
-                'current_building_index': student_on_tour.current_building_index,
-            }
+                "type": "progress.update",
+                "current_building_index": student_on_tour.current_building_index,
+            },
         )
     elif (instance.type == RemarkAtBuilding.VERTREK and
           student_on_tour.current_building_index == student_on_tour.max_building_index):
@@ -56,5 +56,5 @@ def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs
 @receiver(pre_save, sender=StudentOnTour)
 def set_max_building_index(sender, instance: StudentOnTour, **kwargs):
     if not instance.max_building_index and instance.started_tour:
-        max_index = instance.tour.buildingontour_set.aggregate(Max('index'))['index__max']
+        max_index = instance.tour.buildingontour_set.aggregate(Max("index"))["index__max"]
         instance.max_building_index = max_index

@@ -43,10 +43,11 @@ export const remarkTypes = {
 }
 
 export interface RemarkAtBuilding {
-    id: number
+    id: number,
     remark: string,
-    student_on_tour: number
-    timestamp: string
+    student_on_tour: number,
+    timestamp: string,
+    type: string
 }
 
 export async function getRemarksOfBuilding(buildingId: number): Promise<AxiosResponse<any>> {
@@ -69,5 +70,33 @@ export async function postRemarkAtBuilding(buildingId: number, studentOnTourId: 
         type: remarkType
     }), {
         headers: {"Content-Type": "application/json"},
+    });
+}
+
+export async function patchRemarkAtBuilding(remarkId: number, remark: string): Promise<AxiosResponse<any>> {
+    const patch_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_REMARK_AT_BUILDING}${remarkId}`;
+    return await api.patch(patch_url, {
+        remark: remark
+    }, {
+        headers: {"Content-Type": "application/json"},
+    });
+}
+
+export async function deleteRemarkAtBuilding(remarkId: number): Promise<AxiosResponse<any>> {
+    const delete_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_REMARK_AT_BUILDING}${remarkId}`;
+    return await api.delete(delete_url);
+}
+
+export async function getRemarksOfStudentOnTourAtBuilding(buildingId: number, studentOnTourId: number, type: "AA" | "BI" | "VE" | "OP" | null = null) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_REMARKS}`;
+    return await api.get(request_url, {
+        params: type ? {
+            "building": buildingId,
+            "student-on-tour": studentOnTourId,
+            "type": type
+        } : {
+            "building": buildingId,
+            "student-on-tour": studentOnTourId
+        }
     });
 }

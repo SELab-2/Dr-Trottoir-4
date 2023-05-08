@@ -8,6 +8,8 @@ import { addToLobby, Lobby, newVerificationCode, patchLobby } from "@/lib/lobby"
 import { useTranslation } from "react-i18next";
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import { UserView } from "@/types";
+import Select from "react-select";
 
 export default function EditLobbyModal({
     selectedLobby,
@@ -157,20 +159,18 @@ export default function EditLobbyModal({
                         </div>
                         <div className="form-outline mb-4">
                             <label className="form-label">Rol:</label>
-                            <select
-                                value={role}
-                                className={`form-select form-control form-control-lg ${styles.input}`}
-                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                    setRole(e.target.value);
+                            <Select
+                                options={allRoles.map((role: Role) => {
+                                    return { value: role.name, label: t(role.name) as string };
+                                })}
+                                value={role ? { value: role, label: t(role) } : {}}
+                                onChange={(s) => {
+                                    if (s && s.value) {
+                                        setRole(s.value);
+                                    }
                                 }}
-                            >
-                                <option disabled value=""></option>
-                                {allRoles.map((role: Role) => (
-                                    <option value={role.name} key={role.name}>
-                                        {t(role.name)}
-                                    </option>
-                                ))}
-                            </select>
+                                placeholder={"Selecteer rol"}
+                            />
                         </div>
                         {selectedLobby && (
                             <div className="form-outline mb-4">
