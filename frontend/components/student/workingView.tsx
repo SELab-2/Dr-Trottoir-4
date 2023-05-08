@@ -5,24 +5,24 @@ import {
     RemarkAtBuilding,
     remarkTypes,
 } from "@/lib/remark-at-building";
-import React, { useEffect, useState } from "react";
-import {endStudentOnTour, getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
-import { FileListElement, Progress } from "@/types";
-import { BuildingInterface } from "@/lib/building";
-import { getBuildingsOfTour } from "@/lib/tour";
+import React, {useEffect, useState} from "react";
+import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import {FileListElement, Progress} from "@/types";
+import {BuildingInterface} from "@/lib/building";
+import {getBuildingsOfTour} from "@/lib/tour";
 import {
     getPictureOfRemarkOfSpecificRemark,
     getPicturePath,
     PictureOfRemarkInterface,
     postPictureOfRemark,
 } from "@/lib/picture-of-remark";
-import { Apartment, ArrowBack, ArrowForward, AssignmentTurnedIn, Comment } from "@mui/icons-material";
-import { useRouter } from "next/router";
+import {Apartment, ArrowBack, ArrowForward, AssignmentTurnedIn, Comment} from "@mui/icons-material";
+import {useRouter} from "next/router";
 import RemarkModal from "@/components/student/remarkModal";
 import BuildingInfoView from "@/components/student/buildingInfoView";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { Button, ButtonGroup, Form } from "react-bootstrap";
-import { FileList } from "@/components/student/fileList";
+import {Button, ButtonGroup, Form} from "react-bootstrap";
+import {FileList} from "@/components/student/fileList";
 
 export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: string; studentOnTourId: number | null }) {
     const router = useRouter();
@@ -78,7 +78,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
             });
             setStudentOnTour(sot);
             getBuildingsOnTour(sots.tour);
-        }, console.error);
+        }).catch(_ =>{});
     }, [studentOnTourId]);
 
     useEffect(() => {
@@ -94,7 +94,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
         getBuildingsOfTour(tourId).then((res) => {
             const bot: BuildingInterface[] = res.data;
             setBuildingsOnTour(bot);
-        }, console.error);
+        }).catch(_ =>{});
     }
 
     // Get the buildingInfo at the currentIndex
@@ -121,7 +121,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
             } else {
                 setGlobalRemarks([]);
             }
-        }, console.error);
+        }).catch(_ =>{});
     }
 
     // Get the remark of a step
@@ -154,9 +154,9 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                             };
                         })
                     );
-                }, console.error);
+                }).catch(_ =>{});
             }
-        }, console.error);
+        }).catch(_ =>{});
     }
 
     // Handle the submit event
@@ -198,7 +198,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                     }
                 });
                 increaseStep();
-            }, console.error);
+            }).catch(_ =>{});
         }
     }
 

@@ -1,12 +1,12 @@
 import FinishedBuildingModal from "@/components/student/finishedBuildingModal";
-import { Button, ListGroup, ListGroupItem } from "react-bootstrap";
-import { BuildingInterface, getAddress } from "@/lib/building";
-import { datesEqual } from "@/lib/date";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import {Button, ListGroup, ListGroupItem} from "react-bootstrap";
+import {BuildingInterface, getAddress} from "@/lib/building";
+import {datesEqual} from "@/lib/date";
+import React, {useEffect, useState} from "react";
+import {useRouter} from "next/router";
 import {getStudentOnTour, startStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
-import { getBuildingsOfTour, getTour, Tour } from "@/lib/tour";
-import { getRegion, RegionInterface } from "@/lib/region";
+import {getBuildingsOfTour, getTour, Tour} from "@/lib/tour";
+import {getRegion, RegionInterface} from "@/lib/region";
 
 export default function PlannedBuildingList({
     studentOnTourId,
@@ -39,8 +39,8 @@ export default function PlannedBuildingList({
                 getRegion(t.region).then((res) => {
                     const r: RegionInterface = res.data;
                     setRegion(r.region);
-                }, console.error);
-            }, console.error);
+                }).catch(_ =>{});
+            }).catch(_ =>{});
             getBuildingsOfTour(sots.tour).then(
                 (res) => {
                     const buildings: BuildingInterface[] = res.data;
@@ -61,7 +61,7 @@ export default function PlannedBuildingList({
                 started_tour: sots.started_tour,
                 completed_tour: sots.completed_tour,
             });
-        }, console.error);
+        }).catch(_ =>{});
     }, [studentOnTourId]);
 
     async function routeToFirstBuilding() {
@@ -73,7 +73,7 @@ export default function PlannedBuildingList({
                 pathname: redirectTo,
                 query: {studentOnTourId: studentOnTour?.id},
             });
-        }, console.error);
+        }).catch(_ =>{});
     }
 
     function getStartButtonText() {
@@ -112,8 +112,7 @@ export default function PlannedBuildingList({
                                         onClick={() => {
                                             if (
                                                 studentOnTour &&
-                                                !datesEqual(new Date(), new Date(studentOnTour?.date)) &&
-                                                new Date(studentOnTour?.date) < new Date()
+                                                studentOnTour.completed_tour
                                             ) {
                                                 setSelectedBuilding(el);
                                                 setShowFinishedBuildingModal(true);
@@ -132,7 +131,7 @@ export default function PlannedBuildingList({
                     </>
                 )}
                 <div className="mt-1">
-                    {(studentOnTour ? datesEqual(new Date(), studentOnTour?.date) : false) && (
+                    {(studentOnTour ? datesEqual(new Date(), studentOnTour.date) : false) && (! studentOnTour?.completed_tour) && (
                         <Button variant="primary" className="btn-dark" onClick={() => routeToFirstBuilding().then()}>
                             {getStartButtonText()}
                         </Button>

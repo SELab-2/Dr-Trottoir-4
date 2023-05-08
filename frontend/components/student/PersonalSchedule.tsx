@@ -21,7 +21,7 @@ export default function PersonalSchedule({redirectTo}: { redirectTo: string }) {
         getCurrentUser().then((res) => {
             const u: User = res.data;
             setUser(u);
-        }, console.error);
+        }).catch(_ =>{});
     }, []);
 
     useEffect(() => {
@@ -95,7 +95,7 @@ export default function PersonalSchedule({redirectTo}: { redirectTo: string }) {
                 return d > currentDate && !datesEqual(d, currentDate);
             });
             setUpcomingTours(futureTours);
-        }, console.error);
+        }).catch(_ =>{});
     }, [user]);
 
     function redirectToSchedule(studentOnTourId: number): void {

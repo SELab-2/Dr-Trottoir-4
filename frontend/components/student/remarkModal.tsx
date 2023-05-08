@@ -9,8 +9,8 @@ import {
     remarkTypes
 } from "@/lib/remark-at-building";
 import {
-    deletePictureOfRemark,
-    getPictureOfRemarkOfSpecificRemark, getPicturePath,
+    getPictureOfRemarkOfSpecificRemark,
+    getPicturePath,
     PictureOfRemarkInterface,
     postPictureOfRemark
 } from "@/lib/picture-of-remark";
@@ -60,7 +60,7 @@ export default function RemarkModal({
                         file: null
                     };
                 }));
-            }, console.error);
+            }).catch(_ =>{});
         } else {
             setRemark("");
             setRemarkFiles([]);
