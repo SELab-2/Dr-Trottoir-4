@@ -1,10 +1,11 @@
 from django.core.exceptions import BadRequest
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
+from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample, inline_serializer
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import serializers
 
 from analysis.serializers import WorkedHoursAnalysisSerializer, StudentOnTourAnalysisSerializer
 from base.models import StudentOnTour, RemarkAtBuilding
@@ -35,18 +36,33 @@ class WorkedHoursAnalysis(APIView):
         responses={
             200: OpenApiResponse(
                 description="All worked hours for each student for a certain period",
+                response=inline_serializer(
+                    name='WorkedHoursAnalysisResponse',
+                    fields={
+                        "student_id": serializers.IntegerField(),
+                        "worked_minutes": serializers.IntegerField(),
+                        "student_on_tour_ids": serializers.ListField(child=serializers.IntegerField())
+                    }
+                ),
                 examples=[
                     OpenApiExample(
-                        "Successful Response",
-                        value=[
-                            [
-                                {"student_id": 6, "worked_minutes": 112, "student_on_tour_ids": [1, 6, 9, 56, 57]},
-                                {"student_id": 7, "worked_minutes": 70, "student_on_tour_ids": [2, 26]},
-                            ]
-                        ],
+                        "Successful Response 1",
+                        value={
+                            "student_id": 6,
+                            "worked_minutes": 112,
+                            "student_on_tour_ids": [1, 6, 9, 56, 57]
+                        }
+                    ),
+                    OpenApiExample(
+                        "Successful Response 2",
+                        value={
+                            "student_id": 7,
+                            "worked_minutes": 70,
+                            "student_on_tour_ids": [2, 26]
+                        }
                     )
                 ],
-            )
+            ),
         },
     )
     def get(self, request):
@@ -79,28 +95,39 @@ class StudentOnTourAnalysis(APIView):
         responses={
             200: OpenApiResponse(
                 description="A list of buildings and their timings on this student on tour",
+                response=inline_serializer(
+                    name='DetailedStudentOnTourTimings',
+                    fields={
+                        "building_id": serializers.IntegerField(),
+                        "expected_duration_in_seconds": serializers.IntegerField(),
+                        "arrival_time": serializers.DateTimeField(),
+                        "departure_time": serializers.DateTimeField(),
+                        "duration_in_seconds": serializers.IntegerField(),
+                    }
+                ),
                 examples=[
                     OpenApiExample(
-                        "Successful Response",
-                        value=[
-                            {
-                                "building_id": 2,
-                                "expected_duration_in_seconds": 2700,
-                                "arrival_time": "2023-05-08T08:01:52.264000Z",
-                                "departure_time": "2023-05-08T08:07:49.868000Z",
-                                "duration_in_seconds": 358,
-                            },
-                            {
-                                "building_id": 11,
-                                "expected_duration_in_seconds": 3600,
-                                "arrival_time": "2023-05-08T08:08:04.693000Z",
-                                "departure_time": "2023-05-08T08:08:11.714000Z",
-                                "duration_in_seconds": 7,
-                            },
-                        ],
+                        "Successful Response 1",
+                        value={
+                            "building_id": 2,
+                            "expected_duration_in_seconds": 2700,
+                            "arrival_time": "2023-05-08T08:01:52.264000Z",
+                            "departure_time": "2023-05-08T08:07:49.868000Z",
+                            "duration_in_seconds": 358,
+                        },
+                    ),
+                    OpenApiExample(
+                        "Successful Response 2",
+                        value={
+                            "building_id": 11,
+                            "expected_duration_in_seconds": 3600,
+                            "arrival_time": "2023-05-08T08:08:04.693000Z",
+                            "departure_time": "2023-05-08T08:08:11.714000Z",
+                            "duration_in_seconds": 7,
+                        },
                     )
                 ],
-            )
+            ),
         },
     )
     def get(self, request, student_on_tour_id):
