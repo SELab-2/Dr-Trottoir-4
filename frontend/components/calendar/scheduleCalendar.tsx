@@ -57,6 +57,7 @@ function ScheduleCalendar(
         start: startOfWeek(new Date()), // week starts on sunday
         end: endOfWeek(new Date()),
     });
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
     useEffect(() => {
         if (tourUsers.length > 0 && tours.length > 0) {
@@ -112,12 +113,6 @@ function ScheduleCalendar(
     function onEventSelection(e: ScheduleEvent) {
         setSelectedEvent(e);
         setPopupIsOpenEdit(true);
-    }
-
-    function onEventsAdd(eventData: ScheduleEvent[]) {
-        setEvents((currentEvents) => {
-            return [...currentEvents, ...eventData].sort(compareScheduleEvents);
-        });
     }
 
     function onEventEdit(id: number, tour: number, student: number, date: Date) {
@@ -176,6 +171,27 @@ function ScheduleCalendar(
             },
             err => setErrorMessages(handleError(err))
         );
+    }
+
+    function addSingleEvent(sot : StudentOnTour) {
+        setEvents(prevState => {
+            const tour: Tour | undefined = tours.find((t: Tour) => sot.tour === t.id);
+            const student: User | undefined = tourUsers.find((s: User) => sot.student === s.id);
+            if (! tour || ! student) {
+                return [...prevState];
+            }
+            const startDate = new Date(sot.date);
+            startDate.setHours(0);
+            const endDate = addDays(startDate, 1);
+            endDate.setHours(0);
+            return [...prevState, {
+                id: sot.id,
+                tour: tour,
+                student: student,
+                start: startDate,
+                end: endDate,
+            }].sort(compareScheduleEvents);
+        });
     }
 
     function compareScheduleEvents(a: ScheduleEvent, b: ScheduleEvent) {
@@ -248,14 +264,6 @@ function ScheduleCalendar(
                     <button
                         className={styles.button}
                         onClick={() => {
-                            setPopupIsOpenAdd(true);
-                        }}
-                    >
-                        Plan
-                    </button>
-                    <button
-                        className={styles.button}
-                        onClick={() => {
                             setPopupIsOpenLoad(true);
                         }}
                     >
@@ -280,9 +288,13 @@ function ScheduleCalendar(
                 localizer={localizer}
                 drilldownView={null}
                 selectable
-                onSelectEvent={(e : Event) => {
-                    const scheduleEvent : ScheduleEvent = e as ScheduleEvent;
+                onSelectEvent={(e: Event) => {
+                    const scheduleEvent: ScheduleEvent = e as ScheduleEvent;
                     onEventSelection(scheduleEvent);
+                }}
+                onSelectSlot={(info) => {
+                    setSelectedDate(info.start);
+                    setPopupIsOpenAdd(true);
                 }}
                 step={60}
                 timeslots={1}
@@ -304,8 +316,13 @@ function ScheduleCalendar(
                     onEdit={onEventEdit}
                 />
             )}
-            <AddTourScheduleModal isOpen={popupIsOpenAddTour} onClose={() => setPopupIsOpenAddTour(false)}/>
-            <AddScheduleEventModal isOpen={popupIsOpenAdd} onClose={() => setPopupIsOpenAdd(false)}/>
+            <AddTourScheduleModal isOpen={popupIsOpenAddTour}
+                                  onPost={() => getFromRange({start: range.start, end: range.end})}
+                                  onClose={() => setPopupIsOpenAddTour(false)}/>
+            <AddScheduleEventModal isOpen={popupIsOpenAdd} date={selectedDate} onPost={addSingleEvent} onClose={() => {
+                setSelectedDate(null);
+                setPopupIsOpenAdd(false);
+            }}/>
             <CopyScheduleEventsModal
                 range={range}
                 events={events}

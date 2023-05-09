@@ -1,53 +1,61 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { addDays, startOfWeek } from "date-fns";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import { formatDate } from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { postStudentOnTour } from "@/lib/student-on-tour";
+import {postStudentOnTour, StudentOnTour} from "@/lib/student-on-tour";
 import { handleError } from "@/lib/error";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
 function AddScheduleEventModal(
     {
         isOpen,
-        onClose
+        onClose,
+        date,
+        onPost
     } : {
         isOpen: boolean;
-        onClose: () => void
+        onClose: () => void;
+        date : Date | null;
+        onPost: (sot : StudentOnTour) => void
     }
 ) {
     const [tourId, setTourId] = useState(-1);
     const [studentId, setStudentId] = useState(-1);
-    const [date, setDate] = useState<Date | null>(null);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-    const handleSave = () => {
+    useEffect(() => {
+        if (date) {
+            setSelectedDate(date);
+        } else {
+            setSelectedDate(new Date());
+        }
+    }, [date]);
+
+    function handleSave() {
         if (tourId === -1 || studentId === -1) {
             setErrorMessages(["Ronde of student is leeg."]);
         } else {
-            if (date) {
-                postStudentOnTour(tourId, studentId, formatDate(date)).then(
-                    (_) => {
-                        const start = startOfWeek(date);
-                        const end = addDays(start, 6);
+            if (selectedDate) {
+                postStudentOnTour(tourId, studentId, formatDate(selectedDate)).then(
+                    res => {
+                        const sot : StudentOnTour = res.data;
+                        onPost(sot);
                         onClose();
                     },
-                    (err) => {
-                        const e = handleError(err);
-                        setErrorMessages([...errorMessages, ...e]);
-                    }
+                    err => setErrorMessages(handleError(err))
                 );
             } else {
                 setErrorMessages(["Start datum mag niet leeg zijn."]);
             }
         }
-    };
+    }
 
-    const handleStartDateChange = (e: { target: { value: string | number | Date } }) => {
-        setDate(new Date(e.target.value));
-    };
+    function handleStartDateChange(e: { target: { value: string | number | Date } }){
+        setSelectedDate(new Date(e.target.value));
+    }
 
     return (
         <Modal
@@ -55,7 +63,7 @@ function AddScheduleEventModal(
             onHide={() => {
                 setTourId(-1);
                 setStudentId(-1);
-                setDate(null);
+                setSelectedDate(null);
                 onClose();
             }}
         >
@@ -77,7 +85,7 @@ function AddScheduleEventModal(
                             <label>Datum:</label>
                             <input
                                 type="date"
-                                value={date ? formatDate(date) : ""}
+                                value={selectedDate ? formatDate(selectedDate) : ""}
                                 onChange={handleStartDateChange}
                                 className="form-control"
                             />

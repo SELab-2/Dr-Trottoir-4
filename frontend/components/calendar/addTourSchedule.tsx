@@ -9,8 +9,17 @@ import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour"
 import { handleError } from "@/lib/error";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
-function AddTourScheduleModal(data: any) {
-    const { isOpen, onClose } = data;
+function AddTourScheduleModal(
+    {
+        isOpen,
+        onClose,
+        onPost
+    } : {
+        isOpen: boolean
+        onClose : () => void;
+        onPost : () => void
+    }
+) {
     const [tourId, setTourId] = useState(null);
     const [studentId, setStudentId] = useState(-1);
     const [start, setStart] = useState<Date | null>(null);
@@ -23,9 +32,9 @@ function AddTourScheduleModal(data: any) {
     const [fridayId, setFridayId] = useState(-1);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-    const handleSave = () => {
+    function handleSave() {
         if (tourId === null || studentId === -1) {
-            setErrorMessages([...errorMessages, "Ronde of student is leeg."]);
+            setErrorMessages(["Ronde of student is leeg."]);
         } else {
             if (start !== null) {
                 const end = addDays(start, 5);
@@ -86,31 +95,25 @@ function AddTourScheduleModal(data: any) {
                 }
                 handleEventSave(data);
             } else {
-                setErrorMessages([...errorMessages, "Start datum mag niet leeg zijn."]);
+                setErrorMessages(["Start datum mag niet leeg zijn."]);
             }
         }
-    };
+    }
 
-    const handleEventSave = (data: { tour: number; student: number; start: Date; end: Date }[]) => {
+    function handleEventSave (data: { tour: number; student: number; start: Date; end: Date }[]) {
         const post_data: StudentOnTourPost[] = data.map(
             (event: { tour: number; student: number; start: Date; end: Date }) => {
                 return { tour: event.tour, student: event.student, date: formatDate(event.start) };
             }
         );
         postBulkStudentOnTour(post_data).then(
-            (_) => {
-                if (start !== null) {
-                    const end = addDays(start, 5);
-                    resetStates();
-                    onClose();
-                }
+            _ => {
+                onPost()
+                onClose();
             },
-            (err) => {
-                const e = handleError(err);
-                setErrorMessages([...errorMessages, ...e]);
-            }
+            err => setErrorMessages(handleError(err))
         );
-    };
+    }
 
     const getDayTimestamps = (date: Date) => {
         let current = date;
