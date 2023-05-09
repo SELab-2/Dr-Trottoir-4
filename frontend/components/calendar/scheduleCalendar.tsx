@@ -50,7 +50,7 @@ function ScheduleCalendar(
     const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [successMessages, setSuccessMessages] = useState<string[]>([]);
-    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+    const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
     const [tourColors, setTourColors] = useState<{ [key: number]: string }>({});
     const [events, setEvents] = useState<ScheduleEvent[]>([]);
     const [range, setRange] = useState({
@@ -109,7 +109,7 @@ function ScheduleCalendar(
         setSuccessMessages([`Gekopieerd naar week van ${formatDate(start)}`]);
     }
 
-    function onEventSelection(e: Event) {
+    function onEventSelection(e: ScheduleEvent) {
         setSelectedEvent(e);
         setPopupIsOpenEdit(true);
     }
@@ -280,8 +280,10 @@ function ScheduleCalendar(
                 localizer={localizer}
                 drilldownView={null}
                 selectable
-                onSelectEvent={onEventSelection}
-                style={{height: "100vh"}}
+                onSelectEvent={(e : Event) => {
+                    const scheduleEvent : ScheduleEvent = e as ScheduleEvent;
+                    onEventSelection(scheduleEvent);
+                }}
                 step={60}
                 timeslots={1}
                 onEventDrop={onEventDragAndDrop}
@@ -299,7 +301,7 @@ function ScheduleCalendar(
                     }}
                     onDelete={onEventDelete}
                     onDeleteTour={onEventsDelete}
-                    editEvent={onEventEdit}
+                    onEdit={onEventEdit}
                 />
             )}
             <AddTourScheduleModal isOpen={popupIsOpenAddTour} onClose={() => setPopupIsOpenAddTour(false)}/>
