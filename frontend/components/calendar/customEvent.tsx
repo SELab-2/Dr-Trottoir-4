@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { EventProps } from "react-big-calendar";
-import MyEvent from "./calendar";
+import MyEvent from "./scheduleCalendar";
 import styles from "./calendar.module.css";
 
 // @ts-ignore

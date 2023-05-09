@@ -9,8 +9,8 @@ import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour"
 import { handleError } from "@/lib/error";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
-function AddTourModal(data: any) {
-    const { isOpen, onClose, reload } = data;
+function AddTourScheduleModal(data: any) {
+    const { isOpen, onClose } = data;
     const [tourId, setTourId] = useState(null);
     const [studentId, setStudentId] = useState(-1);
     const [start, setStart] = useState<Date | null>(null);
@@ -102,7 +102,6 @@ function AddTourModal(data: any) {
                 if (start !== null) {
                     const end = addDays(start, 5);
                     resetStates();
-                    reload(start, end);
                     onClose();
                 }
             },
@@ -252,4 +251,4 @@ function AddTourModal(data: any) {
     );
 }
 
-export default AddTourModal;
+export default AddTourScheduleModal;

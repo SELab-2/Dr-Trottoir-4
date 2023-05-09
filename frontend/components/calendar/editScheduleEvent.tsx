@@ -8,7 +8,7 @@ import { patchStudentOnTour } from "@/lib/student-on-tour";
 import { formatDate } from "@/lib/date";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
-function EditEventModal(data: any) {
+function EditScheduleEventModal(data: any) {
     const { event, isOpen, onClose, onDelete, onDeleteTour, editEvent } = data;
     const [tourId, setTourId] = useState(event.tour.id);
     const [studentId, setStudentId] = useState(event.student.id);
@@ -76,4 +76,4 @@ function EditEventModal(data: any) {
     );
 }
 
-export default EditEventModal;
+export default EditScheduleEventModal;

@@ -7,7 +7,7 @@ import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour"
 import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
 
-function LoadEventsModal(data: any) {
+function CopyScheduleEventsModal(data: any) {
     const { range, events, isOpen, onClose, onSave } = data;
     const [start_date, setStart] = useState(
         new Date(
@@ -109,4 +109,4 @@ function LoadEventsModal(data: any) {
     );
 }
 
-export default LoadEventsModal;
+export default CopyScheduleEventsModal;

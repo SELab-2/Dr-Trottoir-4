@@ -5,7 +5,7 @@ import { getAllTours, Tour } from "@/lib/tour";
 import { getTourUsersFromRegion, User } from "@/lib/user";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import Loading from "@/components/loading";
-import MyCalendar from "@/components/calendar/calendar";
+import ScheduleCalendar from "@/components/calendar/scheduleCalendar";
 
 function AdminDataSchedule() {
     const router = useRouter();
@@ -51,7 +51,7 @@ function AdminDataSchedule() {
                 <Loading />
             ) : (
                 <div>
-                    <MyCalendar tourUsers={allTourUsers} tours={allTours} />
+                    <ScheduleCalendar tourUsers={allTourUsers} tours={allTours} />
                 </div>
             )}
         </>

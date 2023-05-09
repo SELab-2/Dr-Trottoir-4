@@ -67,7 +67,7 @@ export type UserView = {
     isActive : boolean;
 }
 
-export interface MyEvent extends Event {
+export interface ScheduleEvent extends Event {
     id : number;
     tour: Tour;
     student: User;

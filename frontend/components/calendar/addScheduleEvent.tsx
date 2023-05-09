@@ -9,8 +9,15 @@ import { postStudentOnTour } from "@/lib/student-on-tour";
 import { handleError } from "@/lib/error";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
-function AddEventModal(data: any) {
-    const { isOpen, onClose, reload } = data;
+function AddScheduleEventModal(
+    {
+        isOpen,
+        onClose
+    } : {
+        isOpen: boolean;
+        onClose: () => void
+    }
+) {
     const [tourId, setTourId] = useState(-1);
     const [studentId, setStudentId] = useState(-1);
     const [date, setDate] = useState<Date | null>(null);
@@ -18,14 +25,13 @@ function AddEventModal(data: any) {
 
     const handleSave = () => {
         if (tourId === -1 || studentId === -1) {
-            setErrorMessages([...errorMessages, "Ronde of student is leeg."]);
+            setErrorMessages(["Ronde of student is leeg."]);
         } else {
-            if (date !== null) {
+            if (date) {
                 postStudentOnTour(tourId, studentId, formatDate(date)).then(
                     (_) => {
                         const start = startOfWeek(date);
                         const end = addDays(start, 6);
-                        reload(start, end);
                         onClose();
                     },
                     (err) => {
@@ -34,7 +40,7 @@ function AddEventModal(data: any) {
                     }
                 );
             } else {
-                setErrorMessages([...errorMessages, "Start datum mag niet leeg zijn."]);
+                setErrorMessages(["Start datum mag niet leeg zijn."]);
             }
         }
     };
@@ -91,4 +97,4 @@ function AddEventModal(data: any) {
     );
 }
 
-export default AddEventModal;
+export default AddScheduleEventModal;
