@@ -176,8 +176,7 @@ def validate_duplication_period(start_period: datetime, end_period: datetime, st
         return Response(
             {
                 "message": _(
-                    "the start date of the period to which you want to copy must be, at a minimum, in the week "
-                    "immediately following the end date of the original period"
+                    "the start date of the period to which you want to copy must be, at a minimum, in the week immediately following the end date of the original period"
                 )
             },
             status=status.HTTP_400_BAD_REQUEST,

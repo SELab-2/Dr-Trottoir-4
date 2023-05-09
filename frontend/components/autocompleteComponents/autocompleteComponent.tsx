@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete, { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
 import { AxiosResponse } from "axios/index";
@@ -48,7 +48,7 @@ const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions
                 setOptions(availableOptions);
 
                 //Set the initial value to the object with the same id
-                const initialOption = availableOptions.find((option) => option.id === initialId);
+                const initialOption = availableOptions.find((option) => Number(option.id) === Number(initialId));
                 if (initialOption) {
                     setValue(initialOption);
                     setInputValue(initialOption.label);

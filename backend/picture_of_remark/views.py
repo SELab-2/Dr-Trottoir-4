@@ -138,8 +138,6 @@ class PicturesOfRemarkView(APIView):
         Get all pictures on a specific remark
         """
         pic_of_remark_instances = PictureOfRemark.objects.filter(remark_at_building_id=remark_id)
-        if not pic_of_remark_instances:
-            return not_found("PictureOfRemark")
 
         for r in pic_of_remark_instances:
             self.check_object_permissions(request, r.remark_at_building.student_on_tour.student)

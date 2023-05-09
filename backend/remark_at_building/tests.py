@@ -97,7 +97,7 @@ class RemarkAtBuildingAuthorizationTests(BaseAuthTest):
         super().__init__(methodName)
 
     def test_remark_at_building_list(self):
-        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 200, "Syndic": 403}
         self.list_view("remark-at-building/", codes)
 
     def test_insert_remark_at_building(self):
@@ -128,7 +128,7 @@ class RemarkAtBuildingAuthorizationTests(BaseAuthTest):
             "building": insert_dummy_building(),
             "timestamp": str(datetime.now(pytz.timezone("CET"))).replace(" ", "T"),
             "remark": "no bins present",
-            "type": "AA",
+            "type": "OP",
         }
         self.patch_view(f"remark-at-building/{RaB_id}", codes, special=[(specialStudent, 200)])
 

@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter
 from rest_framework import status
+from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 
 
@@ -58,7 +59,7 @@ def get_boolean_param(request, name, required=False):
 
 
 def get_list_param(request, name, required=False):
-    param = request.GET.getlist(name)
+    param = request.GET.getlist(name + "[]", None)
     if not param:
         if required:
             raise BadRequest(_("The query parameter {name} is required").format(name=name))
