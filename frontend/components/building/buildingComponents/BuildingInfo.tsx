@@ -1,15 +1,15 @@
-import { TiPencil } from "react-icons/ti";
-import React, { useEffect, useState } from "react";
+import {TiPencil} from "react-icons/ti";
+import React, {useEffect, useState} from "react";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
-import { BuildingInterface } from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { useRouter } from "next/router";
+import {BuildingInterface} from "@/lib/building";
+import {getRegion} from "@/lib/region";
+import {useRouter} from "next/router";
 
 function BuildingInfo({
-    building,
-    setBuilding,
-    type,
-}: {
+                          building,
+                          setBuilding,
+                          type,
+                      }: {
     building: BuildingInterface;
     setBuilding: (b: any) => void;
     type: "syndic" | "admin" | "public";
@@ -55,6 +55,10 @@ function BuildingInfo({
         }
     }
 
+    function getPublicLink(fullLink = true) {
+        return (fullLink ? `${process.env.NEXT_PUBLIC_HOST}` : "") + `/public/building?id=${building?.public_id ? building?.public_id : "<public_id>"}`
+    }
+
     return (
         <>
             {type == "syndic" ? (
@@ -95,7 +99,21 @@ function BuildingInfo({
             <p>Region: {regionName} </p>
             <p>Werktijd: {get_building_key("duration")}</p>
             <p>Client id: {get_building_key("client_id")}</p>
-            <p>Public id: {get_building_key("public_id")}</p>
+
+            {type != "public" ? (
+                    <p
+                        title={`De inwoners van het gebouw kunnen de info van dit gebouw raadplegen via de link: 
+                        ${getPublicLink()}`}>
+
+                        Public id: {building?.public_id ?
+                        <a href={getPublicLink(false)}>{get_building_key("public_id")}</a> : get_building_key("public_id")}
+
+                    </p>
+                )
+                :
+                null}
+
+
         </>
     );
 }
