@@ -128,7 +128,7 @@ class RemarkAtBuildingAuthorizationTests(BaseAuthTest):
             "building": insert_dummy_building(),
             "timestamp": str(datetime.now(pytz.timezone("CET"))).replace(" ", "T"),
             "remark": "no bins present",
-            "type": "AA",
+            "type": "OP",
         }
         self.patch_view(f"remark-at-building/{RaB_id}", codes, special=[(specialStudent, 200)])
 
