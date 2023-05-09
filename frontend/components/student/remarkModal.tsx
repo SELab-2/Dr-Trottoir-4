@@ -1,6 +1,6 @@
-import {Button, Form, Modal} from "react-bootstrap";
-import React, {useEffect, useState} from "react";
-import {FileList} from "@/components/student/fileList";
+import { Button, Form, Modal } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { FileList } from "@/components/student/fileList";
 import {
     deleteRemarkAtBuilding,
     patchRemarkAtBuilding,
@@ -14,23 +14,23 @@ import {
     PictureOfRemarkInterface,
     postPictureOfRemark,
 } from "@/lib/picture-of-remark";
-import {StudentOnTour} from "@/lib/student-on-tour";
-import {BuildingInterface} from "@/lib/building";
+import { StudentOnTour } from "@/lib/student-on-tour";
+import { BuildingInterface } from "@/lib/building";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {FileListElement} from "@/types";
-import {handleError} from "@/lib/error";
+import { FileListElement } from "@/types";
+import { handleError } from "@/lib/error";
 
 export default function RemarkModal({
-                                        show,
-                                        onHide,
-                                        studentOnTour,
-                                        building,
-                                        selectedRemark,
-                                        setSelectedRemark,
-                                        onPost,
-                                        onPatch,
-                                        onDelete,
-                                    }: {
+    show,
+    onHide,
+    studentOnTour,
+    building,
+    selectedRemark,
+    setSelectedRemark,
+    onPost,
+    onPatch,
+    onDelete,
+}: {
     show: boolean;
     onHide: () => void;
     studentOnTour: StudentOnTour | null;
@@ -124,10 +124,10 @@ export default function RemarkModal({
                 <Modal.Title>Welke algemene opmerking heeft u?</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                 <Form>
-                    <Form.Control as="textarea" rows={3} value={remark} onChange={(e) => setRemark(e.target.value)}/>
-                    <FileList files={remarkFiles} optional setFiles={setRemarkFiles} editable/>
+                    <Form.Control as="textarea" rows={3} value={remark} onChange={(e) => setRemark(e.target.value)} />
+                    <FileList files={remarkFiles} optional setFiles={setRemarkFiles} editable />
                 </Form>
                 {selectedRemark && (
                     <Button className="btn-danger" onClick={() => deleteRemark()}>
