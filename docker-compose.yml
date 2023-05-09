@@ -1,3 +1,4 @@
+
 version: "2.4"
 
 services:
@@ -92,3 +93,11 @@ services:
     depends_on:
       backend:
         condition: service_started
+
+  test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.test
+    volumes:
+      - ./frontend/:/app/frontend
+    command: npm test
