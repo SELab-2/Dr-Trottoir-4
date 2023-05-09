@@ -29,7 +29,7 @@ import {formatDate} from "@/lib/date";
 import {handleError} from "@/lib/error";
 import CopyScheduleEventsModal from "@/components/calendar/copyEvents";
 import {colors} from "@/components/calendar/colors";
-import "./calendar.module.css";
+import styles from "./calendar.module.css";
 import {ScheduleEvent} from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import SuccessMessageAlert from "@/components/successMessageAlert";
@@ -173,11 +173,11 @@ function ScheduleCalendar(
         );
     }
 
-    function addSingleEvent(sot : StudentOnTour) {
+    function addSingleEvent(sot: StudentOnTour) {
         setEvents(prevState => {
             const tour: Tour | undefined = tours.find((t: Tour) => sot.tour === t.id);
             const student: User | undefined = tourUsers.find((s: User) => sot.student === s.id);
-            if (! tour || ! student) {
+            if (!tour || !student) {
                 return [...prevState];
             }
             const startDate = new Date(sot.date);
@@ -252,22 +252,22 @@ function ScheduleCalendar(
     return (
         <>
             <div>
-                <div>
-                    <button
-                        onClick={() => {
-                            setPopupIsOpenAddTour(true);
-                        }}
-                    >
-                        Plan ronde voor hele week
-                    </button>
-                    <button
-                        onClick={() => {
-                            setPopupIsOpenLoad(true);
-                        }}
-                    >
-                        Kopieer planning
-                    </button>
-                </div>
+                <button
+                    className={styles.button}
+                    onClick={() => {
+                        setPopupIsOpenAddTour(true);
+                    }}
+                >
+                    Plan ronde voor hele week
+                </button>
+                <button
+                    className={styles.button}
+                    onClick={() => {
+                        setPopupIsOpenLoad(true);
+                    }}
+                >
+                    Kopieer planning
+                </button>
                 <SuccessMessageAlert successmessages={successMessages} setSuccessMessages={setSuccessMessages}/>
                 <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             </div>

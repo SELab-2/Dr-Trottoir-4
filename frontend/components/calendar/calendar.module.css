@@ -14,9 +14,7 @@
 
 .button {
     height: 50px;
-    width: 150px;
-    margin: 5px;
-    outline: 0;
+    width: 200px;
     cursor: pointer;
     border: 2px solid #000;
     border-radius: 5px;
@@ -24,8 +22,6 @@
     background: #000;
     font-size: 14px;
     font-weight: 500;
-    line-height: 24px;
-    padding: 5px 10px;
     text-align: center;
     transition: ease-in 0.2s;
 }
