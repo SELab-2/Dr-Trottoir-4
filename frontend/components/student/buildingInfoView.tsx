@@ -43,43 +43,49 @@ export default function BuildingInfoView({
         getGarbageCollectionFromBuilding(buildingId, {
             startDate: startDate,
             endDate: endDate,
-        }).then((res) => {
-            const col: GarbageCollectionInterface[] = res.data;
-            const grouped: { [p: string]: GarbageCollectionInterface[] } = {};
-            grouped[startDate.toISOString().split("T")[0]] = [];
-            grouped[new Date().toISOString().split("T")[0]] = [];
-            grouped[endDate.toISOString().split("T")[0]] = [];
+        })
+            .then((res) => {
+                const col: GarbageCollectionInterface[] = res.data;
+                const grouped: { [p: string]: GarbageCollectionInterface[] } = {};
+                grouped[startDate.toISOString().split("T")[0]] = [];
+                grouped[new Date().toISOString().split("T")[0]] = [];
+                grouped[endDate.toISOString().split("T")[0]] = [];
 
-            col.forEach((g) => {
-                const dateString: string = new Date(g.date).toISOString().split("T")[0];
-                if (grouped[dateString]) {
-                    grouped[dateString].push(g);
-                }
-            });
+                col.forEach((g) => {
+                    const dateString: string = new Date(g.date).toISOString().split("T")[0];
+                    if (grouped[dateString]) {
+                        grouped[dateString].push(g);
+                    }
+                });
 
-            setGarbageCollections(grouped);
-        }, console.error);
+                setGarbageCollections(grouped);
+            })
+            .catch((_) => {});
     }
 
     // Get the comments of a building
     function getBuildingComments(buildingId: number) {
-        getAllBuildingCommentsByBuildingID(buildingId).then((res) => {
-            const bc: BuildingComment[] = res.data;
-            setBuildingComments(bc);
-        }, console.error);
+        getAllBuildingCommentsByBuildingID(buildingId)
+            .then((res) => {
+                const bc: BuildingComment[] = res.data;
+                setBuildingComments(bc);
+            })
+            .catch((_) => {});
     }
 
     // Get the manual for a building
     function getBuildingManual(buildingId: number) {
-        getManualsForBuilding(buildingId).then((res) => {
-            const manuals: BuildingManual[] = res.data;
-            if (manuals.length === 0) {
-                return;
-            }
-            const m: BuildingManual = manuals[0];
-            m.file = getManualPath(m.file);
-            setManual(m);
-        }, console.error);
+        getManualsForBuilding(buildingId)
+            .then((res) => {
+                const manuals: BuildingManual[] = res.data;
+                if (manuals.length === 0) {
+                    return;
+                }
+                const m: BuildingManual = manuals[0];
+                m.file = getManualPath(m.file);
+                setManual(m);
+            })
+            .catch((_) => {});
     }
 
     return (

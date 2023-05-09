@@ -3,9 +3,11 @@ from allauth.account.forms import default_token_generator
 from allauth.account.utils import user_pk_to_url_str
 from allauth.utils import build_absolute_uri
 from dj_rest_auth.forms import AllAuthPasswordResetForm
+from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 
+import config.settings
 from config import settings
 
 
@@ -18,22 +20,12 @@ class CustomAllAuthPasswordResetForm(AllAuthPasswordResetForm):
         for user in self.users:
             temp_key = token_generator.make_token(user)
 
-            # save it to the password reset model
-            # password_reset = PasswordReset(user=user, temp_key=temp_key)
-            # password_reset.save()
-
-            # send the password reset email
-            path = reverse(
-                "password_reset_confirm",
-                args=[user_pk_to_url_str(user), temp_key],
-            )
-
-            if settings.REST_AUTH["PASSWORD_RESET_USE_SITES_DOMAIN"]:
-                url = build_absolute_uri(None, path)
+            host_domain = Site.objects.filter(id=config.settings.SITE_ID).first()
+            if not host_domain:
+                host_domain = "localhost"
             else:
-                url = build_absolute_uri(request, path)
-
-            url = url.replace("%3F", "?")
+                host_domain = host_domain.name
+            url = host_domain + "/reset-password" + "?uid=" + user_pk_to_url_str(user) + "&token=" + temp_key
             context = {
                 "current_site": current_site,
                 "user": user,
