@@ -1,42 +1,43 @@
-import {Button, Form, Modal} from "react-bootstrap";
-import React, {useEffect, useState} from "react";
-import {FileList} from "@/components/student/fileList";
+import { Button, Form, Modal } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { FileList } from "@/components/student/fileList";
 import {
     deleteRemarkAtBuilding,
     patchRemarkAtBuilding,
     postRemarkAtBuilding,
     RemarkAtBuilding,
-    remarkTypes
+    remarkTypes,
 } from "@/lib/remark-at-building";
 import {
     deletePictureOfRemark,
-    getPictureOfRemarkOfSpecificRemark, getPicturePath,
+    getPictureOfRemarkOfSpecificRemark,
+    getPicturePath,
     PictureOfRemarkInterface,
-    postPictureOfRemark
+    postPictureOfRemark,
 } from "@/lib/picture-of-remark";
-import {StudentOnTour} from "@/lib/student-on-tour";
-import {BuildingInterface} from "@/lib/building";
+import { StudentOnTour } from "@/lib/student-on-tour";
+import { BuildingInterface } from "@/lib/building";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {FileListElement} from "@/types";
-import {handleError} from "@/lib/error";
+import { FileListElement } from "@/types";
+import { handleError } from "@/lib/error";
 
 export default function RemarkModal({
-                                        show,
-                                        onHide,
-                                        studentOnTour,
-                                        building,
-                                        selectedRemark,
-                                        setSelectedRemark,
-                                        onPost,
-                                        onPatch,
-                                        onDelete,
-                                    }: {
+    show,
+    onHide,
+    studentOnTour,
+    building,
+    selectedRemark,
+    setSelectedRemark,
+    onPost,
+    onPatch,
+    onDelete,
+}: {
     show: boolean;
     onHide: () => void;
     studentOnTour: StudentOnTour | null;
     building: BuildingInterface | null;
     selectedRemark: RemarkAtBuilding | null;
-    setSelectedRemark: (r: RemarkAtBuilding | null) => void
+    setSelectedRemark: (r: RemarkAtBuilding | null) => void;
     onPost: (r: RemarkAtBuilding) => void;
     onPatch: (r: RemarkAtBuilding) => void;
     onDelete: (r: RemarkAtBuilding) => void;
@@ -51,15 +52,17 @@ export default function RemarkModal({
     useEffect(() => {
         if (selectedRemark) {
             setRemark(selectedRemark.remark);
-            getPictureOfRemarkOfSpecificRemark(selectedRemark.id).then(res => {
+            getPictureOfRemarkOfSpecificRemark(selectedRemark.id).then((res) => {
                 const pictures: PictureOfRemarkInterface[] = res.data;
-                setRemarkFiles(pictures.map(picture => {
-                    return {
-                        url: getPicturePath(picture.picture),
-                        pictureId: picture.id,
-                        file: null
-                    };
-                }));
+                setRemarkFiles(
+                    pictures.map((picture) => {
+                        return {
+                            url: getPicturePath(picture.picture),
+                            pictureId: picture.id,
+                            file: null,
+                        };
+                    })
+                );
             }, console.error);
         } else {
             setRemark("");
@@ -77,10 +80,13 @@ export default function RemarkModal({
         if (!selectedRemark) {
             return;
         }
-        deleteRemarkAtBuilding(selectedRemark.id).then(_ => {
-            onDelete(selectedRemark);
-            closeModal();
-        }, err => setErrorMessages(handleError(err)));
+        deleteRemarkAtBuilding(selectedRemark.id).then(
+            (_) => {
+                onDelete(selectedRemark);
+                closeModal();
+            },
+            (err) => setErrorMessages(handleError(err))
+        );
     }
 
     function uploadRemark() {
@@ -91,23 +97,30 @@ export default function RemarkModal({
         if (!building || !studentOnTour) {
             return;
         }
-        if (!selectedRemark) { // POST
-            postRemarkAtBuilding(building.id, studentOnTour.id, remark, new Date(), type).then((res) => {
-                const r: RemarkAtBuilding = res.data;
-                onPost(r);
-                remarkFiles.forEach((f: FileListElement) => {
-                    if (f.file) {
-                        postPictureOfRemark(f.file, r.id).catch(console.error);
-                    }
-                });
-                closeModal();
-            }, err => setErrorMessages(handleError(err)));
+        if (!selectedRemark) {
+            // POST
+            postRemarkAtBuilding(building.id, studentOnTour.id, remark, new Date(), type).then(
+                (res) => {
+                    const r: RemarkAtBuilding = res.data;
+                    onPost(r);
+                    remarkFiles.forEach((f: FileListElement) => {
+                        if (f.file) {
+                            postPictureOfRemark(f.file, r.id).catch(console.error);
+                        }
+                    });
+                    closeModal();
+                },
+                (err) => setErrorMessages(handleError(err))
+            );
         } else {
             if (selectedRemark.remark != remark) {
-                patchRemarkAtBuilding(selectedRemark.id, remark).then(res => {
-                    const r: RemarkAtBuilding = res.data;
-                    onPatch(r);
-                }, err => setErrorMessages(handleError(err)));
+                patchRemarkAtBuilding(selectedRemark.id, remark).then(
+                    (res) => {
+                        const r: RemarkAtBuilding = res.data;
+                        onPatch(r);
+                    },
+                    (err) => setErrorMessages(handleError(err))
+                );
             }
             remarkFiles.forEach((f: FileListElement) => {
                 if (f.file) {
@@ -124,18 +137,16 @@ export default function RemarkModal({
                 <Modal.Title>Welke algemene opmerking heeft u?</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                 <Form>
-                    <Form.Control as="textarea" rows={3} value={remark}
-                                  onChange={(e) => setRemark(e.target.value)}/>
-                    <FileList files={remarkFiles} optional setFiles={setRemarkFiles} editable/>
+                    <Form.Control as="textarea" rows={3} value={remark} onChange={(e) => setRemark(e.target.value)} />
+                    <FileList files={remarkFiles} optional setFiles={setRemarkFiles} editable />
                 </Form>
-                {
-                    selectedRemark &&
+                {selectedRemark && (
                     <Button className="btn-danger" onClick={() => deleteRemark()}>
                         Verwijder
                     </Button>
-                }
+                )}
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" className="btn-light" onClick={() => closeModal()}>
