@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getAllTours, Tour } from "@/lib/tour";
-import { getAllStudentOnTourFromDate, getAllStudentOnTourFromToday, StudentOnTour } from "@/lib/student-on-tour";
+import { getAllStudentOnTourFromToday, StudentOnTour } from "@/lib/student-on-tour";
 import { getAllUsers, User } from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";

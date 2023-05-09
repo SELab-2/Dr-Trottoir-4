@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { Button } from "react-bootstrap";
-import { Delete, Edit, Email, Info, CalendarMonth } from "@mui/icons-material";
+import { CalendarMonth, Delete, Edit, Email, Info } from "@mui/icons-material";
 import { BuildingView } from "@/types";
 import { getUserInfo } from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
