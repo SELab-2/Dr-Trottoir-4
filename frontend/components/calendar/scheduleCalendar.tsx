@@ -29,7 +29,7 @@ import {formatDate} from "@/lib/date";
 import {handleError} from "@/lib/error";
 import CopyScheduleEventsModal from "@/components/calendar/copyEvents";
 import {colors} from "@/components/calendar/colors";
-import styles from "./calendar.module.css";
+import "./calendar.module.css";
 import {ScheduleEvent} from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import SuccessMessageAlert from "@/components/successMessageAlert";
@@ -254,7 +254,6 @@ function ScheduleCalendar(
             <div>
                 <div>
                     <button
-                        className={styles.button}
                         onClick={() => {
                             setPopupIsOpenAddTour(true);
                         }}
@@ -262,7 +261,6 @@ function ScheduleCalendar(
                         Plan ronde voor hele week
                     </button>
                     <button
-                        className={styles.button}
                         onClick={() => {
                             setPopupIsOpenLoad(true);
                         }}
@@ -278,7 +276,7 @@ function ScheduleCalendar(
                 culture={"nl-BE"}
                 defaultDate={new Date()}
                 defaultView="week"
-                views={["week", "day"]}
+                views={["week"]}
                 events={events}
                 components={{event: CustomDisplay}}
                 eventPropGetter={(event: any) => {

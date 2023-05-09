@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { addDays, endOfWeek, startOfWeek } from "date-fns";
+import {addDays, addWeeks, differenceInDays, endOfWeek, isSameWeek, startOfWeek} from "date-fns";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour";
 import { formatDate } from "@/lib/date";
@@ -23,56 +23,34 @@ function CopyScheduleEventsModal(
         onSave: (start: Date, end: Date) => void;
     }
 ) {
-    const [start_date, setStart] = useState(startOfWeek(new Date()));
-    const [end_date, setEnd] = useState(endOfWeek(start_date));
+    const [copyTo, setCopyTo] = useState(addWeeks(new Date(), 1));
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-    useEffect(() => {
-        setEnd(endOfWeek(start_date));
-    }, [start_date]);
-
     const handleSave = () => {
-        start_date.setHours(0);
-        const diffTime = Math.abs(start_date.getTime() - range.start.getTime()); // get the time difference in milliseconds
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // convert the time difference to days
+        const displayedSunday = startOfWeek(range.start);
+        if (isSameWeek(copyTo, displayedSunday)) {
+            setErrorMessages(["Kan niet kopiëren naar huidige week."]);
+            return;
+        }
+        const start = startOfWeek(copyTo);
+
+        const diff : number = differenceInDays(start, displayedSunday);
+
         let newEvents: StudentOnTourPost[] = [];
+
         for (let e of events) {
-            if (e.start >= range.start && e.start <= range.end) {
                 newEvents.push({
                     tour: e.tour.id,
                     student: e.student.id,
-                    date: formatDate(addDays(e.start, diffDays)),
+                    date: formatDate(addDays(e.start, diff)),
                 });
-            }
         }
         postBulkStudentOnTour(newEvents).then(
             (_) => {
-                if (start_date) {
-                    onSave(start_date, end_date);
-                    setStart(
-                        new Date(
-                            startOfWeek(new Date(), { weekStartsOn: 1 }).toLocaleString("en", {
-                                timeZone: "America/New_York",
-                            })
-                        )
-                    );
-                    setEnd(addDays(start_date, 6));
-                    onClose();
-                }
+                onClose();
             },
-            (err) => {
-                const e = handleError(err);
-                setErrorMessages([...errorMessages, ...e]);
-            }
+            err => setErrorMessages(handleError(err))
         );
-    };
-
-    const handleStartDateChange = (e: { target: { value: string | number | Date } }) => {
-        setStart(new Date(e.target.value));
-    };
-
-    const handleEndDateChange = (e: { target: { value: string | number | Date } }) => {
-        setEnd(new Date(e.target.value));
     };
 
     return (
@@ -85,21 +63,14 @@ function CopyScheduleEventsModal(
                 <form>
                     <div className="form-row">
                         <div className="col">
-                            <label>Start datum:</label>
+                            <label>Kopieer naar week:</label>
                             <input
                                 type="date"
                                 className="form-control"
-                                value={formatDate(start_date)}
-                                onChange={handleStartDateChange}
-                            />
-                        </div>
-                        <div className="col">
-                            <label htmlFor="end-time">Eind datum:</label>
-                            <input
-                                type="date"
-                                className="form-control"
-                                value={formatDate(end_date)}
-                                onChange={handleEndDateChange}
+                                value={formatDate(copyTo)}
+                                onChange={e => {
+                                    setCopyTo(startOfWeek(new Date(e.target.value)));
+                                }}
                             />
                         </div>
                     </div>
