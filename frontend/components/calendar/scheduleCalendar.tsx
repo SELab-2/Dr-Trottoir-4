@@ -27,7 +27,7 @@ import {User} from "@/lib/user";
 import {addDays, endOfWeek} from "date-fns";
 import {formatDate} from "@/lib/date";
 import {handleError} from "@/lib/error";
-import CopyScheduleEventsModal from "@/components/calendar/loadEvents";
+import CopyScheduleEventsModal from "@/components/calendar/copyEvents";
 import {colors} from "@/components/calendar/colors";
 import styles from "./calendar.module.css";
 import {ScheduleEvent} from "@/types";

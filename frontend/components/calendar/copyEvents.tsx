@@ -6,16 +6,24 @@ import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour";
 import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
+import {ScheduleEvent} from "@/types";
 
-function CopyScheduleEventsModal(data: any) {
-    const { range, events, isOpen, onClose, onSave } = data;
-    const [start_date, setStart] = useState(
-        new Date(
-            startOfWeek(new Date(), { weekStartsOn: 1 }).toLocaleString("en", {
-                timeZone: "America/New_York",
-            })
-        )
-    );
+function CopyScheduleEventsModal(
+    {
+        range,
+        events,
+        isOpen,
+        onClose,
+        onSave
+    } : {
+        range: {start: Date, end: Date};
+        events: ScheduleEvent[];
+        isOpen: boolean;
+        onClose: () => void;
+        onSave: (start: Date, end: Date) => void;
+    }
+) {
+    const [start_date, setStart] = useState(startOfWeek(new Date()));
     const [end_date, setEnd] = useState(endOfWeek(start_date));
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
@@ -39,7 +47,7 @@ function CopyScheduleEventsModal(data: any) {
         }
         postBulkStudentOnTour(newEvents).then(
             (_) => {
-                if (start_date !== null) {
+                if (start_date) {
                     onSave(start_date, end_date);
                     setStart(
                         new Date(
