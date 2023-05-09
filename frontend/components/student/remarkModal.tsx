@@ -51,45 +51,6 @@ export default function RemarkModal({
     useEffect(() => {
         if (selectedRemark) {
             setRemark(selectedRemark.remark);
-            <
-            <
-            <
-            <
-            <
-            << HEAD
-                getPictureOfRemarkOfSpecificRemark(selectedRemark.id
-        )
-        .
-            then((res) => {
-                const pictures: PictureOfRemarkInterface[] = res.data;
-                setRemarkFiles(
-                    pictures.map((picture) => {
-                        return {
-                            url: getPicturePath(picture.picture),
-                            pictureId: picture.id,
-                            file: null,
-                        };
-                    })
-                );
-            })
-                .catch((_) => {
-                });
-        ======
-            =
-                getPictureOfRemarkOfSpecificRemark(selectedRemark.id).then((res) => {
-                    const pictures: PictureOfRemarkInterface[] = res.data;
-                    setRemarkFiles(
-                        pictures.map((picture) => {
-                            return {
-                                url: getPicturePath(picture.picture),
-                                pictureId: picture.id,
-                                file: null,
-                            };
-                        })
-                    );
-                }, console.error);
-        >>>>>>>
-            ad5341b1409efdadd35c92ed2a453d88d0390c3f
         } else {
             setRemark("");
             setRemarkFiles([]);
