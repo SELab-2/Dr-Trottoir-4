@@ -1,15 +1,15 @@
-import { BuildingInterface, getAddress } from "@/lib/building";
+import {BuildingInterface, getAddress} from "@/lib/building";
 import {
     GarbageCollectionInterface,
     garbageTypes,
     getGarbageCollectionFromBuilding,
     getGarbageColor,
 } from "@/lib/garbage-collection";
-import { BuildingComment, getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
-import React, { useEffect, useState } from "react";
-import { BuildingManual, getManualPath, getManualsForBuilding } from "@/lib/building-manual";
-import { addDays, subDays } from "date-fns";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
+import {BuildingComment, getAllBuildingCommentsByBuildingID} from "@/lib/building-comment";
+import React, {useEffect, useState} from "react";
+import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/building-manual";
+import {addDays, subDays} from "date-fns";
+import {ListGroup, ListGroupItem} from "react-bootstrap";
 
 /**
  * The info that is displayed when a student is doing a tour
@@ -58,7 +58,7 @@ export default function BuildingInfoView({
             });
 
             setGarbageCollections(grouped);
-        }, console.error);
+        }).catch(_ =>{});
     }
 
     // Get the comments of a building
@@ -66,7 +66,7 @@ export default function BuildingInfoView({
         getAllBuildingCommentsByBuildingID(buildingId).then((res) => {
             const bc: BuildingComment[] = res.data;
             setBuildingComments(bc);
-        }, console.error);
+        }).catch(_ =>{});
     }
 
     // Get the manual for a building
@@ -79,7 +79,7 @@ export default function BuildingInfoView({
             const m: BuildingManual = manuals[0];
             m.file = getManualPath(m.file);
             setManual(m);
-        }, console.error);
+        }).catch(_ =>{});
     }
 
     return (

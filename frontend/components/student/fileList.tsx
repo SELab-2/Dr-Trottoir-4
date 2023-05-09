@@ -40,7 +40,7 @@ export function FileList(
                 const newFiles = [...files];
                 newFiles.splice(index, 1);
                 setFiles(newFiles);
-            }, console.error);
+            }).catch(_ =>{});
         } else {
             const newFiles = [...files];
             newFiles.splice(index, 1);

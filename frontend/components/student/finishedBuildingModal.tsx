@@ -42,8 +42,8 @@ export default function FinishedBuildingModal(
                     }
                 });
                 setPicturesOfRemarks(pictures);
-            }, console.error);
-        }, console.error);
+            }).catch(_ =>{});
+        }).catch(_ =>{});
     }, [building]);
 
     function getRemarksOfType(type : string): RemarkAtBuilding[] {
