@@ -1,6 +1,6 @@
-import { Button, Form, Modal } from "react-bootstrap";
-import React, { useEffect, useState } from "react";
-import { FileList } from "@/components/student/fileList";
+import {Button, Form, Modal} from "react-bootstrap";
+import React, {useEffect, useState} from "react";
+import {FileList} from "@/components/student/fileList";
 import {
     deleteRemarkAtBuilding,
     patchRemarkAtBuilding,
@@ -14,23 +14,23 @@ import {
     PictureOfRemarkInterface,
     postPictureOfRemark,
 } from "@/lib/picture-of-remark";
-import { StudentOnTour } from "@/lib/student-on-tour";
-import { BuildingInterface } from "@/lib/building";
+import {StudentOnTour} from "@/lib/student-on-tour";
+import {BuildingInterface} from "@/lib/building";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { FileListElement } from "@/types";
-import { handleError } from "@/lib/error";
+import {FileListElement} from "@/types";
+import {handleError} from "@/lib/error";
 
 export default function RemarkModal({
-    show,
-    onHide,
-    studentOnTour,
-    building,
-    selectedRemark,
-    setSelectedRemark,
-    onPost,
-    onPatch,
-    onDelete,
-}: {
+                                        show,
+                                        onHide,
+                                        studentOnTour,
+                                        building,
+                                        selectedRemark,
+                                        setSelectedRemark,
+                                        onPost,
+                                        onPatch,
+                                        onDelete,
+                                    }: {
     show: boolean;
     onHide: () => void;
     studentOnTour: StudentOnTour | null;
@@ -51,8 +51,32 @@ export default function RemarkModal({
     useEffect(() => {
         if (selectedRemark) {
             setRemark(selectedRemark.remark);
-            getPictureOfRemarkOfSpecificRemark(selectedRemark.id)
-                .then((res) => {
+            <
+            <
+            <
+            <
+            <
+            << HEAD
+                getPictureOfRemarkOfSpecificRemark(selectedRemark.id
+        )
+        .
+            then((res) => {
+                const pictures: PictureOfRemarkInterface[] = res.data;
+                setRemarkFiles(
+                    pictures.map((picture) => {
+                        return {
+                            url: getPicturePath(picture.picture),
+                            pictureId: picture.id,
+                            file: null,
+                        };
+                    })
+                );
+            })
+                .catch((_) => {
+                });
+        ======
+            =
+                getPictureOfRemarkOfSpecificRemark(selectedRemark.id).then((res) => {
                     const pictures: PictureOfRemarkInterface[] = res.data;
                     setRemarkFiles(
                         pictures.map((picture) => {
@@ -63,8 +87,9 @@ export default function RemarkModal({
                             };
                         })
                     );
-                })
-                .catch((_) => {});
+                }, console.error);
+        >>>>>>>
+            ad5341b1409efdadd35c92ed2a453d88d0390c3f
         } else {
             setRemark("");
             setRemarkFiles([]);
@@ -138,10 +163,10 @@ export default function RemarkModal({
                 <Modal.Title>Welke algemene opmerking heeft u?</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <Form>
-                    <Form.Control as="textarea" rows={3} value={remark} onChange={(e) => setRemark(e.target.value)} />
-                    <FileList files={remarkFiles} optional setFiles={setRemarkFiles} editable />
+                    <Form.Control as="textarea" rows={3} value={remark} onChange={(e) => setRemark(e.target.value)}/>
+                    <FileList files={remarkFiles} optional setFiles={setRemarkFiles} editable/>
                 </Form>
                 {selectedRemark && (
                     <Button className="btn-danger" onClick={() => deleteRemark()}>

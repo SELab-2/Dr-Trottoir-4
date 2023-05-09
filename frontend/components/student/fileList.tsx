@@ -1,15 +1,15 @@
-import { IconButton, Tooltip } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import {IconButton, Tooltip} from "@mui/material";
+import {Delete} from "@mui/icons-material";
 import React from "react";
-import { FileListElement } from "@/types";
-import { deletePictureOfRemark } from "@/lib/picture-of-remark";
+import {FileListElement} from "@/types";
+import {deletePictureOfRemark} from "@/lib/picture-of-remark";
 
 export function FileList({
-    files,
-    setFiles,
-    optional,
-    editable,
-}: {
+                             files,
+                             setFiles,
+                             optional,
+                             editable,
+                         }: {
     files: FileListElement[];
     setFiles: (f: FileListElement[]) => void;
     optional: boolean;
@@ -36,13 +36,11 @@ export function FileList({
     function handleRemoveFile(index: number) {
         const el: FileListElement = files[index];
         if (!el.file && el.pictureId) {
-            deletePictureOfRemark(el.pictureId)
-                .then((_) => {
-                    const newFiles = [...files];
-                    newFiles.splice(index, 1);
-                    setFiles(newFiles);
-                })
-                .catch((_) => {});
+            deletePictureOfRemark(el.pictureId).then((_) => {
+                const newFiles = [...files];
+                newFiles.splice(index, 1);
+                setFiles(newFiles);
+            }, console.error);
         } else {
             const newFiles = [...files];
             newFiles.splice(index, 1);
@@ -70,13 +68,13 @@ export function FileList({
                 {files.map((fileEl, index) => {
                     return (
                         <li key={index}>
-                            <a href={fileEl.url} download style={{ textDecoration: "underline", color: "royalblue" }}>
+                            <a href={fileEl.url} download style={{textDecoration: "underline", color: "royalblue"}}>
                                 {`upload_${index + 1}`}
                             </a>
                             {editable && (
                                 <Tooltip arrow placement="right" title="Verwijder">
                                     <IconButton onClick={() => handleRemoveFile(index)}>
-                                        <Delete />
+                                        <Delete/>
                                     </IconButton>
                                 </Tooltip>
                             )}
