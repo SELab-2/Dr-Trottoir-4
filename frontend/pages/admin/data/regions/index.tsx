@@ -1,10 +1,10 @@
 import AdminHeader from "@/components/header/adminHeader";
 import React, { useEffect, useMemo, useState } from "react";
-import { RegionInterface, getAllRegions, postRegion, patchRegion, deleteRegion } from "@/lib/region";
+import { deleteRegion, getAllRegions, patchRegion, postRegion, RegionInterface } from "@/lib/region";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
-import { Box, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { CalendarMonth, Delete, Edit } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import { Button } from "react-bootstrap";
@@ -27,6 +27,48 @@ function AdminDataRegions() {
             {
                 accessorKey: "region",
                 header: "Regio naam",
+            },
+            {
+                header: "Acties",
+                id: "actions",
+                enableColumnActions: false,
+                Cell: ({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                        <Tooltip arrow placement="left" title="Edit">
+                            <IconButton
+                                onClick={() => {
+                                    const region: RegionView = row.original;
+                                    setSelectedRegion(region);
+                                    setRegionName(region.region);
+                                    setEditDialogOpen(true);
+                                }}
+                            >
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verwijder">
+                            <IconButton
+                                onClick={() => {
+                                    const regionView: RegionView = row.original;
+                                    setSelectedRegion(regionView);
+                                    setDeleteDialogOpen(true);
+                                }}
+                            >
+                                <Delete />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Vuilophaling">
+                            <IconButton
+                                onClick={() => {
+                                    const regionView: RegionView = row.original;
+                                    routeToGarbageSchedule(regionView).then();
+                                }}
+                            >
+                                <CalendarMonth />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                ),
             },
         ],
         []
@@ -73,52 +115,25 @@ function AdminDataRegions() {
         }
     }
 
+    // Route to the garbage view of all the buildings in the region
+    async function routeToGarbageSchedule(regionView: RegionView) {
+        await router.push({
+            pathname: `/admin/data/garbage-collection`,
+            query: { region: regionView.id },
+        });
+    }
+
     return (
         <>
             <AdminHeader />
             <MaterialReactTable
-                displayColumnDefOptions={{
-                    "mrt-row-actions": {
-                        muiTableHeadCellProps: {
-                            align: "center",
-                        },
-                        header: "Acties",
-                    },
-                }}
                 enablePagination={false}
                 enableBottomToolbar={false}
                 columns={columns}
                 data={regions}
                 state={{ isLoading: loading }}
-                enableEditing
                 enableHiding={false}
-                renderRowActions={({ row }) => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
-                        <Tooltip arrow placement="left" title="Edit">
-                            <IconButton
-                                onClick={() => {
-                                    const region: RegionView = row.original;
-                                    setSelectedRegion(region);
-                                    setRegionName(region.region);
-                                    setEditDialogOpen(true);
-                                }}
-                            >
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip arrow placement="right" title="Verwijder">
-                            <IconButton
-                                onClick={() => {
-                                    const regionView: RegionView = row.original;
-                                    setSelectedRegion(regionView);
-                                    setDeleteDialogOpen(true);
-                                }}
-                            >
-                                <Delete />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                )}
+                enableRowActions={false}
                 renderTopToolbarCustomActions={() => (
                     <Button onClick={() => setAddDialogOpen(true)} variant="warning">
                         Maak nieuwe regio aan

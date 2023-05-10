@@ -121,7 +121,7 @@ class Building(models.Model):
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
-    public_id = models.CharField(max_length=32, blank=True, null=True)
+    public_id = models.CharField(max_length=32, blank=True, null=True, unique=True)
 
     """
     Only a syndic can own a building, not a student.
@@ -300,6 +300,10 @@ class StudentOnTour(models.Model):
     tour = models.ForeignKey(Tour, on_delete=models.SET_NULL, null=True)
     date = models.DateField()
     student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    started_tour = models.DateTimeField(null=True, blank=True)
+    completed_tour = models.DateTimeField(null=True, blank=True)
+    current_building_index = models.IntegerField(default=0, blank=True)
+    max_building_index = models.IntegerField(null=True, blank=True)  # gets set by a signal
 
     """
     A syndic can't do tours, so we need to check that a student assigned to the building on the tour is not a syndic.
@@ -320,6 +324,15 @@ class StudentOnTour(models.Model):
                         user_email=user.email, tour_region=tour_region
                     )
                 )
+
+        if self.started_tour and self.completed_tour:
+            self.started_tour = self.started_tour.astimezone()
+            self.completed_tour = self.completed_tour.astimezone()
+
+            if not self.completed_tour > self.started_tour:
+                raise ValidationError(f"Time of completion must come after time of starting the tour.")
+        elif self.completed_tour:
+            raise ValidationError(f"Started tour time must be set before completion time.")
 
     class Meta:
         constraints = [
@@ -359,6 +372,14 @@ class RemarkAtBuilding(models.Model):
         super().clean()
         if not self.timestamp:
             self.timestamp = datetime.now()
+        if self.type == "AA" or self.type == "BI" or type == "VE":
+            remark_instances = RemarkAtBuilding.objects.filter(
+                building=self.building, student_on_tour=self.student_on_tour, type=self.type
+            )
+            if remark_instances.count() == 1:
+                raise ValidationError(
+                    _("There already exists a remark of this type from this student on tour at this building.")
+                )
 
     def __str__(self):
         return f"{self.type} for {self.building}"
@@ -370,6 +391,7 @@ class RemarkAtBuilding(models.Model):
                 "building",
                 "student_on_tour",
                 "timestamp",
+                "type",
                 name="unique_remark_for_building",
                 violation_error_message=_(
                     "This remark was already uploaded to this building by this student on the tour."

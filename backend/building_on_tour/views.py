@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import BuildingOnTour
-from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
+from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent, NoStudentWorkingOnTour
 from base.serializers import BuildingTourSerializer
 from util.request_response_util import *
 
@@ -32,7 +32,7 @@ class Default(APIView):
 
 
 class BuildingTourIndividualView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | ReadOnlyStudent, NoStudentWorkingOnTour]
     serializer_class = BuildingTourSerializer
 
     @extend_schema(responses=get_docs(BuildingTourSerializer))
@@ -40,12 +40,12 @@ class BuildingTourIndividualView(APIView):
         """
         Get info about a BuildingOnTour with given id
         """
-        building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id)
+        building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id).first()
 
         if not building_on_tour_instance:
             return not_found("BuildingOnTour")
 
-        serializer = BuildingTourSerializer(building_on_tour_instance[0])
+        serializer = BuildingTourSerializer(building_on_tour_instance)
         return get_success(serializer)
 
     @extend_schema(responses=patch_docs(BuildingTourSerializer))
@@ -53,12 +53,12 @@ class BuildingTourIndividualView(APIView):
         """
         edit info about a BuildingOnTour with given id
         """
-        building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id)
+        building_on_tour_instance = BuildingOnTour.objects.filter(id=building_tour_id).first()
 
         if not building_on_tour_instance:
             return not_found("BuildingOnTour")
 
-        building_on_tour_instance = building_on_tour_instance[0]
+        self.check_object_permissions(request, building_on_tour_instance.tour)
 
         data = request_to_dict(request.data)
 

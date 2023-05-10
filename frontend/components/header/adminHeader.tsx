@@ -46,6 +46,11 @@ const AdminHeader = () => {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link className="dropdown-item" href="/admin/data/garbage-collection">
+                                        Vuilophaling
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link className="dropdown-item" href="/admin/data/tours">
                                         Rondes
                                     </Link>
@@ -80,6 +85,11 @@ const AdminHeader = () => {
                         <li className="nav-item">
                             <Link className={`nav-link ${styles.text}`} href="/admin/analysis">
                                 Analyse
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className={`nav-link ${styles.text}`} href="/admin/my-schedule">
+                                Mijn agenda
                             </Link>
                         </li>
                     </ul>
