@@ -2,7 +2,7 @@ import AdminHeader from "@/components/header/adminHeader";
 import React, { useEffect, useMemo, useState } from "react";
 import { deleteRegion, getAllRegions, patchRegion, postRegion, RegionInterface } from "@/lib/region";
 import { withAuthorisation } from "@/components/withAuthorisation";
-import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { CalendarMonth, Delete, Edit } from "@mui/icons-material";
 import { useRouter } from "next/router";
