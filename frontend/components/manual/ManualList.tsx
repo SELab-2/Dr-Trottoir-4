@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { getManualsFromBuilding, ManualInterface } from "@/lib/manual";
+import {useEffect, useState} from "react";
+import {getManualsForBuilding, ManualInterface} from "@/lib/building-manual";
 
-function ManualList({ id, type }: { id: number | string; type: "syndic" | "admin" | "public" }) {
+function ManualList({id, type}: { id: number | string; type: "syndic" | "admin" | "public" }) {
     const [manuals, setManuals] = useState<ManualInterface[]>([]);
 
     useEffect(() => {
@@ -13,7 +13,7 @@ function ManualList({ id, type }: { id: number | string; type: "syndic" | "admin
             return;
         }
 
-        getManualsFromBuilding(id)
+        getManualsForBuilding(id)
             .then((manuals) => {
                 let manuals_data = manuals.data;
                 manuals_data.sort((a: ManualInterface, b: ManualInterface) => b.version_number - a.version_number);
@@ -37,7 +37,7 @@ function ManualList({ id, type }: { id: number | string; type: "syndic" | "admin
                         <li key={manual.id}>
                             <a
                                 href={`/${type}/manual?id=${manual.id}`}
-                                style={{ textDecoration: "underline", color: "blue" }}
+                                style={{textDecoration: "underline", color: "blue"}}
                             >
                                 Versie {manual.version_number}
                             </a>
