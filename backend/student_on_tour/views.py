@@ -78,7 +78,7 @@ class StudentOnTourIndividualView(APIView):
         """
         Get an individual StudentOnTour with given id
         """
-        stud_tour_instance = StudentOnTour.objects.get(id=student_on_tour_id)
+        stud_tour_instance = StudentOnTour.objects.filter(id=student_on_tour_id).first()
 
         if not stud_tour_instance:
             return not_found("StudentOnTour")
