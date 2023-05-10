@@ -7,14 +7,13 @@ import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
 import { messages } from "@/locales/localizerCalendar";
-import { getAllStudentOnTourFromDate } from "@/lib/student-on-tour";
+import { getAllStudentOnTourFromDate, postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
 
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import EditEventModal from "@/components/calendar/editEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddEventModal from "@/components/calendar/addEvent";
-import { postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
 import { Tour } from "@/lib/tour";
 import { User } from "@/lib/user";
 import { addDays } from "date-fns";

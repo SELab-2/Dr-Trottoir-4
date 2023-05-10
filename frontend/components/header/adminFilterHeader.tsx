@@ -47,6 +47,11 @@ const AdminFilterHeader = ({ children }: AdminFilterHeaderProps) => {
                                             Analyse
                                         </Link>
                                     </li>
+                                    <li className="nav-item">
+                                        <Link className={`nav-link ${styles.text}`} href="/admin/my-schedule">
+                                            Mijn agenda
+                                        </Link>
+                                    </li>
                                 </ul>
                             </div>
                             <div className="navbar-nav ms-auto position-relative">

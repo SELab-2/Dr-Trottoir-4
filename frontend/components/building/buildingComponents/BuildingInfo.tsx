@@ -2,8 +2,7 @@ import { TiPencil } from "react-icons/ti";
 import React, { useEffect, useState } from "react";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
 import { BuildingInterface } from "@/lib/building";
-import { getRegion, RegionInterface } from "@/lib/region";
-import PatchBuildingAdminModal from "@/components/building/buildingComponents/editModals/PatchBuildingAdminModal";
+import { getRegion } from "@/lib/region";
 import { useRouter } from "next/router";
 
 function BuildingInfo({
@@ -13,7 +12,7 @@ function BuildingInfo({
 }: {
     building: BuildingInterface;
     setBuilding: (b: any) => void;
-    type: "syndic" | "admin" | "";
+    type: "syndic" | "admin" | "public";
 }) {
     const router = useRouter();
     const [editBuilding, setEditBuilding] = useState(false);
@@ -76,13 +75,15 @@ function BuildingInfo({
 
             <h1>
                 Gebouw{" "}
-                <TiPencil
-                    className={"clickable"}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        setEditBuilding(true);
-                    }}
-                ></TiPencil>
+                {type == "syndic" ? (
+                    <TiPencil
+                        className={"clickable"}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setEditBuilding(true);
+                        }}
+                    ></TiPencil>
+                ) : null}
             </h1>
             <p>ID: {get_building_key("id")} </p>
             <p>Naam: {get_building_key("name")}</p>
@@ -91,7 +92,7 @@ function BuildingInfo({
             <p>Straat: {get_building_key("street")}</p>
             <p>Nr: {get_building_key("house_number")}</p>
             <p>Bus: {get_building_key("bus")}</p>
-            <p>RegionInterface: {regionName} </p>
+            <p>Region: {regionName} </p>
             <p>Werktijd: {get_building_key("duration")}</p>
             <p>Client id: {get_building_key("client_id")}</p>
             <p>Public id: {get_building_key("public_id")}</p>

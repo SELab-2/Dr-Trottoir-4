@@ -86,14 +86,8 @@ function PatchBuildingSyndicModal({
                             </Form.Group>
                             <Form.Text className="text-muted">
                                 De inwoners van uw gebouw kunnen info over vuilnisophaling zien op de link{" "}
-                                <a
-                                    href={
-                                        building?.public_id
-                                            ? `${process.env.NEXT_PUBLIC_HOST}public/building/${building?.public_id}`
-                                            : "#"
-                                    }
-                                >
-                                    {`${process.env.NEXT_PUBLIC_HOST}public/building/${
+                                <a href={building?.public_id ? `/public/building?id=${building?.public_id}` : ""}>
+                                    {`${process.env.NEXT_PUBLIC_HOST}/public/building?id=${
                                         building?.public_id ? building?.public_id : "<public_id>"
                                     }`}
                                 </a>

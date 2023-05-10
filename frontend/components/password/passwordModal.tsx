@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import PasswordInput from "./passwordInput";
-import ErrorMessage from "@/components/errorMessage";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { changePassword } from "@/lib/authentication";
 
 interface PasswordModalProps {
@@ -15,8 +15,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ show, closeModal }) => {
     const [currentPassword, setCurrentPassword] = useState<string>("");
     const [showCurrentPassword, setShowCurrentPassword] = useState<boolean>(false);
     const [newPassword2, setNewPassword2] = useState<string>("");
-    const [formErrors, setFormErrors] = useState<boolean>(false);
-    const [errorMessage, setErrorMessage] = useState<string>("");
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const handlePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -28,15 +27,12 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ show, closeModal }) => {
 
     const handleSubmit = async () => {
         if (newPassword1 !== newPassword2) {
-            setFormErrors(true);
-            setErrorMessage("De ingevoerde wachtwoorden komen niet overeen.");
+            setErrorMessages(["De ingevoerde wachtwoorden komen niet overeen."]);
             return;
         } else if (currentPassword == newPassword1 || currentPassword == newPassword2) {
-            setFormErrors(true);
-            setErrorMessage("Uw huidig wachtwoord en nieuw wachtwoord mogen niet overeenkomen");
+            setErrorMessages(["Uw huidig wachtwoord en nieuw wachtwoord mogen niet overeenkomen"]);
         } else if (!newPassword1 || !currentPassword || !newPassword2) {
-            setFormErrors(true);
-            setErrorMessage("Gelieve alle velden in te vullen");
+            setErrorMessages(["Gelieve alle velden in te vullen"]);
         } else {
             try {
                 const res = await changePassword({
@@ -47,8 +43,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ show, closeModal }) => {
                 closeModal();
             } catch (error: any) {
                 console.error("An error occurred:", error.request.responseText);
-                setErrorMessage(error.request.responseText);
-                setFormErrors(true);
+                setErrorMessages([error.request.responseText]);
             }
         }
     };
@@ -59,7 +54,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ show, closeModal }) => {
                 <Modal.Title>Wijzig wachtwoord</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ErrorMessage formErrors={formErrors} errorMessage={errorMessage} onClose={setFormErrors} />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                 <PasswordInput
                     value={currentPassword}
                     setPassword={setCurrentPassword}

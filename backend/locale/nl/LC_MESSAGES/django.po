@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-20 15:19+0200\n"
+"POT-Creation-Date: 2023-05-03 15:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -162,35 +162,35 @@ msgstr "Dit gebouw staat al op deze tour."
 msgid "This index is already in use."
 msgstr "Deze index is al in gebruik"
 
-#: base/models.py:313
+#: base/models.py:317
 msgid "A syndic can't do tours"
 msgstr "Een syndicus kan geen rondes doen"
 
-#: base/models.py:317
+#: base/models.py:321
 #, python-brace-format
 msgid "Student ({user_email}) doesn't do tours in this region ({tour_region})."
 msgstr "Student ({user_email}) doet geen rondes in deze regio ({tour_region})."
 
-#: base/models.py:329
+#: base/models.py:342
 msgid "The student is already assigned to this tour on this date."
 msgstr "De student is al toegewezen aan deze tour op deze datum."
 
-#: base/models.py:373
+#: base/models.py:386
 msgid ""
 "This remark was already uploaded to this building by this student on the "
 "tour."
 msgstr ""
 "Deze opmerking is al geüpload naar dit gebouw door deze student op de tour."
 
-#: base/models.py:393
+#: base/models.py:406
 msgid "The building already has this upload."
 msgstr "Het gebouw heeft al deze upload."
 
-#: base/models.py:429
+#: base/models.py:442
 msgid "The building already has a manual with the same version number"
 msgstr "Het gebouw heeft al een handleiding met hetzelfde versienummer"
 
-#: base/models.py:446
+#: base/models.py:459
 msgid "The name for this template already exists."
 msgstr "De naam van deze template bestaat al."
 
@@ -264,34 +264,55 @@ msgstr ""
 "Je kan enkel handleidingen bekijken die gelinkt zijn aan een van je eigen "
 "gebouwen"
 
-#: config/settings.py:236
+#: base/permissions.py:243
+msgid ""
+"You cannot edit buildings on a tour when a student is actively doing the tour"
+msgstr ""
+"Je kan geen gebouwen bewerken op een ronde wanneer een student actief is op "
+"de ronde"
+
+#: config/settings.py:237
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: config/settings.py:237
+#: config/settings.py:238
 msgid "English"
 msgstr "Engels"
 
-#: garbage_collection/views.py:170
+#: garbage_collection/views.py:171
 msgid ""
 "the start date of the period can't be in a later week than the week of the "
 "end date"
 msgstr ""
-"de start datum van de periode mag niet in een latere week zijn dan de week "
-"van de eind datum"
+"de startdatum van de periode kan niet in een latere week zijn dan de "
+"einddatum"
 
-#: garbage_collection/views.py:178
+#: garbage_collection/views.py:179
 msgid ""
 "the start date of the period to which you want to copy must be, at a "
 "minimum, in the week immediately following the end date of the original "
 "period"
 msgstr ""
-"de startdatum van de periode naar waar je wil kopiëren moet minstens de week "
-"direct volgend op de einddatum van de oorspronkelijke periode zijn"
+"de startdatum van de periode waarnaar je wilt kopiëren moet, op zijn minst, "
+"in de week direct volgend na de einddatum van de originele periode liggen"
 
 #: garbage_collection/views.py:233
 msgid "successfully copied the garbage collections"
-msgstr "de afvalophalingen werden succesvol gekopieerd"
+msgstr "de vuilnisophalingen zijn succesvol gekopieerd"
+
+#: garbage_collection/views.py:275
+msgid ""
+"The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list "
+"of id's) should be given"
+msgstr ""
+"De parameter(s) 'region' (id) en/of 'tour' (id) en/of 'buildings' (lijst van "
+"id's) moet(en) gegeven worden"
+
+#: garbage_collection/views.py:279
+#, fuzzy
+#| msgid "The query parameter {name} should be an integer"
+msgid "The query param 'building' should be a list of ints"
+msgstr "De query parameter {name} moet een getal zijn"
 
 #: users/managers.py:16
 msgid "Email is required"
@@ -305,18 +326,19 @@ msgstr "Superuser moet is_staff=True hebben."
 msgid "Superuser must have is_superuser=True."
 msgstr "Superuser moet is_superuser=True hebben."
 
-#: util/request_response_util.py:17
+#: util/request_response_util.py:18
 #, python-brace-format
 msgid "The query parameter {name} should be an integer"
 msgstr "De query parameter {name} moet een getal zijn"
 
-#: util/request_response_util.py:20 util/request_response_util.py:37
-#: util/request_response_util.py:45 util/request_response_util.py:64
+#: util/request_response_util.py:21 util/request_response_util.py:38
+#: util/request_response_util.py:46 util/request_response_util.py:65
+#: util/request_response_util.py:77
 #, python-brace-format
 msgid "The query parameter {name} is required"
 msgstr "De query parameter {name} is vereist"
 
-#: util/request_response_util.py:31
+#: util/request_response_util.py:32
 #, python-brace-format
 msgid ""
 "The date parameter '{name}': '{param}' hasn't the appropriate form (=YYYY-MM-"
@@ -325,7 +347,7 @@ msgstr ""
 "De datum parameter '{name}': '{param}' heeft niet het juiste formaat (=YYYY-"
 "MM-DD)."
 
-#: util/request_response_util.py:54
+#: util/request_response_util.py:55
 #, python-brace-format
 msgid ""
 "Invalid value for boolean parameter '{name}': '{param}' (true or false "
@@ -333,15 +355,21 @@ msgid ""
 msgstr ""
 "Ongeldige booleaanse parameter '{name}': '{param}' (true of false verwacht)"
 
-#: util/request_response_util.py:154
+#: util/request_response_util.py:83
+#, fuzzy, python-brace-format
+#| msgid "The query parameter {name} should be an integer"
+msgid "The query param {name} must be a value in {allowed_keys}"
+msgstr "De query parameter {name} moet een waarde in {allowed_keys} zijn"
+
+#: util/request_response_util.py:174
 msgid "{} was not found"
 msgstr "{} werd niet gevonden"
 
-#: util/request_response_util.py:158
+#: util/request_response_util.py:178
 msgid "bad input for {}"
 msgstr "slechte input voor {}"
 
-#: util/request_response_util.py:164
+#: util/request_response_util.py:188
 #, python-brace-format
 msgid "There is no {object1} that is linked to {object2} with given id."
 msgstr "Er is geen {object1} dat gelinkt is aan {object2} met de gegeven id."
@@ -533,7 +561,7 @@ msgstr ""
 
 #: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:130
 msgid "This field cannot be null."
-msgstr "Dit veld mag nie null zijn"
+msgstr "Dit veld mag niet null zijn"
 
 #: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:131
 msgid "This field cannot be blank."

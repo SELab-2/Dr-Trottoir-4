@@ -6,6 +6,9 @@ import { getAllRoles, Role } from "@/lib/role";
 import { patchUser } from "@/lib/user";
 import { useTranslation } from "react-i18next";
 import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import { RegionInterface } from "@/lib/region";
+import Select from "react-select";
 
 export function UserEditModal({
     show,
@@ -59,16 +62,7 @@ export function UserEditModal({
             <Modal.Header>
                 <Modal.Title>Pas gebruiker aan</Modal.Title>
             </Modal.Header>
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 <div className="card-body p-4 p-lg-5 text-black">
                     <form>
@@ -146,26 +140,25 @@ export function UserEditModal({
                         </div>
                         <div className="form-outline mb-4">
                             <label className="form-label">Rol:</label>
-                            <select
-                                className={`form-select form-control form-control-lg ${styles.input}`}
-                                value={selectedUser ? selectedUser.role : "Default"}
-                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                    setSelectedUser((prevState: UserView | null) =>
-                                        prevState
-                                            ? {
-                                                  ...prevState,
-                                                  role: e.target.value,
-                                              }
-                                            : null
-                                    );
+                            <Select
+                                options={allRoles.map((role: Role) => {
+                                    return { value: role.name, label: t(role.name) as string };
+                                })}
+                                value={selectedUser ? { value: selectedUser.role, label: t(selectedUser.role) } : {}}
+                                onChange={(s) => {
+                                    if (s && s.value) {
+                                        setSelectedUser((prevState: UserView | null) =>
+                                            prevState
+                                                ? {
+                                                      ...prevState,
+                                                      role: s.value,
+                                                  }
+                                                : null
+                                        );
+                                    }
                                 }}
-                            >
-                                {allRoles.map((role: Role) => (
-                                    <option value={role.name} key={role.name}>
-                                        {t(role.name)}
-                                    </option>
-                                ))}
-                            </select>
+                                placeholder={"Selecteer rol"}
+                            />
                         </div>
                         <div className="form-check form-switch">
                             <input

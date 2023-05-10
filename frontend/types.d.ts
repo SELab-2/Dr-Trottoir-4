@@ -1,3 +1,6 @@
+import {Event} from "react-big-calendar";
+import {BuildingInterface} from "@/lib/building";
+
 export type Login = {
     email: string;
     password: string;
@@ -29,6 +32,7 @@ export type BuildingView = {
     address: string;
     building_id: number;
     syndic_email: string;
+    syndicId: number;
 };
 
 export type BuildingOnTourView = {
@@ -60,4 +64,24 @@ export type UserView = {
     phone_number : string;
     userId : number;
     isActive : boolean;
+}
+
+export interface GarbageCollectionEvent extends Event {
+    start: Date,
+    end: Date,
+    id: number,
+    building: BuildingInterface,
+    garbageType: string
+}
+
+export interface FileListElement {
+    url : string;
+    file : File | null;
+    pictureId : number | null;
+}
+
+export interface Progress {
+    step : number;
+    currentIndex : number;
+    maxIndex : number;
 }

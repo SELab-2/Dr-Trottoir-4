@@ -45,6 +45,11 @@ export const getBuildingInfo = async (buildingId: string | undefined | number): 
     return await api.get(request_url);
 };
 
+export const getBuildingInfoByPublicId = async (publicId: string | undefined | number): Promise<AxiosResponse<any>> => {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_PUBLIC_ID_BUILDING}${publicId}`;
+    return await api.get(request_url);
+}
+
 export async function getAllBuildings(): Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_BUILDINGS}`;
     return await api.get(request_url);
@@ -98,7 +103,6 @@ export function getDurationFromMinutes(durationInMinutes: number) {
 
 export const getNewPublicId = async () => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GET_NEW_PUBLIC_ID_BUILDING}`;
-    console.log(request_url)
     return await api.get(request_url)
 }
 
