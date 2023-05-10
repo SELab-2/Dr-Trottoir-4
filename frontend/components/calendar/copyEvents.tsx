@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import {addDays, addWeeks, differenceInDays, endOfWeek, isSameWeek, startOfWeek} from "date-fns";
+import {addDays, addWeeks, differenceInDays, isSameWeek, startOfWeek} from "date-fns";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour";
 import { formatDate } from "@/lib/date";
@@ -13,17 +13,15 @@ function CopyScheduleEventsModal(
         range,
         events,
         isOpen,
-        onClose,
-        onSave
+        onClose
     } : {
         range: {start: Date, end: Date};
         events: ScheduleEvent[];
         isOpen: boolean;
         onClose: () => void;
-        onSave: (start: Date, end: Date) => void;
     }
 ) {
-    const [copyTo, setCopyTo] = useState(addWeeks(new Date(), 1));
+    const [copyTo, setCopyTo] = useState(startOfWeek(addWeeks(new Date(), 1)));
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const handleSave = () => {
@@ -53,8 +51,12 @@ function CopyScheduleEventsModal(
         );
     };
 
+    function onShow() {
+        setCopyTo(startOfWeek(addWeeks(new Date(), 1)));
+    }
+
     return (
-        <Modal show={isOpen} onHide={onClose}>
+        <Modal show={isOpen} onHide={onClose} onShow={onShow}>
             <Modal.Header closeButton>
                 <Modal.Title>Kopieer deze week naar</Modal.Title>
             </Modal.Header>
