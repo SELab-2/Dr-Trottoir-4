@@ -8,7 +8,7 @@ asgiref==3.6.0
 async-timeout==4.0.2
 attrs==22.2.0
 autobahn==23.1.2
-certifi==2022.12.7
+certifi==2023.5.7
 cffi==1.15.1
 channels-redis==4.1.0
 channels==4.0.0
