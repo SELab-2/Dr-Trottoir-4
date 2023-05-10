@@ -23,7 +23,7 @@ jobs:
           echo ${{ secrets.ENV_FILE }} > .env
 
       - name: Build Docker
-        run: docker-compose build
+        run: docker-compose build --env-file .env
         with:
           files: |
             .env
