@@ -1,7 +1,7 @@
-import {useRouter} from "next/router";
-import {useEffect, useState} from "react";
-import {AxiosResponse} from "axios";
-import {getManual} from "@/lib/building-manual";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { AxiosResponse } from "axios";
+import { getManual } from "@/lib/building-manual";
 
 interface ManualQuery {
     id?: string;
@@ -50,7 +50,7 @@ function ManualView() {
                         marginTop: ".5%",
                     }}
                 >
-                    <embed src={file} style={{width: "97%"}}/>
+                    <embed src={file} style={{ width: "97%" }} />
                 </div>
             )}
         </>
