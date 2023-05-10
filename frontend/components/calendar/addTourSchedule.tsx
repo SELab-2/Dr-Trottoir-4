@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { addDays } from "date-fns";
+import {addDays, startOfWeek} from "date-fns";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import { formatDate } from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
@@ -13,11 +13,13 @@ function AddTourScheduleModal(
     {
         isOpen,
         onClose,
-        onPost
+        onPost,
+        range
     } : {
         isOpen: boolean
         onClose : () => void;
-        onPost : () => void
+        onPost : () => void;
+        range: {start: Date, end: Date};
     }
 ) {
     const [tourId, setTourId] = useState(null);
@@ -151,6 +153,10 @@ function AddTourScheduleModal(
         setChecked(!checked);
     };
 
+    function onShow() {
+        setStart(startOfWeek(range.start));
+    }
+
     return (
         <Modal
             show={isOpen}
@@ -158,6 +164,7 @@ function AddTourScheduleModal(
                 resetStates();
                 onClose();
             }}
+            onShow={onShow}
         >
             <Modal.Header closeButton>
                 <Modal.Title>Voeg ronde toe</Modal.Title>

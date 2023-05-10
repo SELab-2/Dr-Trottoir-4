@@ -316,7 +316,7 @@ function ScheduleCalendar(
             )}
             <AddTourScheduleModal isOpen={popupIsOpenAddTour}
                                   onPost={() => getFromRange({start: range.start, end: range.end})}
-                                  onClose={() => setPopupIsOpenAddTour(false)}/>
+                                  onClose={() => setPopupIsOpenAddTour(false)} range={range}/>
             <AddScheduleEventModal isOpen={popupIsOpenAdd} date={selectedDate} onPost={addSingleEvent} onClose={() => {
                 setSelectedDate(null);
                 setPopupIsOpenAdd(false);
@@ -326,7 +326,6 @@ function ScheduleCalendar(
                 events={events}
                 isOpen={popupIsOpenLoad}
                 onClose={() => setPopupIsOpenLoad(false)}
-                onSave={onEventsCopy}
             />
         </>
     );
