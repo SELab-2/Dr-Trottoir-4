@@ -7,7 +7,8 @@ from .views import (
     StudentOnTourBulk,
     Default,
     StartTourView,
-    EndTourView, ProgressTourView
+    EndTourView,
+    ProgressTourView,
 )
 
 urlpatterns = [

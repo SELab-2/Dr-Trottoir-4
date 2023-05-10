@@ -6,16 +6,16 @@
     padding: 0;
     margin: 0;
 }
-
-/* Define font and font size for the whole document */
+/*
+!* Define font and font size for the whole document *!
 body {
     font-family: Helvetica, sans-serif;
     font-size: 16px;
 }
 
-/* Button Styles */
+!* Button Styles *!
 
-/* Style for all buttons */
+!* Style for all buttons *!
 Button, button {
     height: 50px;
     width: 150px;
@@ -34,29 +34,28 @@ Button, button {
     transition: ease-in 0.2s;
 }
 
-/* Style for buttons when hovering */
+!* Style for buttons when hovering *!
 Button:hover, button:hover {
     color: #000;
     background: rgb(255, 218, 87);
 }
 
-/* Link Styles */
+!* Link Styles *!
 
-/* Style for all links */
+!* Style for all links *!
 a {
     color: inherit;
     text-decoration: none;
 }
 
-/* Style for links when hovering */
+!* Style for links when hovering *!
 a:hover {
     text-decoration: underline;
 }
 
-/* Input Styles */
+!* Input Styles *!
 
-/* Style for all inputs */
-/*
+!* Style for all inputs *!
 input {
     min-width: 250px;
     max-width: 350px;
@@ -74,8 +73,7 @@ input:focus {
     border: none;
     outline: none;
     box-shadow: 0 0 0 0.1rem lightgray;
-}
-*/
+}*/
 
 @media (prefers-color-scheme: light) {
     html {
@@ -88,9 +86,16 @@ input:focus {
 }
 
 .rbc-time-view .rbc-allday-cell {
-    height: calc(90vh) !important;
+    min-height: calc(90vh) !important;
     max-height: unset !important;
 }
+
+.rbc-allday-cell {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
 /* Style for all icons */
 .icon {
     display: inline-block;

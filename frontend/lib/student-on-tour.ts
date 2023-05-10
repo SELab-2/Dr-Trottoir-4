@@ -8,6 +8,10 @@ export interface StudentOnTour {
     tour: number;
     date: Date;
     student: number;
+    completed_tour: string | null;
+    started_tour: string | null;
+    max_building_index: number;
+    current_building_index: number;
 }
 
 export interface StudentOnTourStringDate {
@@ -15,6 +19,10 @@ export interface StudentOnTourStringDate {
     tour: number;
     date: string;
     student: number;
+    completed_tour: string | null;
+    started_tour: string | null;
+    max_building_index: number;
+    current_building_index: number;
 }
 
 export interface StudentOnTourPost {
@@ -99,4 +107,14 @@ export async function getAllStudentOnTourFromToday() {
 export async function getProgress(studentOnTourId: number){
     const request_url = "";
     return 0.5;
+}
+
+export async function startStudentOnTour(studentOnTourId: number) {
+    const post_url: string= `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_STUDENT_ON_TOUR}${studentOnTourId}/start/`;
+    return await api.post(post_url);
+}
+
+export async function endStudentOnTour(studentOnTourId: number) {
+    const post_url: string= `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_STUDENT_ON_TOUR}${studentOnTourId}/end/`;
+    return await api.post(post_url);
 }

@@ -34,6 +34,7 @@ export type BuildingView = {
     address: string;
     building_id: number;
     syndic_email: string;
+    syndicId: number;
 };
 
 export type BuildingOnTourView = {
@@ -81,4 +82,16 @@ export interface GarbageCollectionEvent extends Event {
     id: number,
     building: BuildingInterface,
     garbageType: string
+}
+
+export interface FileListElement {
+    url : string;
+    file : File | null;
+    pictureId : number | null;
+}
+
+export interface Progress {
+    step : number;
+    currentIndex : number;
+    maxIndex : number;
 }

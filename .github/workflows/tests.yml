@@ -20,10 +20,13 @@ jobs:
 
       - name: 'Create .env file'
         run: |
-          echo "${{ secrets.ENV_FILE }}" > .env
+          echo ${{ secrets.ENV_FILE }} > .env
 
       - name: Build Docker
         run: docker-compose build
+        with:
+          files: |
+            .env
 
       - name: Run Tests
         run: |

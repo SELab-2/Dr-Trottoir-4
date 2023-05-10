@@ -54,7 +54,7 @@ const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions
                 setOptions(availableOptions);
 
                 //Set the initial value to the object with the same id
-                const initialOption = availableOptions.find((option) => option.id === initialId);
+                const initialOption = availableOptions.find((option) => Number(option.id) === Number(initialId));
                 if (initialOption) {
                     setValue(initialOption);
                     setInputValue(initialOption.label);

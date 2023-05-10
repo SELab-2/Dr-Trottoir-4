@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, Row, Col, Image } from "react-bootstrap";
+import { Col, Container, Image, Row } from "react-bootstrap";
 
 type PhotoSelectorProps = {
     photos: string[];
