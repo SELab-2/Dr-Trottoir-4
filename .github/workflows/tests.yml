@@ -24,9 +24,6 @@ jobs:
 
       - name: Build Docker
         run: docker-compose --env-file .env build
-        with:
-          files: |
-            .env
 
       - name: Run Tests
         run: |
