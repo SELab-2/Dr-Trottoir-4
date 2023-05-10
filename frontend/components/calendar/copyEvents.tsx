@@ -21,7 +21,7 @@ function CopyScheduleEventsModal(
         onClose: () => void;
     }
 ) {
-    const [copyTo, setCopyTo] = useState(startOfWeek(addWeeks(new Date(), 1)));
+    const [copyTo, setCopyTo] = useState(startOfWeek(addWeeks(range.start, 1)));
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const handleSave = () => {
@@ -52,7 +52,7 @@ function CopyScheduleEventsModal(
     };
 
     function onShow() {
-        setCopyTo(startOfWeek(addWeeks(new Date(), 1)));
+        setCopyTo(startOfWeek(addWeeks(range.start, 1)));
     }
 
     return (
