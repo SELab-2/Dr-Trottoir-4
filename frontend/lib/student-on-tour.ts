@@ -7,6 +7,10 @@ export interface StudentOnTour {
     tour: number;
     date: Date;
     student: number;
+    started_tour?: string;
+    completed_tour?: string;
+    current_building_index?: string;
+    max_building_index?: string;
 }
 
 export interface StudentOnTourStringDate {
