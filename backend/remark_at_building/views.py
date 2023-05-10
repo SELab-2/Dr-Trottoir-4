@@ -184,10 +184,11 @@ class RemarksAtBuildingView(APIView):
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         if most_recent_only:
-            instances = remark_at_building_instances.order_by("-timestamp").first()
-
+            most_recent_remark = remark_at_building_instances.order_by("-timestamp").first()
+            if not most_recent_remark:
+                return not_found(object_name="RemarkAtBuilding")
             # Now we have the most recent one, but there are more remarks on that same day
-            most_recent_day = str(instances.timestamp.date())
+            most_recent_day = most_recent_remark.timestamp.date()
 
             remark_at_building_instances = remark_at_building_instances.filter(timestamp__gte=most_recent_day)
 
