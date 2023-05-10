@@ -185,11 +185,10 @@ class RemarksAtBuildingView(APIView):
 
         if most_recent_only:
             most_recent_remark = remark_at_building_instances.order_by("-timestamp").first()
-            if not most_recent_remark:
-                return not_found(object_name="RemarkAtBuilding")
-            # Now we have the most recent one, but there are more remarks on that same day
-            most_recent_day = most_recent_remark.timestamp.date()
+            if most_recent_remark:
+                # Now we have the most recent one, now get all remarks from that day
+                most_recent_day = most_recent_remark.timestamp.date()
 
-            remark_at_building_instances = remark_at_building_instances.filter(timestamp__gte=most_recent_day)
+                remark_at_building_instances = remark_at_building_instances.filter(timestamp__gte=most_recent_day)
 
         return get_success(self.serializer_class(remark_at_building_instances, many=True))
