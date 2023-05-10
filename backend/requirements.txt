@@ -1,7 +1,7 @@
 Automat==22.10.0
 Django==4.2.1
 Pillow==9.5.0
-PyJWT==2.6.0
+PyJWT==2.7.0
 PyYAML==6.0
 Twisted==22.10.0
 asgiref==3.6.0
