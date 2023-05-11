@@ -223,11 +223,10 @@ class StudentOnTourIndividualView(APIView):
         """
         Get an individual StudentOnTour with given id
         """
-        stud_tour_instances = StudentOnTour.objects.filter(id=student_on_tour_id)
+        stud_tour_instance = StudentOnTour.objects.filter(id=student_on_tour_id).first()
 
-        if len(stud_tour_instances) != 1:
+        if not stud_tour_instance:
             return not_found("StudentOnTour")
-        stud_tour_instance = stud_tour_instances[0]
 
         self.check_object_permissions(request, stud_tour_instance.student)
 

@@ -1,26 +1,24 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import { formatDate } from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {postStudentOnTour, StudentOnTour} from "@/lib/student-on-tour";
+import { postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
 import { handleError } from "@/lib/error";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
-function AddScheduleEventModal(
-    {
-        isOpen,
-        onClose,
-        date,
-        onPost
-    } : {
-        isOpen: boolean;
-        onClose: () => void;
-        date : Date | null;
-        onPost: (sot : StudentOnTour) => void
-    }
-) {
+function AddScheduleEventModal({
+    isOpen,
+    onClose,
+    date,
+    onPost,
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    date: Date | null;
+    onPost: (sot: StudentOnTour) => void;
+}) {
     const [tourId, setTourId] = useState(-1);
     const [studentId, setStudentId] = useState(-1);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -40,12 +38,12 @@ function AddScheduleEventModal(
         } else {
             if (selectedDate) {
                 postStudentOnTour(tourId, studentId, formatDate(selectedDate)).then(
-                    res => {
-                        const sot : StudentOnTour = res.data;
+                    (res) => {
+                        const sot: StudentOnTour = res.data;
                         onPost(sot);
                         onClose();
                     },
-                    err => setErrorMessages(handleError(err))
+                    (err) => setErrorMessages(handleError(err))
                 );
             } else {
                 setErrorMessages(["Start datum mag niet leeg zijn."]);
@@ -53,7 +51,7 @@ function AddScheduleEventModal(
         }
     }
 
-    function handleStartDateChange(e: { target: { value: string | number | Date } }){
+    function handleStartDateChange(e: { target: { value: string | number | Date } }) {
         setSelectedDate(new Date(e.target.value));
     }
 

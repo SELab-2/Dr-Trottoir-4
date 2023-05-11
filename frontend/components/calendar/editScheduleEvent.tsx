@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
@@ -7,25 +7,23 @@ import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { patchStudentOnTour } from "@/lib/student-on-tour";
 import { formatDate } from "@/lib/date";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
-import {ScheduleEvent} from "@/types";
+import { ScheduleEvent } from "@/types";
 
-function EditScheduleEventModal(
-    {
-        event,
-        isOpen,
-        onClose,
-        onDelete,
-        onDeleteTour,
-        onEdit
-    } : {
-        event : ScheduleEvent | null;
-        isOpen : boolean;
-        onClose : () => void;
-        onDelete: (e : ScheduleEvent) => void;
-        onDeleteTour: (e : ScheduleEvent) => void;
-        onEdit: (id: number, tour: number, student: number, date: Date) => void
-    }
-) {
+function EditScheduleEventModal({
+    event,
+    isOpen,
+    onClose,
+    onDelete,
+    onDeleteTour,
+    onEdit,
+}: {
+    event: ScheduleEvent | null;
+    isOpen: boolean;
+    onClose: () => void;
+    onDelete: (e: ScheduleEvent) => void;
+    onDeleteTour: (e: ScheduleEvent) => void;
+    onEdit: (id: number, tour: number, student: number, date: Date) => void;
+}) {
     const [tourId, setTourId] = useState<number | null>(null);
     const [studentId, setStudentId] = useState<number | null>(null);
     const [date, setDate] = useState<Date>(new Date());
@@ -44,7 +42,7 @@ function EditScheduleEventModal(
     }, [event]);
 
     const handleSave = () => {
-        if (! event || ! tourId || ! studentId) {
+        if (!event || !tourId || !studentId) {
             return;
         }
         patchStudentOnTour(event.id, tourId, studentId, formatDate(date)).then(
@@ -58,7 +56,7 @@ function EditScheduleEventModal(
     };
 
     const handleDelete = () => {
-        if (! event) {
+        if (!event) {
             return;
         }
         onDelete(event);
@@ -66,7 +64,7 @@ function EditScheduleEventModal(
     };
 
     const handleTourDelete = () => {
-        if (! event) {
+        if (!event) {
             return;
         }
         onDeleteTour(event);

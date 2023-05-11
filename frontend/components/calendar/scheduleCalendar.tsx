@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {Calendar, dateFnsLocalizer, Event} from "react-big-calendar";
-import withDragAndDrop, {EventInteractionArgs} from "react-big-calendar/lib/addons/dragAndDrop";
+import React, { useEffect, useState } from "react";
+import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
+import withDragAndDrop, { EventInteractionArgs } from "react-big-calendar/lib/addons/dragAndDrop";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
-import {messages} from "@/locales/localizerCalendar";
+import { messages } from "@/locales/localizerCalendar";
 import {
     deleteBulkStudentOnTour,
     deleteStudentOnTour,
@@ -22,28 +22,20 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import EditScheduleEventModal from "@/components/calendar/editScheduleEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddScheduleEventModal from "@/components/calendar/addScheduleEvent";
-import {Tour} from "@/lib/tour";
-import {User} from "@/lib/user";
-import {addDays, endOfWeek} from "date-fns";
-import {formatDate} from "@/lib/date";
-import {handleError} from "@/lib/error";
+import { Tour } from "@/lib/tour";
+import { User } from "@/lib/user";
+import { addDays, endOfWeek } from "date-fns";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
 import CopyScheduleEventsModal from "@/components/calendar/copyEvents";
-import {colors} from "@/components/calendar/colors";
+import { colors } from "@/components/calendar/colors";
 import styles from "./calendar.module.css";
-import {ScheduleEvent} from "@/types";
+import { ScheduleEvent } from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import SuccessMessageAlert from "@/components/successMessageAlert";
 import AddTourScheduleModal from "@/components/calendar/addTourSchedule";
 
-function ScheduleCalendar(
-    {
-        tourUsers,
-        tours
-    }: {
-        tourUsers: User[];
-        tours: Tour[];
-    }
-) {
+function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour[] }) {
     const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
     const [popupIsOpenAddTour, setPopupIsOpenAddTour] = useState(false);
@@ -62,51 +54,60 @@ function ScheduleCalendar(
     useEffect(() => {
         if (tourUsers.length > 0 && tours.length > 0) {
             assignColors(tours);
-            getFromRange({start: startOfWeek(new Date()), end: endOfWeek(new Date())});
+            getFromRange({ start: startOfWeek(new Date()), end: endOfWeek(new Date()) });
         }
     }, [tourUsers, tours]);
 
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
         let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
-        setRange({start: startDate, end: endDate});
-        onEventsLoad({start_date: startDate, end_date: endDate});
+        setRange({ start: startDate, end: endDate });
+        onEventsLoad({ start_date: startDate, end_date: endDate });
     }
 
     function postEvents(start: Date, end: Date, data: StudentOnTourPost[]) {
         postBulkStudentOnTour(data).then(
-            _ => getFromRange({start: range.start, end: range.end}),
-            err => setErrorMessages(handleError(err))
+            (_) => getFromRange({ start: range.start, end: range.end }),
+            (err) => setErrorMessages(handleError(err))
         );
     }
 
-    function onEventsLoad({start_date, end_date}: { start_date: Date; end_date: Date }) {
-        getAllStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
-            res => {
+    function onEventsLoad({ start_date, end_date }: { start_date: Date; end_date: Date }) {
+        getAllStudentOnTourFromDate({ startDate: new Date(start_date), endDate: new Date(end_date) }).then(
+            (res) => {
                 const list: StudentOnTour[] = res.data;
-                setEvents(list.filter(s => {
-                    return tourUsers.find((u: User) => u.id === s.student) && tours.find((t: Tour) => t.id === s.tour);
-                }).map(sot => {
-                    const startDate = new Date(sot.date);
-                    startDate.setHours(0);
-                    const endDate = addDays(new Date(sot.date), 1);
-                    endDate.setHours(0);
-                    const student: User = tourUsers.find((u: User) => u.id === sot.student)!;
-                    const tour: Tour = tours.find((t: Tour) => t.id === sot.tour)!;
-                    return {
-                        id: sot.id,
-                        tour: tour,
-                        student: student,
-                        start: startDate,
-                        end: endDate,
-                    }
-                }).sort(compareScheduleEvents));
-            }, err => setErrorMessages(handleError(err))
+                setEvents(
+                    list
+                        .filter((s) => {
+                            return (
+                                tourUsers.find((u: User) => u.id === s.student) &&
+                                tours.find((t: Tour) => t.id === s.tour)
+                            );
+                        })
+                        .map((sot) => {
+                            const startDate = new Date(sot.date);
+                            startDate.setHours(0);
+                            const endDate = addDays(new Date(sot.date), 1);
+                            endDate.setHours(0);
+                            const student: User = tourUsers.find((u: User) => u.id === sot.student)!;
+                            const tour: Tour = tours.find((t: Tour) => t.id === sot.tour)!;
+                            return {
+                                id: sot.id,
+                                tour: tour,
+                                student: student,
+                                start: startDate,
+                                end: endDate,
+                            };
+                        })
+                        .sort(compareScheduleEvents)
+                );
+            },
+            (err) => setErrorMessages(handleError(err))
         );
     }
 
     function onEventsCopy(start: Date, end: Date) {
-        getFromRange({start, end})
+        getFromRange({ start, end });
         setSuccessMessages([`Gekopieerd naar week van ${formatDate(start)}`]);
     }
 
@@ -123,24 +124,26 @@ function ScheduleCalendar(
         const currentStudent: User | undefined = tourUsers.find((s: User) => s.id === student);
         if (currentTour && currentStudent) {
             setEvents((currentEvents) => {
-                return currentEvents.map((currentEvent) => {
-                    if (currentEvent.id === id) {
-                        return {
-                            ...currentEvent,
-                            tour: currentTour,
-                            student: currentStudent,
-                            start: date,
-                            end: end,
-                        };
-                    }
-                    return currentEvent;
-                }).sort(compareScheduleEvents);
+                return currentEvents
+                    .map((currentEvent) => {
+                        if (currentEvent.id === id) {
+                            return {
+                                ...currentEvent,
+                                tour: currentTour,
+                                student: currentStudent,
+                                start: date,
+                                end: end,
+                            };
+                        }
+                        return currentEvent;
+                    })
+                    .sort(compareScheduleEvents);
             });
         }
     }
 
     function onEventResize(args: EventInteractionArgs<object>): void {
-        const {event, start, end} = args;
+        const { event, start, end } = args;
         let resizedEvents: StudentOnTourPost[] = [];
         let currentDate = new Date(start);
         currentDate.setHours(0);
@@ -161,20 +164,24 @@ function ScheduleCalendar(
         postEvents(range.start, range.end, resizedEvents);
     }
 
-
     function onEventDragAndDrop(args: EventInteractionArgs<object>): void {
-        const {event, start} = args;
+        const { event, start } = args;
         const scheduleEvent: ScheduleEvent = event as ScheduleEvent;
-        patchStudentOnTour(scheduleEvent.id, scheduleEvent.tour.id, scheduleEvent.student.id, formatDate(new Date(start))).then(
-            res => {
+        patchStudentOnTour(
+            scheduleEvent.id,
+            scheduleEvent.tour.id,
+            scheduleEvent.student.id,
+            formatDate(new Date(start))
+        ).then(
+            (res) => {
                 onEventEdit(scheduleEvent.id, scheduleEvent.tour.id, scheduleEvent.student.id, new Date(res.data.date));
             },
-            err => setErrorMessages(handleError(err))
+            (err) => setErrorMessages(handleError(err))
         );
     }
 
     function addSingleEvent(sot: StudentOnTour) {
-        setEvents(prevState => {
+        setEvents((prevState) => {
             const tour: Tour | undefined = tours.find((t: Tour) => sot.tour === t.id);
             const student: User | undefined = tourUsers.find((s: User) => sot.student === s.id);
             if (!tour || !student) {
@@ -184,13 +191,16 @@ function ScheduleCalendar(
             startDate.setHours(0);
             const endDate = addDays(startDate, 1);
             endDate.setHours(0);
-            return [...prevState, {
-                id: sot.id,
-                tour: tour,
-                student: student,
-                start: startDate,
-                end: endDate,
-            }].sort(compareScheduleEvents);
+            return [
+                ...prevState,
+                {
+                    id: sot.id,
+                    tour: tour,
+                    student: student,
+                    start: startDate,
+                    end: endDate,
+                },
+            ].sort(compareScheduleEvents);
         });
     }
 
@@ -212,14 +222,16 @@ function ScheduleCalendar(
 
     function onEventDelete(event: ScheduleEvent) {
         deleteStudentOnTour(event.id).then(
-            _ => {
+            (_) => {
                 setEvents((currentEvents) => {
-                    return currentEvents.filter((currentEvent) => {
-                        return currentEvent !== event;
-                    }).sort(compareScheduleEvents);
+                    return currentEvents
+                        .filter((currentEvent) => {
+                            return currentEvent !== event;
+                        })
+                        .sort(compareScheduleEvents);
                 });
             },
-            err => setErrorMessages(handleError(err))
+            (err) => setErrorMessages(handleError(err))
         );
     }
 
@@ -232,18 +244,18 @@ function ScheduleCalendar(
                 return event.id;
             })
         ).then(
-            _ => {
+            (_) => {
                 const updatedEvents: ScheduleEvent[] = events.filter((e) => !removedTours.includes(e));
                 setEvents(updatedEvents);
             },
-            err => setErrorMessages(handleError(err))
+            (err) => setErrorMessages(handleError(err))
         );
     }
 
     function assignColors(tours: Tour[]) {
         const col: { [key: number]: string } = {};
         tours.forEach((t: Tour, index: number) => {
-            const cIndex = index % colors.length
+            const cIndex = index % colors.length;
             col[t.id] = colors[cIndex];
         });
         setTourColors(col);
@@ -268,8 +280,8 @@ function ScheduleCalendar(
                 >
                     Kopieer planning
                 </button>
-                <SuccessMessageAlert successmessages={successMessages} setSuccessMessages={setSuccessMessages}/>
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                <SuccessMessageAlert successmessages={successMessages} setSuccessMessages={setSuccessMessages} />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             </div>
             <DnDCalendar
                 messages={messages}
@@ -278,10 +290,10 @@ function ScheduleCalendar(
                 defaultView="week"
                 views={["week"]}
                 events={events}
-                components={{event: CustomDisplay}}
+                components={{ event: CustomDisplay }}
                 eventPropGetter={(event: any) => {
                     const backgroundColor = tourColors[event.tour.id];
-                    return {style: {backgroundColor, color: "white"}};
+                    return { style: { backgroundColor, color: "white" } };
                 }}
                 localizer={localizer}
                 drilldownView={null}
@@ -314,13 +326,21 @@ function ScheduleCalendar(
                     onEdit={onEventEdit}
                 />
             )}
-            <AddTourScheduleModal isOpen={popupIsOpenAddTour}
-                                  onPost={() => getFromRange({start: range.start, end: range.end})}
-                                  onClose={() => setPopupIsOpenAddTour(false)} range={range}/>
-            <AddScheduleEventModal isOpen={popupIsOpenAdd} date={selectedDate} onPost={addSingleEvent} onClose={() => {
-                setSelectedDate(null);
-                setPopupIsOpenAdd(false);
-            }}/>
+            <AddTourScheduleModal
+                isOpen={popupIsOpenAddTour}
+                onPost={() => getFromRange({ start: range.start, end: range.end })}
+                onClose={() => setPopupIsOpenAddTour(false)}
+                range={range}
+            />
+            <AddScheduleEventModal
+                isOpen={popupIsOpenAdd}
+                date={selectedDate}
+                onPost={addSingleEvent}
+                onClose={() => {
+                    setSelectedDate(null);
+                    setPopupIsOpenAdd(false);
+                }}
+            />
             <CopyScheduleEventsModal
                 range={range}
                 events={events}
