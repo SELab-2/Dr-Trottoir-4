@@ -17,13 +17,7 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/system";
 import LiveField from "@/components/liveField";
 import {
-  BuildingOnTour,
-  getAllBuildingsOnTourWithTourID,
-} from "@/lib/building-on-tour";
-import {
-  getRemarksAtBuildingOfSpecificBuilding,
-  RemarkAtBuildingInterface,
-  translateRemartAtBuildingType,
+  getAllRemarksOfStudentOnTour,
 } from "@/lib/remark-at-building";
 
 interface WebSocketsResponse {
@@ -82,10 +76,26 @@ function AdminDashboard() {
 
     ws.addEventListener("message", (event) => {
       const data: WebSocketsResponse = JSON.parse(event.data);
+      console.log(data);
       setCurrentBuildingIndex((prevState) => ({
         ...prevState,
         [studentOnTourId]: data.current_building_index,
       }));
+      if (!maxBuildingIndex[studentOnTourId]) {
+        getStudentOnTourProgress(studentOnTourId).then(
+          (res) => {
+            const data: ProgressResponse = res.data;
+            console.log(data);
+            setMaxBuildingIndex((prevState) => ({
+              ...prevState,
+              [studentOnTourId]: data.max_building_index
+            }));
+          },
+          (err) => {
+            console.error(err);
+          }
+        );
+      }
       console.log(
         `New current_building_index for ${studentOnTourId}: ${data.current_building_index}`
       );
@@ -107,16 +117,25 @@ function AdminDashboard() {
     return ws;
   };
 
-  const setInitialProgress = async (studentOnTourId: number) => {
+  const setInitialData = async (studentOnTourId: number) => {
+    await fetchRemarks(studentOnTourId).then(
+      (remarksCount: number) => {
+        setRemarksRecord((prevState) => ({
+          ...prevState,
+          [studentOnTourId]: remarksCount,
+        }));
+      },
+      (err) => {
+        console.error(err);
+      }
+    );
+
     await getStudentOnTourProgress(studentOnTourId).then(
       (res) => {
         const data: ProgressResponse = res.data;
-        // TODO: max_building_index right now still is null
         setMaxBuildingIndex((prevState) => ({
           ...prevState,
           [studentOnTourId]: data.max_building_index
-            ? data.max_building_index
-            : 4,
         }));
 
         setCurrentBuildingIndex((prevState) => ({
@@ -130,35 +149,10 @@ function AdminDashboard() {
     );
   };
 
-  const fetchRemarks = async (
-    studentOnTour: StudentOnTour
-  ): Promise<number> => {
-    // Fetch remarks based on studentOnTourId
-    // Return an array of remarks
-    // TODO change this to query the remarks of a specific student_on_tour
-    // once it is possible
-    let remarksCount = 0;
-    await getAllBuildingsOnTourWithTourID(studentOnTour.tour).then(
-      async (buildingRes) => {
-        const buildingsOnTour: BuildingOnTour[] = buildingRes.data;
-        for (const buildingOnTour of buildingsOnTour) {
-          await getRemarksAtBuildingOfSpecificBuilding(
-            buildingOnTour.building
-          ).then((remarkRes) => {
-            // don't actually care about the remark, just the count
-            const remarks: RemarkAtBuildingInterface[] = remarkRes.data;
-            for (const remark of remarks) {
-              if (translateRemartAtBuildingType(remark.type) === "Opmerking") {
-                remarksCount++;
-              }
-            }
-          });
-        }
-      },
-      (err) => {
-        console.error(err);
-      }
-    );
+  const fetchRemarks = async (studentOnTourId: number): Promise<number> => {
+    let remarks = await getAllRemarksOfStudentOnTour(studentOnTourId, "OP");
+    let remarksCount = remarks.data.length;
+
     return remarksCount;
   };
 
@@ -182,7 +176,7 @@ function AdminDashboard() {
 
         setTours(tourResponse.data);
         setStudentsOnTours(studentOnTourResponse.data);
-        console.log(studentOnTourResponse.data);
+
         setUsers(allUsersResponse.data);
       } catch (error) {
         console.error(error);
@@ -198,10 +192,7 @@ function AdminDashboard() {
     const webSocketConnections: WebSocket[] = [];
     const newRemarks: Record<string, number> = {};
     studentsOnTours.forEach(async (studentOnTour) => {
-      await setInitialProgress(studentOnTour.id);
-
-      const remarks = await fetchRemarks(studentOnTour);
-      newRemarks[studentOnTour.id] = remarks;
+      await setInitialData(studentOnTour.id);
 
       const ws = setupWebSocketForStudentOnTour(studentOnTour.id);
       webSocketConnections.push(ws);
@@ -236,7 +227,7 @@ function AdminDashboard() {
                 <th>Ronde</th>
                 <th>Student</th>
                 <th>Voortgang</th>
-                <th>Gebouw index</th>
+                <th>Opmerkingen</th>
               </tr>
             </thead>
             <tbody>
@@ -269,7 +260,7 @@ function AdminDashboard() {
                           onClick={() => redirectToRemarksPage(studentOnTour)}
                         >
                           <LiveField
-                            fetcher={() => fetchRemarks(studentOnTour)}
+                            fetcher={() => fetchRemarks(studentOnTour.id)}
                             formatter={getRemarkText}
                             interval={10000}
                           />

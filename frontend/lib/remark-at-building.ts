@@ -100,3 +100,15 @@ export async function getRemarksOfStudentOnTourAtBuilding(buildingId: number, st
         }
     });
 }
+
+export async function getAllRemarksOfStudentOnTour(studentOnTourId: number, type: "AA" | "BI" | "VE" | "OP" | null = null) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_REMARKS}`;
+    return await api.get(request_url, {
+        params: type ? {
+            "student-on-tour": studentOnTourId,
+            "type": type
+        } : {
+            "student-on-tour": studentOnTourId
+        }
+    });
+}
