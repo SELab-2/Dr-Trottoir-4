@@ -81,7 +81,7 @@ function LoginForm() {
                 </Button>
             </div>
 
-            <p>
+            <p id="normal_text">
                 Heb je nog geen account?{" "}
                 <Link id="link" href="/signup">
                     Registreer je hier!

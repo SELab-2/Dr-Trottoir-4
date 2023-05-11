@@ -3,7 +3,7 @@
 #title {
     font-size: 36px;
     font-weight: bolder;
-    padding-top: 20px;
+    padding-top: 35px;
     padding-bottom: 20px;
 }
 
@@ -20,7 +20,7 @@
 }
 
 #input {
-    max-width: 350px;
+    max-width: 300px;
     padding-top: 5px;
     padding-bottom: 15px;
 }
@@ -42,7 +42,7 @@
 #wide_button {
     width: 100%;
     height: 50px;
-    max-width: 350px;
+    max-width: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,7 +51,7 @@
 
 #wide_button:hover {
     width: 100%;
-    max-width: 350px;
+    max-width: 300px;
     background-color: transparent;
     color: #1D1D1D;
     transition: ease-in 0.2s;
@@ -63,8 +63,22 @@
 }
 
 #link {
-
     text-decoration: underline;
+}
+
+#center_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    height: 60%;
+    margin-top: 5rem;
+}
+
+#filler_image {
+    height: auto;
+
+    object-fit: contain
 }
 
 /*

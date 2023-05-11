@@ -1,14 +1,13 @@
 import BaseHeader from "@/components/header/baseHeader";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { getRoleDirection } from "@/lib/reroute";
 import Loading from "@/components/loading";
 import LoginForm from "@/components/loginForm";
+import CarouselComponent from "@/components/imageCarousel";
+import {Card, Col, Container, Row} from "react-bootstrap";
+import React, {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {getRoleDirection} from "@/lib/reroute";
 import setSessionStorage from "@/lib/storage";
-import Image from "next/image";
-import filler_image from "@/public/filler_image.png";
-import styles from "@/styles/Login.module.css";
-import { getCurrentUser } from "@/lib/user";
+import {getCurrentUser} from "@/lib/user";
 
 export default function Login() {
     const router = useRouter();
@@ -33,33 +32,23 @@ export default function Login() {
 
     return (
         <>
-            <BaseHeader />
+            <BaseHeader/>
             <div>
                 {loading ? (
-                    <Loading />
+                    <Loading/>
                 ) : (
-                    <div className="container py-5 h-100">
-                        <div className="row d-flex justify-content-center align-items-center h-100">
-                            <div className="col col-xl-10">
-                                <div className="card">
-                                    <div className="row g-0">
-                                        <div className="col-md-6 col-lg-5 d-none d-md-block">
-                                            <Image
-                                                src={filler_image}
-                                                alt="My App Logo"
-                                                className={styles.filler_image}
-                                            />
-                                        </div>
-                                        <div className="col-md-6 col-lg-7 d-flex align-items-center">
-                                            <div className="card-body p-4 p-lg-5 text-black">
-                                                <LoginForm />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <Container id="center_container">
+                        <Card>
+                            <Row>
+                                <Col md={6}>
+                                    <CarouselComponent/>
+                                </Col>
+                                <Col md={6}>
+                                    <LoginForm/>
+                                </Col>
+                            </Row>
+                        </Card>
+                    </Container>
                 )}
             </div>
         </>

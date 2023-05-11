@@ -3,7 +3,7 @@ import React, { FormEvent, useState } from "react";
 import BaseHeader from "@/components/header/baseHeader";
 import styles from "@/styles/Login.module.css";
 import Image from "next/image";
-import filler_image from "@/public/filler_image.png";
+import filler_image from "@/public/filler_image_1.png";
 import reset from "@/lib/reset";
 
 export default function ForgotPassword() {
