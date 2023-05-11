@@ -1,4 +1,6 @@
-from datetime import date
+import os
+import uuid
+from datetime import date, datetime
 
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -399,8 +401,14 @@ class RemarkAtBuilding(models.Model):
         ]
 
 
+def get_file_path_image(instance, filename):
+    extension = filename.split(".")[-1]
+    filename = str(uuid.uuid4()) + "." + extension
+    return os.path.join("building_images/", filename)
+
+
 class PictureOfRemark(models.Model):
-    picture = models.ImageField(upload_to="building_pictures/")
+    picture = models.ImageField(upload_to=get_file_path_image)
     remark_at_building = models.ForeignKey(RemarkAtBuilding, on_delete=models.SET_NULL, null=True)
     hash = models.TextField(blank=True, null=True)
 
