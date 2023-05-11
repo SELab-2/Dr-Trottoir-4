@@ -8,7 +8,7 @@ import styles from "@/styles/Login.module.css";
 
 export default function CarouselComponent() {
     return (
-        <Carousel indicators={false} controls={false} fade={true} interval={3000}>
+        <Carousel id="carousel" indicators={true} controls={false} fade={true} interval={6000}>
             <Carousel.Item >
                 <Image id="filler_image" className="d-block w-100" src={filler_image_1} alt="First slide"/>
             </Carousel.Item>

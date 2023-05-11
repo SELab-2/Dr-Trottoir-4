@@ -10,8 +10,8 @@ export default function Signup() {
         <>
             <BaseHeader/>
             <div>
-                <Container id="wide_center_container">
-                    <Card>
+                <Container id="center_container">
+                    <Card style={{paddingBottom: '20px'}}>
                         <Row>
                             <Col md={5} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                                     <CarouselComponent/>

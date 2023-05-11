@@ -188,7 +188,7 @@ function SignupForm() {
                             }
                         }}
                     />
-                    <Form.Label id="normal_text">
+                    <Form.Label id="small_text">
                         Heb je al een account? <a href="/login">Ga naar login</a>
                     </Form.Label>
                     <div id="padding">
