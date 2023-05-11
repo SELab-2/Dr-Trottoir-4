@@ -21,7 +21,7 @@ jobs:
       - name: 'Create .env file'
         run: |
           echo ${{ secrets.ENV_FILE }} > .env
-          cat ${{ secrets.ENV_FILE }}
+          wc -c .env
 
       - name: Build Docker
         run: docker-compose --env-file .env build
