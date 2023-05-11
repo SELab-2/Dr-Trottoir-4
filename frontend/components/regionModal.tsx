@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import styles from "@/styles/Login.module.css";
 

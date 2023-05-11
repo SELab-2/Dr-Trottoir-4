@@ -41,6 +41,7 @@ from .views import RootDefault
 
 urlpatterns = [
     path("", RootDefault.as_view()),
+    path("analysis/", include("analysis.urls")),
     path("admin/", admin.site.urls),
     path("docs/", SpectacularAPIView.as_view(), name="schema"),
     path("docs/ui/", SpectacularSwaggerView.as_view(url="/docs"), name="swagger-ui"),

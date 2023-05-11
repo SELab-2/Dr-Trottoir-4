@@ -1,12 +1,12 @@
 import FinishedBuildingModal from "@/components/student/finishedBuildingModal";
-import {Button, ListGroup, ListGroupItem} from "react-bootstrap";
-import {BuildingInterface, getAddress} from "@/lib/building";
-import {datesEqual} from "@/lib/date";
-import React, {useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import {getStudentOnTour, startStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
-import {getBuildingsOfTour, getTour, Tour} from "@/lib/tour";
-import {getRegion, RegionInterface} from "@/lib/region";
+import { Button, ListGroup, ListGroupItem } from "react-bootstrap";
+import { BuildingInterface, getAddress } from "@/lib/building";
+import { datesEqual } from "@/lib/date";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { getStudentOnTour, startStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import { getBuildingsOfTour, getTour, Tour } from "@/lib/tour";
+import { getRegion, RegionInterface } from "@/lib/region";
 
 export default function PlannedBuildingList({
     studentOnTourId,
@@ -28,59 +28,67 @@ export default function PlannedBuildingList({
         if (!studentOnTourId) {
             return;
         }
-        getStudentOnTour(studentOnTourId).then((res) => {
-            const sots: StudentOnTourStringDate = res.data;
+        getStudentOnTour(studentOnTourId)
+            .then((res) => {
+                const sots: StudentOnTourStringDate = res.data;
 
-            // Get the tour info
-            getTour(sots.tour).then((res) => {
-                const t: Tour = res.data;
-                setTour(t);
+                // Get the tour info
+                getTour(sots.tour)
+                    .then((res) => {
+                        const t: Tour = res.data;
+                        setTour(t);
 
-                getRegion(t.region).then((res) => {
-                    const r: RegionInterface = res.data;
-                    setRegion(r.region);
-                }).catch(_ =>{});
-            }).catch(_ =>{});
-            getBuildingsOfTour(sots.tour).then(
-                (res) => {
-                    const buildings: BuildingInterface[] = res.data;
-                    setBuildings(buildings);
-                },
-                (err) => {
-                    console.error(err);
-                }
-            );
-            // Set the studentOnTour state
-            setStudentOnTour({
-                id: sots.id,
-                student: sots.student,
-                tour: sots.tour,
-                date: new Date(sots.date),
-                max_building_index: sots.max_building_index,
-                current_building_index: sots.current_building_index,
-                started_tour: sots.started_tour,
-                completed_tour: sots.completed_tour,
-            });
-        }).catch(_ =>{});
+                        getRegion(t.region)
+                            .then((res) => {
+                                const r: RegionInterface = res.data;
+                                setRegion(r.region);
+                            })
+                            .catch((_) => {});
+                    })
+                    .catch((_) => {});
+                getBuildingsOfTour(sots.tour).then(
+                    (res) => {
+                        const buildings: BuildingInterface[] = res.data;
+                        setBuildings(buildings);
+                    },
+                    (err) => {
+                        console.error(err);
+                    }
+                );
+                // Set the studentOnTour state
+                setStudentOnTour({
+                    id: sots.id,
+                    student: sots.student,
+                    tour: sots.tour,
+                    date: new Date(sots.date),
+                    max_building_index: sots.max_building_index,
+                    current_building_index: sots.current_building_index,
+                    started_tour: sots.started_tour,
+                    completed_tour: sots.completed_tour,
+                });
+            })
+            .catch((_) => {});
     }, [studentOnTourId]);
 
     async function routeToFirstBuilding() {
-        if (buildings.length === 0 || ! studentOnTourId) {
+        if (buildings.length === 0 || !studentOnTourId) {
             return;
         }
-        startStudentOnTour(studentOnTourId).then(async _ => {
-            await router.push({
-                pathname: redirectTo,
-                query: {studentOnTourId: studentOnTour?.id},
-            });
-        }).catch(_ =>{});
+        startStudentOnTour(studentOnTourId)
+            .then(async (_) => {
+                await router.push({
+                    pathname: redirectTo,
+                    query: { studentOnTourId: studentOnTour?.id },
+                });
+            })
+            .catch((_) => {});
     }
 
     function getStartButtonText() {
-        if (! studentOnTour) {
+        if (!studentOnTour) {
             return "";
         }
-        if (studentOnTour.started_tour && ! studentOnTour.completed_tour) {
+        if (studentOnTour.started_tour && !studentOnTour.completed_tour) {
             return "Doe verder met deze ronde";
         }
         return "Start deze ronde";
@@ -110,10 +118,7 @@ export default function PlannedBuildingList({
                                         action
                                         key={`${el.id}-${index}`}
                                         onClick={() => {
-                                            if (
-                                                studentOnTour &&
-                                                studentOnTour.completed_tour
-                                            ) {
+                                            if (studentOnTour && studentOnTour.completed_tour) {
                                                 setSelectedBuilding(el);
                                                 setShowFinishedBuildingModal(true);
                                             }
@@ -131,11 +136,16 @@ export default function PlannedBuildingList({
                     </>
                 )}
                 <div className="mt-1">
-                    {(studentOnTour ? datesEqual(new Date(), studentOnTour.date) : false) && (! studentOnTour?.completed_tour) && (
-                        <Button variant="primary" className="btn-dark" onClick={() => routeToFirstBuilding().then()}>
-                            {getStartButtonText()}
-                        </Button>
-                    )}
+                    {(studentOnTour ? datesEqual(new Date(), studentOnTour.date) : false) &&
+                        !studentOnTour?.completed_tour && (
+                            <Button
+                                variant="primary"
+                                className="btn-dark"
+                                onClick={() => routeToFirstBuilding().then()}
+                            >
+                                {getStartButtonText()}
+                            </Button>
+                        )}
                     {studentOnTour &&
                         !datesEqual(new Date(), studentOnTour.date) &&
                         new Date() < studentOnTour.date && (
@@ -144,8 +154,8 @@ export default function PlannedBuildingList({
                             )}`}</p>
                         )}
                     {studentOnTour &&
-                        ((!datesEqual(new Date(), studentOnTour.date) &&
-                        new Date() > studentOnTour.date) || studentOnTour.completed_tour) && (
+                        ((!datesEqual(new Date(), studentOnTour.date) && new Date() > studentOnTour.date) ||
+                            studentOnTour.completed_tour) && (
                             <p>{`U hebt deze ronde afgewerkt op ${studentOnTour.date.toLocaleDateString("en-GB")}.`}</p>
                         )}
                 </div>

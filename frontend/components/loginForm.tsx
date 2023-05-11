@@ -1,5 +1,3 @@
-import Image from "next/image";
-import filler_image from "@/public/filler_image.png";
 import styles from "@/styles/Login.module.css";
 import React, { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -9,11 +7,6 @@ import setSessionStorage from "@/lib/storage";
 import { getRoleDirection } from "@/lib/reroute";
 import { handleError } from "@/lib/error";
 import Link from "next/link";
-import IconButton from "@mui/material/IconButton";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import InputAdornment from "@mui/material/InputAdornment";
-import TextField from "@mui/material/TextField";
 import PasswordInput from "@/components/password/passwordInput";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
@@ -86,7 +79,7 @@ function LoginForm() {
                 </button>
             </div>
 
-            <a className="small text-muted" href="/reset-password">
+            <a className="small text-muted" href="/forgot-password">
                 Wachtwoord vergeten?
             </a>
             <p className="mb-5 pb-lg-2">
