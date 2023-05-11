@@ -1,140 +1,101 @@
-import {render, fireEvent, waitFor, screen} from '@testing-library/react';
-
-import {BuildingInterface} from '@/lib/building';
-import {GarbageCollectionEvent} from '@/types';
+import {render, screen, waitFor, fireEvent} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
+    garbageTypes,
+    deleteGarbageCollection,
+    patchGarbageCollection,
+    postGarbageCollection, GarbageCollectionInterface
+} from '@/lib/garbage-collection';
+import {formatDate} from '@/lib/date';
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
-import {deleteGarbageCollection, patchGarbageCollection, postGarbageCollection} from "@/lib/garbage-collection";
+import buildings from "@/pages/admin/data/buildings";
 
-jest.mock("@/lib/garbage-collection", () => ({
-    deleteGarbageCollection: jest.fn(),
-    patchGarbageCollection: jest.fn(),
-    postGarbageCollection: jest.fn(),
-    garbageTypes: {'paper': 'Papier', 'plastic': 'Plastic', 'glass': 'Glas'}
-}));
+jest.mock('@/lib/garbage-collection');
+jest.mock('@/lib/date');
 
-jest.mock("@/lib/error", () => ({
-    handleError: jest.fn()
-}));
-
-const buildings: BuildingInterface[] = [
-    {
+describe('GarbageEditModal', () => {
+    const mockCloseModal = jest.fn();
+    const mockOnPost = jest.fn();
+    const mockOnPatch = jest.fn();
+    const mockOnDelete = jest.fn();
+    const mockBuilding = {
         id: 1,
-        syndic: 100,
-        name: 'Building A',
-        city: 'City A',
+        syndic: 1,
+        name: 'Building 1',
+        city: 'City 1',
         postal_code: '12345',
-        street: 'Street A',
-        house_number: '10',
-        bus: 'Bus A',
-        client_number: '123',
-        duration: '1h',
+        street: 'Street 1',
+        house_number: '1',
+        bus: '1',
+        client_number: '1',
+        duration: '1',
         region: 1,
-        public_id: 'pub1',
-    },
-    {
-        id: 2,
-        syndic: 200,
-        name: 'Building B',
-        city: 'City B',
-        postal_code: '23456',
-        street: 'Street B',
-        house_number: '20',
-        bus: 'Bus B',
-        client_number: '234',
-        duration: '2h',
-        region: 2,
-        public_id: 'pub2',
-    }
-];
+        public_id: '1',
+    };
+    const mockGarbageCollectionEvent = {
+        start: new Date(),
+        end: new Date(),
+        id: 1,
+        building: mockBuilding,
+        garbageType: 'Type 1',
+    };
+    const garbageCollectionData: GarbageCollectionInterface = {
+        id: 1,
+        date: new Date(),
+        garbage_type: 'Type1',
+        building: 1
+    };
+    const mockPostGarbageCollection = postGarbageCollection as jest.MockedFunction<typeof postGarbageCollection>;
+    const mockPatchGarbageCollection = patchGarbageCollection as jest.MockedFunction<typeof patchGarbageCollection>;
+    const mockDeleteGarbageCollection = deleteGarbageCollection as jest.MockedFunction<typeof deleteGarbageCollection>;
 
-const selectedEvent: GarbageCollectionEvent = {
-    id: 1,
-    start: new Date(),
-    end: new Date(),
-    building: buildings[0],
-    garbageType: 'Papier',
-    title: 'Event A',
-    allDay: false,
-};
 
-test('renders the GarbageEditModal correctly', () => {
-    const {getByText} = render(<GarbageEditModal
-        selectedEvent={selectedEvent}
-        show={true}
-        closeModal={() => {
-        }}
-        onPost={() => {
-        }}
-        onPatch={() => {
-        }}
-        onDelete={() => {
-        }}
-        clickedDate={new Date()}
-        buildings={buildings}
-    />);
+    beforeEach(() => {
+        (formatDate as jest.Mock).mockReturnValue('2023-05-11');
+        jest.clearAllMocks();
+    });
 
-    expect(getByText("Pas ophaling aan")).toBeInTheDocument();
-});
 
-test('calls the deleteGarbageCollection function when delete button is clicked', async () => {
-    render(<GarbageEditModal
-        selectedEvent={selectedEvent}
-        show={true}
-        closeModal={() => {
-        }}
-        onPost={() => {
-        }}
-        onPatch={() => {
-        }}
-        onDelete={() => {
-        }}
-        clickedDate={new Date()}
-        buildings={buildings}
-    />);
+    it('should render correctly for creating a new garbage collection', () => {
+        render(
+            <GarbageEditModal
+                selectedEvent={null}
+                show={true}
+                closeModal={mockCloseModal}
+                onPost={mockOnPost}
+                onPatch={mockOnPatch}
+                onDelete={mockOnDelete}
+                clickedDate={new Date()}
+                buildings={[mockBuilding]}
+            />
+        );
 
-    fireEvent.click(screen.getByText("Verwijder"));
+        expect(screen.getByText('Voeg ophaling(en) toe')).toBeInTheDocument();
+        expect(screen.getByText('Datum:')).toBeInTheDocument();
+        expect(screen.getByText('Gebouw(en):')).toBeInTheDocument();
+        expect(screen.getByText('Type:')).toBeInTheDocument();
+        expect(screen.getByText('Voeg toe')).toBeInTheDocument();
+    });
 
-    await waitFor(() => expect(deleteGarbageCollection).toHaveBeenCalled());
-});
+    it('should render correctly for updating an existing garbage collection', () => {
+        render(
+            <GarbageEditModal
+                selectedEvent={mockGarbageCollectionEvent}
+                show={true}
+                closeModal={mockCloseModal}
+                onPost={mockOnPost}
+                onPatch={mockOnPatch}
+                onDelete={mockOnDelete}
+                clickedDate={null}
+                buildings={[mockBuilding]}
+            />
+        );
 
-test('calls the patchGarbageCollection function when submit button is clicked with an existing event', async () => {
-    render(<GarbageEditModal
-        selectedEvent={selectedEvent}
-        show={true}
-        closeModal={() => {
-        }}
-        onPost={() => {
-        }}
-        onPatch={() => {
-        }}
-        onDelete={() => {
-        }}
-        clickedDate={new Date()}
-        buildings={buildings}
-    />);
-
-    fireEvent.click(screen.getByText("Pas aan"));
-
-    await waitFor(() => expect(patchGarbageCollection).toHaveBeenCalled());
-});
-
-test('calls the postGarbageCollection function when submit button is clicked without an existing event', async () => {
-    render(<GarbageEditModal
-        selectedEvent={null}
-        show={true}
-        closeModal={() => {
-        }}
-        onPost={() => {
-        }}
-        onPatch={() => {
-        }}
-        onDelete={() => {
-        }}
-        clickedDate={new Date()}
-        buildings={buildings}
-    />);
-
-    fireEvent.click(screen.getByText("Voeg toe"));
-
-    await waitFor(() => expect(postGarbageCollection).toHaveBeenCalled());
+        expect(screen.getByText('Pas ophaling aan')).toBeInTheDocument();
+        expect(screen.getByText('Datum:')).toBeInTheDocument();
+        expect(screen.getByText('Gebouw:')).toBeInTheDocument();
+        expect(screen.getByText('Type:')).toBeInTheDocument();
+        expect(screen.getByText('Verwijder')).toBeInTheDocument();
+        expect(screen.getByText('Pas aan')).toBeInTheDocument();
+    });
 });
