@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, InputGroup, Button } from 'react-bootstrap';
+import { FormControl, InputGroup, Button, Form } from 'react-bootstrap';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
@@ -43,7 +43,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 
     return (
         <div>
-            <label id="normal_text">{label}</label>
+            <Form.Label id="normal_text">{label}</Form.Label>
             <InputGroup id="input">
                 <FormControl
                     id="form_control"

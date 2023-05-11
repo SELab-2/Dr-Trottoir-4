@@ -40,7 +40,7 @@ export default function Login() {
                     <Container id="center_container">
                         <Card>
                             <Row>
-                                <Col md={6}>
+                                <Col md={6} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                                     <CarouselComponent/>
                                 </Col>
                                 <Col md={6}>
