@@ -95,3 +95,9 @@ export interface Progress {
     currentIndex : number;
     maxIndex : number;
 }
+
+export interface WorkedHours {
+    student_id: number;
+    worked_minutes: number;
+    student_on_tour_ids: number[];
+}

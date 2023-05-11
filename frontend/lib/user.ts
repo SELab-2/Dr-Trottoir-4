@@ -81,7 +81,7 @@ export async function getTourUsers(includeInactiveUser: boolean = false) {
     return await api.get(request_url, {
         params: {
             "include-inactive-bool": includeInactiveUser,
-            "include-role-name-list": "[student, admin, superstudent]"
+            "include-role-name-list": ["student", "admin", "superstudent"]
         }
     });
 }
