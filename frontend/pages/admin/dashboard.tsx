@@ -68,15 +68,8 @@ function AdminDashboard() {
       `ws://localhost:2002/ws/student-on-tour/${studentOnTourId}/`
     );
 
-    ws.addEventListener("open", (event) => {
-      console.log(
-        `WebSocket connection opened for studentOnTourId: ${studentOnTourId}`
-      );
-    });
-
     ws.addEventListener("message", (event) => {
       const data: WebSocketsResponse = JSON.parse(event.data);
-      console.log(data);
       setCurrentBuildingIndex((prevState) => ({
         ...prevState,
         [studentOnTourId]: data.current_building_index,
@@ -85,7 +78,6 @@ function AdminDashboard() {
         getStudentOnTourProgress(studentOnTourId).then(
           (res) => {
             const data: ProgressResponse = res.data;
-            console.log(data);
             setMaxBuildingIndex((prevState) => ({
               ...prevState,
               [studentOnTourId]: data.max_building_index
@@ -96,22 +88,6 @@ function AdminDashboard() {
           }
         );
       }
-      console.log(
-        `New current_building_index for ${studentOnTourId}: ${data.current_building_index}`
-      );
-    });
-
-    ws.addEventListener("close", (event) => {
-      console.log(
-        `WebSocket connection closed for studentOnTourId: ${studentOnTourId}`
-      );
-    });
-
-    ws.addEventListener("error", (event) => {
-      console.error(
-        `WebSocket error for studentOnTourId: ${studentOnTourId}`,
-        event
-      );
     });
 
     return ws;
