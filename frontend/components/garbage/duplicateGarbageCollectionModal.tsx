@@ -6,6 +6,7 @@ import { BuildingInterface } from "@/lib/building";
 import { duplicateGarbageCollectionSchedule } from "@/lib/garbage-collection";
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import { endOfWeek, startOfWeek } from "date-fns";
 
 export default function DuplicateGarbageCollectionModal({
     show,
@@ -33,7 +34,6 @@ export default function DuplicateGarbageCollectionModal({
             setErrorMessages(["Einddatum moet na begindatum komen."]);
             return;
         }
-        // For now duplicate for all the buildings
         duplicateGarbageCollectionSchedule(startDate, endDate, copyToDate).then(
             (_) => {
                 onHide();
@@ -64,31 +64,41 @@ export default function DuplicateGarbageCollectionModal({
                 <Modal.Body>
                     <div className="form-row">
                         <div className="col">
-                            <label>Van:</label>
+                            <label>Van start van week:</label>
                             <input
                                 type="date"
                                 className="form-control"
                                 value={startDate}
-                                onChange={(event) => setStartDate(event.target.value)}
+                                onChange={(event) =>
+                                    setStartDate(
+                                        formatDate(startOfWeek(new Date(event.target.value), { weekStartsOn: 1 }))
+                                    )
+                                }
                             />
                         </div>
                         <div className="col">
-                            <label>Tot:</label>
+                            <label>Tot einde van week:</label>
                             <input
                                 type="date"
                                 className="form-control"
                                 value={endDate}
-                                onChange={(event) => setEndDate(event.target.value)}
+                                onChange={(event) =>
+                                    setEndDate(formatDate(endOfWeek(new Date(event.target.value), { weekStartsOn: 1 })))
+                                }
                             />
                         </div>
                     </div>
                     <div className="form-outline mb-4">
-                        <label className="form-label">Kopieer naar datum:</label>
+                        <label className="form-label">Kopieer naar maandag van week:</label>
                         <input
                             type="date"
                             className="form-control"
                             value={copyToDate}
-                            onChange={(event) => setCopyToDate(event.target.value)}
+                            onChange={(event) =>
+                                setCopyToDate(
+                                    formatDate(startOfWeek(new Date(event.target.value), { weekStartsOn: 1 }))
+                                )
+                            }
                         />
                     </div>
                 </Modal.Body>
