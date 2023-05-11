@@ -9,8 +9,8 @@ module.exports = {
         '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', {presets: ['next/babel']}],
     },
     moduleNameMapper: {
+        '\\.(css|less|scss|sass)$': '<rootDir>/__mocks__/styleMock.js',
         '^@/(.*)$': '<rootDir>/$1',
-        '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
     },
     testEnvironment: 'jsdom',
     setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
