@@ -1,11 +1,72 @@
 /* General Styles */
 
-/* Reset default margin, padding, and border for all elements */
-* {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
+#title {
+    font-size: 36px;
+    font-weight: bolder;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
+
+#small_text {
+    padding-top: 5px;
+    padding-bottom: 10px;
+    font-size: 14px;
+}
+
+#normal_text {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 16px;
+}
+
+#input {
+    max-width: 350px;
+    padding-top: 5px;
+    padding-bottom: 15px;
+}
+
+#form_control, #form_control:focus {
+    height: 40px;
+    background: #f8f9fa;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#form_control:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem #e5f3fd;
+}
+
+#wide_button {
+    width: 100%;
+    height: 50px;
+    max-width: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1D1D1D;
+}
+
+#wide_button:hover {
+    width: 100%;
+    max-width: 350px;
+    background-color: transparent;
+    color: #1D1D1D;
+    transition: ease-in 0.2s;
+}
+
+#padding {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#link {
+
+    text-decoration: underline;
+}
+
 /*
 !* Define font and font size for the whole document *!
 body {

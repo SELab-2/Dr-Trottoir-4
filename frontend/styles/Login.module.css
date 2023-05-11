@@ -7,27 +7,20 @@
     border-radius: 5px;
 }
 
-.input {
-    max-width: 350px;
-    height: 40px;
-    overflow: hidden;
-    border-color: #1D1D1D;
-    font-size: 14px;
-}
 
 .input:focus {
   box-shadow: 0 0 0 0.1rem lightgray;
 }
 
 .button {
-    width: 250px;
+    max-width: 350px;
     border-radius: 5px;
     background-color: #1D1D1D;
     color: white;
 }
 
 .button:hover {
-    width: 250px;
+    max-width: 350px;
     border-radius: 5px;
     background-color: transparent;
     color: #1D1D1D;

@@ -1,8 +1,7 @@
 import React from 'react';
-import IconButton from '@mui/material/IconButton';
+import { FormControl, InputGroup, Button } from 'react-bootstrap';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import styles from "@/styles/Login.module.css";
 
 interface PasswordInputProps {
     value: string;
@@ -43,33 +42,25 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
     };
 
     return (
-        <div className={`form-outline mb-4`}>
-            <label className="form-label">{label}</label>
-            <div style={{position: 'relative'}}>
-                <input
+        <div>
+            <label id="normal_text">{label}</label>
+            <InputGroup id="input">
+                <FormControl
+                    id="form_control"
                     type={showPassword ? 'text' : 'password'}
-                    className={`form-control form-control-lg ${styles.input}`}
                     value={value}
                     onInput={handleInput}
                     onInvalid={handleInvalid}
                     required
                     placeholder={placeholder}
-                    style={{paddingRight: '40px'}}
                 />
-                {showIconButton && (
-                    <IconButton
+                <Button
+                        variant="light"
                         onClick={handlePasswordVisibility}
-                        style={{
-                            position: 'absolute',
-                            top: '50%',
-                            right: '40px',
-                            transform: 'translateY(-50%)',
-                        }}
                     >
                         {showPassword ? <Visibility/> : <VisibilityOff/>}
-                    </IconButton>
-                )}
-            </div>
+                    </Button>
+            </InputGroup>
         </div>
     );
 };
