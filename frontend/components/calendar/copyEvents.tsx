@@ -1,26 +1,24 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import {addDays, addWeeks, differenceInDays, isSameWeek, startOfWeek} from "date-fns";
+import { addDays, addWeeks, differenceInDays, isSameWeek, startOfWeek } from "date-fns";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour";
 import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
-import {ScheduleEvent} from "@/types";
+import { ScheduleEvent } from "@/types";
 
-function CopyScheduleEventsModal(
-    {
-        range,
-        events,
-        isOpen,
-        onClose
-    } : {
-        range: {start: Date, end: Date};
-        events: ScheduleEvent[];
-        isOpen: boolean;
-        onClose: () => void;
-    }
-) {
+function CopyScheduleEventsModal({
+    range,
+    events,
+    isOpen,
+    onClose,
+}: {
+    range: { start: Date; end: Date };
+    events: ScheduleEvent[];
+    isOpen: boolean;
+    onClose: () => void;
+}) {
     const [copyTo, setCopyTo] = useState(startOfWeek(addWeeks(range.start, 1)));
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
@@ -32,22 +30,22 @@ function CopyScheduleEventsModal(
         }
         const start = startOfWeek(copyTo);
 
-        const diff : number = differenceInDays(start, displayedSunday);
+        const diff: number = differenceInDays(start, displayedSunday);
 
         let newEvents: StudentOnTourPost[] = [];
 
         for (let e of events) {
-                newEvents.push({
-                    tour: e.tour.id,
-                    student: e.student.id,
-                    date: formatDate(addDays(e.start, diff)),
-                });
+            newEvents.push({
+                tour: e.tour.id,
+                student: e.student.id,
+                date: formatDate(addDays(e.start, diff)),
+            });
         }
         postBulkStudentOnTour(newEvents).then(
             (_) => {
                 onClose();
             },
-            err => setErrorMessages(handleError(err))
+            (err) => setErrorMessages(handleError(err))
         );
     };
 
@@ -70,7 +68,7 @@ function CopyScheduleEventsModal(
                                 type="date"
                                 className="form-control"
                                 value={formatDate(copyTo)}
-                                onChange={e => {
+                                onChange={(e) => {
                                     setCopyTo(startOfWeek(new Date(e.target.value)));
                                 }}
                             />
