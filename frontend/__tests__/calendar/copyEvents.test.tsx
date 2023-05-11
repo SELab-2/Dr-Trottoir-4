@@ -31,6 +31,7 @@ describe('<CopyScheduleEventsModal />', () => {
     });
 
     it('should call postBulkStudentOnTour when Kopieer button is clicked', async () => {
+        // @ts-ignore
         (postBulkStudentOnTour as jest.MockedFunction<typeof postBulkStudentOnTour>).mockResolvedValue({});
 
         const {getByText} = render(<CopyScheduleEventsModal isOpen={true} onClose={onClose} events={events}
