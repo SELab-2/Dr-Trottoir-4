@@ -32,19 +32,17 @@ def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs
                 "current_building_index": student_on_tour.current_building_index,
             },
         )
-    elif (instance.type == RemarkAtBuilding.VERTREK and
-          student_on_tour.current_building_index == student_on_tour.max_building_index):
+    elif (
+        instance.type == RemarkAtBuilding.VERTREK
+        and student_on_tour.current_building_index == student_on_tour.max_building_index
+    ):
         student_on_tour.completed_tour = timezone.now()
         student_on_tour.save()
 
         # Broadcast update to websocket
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            "student_on_tour_updates",
-            {
-                "type": 'student.on.tour.completed',
-                "student_on_tour_id": student_on_tour.id
-            }
+            "student_on_tour_updates", {"type": "student.on.tour.completed", "student_on_tour_id": student_on_tour.id}
         )
 
 
