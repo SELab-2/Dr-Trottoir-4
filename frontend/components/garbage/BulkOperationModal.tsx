@@ -71,8 +71,9 @@ export default function BulkOperationModal({
                 <Modal.Body>
                     <div className="form-row">
                         <div className="col">
-                            <label>Verplaats van:</label>
+                            <label htmlFor={"verplaats-van"}>Verplaats van:</label>
                             <input
+                                id={"verplaats-van"}
                                 type="date"
                                 className="form-control"
                                 value={dateToMove}
@@ -80,8 +81,9 @@ export default function BulkOperationModal({
                             />
                         </div>
                         <div className="col">
-                            <label>naar:</label>
+                            <label htmlFor={"naar"}>naar:</label>
                             <input
+                                id={"naar"}
                                 type="date"
                                 className="form-control"
                                 value={moveToDate}
@@ -90,8 +92,9 @@ export default function BulkOperationModal({
                         </div>
                     </div>
                     <div className="form-outline mb-4">
-                        <label className="form-label">Type:</label>
+                        <label htmlFor={"garbage-select"} className="form-label">Type:</label>
                         <select
+                            id={"garbage-select"}
                             className={`form-select form-control form-control-lg ${styles.input}`}
                             value={garbageType ? garbageType : ""}
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
