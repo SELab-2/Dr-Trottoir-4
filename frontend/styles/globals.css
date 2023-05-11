@@ -6,7 +6,6 @@
     padding: 0;
     margin: 0;
 }
-
 /* Define font and font size for the whole document */
 body {
     font-family: Helvetica, sans-serif;
@@ -40,7 +39,7 @@ Button:hover, button:hover {
     background: rgb(255, 218, 87);
 }
 
-/* Link Styles */
+/* Link Styles *!
 
 /* Style for all links */
 a {
@@ -86,9 +85,16 @@ input:focus {
 }
 
 .rbc-time-view .rbc-allday-cell {
-    height: calc(90vh) !important;
+    min-height: calc(90vh) !important;
     max-height: unset !important;
 }
+
+.rbc-allday-cell {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
 /* Style for all icons */
 .icon {
     display: inline-block;

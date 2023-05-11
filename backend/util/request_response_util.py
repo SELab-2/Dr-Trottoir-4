@@ -59,7 +59,7 @@ def get_boolean_param(request, name, required=False):
 
 
 def get_list_param(request, name, required=False):
-    param = request.GET.getlist(name)
+    param = request.GET.getlist(name + "[]", None)
     if not param:
         if required:
             raise BadRequest(_("The query parameter {name} is required").format(name=name))

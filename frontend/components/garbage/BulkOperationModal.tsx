@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-    bulkMoveGarbageCollectionSchedule,
-    duplicateGarbageCollectionSchedule,
-    garbageTypes,
-} from "@/lib/garbage-collection";
+import { bulkMoveGarbageCollectionSchedule, garbageTypes } from "@/lib/garbage-collection";
 import { handleError } from "@/lib/error";
 import { formatDate } from "@/lib/date";
 import { Button, Form, Modal } from "react-bootstrap";

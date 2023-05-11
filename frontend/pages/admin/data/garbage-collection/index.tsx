@@ -29,7 +29,6 @@ import { withAuthorisation } from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import BulkOperationModal from "@/components/garbage/BulkOperationModal";
-import Select from "react-select";
 
 interface ParsedUrlQuery {}
 
