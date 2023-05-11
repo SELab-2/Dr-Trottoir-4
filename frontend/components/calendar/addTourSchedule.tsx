@@ -49,7 +49,7 @@ function AddTourScheduleModal({
                         currentDate = nextDate;
                         currentDate.setHours(0);
                     }
-                } else if (sundayId && mondayId && tuesdayId && wednesdayId && thursdayId && fridayId){
+                } else if (sundayId && mondayId && tuesdayId && wednesdayId && thursdayId && fridayId) {
                     let dates = getDayTimestamps(start);
                     data.push({
                         tour: tourId,
