@@ -143,8 +143,8 @@ export default function AdminAnalysisWorkingHours() {
                                 <div className="col-sm-4 p-2" key={worked.student_id}>
                                     <Card>
                                         <Card.Body>
-                                            <Card.Title className="card-title">{name}</Card.Title>
-                                            <Card.Text>{time}</Card.Text>
+                                            <span className="h3 fw-bold">{name}</span>
+                                            <Card.Text className="text-muted mt-1">{time}</Card.Text>
                                             <ListGroup className="list-group-flush">
                                                 <ListGroup.Item/>
                                                 {
