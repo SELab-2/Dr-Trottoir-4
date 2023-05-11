@@ -51,7 +51,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
                     type={showPassword ? 'text' : 'password'}
                     className={`form-control form-control-lg ${styles.input}`}
                     value={value}
-                    onInput={handleInput}
+                    onChange={handleInput}
                     onInvalid={handleInvalid}
                     required
                     placeholder={placeholder}
