@@ -224,12 +224,19 @@ class GarbageCollectionDuplicateView(APIView):
         if building_ids:
             garbage_collections_to_duplicate = garbage_collections_to_duplicate.filter(building__id__in=building_ids)
 
-        # loop through the GarbageCollections to duplicate and create a copy if it doesn't already exist
-        for gc in garbage_collections_to_duplicate:
+        # filter only the GarbageCollections that don't already have an entry in the copy period
+        remaining_garbage_collections = garbage_collections_to_duplicate.filter(
+            lambda gc: not GarbageCollection.objects.filter(
+                date=(datetime.combine(gc.date, datetime.min.time()) + (start_date_copy - start_date_period)).date(),
+                building=gc.building).exists()
+        )
+
+        for remaining_gc in remaining_garbage_collections:
             # offset the date by the start date difference
-            copy_date = (datetime.combine(gc.date, datetime.min.time()) + (start_date_copy - start_date_period)).date()
-            if not GarbageCollection.objects.filter(date=copy_date, building=gc.building).exists():
-                GarbageCollection.objects.create(date=copy_date, building=gc.building, garbage_type=gc.garbage_type)
+            copy_date = (datetime.combine(remaining_gc.date, datetime.min.time()) + (
+                        start_date_copy - start_date_period)).date()
+            GarbageCollection.objects.create(date=copy_date, building=remaining_gc.building,
+                                             garbage_type=remaining_gc.garbage_type)
         return Response({"message": _("successfully copied the garbage collections")}, status=status.HTTP_200_OK)
 
 
