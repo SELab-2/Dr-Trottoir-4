@@ -54,6 +54,9 @@ class StudentOnTourAnalysisSerializer(serializers.BaseSerializer):
         building_data = {}
 
         for rab in remarks_at_buildings:
+            # skip if the building was deleted
+            if not rab.building:
+                continue
             # get the building id for the current RemarkAtBuilding object
             building_id = rab.building.id
             # add a dict if we haven't seen this building before
