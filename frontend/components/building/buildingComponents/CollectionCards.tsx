@@ -1,17 +1,17 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import {
     getRemarksAtBuildingOfSpecificBuilding,
     RemarkAtBuildingInterface,
     translateRemarkAtBuildingType,
 } from "@/lib/remark-at-building";
-import {getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface} from "@/lib/picture-of-remark";
-import {Accordion, Card} from "react-bootstrap";
+import { getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
+import { Accordion, Card } from "react-bootstrap";
 import ImageEnlargeModal from "@/components/ImageEnlargeModal";
 
-function CollectionCards({building, date}: { building: number, date: string | null }) {
-
-    const [collectionDetails, setCollectionDetails] = useState<[RemarkAtBuildingInterface, PictureOfRemarkInterface[]][] | []>([]);
-
+function CollectionCards({ building, date }: { building: number; date: string | null }) {
+    const [collectionDetails, setCollectionDetails] = useState<
+        [RemarkAtBuildingInterface, PictureOfRemarkInterface[]][] | []
+    >([]);
 
     const [enlargeImageShow, setEnlargeImageShow] = useState<boolean>(false);
     const [enlargeImageURL, setEnlargeImageURL] = useState<string>("");
@@ -59,16 +59,20 @@ function CollectionCards({building, date}: { building: number, date: string | nu
 
     return (
         <>
-            {date &&
-                <><h4>Details ophaling op datum '{date}' (dit werkt nog niet, maar gebruik in jullie code gerust al de
-                    link
-                    met de query param)</h4><br/></>}
+            {date && (
+                <>
+                    <h4>
+                        Details ophaling op datum '{date}' (dit werkt nog niet, maar gebruik in jullie code gerust al de
+                        link met de query param)
+                    </h4>
+                    <br />
+                </>
+            )}
 
-            <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL}/>
-
+            <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL} />
 
             <h1>Details laatste ophaling</h1>
-            <div style={{margin: "0 0", width: "75%", maxWidth: "95%"}}>
+            <div style={{ margin: "0 0", width: "75%", maxWidth: "95%" }}>
                 {collectionDetails.length == 0}
                 <Accordion alwaysOpen>
                     {collectionDetails.map(([remark, pictures]) => (
