@@ -1,7 +1,7 @@
 import AdminHeader from "@/components/header/adminHeader";
 import React, {useEffect, useState} from "react";
 import {differenceInMinutes, endOfWeek, startOfWeek, subMonths} from "date-fns";
-import {Card, Col, Form, ListGroup, Row} from "react-bootstrap";
+import {Card, Col, Container, Form, ListGroup, Row} from "react-bootstrap";
 import {formatDate} from "@/lib/date";
 import {getWorkedHours} from "@/lib/analysis";
 import {getAllTours, Tour} from "@/lib/tour";
@@ -106,73 +106,71 @@ export default function AdminAnalysisWorkingHours() {
     }
 
     return (
-        <>
+        <Container fluid className="p-0 overflow-hidden">
             <AdminHeader/>
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <Form className="m-2">
-                <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={1}>Start periode:</Form.Label>
-                    <Col sm={2}>
+                <Row>
+                    <Form.Group as={Col} sm={12} md={3} lg={3}>
+                        <Form.Label>Start periode:</Form.Label>
                         <Form.Control
                             type="date"
                             value={formatDate(startDate)}
                             onChange={e => {
-                                setStartDate(new Date(e.target.value))
+                                setStartDate(new Date(e.target.value));
                             }}
                         />
-                    </Col>
-                    <Form.Label column sm={1}>Einde periode:</Form.Label>
-                    <Col sm={2}>
+                    </Form.Group>
+                    <Form.Group as={Col} sm={12} md={3} lg={3}>
+                        <Form.Label>Einde periode:</Form.Label>
                         <Form.Control
                             type="date"
                             value={formatDate(endDate)}
                             onChange={e => {
-                                setEndDate(new Date(e.target.value))
+                                setEndDate(new Date(e.target.value));
                             }}
                         />
-                    </Col>
-                </Form.Group>
+                    </Form.Group>
+                </Row>
             </Form>
-            <div className="container">
-                <div className="row" style={{alignItems: "flex-start"}}>
-                    {
-                        workedHours.map(worked => {
-                            const name: string = getStudentName(worked.student_id);
-                            const time: string = toHoursAndMinutes(worked.worked_minutes);
-                            return (
-                                <div className="col-sm-4 p-2" key={worked.student_id}>
-                                    <Card>
-                                        <Card.Body>
-                                            <span className="h3 fw-bold">{name}</span>
-                                            <Card.Text className="text-muted mt-1">{time}</Card.Text>
-                                            <ListGroup className="list-group-flush">
-                                                <ListGroup.Item/>
-                                                {
-                                                    worked.student_on_tour_ids.map(s => {
-                                                        const sot: StudentOnTour | undefined = studentOnTours.find(st => st.id === s);
-                                                        if (!sot) {
-                                                            return (<></>);
-                                                        }
-                                                        return <ListGroup.Item key={s}><Link style={{
-                                                            textDecoration: "underline",
-                                                            color: "royalblue"
-                                                        }} href={{
-                                                            pathname: "/admin/analysis/student-on-tour",
-                                                            query: {
-                                                                studentOnTour: sot.id,
-                                                            },
-                                                        }}>{getTourName(sot)}</Link></ListGroup.Item>
-                                                    })
-                                                }
-                                            </ListGroup>
-                                        </Card.Body>
-                                    </Card>
-                                </div>
-                            );
-                        })
-                    }
-                </div>
-            </div>
-        </>
+            <Row className="m-2">
+                {
+                    workedHours.map(worked => {
+                        const name: string = getStudentName(worked.student_id);
+                        const time: string = toHoursAndMinutes(worked.worked_minutes);
+                        return (
+                            <Col key={worked.student_id} xs={12} md={4} lg={3} className="p-1">
+                                <Card>
+                                    <Card.Body>
+                                        <span className="h3 fw-bold">{name}</span>
+                                        <Card.Text className="text-muted mt-1">{time}</Card.Text>
+                                        <ListGroup className="list-group-flush">
+                                            <ListGroup.Item/>
+                                            {
+                                                worked.student_on_tour_ids.map(s => {
+                                                    const sot: StudentOnTour | undefined = studentOnTours.find(st => st.id === s);
+                                                    if (!sot) {
+                                                        return (<></>);
+                                                    }
+                                                    return <ListGroup.Item key={s}><Link style={{
+                                                        textDecoration: "underline",
+                                                        color: "royalblue"
+                                                    }} href={{
+                                                        pathname: "/admin/analysis/student-on-tour",
+                                                        query: {
+                                                            studentOnTour: sot.id,
+                                                        },
+                                                    }}>{getTourName(sot)}</Link></ListGroup.Item>
+                                                })
+                                            }
+                                        </ListGroup>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        );
+                    })
+                }
+            </Row>
+        </Container>
     );
 }
