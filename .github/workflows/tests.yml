@@ -23,22 +23,23 @@ jobs:
           echo "secrets.ENV_FILE" > .env
 
       - name: Build Docker
-        run: docker-compose --env-file .env build
+        run: docker-compose build
 
       - name: Run Tests
         run: |
+          docker-compose up
           docker-compose run --env-file .env --name backend_test backend python manage.py test picture_of_remark/tests.py users/tests.py remark_at_building/tests.py lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role,remark_at_building,picture_of_remark,users --with-xunit --xunit-file=/app/coverage.xml
           docker stop backend_test
           docker cp backend_test:/app/coverage.xml coverage.xml
           docker-compose down
-
+      
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2.6.1
         if: always()
         with:
           files: |
             coverage.xml
-
+          
 
       - name: Clean up
         if: always()
