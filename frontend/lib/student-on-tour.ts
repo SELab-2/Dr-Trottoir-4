@@ -1,6 +1,7 @@
 import {AxiosResponse} from "axios";
 import api from "@/lib/api/axios";
 import {DateInterval, getFromDate} from "@/lib/date";
+import {stringify} from "querystring";
 
 export interface StudentOnTour {
     id: number;
@@ -24,6 +25,12 @@ export interface StudentOnTourStringDate {
     current_building_index: number;
 }
 
+export interface StudentOnTourPost {
+    tour: number;
+    student: number;
+    date: string;
+}
+
 export async function postStudentOnTour(tour: number, student: number, date: string): Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_STUDENT_ON_TOUR}`;
     return await api.post(request_url, JSON.stringify({tour, student, date}),
@@ -33,6 +40,43 @@ export async function postStudentOnTour(tour: number, student: number, date: str
     );
 }
 
+export async function patchStudentOnTour(id: number, tour: number, student: number, date: string) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_STUDENT_ON_TOUR}${id}`;
+    return await api.patch(request_url, JSON.stringify({tour, student, date}),
+        {
+            headers: {"Content-Type": "application/json"},
+        }
+    );
+}
+
+export async function deleteStudentOnTour(id: number) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_STUDENT_ON_TOUR}${id}`;
+    return await api.delete(request_url);
+}
+
+export async function postBulkStudentOnTour(data : StudentOnTourPost[]) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_STUDENT_ON_TOUR}`;
+    return await api.post(request_url, JSON.stringify({data: data}),
+        {
+            headers: {"Content-Type": "application/json"},
+        }
+    );
+}
+
+export async function patchBulkStudentOnTour(data : any) {
+    //TODO to right format
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_STUDENT_ON_TOUR}`;
+    return await api.patch(request_url, JSON.stringify(data),
+        {
+            headers: {"Content-Type": "application/json"},
+        }
+    );
+}
+
+export async function deleteBulkStudentOnTour(data : number[]) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_STUDENT_ON_TOUR}`;
+    return await api.delete(request_url, { data: {ids: data }});
+}
 
 export async function getStudentOnTour(studentOnTourId: number) {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_STUDENT_ON_TOUR}${studentOnTourId}`;

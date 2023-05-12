@@ -16,18 +16,18 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.events.pull_request.head.repo.full_name }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: 'Create .env file'
         run: |
-          echo ${{ secrets.ENV_FILE }} > .env
+          echo "secrets.ENV_FILE" > .env
 
       - name: Build Docker
-        run: docker-compose build
+        run: docker-compose --env-file .env build
 
       - name: Run Tests
         run: |
-          docker-compose run --name backend_test backend python manage.py test picture_of_remark/tests.py users/tests.py remark_at_building/tests.py lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role,remark_at_building,picture_of_remark,users --with-xunit --xunit-file=/app/coverage.xml
+          docker-compose run --env-file .env --name backend_test backend python manage.py test picture_of_remark/tests.py users/tests.py remark_at_building/tests.py lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role,remark_at_building,picture_of_remark,users --with-xunit --xunit-file=/app/coverage.xml
           docker cp backend_test:/app/coverage.xml coverage.xml
           docker-compose down
 
