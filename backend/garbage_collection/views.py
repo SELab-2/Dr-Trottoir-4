@@ -225,18 +225,19 @@ class GarbageCollectionDuplicateView(APIView):
             garbage_collections_to_duplicate = garbage_collections_to_duplicate.filter(building__id__in=building_ids)
 
         # filter only the GarbageCollections that don't already have an entry in the copy period
-        remaining_garbage_collections = [gc for gc in garbage_collections_to_duplicate if
-                                         not GarbageCollection.objects.filter(
-                                             date=(datetime.combine(gc.date, datetime.min.time()) + (
-                                                         start_date_copy - start_date_period)).date(),
-                                             building=gc.building,
-                                             garbage_type=gc.garbage_type,
-                                         ).exists()]
-
-        for remaining_gc in remaining_garbage_collections:
+        remaining_garbage_collections = []
+        for gc in garbage_collections_to_duplicate:
             # offset the date by the start date difference
-            copy_date = (datetime.combine(remaining_gc.date, datetime.min.time()) + (
+            copy_date = (datetime.combine(gc.date, datetime.min.time()) + (
                     start_date_copy - start_date_period)).date()
+            if not GarbageCollection.objects.filter(
+                    date=copy_date,
+                    building=gc.building,
+                    garbage_type=gc.garbage_type
+            ).exists():
+                remaining_garbage_collections.append((gc, copy_date))
+
+        for remaining_gc, copy_date in remaining_garbage_collections:
             GarbageCollection.objects.create(date=copy_date, building=remaining_gc.building,
                                              garbage_type=remaining_gc.garbage_type)
         return Response({"message": _("successfully copied the garbage collections")}, status=status.HTTP_200_OK)
