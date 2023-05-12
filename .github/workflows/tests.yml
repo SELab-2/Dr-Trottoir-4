@@ -30,7 +30,7 @@ jobs:
 
       - name: Run Tests
         run: |
-          docker-compose run --env-file .env --name backend_test backend python manage.py test picture_of_remark/tests.py users/tests.py remark_at_building/tests.py lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role,remark_at_building,picture_of_remark,users --with-xunit --xunit-file=/app/coverage.xml
+          docker-compose run --name backend_test backend python manage.py test picture_of_remark/tests.py users/tests.py remark_at_building/tests.py lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role,remark_at_building,picture_of_remark,users --with-xunit --xunit-file=/app/coverage.xml
 
       - name: Copy Test Results
         run: docker cp backend_test:/app/coverage.xml coverage.xml
