@@ -2,12 +2,23 @@ import { useEffect, useState } from "react";
 import {
     getRemarksAtBuildingOfSpecificBuilding,
     RemarkAtBuildingInterface,
-    translateRemartAtBuildingType,
+    translateRemarkAtBuildingType,
 } from "@/lib/remark-at-building";
 import { Card } from "react-bootstrap";
 import { getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
 
-function LatestCollectionDetail({ building }: { building: number }) {
+
+
+
+
+// wordt niet meer gebruikt, maar nog ff laten staan voor als ik code zou nodig hebben
+
+
+
+
+
+
+function LatestCollectionDetailTODOVERWIJDEREN({ building }: { building: number }) {
     const [remarks, setRemarks] = useState<RemarkAtBuildingInterface[]>([]);
     const [pictures, setPictures] = useState<string[]>([]);
     const [date, setDate] = useState<Date | undefined>();
@@ -87,7 +98,7 @@ function LatestCollectionDetail({ building }: { building: number }) {
                 return (
                     <Card key={remark.id}>
                         <Card.Body>
-                            <Card.Title>{translateRemartAtBuildingType(remark.type)}</Card.Title>
+                            <Card.Title>{translateRemarkAtBuildingType(remark.type)}</Card.Title>
                             <Card.Subtitle>{remark.timestamp ? String(remark.timestamp) : ""}</Card.Subtitle>
                             <Card.Text>{remark.remark || "Geen opmerkingen"}</Card.Text>
                         </Card.Body>
@@ -98,4 +109,4 @@ function LatestCollectionDetail({ building }: { building: number }) {
     );
 }
 
-export default LatestCollectionDetail;
+export default LatestCollectionDetailTODOVERWIJDEREN;

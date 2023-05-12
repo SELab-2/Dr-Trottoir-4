@@ -14,7 +14,7 @@ import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-
 import {
     getRemarksAtBuildingOfSpecificBuilding,
     RemarkAtBuildingInterface,
-    translateRemartAtBuildingType,
+    translateRemarkAtBuildingType,
 } from "@/lib/remark-at-building";
 
 const GreenLinearProgress = styled(LinearProgress)(() => ({
@@ -57,7 +57,7 @@ function AdminDashboard() {
                         // don't actually care about the remark, just the count
                         const remarks: RemarkAtBuildingInterface[] = remarkRes.data;
                         for (const remark of remarks) {
-                            if (translateRemartAtBuildingType(remark.type) === "Opmerking") {
+                            if (translateRemarkAtBuildingType(remark.type) === "Algemene Opmerking") {
                                 remarksCount++;
                             }
                         }
