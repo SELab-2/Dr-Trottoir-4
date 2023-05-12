@@ -46,8 +46,8 @@ class StudentOnTourBulk(APIView):
 
     @extend_schema(
         description="POST body consists of a data component that is a list of Student-Tour instances. "
-                    "This enables the frontend to save a schedule in 1 request instead of multiple. "
-                    "If a save fails, all the previous saves will be undone as well.",
+        "This enables the frontend to save a schedule in 1 request instead of multiple. "
+        "If a save fails, all the previous saves will be undone as well.",
         request=StudOnTourSerializer,
         responses={200: SuccessSerializer, 400: None},
         examples=[
@@ -96,9 +96,9 @@ class StudentOnTourBulk(APIView):
 
     @extend_schema(
         description="DELETE body consists of an ids component that is a list of Student-Tour instances. "
-                    "This enables the frontend to remove assignments in a schedule in 1 request instead of multiple."
-                    "If a remove fails, the previous removes will **NOT** be undone."
-                    """
+        "This enables the frontend to remove assignments in a schedule in 1 request instead of multiple."
+        "If a remove fails, the previous removes will **NOT** be undone."
+        """
                                             <h3> special</h3>
                                             <br/>**Request body for bulk remove:**<br/>
                                             <i>
@@ -142,8 +142,8 @@ class StudentOnTourBulk(APIView):
 
     @extend_schema(
         description="PATCH body is a map of ids on Student-Tour instances (with new data). "
-                    "This enables the frontend to edit a schedule in 1 request instead of multiple. "
-                    "If a save fails, the previous saves will **NOT** be undone.",
+        "This enables the frontend to edit a schedule in 1 request instead of multiple. "
+        "If a save fails, the previous saves will **NOT** be undone.",
         request=StudOnTourSerializer,
         responses={200: SuccessSerializer, 400: None},
         examples=[
@@ -399,18 +399,20 @@ class StudentOnTourDuplicateView(DuplicationView):
             model=StudentOnTour,
             model_ids="student_ids",
             filter_on_ids_key="student_id__in",
-            message="successfully copied the student on tours"
+            message="successfully copied the student on tours",
         )
 
-    def filter_instances_to_duplicate(self, instances_to_duplicate, start_date_period: datetime,
-                                      end_date_period: datetime, start_date_copy: datetime):
+    def filter_instances_to_duplicate(
+        self, instances_to_duplicate, start_date_period: datetime, end_date_period: datetime, start_date_copy: datetime
+    ):
         remaining_instance = []
         for student_on_tour in instances_to_duplicate:
-            copy_date = (datetime.combine(student_on_tour.date, datetime.min.time()) + (
-                    start_date_copy - start_date_period)).date()
+            copy_date = (
+                datetime.combine(student_on_tour.date, datetime.min.time()) + (start_date_copy - start_date_period)
+            ).date()
             if not StudentOnTour.objects.filter(
-                    date=copy_date,
-                    student=student_on_tour.student,
+                date=copy_date,
+                student=student_on_tour.student,
             ).exists():
                 remaining_instance.append((student_on_tour, copy_date))
         return remaining_instance
