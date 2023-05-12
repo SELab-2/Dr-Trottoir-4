@@ -9,7 +9,7 @@ import {Accordion, Card} from "react-bootstrap";
 import ImageEnlargeModal from "@/components/ImageEnlargeModal";
 
 
-function CollectionCards({building}: { building: number }) {
+function CollectionCards({building, date}: { building: number, date: string | null }) {
 
     const [collectionDetails, setCollectionDetails] = useState<[RemarkAtBuildingInterface, PictureOfRemarkInterface[]][] | []>([]);
 
@@ -73,6 +73,11 @@ function CollectionCards({building}: { building: number }) {
 
     return (
         <>
+            {date &&
+                <><h4>Details ophaling op datum '{date}' (dit werkt nog niet, maar gebruik in jullie code gerust al de
+                    link
+                    met de query param)</h4><br/></>}
+
             <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL}/>
 
             <h1>Details laatste ophaling</h1>

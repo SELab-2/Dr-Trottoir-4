@@ -6,16 +6,15 @@ import BuildingInfo from "@/components/building/buildingComponents/BuildingInfo"
 import LatestCollections from "@/components/building/buildingComponents/LatestCollections";
 import CollectionCards from "@/components/building/buildingComponents/CollectionCards";
 
-interface ParsedUrlQuery {
-}
 
-interface DashboardQuery extends ParsedUrlQuery {
+interface BuildingQuery {
     id?: string;
+    date?: string;
 }
 
 function BuildingPage({type}: { type: "syndic" | "admin" | "public" }) {
     const router = useRouter();
-    const query = router.query as DashboardQuery;
+    const query = router.query as BuildingQuery;
 
     // @ts-ignore
     const [building, setBuilding] = useState<BuildingInterface>(null);
@@ -54,7 +53,7 @@ function BuildingPage({type}: { type: "syndic" | "admin" | "public" }) {
                     <BuildingInfo building={building} setBuilding={setBuilding} type={type}/>
                 </div>
                 <div style={{flex: "1"}}>
-                    <CollectionCards building={building ? building.id : 0}/>
+                    <CollectionCards building={building ? building.id : 0} date={query.date ? query.date : null}/>
                 </div>
                 <div style={{flex: "1"}}>
                     <LatestCollections building={building ? building.id : 0}/>
