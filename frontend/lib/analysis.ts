@@ -12,3 +12,8 @@ export async function getWorkedHours(startDate: Date, endDate: Date, region: num
         params
     });
 }
+
+export async function getAnalysisStudentOnTour(studentOnTourId : number): Promise<AxiosResponse<any>> {
+    const get_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ANALYSIS_STUDENT_ON_TOUR}${studentOnTourId}`;
+    return await api.get(get_url);
+}

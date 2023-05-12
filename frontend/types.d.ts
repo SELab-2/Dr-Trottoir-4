@@ -101,3 +101,11 @@ export interface WorkedHours {
     worked_minutes: number;
     student_on_tour_ids: number[];
 }
+
+export interface BuildingAnalysis {
+    building_id: number,
+    expected_duration_in_seconds: number,
+    arrival_time: string,
+    departure_time: string,
+    duration_in_seconds: number
+}

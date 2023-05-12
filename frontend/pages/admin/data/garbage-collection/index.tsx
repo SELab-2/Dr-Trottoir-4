@@ -316,7 +316,7 @@ function GarbageCollectionSchedule() {
             <DuplicateGarbageCollectionModal
                 closeModal={closeDuplicateModal}
                 show={showDuplicateModal}
-                buildings={buildingList}
+                range={currentRange}
             />
             <BulkOperationModal
                 buildings={buildingList}

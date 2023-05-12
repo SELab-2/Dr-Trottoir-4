@@ -2,26 +2,25 @@ import { Button, Form, Modal } from "react-bootstrap";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "@/lib/date";
-import { BuildingInterface } from "@/lib/building";
 import { duplicateGarbageCollectionSchedule } from "@/lib/garbage-collection";
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { endOfWeek, startOfWeek } from "date-fns";
+import {addWeeks, endOfWeek, startOfWeek} from "date-fns";
 
 export default function DuplicateGarbageCollectionModal({
     show,
     closeModal,
-    buildings,
+    range,
 }: {
     show: boolean;
     closeModal: () => void;
-    buildings: BuildingInterface[];
+    range: { start: Date; end: Date }
 }) {
     const { t } = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
-    const [startDate, setStartDate] = useState<string>("");
-    const [endDate, setEndDate] = useState<string>("");
-    const [copyToDate, setCopyToDate] = useState<string>(formatDate(new Date()));
+    const [startDate, setStartDate] = useState<string>(formatDate(startOfWeek(new Date(), {weekStartsOn: 1})));
+    const [endDate, setEndDate] = useState<string>(formatDate(endOfWeek(new Date(), {weekStartsOn: 1})));
+    const [copyToDate, setCopyToDate] = useState<string>(formatDate(startOfWeek(addWeeks(new Date(), 1), {weekStartsOn: 1})));
 
     // Submit the duplicate request
     function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -45,17 +44,21 @@ export default function DuplicateGarbageCollectionModal({
         );
     }
 
+    function onShow() {
+        setStartDate(formatDate(startOfWeek(range.start, {weekStartsOn: 1})));
+        setEndDate(formatDate(endOfWeek(range.end, {weekStartsOn: 1})));
+        setCopyToDate(formatDate(startOfWeek(addWeeks(range.end, 1), {weekStartsOn: 1})));
+    }
+
     // execute when the modal is hidden
     function onHide() {
         closeModal();
-        setCopyToDate(formatDate(new Date()));
-        setStartDate("");
-        setEndDate("");
+        onShow();
         setErrorMessages([]);
     }
 
     return (
-        <Modal show={show} onHide={() => onHide()}>
+        <Modal show={show} onHide={() => onHide()} onShow={onShow}>
             <Modal.Header>
                 <Modal.Title>Dupliceer vuilophaling schema voor geselecteerde gebouwen</Modal.Title>
             </Modal.Header>

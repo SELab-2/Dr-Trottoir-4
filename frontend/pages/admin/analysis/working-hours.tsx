@@ -159,7 +159,7 @@ export default function AdminAnalysisWorkingHours() {
                                                         }} href={{
                                                             pathname: "/admin/analysis/student-on-tour",
                                                             query: {
-                                                                title: sot.id,
+                                                                studentOnTour: sot.id,
                                                             },
                                                         }}>{getTourName(sot)}</Link></ListGroup.Item>
                                                     })
