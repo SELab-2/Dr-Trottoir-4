@@ -7,16 +7,7 @@ import {
 import { Card } from "react-bootstrap";
 import { getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
 
-
-
-
-
 // wordt niet meer gebruikt, maar nog ff laten staan voor als ik code zou nodig hebben
-
-
-
-
-
 
 function LatestCollectionDetailTODOVERWIJDEREN({ building }: { building: number }) {
     const [remarks, setRemarks] = useState<RemarkAtBuildingInterface[]>([]);
