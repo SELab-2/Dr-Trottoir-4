@@ -39,7 +39,6 @@ export default function DuplicateGarbageCollectionModal({
             },
             (err) => {
                 setErrorMessages(handleError(err));
-                console.error(err);
             }
         );
     }
@@ -60,7 +59,7 @@ export default function DuplicateGarbageCollectionModal({
     return (
         <Modal show={show} onHide={() => onHide()} onShow={onShow}>
             <Modal.Header>
-                <Modal.Title>Dupliceer vuilophaling schema voor geselecteerde gebouwen</Modal.Title>
+                <Modal.Title>Dupliceer vuilophaling schema voor alle gebouwen</Modal.Title>
             </Modal.Header>
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Form onSubmit={submit}>

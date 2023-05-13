@@ -108,6 +108,7 @@ export default function AdminAnalysisWorkingHours() {
     return (
         <Container fluid className="p-0 overflow-hidden">
             <AdminHeader/>
+            <span className="h3 fw-bold">Overzicht gewerkte uren</span>
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <Form className="m-2">
                 <Row>

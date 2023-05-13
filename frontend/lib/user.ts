@@ -118,3 +118,7 @@ export async function patchUser(userId: number, data: Object): Promise<AxiosResp
         headers: {"Content-Type": "application/json"},
     });
 }
+
+export function getFullName(user : User) {
+    return `${user.first_name} ${user.last_name}`;
+}

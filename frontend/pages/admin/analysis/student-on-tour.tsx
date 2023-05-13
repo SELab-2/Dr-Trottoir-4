@@ -2,15 +2,16 @@ import AdminHeader from "@/components/header/adminHeader";
 import {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
 import {getStudentOnTour, StudentOnTour} from "@/lib/student-on-tour";
-import {getAnalysisStudentOnTour} from "@/lib/analysis";
+import {getAnalysisStudentOnTour, getWorkedHours} from "@/lib/analysis";
 import {BuildingAnalysis} from "@/types";
 import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
-import {Badge, Container, ListGroup, ListGroupItem, ProgressBar} from "react-bootstrap";
+import {Container, ListGroup, ListGroupItem, ProgressBar} from "react-bootstrap";
+import {Tooltip} from "@mui/material";
+import {getFullName, getUserInfo, User} from "@/lib/user";
+import {getTour, Tour} from "@/lib/tour";
+import {getRegion, RegionInterface} from "@/lib/region";
 
-interface ParsedUrlQuery {
-}
-
-interface DataStudentOnTourQuery extends ParsedUrlQuery {
+interface StudentOnTourQuery {
     studentOnTour?: number;
 }
 
@@ -19,9 +20,12 @@ export default function AnalysisStudentOnTour() {
     const [studentOnTour, setStudentOnTour] = useState<StudentOnTour | null>(null);
     const [buildingsAnalysis, setBuildingsAnalysis] = useState<BuildingAnalysis[]>([]);
     const [buildings, setBuildings] = useState<BuildingInterface[]>([]);
+    const [student, setStudent] = useState<User | null>(null);
+    const [tour, setTour] = useState<Tour | null>(null);
+    const [region, setRegion] = useState<RegionInterface | null>(null);
 
     useEffect(() => {
-        const query = router.query as DataStudentOnTourQuery;
+        const query = router.query as StudentOnTourQuery;
         const studentOnTourId = query.studentOnTour;
         if (!studentOnTourId) {
             return;
@@ -29,6 +33,8 @@ export default function AnalysisStudentOnTour() {
         getStudentOnTour(studentOnTourId).then(res => {
             const sot: StudentOnTour = res.data;
             setStudentOnTour(sot);
+            getTourWithTourId(sot.tour);
+            getStudent(sot.student);
         }, () => {
         });
 
@@ -41,8 +47,32 @@ export default function AnalysisStudentOnTour() {
                 setBuildings(buildings);
             }, () => {
             });
-        }, console.error);
+        }, () => {
+        });
     }, [router.isReady]);
+
+    function getTourWithTourId(tourId: number) {
+        if (tourId) {
+            getTour(tourId).then(res => {
+                const t: Tour = res.data;
+                setTour(t);
+                getRegion(t.region).then(resp => {
+                    const r: RegionInterface = resp.data;
+                    setRegion(r);
+                }, () => {
+                });
+            }, () => {
+            });
+        }
+    }
+
+    function getStudent(userId: number) {
+        getUserInfo(userId.toString()).then(res => {
+            const u: User = res.data;
+            setStudent(u);
+        }, () => {
+        });
+    }
 
     function convertSecondsToString(seconds: number) {
         if (seconds < 60) {
@@ -64,12 +94,85 @@ export default function AnalysisStudentOnTour() {
         ${departureHours.toString().padStart(2, "0")}:${departureMinutes.toString().padStart(2, "0")}`;
     }
 
+    /**
+     * Render the correct progressbar
+     */
+    function getDurationInProgress(expectedDuration: number, actualDuration: number) {
+        if (expectedDuration > actualDuration) {
+            const per: number = Math.ceil(((expectedDuration - actualDuration) / expectedDuration) * 100);
+            if (per > 25) { // More than 25 % faster
+                return (
+                    <div className="progress-bar-container">
+                        <ProgressBar>
+                            <ProgressBar now={50} style={{backgroundColor: "lightgreen"}}/>
+                        </ProgressBar>
+                    </div>
+                );
+            }
+            const empty: number = 50 - per * 2;
+            return (
+                <div className="progress-bar-container">
+                    <ProgressBar max={50}>
+                        <ProgressBar className="invisible" now={empty} key={1}/>
+                        <ProgressBar now={per * 2} key={2} style={{backgroundColor: "lightgreen"}}/>
+                    </ProgressBar>
+                </div>
+            );
+        } else if (expectedDuration < actualDuration) {
+            const per: number = Math.ceil(((actualDuration - expectedDuration) / actualDuration) * 100);
+            if (per > 25) { // More than 25 % slower
+                return (
+                    <div className="progress-bar-container">
+                        <ProgressBar>
+                            <ProgressBar className="invisible" now={50} key={1}/>
+                            <ProgressBar now={50} key={2} style={{backgroundColor: "indianred"}}/>
+                        </ProgressBar>
+                    </div>
+                );
+            }
+            return (
+                <div className="progress-bar-container">
+                    <ProgressBar>
+                        <ProgressBar className="invisible" now={50} key={1}></ProgressBar>
+                        <ProgressBar now={per * 2} key={2} style={{backgroundColor: "orange"}}/>
+                    </ProgressBar>
+                </div>
+            );
+        } else { // Equal
+            return (
+                <div className="progress-bar-container">
+                    <ProgressBar now={100} style={{backgroundColor: "lightgreen"}}/>
+                </div>
+            );
+        }
+    }
+
     return (
         <>
             <AdminHeader/>
-
             <Container fluid="md">
-                <ListGroup>
+                <div className="m-3">
+                    {
+                        tour && (
+                            <span
+                                className="h2 fw-bold">{`Ronde: ${tour.name} ${region ? `(${region.region})` : ""}`}</span>
+                        )
+                    }
+                    {
+                        tour && buildingsAnalysis.length > 0 && new Date(tour.modified_at) > new Date(buildingsAnalysis[0].arrival_time) && (
+                            <p className="text-muted">{`Dit is niet meer de juiste versie van de ronde (laatst aangepast: ${new Date(tour.modified_at).toLocaleString('en-GB')})`}</p>
+                        )
+                    }
+                    {
+                        student && studentOnTour && studentOnTour.started_tour && studentOnTour.completed_tour && (
+                            <p className="h5">
+                                {`${getFullName(student)} op ${new Date(studentOnTour.date).toLocaleDateString('en-GB')} 
+                            ${getTimeIntervalString(new Date(studentOnTour.started_tour), new Date(studentOnTour.completed_tour))}`}
+                            </p>
+                        )
+                    }
+                </div>
+                <ListGroup className="m-2">
                     {
                         buildingsAnalysis.map((analysis, index) => {
                             const building: BuildingInterface | undefined = buildings.find(b => b.id === analysis.building_id);
@@ -79,12 +182,18 @@ export default function AnalysisStudentOnTour() {
                                         <div className="fw-bold">{building ? getAddress(building) : ""}</div>
                                         <p>{getTimeIntervalString(new Date(analysis.arrival_time), new Date(analysis.departure_time))}</p>
                                     </div>
-                                    <ProgressBar now={20}>
-                                        <div className="progress-line"/>
-                                    </ProgressBar>
-                                    <Badge pill>
-                                        <p>{`${convertSecondsToString(analysis.duration_in_seconds)} vs ${convertSecondsToString(analysis.expected_duration_in_seconds)}`}</p>
-                                    </Badge>
+                                    <Tooltip
+                                        title={
+                                            <div>
+                                                {`Ingeplande duur: ${convertSecondsToString(analysis.expected_duration_in_seconds)}`}
+                                                <br/>
+                                                {`Duur: ${convertSecondsToString(analysis.duration_in_seconds)}`}
+                                            </div>
+                                        }>
+                                        {
+                                            getDurationInProgress(analysis.expected_duration_in_seconds, analysis.duration_in_seconds)
+                                        }
+                                    </Tooltip>
                                 </ListGroupItem>
                             );
                         })
