@@ -116,3 +116,13 @@ input:focus {
 .clickable {
     cursor: pointer;
 }
+
+.progress-line {
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background-color: black;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+}
