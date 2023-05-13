@@ -1,29 +1,29 @@
-import {Button, Form, Modal} from "react-bootstrap";
-import React, {useState} from "react";
-import {useTranslation} from "react-i18next";
-import {formatDate} from "@/lib/date";
-import {handleError} from "@/lib/error";
+import { Button, Form, Modal } from "react-bootstrap";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {addDays, addWeeks, endOfWeek, startOfWeek, subDays} from "date-fns";
-import {AxiosResponse} from "axios";
+import { addDays, addWeeks, endOfWeek, startOfWeek, subDays } from "date-fns";
+import { AxiosResponse } from "axios";
 
 export default function DuplicateScheduleModal({
-                                                   show,
-                                                   closeModal,
-                                                   title,
-                                                   onSubmit,
-                                                   weekStartsOn // the start of the week sunday (0), monday (1)
-                                               }: {
+    show,
+    closeModal,
+    title,
+    onSubmit,
+    weekStartsOn, // the start of the week sunday (0), monday (1)
+}: {
     show: boolean;
     closeModal: () => void;
     title: string;
-    onSubmit: (startDate: string, endDate: string, copyToDate: string) => Promise<AxiosResponse<any, any>>,
+    onSubmit: (startDate: string, endDate: string, copyToDate: string) => Promise<AxiosResponse<any, any>>;
     weekStartsOn: 0 | 1;
 }) {
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
-    const [startDate, setStartDate] = useState<Date>(startOfWeek(new Date(), {weekStartsOn}));
-    const [endDate, setEndDate] = useState<Date>(endOfWeek(new Date(), {weekStartsOn}));
-    const [copyToDate, setCopyToDate] = useState<Date>(addWeeks(startOfWeek(new Date(), {weekStartsOn}), 1));
+    const [startDate, setStartDate] = useState<Date>(startOfWeek(new Date(), { weekStartsOn }));
+    const [endDate, setEndDate] = useState<Date>(endOfWeek(new Date(), { weekStartsOn }));
+    const [copyToDate, setCopyToDate] = useState<Date>(addWeeks(startOfWeek(new Date(), { weekStartsOn }), 1));
 
     // Submit the duplicate request
     function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -35,22 +35,18 @@ export default function DuplicateScheduleModal({
         // Add a day for startDate & copyToDate because backend starts week from monday
         const start = weekStartsOn === 0 ? addDays(startDate, 1) : startDate;
         const copy = weekStartsOn === 0 ? addDays(copyToDate, 1) : copyToDate;
-        onSubmit(
-            formatDate(start),
-            formatDate(endDate),
-            formatDate(copy)
-        ).then(
-            _ => onHide(),
-            err => setErrorMessages(handleError(err))
+        onSubmit(formatDate(start), formatDate(endDate), formatDate(copy)).then(
+            (_) => onHide(),
+            (err) => setErrorMessages(handleError(err))
         );
     }
 
     // execute when the modal is hidden
     function onHide() {
         closeModal();
-        setStartDate(startOfWeek(new Date(), {weekStartsOn}));
-        setEndDate(endOfWeek(new Date(), {weekStartsOn}));
-        setCopyToDate(addWeeks(startOfWeek(new Date(), {weekStartsOn}), 1));
+        setStartDate(startOfWeek(new Date(), { weekStartsOn }));
+        setEndDate(endOfWeek(new Date(), { weekStartsOn }));
+        setCopyToDate(addWeeks(startOfWeek(new Date(), { weekStartsOn }), 1));
         setErrorMessages([]);
     }
 
@@ -59,7 +55,7 @@ export default function DuplicateScheduleModal({
             <Modal.Header>
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <div className="form-row">
@@ -70,9 +66,7 @@ export default function DuplicateScheduleModal({
                                 className="form-control"
                                 value={formatDate(startDate)}
                                 onChange={(event) =>
-                                    setStartDate(
-                                        startOfWeek(new Date(event.target.value), {weekStartsOn})
-                                    )
+                                    setStartDate(startOfWeek(new Date(event.target.value), { weekStartsOn }))
                                 }
                             />
                         </div>
@@ -83,7 +77,7 @@ export default function DuplicateScheduleModal({
                                 className="form-control"
                                 value={formatDate(endDate)}
                                 onChange={(event) =>
-                                    setEndDate(endOfWeek(new Date(event.target.value), {weekStartsOn}))
+                                    setEndDate(endOfWeek(new Date(event.target.value), { weekStartsOn }))
                                 }
                             />
                         </div>
@@ -95,9 +89,7 @@ export default function DuplicateScheduleModal({
                             className="form-control"
                             value={formatDate(copyToDate)}
                             onChange={(event) =>
-                                setCopyToDate(
-                                    startOfWeek(new Date(event.target.value), {weekStartsOn})
-                                )
+                                setCopyToDate(startOfWeek(new Date(event.target.value), { weekStartsOn }))
                             }
                         />
                     </div>

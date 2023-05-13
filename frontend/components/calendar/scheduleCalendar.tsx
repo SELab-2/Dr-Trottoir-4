@@ -1,15 +1,16 @@
-import React, {useEffect, useState} from "react";
-import {Calendar, dateFnsLocalizer, Event} from "react-big-calendar";
-import withDragAndDrop, {EventInteractionArgs} from "react-big-calendar/lib/addons/dragAndDrop";
+import React, { useEffect, useState } from "react";
+import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
+import withDragAndDrop, { EventInteractionArgs } from "react-big-calendar/lib/addons/dragAndDrop";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
-import {messages} from "@/locales/localizerCalendar";
+import { messages } from "@/locales/localizerCalendar";
 import {
     deleteBulkStudentOnTour,
-    deleteStudentOnTour, duplicateStudentOnTourSchedule,
+    deleteStudentOnTour,
+    duplicateStudentOnTourSchedule,
     getAllStudentOnTourFromDate,
     patchStudentOnTour,
     postBulkStudentOnTour,
@@ -22,20 +23,20 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import EditScheduleEventModal from "@/components/calendar/editScheduleEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddScheduleEventModal from "@/components/calendar/addScheduleEvent";
-import {Tour} from "@/lib/tour";
-import {User} from "@/lib/user";
-import {addDays, endOfWeek} from "date-fns";
-import {formatDate} from "@/lib/date";
-import {handleError} from "@/lib/error";
-import {colors} from "@/components/calendar/colors";
+import { Tour } from "@/lib/tour";
+import { User } from "@/lib/user";
+import { addDays, endOfWeek } from "date-fns";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
+import { colors } from "@/components/calendar/colors";
 import styles from "./calendar.module.css";
-import {ScheduleEvent} from "@/types";
+import { ScheduleEvent } from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import SuccessMessageAlert from "@/components/successMessageAlert";
 import AddTourScheduleModal from "@/components/calendar/addTourSchedule";
 import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 
-function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[] }) {
+function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour[] }) {
     const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
     const [popupIsOpenAddTour, setPopupIsOpenAddTour] = useState(false);
@@ -54,26 +55,26 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
     useEffect(() => {
         if (tourUsers.length > 0 && tours.length > 0) {
             assignColors(tours);
-            getFromRange({start: startOfWeek(new Date()), end: endOfWeek(new Date())});
+            getFromRange({ start: startOfWeek(new Date()), end: endOfWeek(new Date()) });
         }
     }, [tourUsers, tours]);
 
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
         let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
-        setRange({start: startDate, end: endDate});
-        onEventsLoad({start_date: startDate, end_date: endDate});
+        setRange({ start: startDate, end: endDate });
+        onEventsLoad({ start_date: startDate, end_date: endDate });
     }
 
     function postEvents(start: Date, end: Date, data: StudentOnTourPost[]) {
         postBulkStudentOnTour(data).then(
-            (_) => getFromRange({start: range.start, end: range.end}),
+            (_) => getFromRange({ start: range.start, end: range.end }),
             (err) => setErrorMessages(handleError(err))
         );
     }
 
-    function onEventsLoad({start_date, end_date}: { start_date: Date; end_date: Date }) {
-        getAllStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
+    function onEventsLoad({ start_date, end_date }: { start_date: Date; end_date: Date }) {
+        getAllStudentOnTourFromDate({ startDate: new Date(start_date), endDate: new Date(end_date) }).then(
             (res) => {
                 const list: StudentOnTour[] = res.data;
                 setEvents(
@@ -138,7 +139,7 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
     }
 
     function onEventResize(args: EventInteractionArgs<object>): void {
-        const {event, start, end} = args;
+        const { event, start, end } = args;
         let resizedEvents: StudentOnTourPost[] = [];
         let currentDate = new Date(start);
         currentDate.setHours(0);
@@ -160,7 +161,7 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
     }
 
     function onEventDragAndDrop(args: EventInteractionArgs<object>): void {
-        const {event, start} = args;
+        const { event, start } = args;
         const scheduleEvent: ScheduleEvent = event as ScheduleEvent;
         patchStudentOnTour(
             scheduleEvent.id,
@@ -275,8 +276,8 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
                 >
                     Kopieer planning
                 </button>
-                <SuccessMessageAlert successmessages={successMessages} setSuccessMessages={setSuccessMessages}/>
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                <SuccessMessageAlert successmessages={successMessages} setSuccessMessages={setSuccessMessages} />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             </div>
             <DnDCalendar
                 messages={messages}
@@ -285,10 +286,10 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
                 defaultView="week"
                 views={["week"]}
                 events={events}
-                components={{event: CustomDisplay}}
+                components={{ event: CustomDisplay }}
                 eventPropGetter={(event: any) => {
                     const backgroundColor = tourColors[event.tour.id];
-                    return {style: {backgroundColor, color: "white"}};
+                    return { style: { backgroundColor, color: "white" } };
                 }}
                 localizer={localizer}
                 drilldownView={null}
@@ -323,7 +324,7 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
             )}
             <AddTourScheduleModal
                 isOpen={popupIsOpenAddTour}
-                onPost={() => getFromRange({start: range.start, end: range.end})}
+                onPost={() => getFromRange({ start: range.start, end: range.end })}
                 onClose={() => setPopupIsOpenAddTour(false)}
                 range={range}
             />
@@ -340,11 +341,13 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
             <DuplicateScheduleModal
                 closeModal={() => {
                     setPopupIsOpenCopy(false);
-                    getFromRange({start: range.start, end: range.end});
+                    getFromRange({ start: range.start, end: range.end });
                 }}
                 weekStartsOn={0}
-             onSubmit={duplicateStudentOnTourSchedule}
-             show={popupIsOpenCopy} title="Dupliceer planning"/>
+                onSubmit={duplicateStudentOnTourSchedule}
+                show={popupIsOpenCopy}
+                title="Dupliceer planning"
+            />
         </>
     );
 }
