@@ -160,7 +160,7 @@ export default function AnalysisStudentOnTour() {
                     }
                     {
                         tour && buildingsAnalysis.length > 0 && new Date(tour.modified_at) > new Date(buildingsAnalysis[0].arrival_time) && (
-                            <p className="text-muted">{`Dit is niet meer de juiste versie van de ronde (laatst aangepast: ${new Date(tour.modified_at).toLocaleString('en-GB')})`}</p>
+                            <p className="text-muted">{`Dit is een oudere versie van de ronde (laatst aangepast: ${new Date(tour.modified_at).toLocaleString('en-GB')})`}</p>
                         )
                     }
                     {
