@@ -1,17 +1,17 @@
 import AdminHeader from "@/components/header/adminHeader";
-import {useRouter} from "next/router";
-import React, {useEffect, useState} from "react";
-import {getStudentOnTour, StudentOnTour} from "@/lib/student-on-tour";
-import {getAnalysisStudentOnTour, getWorkedHours} from "@/lib/analysis";
-import {BuildingAnalysis} from "@/types";
-import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
-import {Col, Container, ListGroup, ListGroupItem, ProgressBar, Row} from "react-bootstrap";
-import {Tooltip} from "@mui/material";
-import {getFullName, getUserInfo, User} from "@/lib/user";
-import {getTour, Tour} from "@/lib/tour";
-import {getRegion, RegionInterface} from "@/lib/region";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { getStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
+import { getAnalysisStudentOnTour, getWorkedHours } from "@/lib/analysis";
+import { BuildingAnalysis } from "@/types";
+import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
+import { Col, Container, ListGroup, ListGroupItem, ProgressBar, Row } from "react-bootstrap";
+import { Tooltip } from "@mui/material";
+import { getFullName, getUserInfo, User } from "@/lib/user";
+import { getTour, Tour } from "@/lib/tour";
+import { getRegion, RegionInterface } from "@/lib/region";
 import Link from "next/link";
-import {formatDate} from "@/lib/date";
+import { formatDate } from "@/lib/date";
 
 interface StudentOnTourQuery {
     studentOnTour?: number;
@@ -39,8 +39,7 @@ export default function AnalysisStudentOnTour() {
                 getTourWithTourId(sot.tour);
                 getStudent(sot.student);
             },
-            () => {
-            }
+            () => {}
         );
 
         getAnalysisStudentOnTour(studentOnTourId).then(
@@ -53,12 +52,10 @@ export default function AnalysisStudentOnTour() {
                         const buildings: BuildingInterface[] = res.map((r) => r.data);
                         setBuildings(buildings);
                     },
-                    () => {
-                    }
+                    () => {}
                 );
             },
-            () => {
-            }
+            () => {}
         );
     }, [router.isReady]);
 
@@ -73,12 +70,10 @@ export default function AnalysisStudentOnTour() {
                             const r: RegionInterface = resp.data;
                             setRegion(r);
                         },
-                        () => {
-                        }
+                        () => {}
                     );
                 },
-                () => {
-                }
+                () => {}
             );
         }
     }
@@ -89,8 +84,7 @@ export default function AnalysisStudentOnTour() {
                 const u: User = res.data;
                 setStudent(u);
             },
-            () => {
-            }
+            () => {}
         );
     }
 
@@ -125,7 +119,7 @@ export default function AnalysisStudentOnTour() {
                 return (
                     <div className="progress-bar-container">
                         <ProgressBar>
-                            <ProgressBar now={50} style={{backgroundColor: "lightgreen"}}/>
+                            <ProgressBar now={50} style={{ backgroundColor: "lightgreen" }} />
                         </ProgressBar>
                     </div>
                 );
@@ -134,8 +128,8 @@ export default function AnalysisStudentOnTour() {
             return (
                 <div className="progress-bar-container">
                     <ProgressBar max={50}>
-                        <ProgressBar className="invisible" now={empty} key={1}/>
-                        <ProgressBar now={per * 2} key={2} style={{backgroundColor: "lightgreen"}}/>
+                        <ProgressBar className="invisible" now={empty} key={1} />
+                        <ProgressBar now={per * 2} key={2} style={{ backgroundColor: "lightgreen" }} />
                     </ProgressBar>
                 </div>
             );
@@ -146,8 +140,8 @@ export default function AnalysisStudentOnTour() {
                 return (
                     <div className="progress-bar-container">
                         <ProgressBar>
-                            <ProgressBar className="invisible" now={50} key={1}/>
-                            <ProgressBar now={50} key={2} style={{backgroundColor: "indianred"}}/>
+                            <ProgressBar className="invisible" now={50} key={1} />
+                            <ProgressBar now={50} key={2} style={{ backgroundColor: "indianred" }} />
                         </ProgressBar>
                     </div>
                 );
@@ -156,7 +150,7 @@ export default function AnalysisStudentOnTour() {
                 <div className="progress-bar-container">
                     <ProgressBar>
                         <ProgressBar className="invisible" now={50} key={1}></ProgressBar>
-                        <ProgressBar now={per * 2} key={2} style={{backgroundColor: "orange"}}/>
+                        <ProgressBar now={per * 2} key={2} style={{ backgroundColor: "orange" }} />
                     </ProgressBar>
                 </div>
             );
@@ -164,7 +158,7 @@ export default function AnalysisStudentOnTour() {
             // Equal
             return (
                 <div className="progress-bar-container">
-                    <ProgressBar now={100} style={{backgroundColor: "lightgreen"}}/>
+                    <ProgressBar now={100} style={{ backgroundColor: "lightgreen" }} />
                 </div>
             );
         }
@@ -172,7 +166,7 @@ export default function AnalysisStudentOnTour() {
 
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <Container fluid="md">
                 <div className="m-3">
                     {tour && (
@@ -219,15 +213,16 @@ export default function AnalysisStudentOnTour() {
                                             <Link
                                                 style={{
                                                     textDecoration: "underline",
-                                                    color: "royalblue"
+                                                    color: "royalblue",
                                                 }}
                                                 href={{
                                                     pathname: "/admin/building/",
                                                     query: {
                                                         id: building ? building.id : -1,
-                                                        date: formatDate(new Date(analysis.departure_time))
-                                                    }
-                                                }}>
+                                                        date: formatDate(new Date(analysis.departure_time)),
+                                                    },
+                                                }}
+                                            >
                                                 Bekijk foto's en opmerkingen
                                             </Link>
                                         </Col>
@@ -239,7 +234,7 @@ export default function AnalysisStudentOnTour() {
                                             {`Ingeplande duur: ${convertSecondsToString(
                                                 analysis.expected_duration_in_seconds
                                             )}`}
-                                            <br/>
+                                            <br />
                                             {`Duur: ${convertSecondsToString(analysis.duration_in_seconds)}`}
                                         </div>
                                     }
