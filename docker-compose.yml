@@ -99,4 +99,3 @@ services:
 volumes:
   shared-images:
     name: images
-
