@@ -1,23 +1,22 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import {
     getRemarksAtBuildingOfSpecificBuilding,
     RemarkAtBuildingInterface,
     translateRemarkAtBuildingType,
 } from "@/lib/remark-at-building";
-import {getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface} from "@/lib/picture-of-remark";
-import {Accordion, Card} from "react-bootstrap";
+import { getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
+import { Accordion, Card } from "react-bootstrap";
 import ImageEnlargeModal from "@/components/ImageEnlargeModal";
-import {convertToSensibleDateLong, convertToSensibleDateShort} from "@/lib/dateUtil";
-import {AxiosResponse} from "axios/index";
+import { convertToSensibleDateLong, convertToSensibleDateShort } from "@/lib/dateUtil";
+import { AxiosResponse } from "axios/index";
 
-function CollectionCards({building, date}: { building: number; date: string | null }) {
+function CollectionCards({ building, date }: { building: number; date: string | null }) {
     const [collectionDetails, setCollectionDetails] = useState<
         [RemarkAtBuildingInterface, PictureOfRemarkInterface[]][] | []
     >([]);
 
     const [enlargeImageShow, setEnlargeImageShow] = useState<boolean>(false);
     const [enlargeImageURL, setEnlargeImageURL] = useState<string>("");
-
 
     function handleRemarksAtBuildingsCall(response: AxiosResponse) {
         const responseData: RemarkAtBuildingInterface[] = response.data.sort(
@@ -49,10 +48,9 @@ function CollectionCards({building, date}: { building: number; date: string | nu
             });
     }
 
-
     useEffect(() => {
         if (date) {
-            getRemarksAtBuildingOfSpecificBuilding(building, {date: date})
+            getRemarksAtBuildingOfSpecificBuilding(building, { date: date })
                 .then((response) => {
                     handleRemarksAtBuildingsCall(response);
                 })
@@ -60,8 +58,7 @@ function CollectionCards({building, date}: { building: number; date: string | nu
                     console.error(error);
                 });
         } else {
-
-            getRemarksAtBuildingOfSpecificBuilding(building, {mostRecent: true})
+            getRemarksAtBuildingOfSpecificBuilding(building, { mostRecent: true })
                 .then((response) => {
                     handleRemarksAtBuildingsCall(response);
                 })
@@ -78,12 +75,10 @@ function CollectionCards({building, date}: { building: number; date: string | nu
 
     return (
         <>
-
-            <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL}/>
+            <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL} />
 
             <h1>Details laatste ophaling {date ? "(" + convertToSensibleDateShort(date) + ")" : null}</h1>
-            <div style={{margin: "0 0", width: "75%", maxWidth: "95%"}}>
-
+            <div style={{ margin: "0 0", width: "75%", maxWidth: "95%" }}>
                 {collectionDetails.length == 0}
                 <Accordion alwaysOpen>
                     {collectionDetails.map(([remark, pictures]) => (
@@ -91,9 +86,7 @@ function CollectionCards({building, date}: { building: number; date: string | nu
                             <Accordion.Header>{translateRemarkAtBuildingType(remark.type)}</Accordion.Header>
                             <Accordion.Body>
                                 <Card.Subtitle className="mb-2 text-muted">
-
                                     {convertToSensibleDateLong(remark.timestamp + "")}
-
                                 </Card.Subtitle>
                                 <Card.Text>{remark.remark}</Card.Text>
                                 <div>
@@ -125,7 +118,6 @@ function CollectionCards({building, date}: { building: number; date: string | nu
                     ))}
                 </Accordion>
             </div>
-
         </>
     );
 }
