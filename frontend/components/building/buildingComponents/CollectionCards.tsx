@@ -83,6 +83,7 @@ function CollectionCards({building, date}: { building: number; date: string | nu
 
             <h1>Details laatste ophaling {date ? "(" + convertToSensibleDateShort(date) + ")" : null}</h1>
             <div style={{margin: "0 0", width: "75%", maxWidth: "95%"}}>
+
                 {collectionDetails.length == 0}
                 <Accordion alwaysOpen>
                     {collectionDetails.map(([remark, pictures]) => (
@@ -90,7 +91,9 @@ function CollectionCards({building, date}: { building: number; date: string | nu
                             <Accordion.Header>{translateRemarkAtBuildingType(remark.type)}</Accordion.Header>
                             <Accordion.Body>
                                 <Card.Subtitle className="mb-2 text-muted">
+
                                     {convertToSensibleDateLong(remark.timestamp + "")}
+
                                 </Card.Subtitle>
                                 <Card.Text>{remark.remark}</Card.Text>
                                 <div>
@@ -122,6 +125,7 @@ function CollectionCards({building, date}: { building: number; date: string | nu
                     ))}
                 </Accordion>
             </div>
+
         </>
     );
 }
