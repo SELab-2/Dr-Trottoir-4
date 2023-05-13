@@ -1,12 +1,13 @@
 name: Test Code Base
 
 on:
-  pull_request_target:
-    branches:
-      - main
-      - develop
-      - testBranch
-
+#  pull_request_target:
+#    branches:
+#      - main
+#      - develop
+#      - testBranch
+  push:
+    branches: ["*"]
 jobs:
   test:
     name: Test Code Base
