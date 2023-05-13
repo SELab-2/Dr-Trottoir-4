@@ -1,4 +1,5 @@
 from django.core.exceptions import BadRequest
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -34,7 +35,7 @@ from util.request_response_util import (
     bad_request,
     get_id_param,
     get_arbitrary_param,
-    bad_request_custom_error_message,
+    bad_request_custom_error_message, get_date_param,
 )
 
 TRANSLATE = {
@@ -170,7 +171,14 @@ class RemarksAtBuildingView(APIView):
     serializer_class = RemarkAtBuildingSerializer
 
     @extend_schema(
-        responses=get_docs(serializer_class), parameters=param_docs(get_most_recent_param_docs("RemarksAtBuilding"))
+        responses=get_docs(serializer_class), parameters=param_docs(
+            get_most_recent_param_docs("RemarksAtBuilding") | {
+                "date": (
+                        "The date to get remarks for. You cannot use both the most-recent query parameter and the date parameter.",
+                        False,
+                        OpenApiTypes.DATE)
+            }
+        )
     )
     def get(self, request, building_id):
         """
@@ -180,8 +188,12 @@ class RemarksAtBuildingView(APIView):
 
         try:
             most_recent_only = get_boolean_param(request, "most-recent")
+            date = get_date_param(request, "date")
         except BadRequest as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        if most_recent_only and date:
+            return bad_request_custom_error_message(_("Cannot use both most-recent and date for RemarkAtBuilding"))
 
         if most_recent_only:
             instances = remark_at_building_instances.order_by("-timestamp").first()
@@ -190,5 +202,8 @@ class RemarksAtBuildingView(APIView):
             most_recent_day = str(instances.timestamp.date())
 
             remark_at_building_instances = remark_at_building_instances.filter(timestamp__gte=most_recent_day)
+
+        elif date:
+            remark_at_building_instances = remark_at_building_instances.filter(timestamp__date=date)
 
         return get_success(self.serializer_class(remark_at_building_instances, many=True))
