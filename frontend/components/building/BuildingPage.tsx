@@ -1,20 +1,20 @@
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { BuildingInterface, getBuildingInfo, getBuildingInfoByPublicId } from "@/lib/building";
-import { AxiosResponse } from "axios/index";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {BuildingInterface, getBuildingInfo, getBuildingInfoByPublicId} from "@/lib/building";
+import {AxiosResponse} from "axios/index";
 import BuildingInfo from "@/components/building/buildingComponents/BuildingInfo";
-import LatestCollectionDetail from "@/components/building/buildingComponents/LatestCollectionDetail";
 import LatestCollections from "@/components/building/buildingComponents/LatestCollections";
+import CollectionCards from "@/components/building/buildingComponents/CollectionCards";
 
-interface ParsedUrlQuery {}
 
-interface DashboardQuery extends ParsedUrlQuery {
+interface BuildingQuery {
     id?: string;
+    date?: string;
 }
 
-function BuildingPage({ type }: { type: "syndic" | "admin" | "public" }) {
+function BuildingPage({type}: { type: "syndic" | "admin" | "public" }) {
     const router = useRouter();
-    const query = router.query as DashboardQuery;
+    const query = router.query as BuildingQuery;
 
     // @ts-ignore
     const [building, setBuilding] = useState<BuildingInterface>(null);
@@ -46,19 +46,17 @@ function BuildingPage({ type }: { type: "syndic" | "admin" | "public" }) {
         fetchBuilding();
     }, [query.id]);
 
-    // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1310&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
-
     return (
         <>
-            <div style={{ display: "flex" }}>
-                <div style={{ flex: "1" }}>
-                    <BuildingInfo building={building} setBuilding={setBuilding} type={type} />
+            <div style={{display: "flex", justifyContent: "space-evenly"}}>
+                <div style={{flex: "1"}}>
+                    <BuildingInfo building={building} setBuilding={setBuilding} type={type}/>
                 </div>
-                <div style={{ flex: "1" }}>
-                    <LatestCollectionDetail building={building ? building.id : 0} />
+                <div style={{flex: "1"}}>
+                    <CollectionCards building={building ? building.id : 0} date={query.date ? query.date : null}/>
                 </div>
-                <div style={{ flex: "1" }}>
-                    <LatestCollections building={building ? building.id : 0} />
+                <div style={{flex: "1"}}>
+                    <LatestCollections building={building ? building.id : 0}/>
                 </div>
             </div>
         </>
