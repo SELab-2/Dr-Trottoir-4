@@ -1,15 +1,15 @@
 import AdminHeader from "@/components/header/adminHeader";
-import {useRouter} from "next/router";
-import React, {useEffect, useState} from "react";
-import {getStudentOnTour, StudentOnTour} from "@/lib/student-on-tour";
-import {getAnalysisStudentOnTour, getWorkedHours} from "@/lib/analysis";
-import {BuildingAnalysis} from "@/types";
-import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
-import {Container, ListGroup, ListGroupItem, ProgressBar} from "react-bootstrap";
-import {Tooltip} from "@mui/material";
-import {getFullName, getUserInfo, User} from "@/lib/user";
-import {getTour, Tour} from "@/lib/tour";
-import {getRegion, RegionInterface} from "@/lib/region";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { getStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
+import { getAnalysisStudentOnTour, getWorkedHours } from "@/lib/analysis";
+import { BuildingAnalysis } from "@/types";
+import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
+import { Container, ListGroup, ListGroupItem, ProgressBar } from "react-bootstrap";
+import { Tooltip } from "@mui/material";
+import { getFullName, getUserInfo, User } from "@/lib/user";
+import { getTour, Tour } from "@/lib/tour";
+import { getRegion, RegionInterface } from "@/lib/region";
 
 interface StudentOnTourQuery {
     studentOnTour?: number;
@@ -30,48 +30,60 @@ export default function AnalysisStudentOnTour() {
         if (!studentOnTourId) {
             return;
         }
-        getStudentOnTour(studentOnTourId).then(res => {
-            const sot: StudentOnTour = res.data;
-            setStudentOnTour(sot);
-            getTourWithTourId(sot.tour);
-            getStudent(sot.student);
-        }, () => {
-        });
+        getStudentOnTour(studentOnTourId).then(
+            (res) => {
+                const sot: StudentOnTour = res.data;
+                setStudentOnTour(sot);
+                getTourWithTourId(sot.tour);
+                getStudent(sot.student);
+            },
+            () => {}
+        );
 
-        getAnalysisStudentOnTour(studentOnTourId).then(res => {
-            const b: BuildingAnalysis[] = res.data;
-            setBuildingsAnalysis(b);
+        getAnalysisStudentOnTour(studentOnTourId).then(
+            (res) => {
+                const b: BuildingAnalysis[] = res.data;
+                setBuildingsAnalysis(b);
 
-            Promise.all(b.map(building => getBuildingInfo(building.building_id))).then(res => {
-                const buildings: BuildingInterface[] = res.map(r => r.data);
-                setBuildings(buildings);
-            }, () => {
-            });
-        }, () => {
-        });
+                Promise.all(b.map((building) => getBuildingInfo(building.building_id))).then(
+                    (res) => {
+                        const buildings: BuildingInterface[] = res.map((r) => r.data);
+                        setBuildings(buildings);
+                    },
+                    () => {}
+                );
+            },
+            () => {}
+        );
     }, [router.isReady]);
 
     function getTourWithTourId(tourId: number) {
         if (tourId) {
-            getTour(tourId).then(res => {
-                const t: Tour = res.data;
-                setTour(t);
-                getRegion(t.region).then(resp => {
-                    const r: RegionInterface = resp.data;
-                    setRegion(r);
-                }, () => {
-                });
-            }, () => {
-            });
+            getTour(tourId).then(
+                (res) => {
+                    const t: Tour = res.data;
+                    setTour(t);
+                    getRegion(t.region).then(
+                        (resp) => {
+                            const r: RegionInterface = resp.data;
+                            setRegion(r);
+                        },
+                        () => {}
+                    );
+                },
+                () => {}
+            );
         }
     }
 
     function getStudent(userId: number) {
-        getUserInfo(userId.toString()).then(res => {
-            const u: User = res.data;
-            setStudent(u);
-        }, () => {
-        });
+        getUserInfo(userId.toString()).then(
+            (res) => {
+                const u: User = res.data;
+                setStudent(u);
+            },
+            () => {}
+        );
     }
 
     function convertSecondsToString(seconds: number) {
@@ -100,11 +112,12 @@ export default function AnalysisStudentOnTour() {
     function getDurationInProgress(expectedDuration: number, actualDuration: number) {
         if (expectedDuration > actualDuration) {
             const per: number = Math.ceil(((expectedDuration - actualDuration) / expectedDuration) * 100);
-            if (per > 25) { // More than 25 % faster
+            if (per > 25) {
+                // More than 25 % faster
                 return (
                     <div className="progress-bar-container">
                         <ProgressBar>
-                            <ProgressBar now={50} style={{backgroundColor: "lightgreen"}}/>
+                            <ProgressBar now={50} style={{ backgroundColor: "lightgreen" }} />
                         </ProgressBar>
                     </div>
                 );
@@ -113,19 +126,20 @@ export default function AnalysisStudentOnTour() {
             return (
                 <div className="progress-bar-container">
                     <ProgressBar max={50}>
-                        <ProgressBar className="invisible" now={empty} key={1}/>
-                        <ProgressBar now={per * 2} key={2} style={{backgroundColor: "lightgreen"}}/>
+                        <ProgressBar className="invisible" now={empty} key={1} />
+                        <ProgressBar now={per * 2} key={2} style={{ backgroundColor: "lightgreen" }} />
                     </ProgressBar>
                 </div>
             );
         } else if (expectedDuration < actualDuration) {
             const per: number = Math.ceil(((actualDuration - expectedDuration) / actualDuration) * 100);
-            if (per > 25) { // More than 25 % slower
+            if (per > 25) {
+                // More than 25 % slower
                 return (
                     <div className="progress-bar-container">
                         <ProgressBar>
-                            <ProgressBar className="invisible" now={50} key={1}/>
-                            <ProgressBar now={50} key={2} style={{backgroundColor: "indianred"}}/>
+                            <ProgressBar className="invisible" now={50} key={1} />
+                            <ProgressBar now={50} key={2} style={{ backgroundColor: "indianred" }} />
                         </ProgressBar>
                     </div>
                 );
@@ -134,14 +148,15 @@ export default function AnalysisStudentOnTour() {
                 <div className="progress-bar-container">
                     <ProgressBar>
                         <ProgressBar className="invisible" now={50} key={1}></ProgressBar>
-                        <ProgressBar now={per * 2} key={2} style={{backgroundColor: "orange"}}/>
+                        <ProgressBar now={per * 2} key={2} style={{ backgroundColor: "orange" }} />
                     </ProgressBar>
                 </div>
             );
-        } else { // Equal
+        } else {
+            // Equal
             return (
                 <div className="progress-bar-container">
-                    <ProgressBar now={100} style={{backgroundColor: "lightgreen"}}/>
+                    <ProgressBar now={100} style={{ backgroundColor: "lightgreen" }} />
                 </div>
             );
         }
@@ -149,55 +164,66 @@ export default function AnalysisStudentOnTour() {
 
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <Container fluid="md">
                 <div className="m-3">
-                    {
-                        tour && (
-                            <span
-                                className="h2 fw-bold">{`Ronde: ${tour.name} ${region ? `(${region.region})` : ""}`}</span>
-                        )
-                    }
-                    {
-                        tour && buildingsAnalysis.length > 0 && new Date(tour.modified_at) > new Date(buildingsAnalysis[0].arrival_time) && (
-                            <p className="text-muted">{`Dit is een oudere versie van de ronde (laatst aangepast: ${new Date(tour.modified_at).toLocaleString('en-GB')})`}</p>
-                        )
-                    }
-                    {
-                        student && studentOnTour && studentOnTour.started_tour && studentOnTour.completed_tour && (
-                            <p className="h5">
-                                {`${getFullName(student)} op ${new Date(studentOnTour.date).toLocaleDateString('en-GB')} 
-                            ${getTimeIntervalString(new Date(studentOnTour.started_tour), new Date(studentOnTour.completed_tour))}`}
-                            </p>
-                        )
-                    }
+                    {tour && (
+                        <span className="h2 fw-bold">{`Ronde: ${tour.name} ${
+                            region ? `(${region.region})` : ""
+                        }`}</span>
+                    )}
+                    {tour &&
+                        buildingsAnalysis.length > 0 &&
+                        new Date(tour.modified_at) > new Date(buildingsAnalysis[0].arrival_time) && (
+                            <p className="text-muted">{`Dit is een oudere versie van de ronde (laatst aangepast: ${new Date(
+                                tour.modified_at
+                            ).toLocaleString("en-GB")})`}</p>
+                        )}
+                    {student && studentOnTour && studentOnTour.started_tour && studentOnTour.completed_tour && (
+                        <p className="h5">
+                            {`${getFullName(student)} op ${new Date(studentOnTour.date).toLocaleDateString("en-GB")} 
+                            ${getTimeIntervalString(
+                                new Date(studentOnTour.started_tour),
+                                new Date(studentOnTour.completed_tour)
+                            )}`}
+                        </p>
+                    )}
                 </div>
                 <ListGroup className="m-2">
-                    {
-                        buildingsAnalysis.map((analysis, index) => {
-                            const building: BuildingInterface | undefined = buildings.find(b => b.id === analysis.building_id);
-                            return (
-                                <ListGroupItem key={index}>
-                                    <div className="ms-2 me-auto">
-                                        <div className="fw-bold">{building ? getAddress(building) : ""}</div>
-                                        <p>{getTimeIntervalString(new Date(analysis.arrival_time), new Date(analysis.departure_time))}</p>
-                                    </div>
-                                    <Tooltip
-                                        title={
-                                            <div>
-                                                {`Ingeplande duur: ${convertSecondsToString(analysis.expected_duration_in_seconds)}`}
-                                                <br/>
-                                                {`Duur: ${convertSecondsToString(analysis.duration_in_seconds)}`}
-                                            </div>
-                                        }>
-                                        {
-                                            getDurationInProgress(analysis.expected_duration_in_seconds, analysis.duration_in_seconds)
-                                        }
-                                    </Tooltip>
-                                </ListGroupItem>
-                            );
-                        })
-                    }
+                    {buildingsAnalysis.map((analysis, index) => {
+                        const building: BuildingInterface | undefined = buildings.find(
+                            (b) => b.id === analysis.building_id
+                        );
+                        return (
+                            <ListGroupItem key={index}>
+                                <div className="ms-2 me-auto">
+                                    <div className="fw-bold">{building ? getAddress(building) : ""}</div>
+                                    <p>
+                                        {getTimeIntervalString(
+                                            new Date(analysis.arrival_time),
+                                            new Date(analysis.departure_time)
+                                        )}
+                                    </p>
+                                </div>
+                                <Tooltip
+                                    title={
+                                        <div>
+                                            {`Ingeplande duur: ${convertSecondsToString(
+                                                analysis.expected_duration_in_seconds
+                                            )}`}
+                                            <br />
+                                            {`Duur: ${convertSecondsToString(analysis.duration_in_seconds)}`}
+                                        </div>
+                                    }
+                                >
+                                    {getDurationInProgress(
+                                        analysis.expected_duration_in_seconds,
+                                        analysis.duration_in_seconds
+                                    )}
+                                </Tooltip>
+                            </ListGroupItem>
+                        );
+                    })}
                 </ListGroup>
             </Container>
         </>
