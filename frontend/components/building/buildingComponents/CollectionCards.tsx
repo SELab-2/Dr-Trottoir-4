@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {
     getRemarksAtBuildingOfSpecificBuilding,
     RemarkAtBuildingInterface,
     translateRemarkAtBuildingType,
 } from "@/lib/remark-at-building";
-import { getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
-import { Accordion, Card } from "react-bootstrap";
+import {getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface} from "@/lib/picture-of-remark";
+import {Accordion, Card} from "react-bootstrap";
 import ImageEnlargeModal from "@/components/ImageEnlargeModal";
 
-function CollectionCards({ building, date }: { building: number; date: string | null }) {
+function CollectionCards({building, date}: { building: number; date: string | null }) {
     const [collectionDetails, setCollectionDetails] = useState<
         [RemarkAtBuildingInterface, PictureOfRemarkInterface[]][] | []
     >([]);
@@ -65,29 +65,40 @@ function CollectionCards({ building, date }: { building: number; date: string | 
                         Details ophaling op datum '{date}' (dit werkt nog niet, maar gebruik in jullie code gerust al de
                         link met de query param)
                     </h4>
-                    <br />
+                    <br/>
                 </>
             )}
 
-            <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL} />
+            <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL}/>
 
             <h1>Details laatste ophaling</h1>
-            <div style={{ margin: "0 0", width: "75%", maxWidth: "95%" }}>
+            <div style={{margin: "0 0", width: "75%", maxWidth: "95%"}}>
                 {collectionDetails.length == 0}
                 <Accordion alwaysOpen>
                     {collectionDetails.map(([remark, pictures]) => (
                         <Accordion.Item eventKey={remark.id + ""} key={remark.id}>
                             <Accordion.Header>{translateRemarkAtBuildingType(remark.type)}</Accordion.Header>
                             <Accordion.Body>
-                                <Card.Subtitle className="mb-2 text-muted">{remark.timestamp + ""}</Card.Subtitle>
+                                <Card.Subtitle className="mb-2 text-muted">{
+                                    new Date(remark.timestamp + "").toLocaleString('nl-BE', {
+                                        weekday: 'long',
+                                        day: 'numeric',
+                                        month: 'long',
+                                        year: 'numeric',
+                                        hour: 'numeric',
+                                        minute: 'numeric',
+                                        timeZone: 'Europe/Brussels',
+                                        timeZoneName: 'short'
+                                    })
+                                }</Card.Subtitle>
                                 <Card.Text>{remark.remark}</Card.Text>
                                 <div>
-                                    {pictures.map((picture) => (
+                                    {pictures.map((picture: PictureOfRemarkInterface) => (
                                         <Card.Img
                                             key={picture.id}
                                             src={`${("" + process.env.NEXT_PUBLIC_BASE_API_URL).slice(0, -1)}${
                                                 picture.picture
-                                            }`} // Update the base URL accordingly
+                                            }`}
                                             alt="Remark picture"
                                             style={{
                                                 maxHeight: "15em",
