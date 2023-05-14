@@ -24,7 +24,7 @@ export default function AdminAnalysisWorkingHours() {
     const [workedHours, setWorkedHours] = useState<WorkedHours[]>([]);
 
     const [startDate, setStartDate] = useState<Date>(startOfWeek(subMonths(new Date(), 1)));
-    const [endDate, setEndDate] = useState<Date>(endOfWeek(new Date()));
+    const [endDate, setEndDate] = useState<Date>(new Date());
 
     useEffect(() => {
         getAllTours().then(res => {
