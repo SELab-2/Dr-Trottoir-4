@@ -184,11 +184,11 @@ class RemarksAtBuildingView(APIView):
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         if most_recent_only:
-            instances = remark_at_building_instances.order_by("-timestamp").first()
+            most_recent_remark = remark_at_building_instances.order_by("-timestamp").first()
+            if most_recent_remark:
+                # Now we have the most recent one, now get all remarks from that day
+                most_recent_day = most_recent_remark.timestamp.date()
 
-            # Now we have the most recent one, but there are more remarks on that same day
-            most_recent_day = str(instances.timestamp.date())
-
-            remark_at_building_instances = remark_at_building_instances.filter(timestamp__gte=most_recent_day)
+                remark_at_building_instances = remark_at_building_instances.filter(timestamp__gte=most_recent_day)
 
         return get_success(self.serializer_class(remark_at_building_instances, many=True))
