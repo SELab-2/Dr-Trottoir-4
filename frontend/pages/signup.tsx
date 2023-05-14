@@ -3,14 +3,13 @@ import BaseHeader from "@/components/header/baseHeader";
 import SignupForm from "@/components/signupForm";
 import {Card, Col, Container, Row} from "react-bootstrap";
 import CarouselComponent from "@/components/imageCarousel";
-import LoginForm from "@/components/loginForm";
 
 export default function Signup() {
     return (
         <>
             <BaseHeader/>
             <div>
-                <Container id="center_container">
+                <Container className="center_container">
                     <Card style={{paddingBottom: '20px'}}>
                         <Row>
                             <Col md={5} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>

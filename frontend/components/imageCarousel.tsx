@@ -8,15 +8,15 @@ import styles from "@/styles/Login.module.css";
 
 export default function CarouselComponent() {
     return (
-        <Carousel id="carousel" indicators={true} controls={false} fade={true} interval={6000}>
+        <Carousel className="carousel" indicators={true} controls={false} fade={true} interval={6000}>
             <Carousel.Item >
-                <Image id="filler_image" className="d-block w-100" src={filler_image_1} alt="First slide"/>
+                <Image className={"filler_image d-block"} src={filler_image_1} alt="First slide"/>
             </Carousel.Item>
             <Carousel.Item className={styles.filler_image}>
-                <Image id="filler_image" className="d-block w-100" src={filler_image_2} alt="Second slide"/>
+                <Image className={"filler_image d-block"} src={filler_image_2} alt="Second slide"/>
             </Carousel.Item>
             <Carousel.Item className={styles.filler_image}>
-                <Image id="filler_image" className="d-block w-100" src={filler_image_3} alt="Third slide"/>
+                <Image className={"filler_image d-block"} src={filler_image_3} alt="Third slide"/>
             </Carousel.Item>
         </Carousel>
     );

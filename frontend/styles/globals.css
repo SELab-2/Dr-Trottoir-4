@@ -1,6 +1,6 @@
 /* General Styles */
 
-#title {
+.title {
     font-size: 36px;
     font-weight: bolder;
     padding-top: 35px;
@@ -8,21 +8,21 @@
     padding-bottom: 20px;
 }
 
-#small_text {
+.small_text {
     padding-top: 5px;
     padding-left: 10px;
     padding-bottom: 10px;
     font-size: 14px;
 }
 
-#normal_text {
+.normal_text {
     padding-top: 5px;
     padding-left: 10px;
     padding-bottom: 5px;
     font-size: 16px;
 }
 
-#input {
+.input {
     max-width: 300px;
     padding-top: 5px;
     padding-left: 10px;
@@ -30,7 +30,7 @@
     padding-bottom: 15px;
 }
 
-#form_control, #form_control:focus {
+.form_control, #form_control:focus {
     height: 40px;
     background: #f8f9fa;
     font-size: 15px;
@@ -39,7 +39,7 @@
     justify-content: center;
 }
 
-#form_control:focus {
+.form_control:focus {
     outline: none;
     box-shadow: 0 0 0 0.2rem #e5f3fd;
 }
@@ -49,7 +49,7 @@
     box-shadow: 0 0 0 0.2rem #e5f3fd;
 }
 
-#wide_button {
+.wide_button {
     width: 100%;
     height: 40px;
     max-width: 280px;
@@ -64,7 +64,7 @@
     box-sizing: border-box;
 }
 
-#wide_button:hover {
+.wide_button:hover {
     width: 100%;
     max-width: 280px;
     padding-left: 10px;
@@ -74,18 +74,18 @@
     transition: ease-in 0.2s;
 }
 
-#padding {
+.padding {
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 10px;
     padding-right: 10px;
 }
 
-#link {
+.link {
     text-decoration: underline;
 }
 
-#center_container {
+.center_container {
     display: flex;
     justify-content: center;
     height: 60%;
@@ -93,21 +93,22 @@
 }
 
 
-#filler_image {
-    height: 500px;
+.filler_image {
+    max-height: 500px;
+    max-width: 100%;
     object-fit: contain;
 }
 
 
 
 @media screen and (max-width: 768px) {
-    #carousel {
+    .carousel {
         display: none;
     }
 }
 
 @media screen and (max-width: 768px) {
-    #column_padding {
+    .column_padding {
         margin-left: auto;
     }
 }

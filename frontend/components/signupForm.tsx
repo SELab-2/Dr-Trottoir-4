@@ -49,16 +49,16 @@ function SignupForm() {
     return (
         <Form onSubmit={handleSubmit}>
             <div>
-                <Form.Label id="title">Sign up.</Form.Label>
+                <Form.Label className="title">Sign up.</Form.Label>
             </div>
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <Row>
                 <Col md={6}>
                     <div>
-                        <Form.Label id="normal_text">Voornaam</Form.Label>
-                        <InputGroup id="input">
+                        <Form.Label className="normal_text">Voornaam</Form.Label>
+                        <InputGroup className="input">
                             <FormControl
-                                id="form_control"
+                                className="form_control"
                                 type="text"
                                 title="Geef je voornaam in."
                                 value={firstname}
@@ -76,10 +76,10 @@ function SignupForm() {
                     </div>
 
                     <div>
-                        <Form.Label id="normal_text">Achternaam</Form.Label>
-                        <InputGroup id="input">
+                        <Form.Label className="normal_text">Achternaam</Form.Label>
+                        <InputGroup className="input">
                             <FormControl
-                                id="form_control"
+                                className="form_control"
                                 type="text"
                                 title="Geef je achternaam in."
                                 value={lastname}
@@ -97,8 +97,8 @@ function SignupForm() {
                     </div>
 
                     <div>
-                        <Form.Label id="normal_text">Gsm-nummer</Form.Label>
-                        <InputGroup id="input">
+                        <Form.Label className="normal_text">Gsm-nummer</Form.Label>
+                        <InputGroup className="input">
                             <PhoneInput
                                 country={"be"}
                                 value={phoneNumber}
@@ -110,10 +110,10 @@ function SignupForm() {
                         </InputGroup>
                     </div>
                     <div>
-                        <Form.Label id="normal_text">Verificatiecode</Form.Label>
-                        <InputGroup id="input">
+                        <Form.Label className="normal_text">Verificatiecode</Form.Label>
+                        <InputGroup className="input">
                             <FormControl
-                                id="form_control"
+                                className="form_control"
                                 type="text"
                                 title="Geef de verificatiecode die je verkreeg via een platformbeheerder."
                                 value={verificationCode}
@@ -132,10 +132,10 @@ function SignupForm() {
                 </Col>
                 <Col md={6}>
                     <div>
-                        <Form.Label id="normal_text">E-mailadres</Form.Label>
-                        <InputGroup id="input">
+                        <Form.Label className="normal_text">E-mailadres</Form.Label>
+                        <InputGroup className="input">
                             <FormControl
-                                id="form_control"
+                                className="form_control"
                                 type="email"
                                 title="Geef het e-mailadres die je hebt opgegeven aan een platformbeheerder."
                                 value={email}
@@ -188,12 +188,12 @@ function SignupForm() {
                             }
                         }}
                     />
-                    <Form.Label id="small_text">
+                    <Form.Label className="small_text">
                         Heb je al een account? <a href="/login">Ga naar login</a>
                     </Form.Label>
-                    <div id="padding">
+                    <div className="padding">
                         <Button
-                            id="wide_button"
+                            className="wide_button"
                             size="lg"
                             type="submit">
                             Registreer

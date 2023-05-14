@@ -37,7 +37,7 @@ export default function Login() {
                 {loading ? (
                     <Loading/>
                 ) : (
-                    <Container id="center_container">
+                    <Container className="center_container">
                         <Card>
                             <Row>
                                 <Col md={6} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>

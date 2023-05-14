@@ -38,7 +38,7 @@ function LoginForm() {
 
     return (
         <Form onSubmit={handleSubmit}>
-            <Form.Label id="title">Login.</Form.Label>
+            <Form.Label className="title">Login.</Form.Label>
             {router.query.createdAccount && (
                 <div className={"visible alert alert-success alert-dismissible fade show"}>
                     <strong>Succes!</strong> Uw account werd met succes aangemaakt!
@@ -47,10 +47,10 @@ function LoginForm() {
             )}
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <div>
-                <Form.Label id="normal_text">E-mailadres</Form.Label>
-                <InputGroup id="input">
+                <Form.Label className="normal_text">E-mailadres</Form.Label>
+                <InputGroup className="input">
                     <Form.Control
-                        id="form_control"
+                        className="form_control"
                         type="email"
                         value={username}
                         placeholder="naam@voorbeeld.com"
@@ -70,20 +70,20 @@ function LoginForm() {
             />
 
             <a href="/forgot-password">
-                <label id="small_text">Wachtwoord vergeten?</label>
+                <label className="small_text">Wachtwoord vergeten?</label>
             </a>
-            <div id="padding">
+            <div className="padding">
                 <Button
-                    id="wide_button"
+                    className="wide_button"
                     size="lg"
                     type="submit">
                     Login
                 </Button>
             </div>
 
-            <p id="normal_text">
+            <p className="normal_text">
                 Heb je nog geen account?{" "}
-                <Link id="link" href="/signup">
+                <Link className="link" href="/signup">
                     Registreer je hier!
                 </Link>
             </p>

@@ -22,7 +22,6 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
                                                          showPassword,
                                                          label,
                                                          placeholder,
-                                                         showIconButton,
                                                          customOnInput,
                                                          customOnInvalid,
                                                      }) => {
@@ -43,10 +42,10 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 
     return (
         <div>
-            <Form.Label id="normal_text">{label}</Form.Label>
-            <InputGroup id="input">
+            <Form.Label className="normal_text">{label}</Form.Label>
+            <InputGroup className="input">
                 <FormControl
-                    id="form_control"
+                    className="form_control"
                     type={showPassword ? 'text' : 'password'}
                     value={value}
                     onInput={handleInput}
