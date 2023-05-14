@@ -1,6 +1,6 @@
 import AdminHeader from "@/components/header/adminHeader";
 import React, {useEffect, useState} from "react";
-import {differenceInMinutes, endOfWeek, startOfWeek, subMonths} from "date-fns";
+import {addDays, differenceInMinutes, endOfWeek, startOfWeek, subDays, subMonths} from "date-fns";
 import {Card, Col, Container, Form, ListGroup, Row} from "react-bootstrap";
 import {formatDate} from "@/lib/date";
 import {getWorkedHours} from "@/lib/analysis";
@@ -50,17 +50,13 @@ export default function AdminAnalysisWorkingHours() {
         if (allTours.length <= 0) {
             return;
         }
-        if (endDate < startDate) {
-            setErrorMessages(["Einde van periode moet na start komen."]);
-            return;
-        }
         getWorkedHours(startDate, endDate).then(res => {
             const hours: WorkedHours[] = res.data;
             setWorkedHours(hours.sort((a, b) => b.worked_minutes - a.worked_minutes));
         }, err => setErrorMessages(handleError(err)));
         getAllStudentOnTourFromDate({startDate, endDate}).then(res => {
             const sots: StudentOnTourStringDate[] = res.data;
-            setStudentOnTours(sots.filter(s => s.completed_tour && s.started_tour).map(s => {
+            setStudentOnTours(sots.map(s => {
                 return {
                     id: s.id,
                     student: s.student,
@@ -87,8 +83,11 @@ export default function AdminAnalysisWorkingHours() {
             return "Onbekend";
         }
         const region: RegionInterface | undefined = allRegions.find(r => r.id === tour.region);
+        if (!studentOnTour.completed_tour && !studentOnTour.started_tour) {
+            return `${tour.name} (${region ? region.region : "onbekend"}) - ${studentOnTour.date.toLocaleDateString("en-GB")} (gepland)`;
+        }
         if (!studentOnTour.completed_tour || !studentOnTour.started_tour) {
-            return `${tour.name} (${region ? region.region : "onbekend"}) - ${studentOnTour.date.toLocaleDateString("en-GB")}`;
+            return `${tour.name} (${region ? region.region : "onbekend"}) - ${studentOnTour.date.toLocaleDateString("en-GB")} (bezig)`;
         }
         const completionTime = new Date(studentOnTour.completed_tour);
         const startingTime = new Date(studentOnTour.started_tour);
@@ -117,6 +116,7 @@ export default function AdminAnalysisWorkingHours() {
                         <Form.Control
                             type="date"
                             value={formatDate(startDate)}
+                            max={formatDate(subDays(endDate, 1))}
                             onChange={e => {
                                 setStartDate(new Date(e.target.value));
                             }}
@@ -126,6 +126,7 @@ export default function AdminAnalysisWorkingHours() {
                         <Form.Label>Einde periode:</Form.Label>
                         <Form.Control
                             type="date"
+                            min={formatDate(addDays(startDate, 1))}
                             value={formatDate(endDate)}
                             onChange={e => {
                                 setEndDate(new Date(e.target.value));
