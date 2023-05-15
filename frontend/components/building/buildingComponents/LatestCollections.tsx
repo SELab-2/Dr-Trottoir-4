@@ -1,8 +1,12 @@
-import { GarbageCollectionInterface, getGarbageCollectionFromBuilding } from "@/lib/garbage-collection";
-import { useEffect, useState } from "react";
+import {GarbageCollectionInterface, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
+import React, {useEffect, useState} from "react";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
-function LatestCollections({ building }: { building: number }) {
+function LatestCollections({building}: { building: number }) {
     const [collections, setCollections] = useState<GarbageCollectionInterface[]>([]);
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (building) {
@@ -17,34 +21,40 @@ function LatestCollections({ building }: { building: number }) {
             })
                 .then((res) => {
                     setCollections(res.data);
+                    setErrorMessages([]);
                 })
                 .catch((error) => {
-                    //TODO: generieke functie nodig voor error messages
-                    //  De error message zou dan kunnen pop uppen in een modal
-                    console.error(error);
+                    setErrorMessages(handleError(error));
                 });
         }
     }, [building]);
 
     return (
-        <div style={{ height: "100%", overflowY: "scroll" }}>
-            <h1>Recente ophalingen</h1>
-            {collections.length > 0 ? (
-                <ul>
-                    {collections.map((collection: GarbageCollectionInterface) => (
-                        <li key={collection.id}>
-                            <>
-                                Type: {collection.garbage_type} <br />
-                                Datum: {collection.date}
-                                <br />
-                            </>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>Er zijn geen ophalingen gevonden in de voorbije maand.</p>
-            )}
-        </div>
+        <>
+
+            <div style={{height: "100%", overflowY: "scroll"}}>
+                <h1>Recente ophalingen</h1>
+
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+
+                {collections.length > 0 ? (
+                    <ul>
+                        {collections.map((collection: GarbageCollectionInterface) => (
+                            <li key={collection.id}>
+                                <>
+                                    Type: {collection.garbage_type} <br/>
+                                    Datum: {collection.date}
+                                    <br/>
+                                </>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>Er zijn geen ophalingen gevonden in de voorbije maand.</p>
+                )}
+            </div>
+
+        </>
     );
 }
 

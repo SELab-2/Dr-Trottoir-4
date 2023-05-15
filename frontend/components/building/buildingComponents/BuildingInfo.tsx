@@ -1,15 +1,17 @@
-import { TiPencil } from "react-icons/ti";
-import React, { useEffect, useState } from "react";
+import {TiPencil} from "react-icons/ti";
+import React, {useEffect, useState} from "react";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
-import { BuildingInterface } from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { useRouter } from "next/router";
+import {BuildingInterface} from "@/lib/building";
+import {getRegion} from "@/lib/region";
+import {useRouter} from "next/router";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 function BuildingInfo({
-    building,
-    setBuilding,
-    type,
-}: {
+                          building,
+                          setBuilding,
+                          type,
+                      }: {
     building: BuildingInterface;
     setBuilding: (b: any) => void;
     type: "syndic" | "admin" | "public";
@@ -17,6 +19,8 @@ function BuildingInfo({
     const router = useRouter();
     const [editBuilding, setEditBuilding] = useState(false);
     const [regionName, setRegionName] = useState("/");
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (building) {
@@ -49,8 +53,9 @@ function BuildingInfo({
             const region = await getRegion(region_id);
             const regionName = region.data.region;
             setRegionName(regionName);
+            setErrorMessages([]);
         } catch (error) {
-            console.error(error);
+            setErrorMessages(handleError(error));
             setRegionName("/");
         }
     }
@@ -66,13 +71,6 @@ function BuildingInfo({
                 />
             ) : null}
 
-            {/*type == "admin" ? <PatchBuildingAdminModal
-                show={editBuilding}
-                closeModal={() => setEditBuilding(false)}
-                building={building}
-                setBuilding={setBuilding} />
-            : null*/}
-
             <h1>
                 Gebouw{" "}
                 {type == "syndic" ? (
@@ -85,6 +83,9 @@ function BuildingInfo({
                     ></TiPencil>
                 ) : null}
             </h1>
+
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+
             <p>ID: {get_building_key("id")} </p>
             <p>Naam: {get_building_key("name")}</p>
             <p>Stad: {get_building_key("city")}</p>

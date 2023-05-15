@@ -1,22 +1,26 @@
-import { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     getRemarksAtBuildingOfSpecificBuilding,
     RemarkAtBuildingInterface,
     translateRemarkAtBuildingType,
 } from "@/lib/remark-at-building";
-import { getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
-import { Accordion, Card } from "react-bootstrap";
+import {getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface} from "@/lib/picture-of-remark";
+import {Accordion, Card} from "react-bootstrap";
 import ImageEnlargeModal from "@/components/ImageEnlargeModal";
-import { convertToSensibleDateLong, convertToSensibleDateShort } from "@/lib/dateUtil";
-import { AxiosResponse } from "axios/index";
+import {convertToSensibleDateLong, convertToSensibleDateShort} from "@/lib/dateUtil";
+import {AxiosResponse} from "axios/index";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
-function CollectionCards({ building, date }: { building: number; date: string | null }) {
+function CollectionCards({building, date}: { building: number; date: string | null }) {
     const [collectionDetails, setCollectionDetails] = useState<
         [RemarkAtBuildingInterface, PictureOfRemarkInterface[]][] | []
     >([]);
 
     const [enlargeImageShow, setEnlargeImageShow] = useState<boolean>(false);
     const [enlargeImageURL, setEnlargeImageURL] = useState<string>("");
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     function handleRemarksAtBuildingsCall(response: AxiosResponse) {
         const responseData: RemarkAtBuildingInterface[] = response.data.sort(
@@ -42,28 +46,31 @@ function CollectionCards({ building, date }: { building: number; date: string | 
                     responseData.map((remark, index) => [remark, pictureData[index]]);
 
                 setCollectionDetails(newCollectionDetails);
+                setErrorMessages([]);
             })
             .catch((error) => {
-                console.error(error);
+                setErrorMessages(handleError(error));
             });
     }
 
     useEffect(() => {
         if (date) {
-            getRemarksAtBuildingOfSpecificBuilding(building, { date: date })
+            getRemarksAtBuildingOfSpecificBuilding(building, {date: date})
                 .then((response) => {
                     handleRemarksAtBuildingsCall(response);
+                    setErrorMessages([]);
                 })
                 .catch((error) => {
-                    console.error(error);
+                    setErrorMessages(handleError(error));
                 });
         } else {
-            getRemarksAtBuildingOfSpecificBuilding(building, { mostRecent: true })
+            getRemarksAtBuildingOfSpecificBuilding(building, {mostRecent: true})
                 .then((response) => {
                     handleRemarksAtBuildingsCall(response);
+                    setErrorMessages([]);
                 })
                 .catch((error) => {
-                    console.error(error);
+                    setErrorMessages(handleError(error));
                 });
         }
     }, [building]);
@@ -75,48 +82,54 @@ function CollectionCards({ building, date }: { building: number; date: string | 
 
     return (
         <>
-            <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL} />
+            <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL}/>
 
             <h1>Details laatste ophaling {date ? "(" + convertToSensibleDateShort(date) + ")" : null}</h1>
-            <div style={{ margin: "0 0", width: "75%", maxWidth: "95%" }}>
-                {collectionDetails.length == 0}
-                <Accordion alwaysOpen>
-                    {collectionDetails.map(([remark, pictures]) => (
-                        <Accordion.Item eventKey={remark.id + ""} key={remark.id}>
-                            <Accordion.Header>{translateRemarkAtBuildingType(remark.type)}</Accordion.Header>
-                            <Accordion.Body>
-                                <Card.Subtitle className="mb-2 text-muted">
-                                    {convertToSensibleDateLong(remark.timestamp + "")}
-                                </Card.Subtitle>
-                                <Card.Text>{remark.remark}</Card.Text>
-                                <div>
-                                    {pictures.map((picture: PictureOfRemarkInterface) => (
-                                        <Card.Img
-                                            key={picture.id}
-                                            src={`${("" + process.env.NEXT_PUBLIC_BASE_API_URL).slice(0, -1)}${
-                                                picture.picture
-                                            }`}
-                                            alt="Remark picture"
-                                            style={{
-                                                maxHeight: "15em",
-                                                width: "auto",
-                                                maxWidth: "95%",
-                                                cursor: "pointer",
-                                            }}
-                                            onClick={() =>
-                                                imageClick(
-                                                    `${("" + process.env.NEXT_PUBLIC_BASE_API_URL).slice(0, -1)}${
-                                                        picture.picture
-                                                    }`
-                                                )
-                                            }
-                                        />
-                                    ))}
-                                </div>
-                            </Accordion.Body>
-                        </Accordion.Item>
-                    ))}
-                </Accordion>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <div style={{margin: "0 0", width: "75%", maxWidth: "95%"}}>
+                {collectionDetails.length == 0 ? (
+                    <p>Er zijn geen ophalingen gevonden.</p>
+                ) : (
+                    <Accordion alwaysOpen>
+                        {collectionDetails.map(([remark, pictures]) => (
+                            <Accordion.Item eventKey={remark.id + ""} key={remark.id}>
+                                <Accordion.Header>{translateRemarkAtBuildingType(remark.type)}</Accordion.Header>
+                                <Accordion.Body>
+                                    <Card.Subtitle className="mb-2 text-muted">
+                                        {convertToSensibleDateLong(remark.timestamp + "")}
+                                    </Card.Subtitle>
+                                    <Card.Text>{remark.remark}</Card.Text>
+                                    <div>
+                                        {pictures.map((picture: PictureOfRemarkInterface) => (
+                                            <Card.Img
+                                                key={picture.id}
+                                                src={`${("" + process.env.NEXT_PUBLIC_BASE_API_URL).slice(0, -1)}${
+                                                    picture.picture
+                                                }`}
+                                                alt="Remark picture"
+                                                style={{
+                                                    maxHeight: "15em",
+                                                    width: "auto",
+                                                    maxWidth: "95%",
+                                                    cursor: "pointer",
+                                                }}
+                                                onClick={() =>
+                                                    imageClick(
+                                                        `${("" + process.env.NEXT_PUBLIC_BASE_API_URL).slice(0, -1)}${
+                                                            picture.picture
+                                                        }`
+                                                    )
+                                                }
+                                            />
+                                        ))}
+                                    </div>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        ))}
+                    </Accordion>
+                )
+                }
+
             </div>
         </>
     );
