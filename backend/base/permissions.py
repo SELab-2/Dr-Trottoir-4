@@ -1,9 +1,8 @@
+from django.utils.translation import gettext_lazy as _
 from rest_framework.permissions import BasePermission
 
 from base.models import Building, User, Role, Manual, Tour, StudentOnTour
 from util.request_response_util import request_to_dict
-from django.utils.translation import gettext_lazy as _
-
 
 SAFE_METHODS = ["GET", "HEAD", "OPTIONS"]
 

@@ -6,135 +6,93 @@ import person from "@/public/icons/person.svg";
 import menu from "@/public/icons/menu.svg";
 import Link from "next/link";
 import Logout from "@/components/logout";
+import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 
 const AdminHeader = () => {
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <Navbar bg="dark" variant="dark" expand="lg">
             <div className="container-fluid">
                 <Link href="/admin/dashboard">
-                    <Image src={logo} alt="My App Logo" width={120} height={30} />
+                    <Navbar.Brand>
+                        <Image src={logo} alt="My App Logo" width={120} height={30}/>
+                    </Navbar.Brand>
                 </Link>
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li className="nav-item">
-                            <Link className={`nav-link ${styles.text}`} href="/admin/dashboard">
-                                Dashboard
+                <Navbar.Collapse id="navbarSupportedContent">
+                    <Nav className="ms-auto mb-2 mb-lg-0">
+                        <Nav.Link className={styles.text} href="/admin/dashboard">
+                            Dashboard
+                        </Nav.Link>
+                        <NavDropdown
+                            title="Data"
+                            className={styles.text}
+                            id="navbarDropdownData"
+                            menuVariant="dark"
+                        >
+                            <Link href="/admin/data/users">
+                                <NavDropdown.Item>Gebruikers</NavDropdown.Item>
                             </Link>
-                        </li>
-                        <li className="position-relative">
-                            <a
-                                className={`nav-link dropdown-toggle ${styles.text}`}
-                                id="navbarDropdownData"
-                                role="button"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                            >
-                                Data
-                            </a>
-                            <ul
-                                className="dropdown-menu dropdown-menu-en dropdown-menu-end"
-                                aria-labelledby="navbarDropdownData"
-                            >
-                                <li>
-                                    <Link className="dropdown-item" href="/admin/data/users">
-                                        Gebruikers
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link className="dropdown-item" href="/admin/data/schedules">
-                                        Planning
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link className="dropdown-item" href="/admin/data/garbage-collection">
-                                        Vuilophaling
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link className="dropdown-item" href="/admin/data/tours">
-                                        Rondes
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link className="dropdown-item" href="/admin/data/buildings">
-                                        Gebouwen
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link className="dropdown-item" href="/admin/data/regions">
-                                        Regio's
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link className="dropdown-item" href="/admin/data/mails">
-                                        Mails
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link className="dropdown-item" href="/admin/data/lobby">
-                                        Lobby
-                                    </Link>
-                                </li>
-                            </ul>
-                        </li>
-                        <li className="nav-item">
-                            <Link className={`nav-link ${styles.text}`} href="/admin/communication">
-                                Communicatie
+                            <Link href="/admin/data/schedules">
+                                <NavDropdown.Item>Planning</NavDropdown.Item>
                             </Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className={`nav-link ${styles.text}`} href="/admin/analysis">
-                                Analyse
+                            <Link href="/admin/data/garbage-collection">
+                                <NavDropdown.Item>Vuilophaling</NavDropdown.Item>
                             </Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className={`nav-link ${styles.text}`} href="/admin/my-schedule">
-                                Mijn agenda
+                            <Link href="/admin/data/tours">
+                                <NavDropdown.Item>Rondes</NavDropdown.Item>
                             </Link>
-                        </li>
-                    </ul>
-                </div>
-                <div className="ms-auto">
-                    <a
-                        className="nav-link dropdown-toggle"
+                            <Link href="/admin/data/buildings">
+                                <NavDropdown.Item>Gebouwen</NavDropdown.Item>
+                            </Link>
+                            <Link href="/admin/data/regions">
+                                <NavDropdown.Item>Regio's</NavDropdown.Item>
+                            </Link>
+                            <Link href="/admin/data/mails">
+                                <NavDropdown.Item>Mails</NavDropdown.Item>
+                            </Link>
+                            <Link href="/admin/data/lobby">
+                                <NavDropdown.Item>Lobby</NavDropdown.Item>
+                            </Link>
+                        </NavDropdown>
+                        <Nav.Link className={styles.text} href="/admin/communication">
+                            Communicatie
+                        </Nav.Link>
+                        <Nav.Link className={styles.text} href="/admin/analysis">
+                            Analyse
+                        </Nav.Link>
+                        <Nav.Link className={styles.text} href="/admin/my-schedule">
+                            Mijn agenda
+                        </Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Navbar.Toggle className={styles.menuIcon} aria-controls="navbarSupportedContent"
+                                   aria-label="Toggle navigation">
+                        <Image src={menu} alt="My App Menu" height={24}/>
+                    </Navbar.Toggle>
+                    <NavDropdown
                         id="navbarDropdown1"
-                        role="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
+                        menuVariant="dark"
+                        align="end"
+                        title={
+                            <Image
+                                src={person}
+                                alt="My App Logo"
+                                className={styles.person}
+                                height={24}
+                            />
+                        }
                     >
-                        <Image
-                            src={person}
-                            alt="My App Logo"
-                            className={`rounded-circle ${styles.person}`}
-                            height={24}
-                        />
-                    </a>
-                    <ul className="dropdown-menu dropdown-menu-en dropdown-menu-end" aria-labelledby="navbarDropdown1">
-                        <li>
-                            <Link className="dropdown-item" href="/user/profile">
-                                Bewerk account
-                            </Link>
-                        </li>
-                        <li>
-                            <hr className="dropdown-divider" />
-                        </li>
-                        <li>
-                            <Logout />
-                        </li>
-                    </ul>
+                        <Link href="/user/profile">
+                            <NavDropdown.Item>Bewerk account</NavDropdown.Item>
+                        </Link>
+                        <NavDropdown.Divider/>
+                        <NavDropdown.Item>
+                            <Logout/>
+                        </NavDropdown.Item>
+                    </NavDropdown>
                 </div>
-                <a
-                    className={`nav-link ${styles.menuIcon}`}
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <Image src={menu} alt="My App Menu" height={24} />
-                </a>
             </div>
-        </nav>
+        </Navbar>
     );
 };
 
