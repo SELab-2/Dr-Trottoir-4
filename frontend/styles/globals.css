@@ -92,13 +92,16 @@
     margin-top: 3rem;
 }
 
+.container {
+    margin-top: 3rem;
+}
+
 
 .filler_image {
     max-height: 500px;
     max-width: 100%;
     object-fit: contain;
 }
-
 
 
 @media screen and (max-width: 768px) {

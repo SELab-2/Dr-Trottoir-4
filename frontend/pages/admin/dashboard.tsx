@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { getAllTours, Tour } from "@/lib/tour";
-import { getAllStudentOnTourFromToday, StudentOnTour } from "@/lib/student-on-tour";
-import { getAllUsers, User } from "@/lib/user";
+import React, {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {getAllTours, Tour} from "@/lib/tour";
+import {getAllStudentOnTourFromToday, StudentOnTour} from "@/lib/student-on-tour";
+import {getAllUsers, User} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import Loading from "@/components/loading";
 import LinearProgress from "@mui/material/LinearProgress";
-import Box from "@mui/material/Box";
-import { styled } from "@mui/system";
+import {styled} from "@mui/system";
 import LiveField from "@/components/liveField";
-import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
+import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
 import {
     getRemarksAtBuildingOfSpecificBuilding,
     RemarkAtBuildingInterface,
     translateRemarkAtBuildingType,
 } from "@/lib/remark-at-building";
+import {Button, Container, Table} from "react-bootstrap";
 
 const GreenLinearProgress = styled(LinearProgress)(() => ({
     height: "20px",
@@ -131,15 +131,73 @@ function AdminDashboard() {
     if (loading) {
         return (
             <>
-                <AdminHeader />
-                <Loading />
+                <AdminHeader/>
+                <Loading/>
             </>
         );
     }
     return (
         <div>
-            <AdminHeader />
-            {studentsOnTours.length > 0 ? (
+            <AdminHeader/>
+            <Container className="container">
+                {studentsOnTours.length > 0 ? (
+                    <>
+                        <label className="title">Rondes van vandaag</label>
+                        <Table responsive>
+                            <thead>
+                            <tr>
+                                <th>Ronde</th>
+                                <th>Student</th>
+                                <th>Voortgang</th>
+                                <th>Opmerkingen</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {studentsOnTours.map((studentOnTour) => {
+                                const tour = tours.find((t) => t.id === studentOnTour.tour);
+                                const user = users.find((u) => u.id === studentOnTour.student);
+
+                                if (!tour || !user) return null;
+
+                                return (
+                                    <tr key={studentOnTour.id}>
+                                        <td>{tour.name}</td>
+                                        <td>{`${user.first_name} ${user.last_name}`}</td>
+                                        <td>
+                                            <GreenLinearProgress
+                                                variant="determinate"
+                                                value={progressRecord[studentOnTour.id] || 0}
+                                            />
+                                        </td>
+                                        <td>
+                                            {remarksRecord[studentOnTour.id] > 0 ? (
+                                                <Button
+                                                    variant="link"
+                                                    onClick={() => redirectToRemarksPage(studentOnTour.id)}
+                                                >
+                                                    <LiveField
+                                                        fetcher={() => fetchRemarks(studentOnTour)}
+                                                        formatter={getRemarkText}
+                                                        interval={3000}
+                                                    />
+                                                </Button>
+                                            ) : (
+                                                "Geen opmerkingen"
+                                            )}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                            </tbody>
+                        </Table>
+                    </>
+                ) : (
+                    <>
+                        <label className="title">Geen rondes vandaag</label>
+                    </>
+                )}
+            </Container>
+            {/*{studentsOnTours.length > 0 ? (
                 <>
                     <h2>Rondes van vandaag</h2>
                     <table className="table">
@@ -190,7 +248,7 @@ function AdminDashboard() {
                 </>
             ) : (
                 <h2>Geen rondes vandaag</h2>
-            )}
+            )}*/}
         </div>
     );
 }
