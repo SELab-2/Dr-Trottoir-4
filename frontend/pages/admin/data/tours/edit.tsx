@@ -1,33 +1,28 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/router";
-import { getAllRegions, getRegion, RegionInterface } from "@/lib/region";
-import { getTour, patchTour, postTour, swapBuildingsOnTour, Tour } from "@/lib/tour";
-import { BuildingInterface, getAllBuildings } from "@/lib/building";
-import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
-import MaterialReactTable, { MRT_ColumnDef, MRT_Row } from "material-react-table";
-import { Box, IconButton, Tooltip } from "@mui/material";
-import { Button } from "react-bootstrap";
-import SaveIcon from "@mui/icons-material/Save";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { Add, Delete, Remove } from "@mui/icons-material";
-import { handleError } from "@/lib/error";
+import React, {useEffect, useMemo, useState} from "react";
+import {useRouter} from "next/router";
+import {getAllRegions, getRegion, RegionInterface} from "@/lib/region";
+import {getTour, patchTour, postTour, swapBuildingsOnTour, Tour} from "@/lib/tour";
+import {BuildingInterface, getAllBuildings} from "@/lib/building";
+import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
+import MaterialReactTable, {MRT_ColumnDef, MRT_Row} from "material-react-table";
+import {Box, IconButton, Tooltip} from "@mui/material";
+import {Button, Card, Col, FormControl, Row} from "react-bootstrap";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {Add, Remove} from "@mui/icons-material";
+import {handleError} from "@/lib/error";
 import AdminHeader from "@/components/header/adminHeader";
-import styles from "@/styles/Login.module.css";
-import { BuildingNotOnTourView, BuildingOnTourView, TourView } from "@/types";
-import { TourDeleteModal } from "@/components/admin/tourDeleteModal";
+import {BuildingNotOnTourView, BuildingOnTourView, TourView} from "@/types";
+import {TourDeleteModal} from "@/components/admin/tourDeleteModal";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import Select from "react-select";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DataToursEditQuery extends ParsedUrlQuery {
     tour?: number;
 }
 
-/**
- * https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=115-606&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
- * @constructor
- */
 function AdminDataToursEdit() {
     const router = useRouter();
     const query: DataToursEditQuery = router.query as DataToursEditQuery;
@@ -135,7 +130,7 @@ function AdminDataToursEdit() {
                 (res) => {
                     const r: Tour = res.data;
                     setTour(r);
-                    setTourView({ name: r.name, region: "", tour_id: Number(query.tour), last_modified: "" });
+                    setTourView({name: r.name, region: "", tour_id: Number(query.tour), last_modified: ""});
                 },
                 (err) => {
                     console.error(err);
@@ -271,7 +266,7 @@ function AdminDataToursEdit() {
      */
     function addToBuildingOnTour(buildingNotOnTour: BuildingNotOnTourView) {
         const index: number = buildingsOnTourView.length;
-        const bot: BuildingOnTourView = { ...buildingNotOnTour, index: index };
+        const bot: BuildingOnTourView = {...buildingNotOnTour, index: index};
         const i = buildingsNotOnTourView.indexOf(buildingNotOnTour);
         if (i > -1) {
             buildingsNotOnTourView.splice(i, 1);
@@ -313,7 +308,7 @@ function AdminDataToursEdit() {
             return;
         }
         if (tour) {
-            patchTour(tour.id, { name: tourName }, new Date(Date.now())).then(
+            patchTour(tour.id, {name: tourName}, new Date(Date.now())).then(
                 async (_) => {
                     if (buildingsOnTourView.length > 0) {
                         const buildingIndices: { [b: number]: number } = {};
@@ -395,7 +390,7 @@ function AdminDataToursEdit() {
 
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             <TourDeleteModal
                 closeModal={closeModal}
                 show={showDeleteModal}
@@ -403,158 +398,176 @@ function AdminDataToursEdit() {
                 setSelectedTour={setTourView}
                 onDelete={closeAndRouteDeleteModal}
             />
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
-                {!tour && (
-                    <>
-                        <label className="form-label">Selecteer een regio:</label>
-                        <Select
-                            options={possibleRegions.map((region: RegionInterface) => {
-                                return { value: region.region, label: region.region };
-                            })}
-                            value={
-                                selectedRegion
-                                    ? { value: selectedRegion, label: selectedRegion }
-                                    : {
-                                          value: "",
-                                          label: "",
-                                      }
-                            }
-                            onChange={(s) => {
-                                if (s && s.value) {
-                                    setSelectedRegion(s.value);
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <Card style={{margin: '10px'}}>
+                <Row>
+                    <Col md={4}>
+                        <label className="normal_text">Ronde:</label>
+                        <div className="input">
+                            <FormControl
+                                className="form_control"
+                                value={tourName}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    setTourName(e.target.value);
+                                }}
+                            />
+                        </div>
+                    </Col>
+                    {!tour && (
+                        <Col md={4} className="padding">
+                            <label className="normal_text">Regio:</label>
+                            <Select
+                                options={possibleRegions.map((region: RegionInterface) => {
+                                    return {value: region.region, label: region.region};
+                                })}
+                                value={
+                                    selectedRegion
+                                        ? {value: selectedRegion, label: selectedRegion}
+                                        : {
+                                            value: "",
+                                            label: "",
+                                        }
                                 }
-                            }}
-                            placeholder={"Selecteer regio"}
-                            menuPortalTarget={document.querySelector("body")}
-                        />
-                    </>
+                                onChange={(s) => {
+                                    if (s && s.value) {
+                                        setSelectedRegion(s.value);
+                                    }
+                                }}
+                                placeholder={"Selecteer regio"}
+                                menuPortalTarget={document.querySelector("body")}
+                                styles={{
+                                    control: (provided) => ({
+                                        ...provided,
+                                        maxWidth: 300,
+                                        width: '100%',
+                                        height: 40,
+                                    }),
+                                }}
+                            />
+                        </Col>
+                    )}
+                    {tour && (
+                        <Col md={4} className="d-flex justify-content-end align-items-center">
+                            <label className="normal_text">{region ? `Regio: ${region.region}` : ""}</label>
+                            <label className="normal_text">{`Laatste aanpassing: ${new Date(
+                                tour.modified_at
+                            ).toLocaleString()}`}</label>
+                        </Col>
+                    )}
+                    <Col md={4} className="d-flex justify-content-end align-items-center">
+                        <Button
+                            className="small_button"
+                            size="sm"
+                            onClick={() => setShowDeleteModal(true)}>
+                            Verwijder
+                        </Button>
+                        <Button
+                            className="small_button"
+                            size="sm"
+                            onClick={() => saveTour().then()}>
+                            Sla op
+                        </Button>
+                    </Col>
+                </Row>
+            </Card>
+            <MaterialReactTable
+                columns={columnsBuildingOnTourView}
+                data={buildingsOnTourView}
+                displayColumnDefOptions={{
+                    "mrt-row-actions": {
+                        muiTableHeadCellProps: {
+                            align: "center",
+                        },
+                        header: "Verwijder",
+                    },
+                }}
+                enablePagination={false}
+                enableEditing
+                // Don't show the tour_id
+                enableHiding={false}
+                enableBottomToolbar={false}
+                initialState={{columnVisibility: {buildingId: false, index: false}}}
+                state={{isLoading: isLoading}}
+                autoResetPageIndex={false}
+                enableRowNumbers
+                enableRowOrdering
+                muiTableBodyRowDragHandleProps={({table}) => ({
+                    onDragEnd: () => {
+                        const {draggingRow, hoveredRow} = table.getState();
+                        if (hoveredRow && draggingRow) {
+                            buildingsOnTourView.splice(
+                                (hoveredRow as MRT_Row<BuildingOnTourView>).index,
+                                0,
+                                buildingsOnTourView.splice(draggingRow.index, 1)[0]
+                            );
+                            buildingsOnTourView.forEach((view: BuildingOnTourView, index) => (view.index = index));
+                            setBuildingsOnTourView([...buildingsOnTourView]);
+                        }
+                    },
+                })}
+                renderRowActions={({row}) => (
+                    <Box sx={{display: "flex", gap: "1rem"}}>
+                        <Tooltip arrow placement="left" title="Verwijder van ronde">
+                            <IconButton
+                                onClick={() => {
+                                    const buildingOnTourView: BuildingOnTourView = row.original;
+                                    removeFromBuildingOnTour(buildingOnTourView);
+                                }}
+                            >
+                                <Remove/>
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 )}
-                <>
-                    <label className="form-label">Ronde:</label>
-                    <input
-                        className={`form-control form-control-lg ${styles.input}`}
-                        value={tourName}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setTourName(e.target.value);
-                        }}
-                    ></input>
-                </>
-                {tour && (
-                    <>
-                        <label className="form-label">{region ? `Regio: ${region.region}` : ""}</label>
-                        <label className="form-label">{`Laatste aanpassing: ${new Date(
-                            tour.modified_at
-                        ).toLocaleString()}`}</label>
-                    </>
+                renderTopToolbarCustomActions={() => (
+                    <Box sx={{display: "flex", gap: "1rem"}}>
+                        <label className="normal_text" style={{fontWeight: 'bold'}}>
+                            Gebouwen op deze ronde {tour ? `(regio ${region?.region}):` : ":"}
+                        </label>
+                    </Box>
                 )}
-                <Tooltip title="Sla op">
-                    <SaveIcon
-                        onClick={() => {
-                            saveTour().then();
-                        }}
-                    />
-                </Tooltip>
-                {tour && (
-                    <Tooltip title="Verwijder ronde">
-                        <Delete
-                            onClick={() => {
-                                setShowDeleteModal(true);
-                            }}
-                        />
-                    </Tooltip>
-                )}
+            />
 
-                <MaterialReactTable
-                    columns={columnsBuildingOnTourView}
-                    data={buildingsOnTourView}
-                    displayColumnDefOptions={{
-                        "mrt-row-actions": {
-                            muiTableHeadCellProps: {
-                                align: "center",
-                            },
-                            header: "Verwijder",
+            <MaterialReactTable
+                columns={columnsBuildingNotOnTourView}
+                data={buildingsNotOnTourView}
+                enableBottomToolbar={false}
+                displayColumnDefOptions={{
+                    "mrt-row-actions": {
+                        muiTableHeadCellProps: {
+                            align: "center",
                         },
-                    }}
-                    enablePagination={false}
-                    enableEditing
-                    // Don't show the tour_id
-                    enableHiding={false}
-                    enableBottomToolbar={false}
-                    initialState={{ columnVisibility: { buildingId: false, index: false } }}
-                    state={{ isLoading: isLoading }}
-                    autoResetPageIndex={false}
-                    enableRowNumbers
-                    enableRowOrdering
-                    muiTableBodyRowDragHandleProps={({ table }) => ({
-                        onDragEnd: () => {
-                            const { draggingRow, hoveredRow } = table.getState();
-                            if (hoveredRow && draggingRow) {
-                                buildingsOnTourView.splice(
-                                    (hoveredRow as MRT_Row<BuildingOnTourView>).index,
-                                    0,
-                                    buildingsOnTourView.splice(draggingRow.index, 1)[0]
-                                );
-                                buildingsOnTourView.forEach((view: BuildingOnTourView, index) => (view.index = index));
-                                setBuildingsOnTourView([...buildingsOnTourView]);
-                            }
-                        },
-                    })}
-                    renderRowActions={({ row }) => (
-                        <Box sx={{ display: "flex", gap: "1rem" }}>
-                            <Tooltip arrow placement="left" title="Verwijder van ronde">
-                                <IconButton
-                                    onClick={() => {
-                                        const buildingOnTourView: BuildingOnTourView = row.original;
-                                        removeFromBuildingOnTour(buildingOnTourView);
-                                    }}
-                                >
-                                    <Remove />
-                                </IconButton>
-                            </Tooltip>
-                        </Box>
-                    )}
-                />
-
-                <MaterialReactTable
-                    columns={columnsBuildingNotOnTourView}
-                    data={buildingsNotOnTourView}
-                    enableBottomToolbar={false}
-                    displayColumnDefOptions={{
-                        "mrt-row-actions": {
-                            muiTableHeadCellProps: {
-                                align: "center",
-                            },
-                            header: "Voeg toe",
-                        },
-                    }}
-                    enablePagination={false}
-                    enableEditing
-                    state={{ isLoading: isLoading }}
-                    // Don't show the tour_id
-                    enableHiding={false}
-                    initialState={{ columnVisibility: { buildingId: false } }}
-                    renderRowActions={({ row }) => (
-                        <Box sx={{ display: "flex", gap: "1rem" }}>
-                            <Tooltip arrow placement="left" title="Voeg toe aan ronde">
-                                <IconButton
-                                    onClick={() => {
-                                        const bnot: BuildingNotOnTourView = row.original;
-                                        addToBuildingOnTour(bnot);
-                                    }}
-                                >
-                                    <Add />
-                                </IconButton>
-                            </Tooltip>
-                        </Box>
-                    )}
-                    renderTopToolbarCustomActions={() => (
-                        <Box sx={{ display: "flex", gap: "1rem" }}>
-                            <label className="form-label">Gebouwen niet op deze ronde (regio {region?.region})</label>
-                        </Box>
-                    )}
-                />
-            </Box>
+                        header: "Voeg toe",
+                    },
+                }}
+                enablePagination={false}
+                enableEditing
+                state={{isLoading: isLoading}}
+                // Don't show the tour_id
+                enableHiding={false}
+                initialState={{columnVisibility: {buildingId: false}}}
+                renderRowActions={({row}) => (
+                    <Box sx={{display: "flex", gap: "1rem"}}>
+                        <Tooltip arrow placement="left" title="Voeg toe aan ronde">
+                            <IconButton
+                                onClick={() => {
+                                    const bnot: BuildingNotOnTourView = row.original;
+                                    addToBuildingOnTour(bnot);
+                                }}
+                            >
+                                <Add/>
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                )}
+                renderTopToolbarCustomActions={() => (
+                    <Box sx={{display: "flex", gap: "1rem"}}>
+                        <label className="normal_text" style={{fontWeight: 'bold'}}>
+                            Gebouwen niet op deze ronde {tour ? `(regio ${region?.region}):` : ":"}
+                        </label>
+                    </Box>
+                )}
+            />
         </>
     );
 }
