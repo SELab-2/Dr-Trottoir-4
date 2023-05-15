@@ -17,26 +17,24 @@ const StudentHeader = () => {
                     </Navbar.Brand>
                 </Link>
                 <NavDropdown
-                        id="navbarDropdown1"
-                        menuVariant="dark"
-                        align="end"
-                        title={
-                            <Image
-                                src={person}
-                                alt="My App Logo"
-                                className={styles.person}
-                                height={24}
-                            />
-                        }
-                    >
-                        <Link href="/user/profile">
-                            <NavDropdown.Item>Bewerk account</NavDropdown.Item>
-                        </Link>
-                        <NavDropdown.Divider/>
-                        <NavDropdown.Item>
-                            <Logout/>
-                        </NavDropdown.Item>
-                    </NavDropdown>
+                    id="navbarDropdown1"
+                    menuVariant="dark"
+                    align="end"
+                    title={
+                        <Image
+                            src={person}
+                            alt="My App Logo"
+                            className={styles.person}
+                            height={24}
+                        />
+                    }
+                >
+                    <NavDropdown.Item href="/user/profile">Bewerk account</NavDropdown.Item>
+                    <NavDropdown.Divider/>
+                    <NavDropdown.Item>
+                        <Logout/>
+                    </NavDropdown.Item>
+                </NavDropdown>
             </div>
         </Navbar>
     );

@@ -26,26 +26,25 @@ function Logout() {
     return (
         <>
             <a
-                className="dropdown-item"
                 onClick={(e) => {
                     e.preventDefault();
                     setShowModal(true);
                 }}
             >
-                Log out
+                Log uit
             </a>
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Log out</Modal.Title>
+                    <Modal.Title>Uitloggen</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure you want to log out?</Modal.Body>
+                <Modal.Body>Zeker dat je wil uitloggen?</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" className="btn-light" onClick={() => setShowModal(false)}>
-                        Cancel
+                        Annuleer
                     </Button>
                     <Button variant="primary" className="btn-dark" onClick={handleLogout}>
-                        Log out
+                        Log uit
                     </Button>
                 </Modal.Footer>
             </Modal>

@@ -29,9 +29,7 @@ const DefaultHeader = () => {
                         />
                     }
                 >
-                    <Link href="/user/profile">
-                        <NavDropdown.Item>Bewerk account</NavDropdown.Item>
-                    </Link>
+                    <NavDropdown.Item href="/user/profile">Bewerk account</NavDropdown.Item>
                     <NavDropdown.Divider/>
                     <NavDropdown.Item>
                         <Logout/>

@@ -28,30 +28,14 @@ const AdminHeader = () => {
                             id="navbarDropdownData"
                             menuVariant="dark"
                         >
-                            <Link href="/admin/data/users">
-                                <NavDropdown.Item>Gebruikers</NavDropdown.Item>
-                            </Link>
-                            <Link href="/admin/data/schedules">
-                                <NavDropdown.Item>Planning</NavDropdown.Item>
-                            </Link>
-                            <Link href="/admin/data/garbage-collection">
-                                <NavDropdown.Item>Vuilophaling</NavDropdown.Item>
-                            </Link>
-                            <Link href="/admin/data/tours">
-                                <NavDropdown.Item>Rondes</NavDropdown.Item>
-                            </Link>
-                            <Link href="/admin/data/buildings">
-                                <NavDropdown.Item>Gebouwen</NavDropdown.Item>
-                            </Link>
-                            <Link href="/admin/data/regions">
-                                <NavDropdown.Item>Regio's</NavDropdown.Item>
-                            </Link>
-                            <Link href="/admin/data/mails">
-                                <NavDropdown.Item>Mails</NavDropdown.Item>
-                            </Link>
-                            <Link href="/admin/data/lobby">
-                                <NavDropdown.Item>Lobby</NavDropdown.Item>
-                            </Link>
+                            <NavDropdown.Item href="/admin/data/users">Gebruikers</NavDropdown.Item>
+                            <NavDropdown.Item href="/admin/data/schedules">Planning</NavDropdown.Item>
+                            <NavDropdown.Item href="/admin/data/garbage-collection">Vuilophaling</NavDropdown.Item>
+                            <NavDropdown.Item href="/admin/data/tours">Rondes</NavDropdown.Item>
+                            <NavDropdown.Item href="/admin/data/buildings">Gebouwen</NavDropdown.Item>
+                            <NavDropdown.Item href="/admin/data/regions">Regio's</NavDropdown.Item>
+                            <NavDropdown.Item href="/admin/data/mails">Mails</NavDropdown.Item>
+                            <NavDropdown.Item href="/admin/data/lobby">Lobby</NavDropdown.Item>
                         </NavDropdown>
                         <Nav.Link className={styles.text} href="/admin/communication">
                             Communicatie
@@ -64,7 +48,7 @@ const AdminHeader = () => {
                         </Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{display: 'flex', alignItems: 'center'}}>
                     <Navbar.Toggle className={styles.menuIcon} aria-controls="navbarSupportedContent"
                                    aria-label="Toggle navigation">
                         <Image src={menu} alt="My App Menu" height={24}/>
@@ -82,13 +66,11 @@ const AdminHeader = () => {
                             />
                         }
                     >
-                        <Link href="/user/profile">
-                            <NavDropdown.Item>Bewerk account</NavDropdown.Item>
-                        </Link>
+                        <NavDropdown.Item href="/user/profile">Bewerk account</NavDropdown.Item>
                         <NavDropdown.Divider/>
-                        <NavDropdown.Item>
+                        <NavDropdown.ItemText>
                             <Logout/>
-                        </NavDropdown.Item>
+                        </NavDropdown.ItemText>
                     </NavDropdown>
                 </div>
             </div>
