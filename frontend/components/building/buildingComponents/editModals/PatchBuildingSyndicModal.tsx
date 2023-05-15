@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {Button, Form, Modal} from "react-bootstrap";
-import {BuildingInterface, BuildingSyndicPostInterface} from "@/lib/building";
+import React, { useEffect, useState } from "react";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { Button, Form, Modal } from "react-bootstrap";
+import { BuildingInterface, BuildingSyndicPostInterface } from "@/lib/building";
 import {
     getNewPublicIdUtil,
     handleInputChangeUtil,
@@ -10,11 +10,11 @@ import {
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 function PatchBuildingSyndicModal({
-                                      show,
-                                      closeModal,
-                                      building,
-                                      setBuilding,
-                                  }: {
+    show,
+    closeModal,
+    building,
+    setBuilding,
+}: {
     show: boolean;
     closeModal: () => void;
     building: BuildingInterface | null;
@@ -42,8 +42,7 @@ function PatchBuildingSyndicModal({
     const handleSubmit = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-        handleSubmitUtil(event, formData, building, setBuilding, closeModal, setErrorMessages)
-
+        handleSubmitUtil(event, formData, building, setBuilding, closeModal, setErrorMessages);
     };
 
     return (
@@ -51,7 +50,7 @@ function PatchBuildingSyndicModal({
             <Modal show={show} onHide={closeModal}>
                 <Modal.Header closeButton>Bewerk gebouw</Modal.Header>
                 <Modal.Body>
-                    <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                    <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                     <Form>
                         <Form.Group className="mb-3" controlId="formPatchBuilding">
                             <Form.Group controlId={"name"}>
@@ -85,7 +84,6 @@ function PatchBuildingSyndicModal({
                                 </a>
                             </Form.Text>
                         </Form.Group>
-
 
                         <Button
                             variant="danger"
