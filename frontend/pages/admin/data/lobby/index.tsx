@@ -1,18 +1,18 @@
-import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
-import { Box, IconButton, Tooltip } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
-import React, { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { deleteLobby, getAllInLobby, Lobby } from "@/lib/lobby";
+import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
+import {Box, IconButton, Tooltip} from "@mui/material";
+import {Delete, Edit} from "@mui/icons-material";
+import React, {useEffect, useMemo, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {deleteLobby, getAllInLobby, Lobby} from "@/lib/lobby";
 import AdminHeader from "@/components/header/adminHeader";
-import { getUserRole } from "@/lib/user";
-import { Button } from "react-bootstrap";
+import {getUserRole} from "@/lib/user";
+import {Button} from "react-bootstrap";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import EditLobbyModal from "@/components/admin/editLobbyModal";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
 function LobbyPage() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [lobbies, setLobbies] = useState<Lobby[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [showCreateLobbyModal, setShowCreateLobbyModal] = useState<boolean>(false);
@@ -44,8 +44,8 @@ function LobbyPage() {
                 header: "Acties",
                 id: "actions",
                 enableColumnActions: false,
-                Cell: ({ row }) => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                Cell: ({row}) => (
+                    <Box sx={{display: "flex", gap: "1rem"}}>
                         <Tooltip arrow placement="left" title="Pas aan">
                             <IconButton
                                 onClick={() => {
@@ -54,7 +54,7 @@ function LobbyPage() {
                                     setSelectedLobby(lobby);
                                 }}
                             >
-                                <Edit />
+                                <Edit/>
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -65,7 +65,7 @@ function LobbyPage() {
                                     setSelectedLobby(lobby);
                                 }}
                             >
-                                <Delete />
+                                <Delete/>
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -156,50 +156,52 @@ function LobbyPage() {
     }
 
     return (
-        <>
-            <AdminHeader />
-            <DeleteConfirmationDialog
-                open={showRemoveDialog}
-                title="Verwijder uit lobby"
-                description={`Weet u zeker dat u ${selectedLobby?.email} (${
-                    selectedLobby ? t(getUserRole(selectedLobby.role.toString())) : ""
-                }) uit de lobby wilt verwijderen?`}
-                handleClose={closeRemoveModal}
-                handleConfirm={removeLobby}
-                confirmButtonText="Verwijder"
-                cancelButtonText="Annuleer"
-            />
-            <EditLobbyModal
-                selectedLobby={selectedLobby}
-                show={showCreateLobbyModal}
-                onHide={hideModal}
-                onPatch={afterPatch}
-                onPost={afterPost}
-                onNewVerificationCode={afterNewVerificationPost}
-            />
-            <MaterialReactTable
-                enablePagination={false}
-                enableBottomToolbar={false}
-                columns={columns}
-                data={lobbies}
-                state={{ isLoading: loading }}
-                enableHiding={false}
-                enableRowActions={false}
-                initialState={{ columnVisibility: { id: false } }}
-                renderTopToolbarCustomActions={() => (
-                    <Button
-                        variant="primary"
-                        className="btn-dark"
-                        onClick={async () => {
-                            setShowCreateLobbyModal(true);
-                        }}
-                    >
-                        Voeg toe aan lobby
-                    </Button>
-                )}
-                enableColumnActions={false}
-            />
-        </>
+        <div className="tablepageContainer">
+            <AdminHeader/>
+            <div className="tableContainer">
+                <DeleteConfirmationDialog
+                    open={showRemoveDialog}
+                    title="Verwijder uit lobby"
+                    description={`Weet u zeker dat u ${selectedLobby?.email} (${
+                        selectedLobby ? t(getUserRole(selectedLobby.role.toString())) : ""
+                    }) uit de lobby wilt verwijderen?`}
+                    handleClose={closeRemoveModal}
+                    handleConfirm={removeLobby}
+                    confirmButtonText="Verwijder"
+                    cancelButtonText="Annuleer"
+                />
+                <EditLobbyModal
+                    selectedLobby={selectedLobby}
+                    show={showCreateLobbyModal}
+                    onHide={hideModal}
+                    onPatch={afterPatch}
+                    onPost={afterPost}
+                    onNewVerificationCode={afterNewVerificationPost}
+                />
+                <MaterialReactTable
+                    enablePagination={false}
+                    enableBottomToolbar={false}
+                    columns={columns}
+                    data={lobbies}
+                    state={{isLoading: loading}}
+                    enableHiding={false}
+                    enableRowActions={false}
+                    initialState={{columnVisibility: {id: false}}}
+                    renderTopToolbarCustomActions={() => (
+                        <Button
+                            className="wide_button"
+                            size="lg"
+                            onClick={async () => {
+                                setShowCreateLobbyModal(true);
+                            }}
+                        >
+                            Voeg toe aan lobby
+                        </Button>
+                    )}
+                    enableColumnActions={false}
+                />
+            </div>
+        </div>
     );
 }
 

@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { getCurrentUser, getUserRole, patchUser, User } from "@/lib/user";
-import styles from "@/styles/Login.module.css";
-import { useTranslation } from "react-i18next";
-import { getAllRegions, RegionInterface } from "@/lib/region";
+import React, {useEffect, useState} from "react";
+import {getCurrentUser, getUserRole, patchUser, User} from "@/lib/user";
+import {useTranslation} from "react-i18next";
+import {getAllRegions, RegionInterface} from "@/lib/region";
 import AdminHeader from "@/components/header/adminHeader";
 import StudentHeader from "@/components/header/studentHeader";
 import SyndicHeader from "@/components/header/syndicHeader";
-import { handleError } from "@/lib/error";
-import PasswordModal from "@/components/password/passwordModal";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import {Button, Card, Col, Container, Form, FormCheck, FormControl, InputGroup, Row} from "react-bootstrap";
+import PhoneInput from "react-phone-input-2";
+import PasswordInput from "@/components/password/passwordInput";
+import {changePassword} from "@/lib/authentication";
+import {Divider} from "@mui/material";
 
 export default function UserProfile() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [user, setUser] = useState<User | null>(null);
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
@@ -20,10 +23,23 @@ export default function UserProfile() {
     const [selectedRegions, setSelectedRegions] = useState<number[]>([]);
     const [allRegions, setAllRegions] = useState<RegionInterface[]>([]);
     const [role, setRole] = useState<string>("");
-    const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false);
-
+    const [newPassword1, setNewPassword1] = useState<string>("");
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [currentPassword, setCurrentPassword] = useState<string>("");
+    const [showCurrentPassword, setShowCurrentPassword] = useState<boolean>(false);
+    const [newPassword2, setNewPassword2] = useState<string>("");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [succesPatch, setSuccessPatch] = useState<boolean>(false);
+    const [succesPass, setSuccessPass] = useState<boolean>(false);
+
+    const handlePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleCurrentPasswordVisibility = () => {
+        setShowCurrentPassword(!showCurrentPassword);
+    };
+
 
     useEffect(() => {
         getCurrentUser().then(
@@ -42,13 +58,6 @@ export default function UserProfile() {
             }
         );
     }, []);
-
-    const openPasswordModal = () => {
-        setShowPasswordModal(true);
-    };
-    const closePasswordModal = () => {
-        setShowPasswordModal(false);
-    };
 
     function setUserInfo(u: User) {
         setRole(getUserRole(u.role.toString()));
@@ -93,138 +102,230 @@ export default function UserProfile() {
         );
     }
 
+    function submitPasswordChange() {
+        if (newPassword1 !== newPassword2) {
+            setErrorMessages(["De ingevoerde wachtwoorden komen niet overeen."]);
+            return;
+        } else if (currentPassword == newPassword1 || currentPassword == newPassword2) {
+            setErrorMessages(["Uw huidig wachtwoord en nieuw wachtwoord mogen niet overeenkomen"]);
+        } else if (!newPassword1 || !currentPassword || !newPassword2) {
+            setErrorMessages(["Gelieve alle velden in te vullen"]);
+        } else {
+            changePassword({
+                old_password: currentPassword,
+                new_password1: newPassword1,
+                new_password2: newPassword2,
+            }).then((_) => {
+                    setSuccessPass(true);
+                },
+                (err) => {
+                    const e = handleError(err)
+                    setErrorMessages(e);
+                });
+        }
+    }
+
     return (
         <>
-            {["Admin", "Superstudent"].includes(role) && <AdminHeader />}
-            {"Student" === role && <StudentHeader />}
-            {"Syndic" === role && <SyndicHeader />}
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
-            {succesPatch && (
-                <div className={"visible alert alert-success alert-dismissible fade show"}>
-                    <strong>Succes!</strong> Uw profiel werd met succes gewijzigd!
-                    <button type="button" className="btn-close" onClick={() => setSuccessPatch(false)}></button>
-                </div>
-            )}
-            <form className="m-2">
-                <div className="d-flex align-items-center mb-3 pb-1">
-                    <i className="fas fa-cubes fa-2x me-3" />
-                    <span className="h1 fw-bold mb-0">Profiel</span>
-                </div>
-
-                <div className="form-outline mb-4">
-                    <label className="form-label">Voornaam:</label>
-                    <input
-                        type="text"
-                        className={`form-control form-control-lg ${styles.input}`}
-                        value={firstName}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setFirstName(e.target.value);
-                            e.target.setCustomValidity("");
-                        }}
-                        onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            e.target.setCustomValidity("Voornaam is verplicht.");
-                        }}
-                        required
-                    />
-                </div>
-
-                <div className="form-outline mb-4">
-                    <label className="form-label">Achternaam:</label>
-                    <input
-                        type="text"
-                        className={`form-control form-control-lg ${styles.input}`}
-                        value={lastName}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setLastName(e.target.value);
-                            e.target.setCustomValidity("");
-                        }}
-                        onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            e.target.setCustomValidity("Achternaam is verplicht.");
-                        }}
-                        required
-                    />
-                </div>
-
-                <div className="form-outline mb-4">
-                    <label className="form-label">E-mailadres:</label>
-                    <input
-                        type="email"
-                        className={`form-control form-control-lg ${styles.input}`}
-                        value={email}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setEmail(e.target.value);
-                        }}
-                        required
-                    />
-                </div>
-
-                <div className="form-outline mb-4">
-                    <label className="form-label">Telefoon:</label>
-                    <input
-                        value={phoneNumber}
-                        type="text"
-                        className={`form-control form-control-lg ${styles.input}`}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value)}
-                    />
-                </div>
-
-                <div className="form-outline mb-4">
-                    <label className="form-label">{`Rol : ${user ? t(getUserRole(user.role.toString())) : ""}`}</label>
-                </div>
-
-                {allRegions.length > 0 && (
-                    <div className="form-outline mb-4">
-                        <label className="form-label">Regio's waarin u wilt werken:</label>
-                        {allRegions?.map((r: RegionInterface) => {
-                            return (
-                                <div className="form-check" key={r.id}>
-                                    <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        value={r.id}
-                                        id={r.id.toString()}
-                                        checked={selectedRegions.some((n: number) => n === r.id)}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                            const regionId = Number(e.target.value);
-                                            const regions = [...selectedRegions];
-                                            if (
-                                                e.target.checked &&
-                                                !selectedRegions.find((el: number) => el === regionId)
-                                            ) {
-                                                regions.push(regionId);
-                                                setSelectedRegions(regions);
-                                            } else if (
-                                                !e.target.checked &&
-                                                selectedRegions.find((el: number) => el === regionId)
-                                            ) {
-                                                const i = regions.indexOf(regionId);
-                                                if (i > -1) {
-                                                    regions.splice(i, 1);
-                                                }
-                                                setSelectedRegions(regions);
-                                            }
-                                        }}
-                                    />
-                                    <label className="form-check-label" htmlFor={r.id.toString()}>
-                                        {r.region}
-                                    </label>
+            {["Admin", "Superstudent"].includes(role) && <AdminHeader/>}
+            {"Student" === role && <StudentHeader/>}
+            {"Syndic" === role && <SyndicHeader/>}
+            <Container className="center_container">
+                <Card className="padding" style={{maxWidth: '700px', width: '100%'}}>
+                    <Row>
+                        <Col md={6} className="column_padding">
+                            <label className="title">Profiel</label> <br/>
+                            <label className="normal_text">
+                                   Rol : <strong> {`${user ? t(getUserRole(user.role.toString())) : ""}`}</strong>
+                                </label>
+                            <Divider style={{backgroundColor: 'black'}}/>
+                            {succesPass && (
+                                <div className={"visible alert alert-success alert-dismissible fade show"}>
+                                    <strong>Succes!</strong> Uw wachtwoord werd met succes gewijzigd!
+                                    <button type="button" className="btn-close"
+                                            onClick={() => setSuccessPass(false)}/>
                                 </div>
-                            );
-                        })}
-                    </div>
-                )}
-            </form>
-            <div>
-                <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} onClick={openPasswordModal}>
-                    Wijzig wachtwoord
-                </button>
+                            )}
+                            {succesPatch && (
+                                <div className={"visible alert alert-success alert-dismissible fade show"}>
+                                    <strong>Succes!</strong> Uw profiel werd met succes gewijzigd!
+                                    <button type="button" className="btn-close"
+                                            onClick={() => setSuccessPatch(false)}/>
+                                </div>
+                            )}
+                            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                            <PasswordInput
+                                value={currentPassword}
+                                setPassword={setCurrentPassword}
+                                handlePasswordVisibility={handleCurrentPasswordVisibility}
+                                showPassword={showCurrentPassword}
+                                label="Huidig wachtwoord:"
+                                placeholder="Voer uw huidige wachtwoord in"
+                                showIconButton={true}
+                            />
+                            <PasswordInput
+                                value={newPassword1}
+                                setPassword={setNewPassword1}
+                                handlePasswordVisibility={handlePasswordVisibility}
+                                showPassword={showPassword}
+                                label="Nieuw wachtwoord:"
+                                placeholder="Voer uw nieuwe wachtwoord in"
+                                showIconButton={true}
+                            />
+                            <PasswordInput
+                                value={newPassword2}
+                                setPassword={setNewPassword2}
+                                handlePasswordVisibility={() => null}
+                                showPassword={false}
+                                label="Bevestig nieuw wachtwoord:"
+                                placeholder="Voer uw nieuwe wachtwoord opnieuw in"
+                                showIconButton={false}
+                            />
+                            <div style={{paddingLeft: '10px'}}>
+                                <Button
+                                    className="wide_button"
+                                    size="lg"
+                                    onClick={() => {
+                                        submitPasswordChange()
+                                    }}>
+                                    Wijzig wachtwoord
+                                </Button>
+                            </div>
+                        </Col>
+                        <Col md={6}>
+                            <Form>
+                                <div>
+                                    <label className="normal_text"> </label>
+                                    {allRegions.length > 0 && (
+                                        <div>
+                                            <label className="normal_text">Regio's waarin u wilt werken:</label>
+                                            {allRegions?.map((r: RegionInterface) => {
+                                                return (
+                                                    <div key={r.id}>
+                                                        <Row className="align-items-center">
+                                                            <Col xs="auto">
+                                                                <FormCheck
+                                                                    value={r.id}
+                                                                    id={r.id.toString()}
+                                                                    style={{paddingLeft: '15px'}}
+                                                                    checked={selectedRegions.some((n: number) => n === r.id)}
+                                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                                        const regionId = Number(e.target.value);
+                                                                        const regions = [...selectedRegions];
+                                                                        if (
+                                                                            e.target.checked &&
+                                                                            !selectedRegions.find((el: number) => el === regionId)
+                                                                        ) {
+                                                                            regions.push(regionId);
+                                                                            setSelectedRegions(regions);
+                                                                        } else if (
+                                                                            !e.target.checked &&
+                                                                            selectedRegions.find((el: number) => el === regionId)
+                                                                        ) {
+                                                                            const i = regions.indexOf(regionId);
+                                                                            if (i > -1) {
+                                                                                regions.splice(i, 1);
+                                                                            }
+                                                                            setSelectedRegions(regions);
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            </Col>
+                                                            <Col>
+                                                                <label className="normal_text"
+                                                                       htmlFor={r.id.toString()}>
+                                                                    {r.region}
+                                                                </label>
+                                                            </Col>
+                                                        </Row>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                    <Form.Label className="normal_text">Voornaam:</Form.Label>
+                                    <InputGroup className="input">
+                                        <FormControl
+                                            className="form_control"
+                                            type="text"
+                                            value={firstName}
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                setFirstName(e.target.value);
+                                                e.target.setCustomValidity("");
+                                            }}
+                                            onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                e.target.setCustomValidity("Voornaam is verplicht.");
+                                            }}
+                                            required
+                                        />
+                                    </InputGroup>
+                                </div>
 
-                <PasswordModal show={showPasswordModal} closeModal={closePasswordModal} />
+                                <div>
+                                    <Form.Label className="normal_text">Achternaam:</Form.Label>
+                                    <InputGroup className="input">
+                                        <FormControl
+                                            className="form_control"
+                                            type="text"
+                                            value={lastName}
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                setLastName(e.target.value);
+                                                e.target.setCustomValidity("");
+                                            }}
+                                            onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                e.target.setCustomValidity("Achternaam is verplicht.");
+                                            }}
+                                            required
+                                        />
+                                    </InputGroup>
+                                </div>
 
-                <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} onClick={submit}>
-                    Pas aan
-                </button>
-            </div>
+                                <div>
+                                    <Form.Label className="normal_text">E-mailadres:</Form.Label>
+                                    <InputGroup className="input">
+                                        <FormControl
+                                            className="form_control"
+                                            type="email"
+                                            value={email}
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                setEmail(e.target.value);
+                                            }}
+                                            required
+                                        />
+                                    </InputGroup>
+                                </div>
+
+                                <div>
+                                    <InputGroup className="input">
+                                        <PhoneInput
+                                            country={"be"}
+                                            value={phoneNumber}
+                                            preferredCountries={["be", "nl"]}
+                                            onChange={(phone) => setPhoneNumber("+" + phone)}
+                                            inputClass="form_control"
+                                            inputStyle={{
+                                                height: '40px',
+                                                background: '#f8f9fa',
+                                                fontSize: '15px',
+                                                width: '100%',
+                                                maxWidth: '300px'
+                                            }}
+                                        />
+                                    </InputGroup>
+                                </div>
+                                <div style={{paddingLeft: '15px'}}>
+                                    <Button
+                                        className="wide_button"
+                                        size="lg"
+                                        onClick={submit}>
+                                        Pas aan
+                                    </Button>
+                                </div>
+                            </Form>
+                        </Col>
+                    </Row>
+                </Card>
+            </Container>
         </>
     );
 }

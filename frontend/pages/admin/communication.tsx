@@ -1,16 +1,16 @@
 import AdminHeader from "@/components/header/adminHeader";
-import { EmailTemplate, getAllEmailTemplates } from "@/lib/email-template";
-import { ChangeEvent, useEffect, useState } from "react";
-import styles from "styles/Welcome.module.css";
-import { Button, FloatingLabel, Form } from "react-bootstrap";
+import {EmailTemplate, getAllEmailTemplates} from "@/lib/email-template";
+import {ChangeEvent, useEffect, useState} from "react";
+import {Button, Col, Container, FloatingLabel, Form, Row} from "react-bootstrap";
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
-import { BuildingInterface, getAllBuildings } from "@/lib/building";
-import { getAllUsers, User } from "@/lib/user";
+import {BuildingInterface, getAllBuildings} from "@/lib/building";
+import {getAllUsers, User} from "@/lib/user";
 import UserAutoComplete from "@/components/autocompleteComponents/userAutocomplete";
-import { useRouter } from "next/router";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {useRouter} from "next/router";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DataCommunicationQuery extends ParsedUrlQuery {
     template?: number;
@@ -45,13 +45,13 @@ function AdminCommunication() {
                     replacedName,
                     "address",
                     currentBuilding.street +
-                        " " +
-                        currentBuilding.house_number +
-                        " (" +
-                        currentBuilding.postal_code +
-                        " " +
-                        currentBuilding.city +
-                        ")"
+                    " " +
+                    currentBuilding.house_number +
+                    " (" +
+                    currentBuilding.postal_code +
+                    " " +
+                    currentBuilding.city +
+                    ")"
                 );
             }
         }
@@ -68,7 +68,7 @@ function AdminCommunication() {
         const currentUser = allUsers.find((e) => e.id === syndicId);
         await router.push({
             pathname: `data/buildings/`,
-            query: { syndic: currentUser?.email },
+            query: {syndic: currentUser?.email},
         });
     }
 
@@ -125,27 +125,26 @@ function AdminCommunication() {
 
     return (
         <>
-            <>
-                <AdminHeader />
-                <p className={styles.title}>Communicatie extern</p>
-                <div style={{ display: "flex", width: "100%" }}>
-                    <div style={{ width: "10%" }}></div>
-                    <div style={{ display: "flex", width: "100%" }}>
-                        <div style={{ width: "33%" }}>
+            <AdminHeader/>
+            <Container>
+                <p className="title">Communicatie extern</p>
+                <div>
+                    <Row className="align-content-center">
+                        <Col>
                             <TemplateAutocomplete
                                 initialId={templateId}
                                 setObjectId={setTemplateId}
                                 required={false}
-                            ></TemplateAutocomplete>
-                        </div>
-                        <div style={{ width: "33%" }}>
+                            />
+                        </Col>
+                        <Col>
                             <UserAutoComplete
                                 initialId={userId}
                                 setObjectId={setUserId}
                                 required={false}
-                            ></UserAutoComplete>
-                        </div>
-                        <div style={{ width: "33%" }}>
+                            />
+                        </Col>
+                        <Col>
                             <Button
                                 variant="secondary"
                                 size="lg"
@@ -157,40 +156,36 @@ function AdminCommunication() {
                             >
                                 Gebouw
                             </Button>
-                        </div>
-                        <div style={{ width: "33%" }}>
+                        </Col>
+                        <Col>
                             <a
                                 href={`mailto:${getSelectedUserMail()}?body=${updatedTemplateText.replace(
                                     /\n/g,
                                     "%0D%0A"
                                 )}`}
-                                style={{ textDecoration: "underline", color: "royalblue" }}
+                                style={{textDecoration: "underline", color: "royalblue"}}
                             >
                                 Verstuur mail
                             </a>
-                        </div>
+                        </Col>
+                    </Row>
+                </div>
+                <Row>
+                    <div style={{display: "flex"}}>
+                        <FloatingLabel
+                            controlId="floatingTextarea"
+                            label="Email"
+                        >
+                            <Form.Control
+                                as="textarea"
+                                placeholder="Schrijf je email hier"
+                                value={updatedTemplateText}
+                                onChange={handleEditTemplate}
+                            />
+                        </FloatingLabel>
                     </div>
-                    <div style={{ width: "10%" }}></div>
-                </div>
-                <div style={{ display: "flex" }}>
-                    <div style={{ width: "10%" }}></div>
-                    <FloatingLabel
-                        controlId="floatingTextarea"
-                        label="Email"
-                        className="mb-3"
-                        style={{ width: "100%" }}
-                    >
-                        <Form.Control
-                            as="textarea"
-                            placeholder="Schrijf je email hier"
-                            style={{ height: "400px" }}
-                            value={updatedTemplateText}
-                            onChange={handleEditTemplate}
-                        />
-                    </FloatingLabel>
-                    <div style={{ width: "10%" }}></div>
-                </div>
-            </>
+                </Row>
+            </Container>
         </>
     );
 }

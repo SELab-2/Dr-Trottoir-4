@@ -1,13 +1,13 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, { useEffect, useMemo, useState } from "react";
-import { Emailtemplate, getAllMailTemplates } from "@/lib/emailtemplate";
-import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
-import { Box, IconButton, Tooltip } from "@mui/material";
-import { Delete, Edit, Email } from "@mui/icons-material";
-import { Button } from "react-bootstrap";
-import { useRouter } from "next/router";
+import React, {useEffect, useMemo, useState} from "react";
+import {Emailtemplate, getAllMailTemplates} from "@/lib/emailtemplate";
+import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
+import {Box, IconButton, Tooltip} from "@mui/material";
+import {Delete, Edit, Email} from "@mui/icons-material";
+import {Button} from "react-bootstrap";
+import {useRouter} from "next/router";
 import EditEmailModal from "@/components/admin/editEmailModal";
-import { DeleteEmailModal } from "@/components/admin/deleteEmailModal";
+import {DeleteEmailModal} from "@/components/admin/deleteEmailModal";
 
 export default function AdminDataMails() {
     const router = useRouter();
@@ -28,7 +28,7 @@ export default function AdminDataMails() {
                 header: "Acties",
                 id: "actions",
                 enableColumnActions: false,
-                Cell: ({ row }) => (
+                Cell: ({row}) => (
                     <Box>
                         <Tooltip arrow placement="right" title="Pas aan">
                             <IconButton
@@ -39,7 +39,7 @@ export default function AdminDataMails() {
                                     setShowEditModal(true);
                                 }}
                             >
-                                <Edit />
+                                <Edit/>
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -50,7 +50,7 @@ export default function AdminDataMails() {
                                     setShowDeleteModal(true);
                                 }}
                             >
-                                <Delete />
+                                <Delete/>
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verstuur mail">
@@ -60,7 +60,7 @@ export default function AdminDataMails() {
                                     routeToCommunication(emailtemplate).then();
                                 }}
                             >
-                                <Email />
+                                <Email/>
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -97,49 +97,52 @@ export default function AdminDataMails() {
     async function routeToCommunication(mailTemplate: Emailtemplate) {
         await router.push({
             pathname: `/admin/communication`,
-            query: { template: mailTemplate.id },
+            query: {template: mailTemplate.id},
         });
     }
 
     return (
-        <>
-            <AdminHeader />
-            <EditEmailModal
-                show={showEditModal}
-                hideModal={closeModal}
-                setEmail={setSelectedTemplate}
-                selectedEmail={selectedTemplate}
-                edit={editMail}
-            />
-            <DeleteEmailModal
-                show={showDeleteModal}
-                closeModal={closeModal}
-                selectedMail={selectedTemplate}
-                setMail={setSelectedTemplate}
-            />
-            <MaterialReactTable
-                enablePagination={false}
-                enableBottomToolbar={false}
-                columns={columns}
-                data={emailTemplates}
-                state={{ isLoading: loading }}
-                renderDetailPanel={({ row }) => {
-                    const emailtemplate: Emailtemplate = row.original;
-                    return <pre>{emailtemplate.template}</pre>;
-                }}
-                enableRowActions={false}
-                renderTopToolbarCustomActions={() => (
-                    <Button
-                        onClick={() => {
-                            setShowEditModal(true);
-                            setEditMail(false);
-                        }}
-                        variant="warning"
-                    >
-                        Maak nieuwe mail template aan
-                    </Button>
-                )}
-            />
-        </>
+        <div className="tablepageContainer">
+            <AdminHeader/>
+            <div className="tableContainer">
+                <EditEmailModal
+                    show={showEditModal}
+                    hideModal={closeModal}
+                    setEmail={setSelectedTemplate}
+                    selectedEmail={selectedTemplate}
+                    edit={editMail}
+                />
+                <DeleteEmailModal
+                    show={showDeleteModal}
+                    closeModal={closeModal}
+                    selectedMail={selectedTemplate}
+                    setMail={setSelectedTemplate}
+                />
+                <MaterialReactTable
+                    enablePagination={false}
+                    enableBottomToolbar={false}
+                    columns={columns}
+                    data={emailTemplates}
+                    state={{isLoading: loading}}
+                    renderDetailPanel={({row}) => {
+                        const emailtemplate: Emailtemplate = row.original;
+                        return <pre>{emailtemplate.template}</pre>;
+                    }}
+                    enableRowActions={false}
+                    renderTopToolbarCustomActions={() => (
+                        <Button
+                            className="wide_button"
+                            size="lg"
+                            onClick={() => {
+                                setShowEditModal(true);
+                                setEditMail(false);
+                            }}
+                        >
+                            Maak nieuwe mail template aan
+                        </Button>
+                    )}
+                />
+            </div>
+        </div>
     );
 }
