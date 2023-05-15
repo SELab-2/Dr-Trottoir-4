@@ -87,7 +87,7 @@ NOSE_ARGS = ["--cover-xml", "--cover-xml-file=./coverage.xml"]
 SPECTACULAR_SETTINGS = {
     "TITLE": "Dr-Trottoir API",
     "DESCRIPTION": "This is the documentation for the Dr-Trottoir API. You can access this API directly by using port "
-                   "2002.",
+    "2002.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
