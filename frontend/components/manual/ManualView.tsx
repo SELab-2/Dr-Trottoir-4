@@ -1,7 +1,9 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AxiosResponse } from "axios";
 import { getManual } from "@/lib/building-manual";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 interface ManualQuery {
     id?: string;
@@ -12,6 +14,8 @@ function ManualView() {
     const query = router.query as ManualQuery;
 
     const [file, setFile] = useState<string>("");
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (!query.id) {
@@ -28,16 +32,18 @@ function ManualView() {
             .then((manual: AxiosResponse) => {
                 const file = `${process.env.NEXT_PUBLIC_BASE_API_URL}${manual.data.file.slice(1)}`;
                 setFile(file);
-                //console.log(file);
+                // console.log(file)
+                setErrorMessages([]);
             })
             .catch((error) => {
-                //TODO: error component
-                console.error(error);
+                setErrorMessages(handleError(error));
             });
     }
 
     return (
         <>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+
             {!file ? (
                 <p>Kon de handleiding niet laden</p>
             ) : (

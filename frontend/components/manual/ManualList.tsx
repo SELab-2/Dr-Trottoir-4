@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
-import { getManualsForBuilding, ManualInterface } from "@/lib/building-manual";
+import React, {useEffect, useState} from "react";
+import {getManualsForBuilding, ManualInterface} from "@/lib/building-manual";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
-function ManualList({ id, type }: { id: number | string; type: "syndic" | "admin" | "public" }) {
+function ManualList({id, type}: { id: number | string; type: "syndic" | "admin" | "public" }) {
     const [manuals, setManuals] = useState<ManualInterface[]>([]);
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         fetchManuals();
@@ -23,21 +26,23 @@ function ManualList({ id, type }: { id: number | string; type: "syndic" | "admin
                 } else {
                     setManuals(manuals_data);
                 }
+                setErrorMessages([]);
             })
             .catch((error) => {
-                console.error(error);
+                setErrorMessages(handleError(error));
             });
     }
 
     return (
         <>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             {manuals && manuals.length > 0 ? (
                 <ul>
                     {manuals.map((manual: ManualInterface) => (
                         <li key={manual.id}>
                             <a
                                 href={`/${type}/manual?id=${manual.id}`}
-                                style={{ textDecoration: "underline", color: "blue" }}
+                                style={{textDecoration: "underline", color: "blue"}}
                             >
                                 Versie {manual.version_number}
                             </a>
