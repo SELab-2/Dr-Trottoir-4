@@ -18,6 +18,7 @@ services:
 
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+      - shared-images:/www/media
     depends_on:
       - backend
       - frontend
@@ -66,6 +67,7 @@ services:
       - 9000
     volumes:
       - ./backend:/app/backend
+      - shared-images:/app/media
     depends_on:
       database:
         condition: service_healthy
@@ -92,3 +94,8 @@ services:
     depends_on:
       backend:
         condition: service_started
+
+
+volumes:
+  shared-images:
+    name: images

@@ -1,4 +1,3 @@
-from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -174,7 +173,7 @@ class AllUsersView(APIView):
         try:
             user_instances = filter_instances(request, user_instances, filters, transformations)
         except BadRequest as e:
-            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return bad_request_custom_error_message(str(e))
 
         serializer = UserSerializer(user_instances, many=True)
         return get_success(serializer)
