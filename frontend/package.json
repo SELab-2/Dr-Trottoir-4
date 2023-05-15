@@ -15,7 +15,7 @@
     "@emotion/styled": "^11.10.8",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.12.3",
-    "@types/node": "18.16.7",
+    "@types/node": "18.16.9",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
     "axios": "^1.4.0",
