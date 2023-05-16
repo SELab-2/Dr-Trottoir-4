@@ -175,8 +175,7 @@ function AdminAnalysisWorkingHours() {
                                             }
                                             return (
                                                 <ListGroup.Item key={index}>
-                                                    {
-                                                        (sot.completed_tour || sot.started_tour) &&
+                                                    {(sot.completed_tour || sot.started_tour) && (
                                                         <Link
                                                             style={{
                                                                 textDecoration: "underline",
@@ -191,13 +190,10 @@ function AdminAnalysisWorkingHours() {
                                                         >
                                                             {getTourName(sot)}
                                                         </Link>
-                                                    }
-                                                    {
-                                                        (!sot.completed_tour && !sot.started_tour) &&
-                                                        <p>
-                                                            {getTourName(sot)}
-                                                        </p>
-                                                    }
+                                                    )}
+                                                    {!sot.completed_tour && !sot.started_tour && (
+                                                        <p>{getTourName(sot)}</p>
+                                                    )}
                                                 </ListGroup.Item>
                                             );
                                         })}
