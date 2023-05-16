@@ -17,7 +17,7 @@ from util.request_response_util import get_unique_uuid
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2 ** 31 - 1
+MAX_INT = 2**31 - 1
 
 
 class Region(models.Model):
@@ -449,9 +449,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-                self.version_number == 0
-                or self.version_number > max_version_number + 1
-                or self.version_number in version_numbers
+            self.version_number == 0
+            or self.version_number > max_version_number + 1
+            or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 
