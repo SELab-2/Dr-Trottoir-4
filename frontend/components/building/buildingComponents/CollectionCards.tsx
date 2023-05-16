@@ -22,6 +22,22 @@ function CollectionCards({ building, date }: { building: number; date: string | 
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
+
+    const connectToWebSocket = (websocketURL: string, callback: () => void) => {
+        const client = new WebSocket(websocketURL);
+
+        client.onopen = () => {
+        };
+
+        client.addEventListener("message", (event) => {
+            callback()
+        });
+
+        client.onclose = () => {
+        };
+    };
+
+
     function handleRemarksAtBuildingsCall(response: AxiosResponse) {
         const responseData: RemarkAtBuildingInterface[] = response.data.sort(
             (a: RemarkAtBuildingInterface, b: RemarkAtBuildingInterface) => {
@@ -53,7 +69,7 @@ function CollectionCards({ building, date }: { building: number; date: string | 
             });
     }
 
-    useEffect(() => {
+    function fetchData() {
         if (date) {
             getRemarksAtBuildingOfSpecificBuilding(building, { date: date })
                 .then((response) => {
@@ -73,6 +89,11 @@ function CollectionCards({ building, date }: { building: number; date: string | 
                     setErrorMessages(handleError(error));
                 });
         }
+    }
+
+    useEffect(() => {
+        fetchData();
+        connectToWebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}building/${building}/remarks/`, fetchData);
     }, [building]);
 
     function imageClick(url: string) {
