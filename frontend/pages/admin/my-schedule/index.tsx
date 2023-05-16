@@ -2,8 +2,6 @@ import PersonalSchedule from "@/components/student/PersonalSchedule";
 import AdminHeader from "@/components/header/adminHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
 
-interface ParsedUrlQuery {}
-
 function MySchedule() {
     return (
         <>

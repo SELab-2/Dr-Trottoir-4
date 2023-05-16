@@ -1,17 +1,17 @@
 import FinishedBuildingModal from "@/components/student/finishedBuildingModal";
-import { Button, ListGroup, ListGroupItem } from "react-bootstrap";
-import { BuildingInterface, getAddress } from "@/lib/building";
-import { datesEqual } from "@/lib/date";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { getStudentOnTour, startStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
-import { getBuildingsOfTour, getTour, Tour } from "@/lib/tour";
-import { getRegion, RegionInterface } from "@/lib/region";
+import {Button, ListGroup, ListGroupItem} from "react-bootstrap";
+import {BuildingInterface, getAddress} from "@/lib/building";
+import {datesEqual} from "@/lib/date";
+import React, {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {getStudentOnTour, startStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import {getBuildingsOfTour, getTour, Tour} from "@/lib/tour";
+import {getRegion, RegionInterface} from "@/lib/region";
 
 export default function PlannedBuildingList({
-    studentOnTourId,
-    redirectTo,
-}: {
+                                                studentOnTourId,
+                                                redirectTo,
+                                            }: {
     studentOnTourId: number | null;
     redirectTo: string;
 }) {
@@ -43,9 +43,11 @@ export default function PlannedBuildingList({
                                 const r: RegionInterface = res.data;
                                 setRegion(r.region);
                             })
-                            .catch((_) => {});
+                            .catch((_) => {
+                            });
                     })
-                    .catch((_) => {});
+                    .catch((_) => {
+                    });
                 getBuildingsOfTour(sots.tour).then(
                     (res) => {
                         const buildings: BuildingInterface[] = res.data;
@@ -67,7 +69,8 @@ export default function PlannedBuildingList({
                     completed_tour: sots.completed_tour,
                 });
             })
-            .catch((_) => {});
+            .catch((_) => {
+            });
     }, [studentOnTourId]);
 
     async function routeToFirstBuilding() {
@@ -78,10 +81,11 @@ export default function PlannedBuildingList({
             .then(async (_) => {
                 await router.push({
                     pathname: redirectTo,
-                    query: { studentOnTourId: studentOnTour?.id },
+                    query: {studentOnTourId: studentOnTour?.id},
                 });
             })
-            .catch((_) => {});
+            .catch((_) => {
+            });
     }
 
     function getStartButtonText() {
@@ -103,13 +107,26 @@ export default function PlannedBuildingList({
                 setBuilding={setSelectedBuilding}
                 studentOnTour={studentOnTour}
             />
-            <div className="mt-3 mb-1 ms-2 me-2">
-                <span className="h1 fw-bold">{tour ? `Ronde ${tour?.name}` : ""}</span>
-                <p className="h5 fw-bold">{region ? `Regio ${region}` : ""}</p>
-                <p className="h">{studentOnTour ? studentOnTour.date.toLocaleDateString("en-GB") : ""}</p>
+            <div>
+                <label style={{
+                    fontWeight: 'bolder',
+                    fontSize: '24px',
+                    marginLeft: 10
+                }}>{tour ? `Ronde ${tour?.name}` : ""}</label>
+                <br/>
+                <label style={{
+                    fontWeight: 'bold',
+                    fontSize: '20px',
+                    marginLeft: 10
+                }}>{region ? `Regio ${region}` : ""}</label>
+                <br/>
+                <label style={{
+                    fontSize: '16px',
+                    marginLeft: 10
+                }}>{studentOnTour ? studentOnTour.date.toLocaleDateString("en-GB") : ""}</label>
                 {buildings.length > 0 && (
                     <>
-                        <p>Gebouwen op deze ronde:</p>
+                        <p className="normal_text" style={{fontWeight: 'bold'}}>Gebouwen op deze ronde:</p>
                         <ListGroup>
                             {buildings.map((el: BuildingInterface, index: number) => {
                                 return (
@@ -135,29 +152,31 @@ export default function PlannedBuildingList({
                         </ListGroup>
                     </>
                 )}
-                <div className="mt-1">
+                <div>
                     {(studentOnTour ? datesEqual(new Date(), studentOnTour.date) : false) &&
-                        !studentOnTour?.completed_tour && (
+                    !studentOnTour?.completed_tour && (
+                        <div className="padding" style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                             <Button
-                                variant="primary"
-                                className="btn-dark"
+                                className="wide_button"
                                 onClick={() => routeToFirstBuilding().then()}
                             >
                                 {getStartButtonText()}
                             </Button>
-                        )}
+                        </div>
+
+                    )}
                     {studentOnTour &&
-                        !datesEqual(new Date(), studentOnTour.date) &&
-                        new Date() < studentOnTour.date && (
-                            <p>{`U kan deze ronde nog niet starten, kom terug op ${studentOnTour.date.toLocaleDateString(
-                                "en-GB"
-                            )}`}</p>
-                        )}
+                    !datesEqual(new Date(), studentOnTour.date) &&
+                    new Date() < studentOnTour.date && (
+                        <p>{`U kan deze ronde nog niet starten, kom terug op ${studentOnTour.date.toLocaleDateString(
+                            "en-GB"
+                        )}`}</p>
+                    )}
                     {studentOnTour &&
-                        ((!datesEqual(new Date(), studentOnTour.date) && new Date() > studentOnTour.date) ||
-                            studentOnTour.completed_tour) && (
-                            <p>{`U hebt deze ronde afgewerkt op ${studentOnTour.date.toLocaleDateString("en-GB")}.`}</p>
-                        )}
+                    ((!datesEqual(new Date(), studentOnTour.date) && new Date() > studentOnTour.date) ||
+                        studentOnTour.completed_tour) && (
+                        <p>{`U hebt deze ronde afgewerkt op ${studentOnTour.date.toLocaleDateString("en-GB")}.`}</p>
+                    )}
                 </div>
             </div>
         </>

@@ -1,13 +1,13 @@
 import ToursList from "@/components/student/toursList";
-import { useEffect, useState } from "react";
-import { getCurrentUser, User } from "@/lib/user";
-import { getToursOfStudent, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
-import { getTour, Tour } from "@/lib/tour";
-import { getRegion, RegionInterface } from "@/lib/region";
-import { datesEqual } from "@/lib/date";
-import { useRouter } from "next/router";
+import {useEffect, useState} from "react";
+import {getCurrentUser, User} from "@/lib/user";
+import {getToursOfStudent, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import {getTour, Tour} from "@/lib/tour";
+import {getRegion, RegionInterface} from "@/lib/region";
+import {datesEqual} from "@/lib/date";
+import {useRouter} from "next/router";
 
-export default function PersonalSchedule({ redirectTo }: { redirectTo: string }) {
+export default function PersonalSchedule({redirectTo}: { redirectTo: string }) {
     const router = useRouter();
 
     const [user, setUser] = useState<User | null>(null);
@@ -23,7 +23,8 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
                 const u: User = res.data;
                 setUser(u);
             })
-            .catch((_) => {});
+            .catch((_) => {
+            });
     }, []);
 
     useEffect(() => {
@@ -36,7 +37,7 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
 
         const nextMonth: Date = new Date();
         nextMonth.setMonth(nextMonth.getMonth() + 1);
-        getToursOfStudent(user.id, { startDate: monthAgo, endDate: nextMonth })
+        getToursOfStudent(user.id, {startDate: monthAgo, endDate: nextMonth})
             .then(async (res) => {
                 // Some cache to recognize duplicate tours (to not do unnecessary requests)
                 const t: Record<number, Tour> = {};
@@ -99,20 +100,22 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
                 });
                 setUpcomingTours(futureTours);
             })
-            .catch((_) => {});
+            .catch((_) => {
+            });
     }, [user]);
 
     function redirectToSchedule(studentOnTourId: number): void {
         router
             .push({
                 pathname: redirectTo,
-                query: { studentOnTourId },
+                query: {studentOnTourId},
             })
             .then();
     }
 
     return (
         <>
+            <p className="title">Overzicht rondes</p>
             <ToursList
                 studentOnTours={toursToday}
                 listTitle="Vandaag"

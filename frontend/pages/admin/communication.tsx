@@ -31,30 +31,14 @@ function AdminCommunication() {
     const query: DataCommunicationQuery = router.query as DataCommunicationQuery;
 
     const replaceVariable = (str: string, variable: string, value: string): string => {
-        const regex = new RegExp(`{{\\s*${variable}\\s*}}`, "g");
-        return str.replace(regex, value);
+        const regex = new RegExp(`\\{\\{\\s*${variable}\\s*\\}\\}`, "g");
+        return str.replace(regex, value);;
     };
 
     const fillInVariables = (input: string): string => {
         const currentUser = allUsers.find((e) => e.id === Number(userId));
         if (currentUser) {
-            const currentBuilding = allBuildings.find((e) => e.syndic === currentUser.id);
-
-            const replacedName = replaceVariable(input, "name", currentUser.first_name + " " + currentUser.last_name);
-            if (currentBuilding) {
-                return replaceVariable(
-                    replacedName,
-                    "address",
-                    currentBuilding.street +
-                    " " +
-                    currentBuilding.house_number +
-                    " (" +
-                    currentBuilding.postal_code +
-                    " " +
-                    currentBuilding.city +
-                    ")"
-                );
-            }
+            return replaceVariable(input, "name", currentUser.first_name + " " + currentUser.last_name);
         }
 
         return input;

@@ -31,9 +31,9 @@ const StudentHeader = () => {
                 >
                     <NavDropdown.Item href="/user/profile">Bewerk account</NavDropdown.Item>
                     <NavDropdown.Divider/>
-                    <NavDropdown.Item>
+                    <NavDropdown.ItemText>
                         <Logout/>
-                    </NavDropdown.Item>
+                    </NavDropdown.ItemText>
                 </NavDropdown>
             </div>
         </Navbar>

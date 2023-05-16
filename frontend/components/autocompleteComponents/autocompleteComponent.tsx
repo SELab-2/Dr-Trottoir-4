@@ -68,7 +68,7 @@ const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions
     }, [fetchOptions, initialId]);
 
     return (
-        <>
+        <div>
             <Form.Label> {label} </Form.Label>
             <Autocomplete
                 //our option and value are different but without this line it will give warnings as the default
@@ -88,10 +88,11 @@ const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions
                 options={options}
                 getOptionLabel={(option: any) => option.label || ""}
                 renderInput={(params: AutocompleteRenderInputParams) => (
-                    <TextField {...params} variant="outlined" fullWidth />
+                    <TextField {...params} variant="outlined" fullWidth/>
                 )}
+                ListboxProps={{ style: { maxHeight: 200, overflowY: 'auto' } }}
             />
-        </>
+        </div>
     );
 };
 

@@ -5,7 +5,28 @@
     font-weight: bolder;
     padding-top: 35px;
     padding-left: 10px;
-    padding-bottom: 20px;
+    padding-bottom: 15px;
+}
+
+.subtitle {
+    font-size: 28px;
+    font-weight: bolder;
+    padding-left: 10px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.bold_text {
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
+
+.text {
+    font-size: 16px;
+    padding-left: 10px;
+    padding-bottom: 10px;
 }
 
 .small_text {
@@ -93,6 +114,30 @@
     background-color: transparent;
     color: #1D1D1D;
     transition: ease-in 0.2s;
+}
+
+.button {
+    height: 40px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1D1D1D;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+.button:hover {
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: transparent;
+    color: #1D1D1D;
+    transition: ease-in 0.2s;
+    border-radius: 5px;
 }
 
 .padding {
