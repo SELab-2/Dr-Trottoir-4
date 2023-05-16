@@ -54,7 +54,9 @@ export function FileList({
         <>
             {editable && (
                 <div>
-                    <label data-testid="upload-label" htmlFor={"photos"} className="form-label">{`Upload foto's ${optional ? "(Optioneel)" : ""}:`}</label>
+                    <label data-testid="upload-label" htmlFor={"photos"} className="form-label">{`Upload foto's ${
+                        optional ? "(Optioneel)" : ""
+                    }:`}</label>
                     <input
                         id={"photos"}
                         className="form-control"
