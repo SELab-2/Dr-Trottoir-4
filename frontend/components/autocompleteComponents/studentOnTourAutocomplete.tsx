@@ -3,6 +3,7 @@ import AutocompleteComponent, {
   StudentOnTourProps,
 } from "@/components/autocompleteComponents/autocompleteComponent";
 import {
+    getActualToursOfStudent,
   getToursOfStudent,
   StudentOnTour,
   studentOnTourSearchString,
@@ -20,11 +21,8 @@ const StudentOnTourAutocomplete: React.FC<StudentOnTourProps> = ({
     <AutocompleteComponent
       initialId={initialId}
       label={`Selecteer ronde${required ? "*" : ""}`}
-      fetchOptions={() => getToursOfStudent(studentId)}
-      mapping={(sot: StudentOnTour) => getTour(sot.tour).then((res) => {
-        const tour : Tour = res.data;
-        return `${tour.name}`;
-      })}
+      fetchOptions={() => getActualToursOfStudent(studentId)}
+      mapping={(tour: Tour) => tour.name}
       setObjectId={setObjectId}
     />
   );

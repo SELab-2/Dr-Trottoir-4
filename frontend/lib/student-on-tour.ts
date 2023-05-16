@@ -137,7 +137,46 @@ export function studentOnTourSearchString(studentOnTour: StudentOnTour) {
   );
 }
 
-export function getStudentOnTourIndividualProgressWS(studentOnTourId: number) {
+export async function getActualToursOfStudent(
+    studentId: number,
+    params: DateInterval | null = null
+  ): Promise<AxiosResponse<Tour[]>> {
+    try {
+        // Fetch all StudentOnTour for the given student
+        const studentOnToursResponse = await getToursOfStudent(studentId, params);
+    
+        // Create a Set to store unique tour values
+        const uniqueTourIds = new Set(studentOnToursResponse.data.map((studentOnTour: StudentOnTour) => studentOnTour.tour));
+    
+        // Get actual Tour for each unique tour id
+        const toursPromises = Array.from(uniqueTourIds).map((tourId: unknown) =>
+          getTour(tourId as number)
+        );
+    
+        // Wait for all Tour fetch Promises to resolve
+        const toursResponses = await Promise.all(toursPromises);
+    
+        // Extract the Tour data from each response
+        const tourData = toursResponses.map(tourResponse => tourResponse.data);
+    
+        // Return a single AxiosResponse with the tour data
+        return { 
+          data: tourData,
+          status: 200,
+          statusText: 'OK',
+          headers: studentOnToursResponse.headers,
+          config: studentOnToursResponse.config,
+       };
+    
+      } catch (err) {
+        // Handle any errors that occurred while fetching data
+        console.error(err);
+        throw err;
+      }
+  }
+
+
+  export function getStudentOnTourIndividualProgressWS(studentOnTourId: number) {
     const url: string = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}${process.env.NEXT_PUBLIC_WEBSOCKET_STUDENT_ON_TOUR_BASE}${studentOnTourId}/progress/`;
     return new WebSocket(url);
 }
@@ -152,21 +191,4 @@ export function getStudentOnTourIndividualRemarkWS(studentOnTourId: number) {
     return new WebSocket(url);
 }
 
-// export async function getToursOfStudent(studentId: number, params: DateInterval | null = null): Promise<AxiosResponse<any>> {
-//     await getToursOfStudent(studentId, params).then(
-//         async (res) => {
-//             const tourDates: Record<number, string[]> = {};
-//             const data: StudentOnTourStringDate[] = res.data;
-//             for (const sot of data) {
-//                 if (!tourDates[sot.tour]) {
-//                     tourDates[sot.tour] = [];
-//                 }
-//                 tourDates[sot.tour].push(sot.date);
-//             }
-//         },
-//         (err) => {
-//             console.error(err);
-//         }
-//     )
-// }
 

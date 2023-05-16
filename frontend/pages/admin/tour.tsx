@@ -49,6 +49,7 @@ function AdminTour() {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().substring(0, 10)
   );
+  
   const [studentOnTourId, setStudentOnTourId] = useState<number>(0);
 
   const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
@@ -190,11 +191,6 @@ function AdminTour() {
         <StudentAutocomplete
           initialId={selectedStudentId}
           setObjectId={setSelectedStudentId}
-          required={true}
-        />
-        <TourAutocomplete
-          initialId={selectedTourId}
-          setObjectId={setSelectedTourId}
           required={true}
         />
         <StudentOnTourAutocomplete
