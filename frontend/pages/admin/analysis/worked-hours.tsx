@@ -12,8 +12,9 @@ import { getAllStudentOnTourFromDate, StudentOnTour, StudentOnTourStringDate } f
 import { WorkedHours } from "@/types";
 import { handleError } from "@/lib/error";
 import Link from "next/link";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
-export default function AdminAnalysisWorkingHours() {
+function AdminAnalysisWorkingHours() {
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const [allTours, setAllTours] = useState<Tour[]>([]);
@@ -201,3 +202,5 @@ export default function AdminAnalysisWorkingHours() {
         </Container>
     );
 }
+
+export default withAuthorisation(AdminAnalysisWorkingHours, ["Admin", "Superstudent"]);

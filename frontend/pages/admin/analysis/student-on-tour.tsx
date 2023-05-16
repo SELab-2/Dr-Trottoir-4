@@ -12,12 +12,13 @@ import { getTour, Tour } from "@/lib/tour";
 import { getRegion, RegionInterface } from "@/lib/region";
 import Link from "next/link";
 import { formatDate } from "@/lib/date";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
 interface StudentOnTourQuery {
     studentOnTour?: number;
 }
 
-export default function AnalysisStudentOnTour() {
+function AnalysisStudentOnTour() {
     const router = useRouter();
     const [studentOnTour, setStudentOnTour] = useState<StudentOnTour | null>(null);
     const [buildingsAnalysis, setBuildingsAnalysis] = useState<BuildingAnalysis[]>([]);
@@ -252,3 +253,5 @@ export default function AnalysisStudentOnTour() {
         </>
     );
 }
+
+export default withAuthorisation(AnalysisStudentOnTour, ["Admin", "Superstudent"]);
