@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import { Button } from "react-bootstrap";
 import RegionModal, { ModalMode } from "@/components/regionModal";
+import {handleError} from "@/lib/error";
 
 interface RegionView extends RegionInterface {}
 
@@ -82,7 +83,7 @@ function AdminDataRegions() {
                 setLoading(false);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
                 setLoading(false);
             }
         );
@@ -96,7 +97,7 @@ function AdminDataRegions() {
             setRegionName("");
             setAddDialogOpen(false);
         } catch (error) {
-            console.error(error);
+            handleError(error);
         }
     }
 
@@ -110,7 +111,7 @@ function AdminDataRegions() {
                 setRegionName("");
                 setEditDialogOpen(false);
             } catch (error) {
-                console.error(error);
+                handleError(error);
             }
         }
     }
@@ -167,7 +168,7 @@ function AdminDataRegions() {
                             await deleteRegion(selectedRegion.id);
                             setRegions(regions.filter((region) => region.id !== selectedRegion.id));
                         } catch (error) {
-                            console.error(error);
+                            handleError(error);
                         }
                     }
                     setDeleteDialogOpen(false);

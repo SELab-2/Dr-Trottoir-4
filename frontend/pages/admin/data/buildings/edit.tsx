@@ -12,6 +12,7 @@ import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
+import {handleError} from "@/lib/error";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -60,8 +61,7 @@ function AdminDataBuildingsEdit() {
                 setShowConfirmation(true);
             } catch (error: any) {
                 setShowConfirmation(false);
-                console.error("An error occurred:", error.request.responseText);
-                setErrorMessages([error.request.responseText]);
+                setErrorMessages(handleError(error));
             }
         }
     };

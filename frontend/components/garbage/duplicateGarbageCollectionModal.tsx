@@ -40,7 +40,6 @@ export default function DuplicateGarbageCollectionModal({
             },
             (err) => {
                 setErrorMessages(handleError(err));
-                console.error(err);
             }
         );
     }

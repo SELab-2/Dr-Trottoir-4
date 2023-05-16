@@ -38,7 +38,7 @@ export default function UserProfile() {
                 setUserInfo(u);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }, []);
@@ -87,8 +87,7 @@ export default function UserProfile() {
                 setSuccessPatch(true);
             },
             (err) => {
-                const e = handleError(err);
-                setErrorMessages(e);
+                setErrorMessages(handleError(err));
             }
         );
     }
