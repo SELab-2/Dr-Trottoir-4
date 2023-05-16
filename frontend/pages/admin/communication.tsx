@@ -1,13 +1,14 @@
 import AdminHeader from "@/components/header/adminHeader";
 import {EmailTemplate, getAllEmailTemplates} from "@/lib/email-template";
 import {ChangeEvent, useEffect, useState} from "react";
-import {Button, Col, Container, FloatingLabel, Form, Row} from "react-bootstrap";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
 import {BuildingInterface, getAllBuildings} from "@/lib/building";
 import {getAllUsers, User} from "@/lib/user";
 import UserAutoComplete from "@/components/autocompleteComponents/userAutocomplete";
 import {useRouter} from "next/router";
 import {withAuthorisation} from "@/components/withAuthorisation";
+import {Send} from "@mui/icons-material";
 
 interface ParsedUrlQuery {
 }
@@ -129,62 +130,76 @@ function AdminCommunication() {
             <Container>
                 <p className="title">Communicatie extern</p>
                 <div>
-                    <Row className="align-content-center">
-                        <Col>
-                            <TemplateAutocomplete
-                                initialId={templateId}
-                                setObjectId={setTemplateId}
-                                required={false}
-                            />
+                    <Row>
+                        <Col md={3}>
+                            <Row>
+                                <TemplateAutocomplete
+                                    initialId={templateId}
+                                    setObjectId={setTemplateId}
+                                    required={false}
+                                />
+                            </Row>
+                            <Row>
+                                <UserAutoComplete
+                                    initialId={userId}
+                                    setObjectId={setUserId}
+                                    required={false}
+                                />
+                            </Row>
+                            <Row>
+                                <div className="padding">
+                                    <Button
+                                        className="small_button"
+                                        size="sm"
+                                        onClick={() => {
+                                            if (userId) {
+                                                routeToBuildings(userId).then();
+                                            }
+                                        }}
+                                    >
+                                        Gebouw
+                                    </Button>
+                                </div>
+                            </Row>
                         </Col>
-                        <Col>
-                            <UserAutoComplete
-                                initialId={userId}
-                                setObjectId={setUserId}
-                                required={false}
-                            />
+                        <Col md={9}>
+                            <Row>
+                                <div style={{display: "flex"}}>
+                                    <Form.Control
+                                        as="textarea"
+                                        className="mail_area"
+                                        placeholder="Schrijf je email hier"
+                                        value={updatedTemplateText}
+                                        onChange={handleEditTemplate}
+                                    />
+                                </div>
+                            </Row>
                         </Col>
-                        <Col>
-                            <Button
-                                variant="secondary"
-                                size="lg"
-                                onClick={() => {
-                                    if (userId) {
-                                        routeToBuildings(userId).then();
-                                    }
-                                }}
-                            >
-                                Gebouw
-                            </Button>
-                        </Col>
-                        <Col>
-                            <a
-                                href={`mailto:${getSelectedUserMail()}?body=${updatedTemplateText.replace(
-                                    /\n/g,
-                                    "%0D%0A"
-                                )}`}
-                                style={{textDecoration: "underline", color: "royalblue"}}
-                            >
-                                Verstuur mail
-                            </a>
+                    </Row>
+                    <Row>
+                        <Col md={{span: 3, offset: 3}}>
+                            <div className="padding mt-auto">
+                                <Button
+                                    href={`mailto:${getSelectedUserMail()}?body=${encodeURIComponent(
+                                        updatedTemplateText
+                                    )}`}
+                                    className="wide_button"
+                                    size="lg"
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    Verstuur mail
+                                    <Send
+                                        style={{height: '10px', paddingLeft: '10px', marginRight: "0.5em"}}
+                                    />
+                                </Button>
+                            </div>
                         </Col>
                     </Row>
                 </div>
-                <Row>
-                    <div style={{display: "flex"}}>
-                        <FloatingLabel
-                            controlId="floatingTextarea"
-                            label="Email"
-                        >
-                            <Form.Control
-                                as="textarea"
-                                placeholder="Schrijf je email hier"
-                                value={updatedTemplateText}
-                                onChange={handleEditTemplate}
-                            />
-                        </FloatingLabel>
-                    </div>
-                </Row>
+
             </Container>
         </>
     );
