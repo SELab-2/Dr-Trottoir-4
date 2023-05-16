@@ -137,6 +137,21 @@ export function studentOnTourSearchString(studentOnTour: StudentOnTour) {
   );
 }
 
+export function getStudentOnTourIndividualProgressWS(studentOnTourId: number) {
+    const url: string = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}${process.env.NEXT_PUBLIC_WEBSOCKET_STUDENT_ON_TOUR_BASE}${studentOnTourId}/progress`;
+    return new WebSocket(url);
+}
+
+export function getStudentOnTourAllProgressWS() {
+    const url: string = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}${process.env.NEXT_PUBLIC_WEBSOCKET_STUDENT_ON_TOUR_PROGRESS_ALL}`;
+    return new WebSocket(url);
+}
+
+export function getStudentOnTourIndividualRemarkWS(studentOnTourId: number) {
+    const url: string = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}${process.env.NEXT_PUBLIC_WEBSOCKET_STUDENT_ON_TOUR_BASE}${studentOnTourId}/remarks`;
+    return new WebSocket(url);
+}
+
 // export async function getToursOfStudent(studentId: number, params: DateInterval | null = null): Promise<AxiosResponse<any>> {
 //     await getToursOfStudent(studentId, params).then(
 //         async (res) => {
