@@ -9,7 +9,7 @@ import SyndicHeader from "@/components/header/syndicHeader";
 import { handleError } from "@/lib/error";
 import PasswordModal from "@/components/password/passwordModal";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
 function UserProfile() {
     const { t } = useTranslation();

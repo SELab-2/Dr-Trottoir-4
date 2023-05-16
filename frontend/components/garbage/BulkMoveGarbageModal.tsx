@@ -1,18 +1,18 @@
-import React, {useState} from "react";
-import {bulkMoveGarbageCollectionSchedule, garbageTypes} from "@/lib/garbage-collection";
-import {handleError} from "@/lib/error";
-import {formatDate} from "@/lib/date";
-import {Button, Form, Modal} from "react-bootstrap";
-import {addDays} from "date-fns";
-import {BuildingInterface} from "@/lib/building";
+import React, { useState } from "react";
+import { bulkMoveGarbageCollectionSchedule, garbageTypes } from "@/lib/garbage-collection";
+import { handleError } from "@/lib/error";
+import { formatDate } from "@/lib/date";
+import { Button, Form, Modal } from "react-bootstrap";
+import { addDays } from "date-fns";
+import { BuildingInterface } from "@/lib/building";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import Select from "react-select";
 
 export default function BulkMoveGarbageModal({
-                                               show,
-                                               buildings,
-                                               closeModal,
-                                           }: {
+    show,
+    buildings,
+    closeModal,
+}: {
     show: boolean;
     buildings: BuildingInterface[];
     closeModal: () => void;
@@ -62,7 +62,7 @@ export default function BulkMoveGarbageModal({
             <Modal.Header>
                 <Modal.Title>Bulk operatie voor geselecteerde gebouwen</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <Form.Group>
@@ -88,9 +88,9 @@ export default function BulkMoveGarbageModal({
                         <Select
                             options={Object.keys(garbageTypes).map((key: string) => {
                                 const v = garbageTypes[key];
-                                return {value: v, label: v};
+                                return { value: v, label: v };
                             })}
-                            value={garbageType ? {value: garbageType, label: garbageType} : {}}
+                            value={garbageType ? { value: garbageType, label: garbageType } : {}}
                             onChange={(s) => {
                                 if (s && s.value) {
                                     setGarbageType(s.value);

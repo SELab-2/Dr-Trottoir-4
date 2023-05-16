@@ -8,7 +8,7 @@ import { Button } from "react-bootstrap";
 import { useRouter } from "next/router";
 import EditEmailModal from "@/components/admin/editEmailModal";
 import { DeleteEmailModal } from "@/components/admin/deleteEmailModal";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
 function AdminDataMails() {
     const router = useRouter();
