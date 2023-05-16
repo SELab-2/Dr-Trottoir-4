@@ -7,6 +7,7 @@ getAllStudentOnTourFromToday,
 getStudentOnTour,
 getStudentOnTourAllProgressWS,
 getStudentOnTourIndividualProgressWS,
+getStudentOnTourIndividualRemarkWS,
 getStudentOnTourProgress,
 StudentOnTour,
 } from "@/lib/student-on-tour";
@@ -18,9 +19,9 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/system";
 import LiveField from "@/components/liveField";
-import { getAllRemarksOfStudentOnTour } from "@/lib/remark-at-building";
+import { getAllRemarksOfStudentOnTour, RemarkAtBuilding } from "@/lib/remark-at-building";
 
-interface IndividualWebSocketsResponse {
+interface IndividualProgressWebSocketsResponse {
     current_building_index: number;
 }
 
@@ -48,7 +49,7 @@ function AdminDashboard() {
     const [studentsOnTours, setStudentsOnTours] = useState<StudentOnTour[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
-    const [remarksRecord, setRemarksRecord] = useState<Record<string, number>>(
+    const [remarksRecord, setRemarksRecord] = useState<Record<number, number>>(
         {}
     );
     const [startedStudentOnTourIds, setStartedStudentOnTourIds] = useState<
@@ -95,10 +96,11 @@ function AdminDashboard() {
     const setupWebSocketForIndividualStudentOnTour = (
         studentOnTourId: number
     ) => {
-        const ws = getStudentOnTourIndividualProgressWS(studentOnTourId);
+        const wsProgress = getStudentOnTourIndividualProgressWS(studentOnTourId);
+        const wsRemarks = getStudentOnTourIndividualRemarkWS(studentOnTourId);
 
-        ws.addEventListener("message", (event) => {
-        const data: IndividualWebSocketsResponse = JSON.parse(event.data);
+        wsProgress.addEventListener("message", (event) => {
+        const data: IndividualProgressWebSocketsResponse = JSON.parse(event.data);
         setCurrentBuildingIndex((prevState) => ({
             ...prevState,
             [studentOnTourId]: data.current_building_index,
@@ -119,7 +121,15 @@ function AdminDashboard() {
         }
         });
 
-        return ws;
+        wsRemarks.addEventListener("message", (event) => {
+            // don't care about the actual remark
+            setRemarksRecord((prevState) => ({
+                ...prevState,
+                [studentOnTourId]: (prevState[studentOnTourId] || 0) + 1,
+            }))
+        })
+
+        return {wsProgress, wsRemarks};
     };
 
     const setInitialData = async (studentOnTourId: number) => {
@@ -199,8 +209,9 @@ function AdminDashboard() {
         const newRemarks: Record<string, number> = {};
         studentsOnTours.forEach(async (studentOnTour) => {
             await setInitialData(studentOnTour.id);
-            const ws = setupWebSocketForIndividualStudentOnTour(studentOnTour.id);
-            webSocketConnections.push(ws);
+            const {wsProgress, wsRemarks} = setupWebSocketForIndividualStudentOnTour(studentOnTour.id);
+            webSocketConnections.push(wsProgress);
+            webSocketConnections.push(wsRemarks);
             if (studentOnTour.started_tour) {
                 setStartedStudentOnTourIds((prevState) => [...prevState, studentOnTour.id]);
             }
@@ -296,11 +307,7 @@ function AdminDashboard() {
                             <button
                             onClick={() => redirectToRemarksPage(studentOnTour)}
                             >
-                            <LiveField
-                                fetcher={() => fetchRemarks(studentOnTour.id)}
-                                formatter={getRemarkText}
-                                interval={10000}
-                            />
+                            {getRemarkText(remarksRecord[studentOnTour.id])}
                             </button>
                         ) : (
                             "Geen opmerkingen"
