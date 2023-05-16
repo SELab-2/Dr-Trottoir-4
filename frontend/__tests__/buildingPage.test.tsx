@@ -4,6 +4,9 @@ import {BuildingInterface, getBuildingInfo, getBuildingInfoByPublicId} from "@/l
 import {AxiosResponse} from "axios/index";
 import BuildingPage from "@/components/building/BuildingPage";
 import {getRemarksAtBuildingOfSpecificBuilding, RemarkAtBuildingInterface} from "@/lib/remark-at-building";
+import {getFromDate} from "@/lib/date";
+import {GarbageCollectionInterface} from "@/lib/garbage-collection";
+import {getRegion, RegionInterface} from "@/lib/region";
 
 jest.mock("next/router", () => ({
     useRouter: jest.fn()
@@ -16,6 +19,14 @@ jest.mock("@/lib/building", () => ({
 
 jest.mock("@/lib/remark-at-building", () => ({
     getRemarksAtBuildingOfSpecificBuilding: jest.fn(),
+}));
+
+jest.mock("@/lib/date", () => ({
+    getFromDate: jest.fn(),
+}));
+
+jest.mock("@/lib/region", () => ({
+    getRegion: jest.fn(),
 }));
 
 describe("<BuildingPage />", () => {
@@ -35,13 +46,26 @@ describe("<BuildingPage />", () => {
     };
 
     const remarkAtBuilding: RemarkAtBuildingInterface = {
-      id: 1,
-      student_on_tour: 1,
-      building: 1,
-      timestamp: new Date(),
-      remark: "foo",
-      type: "AA"
+        id: 1,
+        student_on_tour: 1,
+        building: 1,
+        timestamp: new Date(),
+        remark: "foo",
+        type: "AA"
     };
+
+    const garbageCollection: GarbageCollectionInterface = {
+        id: 1,
+        building: 1,
+        date: new Date(),
+        garbage_type: "GFT"
+    };
+
+    const region: RegionInterface = {
+        id: 1,
+        region: "region"
+    };
+
     beforeEach(() => {
         (useRouter as jest.Mock).mockReturnValue({
             query: {id: "1"},
@@ -54,7 +78,13 @@ describe("<BuildingPage />", () => {
             data: building
         } as AxiosResponse);
         (getRemarksAtBuildingOfSpecificBuilding as jest.MockedFunction<typeof getRemarksAtBuildingOfSpecificBuilding>).mockResolvedValue({
-            data: [remarkAtBuilding], // <-- Your mock data here
+            data: [remarkAtBuilding],
+        } as AxiosResponse);
+        (getFromDate as jest.MockedFunction<typeof getFromDate>).mockResolvedValue({
+            data: garbageCollection,
+        } as AxiosResponse);
+        (getRegion as jest.MockedFunction<typeof getRegion>).mockResolvedValue({
+            data: region,
         } as AxiosResponse);
     });
 
