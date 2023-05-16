@@ -27,7 +27,7 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
             {
                 "type": "remark.at.building.remark.created",
                 "remark_at_building_remark": remark_at_building_remark,
-            }
+            },
         )
         return
 
@@ -56,8 +56,8 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
         return
 
     if (
-            instance.type == RemarkAtBuilding.VERTREK
-            and student_on_tour.current_building_index == student_on_tour.max_building_index
+        instance.type == RemarkAtBuilding.VERTREK
+        and student_on_tour.current_building_index == student_on_tour.max_building_index
     ):
         student_on_tour.completed_tour = timezone.now()
         student_on_tour.save()
