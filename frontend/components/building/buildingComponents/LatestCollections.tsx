@@ -1,9 +1,10 @@
-import { GarbageCollectionInterface, getGarbageCollectionFromBuilding } from "@/lib/garbage-collection";
-import React, { useEffect, useState } from "react";
-import { handleError } from "@/lib/error";
+import {GarbageCollectionInterface, getGarbageCollectionFromBuilding} from "@/lib/garbage-collection";
+import React, {useEffect, useState} from "react";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import {convertToSensibleDateShort} from "@/lib/dateUtil";
 
-function LatestCollections({ building }: { building: number }) {
+function LatestCollections({building}: { building: number }) {
     const [collections, setCollections] = useState<GarbageCollectionInterface[]>([]);
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
@@ -29,21 +30,32 @@ function LatestCollections({ building }: { building: number }) {
         }
     }, [building]);
 
+    function getNewBuildingDateUrl(date: Date) {
+        const url = new URL(window.location.href);
+        const queryParams = new URLSearchParams(url.search);
+        queryParams.set("date", date + "");
+        url.search = queryParams.toString();
+        return url.toString();
+    }
+
     return (
         <>
-            <div style={{ height: "100%", overflowY: "scroll" }}>
+            <div style={{height: "100%", overflowY: "scroll"}}>
                 <h1>Recente ophalingen</h1>
 
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
 
                 {collections.length > 0 ? (
                     <ul>
                         {collections.map((collection: GarbageCollectionInterface) => (
                             <li key={collection.id}>
                                 <>
-                                    Type: {collection.garbage_type} <br />
-                                    Datum: {collection.date}
-                                    <br />
+                                    Type: {collection.garbage_type} <br/>
+                                    Datum:&nbsp;
+                                    <a href={getNewBuildingDateUrl(collection.date)}>
+                                        {convertToSensibleDateShort(collection.date)}
+                                    </a>
+                                    <br/>
                                 </>
                             </li>
                         ))}
