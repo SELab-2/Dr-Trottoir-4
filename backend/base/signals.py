@@ -12,12 +12,18 @@ from base.serializers import RemarkAtBuildingSerializer
 @receiver(post_save, sender=RemarkAtBuilding)
 def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
     if instance.type == RemarkAtBuilding.OPMERKING:
-        print("Signal received: remark at building OPMERKING!")
         # Broadcast to remark at building websocket
         remark_at_building_remark = RemarkAtBuildingSerializer(instance).data
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             f"remark-at-building_{instance.building.id}",
+            {
+                "type": "remark.at.building.remark.created",
+                "remark_at_building_remark": remark_at_building_remark,
+            },
+        )
+        async_to_sync(channel_layer.group_send)(
+            f"student_on_tour_{instance.student_on_tour.id}_remarks",
             {
                 "type": "remark.at.building.remark.created",
                 "remark_at_building_remark": remark_at_building_remark,
@@ -41,7 +47,7 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
         # Broadcast update to websocket
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            f"student_on_tour_{student_on_tour.id}",
+            f"student_on_tour_{student_on_tour.id}_progress",
             {
                 "type": "progress.update",
                 "current_building_index": student_on_tour.current_building_index,
@@ -50,8 +56,8 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
         return
 
     if (
-            instance.type == RemarkAtBuilding.VERTREK
-            and student_on_tour.current_building_index == student_on_tour.max_building_index
+        instance.type == RemarkAtBuilding.VERTREK
+        and student_on_tour.current_building_index == student_on_tour.max_building_index
     ):
         student_on_tour.completed_tour = timezone.now()
         student_on_tour.save()
