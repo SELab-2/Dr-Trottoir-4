@@ -6,4 +6,5 @@ class BaseConfig(AppConfig):
     name = "base"
 
     def ready(self):
+        # noinspection PyUnresolvedReferences
         import base.signals

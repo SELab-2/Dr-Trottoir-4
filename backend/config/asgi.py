@@ -8,6 +8,7 @@ https://docs.djangoproject.com/en/4.1/howto/deployment/asgi/
 """
 
 import os
+
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
 from django.urls import re_path, path
@@ -24,10 +25,12 @@ application = ProtocolTypeRouter(
         "websocket": URLRouter(
             [
                 re_path(
-                    r"^ws/student-on-tour/(?P<student_on_tour_id>\d+)/$",
+                    r"^ws/student-on-tour/student/(?P<student_on_tour_id>\d+)/$",
                     consumers.IndividualStudentOnTourConsumer.as_asgi(),
                 ),
                 path("ws/student-on-tour/all/", consumers.AllStudentOnTourConsumer.as_asgi()),
+                path("ws/remark-at-building/remark/building/<int:building_id>/",
+                     consumers.RemarksAtBuildingConsumer.as_asgi()),
             ]
         ),
     }

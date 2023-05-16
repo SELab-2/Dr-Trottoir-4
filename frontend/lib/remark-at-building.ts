@@ -10,7 +10,7 @@ export interface RemarkAtBuildingInterface {
     type: "AA" | "BI" | "VE" | "OP";
 }
 
-export function translateRemartAtBuildingType(type: RemarkAtBuildingInterface["type"]) {
+export function translateRemarkAtBuildingType(type: RemarkAtBuildingInterface["type"]) {
     switch (type) {
         case "AA":
             return "Aankomst";
@@ -19,7 +19,7 @@ export function translateRemartAtBuildingType(type: RemarkAtBuildingInterface["t
         case "VE":
             return "Vertrek";
         case "OP":
-            return "Opmerking";
+            return "Algemene Opmerking";
     }
 }
 

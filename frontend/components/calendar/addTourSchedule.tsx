@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import {addDays, startOfWeek} from "date-fns";
+import { addDays, startOfWeek } from "date-fns";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import { formatDate } from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
@@ -9,19 +9,17 @@ import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour"
 import { handleError } from "@/lib/error";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
-function AddTourScheduleModal(
-    {
-        isOpen,
-        onClose,
-        onPost,
-        range
-    } : {
-        isOpen: boolean
-        onClose : () => void;
-        onPost : () => void;
-        range: {start: Date, end: Date};
-    }
-) {
+function AddTourScheduleModal({
+    isOpen,
+    onClose,
+    onPost,
+    range,
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    onPost: () => void;
+    range: { start: Date; end: Date };
+}) {
     const [tourId, setTourId] = useState(null);
     const [studentId, setStudentId] = useState(-1);
     const [start, setStart] = useState<Date | null>(null);
@@ -102,18 +100,18 @@ function AddTourScheduleModal(
         }
     }
 
-    function handleEventSave (data: { tour: number; student: number; start: Date; end: Date }[]) {
+    function handleEventSave(data: { tour: number; student: number; start: Date; end: Date }[]) {
         const post_data: StudentOnTourPost[] = data.map(
             (event: { tour: number; student: number; start: Date; end: Date }) => {
                 return { tour: event.tour, student: event.student, date: formatDate(event.start) };
             }
         );
         postBulkStudentOnTour(post_data).then(
-            _ => {
-                onPost()
+            (_) => {
+                onPost();
                 onClose();
             },
-            err => setErrorMessages(handleError(err))
+            (err) => setErrorMessages(handleError(err))
         );
     }
 

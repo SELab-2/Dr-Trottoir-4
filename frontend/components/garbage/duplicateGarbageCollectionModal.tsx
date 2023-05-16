@@ -1,23 +1,23 @@
-import {Button, Form, Modal} from "react-bootstrap";
-import React, {useState} from "react";
-import {useTranslation} from "react-i18next";
-import {formatDate} from "@/lib/date";
-import {BuildingInterface} from "@/lib/building";
-import {duplicateGarbageCollectionSchedule} from "@/lib/garbage-collection";
-import {handleError} from "@/lib/error";
+import { Button, Form, Modal } from "react-bootstrap";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { formatDate } from "@/lib/date";
+import { BuildingInterface } from "@/lib/building";
+import { duplicateGarbageCollectionSchedule } from "@/lib/garbage-collection";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {endOfWeek, startOfWeek} from "date-fns";
+import { endOfWeek, startOfWeek } from "date-fns";
 
 export default function DuplicateGarbageCollectionModal({
-                                                            show,
-                                                            closeModal,
-                                                            buildings,
-                                                        }: {
+    show,
+    closeModal,
+    buildings,
+}: {
     show: boolean;
     closeModal: () => void;
     buildings: BuildingInterface[];
 }) {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [startDate, setStartDate] = useState<string>("");
     const [endDate, setEndDate] = useState<string>("");
@@ -59,7 +59,7 @@ export default function DuplicateGarbageCollectionModal({
             <Modal.Header>
                 <Modal.Title>Dupliceer vuilophaling schema voor geselecteerde gebouwen</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <div className="form-row">
@@ -69,11 +69,11 @@ export default function DuplicateGarbageCollectionModal({
                                 type="date"
                                 className="form-control"
                                 value={startDate}
-                                onChange={(event) => setStartDate(
-                                    formatDate(
-                                        startOfWeek(new Date(event.target.value), {weekStartsOn: 1})
+                                onChange={(event) =>
+                                    setStartDate(
+                                        formatDate(startOfWeek(new Date(event.target.value), { weekStartsOn: 1 }))
                                     )
-                                )}
+                                }
                             />
                         </div>
                         <div className="col">
@@ -82,11 +82,9 @@ export default function DuplicateGarbageCollectionModal({
                                 type="date"
                                 className="form-control"
                                 value={endDate}
-                                onChange={(event) => setEndDate(
-                                    formatDate(
-                                        endOfWeek(new Date(event.target.value), {weekStartsOn: 1})
-                                    )
-                                )}
+                                onChange={(event) =>
+                                    setEndDate(formatDate(endOfWeek(new Date(event.target.value), { weekStartsOn: 1 })))
+                                }
                             />
                         </div>
                     </div>
@@ -96,11 +94,11 @@ export default function DuplicateGarbageCollectionModal({
                             type="date"
                             className="form-control"
                             value={copyToDate}
-                            onChange={(event) => setCopyToDate(
-                                formatDate(
-                                    startOfWeek(new Date(event.target.value), {weekStartsOn: 1})
+                            onChange={(event) =>
+                                setCopyToDate(
+                                    formatDate(startOfWeek(new Date(event.target.value), { weekStartsOn: 1 }))
                                 )
-                            )}
+                            }
                         />
                     </div>
                 </Modal.Body>
