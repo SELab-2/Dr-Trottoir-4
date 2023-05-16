@@ -95,7 +95,7 @@ function AdminDashboard() {
     const setupWebSocketForIndividualStudentOnTour = (
         studentOnTourId: number
     ) => {
-        const ws = getStudentOnTourIndividualProgressWS(studentOnTourId);
+        const ws = new WebSocket(`ws://localhost:2002/ws/student-on-tour/${studentOnTourId}/progress/`);//getStudentOnTourIndividualProgressWS(studentOnTourId);
 
         ws.addEventListener("message", (event) => {
         const data: IndividualWebSocketsResponse = JSON.parse(event.data);

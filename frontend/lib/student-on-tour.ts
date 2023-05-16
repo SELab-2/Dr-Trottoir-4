@@ -138,7 +138,7 @@ export function studentOnTourSearchString(studentOnTour: StudentOnTour) {
 }
 
 export function getStudentOnTourIndividualProgressWS(studentOnTourId: number) {
-    const url: string = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}${process.env.NEXT_PUBLIC_WEBSOCKET_STUDENT_ON_TOUR_BASE}${studentOnTourId}/progress`;
+    const url: string = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}${process.env.NEXT_PUBLIC_WEBSOCKET_STUDENT_ON_TOUR_BASE}${studentOnTourId}/progress/`;
     return new WebSocket(url);
 }
 
@@ -148,7 +148,7 @@ export function getStudentOnTourAllProgressWS() {
 }
 
 export function getStudentOnTourIndividualRemarkWS(studentOnTourId: number) {
-    const url: string = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}${process.env.NEXT_PUBLIC_WEBSOCKET_STUDENT_ON_TOUR_BASE}${studentOnTourId}/remarks`;
+    const url: string = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}${process.env.NEXT_PUBLIC_WEBSOCKET_STUDENT_ON_TOUR_BASE}${studentOnTourId}/remarks/`;
     return new WebSocket(url);
 }
 
