@@ -166,29 +166,38 @@ function AdminAnalysisWorkingHours() {
                                     <Card.Text className="text-muted mt-1">{time}</Card.Text>
                                     <ListGroup className="list-group-flush">
                                         <ListGroup.Item />
-                                        {worked.student_on_tour_ids.map((s) => {
+                                        {worked.student_on_tour_ids.map((s, index) => {
                                             const sot: StudentOnTour | undefined = studentOnTours.find(
                                                 (st) => st.id === s
                                             );
                                             if (!sot) {
-                                                return <></>;
+                                                return <div key={index}></div>;
                                             }
                                             return (
-                                                <ListGroup.Item key={s}>
-                                                    <Link
-                                                        style={{
-                                                            textDecoration: "underline",
-                                                            color: "royalblue",
-                                                        }}
-                                                        href={{
-                                                            pathname: "/admin/analysis/student-on-tour",
-                                                            query: {
-                                                                studentOnTour: sot.id,
-                                                            },
-                                                        }}
-                                                    >
-                                                        {getTourName(sot)}
-                                                    </Link>
+                                                <ListGroup.Item key={index}>
+                                                    {
+                                                        (sot.completed_tour || sot.started_tour) &&
+                                                        <Link
+                                                            style={{
+                                                                textDecoration: "underline",
+                                                                color: "royalblue",
+                                                            }}
+                                                            href={{
+                                                                pathname: "/admin/analysis/student-on-tour",
+                                                                query: {
+                                                                    studentOnTour: sot.id,
+                                                                },
+                                                            }}
+                                                        >
+                                                            {getTourName(sot)}
+                                                        </Link>
+                                                    }
+                                                    {
+                                                        (!sot.completed_tour && !sot.started_tour) &&
+                                                        <p>
+                                                            {getTourName(sot)}
+                                                        </p>
+                                                    }
                                                 </ListGroup.Item>
                                             );
                                         })}
