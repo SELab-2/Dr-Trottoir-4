@@ -196,12 +196,12 @@ class RemarksAtBuildingView(APIView):
             return bad_request_custom_error_message(_("Cannot use both most-recent and date for RemarkAtBuilding"))
 
         if most_recent_only:
-            instances = remark_at_building_instances.order_by("-timestamp").first()
+            most_recent_remark = remark_at_building_instances.order_by("-timestamp").first()
+            if most_recent_remark:
+                # Now we have the most recent one, now get all remarks from that day
+                most_recent_day = most_recent_remark.timestamp.date()
 
-            # Now we have the most recent one, but there are more remarks on that same day
-            most_recent_day = str(instances.timestamp.date())
-
-            remark_at_building_instances = remark_at_building_instances.filter(timestamp__gte=most_recent_day)
+                remark_at_building_instances = remark_at_building_instances.filter(timestamp__gte=most_recent_day)
 
         elif date:
             remark_at_building_instances = remark_at_building_instances.filter(timestamp__date=date)
