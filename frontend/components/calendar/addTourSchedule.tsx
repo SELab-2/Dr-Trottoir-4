@@ -20,23 +20,23 @@ function AddTourScheduleModal({
     onPost: () => void;
     range: { start: Date; end: Date };
 }) {
-    const [tourId, setTourId] = useState(null);
-    const [studentId, setStudentId] = useState(-1);
+    const [tourId, setTourId] = useState<number | null>(null);
+    const [studentId, setStudentId] = useState<number | null>(null);
     const [start, setStart] = useState<Date | null>(null);
     const [checked, setChecked] = useState(true);
-    const [sundayId, setSundayId] = useState(-1);
-    const [mondayId, setMondayId] = useState(-1);
-    const [tuesdayId, setTuesdayId] = useState(-1);
-    const [wednesdayId, setWednesdayId] = useState(-1);
-    const [thursdayId, setThursdayId] = useState(-1);
-    const [fridayId, setFridayId] = useState(-1);
+    const [sundayId, setSundayId] = useState<number | null>(null);
+    const [mondayId, setMondayId] = useState<number | null>(null);
+    const [tuesdayId, setTuesdayId] = useState<number | null>(null);
+    const [wednesdayId, setWednesdayId] = useState<number | null>(null);
+    const [thursdayId, setThursdayId] = useState<number | null>(null);
+    const [fridayId, setFridayId] = useState<number | null>(null);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     function handleSave() {
-        if (tourId === null || studentId === -1) {
+        if (tourId === null || studentId === null) {
             setErrorMessages(["Ronde of student is leeg."]);
         } else {
-            if (start !== null) {
+            if (start && studentId) {
                 const end = addDays(start, 5);
                 let data = [];
                 let currentDate = start;
@@ -49,7 +49,7 @@ function AddTourScheduleModal({
                         currentDate = nextDate;
                         currentDate.setHours(0);
                     }
-                } else {
+                } else if (sundayId && mondayId && tuesdayId && wednesdayId && thursdayId && fridayId) {
                     let dates = getDayTimestamps(start);
                     data.push({
                         tour: tourId,
@@ -125,13 +125,13 @@ function AddTourScheduleModal({
 
     const resetStates = () => {
         setStart(null);
-        setSundayId(-1);
-        setMondayId(-1);
-        setTuesdayId(-1);
-        setWednesdayId(-1);
-        setThursdayId(-1);
-        setFridayId(-1);
-        setStudentId(-1);
+        setSundayId(null);
+        setMondayId(null);
+        setTuesdayId(null);
+        setWednesdayId(null);
+        setThursdayId(null);
+        setFridayId(null);
+        setStudentId(null);
         setTourId(null);
         setChecked(true);
         setErrorMessages([]);
