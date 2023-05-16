@@ -38,6 +38,13 @@ export interface TourUserProps {
     tourId?: number | null;
 }
 
+export interface StudentOnTourProps {
+    initialId: any;
+    setObjectId: (value: any) => void;
+    required: boolean;
+    studentId: number;
+}
+
 const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions, mapping, setObjectId }) => {
     const [value, setValue] = React.useState<any>();
     const [inputValue, setInputValue] = useState("");

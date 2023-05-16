@@ -62,7 +62,7 @@ export async function getSyndics() {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
     return await api.get(request_url, {
         params: {
-            "include-role-name-list": "syndic"
+            "include-role-name-list": ["syndic"]
         }
     });
 }
@@ -71,7 +71,7 @@ export async function getStudents() {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
     return await api.get(request_url, {
         params: {
-            "include-role-name-list": "student"
+            "include-role-name-list": ["student"]
         }
     });
 }
