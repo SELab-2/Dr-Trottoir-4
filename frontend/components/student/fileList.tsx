@@ -1,8 +1,10 @@
 import { IconButton, Tooltip } from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import React from "react";
+import React, {useState} from "react";
 import { FileListElement } from "@/types";
 import { deletePictureOfRemark } from "@/lib/picture-of-remark";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import {handleError} from "@/lib/error";
 
 export function FileList({
     files,
@@ -15,6 +17,9 @@ export function FileList({
     optional: boolean;
     editable: boolean;
 }) {
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
     // Handle when a file is selected
     function handleFileAdd(event: React.ChangeEvent<HTMLInputElement>) {
         const newFiles: FileList | null = event.target.files;
@@ -42,7 +47,7 @@ export function FileList({
                     newFiles.splice(index, 1);
                     setFiles(newFiles);
                 })
-                .catch((_) => {});
+                .catch(err => setErrorMessages(handleError(err)));
         } else {
             const newFiles = [...files];
             newFiles.splice(index, 1);
@@ -52,6 +57,7 @@ export function FileList({
 
     return (
         <>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             {editable && (
                 <div>
                     <label className="form-label">{`Upload foto's ${optional ? "(Optioneel)" : ""}:`}</label>

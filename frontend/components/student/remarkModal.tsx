@@ -64,7 +64,7 @@ export default function RemarkModal({
                         })
                     );
                 })
-                .catch((_) => {});
+                .catch(err => setErrorMessages(handleError(err)));
         } else {
             setRemark("");
             setRemarkFiles([]);
