@@ -31,16 +31,10 @@ interface DataAdminTourQuery extends ParsedUrlQuery {
 
 function AdminTour() {
   const router = useRouter();
-  const [allToursOfStudent, setAllToursOfStudent] = useState<StudentOnTour[]>(
-    []
-  );
-  const [allStudentsOnTour, setAllStudentsOnTour] = useState<StudentOnTour[]>(
-    []
-  );
+  const [allToursOfStudent, setAllToursOfStudent] = useState<StudentOnTour[]>([]);
+  const [allStudentsOnTour, setAllStudentsOnTour] = useState<StudentOnTour[]>([]);
   const [allStudents, setAllStudents] = useState<User[]>([]);
-  const [allBuildingsOnTour, setAllBuildingsOnTour] = useState<
-    BuildingOnTour[]
-  >([]);
+  const [allBuildingsOnTour, setAllBuildingsOnTour] = useState<BuildingOnTour[]>([]);
   const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
   const [selectedStudentId, setSelectedStudentId] = useState<number>(0);
   const [selectedStudentName, setSelectedStudentName] = useState<string>("");
@@ -54,6 +48,8 @@ function AdminTour() {
   const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
   const [loading, setLoading] = useState(true);
 
+  // First, fetch all students when the router is ready.
+  // Set the selected student ID based on the router query or default to the first student.
   useEffect(() => {
     try {
       getStudents().then((res) => {
@@ -73,12 +69,13 @@ function AdminTour() {
     }
   }, [router.isReady]);
 
+
+  // When selected student ID changes, fetch all tours of that student.
+  // Set the selected tour ID based on the router query or default to the first tour.
   useEffect(() => {
     if (!selectedStudentId) return;
 
     getToursOfStudent(selectedStudentId).then((res) => {
-      console.log("µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ");
-      console.log(res.data);
       const sots: StudentOnTour[] = res.data;
       setAllToursOfStudent(sots);
       let currentSot = sots[0];
@@ -86,18 +83,13 @@ function AdminTour() {
         currentSot = sots.find((e) => e.tour === +[query.tour]) || sots[0];
       }
       setSelectedTourId(currentSot.tour);
-      console.log("############ SOTS");
-      console.log(sots);
+
+
       const validDatesArray = sots.map((sot) => new Date(sot.date));
-      console.log("validDates:");
-      console.log(validDatesArray);
       if (validDatesArray.length > 0) {
         const sortedDates = validDatesArray.sort((a, b) => a.getTime() - b.getTime());
         setValidDates(sortedDates);
-        console.log(`sortedDates:`);
-        console.log(sortedDates);
         const latestDate = sortedDates.length > 0 ? sortedDates[sortedDates.length - 1] : null;
-        console.log(`latest date: ${latestDate}`);
         if (latestDate) {
           setSelectedDate(latestDate);
         }
@@ -107,6 +99,9 @@ function AdminTour() {
     });
   }, [selectedStudentId]);
 
+
+  // When selected tour ID changes, fetch details of the tour and update selected tour.
+  // Also fetch all buildings on that tour.
   useEffect(() => {
     if (!selectedTourId) return;
 
@@ -114,71 +109,89 @@ function AdminTour() {
       const tour: Tour = res.data;
       setSelectedTour(tour);
       setSelectedTourName(tour.name);
-    });
+    }).catch(console.error);
+
+    getAllBuildingsOnTourWithTourID(selectedTourId).then((res) => {
+        setAllBuildingsOnTour(res.data);
+    }).catch(console.error);
   }, [selectedTourId]);
 
-  useEffect(() => {
-    const fetchBuildingsOnTour = async () => {
-      if (selectedTourId) {
-        const response = await getAllBuildingsOnTourWithTourID(selectedTourId);
-        setAllBuildingsOnTour(response.data);
-      }
-    };
-    fetchBuildingsOnTour();
-  }, [selectedTourId]);
 
+  // When the list of buildings on tour changes, fetch all building details.
   useEffect(() => {
-    const fetchBuildings = async () => {
-      if (allBuildingsOnTour) {
-        const buildingPromises = allBuildingsOnTour.map((buildingOnTour) =>
-          getBuildingInfo(buildingOnTour.building)
-        );
+    if (!allBuildingsOnTour.length) return;
 
-        try {
-          const buildingResponses = await Promise.all(buildingPromises);
-          const fetchedBuildings = buildingResponses.map(
-            (response) => response.data
-          );
-          setAllBuildings(fetchedBuildings);
-        } catch (error) {
-          console.error("Error fetching buildings:", error);
+    Promise.all(allBuildingsOnTour.map((buildingOnTour) => getBuildingInfo(buildingOnTour.building)))
+      .then((responses) => {
+        setAllBuildings(responses.map(response =>response.data));
+        setLoading(false);
+        }).catch(console.error);
+    }, [allBuildingsOnTour]);
+
+    // When valid dates change, update the selected date to the latest valid date.
+    // Only if the current selected date is not valid.
+    useEffect(() => {
+        if (validDates.length > 0) {
+            const isDateValid = validDates.map(d => d.toLocaleDateString()).includes(selectedDate.toLocaleDateString());
+            if (!isDateValid) {
+                setSelectedDate(validDates[validDates.length - 1]);
+            }
         }
-      }
-    };
-    fetchBuildings();
-  }, [allBuildingsOnTour]);
+    }, [validDates, selectedDate]);
 
-  useEffect(() => {
-    console.log("allBuildings:");
-    console.log(allBuildings);
-    console.log(`allBuildingsOnTour:`);
-    console.log(allBuildingsOnTour);
-    console.log(`allStudents:`);
-    console.log(allStudents);
-    console.log(`allStudentsOnTour:`);
-    console.log(allStudentsOnTour);
-    console.log(`allToursOfStudent:`);
-    console.log(allToursOfStudent);
-    console.log("selectedStudent:");
-    console.log(selectedStudentId);
-    console.log("selected tour:");
-    console.log(selectedTourId);
+//     const fetchBuildings = async () => {
+//       if (allBuildingsOnTour) {
+//         const buildingPromises = allBuildingsOnTour.map((buildingOnTour) =>
+//           getBuildingInfo(buildingOnTour.building)
+//         );
 
-    if (selectedStudentId && selectedTourId) {
-      const foundStudentOnTour = allStudentsOnTour.find(
-        (sot) =>
-          sot.student === selectedStudentId && sot.tour === selectedTourId
-      );
-      setStudentOnTourId(foundStudentOnTour?.id || 0);
-      setLoading(false);
-    }
-  }, [
-    selectedStudentId,
-    selectedTourId,
-    allStudentsOnTour,
-    allBuildings,
-    allBuildingsOnTour,
-  ]);
+//         try {
+//           const buildingResponses = await Promise.all(buildingPromises);
+//           const fetchedBuildings = buildingResponses.map(
+//             (response) => response.data
+//           );
+//           setAllBuildings(fetchedBuildings);
+//         } catch (error) {
+//           console.error("Error fetching buildings:", error);
+//         }
+//       }
+//     };
+//     fetchBuildings();
+//   }, [allBuildingsOnTour]);
+
+//   useEffect(() => {
+//     console.log("allBuildings:");
+//     console.log(allBuildings);
+//     console.log(`allBuildingsOnTour:`);
+//     console.log(allBuildingsOnTour);
+//     console.log(`allStudents:`);
+//     console.log(allStudents);
+//     console.log(`allStudentsOnTour:`);
+//     console.log(allStudentsOnTour);
+//     console.log(`allToursOfStudent:`);
+//     console.log(allToursOfStudent);
+//     console.log("selectedStudent:");
+//     console.log(selectedStudentId);
+//     console.log("selected tour:");
+//     console.log(selectedTourId);
+//     console.log("selected date:");
+//     console.log(selectedDate);
+
+//     // if (selectedStudentId && selectedTourId) {
+//     //   const foundStudentOnTour = allStudentsOnTour.find(
+//     //     (sot) =>
+//     //       sot.student === selectedStudentId && sot.tour === selectedTourId
+//     //   );
+//     //   setStudentOnTourId(foundStudentOnTour?.id || 0);
+//     //   setLoading(false);
+//     // }
+//   }, [
+//     selectedStudentId,
+//     selectedTourId,
+//     allStudentsOnTour,
+//     allBuildings,
+//     allBuildingsOnTour,
+//   ]);
 
   if (loading) {
     return (
