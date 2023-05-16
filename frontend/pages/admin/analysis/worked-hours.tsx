@@ -12,7 +12,7 @@ import { getAllStudentOnTourFromDate, StudentOnTour, StudentOnTourStringDate } f
 import { WorkedHours } from "@/types";
 import { handleError } from "@/lib/error";
 import Link from "next/link";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
 function AdminAnalysisWorkingHours() {
     const [errorMessages, setErrorMessages] = useState<string[]>([]);

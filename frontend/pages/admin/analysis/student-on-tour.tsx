@@ -12,7 +12,7 @@ import { getTour, Tour } from "@/lib/tour";
 import { getRegion, RegionInterface } from "@/lib/region";
 import Link from "next/link";
 import { formatDate } from "@/lib/date";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
 interface StudentOnTourQuery {
     studentOnTour?: number;
