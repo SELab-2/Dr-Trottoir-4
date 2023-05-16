@@ -22,21 +22,17 @@ function CollectionCards({ building, date }: { building: number; date: string | 
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-
     const connectToWebSocket = (websocketURL: string, callback: () => void) => {
         const client = new WebSocket(websocketURL);
 
-        client.onopen = () => {
-        };
+        client.onopen = () => {};
 
         client.addEventListener("message", (event) => {
-            callback()
+            callback();
         });
 
-        client.onclose = () => {
-        };
+        client.onclose = () => {};
     };
-
 
     function handleRemarksAtBuildingsCall(response: AxiosResponse) {
         const responseData: RemarkAtBuildingInterface[] = response.data.sort(
