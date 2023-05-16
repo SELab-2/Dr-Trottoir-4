@@ -63,7 +63,6 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
         getStudentOnTour(studentOnTourId)
             .then((res) => {
                 const sots: StudentOnTourStringDate = res.data;
-                console.log(sots)
                 const sot: StudentOnTour = {
                     id: sots.id,
                     student: sots.student,
