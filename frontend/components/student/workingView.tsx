@@ -75,9 +75,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                 };
                 if (sot.completed_tour) {
                     // Tour is completed, redirect to no access
-                    router.replace("/no-access").then((_) => {
-                        console.error("No access");
-                    });
+                    router.replace("/no-access").then();
                 }
                 setProgress({
                     step: 0,
