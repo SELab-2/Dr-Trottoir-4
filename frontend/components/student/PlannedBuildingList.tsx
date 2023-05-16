@@ -71,17 +71,26 @@ export default function PlannedBuildingList({
     }, [studentOnTourId]);
 
     async function routeToFirstBuilding() {
-        if (buildings.length === 0 || !studentOnTourId) {
+        if (buildings.length === 0 || !studentOnTourId || ! studentOnTour) {
             return;
         }
-        startStudentOnTour(studentOnTourId)
-            .then(async (_) => {
-                await router.push({
-                    pathname: redirectTo,
-                    query: { studentOnTourId: studentOnTour?.id },
-                });
-            })
-            .catch((_) => {});
+        if (! studentOnTour.started_tour) {
+            startStudentOnTour(studentOnTourId)
+                .then(async (_) => {
+                    await router.push({
+                        pathname: redirectTo,
+                        query: { studentOnTourId: studentOnTour.id },
+                    });
+                })
+                .catch((_) => {});
+            return;
+        } else {
+            await router.push({
+                pathname: redirectTo,
+                query: { studentOnTourId: studentOnTour.id },
+            });
+        }
+
     }
 
     function getStartButtonText() {
