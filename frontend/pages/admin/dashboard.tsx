@@ -185,6 +185,8 @@ function AdminDashboard() {
             setUsers(allUsersResponse.data);
         } catch (error) {
             console.error(error);
+        } finally {
+            setLoading(false);
         }
         };
 
@@ -193,19 +195,19 @@ function AdminDashboard() {
 
     useEffect(() => {
         if (!studentsOnTours.length) return;
-
         const webSocketConnections: WebSocket[] = [];
         const newRemarks: Record<string, number> = {};
         studentsOnTours.forEach(async (studentOnTour) => {
-        await setInitialData(studentOnTour.id);
-
-        const ws = setupWebSocketForIndividualStudentOnTour(studentOnTour.id);
-        webSocketConnections.push(ws);
+            await setInitialData(studentOnTour.id);
+            const ws = setupWebSocketForIndividualStudentOnTour(studentOnTour.id);
+            webSocketConnections.push(ws);
         });
+        
         const wsAll = setupWebSocketForAllStudentOnTours();
+        console.log(`created all websockets`);
         
         setLoading(false);
-
+        console.log(`loading should be false here`);
         setRemarksRecord(newRemarks);
 
         return () => {
@@ -234,6 +236,16 @@ function AdminDashboard() {
         </>
         );
     }
+
+    if (studentsOnTours.length === 0) {
+        return (
+            <div>
+                <AdminHeader />
+                <h2>Er zijn vandaag geen studenten ingepland</h2>
+            </div>
+        );
+    }
+
     return (
         <div>
         <AdminHeader />
