@@ -8,8 +8,9 @@ import { Button } from "react-bootstrap";
 import { useRouter } from "next/router";
 import EditEmailModal from "@/components/admin/editEmailModal";
 import { DeleteEmailModal } from "@/components/admin/deleteEmailModal";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
-export default function AdminDataMails() {
+function AdminDataMails() {
     const router = useRouter();
     const [emailTemplates, setEmailTemplates] = useState<Emailtemplate[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -143,3 +144,5 @@ export default function AdminDataMails() {
         </>
     );
 }
+
+export default withAuthorisation(AdminDataMails, ["Admin", "Superstudent"]);
