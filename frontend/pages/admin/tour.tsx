@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-
+import "react-datepicker/dist/react-datepicker.css";
+import ReactDatePicker from "react-datepicker";
 import { getAllTours, getTour, Tour } from "@/lib/tour";
 import {
   getAllStudentOnTourFromDate,
@@ -46,10 +47,8 @@ function AdminTour() {
   const [selectedTour, setSelectedTour] = useState<Tour | null>(null);
   const [selectedTourId, setSelectedTourId] = useState<number>(0);
   const [selectedTourName, setSelectedTourName] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().substring(0, 10)
-  );
-  
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [validDates, setValidDates] = useState<Date[]>([]);
   const [studentOnTourId, setStudentOnTourId] = useState<number>(0);
 
   const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
@@ -57,19 +56,6 @@ function AdminTour() {
 
   useEffect(() => {
     try {
-      // getAllTours().then(
-      //     (res) => {
-      //         const tours: Tour[] = res.data;
-      //         setAllTours(tours);
-      //         let currentTour = tours[0];
-      //         if (query.tour) {
-      //             currentTour = tours.find(e => e.id === +[query.tour]) || tours[0];
-      //         }
-      //         setSelectedTourId(currentTour.id);
-      //         setSelectedTourName(currentTour.name);
-      //     }
-      // );
-
       getStudents().then((res) => {
         const students: User[] = res.data;
         students.filter((e) => e.role === 4);
@@ -93,13 +79,31 @@ function AdminTour() {
     getToursOfStudent(selectedStudentId).then((res) => {
       console.log("µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ");
       console.log(res.data);
-      const sot: StudentOnTour[] = res.data;
-      setAllToursOfStudent(sot);
-      let currentTour = sot[0];
+      const sots: StudentOnTour[] = res.data;
+      setAllToursOfStudent(sots);
+      let currentSot = sots[0];
       if (query.tour) {
-        currentTour = sot.find((e) => e.tour === +[query.tour]) || sot[0];
+        currentSot = sots.find((e) => e.tour === +[query.tour]) || sots[0];
       }
-      setSelectedTourId(currentTour.tour);
+      setSelectedTourId(currentSot.tour);
+      console.log("############ SOTS");
+      console.log(sots);
+      const validDatesArray = sots.map((sot) => new Date(sot.date));
+      console.log("validDates:");
+      console.log(validDatesArray);
+      if (validDatesArray.length > 0) {
+        const sortedDates = validDatesArray.sort((a, b) => a.getTime() - b.getTime());
+        setValidDates(sortedDates);
+        console.log(`sortedDates:`);
+        console.log(sortedDates);
+        const latestDate = sortedDates.length > 0 ? sortedDates[sortedDates.length - 1] : null;
+        console.log(`latest date: ${latestDate}`);
+        if (latestDate) {
+          setSelectedDate(latestDate);
+        }
+      }
+
+        
     });
   }, [selectedStudentId]);
 
@@ -199,10 +203,11 @@ function AdminTour() {
           required={true}
           studentId={selectedStudentId}
         />
-        <input
-          type="date"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
+        <ReactDatePicker
+        selected={selectedDate}
+        onChange={(date: Date) => setSelectedDate(date)}
+        highlightDates={validDates} // highlight valid dates
+        filterDate={(date: Date) => validDates.map(d => d.toLocaleDateString()).includes(date.toLocaleDateString())}
         />
       </div>
       {studentOnTourId && (
@@ -213,7 +218,6 @@ function AdminTour() {
             <p>Tour Name: {selectedTourName}</p>
             <p>Student Name: {selectedStudentName}</p>
             {/* Add any other relevant information */}
-            <p>Datum: {selectedDate}</p>
           </div>
 
           <div style={{ width: "80%" }}>

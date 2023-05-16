@@ -222,8 +222,8 @@ function AdminDashboard() {
         setRemarksRecord(newRemarks);
 
         return () => {
-        webSocketConnections.forEach((ws) => ws.close());
-        wsAll.close();
+            webSocketConnections.forEach((ws) => ws.close());
+            wsAll.close();
         };
     }, [tours, studentsOnTours, users]);
 

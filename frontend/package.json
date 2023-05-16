@@ -9,8 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/node": "18.16.1",
-    "@types/react": "18.0.31",
     "@emotion/react": "^11.10.8",
     "@emotion/styled": "^11.10.8",
     "@mui/icons-material": "^5.11.16",
@@ -29,6 +27,7 @@
     "react": "18.2.0",
     "react-big-calendar": "^1.6.9",
     "react-bootstrap": "^2.7.4",
+    "react-datepicker": "^4.11.0",
     "react-dom": "18.2.0",
     "react-i18next": "^12.2.2",
     "react-icons": "^4.8.0",
@@ -40,6 +39,7 @@
   "devDependencies": {
     "@types/bootstrap": "^5.2.6",
     "@types/js-cookie": "^3.0.3",
-    "@types/react-big-calendar": "^1.6.3"
+    "@types/react-big-calendar": "^1.6.3",
+    "@types/react-datepicker": "^4.11.2"
   }
 }
