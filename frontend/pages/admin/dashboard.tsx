@@ -201,13 +201,13 @@ function AdminDashboard() {
             await setInitialData(studentOnTour.id);
             const ws = setupWebSocketForIndividualStudentOnTour(studentOnTour.id);
             webSocketConnections.push(ws);
+            if (studentOnTour.started_tour) {
+                setStartedStudentOnTourIds((prevState) => [...prevState, studentOnTour.id]);
+            }
         });
         
         const wsAll = setupWebSocketForAllStudentOnTours();
-        console.log(`created all websockets`);
         
-        setLoading(false);
-        console.log(`loading should be false here`);
         setRemarksRecord(newRemarks);
 
         return () => {
@@ -217,14 +217,17 @@ function AdminDashboard() {
     }, [tours, studentsOnTours, users]);
 
     useEffect(() => {
-        if (!startedStudentOnTourIds.length) return;
-
         for (const sot of studentsOnTours) {
-        if (startedStudentOnTourIds.includes(sot.id)) {
-            setStartedStudentOnTours((prevState) => [...prevState, sot]);
-        } else {
-            setNotYetStartedStudentOnTours((prevState) => [...prevState, sot]);
-        }
+            if (startedStudentOnTourIds.includes(sot.id)) {
+                if (!startedStudentOnTours.some((startedSot) => startedSot.id === sot.id)) {
+                    setStartedStudentOnTours((prevState) => [...prevState, sot]);
+                }
+                setNotYetStartedStudentOnTours((prevState) => prevState.filter((notStartedSot) => notStartedSot.id !== sot.id));
+            } else {
+                if (!notYetStartedStudentOnTours.some((notStartedSot) => notStartedSot.id === sot.id)) {
+                    setNotYetStartedStudentOnTours((prevState) => [...prevState, sot]);
+                }
+            }
         }
     }, [startedStudentOnTourIds, studentsOnTours]);
 
@@ -252,17 +255,20 @@ function AdminDashboard() {
         {studentsOnTours.length > 0 ? (
             <>
             <h2>Rondes van vandaag</h2>
+            {startedStudentOnTours.length > 0 ? (
+                <>
+                <h3>Bezig</h3>
             <table className="table">
                 <thead>
                 <tr>
-                    <th>Ronde</th>
-                    <th>Student</th>
-                    <th>Voortgang</th>
-                    <th>Opmerkingen</th>
+                    <th style={{width: "25%"}}>Ronde</th>
+                    <th style={{width: "25%"}}>Student</th>
+                    <th style={{width: "25%"}}>Voortgang</th>
+                    <th style={{width: "25%"}}>Opmerkingen</th>
                 </tr>
                 </thead>
                 <tbody>
-                {studentsOnTours.map((studentOnTour) => {
+                {startedStudentOnTours.map((studentOnTour) => {
                     const tour = tours.find((t) => t.id === studentOnTour.tour);
                     const user = users.find((u) => u.id === studentOnTour.student);
 
@@ -305,6 +311,67 @@ function AdminDashboard() {
                 })}
                 </tbody>
             </table>
+                </>
+            ) : (<></>)}
+            {(notYetStartedStudentOnTours.length > 0) ? (
+                <>
+                <h3>Nog niet begonnen</h3>
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                    <th style={{width: "25%"}}>Ronde</th>
+                                    <th style={{width: "25%"}}>Student</th>
+                                    <th style={{width: "25%"}}>Voortgang</th>
+                                    <th style={{width: "25%"}}>Opmerkingen</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {notYetStartedStudentOnTours.map((studentOnTour) => {
+                                    const tour = tours.find((t) => t.id === studentOnTour.tour);
+                                    const user = users.find((u) => u.id === studentOnTour.student);
+
+                                    if (!tour || !user) return null;
+
+                                    return (
+                                    <tr key={studentOnTour.id}>
+                                        <td>{tour.name}</td>
+                                        <td>{`${user.first_name} ${user.last_name}`}</td>
+                                        <td>
+                                        <Box sx={{ width: "100%" }}>
+                                            <GreenLinearProgress
+                                            variant="determinate"
+                                            value={
+                                                (currentBuildingIndex[studentOnTour.id] /
+                                                maxBuildingIndex[studentOnTour.id]) *
+                                                100 || 0
+                                            }
+                                            />
+                                        </Box>
+                                        </td>
+
+                                        <td>
+                                        {remarksRecord[studentOnTour.id] > 0 ? (
+                                            <button
+                                            onClick={() => redirectToRemarksPage(studentOnTour)}
+                                            >
+                                            <LiveField
+                                                fetcher={() => fetchRemarks(studentOnTour.id)}
+                                                formatter={getRemarkText}
+                                                interval={10000}
+                                            />
+                                            </button>
+                                        ) : (
+                                            "Geen opmerkingen"
+                                        )}
+                                        </td>
+                                    </tr>
+                                    );
+                                })}
+                                </tbody>
+                            </table>
+                </>
+            ) : (<></>)}
+           
             </>
         ) : (
             <h2>Geen rondes vandaag</h2>
