@@ -25,10 +25,12 @@ application = ProtocolTypeRouter(
         "websocket": URLRouter(
             [
                 re_path(
-                    r"^ws/student-on-tour/(?P<student_on_tour_id>\d+)/$",
+                    r"^ws/student-on-tour/student/(?P<student_on_tour_id>\d+)/$",
                     consumers.IndividualStudentOnTourConsumer.as_asgi(),
                 ),
                 path("ws/student-on-tour/all/", consumers.AllStudentOnTourConsumer.as_asgi()),
+                path("ws/remark-at-building/remark/building/<int:building_id>/",
+                     consumers.RemarksAtBuildingConsumer.as_asgi()),
             ]
         ),
     }

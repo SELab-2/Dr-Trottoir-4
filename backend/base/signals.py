@@ -6,10 +6,25 @@ from django.dispatch import receiver
 from django.utils import timezone
 
 from base.models import StudentOnTour, RemarkAtBuilding
+from base.serializers import RemarkAtBuildingSerializer
 
 
 @receiver(post_save, sender=RemarkAtBuilding)
-def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs):
+def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
+    if instance.type == RemarkAtBuilding.OPMERKING:
+        print("Signal received: remark at building OPMERKING!")
+        # Broadcast to remark at building websocket
+        remark_at_building_remark = RemarkAtBuildingSerializer(instance).data
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"remark-at-building_{instance.building.id}",
+            {
+                "type": "remark.at.building.remark.created",
+                "remark_at_building_remark": remark_at_building_remark,
+            },
+        )
+        return
+
     student_on_tour = instance.student_on_tour
 
     if instance.type == RemarkAtBuilding.AANKOMST:
@@ -32,9 +47,11 @@ def progress_current_building_index(sender, instance: RemarkAtBuilding, **kwargs
                 "current_building_index": student_on_tour.current_building_index,
             },
         )
-    elif (
-        instance.type == RemarkAtBuilding.VERTREK
-        and student_on_tour.current_building_index == student_on_tour.max_building_index
+        return
+
+    if (
+            instance.type == RemarkAtBuilding.VERTREK
+            and student_on_tour.current_building_index == student_on_tour.max_building_index
     ):
         student_on_tour.completed_tour = timezone.now()
         student_on_tour.save()
