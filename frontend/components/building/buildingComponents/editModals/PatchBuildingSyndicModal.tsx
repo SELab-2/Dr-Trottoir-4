@@ -7,6 +7,7 @@ import {
     handleInputChangeUtil,
     handleSubmitUtil,
 } from "@/components/building/buildingComponents/editModals/handleUtil";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 function PatchBuildingSyndicModal({
     show,
@@ -24,7 +25,7 @@ function PatchBuildingSyndicModal({
         public_id: "",
     });
 
-    const [errorText, setErrorText] = useState("");
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         setFormData({
@@ -35,24 +36,13 @@ function PatchBuildingSyndicModal({
 
     const newPublicId = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
-
-        try {
-            getNewPublicIdUtil(event, formData, setFormData);
-        } catch (error) {
-            //TODO: generic component
-            console.error(JSON.stringify(error));
-        }
+        getNewPublicIdUtil(event, formData, setFormData, setErrorMessages);
     };
 
-    const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
+    const handleSubmit = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-        try {
-            await handleSubmitUtil(event, formData, building, setBuilding, closeModal);
-        } catch (error: any) {
-            //TODO: generic error component
-            setErrorText(JSON.stringify(error.response.data));
-        }
+        handleSubmitUtil(event, formData, building, setBuilding, closeModal, setErrorMessages);
     };
 
     return (
@@ -60,6 +50,7 @@ function PatchBuildingSyndicModal({
             <Modal show={show} onHide={closeModal}>
                 <Modal.Header closeButton>Bewerk gebouw</Modal.Header>
                 <Modal.Body>
+                    <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                     <Form>
                         <Form.Group className="mb-3" controlId="formPatchBuilding">
                             <Form.Group controlId={"name"}>
@@ -93,9 +84,6 @@ function PatchBuildingSyndicModal({
                                 </a>
                             </Form.Text>
                         </Form.Group>
-
-                        {/*TODO: below line should probably a custom component with a state boolean*/}
-                        <div style={{ background: "red" }}>{errorText}</div>
 
                         <Button
                             variant="danger"
