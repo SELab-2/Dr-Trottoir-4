@@ -71,10 +71,10 @@ export default function PlannedBuildingList({
     }, [studentOnTourId]);
 
     async function routeToFirstBuilding() {
-        if (buildings.length === 0 || !studentOnTourId || ! studentOnTour) {
+        if (buildings.length === 0 || !studentOnTourId || !studentOnTour) {
             return;
         }
-        if (! studentOnTour.started_tour) {
+        if (!studentOnTour.started_tour) {
             startStudentOnTour(studentOnTourId)
                 .then(async (_) => {
                     await router.push({
@@ -90,7 +90,6 @@ export default function PlannedBuildingList({
                 query: { studentOnTourId: studentOnTour.id },
             });
         }
-
     }
 
     function getStartButtonText() {
