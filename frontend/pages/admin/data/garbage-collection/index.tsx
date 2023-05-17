@@ -4,7 +4,8 @@ import {
     GarbageCollectionInterface,
     garbageTypes,
     getGarbageCollectionFromBuilding,
-    getGarbageColor, patchGarbageCollection,
+    getGarbageColor,
+    patchGarbageCollection,
 } from "@/lib/garbage-collection";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
@@ -22,7 +23,7 @@ import GarbageEditModal from "@/components/garbage/GarbageEditModal";
 import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 import { Button } from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
-import {GarbageCollectionEvent} from "@/types";
+import { GarbageCollectionEvent } from "@/types";
 import GarbageCollectionEventComponentWithAddress from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
 import GarbageCollectionEventComponentWithoutAddress from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
 import { getBuildingsOfTour } from "@/lib/tour";
@@ -31,9 +32,9 @@ import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAu
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import BulkMoveGarbageModal from "@/components/garbage/BulkMoveGarbageModal";
 import { AxiosResponse } from "axios";
-import withDragAndDrop, {EventInteractionArgs} from "react-big-calendar/lib/addons/dragAndDrop";
-import {formatDate} from "@/lib/date";
-import {handleError} from "@/lib/error";
+import withDragAndDrop, { EventInteractionArgs } from "react-big-calendar/lib/addons/dragAndDrop";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
 
 interface ParsedUrlQuery {}
 
@@ -72,7 +73,7 @@ function GarbageCollectionSchedule() {
 
     const [buildingList, setBuildingList] = useState<BuildingInterface[]>([]);
 
-    const [errorMessages, setErrorMessages] = useState<string[]>([])
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         const query: DataBuildingQuery = router.query as DataBuildingQuery;
@@ -304,17 +305,14 @@ function GarbageCollectionSchedule() {
     function dragAndDrop(args: EventInteractionArgs<object>): void {
         const { event, start } = args;
         const garbageCollectionEvent: GarbageCollectionEvent = event as GarbageCollectionEvent;
-        patchGarbageCollection(
-            garbageCollectionEvent.id,
-            {date: formatDate(new Date(start))}
-        ).then(
+        patchGarbageCollection(garbageCollectionEvent.id, { date: formatDate(new Date(start)) }).then(
             (res) => {
-                const g : GarbageCollectionInterface = res.data;
+                const g: GarbageCollectionInterface = res.data;
                 onPatch(g);
             },
             (err) => setErrorMessages(handleError(err))
         );
-}
+    }
 
     // Closes the duplicate modal
     function closeDuplicateModal() {
@@ -429,11 +427,11 @@ function GarbageCollectionSchedule() {
                     return event;
                 })}
                 components={{
-                    event: GarbageCollectionEventComponentWithAddress
+                    event: GarbageCollectionEventComponentWithAddress,
                 }}
                 localizer={loc}
                 eventPropGetter={(e) => {
-                    const event : GarbageCollectionEvent = e as GarbageCollectionEvent;
+                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
                     const backgroundColor = getGarbageColor(event.garbageType);
                     return { style: { backgroundColor, color: "black" } };
                 }}
@@ -447,7 +445,7 @@ function GarbageCollectionSchedule() {
                     setShowEditModal(true);
                 }}
                 onSelectEvent={(e) => {
-                    const event : GarbageCollectionEvent = e as GarbageCollectionEvent;
+                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
                     if (buildingList.length <= 0) {
                         return;
                     }
