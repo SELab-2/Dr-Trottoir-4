@@ -4,7 +4,7 @@ import { formatDate } from "@/lib/date";
 
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { addDays, addWeeks, endOfWeek, startOfWeek} from "date-fns";
+import { addDays, addWeeks, endOfWeek, startOfWeek } from "date-fns";
 import { AxiosResponse } from "axios";
 
 export default function DuplicateScheduleModal({
