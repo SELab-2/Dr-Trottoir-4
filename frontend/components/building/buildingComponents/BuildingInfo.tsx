@@ -1,17 +1,17 @@
-import { TiPencil } from "react-icons/ti";
-import React, { useEffect, useState } from "react";
+import {TiPencil} from "react-icons/ti";
+import React, {useEffect, useState} from "react";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
-import { BuildingInterface } from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { useRouter } from "next/router";
-import { handleError } from "@/lib/error";
+import {BuildingInterface} from "@/lib/building";
+import {getRegion} from "@/lib/region";
+import {useRouter} from "next/router";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 function BuildingInfo({
-    building,
-    setBuilding,
-    type,
-}: {
+                          building,
+                          setBuilding,
+                          type,
+                      }: {
     building: BuildingInterface;
     setBuilding: (b: any) => void;
     type: "syndic" | "admin" | "public";
@@ -62,7 +62,7 @@ function BuildingInfo({
 
     return (
         <>
-            {type == "syndic" ? (
+            {type === "syndic" ? (
                 <PatchBuildingSyndicModal
                     show={editBuilding}
                     closeModal={() => setEditBuilding(false)}
@@ -81,10 +81,19 @@ function BuildingInfo({
                             setEditBuilding(true);
                         }}
                     ></TiPencil>
-                ) : null}
+                ) : type=="admin" ? (
+                    <TiPencil
+                        className={"clickable"}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.push(`/admin/data/buildings/edit?building=${building.id}`);
+                        }}
+                    ></TiPencil>
+                    ) : null}
+
             </h1>
 
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
 
             <p>ID: {get_building_key("id")} </p>
             <p>Naam: {get_building_key("name")}</p>
