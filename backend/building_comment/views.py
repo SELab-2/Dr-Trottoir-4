@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -26,7 +27,7 @@ class DefaultBuildingComment(APIView):
         set_keys_of_instance(building_comment_instance, data, TRANSLATE)
 
         if building_comment_instance.building is None:
-            return bad_request("BuildingComment")
+            return not_found(_("Building (with id {id})".format(id=building_comment_instance.building_id)))
 
         self.check_object_permissions(request, building_comment_instance.building)
 
