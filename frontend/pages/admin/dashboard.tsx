@@ -67,6 +67,10 @@ function AdminDashboard() {
     >({});
 
     const getRemarkText = (numberOfRemarks: number): string => {
+        if (numberOfRemarks === 0) {
+            return "Geen opmerkingen";
+        }
+
         let extension = "";
         if (numberOfRemarks > 1) {
         extension = "en";
@@ -284,8 +288,8 @@ function AdminDashboard() {
                     if (!tour || !user) return null;
 
                     return (
-                    <tr key={studentOnTour.id}>
-                        <td>{tour.name}</td>
+                    <tr key={studentOnTour.id} style={{ cursor: "pointer" }} onClick={() => redirectToRemarksPage(studentOnTour)}>
+                        <td style={{ textDecoration: "underline" }}>{tour.name}</td>
                         <td>{`${user.first_name} ${user.last_name}`}</td>
                         <td>
                         <Box sx={{ width: "100%" }}>
@@ -301,15 +305,7 @@ function AdminDashboard() {
                         </td>
 
                         <td>
-                        {remarksRecord[studentOnTour.id] > 0 ? (
-                            <button
-                            onClick={() => redirectToRemarksPage(studentOnTour)}
-                            >
                             {getRemarkText(remarksRecord[studentOnTour.id])}
-                            </button>
-                        ) : (
-                            "Geen opmerkingen"
-                        )}
                         </td>
                     </tr>
                     );
@@ -355,19 +351,7 @@ function AdminDashboard() {
                                         </td>
 
                                         <td>
-                                        {remarksRecord[studentOnTour.id] > 0 ? (
-                                            <button
-                                            onClick={() => redirectToRemarksPage(studentOnTour)}
-                                            >
-                                            <LiveField
-                                                fetcher={() => fetchRemarks(studentOnTour.id)}
-                                                formatter={getRemarkText}
-                                                interval={10000}
-                                            />
-                                            </button>
-                                        ) : (
-                                            "Geen opmerkingen"
-                                        )}
+                                            {getRemarkText(remarksRecord[studentOnTour.id])}
                                         </td>
                                     </tr>
                                     );
