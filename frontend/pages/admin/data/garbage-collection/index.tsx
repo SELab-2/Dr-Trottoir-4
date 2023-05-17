@@ -417,7 +417,7 @@ function GarbageCollectionSchedule() {
                     const backgroundColor = getGarbageColor(event.garbageType);
                     return { style: { backgroundColor, color: "black" } };
                 }}
-                drilldownView={null}
+                drilldownView="week"
                 selectable
                 onSelectSlot={(slotInfo) => {
                     if (buildingList.length <= 0) {
