@@ -18,7 +18,7 @@ class DefaultBuildingComment(APIView):
     @extend_schema(responses=post_docs(BuildingCommentSerializer))
     def post(self, request):
         """
-        Create a new BuildingComment
+        Create a new BuildingComment. If no date is set, the current date and time will be used.
         """
         data = request_to_dict(request.data)
 
