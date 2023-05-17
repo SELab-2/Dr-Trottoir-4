@@ -35,7 +35,8 @@ from util.request_response_util import (
     bad_request,
     get_id_param,
     get_arbitrary_param,
-    bad_request_custom_error_message, get_date_param,
+    bad_request_custom_error_message,
+    get_date_param,
 )
 
 TRANSLATE = {
@@ -171,14 +172,17 @@ class RemarksAtBuildingView(APIView):
     serializer_class = RemarkAtBuildingSerializer
 
     @extend_schema(
-        responses=get_docs(serializer_class), parameters=param_docs(
-            get_most_recent_param_docs("RemarksAtBuilding") | {
+        responses=get_docs(serializer_class),
+        parameters=param_docs(
+            get_most_recent_param_docs("RemarksAtBuilding")
+            | {
                 "date": (
-                        "The date to get remarks for. You cannot use both the most-recent query parameter and the date parameter.",
-                        False,
-                        OpenApiTypes.DATE)
+                    "The date to get remarks for. You cannot use both the most-recent query parameter and the date parameter.",
+                    False,
+                    OpenApiTypes.DATE,
+                )
             }
-        )
+        ),
     )
     def get(self, request, building_id):
         """

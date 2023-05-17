@@ -10,11 +10,11 @@ export default function LocaleDateRangePicker(
         endDate,
         setStartDate,
         setEndDate,
-    } : {
-        startDate: Date,
-        endDate: Date,
-        setStartDate: (d : Date) => void,
-        setEndDate: (d : Date) => void,
+    }: {
+        startDate: Date | null,
+        endDate: Date | null,
+        setStartDate: (d: Date | null) => void,
+        setEndDate: (d: Date | null) => void,
     }
 ) {
 
@@ -24,7 +24,7 @@ export default function LocaleDateRangePicker(
             showIcon
             dateFormat="dd/MM/yyyy"
             selected={startDate}
-            onChange={([s , e] : Date[]) => {
+            onChange={([s, e]: [Date | null, Date | null]) => {
                 setStartDate(s);
                 setEndDate(e);
             }}
