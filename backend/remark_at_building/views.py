@@ -117,7 +117,7 @@ class RemarkAtBuildingIndividualView(APIView):
 
         set_keys_of_instance(remark_at_building_instance, data, TRANSLATE)
 
-        if r := try_full_clean_and_save(remark_at_building_instance):
+        if r := remark_at_building_instance.save():
             return r
 
         return patch_success(self.serializer_class(remark_at_building_instance))
