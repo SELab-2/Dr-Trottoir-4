@@ -15,11 +15,12 @@ import {getUserInfo} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
-import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/userAutocomplete";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
+import UsersFromRegionAutocomplete from "@/components/autocompleteComponents/userFromRegionAutocomplete";
+import SyndicAutocomplete from "@/components/autocompleteComponents/syndicAutocomplete";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -73,12 +74,19 @@ function AdminDataBuildingsEdit() {
                             await deleteBuildingComment(buildingCommentsId);
                             setBuildingCommentsId(undefined);
                         }
+                    } else {
+                        if (buildingComments) {
+                            await postBuildingComment({
+                                building: Number(router.query.building),
+                                comment: buildingComments
+                            });
+                        }
                     }
                 } else {
-                    await postBuilding(building);
+                    const res = await postBuilding(building);
                     if (buildingComments) {
                         await postBuildingComment({
-                            building: Number(router.query.building),
+                            building: res.data.id,
                             comment: buildingComments
                         });
                     }
@@ -234,11 +242,11 @@ function AdminDataBuildingsEdit() {
                         setObjectId={setRegionId}
                         required={true}
                     ></RegionAutocomplete>
-                    <SyndicAutoCompleteComponent
+                    <SyndicAutocomplete
                         initialId={syndicId}
                         setObjectId={setSyndicId}
                         required={true}
-                    ></SyndicAutoCompleteComponent>
+                    ></SyndicAutocomplete>
                     {!router.query.building && <PDFUploader onUpload={setManual}></PDFUploader>}
                 </Form>
                 <button onClick={goBack} className="ml-2">

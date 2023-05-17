@@ -32,10 +32,10 @@ export interface GenericProps {
     required: boolean;
 }
 
-export interface TourUserProps {
+export interface UserProps {
     initialId: any;
     setObjectId: (value: any) => void;
-    tourId?: number | null;
+    matchId?: number | null;
 }
 
 const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions, mapping, setObjectId }) => {
