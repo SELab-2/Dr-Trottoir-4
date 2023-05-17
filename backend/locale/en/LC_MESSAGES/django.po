@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-03 15:53+0200\n"
+"POT-Creation-Date: 2023-05-14 01:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,197 +68,203 @@ msgstr ""
 msgid "new password has been saved"
 msgstr ""
 
-#: base/models.py:20
+#: base/models.py:23
 msgid "This region already exists"
 msgstr ""
 
-#: base/models.py:40
+#: base/models.py:43
 #, python-brace-format
 msgid "The maximum rank allowed is {highest_rank}."
 msgstr ""
 
-#: base/models.py:48
+#: base/models.py:51
 msgid "This role name already exists."
 msgstr ""
 
-#: base/models.py:59
+#: base/models.py:62
 msgid "A user already exists with this email."
 msgstr ""
 
-#: base/models.py:83
+#: base/models.py:86
 msgid "This email is already in the lobby."
 msgstr ""
 
-#: base/models.py:87
+#: base/models.py:90
 msgid "This verification code already exists."
 msgstr ""
 
-#: base/models.py:102
+#: base/models.py:105
 msgid ""
 " This email belongs to an INACTIVE user. Instead of trying to register this "
 "user, you can simply reactivate the account."
 msgstr ""
 
-#: base/models.py:105
+#: base/models.py:108
 #, python-brace-format
 msgid "Email already exists in database for a user (id: {user_id}).{addendum}"
 msgstr ""
 
-#: base/models.py:116
+#: base/models.py:119
 msgid "No bus"
 msgstr ""
 
-#: base/models.py:132
+#: base/models.py:135
 msgid "The house number of the building must be positive and not zero."
 msgstr ""
 
-#: base/models.py:139
+#: base/models.py:142
 msgid "Only a user with role \"syndic\" can own a building."
 msgstr ""
 
-#: base/models.py:145
+#: base/models.py:148
 #, python-brace-format
 msgid "{public_id} already exists as public_id of another building"
 msgstr ""
 
-#: base/models.py:157
+#: base/models.py:160
 msgid "A building with this address already exists."
 msgstr ""
 
-#: base/models.py:180
+#: base/models.py:183
 msgid "This comment already exists, and was posted at the exact same time."
 msgstr ""
 
-#: base/models.py:218
+#: base/models.py:221
 msgid ""
 "This type of garbage is already being collected on the same day for this "
 "building."
 msgstr ""
 
-#: base/models.py:244
+#: base/models.py:247
 msgid "There is already a tour with the same name in the region."
 msgstr ""
 
-#: base/models.py:267
+#: base/models.py:270
 #, python-brace-format
 msgid ""
 "The regions for tour ({tour_region}) and building ({building_region}) are "
 "different."
 msgstr ""
 
-#: base/models.py:281
+#: base/models.py:284
 msgid "This building is already on this tour."
 msgstr ""
 
-#: base/models.py:287
+#: base/models.py:290
 msgid "This index is already in use."
 msgstr ""
 
-#: base/models.py:317
+#: base/models.py:320
 msgid "A syndic can't do tours"
 msgstr ""
 
-#: base/models.py:321
+#: base/models.py:324
 #, python-brace-format
 msgid "Student ({user_email}) doesn't do tours in this region ({tour_region})."
 msgstr ""
 
-#: base/models.py:342
+#: base/models.py:345
 msgid "The student is already assigned to this tour on this date."
 msgstr ""
 
-#: base/models.py:386
+#: base/models.py:382
+msgid ""
+"There already exists a remark of this type from this student on tour at this "
+"building."
+msgstr ""
+
+#: base/models.py:398
 msgid ""
 "This remark was already uploaded to this building by this student on the "
 "tour."
 msgstr ""
 
-#: base/models.py:406
+#: base/models.py:424
 msgid "The building already has this upload."
 msgstr ""
 
-#: base/models.py:442
+#: base/models.py:460
 msgid "The building already has a manual with the same version number"
 msgstr ""
 
-#: base/models.py:459
+#: base/models.py:477
 msgid "The name for this template already exists."
 msgstr ""
 
-#: base/permissions.py:19
+#: base/permissions.py:18
 msgid "Admin permission required"
 msgstr ""
 
-#: base/permissions.py:30
+#: base/permissions.py:29
 msgid "Super student permission required"
 msgstr ""
 
-#: base/permissions.py:41
+#: base/permissions.py:40
 msgid "Student permission required"
 msgstr ""
 
-#: base/permissions.py:52
+#: base/permissions.py:51
 msgid "Students are only allowed to read"
 msgstr ""
 
-#: base/permissions.py:64
+#: base/permissions.py:63
 msgid "Syndic permission required"
 msgstr ""
 
-#: base/permissions.py:88
+#: base/permissions.py:87
 msgid "You can only access/edit the buildings that you own"
 msgstr ""
 
-#: base/permissions.py:102
+#: base/permissions.py:101
 msgid "You can only read the building that you own"
 msgstr ""
 
-#: base/permissions.py:118
+#: base/permissions.py:117
 msgid ""
 "You can only patch the building public id and the name of the building that "
 "you own"
 msgstr ""
 
-#: base/permissions.py:146
+#: base/permissions.py:145
 msgid "You can only access/edit your own account"
 msgstr ""
 
-#: base/permissions.py:157
+#: base/permissions.py:156
 msgid "You can only access your own account"
 msgstr ""
 
-#: base/permissions.py:170
+#: base/permissions.py:169
 msgid "You can't create a user of a higher role"
 msgstr ""
 
-#: base/permissions.py:188
+#: base/permissions.py:187
 msgid "You don't have the right permissions to delete this user"
 msgstr ""
 
-#: base/permissions.py:201
+#: base/permissions.py:200
 msgid "You don't have the right permissions to edit this user"
 msgstr ""
 
-#: base/permissions.py:214
+#: base/permissions.py:213
 msgid ""
 "You can't assign a role to yourself or assign a role that is higher than "
 "your own"
 msgstr ""
 
-#: base/permissions.py:233
+#: base/permissions.py:232
 msgid "You can only view manuals that are linked to one of your buildings"
 msgstr ""
 
-#: base/permissions.py:243
+#: base/permissions.py:242
 msgid ""
 "You cannot edit buildings on a tour when a student is actively doing the tour"
 msgstr ""
 
-#: config/settings.py:237
+#: config/settings.py:238
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: config/settings.py:238
+#: config/settings.py:239
 msgid "English"
 msgstr "Engels"
 
@@ -275,18 +281,22 @@ msgid ""
 "period"
 msgstr ""
 
-#: garbage_collection/views.py:233
+#: garbage_collection/views.py:243
 msgid "successfully copied the garbage collections"
 msgstr ""
 
-#: garbage_collection/views.py:275
+#: garbage_collection/views.py:285
 msgid ""
 "The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list "
 "of id's) should be given"
 msgstr ""
 
-#: garbage_collection/views.py:279
+#: garbage_collection/views.py:289
 msgid "The query param 'building' should be a list of ints"
+msgstr ""
+
+#: remark_at_building/views.py:196
+msgid "Cannot use both most-recent and date for RemarkAtBuilding"
 msgstr ""
 
 #: users/managers.py:16
@@ -301,46 +311,46 @@ msgstr ""
 msgid "Superuser must have is_superuser=True."
 msgstr ""
 
-#: util/request_response_util.py:18
+#: util/request_response_util.py:17
 #, python-brace-format
 msgid "The query parameter {name} should be an integer"
 msgstr ""
 
-#: util/request_response_util.py:21 util/request_response_util.py:38
-#: util/request_response_util.py:46 util/request_response_util.py:65
-#: util/request_response_util.py:77
+#: util/request_response_util.py:20 util/request_response_util.py:37
+#: util/request_response_util.py:45 util/request_response_util.py:64
+#: util/request_response_util.py:76
 #, python-brace-format
 msgid "The query parameter {name} is required"
 msgstr ""
 
-#: util/request_response_util.py:32
+#: util/request_response_util.py:31
 #, python-brace-format
 msgid ""
 "The date parameter '{name}': '{param}' hasn't the appropriate form (=YYYY-MM-"
 "DD)."
 msgstr ""
 
-#: util/request_response_util.py:55
+#: util/request_response_util.py:54
 #, python-brace-format
 msgid ""
 "Invalid value for boolean parameter '{name}': '{param}' (true or false "
 "expected)"
 msgstr ""
 
-#: util/request_response_util.py:83
+#: util/request_response_util.py:82
 #, python-brace-format
 msgid "The query param {name} must be a value in {allowed_keys}"
 msgstr ""
 
-#: util/request_response_util.py:174
+#: util/request_response_util.py:173
 msgid "{} was not found"
 msgstr ""
 
-#: util/request_response_util.py:178
+#: util/request_response_util.py:177
 msgid "bad input for {}"
 msgstr ""
 
-#: util/request_response_util.py:188
+#: util/request_response_util.py:187
 #, python-brace-format
 msgid "There is no {object1} that is linked to {object2} with given id."
 msgstr ""

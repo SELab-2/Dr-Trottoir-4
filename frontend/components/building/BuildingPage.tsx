@@ -6,7 +6,8 @@ import BuildingInfo from "@/components/building/buildingComponents/BuildingInfo"
 import LatestCollections from "@/components/building/buildingComponents/LatestCollections";
 import CollectionCards from "@/components/building/buildingComponents/CollectionCards";
 import {Col, Container, Row} from "react-bootstrap";
-
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 interface BuildingQuery {
     id?: string;
@@ -20,22 +21,26 @@ function BuildingPage({type}: { type: "syndic" | "admin" | "public" }) {
     // @ts-ignore
     const [building, setBuilding] = useState<BuildingInterface>(null);
 
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
     async function fetchBuilding() {
         if (type !== "public" /*&& /^\d+$/.test(query.id+"")*/) {
             getBuildingInfo(Number(query.id))
                 .then((buildings: AxiosResponse) => {
                     setBuilding(buildings.data);
+                    setErrorMessages([]);
                 })
                 .catch((error) => {
-                    console.error(error); //TODO: error component?
+                    setErrorMessages(handleError(error));
                 });
         } else {
             getBuildingInfoByPublicId(query.id)
                 .then((buildings: AxiosResponse) => {
                     setBuilding(buildings.data);
+                    setErrorMessages([]);
                 })
                 .catch((error) => {
-                    console.error(error);
+                    setErrorMessages(handleError(error));
                 });
         }
     }
@@ -50,9 +55,10 @@ function BuildingPage({type}: { type: "syndic" | "admin" | "public" }) {
     return (
         <>
             <Container style={{flex: "1"}}>
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <Row>
                     <Col md={4} style={{backgroundColor: '#FAFAFA', borderLeft: '10px solid #F6BE00'}}>
-                        <div >
+                        <div>
                             <BuildingInfo building={building} setBuilding={setBuilding} type={type}/>
                         </div>
                     </Col>

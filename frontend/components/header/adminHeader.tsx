@@ -40,7 +40,7 @@ const AdminHeader = () => {
                         <Nav.Link className={styles.text} href="/admin/communication">
                             Communicatie
                         </Nav.Link>
-                        <Nav.Link className={styles.text} href="/admin/analysis">
+                        <Nav.Link className={styles.text} href="/admin/analysis/worked-hours">
                             Analyse
                         </Nav.Link>
                         <Nav.Link className={styles.text} href="/admin/my-schedule">

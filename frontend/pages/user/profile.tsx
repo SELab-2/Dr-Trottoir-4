@@ -12,9 +12,10 @@ import PhoneInput from "react-phone-input-2";
 import PasswordInput from "@/components/password/passwordInput";
 import {changePassword} from "@/lib/authentication";
 import {Divider} from "@mui/material";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
-export default function UserProfile() {
-    const {t} = useTranslation();
+function UserProfile() {
+    const { t } = useTranslation();
     const [user, setUser] = useState<User | null>(null);
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
@@ -329,3 +330,5 @@ export default function UserProfile() {
         </>
     );
 }
+
+export default withAuthorisation(UserProfile, ["Admin", "Superstudent", "Syndic", "Student", "Default"]);

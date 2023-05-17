@@ -19,8 +19,8 @@ function AddScheduleEventModal({
     date: Date | null;
     onPost: (sot: StudentOnTour) => void;
 }) {
-    const [tourId, setTourId] = useState(-1);
-    const [studentId, setStudentId] = useState(-1);
+    const [tourId, setTourId] = useState<number | null>(null);
+    const [studentId, setStudentId] = useState<number | null>(null);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
@@ -33,7 +33,7 @@ function AddScheduleEventModal({
     }, [date]);
 
     function handleSave() {
-        if (tourId === -1 || studentId === -1) {
+        if (tourId === null || studentId === null) {
             setErrorMessages(["Ronde of student is leeg."]);
         } else {
             if (selectedDate) {
@@ -59,8 +59,8 @@ function AddScheduleEventModal({
         <Modal
             show={isOpen}
             onHide={() => {
-                setTourId(-1);
-                setStudentId(-1);
+                setTourId(null);
+                setStudentId(null);
                 setSelectedDate(null);
                 onClose();
             }}

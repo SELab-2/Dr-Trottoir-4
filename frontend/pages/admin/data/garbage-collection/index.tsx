@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {
+    duplicateGarbageCollectionSchedule,
     GarbageCollectionInterface,
     garbageTypes,
     getGarbageCollectionFromBuilding,
@@ -18,8 +19,8 @@ import {add, addDays, endOfMonth, startOfMonth, sub} from "date-fns";
 import {useRouter} from "next/router";
 import {BuildingInterface, getAllBuildings} from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
-import DuplicateGarbageCollectionModal from "@/components/garbage/duplicateGarbageCollectionModal";
-import {Col, Row} from "react-bootstrap";
+import {Col, Row, Button} from "react-bootstrap";
+import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
 import {GarbageCollectionEvent} from "@/types";
 import GarbageCollectionEventComponentWithAddress
@@ -30,7 +31,8 @@ import {getBuildingsOfTour} from "@/lib/tour";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import BulkOperationModal from "@/components/garbage/BulkOperationModal";
+import BulkMoveGarbageModal from "@/components/garbage/BulkMoveGarbageModal";
+import { AxiosResponse } from "axios";
 
 interface ParsedUrlQuery {
 }
@@ -66,7 +68,7 @@ function GarbageCollectionSchedule() {
     const [showBuildingListModal, setShowBuildingListModal] = useState<boolean>(false);
 
     // The bulk operation modal
-    const [showBulkOperationModal, setShowBulkOperationModal] = useState<boolean>(false);
+    const [showBulkMoveModal, setShowBulkMoveModal] = useState<boolean>(false);
 
     const [buildingList, setBuildingList] = useState<BuildingInterface[]>([]);
 
@@ -284,6 +286,19 @@ function GarbageCollectionSchedule() {
         });
     }
 
+    async function duplicateSchedule(
+        startDate: string,
+        endDate: string,
+        copyToDate: string
+    ): Promise<AxiosResponse<any, any>> {
+        return await duplicateGarbageCollectionSchedule(
+            startDate,
+            endDate,
+            copyToDate,
+            buildingList.map((b) => b.id)
+        );
+    }
+
     // Closes the duplicate modal
     function closeDuplicateModal() {
         setShowDuplicateModal(false);
@@ -291,7 +306,7 @@ function GarbageCollectionSchedule() {
     }
 
     function closeBulkOperationModal() {
-        setShowBulkOperationModal(false);
+        setShowBulkMoveModal(false);
         getFromRange(currentRange);
     }
 
@@ -317,35 +332,37 @@ function GarbageCollectionSchedule() {
         <div className="tablepageContainer">
             <AdminHeader/>
             <div className="tableContainer">
-                <DuplicateGarbageCollectionModal
-                    closeModal={closeDuplicateModal}
-                    show={showDuplicateModal}
-                    buildings={buildingList}
-                />
-                <BulkOperationModal
-                    buildings={buildingList}
-                    closeModal={closeBulkOperationModal}
-                    show={showBulkOperationModal}
-                />
-                <GarbageEditModal
-                    closeModal={closeEditModal}
-                    onPatch={onPatch}
-                    onPost={onPost}
-                    onDelete={onDelete}
-                    selectedEvent={selectedEvent}
-                    show={showEditModal}
-                    clickedDate={selectedDate}
-                    buildings={buildingList}
-                />
-                <SelectedBuildingList
-                    buildings={buildingList}
-                    closeModal={() => setShowBuildingListModal(false)}
-                    show={showBuildingListModal}
-                    removeBuilding={removeBuildingFromList}
-                    removeTour={removeTourBuildings}
-                    selectedTours={tourList}
-                    removeAllBuildings={removeAllBuildings}
-                />
+                <DuplicateScheduleModal
+                closeModal={closeDuplicateModal}
+                show={showDuplicateModal}
+                onSubmit={duplicateSchedule}
+                weekStartsOn={1}
+                title="Dupliceer vuilophaling schema voor geselecteerde gebouwen"
+            />
+            <BulkMoveGarbageModal
+                buildings={buildingList}
+                closeModal={closeBulkOperationModal}
+                show={showBulkMoveModal}
+            />
+            <GarbageEditModal
+                closeModal={closeEditModal}
+                onPatch={onPatch}
+                onPost={onPost}
+                onDelete={onDelete}
+                selectedEvent={selectedEvent}
+                show={showEditModal}
+                clickedDate={selectedDate}
+                buildings={buildingList}
+            />
+            <SelectedBuildingList
+                buildings={buildingList}
+                closeModal={() => setShowBuildingListModal(false)}
+                show={showBuildingListModal}
+                removeBuilding={removeBuildingFromList}
+                removeTour={removeTourBuildings}
+                selectedTours={tourList}
+                removeAllBuildings={removeAllBuildings}
+            />
                 <div>
                     <Row style={{display: "flex", alignItems: "center", padding: "10px"}}>
                         <Col md={6} style={{display: "flex", alignItems: "center"}}>
@@ -355,7 +372,7 @@ function GarbageCollectionSchedule() {
                                     Dupliceer planning
                                 </button>
                                 <button className="button" style={{marginRight: "10px"}}
-                                        onClick={() => setShowBulkOperationModal(true)}>
+                                        onClick={() => setShowBulkMoveModal(true)}>
                                     Verplaats ophaling
                                 </button>
                                 <button className="button" style={{marginRight: "10px"}}
@@ -376,7 +393,7 @@ function GarbageCollectionSchedule() {
                             </Row>
                         </Col>
                     </Row>
-                </div>
+</div>
 
 
                 <Calendar

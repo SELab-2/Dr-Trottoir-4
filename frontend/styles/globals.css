@@ -46,10 +46,7 @@
 .input {
     width: 100%;
     max-width: 300px;
-    padding-top: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 15px;
+    padding: 5px 10px 15px;
 }
 
 .form_control {
@@ -141,10 +138,7 @@
 }
 
 .padding {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 5px 10px;
 }
 
 .link {
@@ -245,75 +239,6 @@
     display: none;
 }
 
-/*
-!* Define font and font size for the whole document *!
-body {
-    font-family: Helvetica, sans-serif;
-    font-size: 16px;
-}
-
-!* Button Styles *!
-
-!* Style for all buttons *!
-Button, button {
-    height: 50px;
-    width: 150px;
-    margin: 5px;
-    outline: 0;
-    cursor: pointer;
-    border: 2px solid #000;
-    border-radius: 5px;
-    color: #fff;
-    background: #000;
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 24px;
-    padding: 5px 10px;
-    text-align: center;
-    transition: ease-in 0.2s;
-}
-
-!* Style for buttons when hovering *!
-Button:hover, button:hover {
-    color: #000;
-    background: rgb(255, 218, 87);
-}
-
-!* Link Styles *!
-
-!* Style for all links *!
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-!* Style for links when hovering *!
-a:hover {
-    text-decoration: underline;
-}
-
-!* Input Styles *!
-
-!* Style for all inputs *!
-input {
-    min-width: 250px;
-    max-width: 350px;
-    height: 40px;
-    background-color: #E8F0FC;
-    overflow: hidden;
-    padding: 10px 5px;
-    margin: 5px;
-    border: solid #1D1D1D 1px;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-input:focus {
-    border: none;
-    outline: none;
-    box-shadow: 0 0 0 0.1rem lightgray;
-}*/
-
 @media (prefers-color-scheme: light) {
     html {
         color-scheme: light;
@@ -355,4 +280,19 @@ input:focus {
 
 .clickable {
     cursor: pointer;
+}
+
+.progress-bar-container {
+    position: relative;
+}
+
+.progress-bar-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 4px;
+    background-color: black;
+    z-index: 1;
 }

@@ -8,6 +8,8 @@ import {IconButton} from "@mui/material";
 import { MdContentCopy } from 'react-icons/md';
 // @ts-ignore
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 function BuildingInfo({
                           building,
@@ -23,6 +25,8 @@ function BuildingInfo({
     const [regionName, setRegionName] = useState("");
 
     const publicId = building && building.public_id || "-";
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (building) {
@@ -42,8 +46,9 @@ function BuildingInfo({
             const region = await getRegion(building.region);
             const regionName = region.data.region;
             setRegionName(regionName);
+            setErrorMessages([]);
         } catch (error) {
-            console.error(error);
+            setErrorMessages(handleError(error));
             setRegionName("/");
         }
     }
