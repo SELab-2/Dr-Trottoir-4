@@ -10,7 +10,8 @@ from rest_framework.views import APIView
 
 import config.settings
 from base.models import StudentOnTour, User
-from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount, IsStudent
+from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount, IsStudent, \
+    PatchDeleteNoStudentWorkingOnTour
 from base.serializers import StudOnTourSerializer, ProgressTourSerializer, SuccessSerializer
 from student_on_tour.serializers import StudentOnTourDuplicateSerializer
 from util.duplication.view import DuplicationView
@@ -41,13 +42,13 @@ class Default(APIView):
 
 
 class StudentOnTourBulk(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent, PatchDeleteNoStudentWorkingOnTour]
     serializer_class = StudOnTourSerializer
 
     @extend_schema(
         description="POST body consists of a data component that is a list of Student-Tour instances. "
-        "This enables the frontend to save a schedule in 1 request instead of multiple. "
-        "If a save fails, all the previous saves will be undone as well.",
+                    "This enables the frontend to save a schedule in 1 request instead of multiple. "
+                    "If a save fails, all the previous saves will be undone as well.",
         request=StudOnTourSerializer,
         responses={200: SuccessSerializer, 400: None},
         examples=[
@@ -96,21 +97,21 @@ class StudentOnTourBulk(APIView):
 
     @extend_schema(
         description="DELETE body consists of an ids component that is a list of Student-Tour instances. "
-        "This enables the frontend to remove assignments in a schedule in 1 request instead of multiple."
-        "If a remove fails, the previous removes will **NOT** be undone."
-        """
-                                            <h3> special</h3>
-                                            <br/>**Request body for bulk remove:**<br/>
-                                            <i>
-                                                {
-                                                    "ids":
-                                                        [
-                                                            0,
-                                                            1,
-                                                            3
-                                                        ]
-                                                }
-                                            </i>""",
+                    "This enables the frontend to remove assignments in a schedule in 1 request instead of multiple."
+                    "If a remove fails, the previous removes will **NOT** be undone."
+                    """
+                                                        <h3> special</h3>
+                                                        <br/>**Request body for bulk remove:**<br/>
+                                                        <i>
+                                                            {
+                                                                "ids":
+                                                                    [
+                                                                        0,
+                                                                        1,
+                                                                        3
+                                                                    ]
+                                                            }
+                                                        </i>""",
         request=StudOnTourSerializer,
         responses={200: SuccessSerializer, 400: None},
     )
@@ -132,6 +133,8 @@ class StudentOnTourBulk(APIView):
             student_on_tour_instance = StudentOnTour.objects.filter(id=d).first()
             if not student_on_tour_instance:
                 return not_found("StudentOnTour")
+
+            self.check_object_permissions(request, student_on_tour_instance.tour)
             student_on_tour_instance.delete()
 
         dummy = type("", (), {})()
@@ -141,8 +144,8 @@ class StudentOnTourBulk(APIView):
 
     @extend_schema(
         description="PATCH body is a map of ids on Student-Tour instances (with new data). "
-        "This enables the frontend to edit a schedule in 1 request instead of multiple. "
-        "If a save fails, the previous saves will **NOT** be undone.",
+                    "This enables the frontend to edit a schedule in 1 request instead of multiple. "
+                    "If a save fails, the previous saves will **NOT** be undone.",
         request=StudOnTourSerializer,
         responses={200: SuccessSerializer, 400: None},
         examples=[
@@ -170,6 +173,7 @@ class StudentOnTourBulk(APIView):
             student_on_tour_instance = StudentOnTour.objects.filter(id=StudentOnTour_id).first()
             if not student_on_tour_instance:
                 return not_found("StudentOnTour")
+            self.check_object_permissions(request, student_on_tour_instance.tour)
             set_keys_of_instance(student_on_tour_instance, data[StudentOnTour_id], TRANSLATE)
             if r := try_full_clean_and_save(student_on_tour_instance):
                 return r
@@ -214,7 +218,8 @@ class TourPerStudentView(APIView):
 
 
 class StudentOnTourIndividualView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | (IsStudent & ReadOnlyOwnerAccount)]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | (IsStudent & ReadOnlyOwnerAccount),
+                          PatchDeleteNoStudentWorkingOnTour]
     serializer_class = StudOnTourSerializer
 
     @extend_schema(responses=get_docs(StudOnTourSerializer))
@@ -227,7 +232,7 @@ class StudentOnTourIndividualView(APIView):
         if not stud_tour_instance:
             return not_found("StudentOnTour")
 
-        self.check_object_permissions(request, stud_tour_instance.student)
+        self.check_object_permissions(request, stud_tour_instance)
 
         serializer = StudOnTourSerializer(stud_tour_instance)
         return get_success(serializer)
@@ -244,7 +249,7 @@ class StudentOnTourIndividualView(APIView):
 
         stud_tour_instance = stud_tour_instances[0]
 
-        self.check_object_permissions(request, stud_tour_instance.student)
+        self.check_object_permissions(request, stud_tour_instance)
 
         data = request_to_dict(request.data)
 
@@ -266,7 +271,7 @@ class StudentOnTourIndividualView(APIView):
             return not_found("StudentOnTour")
         stud_tour_instance = stud_tour_instances[0]
 
-        self.check_object_permissions(request, stud_tour_instance.student)
+        self.check_object_permissions(request, stud_tour_instance)
 
         stud_tour_instance.delete()
         return delete_success()
@@ -399,16 +404,17 @@ class StudentOnTourDuplicateView(DuplicationView):
         )
 
     def filter_instances_to_duplicate(
-        self, instances_to_duplicate, start_date_period: datetime, end_date_period: datetime, start_date_copy: datetime
+            self, instances_to_duplicate, start_date_period: datetime, end_date_period: datetime,
+            start_date_copy: datetime
     ):
         remaining_instance = []
         for student_on_tour in instances_to_duplicate:
             copy_date = (
-                datetime.combine(student_on_tour.date, datetime.min.time()) + (start_date_copy - start_date_period)
+                    datetime.combine(student_on_tour.date, datetime.min.time()) + (start_date_copy - start_date_period)
             ).date()
             if not StudentOnTour.objects.filter(
-                date=copy_date,
-                student=student_on_tour.student,
+                    date=copy_date,
+                    student=student_on_tour.student,
             ).exists():
                 remaining_instance.append((student_on_tour, copy_date))
         return remaining_instance
