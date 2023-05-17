@@ -135,6 +135,31 @@ function AdminTour() {
         }
     }
 
+    const goToBuildingPage = (buildingId: number) => {
+        router.push({
+            pathname: '/admin/building',
+            query: { 
+                id: buildingId,
+                date: selectedDate.toISOString().split('T')[0]
+            },
+        });
+    }
+
+    const goToAnalysisPage = () => {
+        const sot = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
+        if (sot) {
+            router.push({
+                pathname: '/admin/analysis/student-on-tour',
+                query: { studentOnTour: sot.id },
+            });
+        } else {
+            router.push({
+                pathname: '/admin/analysis/worked-hours',
+            });
+        }
+        
+    }
+
     // First, fetch all students when the router is ready.
     // Set the selected student ID based on the router query or default to the first student.
     useEffect(() => {
@@ -311,12 +336,16 @@ function AdminTour() {
                     const timeColor = getSpentTimeColor(expectedDurationInSeconds, durationInSeconds);
                     return (
                         <tr key={building.id}>
-                        <td>{(building.name) ? building.name : `Gebouw ${getBuildingIndex(building.id)}`}</td>
+                        <td style={{ textDecoration: "underline", cursor: "pointer" }} onClick={() => goToBuildingPage(building.id)}>
+                            {(building.name) ? building.name : `Gebouw ${getBuildingIndex(building.id)}`}
+                        </td>
                         <td>{getAddress(building)}</td>
                         <td>{getBuildingStatus(building.id)}</td>
                         <td>{getDepartureTimeString(building.id)}</td>
-                        <td style={{ color: timeColor }}>{getBuildingStatus(building.id) === "Afgewerkt" ? secondsToTime(durationInSeconds) : ""}</td>
-                        <td style={{ cursor: "pointer" }} title={remarksRecord[building.id] ? remarksRecord[building.id].join('\n') : ''}>
+                        <td style={{ textDecoration: "underline", cursor: "pointer", color: timeColor }} onClick={goToAnalysisPage}>
+                            {getBuildingStatus(building.id) === "Afgewerkt" ? secondsToTime(durationInSeconds) : ""}
+                        </td>
+                        <td style={{ textDecoration: "underline", cursor: "pointer" }} onClick={() => goToBuildingPage(building.id)} title={remarksRecord[building.id] ? remarksRecord[building.id].join('\n') : ''}>
                             {remarksRecord[building.id] ? remarksRecord[building.id].length : 0}
                         </td>
                         </tr>
