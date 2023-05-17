@@ -252,6 +252,7 @@ class NoStudentWorkingOnTour(BasePermission):
 
 
 class PatchDeleteNoStudentWorkingOnTour(BasePermission):
+    # todo translations
     message = _("You cannot reassign students on a tour when a student is actively doing the tour")
 
     def has_object_permission(self, request, view, SoTobj: StudentOnTour):
