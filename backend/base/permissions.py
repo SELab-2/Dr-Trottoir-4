@@ -251,15 +251,11 @@ class NoStudentWorkingOnTour(BasePermission):
         return True
 
 
-class PatchDeleteNoStudentWorkingOnTour(BasePermission):
-    # todo translations
-    message = _("You cannot reassign students on a tour when a student is actively doing the tour")
+class ReadOnlyStartedStudentOnTour(BasePermission):
+    # TODO: Translations
+    message = _("The student has already started or finished this tour, this entry can't be edited anymore.")
 
-    def has_object_permission(self, request, view, SoTobj: StudentOnTour):
-        obj = SoTobj.tour
-        if request.method not in SAFE_METHODS and request.method != "POST":
-            active_student_on_tour = StudentOnTour.objects.filter(
-                tour=obj, started_tour__isnull=False, completed_tour__isnull=True
-            ).first()
-            return active_student_on_tour is None
+    def has_object_permission(self, request, view, obj: StudentOnTour):
+        if request.method == "PATCH":
+            return obj.started_tour is None
         return True

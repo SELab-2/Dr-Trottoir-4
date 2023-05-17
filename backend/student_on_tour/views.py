@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 import config.settings
 from base.models import StudentOnTour, User
 from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount, IsStudent, \
-    PatchDeleteNoStudentWorkingOnTour
+    ReadOnlyStartedStudentOnTour
 from base.serializers import StudOnTourSerializer, ProgressTourSerializer, SuccessSerializer
 from student_on_tour.serializers import StudentOnTourDuplicateSerializer
 from util.duplication.view import DuplicationView
@@ -42,7 +42,7 @@ class Default(APIView):
 
 
 class StudentOnTourBulk(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent, PatchDeleteNoStudentWorkingOnTour]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent, ReadOnlyStartedStudentOnTour]
     serializer_class = StudOnTourSerializer
 
     @extend_schema(
@@ -134,7 +134,7 @@ class StudentOnTourBulk(APIView):
             if not student_on_tour_instance:
                 return not_found("StudentOnTour")
 
-            self.check_object_permissions(request, student_on_tour_instance.tour)
+            self.check_object_permissions(request, student_on_tour_instance)
             student_on_tour_instance.delete()
 
         dummy = type("", (), {})()
@@ -173,7 +173,7 @@ class StudentOnTourBulk(APIView):
             student_on_tour_instance = StudentOnTour.objects.filter(id=StudentOnTour_id).first()
             if not student_on_tour_instance:
                 return not_found("StudentOnTour")
-            self.check_object_permissions(request, student_on_tour_instance.tour)
+            self.check_object_permissions(request, student_on_tour_instance)
             set_keys_of_instance(student_on_tour_instance, data[StudentOnTour_id], TRANSLATE)
             if r := try_full_clean_and_save(student_on_tour_instance):
                 return r
@@ -219,7 +219,7 @@ class TourPerStudentView(APIView):
 
 class StudentOnTourIndividualView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | (IsStudent & ReadOnlyOwnerAccount),
-                          PatchDeleteNoStudentWorkingOnTour]
+                          ReadOnlyStartedStudentOnTour]
     serializer_class = StudOnTourSerializer
 
     @extend_schema(responses=get_docs(StudOnTourSerializer))
