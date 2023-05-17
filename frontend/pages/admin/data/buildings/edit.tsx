@@ -1,7 +1,14 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {Form} from "react-bootstrap";
-import {getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding} from "@/lib/building";
+import {
+    getBuildingComment,
+    getBuildingInfo,
+    getDurationFromMinutes,
+    patchBuilding,
+    patchBuildingComment,
+    postBuilding, postBuildingComment
+} from "@/lib/building";
 import {getRegion} from "@/lib/region";
 import {getUserInfo} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
@@ -29,6 +36,7 @@ function AdminDataBuildingsEdit() {
     const [public_id, setPublicId] = useState<string>("");
     const [validated, setValidated] = useState<boolean>(false);
     const [durationInMinutes, setDurationInMinutes] = useState<number>(0);
+    const [buildingComments, setBuildingComments] = useState<string>("");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
@@ -52,9 +60,19 @@ function AdminDataBuildingsEdit() {
             };
             try {
                 if (router.query.building) {
-                    const res = await patchBuilding(building, Number(router.query.building));
+                    await patchBuilding(building, Number(router.query.building));
+                    await patchBuildingComment({
+                        building: Number(router.query.building),
+                        comment: buildingComments
+                    });
                 } else {
-                    const res = await postBuilding(building);
+                    await postBuilding(building);
+                    if (buildingComments) {
+                        await postBuildingComment({
+                            building: Number(router.query.building),
+                            comment: buildingComments
+                        });
+                    }
                 }
                 setShowConfirmation(true);
             } catch (error: any) {
@@ -86,6 +104,8 @@ function AdminDataBuildingsEdit() {
                 setRegionId(region.data.id);
                 const syndic = await getUserInfo(res.data.syndic);
                 setSyndicId(syndic.data.id);
+                const comments = await getBuildingComment(Number(router.query.building));
+                console.log(comments);
                 return true;
             });
         }
@@ -187,6 +207,14 @@ function AdminDataBuildingsEdit() {
                             onChange={(e: ChangeEvent<HTMLInputElement>) =>
                                 setDurationInMinutes(e.target.value === "" ? 0 : parseInt(e.target.value))
                             }
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="opmerkingen">
+                        <Form.Label>Opmerkingen</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            value={buildingComments}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setBuildingComments(e.target.value)}
                         />
                     </Form.Group>
                     <RegionAutocomplete

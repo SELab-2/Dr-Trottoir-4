@@ -35,6 +35,17 @@ export interface BuildingSyndicPostInterface {
     public_id: string;
 }
 
+export interface BuildingCommentPostInterface{
+    building: number,
+    comment: string
+}
+
+export interface BuildingCommentInterface {
+    building: number,
+    comment: string
+    id: number
+}
+
 export const getBuildingsFromOwner = async (ownerId: number | string): Promise<AxiosResponse<any>> => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_OWNER_BUILDING}${ownerId}`;
     return await api.get(request_url);
@@ -84,12 +95,35 @@ export async function postBuilding(building: BuildingPostInterface): Promise<Axi
 }
 
 export async function patchBuilding(building: BuildingPostInterface, id: number): Promise<AxiosResponse<any>> {
-    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${id}`;
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING_COMMENT}`;
     return await api.patch(request_url, JSON.stringify(building),
         {
             headers: {"Content-Type": "application/json"},
         }
     );
+}
+
+export async function postBuildingComment(buildingComment: BuildingCommentPostInterface): Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}`;
+    return await api.post(request_url, JSON.stringify(buildingComment),
+        {
+            headers: {"Content-Type": "application/json"},
+        }
+    );
+}
+
+export async function patchBuildingComment(buildingComment: BuildingCommentPostInterface): Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingComment.building}`;
+    return await api.patch(request_url, JSON.stringify(buildingComment),
+        {
+            headers: {"Content-Type": "application/json"},
+        }
+    );
+}
+
+export async function getBuildingComment(id: number): Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING_COMMENT_BUILDING}${id}`;
+    return await api.get(request_url);
 }
 
 export function getDurationFromMinutes(durationInMinutes: number) {
