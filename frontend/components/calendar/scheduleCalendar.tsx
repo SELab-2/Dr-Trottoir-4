@@ -25,7 +25,7 @@ import CustomDisplay from "@/components/calendar/customEvent";
 import AddScheduleEventModal from "@/components/calendar/addScheduleEvent";
 import { Tour } from "@/lib/tour";
 import { User } from "@/lib/user";
-import { addDays, endOfWeek } from "date-fns";
+import {add, addDays, endOfMonth, endOfWeek, startOfMonth, sub} from "date-fns";
 import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
 import { colors } from "@/components/calendar/colors";
@@ -47,15 +47,15 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
     const [tourColors, setTourColors] = useState<{ [key: number]: string }>({});
     const [events, setEvents] = useState<ScheduleEvent[]>([]);
     const [range, setRange] = useState({
-        start: startOfWeek(new Date()), // week starts on sunday
-        end: endOfWeek(new Date()),
+        start: sub(startOfMonth(new Date()), { days: 7 }),
+        end: add(endOfMonth(new Date()), { days: 7 }),
     });
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
     useEffect(() => {
         if (tourUsers.length > 0 && tours.length > 0) {
             assignColors(tours);
-            getFromRange({ start: startOfWeek(new Date()), end: endOfWeek(new Date()) });
+            getFromRange(range);
         }
     }, [tourUsers, tours]);
 
@@ -304,7 +304,6 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                 }}
                 step={60}
                 timeslots={1}
-
                 style={{ height: "100vh" }}
                 onEventDrop={onEventDragAndDrop}
                 onEventResize={onEventResize}
