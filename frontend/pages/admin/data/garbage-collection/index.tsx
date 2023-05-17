@@ -29,7 +29,7 @@ import { getBuildingsOfTour } from "@/lib/tour";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import BulkOperationModal from "@/components/garbage/BulkOperationModal";
+import BulkMoveGarbageModal from "@/components/garbage/BulkMoveGarbageModal";
 import { AxiosResponse } from "axios";
 
 interface ParsedUrlQuery {}
@@ -65,7 +65,7 @@ function GarbageCollectionSchedule() {
     const [showBuildingListModal, setShowBuildingListModal] = useState<boolean>(false);
 
     // The bulk operation modal
-    const [showBulkOperationModal, setShowBulkOperationModal] = useState<boolean>(false);
+    const [showBulkMoveModal, setShowBulkMoveModal] = useState<boolean>(false);
 
     const [buildingList, setBuildingList] = useState<BuildingInterface[]>([]);
 
@@ -303,7 +303,7 @@ function GarbageCollectionSchedule() {
     }
 
     function closeBulkOperationModal() {
-        setShowBulkOperationModal(false);
+        setShowBulkMoveModal(false);
         getFromRange(currentRange);
     }
 
@@ -335,10 +335,10 @@ function GarbageCollectionSchedule() {
                 weekStartsOn={1}
                 title="Dupliceer vuilophaling schema voor geselecteerde gebouwen"
             />
-            <BulkOperationModal
+            <BulkMoveGarbageModal
                 buildings={buildingList}
                 closeModal={closeBulkOperationModal}
-                show={showBulkOperationModal}
+                show={showBulkMoveModal}
             />
             <GarbageEditModal
                 closeModal={closeEditModal}
@@ -367,7 +367,7 @@ function GarbageCollectionSchedule() {
                         </Button>
                     </div>
                     <div className="col">
-                        <Button variant="primary" className="btn-dark" onClick={() => setShowBulkOperationModal(true)}>
+                        <Button variant="primary" className="btn-dark" onClick={() => setShowBulkMoveModal(true)}>
                             Verplaats ophaling
                         </Button>
                     </div>
