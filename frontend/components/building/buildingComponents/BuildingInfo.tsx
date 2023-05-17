@@ -110,7 +110,7 @@ function BuildingInfo({
                 >
                     Public id:{" "}
                     {building?.public_id ? (
-                        <a href={getPublicLink(false)}>{get_building_key("public_id")}</a>
+                        <a href={getPublicLink(false)} target={"_blank"}>{get_building_key("public_id")}</a>
                     ) : (
                         get_building_key("public_id")
                     )}
