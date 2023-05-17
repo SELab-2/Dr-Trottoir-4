@@ -30,7 +30,6 @@ function BuildingInfo({
 
     useEffect(() => {
         if (building) {
-            building.public_id = "test";
             get_region_name();
         }
     }, [building]);
@@ -93,7 +92,7 @@ function BuildingInfo({
                                 <strong>Publiek id:</strong> {building && building.public_id ? building.public_id : "-"}
                             </p>
                             {building && building.public_id && (
-                                <CopyToClipboard style={{marginBottom: '12px'}} text={building.public_id}>
+                                <CopyToClipboard text={building.public_id}>
                                     <IconButton>
                                         <MdContentCopy size={18}/>
                                     </IconButton>

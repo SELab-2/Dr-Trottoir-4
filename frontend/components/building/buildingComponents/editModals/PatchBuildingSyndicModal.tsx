@@ -61,7 +61,7 @@ function PatchBuildingSyndicModal({
                         <Form.Group className="mb-3" controlId="formPatchBuilding">
                             <Form.Group controlId={"name"}>
                                 <Form.Label className="normal_text">Naam:</Form.Label>
-                                <InputGroup className="input">
+                                <InputGroup style={{padding: '5px 10px 15px', width: '400px'}}>
                                     <Form.Control
                                         className="form_control"
                                         name="name"
@@ -74,7 +74,7 @@ function PatchBuildingSyndicModal({
                             <Form>
                                 <Form.Group controlId="public_id">
                                     <Form.Label className="normal_text">Publiek id:</Form.Label>
-                                    <InputGroup className="input">
+                                    <InputGroup style={{padding: '5px 10px 15px', width: '400px'}}>
                                         <FormControl
                                             className="form_control"
                                             name="public_id"
@@ -107,10 +107,10 @@ function PatchBuildingSyndicModal({
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={closeModal}>
+                    <Button variant="secondary" className="btn-light" onClick={closeModal}>
                         Sluit
                     </Button>
-                    <Button variant="primary" onClick={handleSubmit}>
+                    <Button variant="primary" className="btn-dark" onClick={handleSubmit}>
                         Sla op
                     </Button>
                 </Modal.Footer>

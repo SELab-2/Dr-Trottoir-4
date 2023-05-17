@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     getRemarksAtBuildingOfSpecificBuilding,
     RemarkAtBuildingInterface,
     translateRemarkAtBuildingType,
 } from "@/lib/remark-at-building";
-import { getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
-import { Accordion, Card } from "react-bootstrap";
+import {getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface} from "@/lib/picture-of-remark";
+import {Accordion, Card} from "react-bootstrap";
 import ImageEnlargeModal from "@/components/ImageEnlargeModal";
-import { convertToSensibleDateLong, convertToSensibleDateShort } from "@/lib/dateUtil";
-import { AxiosResponse } from "axios/index";
-import { handleError } from "@/lib/error";
+import {convertToSensibleDateLong, convertToSensibleDateShort} from "@/lib/dateUtil";
+import {AxiosResponse} from "axios";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
-function CollectionCards({ building, date }: { building: number; date: string | null }) {
-    const [collectionDetails, setCollectionDetails] = useState<
-        [RemarkAtBuildingInterface, PictureOfRemarkInterface[]][] | []
-    >([]);
+function CollectionCards({building, date}: { building: number; date: string | null }) {
+    const [collectionDetails, setCollectionDetails] = useState<[RemarkAtBuildingInterface, PictureOfRemarkInterface[]][] | []>([]);
 
     const [enlargeImageShow, setEnlargeImageShow] = useState<boolean>(false);
     const [enlargeImageURL, setEnlargeImageURL] = useState<string>("");
@@ -25,13 +23,15 @@ function CollectionCards({ building, date }: { building: number; date: string | 
     const connectToWebSocket = (websocketURL: string, callback: () => void) => {
         const client = new WebSocket(websocketURL);
 
-        client.onopen = () => {};
+        client.onopen = () => {
+        };
 
-        client.addEventListener("message", (event) => {
+        client.addEventListener("message", () => {
             callback();
         });
 
-        client.onclose = () => {};
+        client.onclose = () => {
+        };
     };
 
     function handleRemarksAtBuildingsCall(response: AxiosResponse) {
@@ -67,7 +67,7 @@ function CollectionCards({ building, date }: { building: number; date: string | 
 
     function fetchData() {
         if (date) {
-            getRemarksAtBuildingOfSpecificBuilding(building, { date: date })
+            getRemarksAtBuildingOfSpecificBuilding(building, {date: date})
                 .then((response) => {
                     handleRemarksAtBuildingsCall(response);
                     setErrorMessages([]);
@@ -76,7 +76,7 @@ function CollectionCards({ building, date }: { building: number; date: string | 
                     setErrorMessages(handleError(error));
                 });
         } else {
-            getRemarksAtBuildingOfSpecificBuilding(building, { mostRecent: true })
+            getRemarksAtBuildingOfSpecificBuilding(building, {mostRecent: true})
                 .then((response) => {
                     handleRemarksAtBuildingsCall(response);
                     setErrorMessages([]);
@@ -99,23 +99,27 @@ function CollectionCards({ building, date }: { building: number; date: string | 
 
     return (
         <>
-            <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL} />
+            <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL}/>
 
-            <h1>Details laatste ophaling {date ? "(" + convertToSensibleDateShort(date) + ")" : null}</h1>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
-            <div style={{ margin: "0 0", width: "75%", maxWidth: "95%" }}>
+            <label className="title">Details laatste ophaling {date ? "(" + convertToSensibleDateShort(date) + ")" : null}</label>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <div>
                 {collectionDetails.length == 0 ? (
                     <p>Er zijn geen ophalingen gevonden.</p>
                 ) : (
                     <Accordion alwaysOpen>
                         {collectionDetails.map(([remark, pictures]) => (
                             <Accordion.Item eventKey={remark.id + ""} key={remark.id}>
-                                <Accordion.Header>{translateRemarkAtBuildingType(remark.type)}</Accordion.Header>
+                                <Accordion.Header>
+                                    <div>
+                                        <strong>{translateRemarkAtBuildingType(remark.type)}</strong>
+                                        <Card.Subtitle style={{fontSize: '14px'}}>
+                                            {convertToSensibleDateLong(remark.timestamp + "")}
+                                        </Card.Subtitle> <br/>
+                                        <Card.Text>{remark.remark}</Card.Text>
+                                    </div>
+                                </Accordion.Header>
                                 <Accordion.Body>
-                                    <Card.Subtitle className="mb-2 text-muted">
-                                        {convertToSensibleDateLong(remark.timestamp + "")}
-                                    </Card.Subtitle>
-                                    <Card.Text>{remark.remark}</Card.Text>
                                     <div>
                                         {pictures.map((picture: PictureOfRemarkInterface) => (
                                             <Card.Img
@@ -125,7 +129,6 @@ function CollectionCards({ building, date }: { building: number; date: string | 
                                                 }`}
                                                 alt="Remark picture"
                                                 style={{
-                                                    maxHeight: "15em",
                                                     width: "auto",
                                                     maxWidth: "95%",
                                                     cursor: "pointer",
