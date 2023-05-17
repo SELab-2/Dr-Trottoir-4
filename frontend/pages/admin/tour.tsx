@@ -20,6 +20,7 @@ import Loading from "@/components/loading";
 import StudentOnTourAutocomplete from "@/components/autocompleteComponents/studentOnTourAutocomplete";
 import { BuildingAnalysis } from "@/types";
 import { getAnalysisStudentOnTour } from "@/lib/analysis";
+import { getAllRemarksOfStudentOnTour, getRemarksOfStudentOnTourAtBuilding } from "@/lib/remark-at-building";
 
 interface ParsedUrlQuery {}
 
@@ -43,6 +44,7 @@ function AdminTour() {
     const [validDates, setValidDates] = useState<Date[]>([]);
     const [selectedStudentOnTour, setSelectedStudentOnTour] = useState<StudentOnTour | null>(null);
     const [analysis, setAnalysis] = useState<BuildingAnalysis[]>([]);
+    const [remarksRecord, setRemarksRecord] = useState<Record<number, number>>({});
 
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
@@ -96,6 +98,41 @@ function AdminTour() {
             }
         }
         return returnText;
+    }
+
+    const getBuildingAnalysis = (buildingId: number) => {
+        return analysis.find((a) => a.building_id === buildingId) || null;
+    }
+
+    const getDepartureTimeString = (buildingId: number) => {
+        let returnString = "";
+        const ba: BuildingAnalysis | null = getBuildingAnalysis(buildingId);
+        if (ba && ba.departure_time) {
+            const date = new Date(ba.departure_time);
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            let prefix = minutes < 10 ? "0" : "";
+            
+            returnString = hours + ":" + prefix + minutes;
+        } 
+        return returnString;
+    }
+
+    const secondsToTime = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return minutes + "m" + (remainingSeconds < 10 ? "0" : "") + remainingSeconds + "s";
+    }
+    
+    const getSpentTimeColor = (expected: number, actual: number) => {
+        const ratio = actual / expected;
+        if (ratio > 1.25) {
+            return "red";
+        } else if (ratio > 1) {
+            return "orange";
+        } else {
+            return "green";
+        }
     }
 
     // First, fetch all students when the router is ready.
@@ -169,23 +206,38 @@ function AdminTour() {
         .then((responses) => {
             setAllBuildings(responses.map(response =>response.data));
         }).catch(console.error);
+
+        const sot = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
+        if (sot) {
+            Promise.all(allBuildingsOnTour.map((buildingOnTour) => getRemarksOfStudentOnTourAtBuilding(buildingOnTour.building, sot.id, "OP")))
+            .then((responses) => {
+                let newRemarksRecord: Record<number,number> = {};
+                responses.forEach((response, index) => {
+                    newRemarksRecord[allBuildingsOnTour[index].building] = response.data.length;
+                });
+                setRemarksRecord(newRemarksRecord);
+            }).catch(console.error);
+        }
+        
+
     }, [allBuildingsOnTour]);
 
-
+    // Get new analysis upon change of the student, tour or date
     useEffect(() => {
         const sot = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
         if (sot) {
             getAnalysisStudentOnTour(sot.id).then((res) => {
                 const b: BuildingAnalysis[] = res.data;
                 setAnalysis(b);
-            })
+            }).catch(console.error);
+            setSelectedStudentOnTour(sot);
         }
         
         setLoading(false);
 
     }, [selectedStudentId, selectedTourId, selectedDate]);
 
-    // For debuggin purposes
+    // For debugging     purposes
     // useEffect(() => {
     //     console.log(`selectedStudentId: ${selectedStudentId}`);
     //     console.log(`selectedTourId: ${selectedTourId}`);
@@ -248,22 +300,24 @@ function AdminTour() {
                     <th>Tijdstip afwerking</th>
                     <th>Tijdsduur</th>
                     <th>Opmerkingen</th>
-                    <th>Alle foto's aanwezig</th>
                     </tr>
                 </thead>
                 <tbody>
                     {allBuildings.map((building) => {
                     // Populate the table with the building details
                     // Replace the placeholders with actual data from your backend
+                    const ba = getBuildingAnalysis(building.id);
+                    const durationInSeconds = ba ? ba.duration_in_seconds : 0;
+                    const expectedDurationInSeconds = ba ? ba.expected_duration_in_seconds : 0;
+                    const timeColor = getSpentTimeColor(expectedDurationInSeconds, durationInSeconds);
                     return (
                         <tr key={building.id}>
-                        <td>{building.name}</td>
+                        <td>{(building.name) ? building.name : `Gebouw ${getBuildingIndex(building.id)}`}</td>
                         <td>{getAddress(building)}</td>
                         <td>{getBuildingStatus(building.id)}</td>
-                        <td>18h55</td>
-                        <td>8m23s</td>
-                        <td>{building.id ? "yes" : "no"}</td>
-                        <td>{building.id ? "yes" : "no"}</td>
+                        <td>{getDepartureTimeString(building.id)}</td>
+                        <td style={{ color: timeColor }}>{getBuildingStatus(building.id) === "Afgewerkt" ? secondsToTime(durationInSeconds) : ""}</td>
+                        <td>{remarksRecord[building.id]}</td>
                         </tr>
                     );
                     })}
