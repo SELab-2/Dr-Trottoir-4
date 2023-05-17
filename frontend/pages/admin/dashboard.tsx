@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getAllTours, Tour } from "@/lib/tour";
 import {
-getAllStudentOnTourFromDate,
 getAllStudentOnTourFromToday,
-getStudentOnTour,
 getStudentOnTourAllProgressWS,
 getStudentOnTourIndividualProgressWS,
 getStudentOnTourIndividualRemarkWS,
@@ -19,7 +17,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/system";
 import LiveField from "@/components/liveField";
-import { getAllRemarksOfStudentOnTour, RemarkAtBuilding } from "@/lib/remark-at-building";
+import { getAllRemarksOfStudentOnTour } from "@/lib/remark-at-building";
 
 interface IndividualProgressWebSocketsResponse {
     current_building_index: number;
@@ -100,25 +98,25 @@ function AdminDashboard() {
         const wsRemarks = getStudentOnTourIndividualRemarkWS(studentOnTourId);
 
         wsProgress.addEventListener("message", (event) => {
-        const data: IndividualProgressWebSocketsResponse = JSON.parse(event.data);
-        setCurrentBuildingIndex((prevState) => ({
-            ...prevState,
-            [studentOnTourId]: data.current_building_index,
-        }));
-        if (!maxBuildingIndex[studentOnTourId]) {
-            getStudentOnTourProgress(studentOnTourId).then(
-            (res) => {
-                const data: ProgressResponse = res.data;
-                setMaxBuildingIndex((prevState) => ({
+            const data: IndividualProgressWebSocketsResponse = JSON.parse(event.data);
+            setCurrentBuildingIndex((prevState) => ({
                 ...prevState,
-                [studentOnTourId]: data.max_building_index,
-                }));
-            },
-            (err) => {
-                console.error(err);
+                [studentOnTourId]: data.current_building_index,
+            }));
+            if (!maxBuildingIndex[studentOnTourId]) {
+                getStudentOnTourProgress(studentOnTourId).then(
+                (res) => {
+                    const data: ProgressResponse = res.data;
+                    setMaxBuildingIndex((prevState) => ({
+                    ...prevState,
+                    [studentOnTourId]: data.max_building_index,
+                    }));
+                },
+                (err) => {
+                    console.error(err);
+                }
+                );
             }
-            );
-        }
         });
 
         wsRemarks.addEventListener("message", (event) => {

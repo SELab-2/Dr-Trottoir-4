@@ -3,6 +3,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from "react-datepicker";
 import { getAllTours, getTour, Tour } from "@/lib/tour";
 import {
+    getStudentOnTourIndividualProgressWS,
+    getStudentOnTourIndividualRemarkWS,
 getToursOfStudent,
 StudentOnTour,
 } from "@/lib/student-on-tour";
@@ -20,13 +22,17 @@ import Loading from "@/components/loading";
 import StudentOnTourAutocomplete from "@/components/autocompleteComponents/studentOnTourAutocomplete";
 import { BuildingAnalysis } from "@/types";
 import { getAnalysisStudentOnTour } from "@/lib/analysis";
-import { getAllRemarksOfStudentOnTour, getRemarksOfStudentOnTourAtBuilding, RemarkAtBuildingInterface } from "@/lib/remark-at-building";
+import { getAllRemarksOfStudentOnTour, getRemarksOfStudentOnTourAtBuilding, RemarkAtBuilding, RemarkAtBuildingInterface } from "@/lib/remark-at-building";
 
 interface ParsedUrlQuery {}
 
 interface DataAdminTourQuery extends ParsedUrlQuery {
     student?: number;
     tour?: number;
+}
+
+interface ProgressWebSocketResponse {
+    current_building_index: number;
 }
 
 function AdminTour() {
@@ -45,6 +51,9 @@ function AdminTour() {
     const [selectedStudentOnTour, setSelectedStudentOnTour] = useState<StudentOnTour | null>(null);
     const [analysis, setAnalysis] = useState<BuildingAnalysis[]>([]);
     const [remarksRecord, setRemarksRecord] = useState<Record<number, string[]>>({});
+    const [currentBuildingIndex, setCurrentBuildingIndex] = useState(0);
+    const [refreshKey, setRefreshKey] = useState(0);
+
 
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
@@ -75,8 +84,9 @@ function AdminTour() {
 
     const getStudentOnTour = (sots: StudentOnTour[], tourId: number, date: Date) => {
         const sot = sots.find((sot) => sot.tour === tourId && new Date(sot.date).toISOString().split('T')[0] === new Date(date).toISOString().split('T')[0]);
-        return (sot) ? sot : null;
+        return (sot) ? { sot, current_building_index: sot.current_building_index } : null;
     }
+    
 
     const getBuildingIndex = (buildingId: number) => {
         const buildingOnTour = allBuildingsOnTour.find((buildingOnTour: BuildingOnTour) => buildingOnTour.building === buildingId);
@@ -84,15 +94,15 @@ function AdminTour() {
     }
 
     const getBuildingStatus = (buildingId: number) => {
-        const sot: StudentOnTour | null = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
+        const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
 
         let returnText = "Nog niet gedaan";
-        if (sot) {
-            if (sot.started_tour) {
+        if (sotObject) {
+            if (sotObject.sot.started_tour) {
                 const buildingIndex = getBuildingIndex(buildingId);
-                if (sot.current_building_index > buildingIndex) {
+                if (currentBuildingIndex > buildingIndex) {
                     returnText = "Afgewerkt";
-                } else if (sot.current_building_index === buildingIndex){
+                } else if (currentBuildingIndex === buildingIndex) {
                     returnText = "Bezig";
                 }
             }
@@ -146,11 +156,11 @@ function AdminTour() {
     }
 
     const goToAnalysisPage = () => {
-        const sot = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
-        if (sot) {
+        const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
+        if (sotObject) {
             router.push({
                 pathname: '/admin/analysis/student-on-tour',
-                query: { studentOnTour: sot.id },
+                query: { studentOnTour: sotObject.sot.id },
             });
         } else {
             router.push({
@@ -158,6 +168,35 @@ function AdminTour() {
             });
         }
         
+    }
+
+    const setupWebsocketsForStudentOnTour = (studentOnTourId: number) => {
+        const wsProgress = getStudentOnTourIndividualProgressWS(studentOnTourId);
+        const wsRemarks = getStudentOnTourIndividualRemarkWS(studentOnTourId);
+
+        wsProgress.addEventListener("message", (event) => {
+            const data: ProgressWebSocketResponse = JSON.parse(event.data);
+            setRefreshKey(prevKey => prevKey + 1); // retrigger useEffects
+            setCurrentBuildingIndex(data.current_building_index);
+        });
+
+        wsRemarks.addEventListener("message", (event) => {
+            console.log(JSON.parse(event.data));
+            const data: RemarkAtBuildingInterface = JSON.parse(event.data);
+            const remark = data.remark || null;
+            if (remark) {
+                setRemarksRecord((prevState) => {
+                    const existingRemarks = prevState[data.building] || [];
+                    return {
+                        ...prevState,
+                        [data.building]: existingRemarks.concat(remark),
+                    };
+                });
+            }
+        });
+        
+
+        return {wsProgress, wsRemarks};
     }
 
     // First, fetch all students when the router is ready.
@@ -200,7 +239,7 @@ function AdminTour() {
 
             updateValidDates(sots, currentSot.tour);
         });
-    }, [selectedStudentId]);
+    }, [selectedStudentId, refreshKey]);
 
 
     // When selected tour ID changes, fetch details of the tour and update selected tour.
@@ -232,47 +271,56 @@ function AdminTour() {
             setAllBuildings(responses.map(response =>response.data));
         }).catch(console.error);
 
-        const sot = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
-        if (sot) {
-            Promise.all(allBuildingsOnTour.map((buildingOnTour) => getRemarksOfStudentOnTourAtBuilding(buildingOnTour.building, sot.id, "OP")))
+        const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
+        if (sotObject) {
+            Promise.all(allBuildingsOnTour.map((buildingOnTour) => getRemarksOfStudentOnTourAtBuilding(buildingOnTour.building, sotObject.sot.id, "OP")))
             .then((responses) => {
                 let tempRemarksRecord: Record<number, string[]> = {};
                 responses.forEach((res, index) => {
-                    console.log(res);
+
                     tempRemarksRecord[allBuildingsOnTour[index].building] = res.data.map((remark: RemarkAtBuildingInterface) => remark.remark);
                 });
                 setRemarksRecord(tempRemarksRecord);
             }).catch(console.error);
         }
-        
-
     }, [allBuildingsOnTour]);
 
     // Get new analysis upon change of the student, tour or date
     useEffect(() => {
-        const sot = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
-        if (sot) {
-            getAnalysisStudentOnTour(sot.id).then((res) => {
+        const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
+        if (sotObject) {
+            setCurrentBuildingIndex(sotObject.current_building_index);
+            getAnalysisStudentOnTour(sotObject.sot.id).then((res) => {
                 const b: BuildingAnalysis[] = res.data;
                 setAnalysis(b);
             }).catch(console.error);
-            setSelectedStudentOnTour(sot);
+            setSelectedStudentOnTour(sotObject.sot);
+
+
+            const {wsProgress, wsRemarks} = setupWebsocketsForStudentOnTour(sotObject.sot.id);
+
+            setLoading(false);
+
+            return () => {
+                wsProgress.close();
+                wsRemarks.close();
+            }
         }
-        
+
         setLoading(false);
 
     }, [selectedStudentId, selectedTourId, selectedDate]);
 
-    // For debugging     purposes
-    // useEffect(() => {
-    //     console.log(`selectedStudentId: ${selectedStudentId}`);
-    //     console.log(`selectedTourId: ${selectedTourId}`);
-    //     console.log(`selectedDate: ${selectedDate}`);
-    //     console.log("selectedStudentOnTour:");
-    //     console.log(selectedStudentOnTour);
-    //     console.log("allToursOfStudent:");
-    //     console.log(allToursOfStudent);
-    // }, [selectedTourId, selectedStudentId, selectedDate, selectedStudentOnTour, allToursOfStudent]);
+    //For debugging purposes
+    useEffect(() => {
+        console.log(`selectedStudentId: ${selectedStudentId}`);
+        console.log(`selectedTourId: ${selectedTourId}`);
+        console.log(`selectedDate: ${selectedDate}`);
+        console.log("selectedStudentOnTour:");
+        console.log(selectedStudentOnTour);
+        console.log("allToursOfStudent:");
+        console.log(allToursOfStudent);
+    }, [selectedTourId, selectedStudentId, selectedDate, selectedStudentOnTour, allToursOfStudent]);
 
     if (loading) {
         return (
