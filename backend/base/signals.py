@@ -11,6 +11,7 @@ from base.serializers import RemarkAtBuildingSerializer, StudOnTourSerializer, G
 
 @receiver(post_save, sender=RemarkAtBuilding)
 def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
+    print("Post save RemarkAtBuilding")
     if instance.type == RemarkAtBuilding.OPMERKING:
         # Broadcast to remark at building websocket
         remark_at_building_remark = RemarkAtBuildingSerializer(instance).data
@@ -34,15 +35,18 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
     student_on_tour = instance.student_on_tour
 
     if instance.type == RemarkAtBuilding.AANKOMST:
+        print("Aankomst")
         # since we start indexing our BuildingOnTour with index 1, this works (since current_building_index starts at 0)
+        update_fields = ["current_building_index"]
         student_on_tour.current_building_index += 1
 
         # since we only start calculating worked time from the moment we arrive at the first building
         # we recalculate the start time of the tour
         if student_on_tour.current_building_index == 1:
             student_on_tour.started_tour = timezone.now()
+            update_fields.append("started_tour")
 
-        student_on_tour.save()
+        student_on_tour.save(update_fields=update_fields)
 
         # Broadcast update to websocket
         channel_layer = get_channel_layer()
@@ -54,13 +58,15 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
             },
         )
         return
-
+    print(f"Student on tour current building index: {student_on_tour.current_building_index}")
+    print(f"Student on tour max building index: {student_on_tour.max_building_index}")
     if (
             instance.type == RemarkAtBuilding.VERTREK
             and student_on_tour.current_building_index == student_on_tour.max_building_index
     ):
+        print("Vertrek")
         student_on_tour.completed_tour = timezone.now()
-        student_on_tour.save()
+        student_on_tour.save(update_fields=["completed_tour"])
 
         # Broadcast update to websocket
         channel_layer = get_channel_layer()
@@ -71,23 +77,26 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
 
 
 @receiver(pre_save, sender=StudentOnTour)
-def set_max_building_index(sender, instance: StudentOnTour, **kwargs):
-    if not instance.max_building_index and instance.started_tour:
+def set_max_building_index_or_notify(sender, instance: StudentOnTour, **kwargs):
+    if not instance.max_building_index:
         max_index = instance.tour.buildingontour_set.aggregate(Max("index"))["index__max"]
         instance.max_building_index = max_index
 
 
 @receiver(post_save, sender=StudentOnTour)
 def notify_student_on_tour_subscribers(sender, instance: StudentOnTour, **kwargs):
-    student_on_tour = StudOnTourSerializer(instance).data
-    channel = get_channel_layer()
-    async_to_sync(channel.group_send)(
-        "student_on_tour_updates",
-        {
-            "type": "student.on.tour.created.or.adapted",
-            "student_on_tour": student_on_tour,
-        }
-    )
+    if not instance.started_tour:
+        student_on_tour = StudOnTourSerializer(instance).data
+        channel = get_channel_layer()
+        async_to_sync(channel.group_send)(
+            "student_on_tour_updates",
+            {
+                "type": "student.on.tour.created.or.adapted",
+                "student_on_tour": student_on_tour,
+            }
+        )
+
+
 @receiver(post_save, sender=GarbageCollection)
 def notify_garbage_collection_subscribers(sender, instance: GarbageCollection, **kwargs):
     garbage_collection = GarbageCollectionSerializer(instance).data
