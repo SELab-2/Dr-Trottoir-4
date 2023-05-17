@@ -126,7 +126,6 @@ class StudentOnTourBulk(APIView):
         }
         """
         for d in data["ids"]:
-            print(d)
             student_on_tour_instance = StudentOnTour.objects.filter(id=d).first()
             if not student_on_tour_instance:
                 return not_found("StudentOnTour")
@@ -165,13 +164,10 @@ class StudentOnTourBulk(APIView):
         }
         """
         for StudentOnTour_id in data:
-            print(StudentOnTour_id)
             student_on_tour_instance = StudentOnTour.objects.filter(id=StudentOnTour_id).first()
             if not student_on_tour_instance:
                 return not_found("StudentOnTour")
-            print(student_on_tour_instance)
             set_keys_of_instance(student_on_tour_instance, data[StudentOnTour_id], TRANSLATE)
-            print(student_on_tour_instance)
             if r := try_full_clean_and_save(student_on_tour_instance):
                 return r
 
