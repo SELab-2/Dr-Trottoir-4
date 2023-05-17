@@ -155,7 +155,8 @@ class ReadOnlyOwnerAccount(BasePermission):
 
     message = _("You can only access your own account")
 
-    def has_object_permission(self, request, view, obj: User):
+    def has_object_permission(self, request, view, SoTobj: StudentOnTour):
+        obj = SoTobj.student
         if request.method in SAFE_METHODS:
             return request.user.id == obj.id
         return False
@@ -247,4 +248,14 @@ class NoStudentWorkingOnTour(BasePermission):
                 tour=obj, started_tour__isnull=False, completed_tour__isnull=True
             ).first()
             return active_student_on_tour is None
+        return True
+
+
+class ReadOnlyStartedStudentOnTour(BasePermission):
+    # TODO: Translations
+    message = _("The student has already started or finished this tour, this entry can't be edited anymore.")
+
+    def has_object_permission(self, request, view, obj: StudentOnTour):
+        if request.method == "PATCH":
+            return obj.started_tour is None
         return True

@@ -1,6 +1,6 @@
 import os
 import uuid
-from datetime import date
+from datetime import date, datetime
 
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -16,7 +16,7 @@ from users.managers import UserManager
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2**31 - 1
+MAX_INT = 2 ** 31 - 1
 
 
 class Region(models.Model):
@@ -167,11 +167,17 @@ class Building(models.Model):
 
 class BuildingComment(models.Model):
     comment = models.TextField()
-    date = models.DateTimeField()
+    date = models.DateTimeField(null=True, blank=True)
     building = models.ForeignKey(Building, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"Comment: {self.comment} ({self.date}) for {self.building}"
+
+    def clean(self):
+        super().clean()
+
+        if not self.date:
+            self.date = datetime.now()
 
     class Meta:
         constraints = [
@@ -313,7 +319,11 @@ class StudentOnTour(models.Model):
 
     def clean(self):
         super().clean()
-
+        if self.date and self.date < datetime.now().date():
+            raise ValidationError(
+                # TODO translation
+                _("You cannot plan a student on a past date.")
+            )
         if self.student_id and self.tour_id:
             user = self.student
             if user.role.name.lower() == "syndic":
@@ -445,9 +455,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-            self.version_number == 0
-            or self.version_number > max_version_number + 1
-            or self.version_number in version_numbers
+                self.version_number == 0
+                or self.version_number > max_version_number + 1
+                or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 

@@ -6,11 +6,13 @@ import {
     getNewPublicId,
     patchBuildingInfo
 } from "@/lib/building";
+import {handleError} from "@/lib/error";
 
 export function getNewPublicIdUtil(
     event: React.MouseEvent<HTMLButtonElement> | undefined,
     formData: BuildingInterface | BuildingPostInterface | BuildingSyndicPostInterface,
-    setFormData: (value: BuildingInterface | BuildingPostInterface | BuildingSyndicPostInterface | any) => void
+    setFormData: (value: BuildingInterface | BuildingPostInterface | BuildingSyndicPostInterface | any) => void,
+    setErrorMessages: (s: string[]) => void
 ): void {
 
     event?.preventDefault();
@@ -21,9 +23,10 @@ export function getNewPublicIdUtil(
                 ...formData,
                 public_id: res.data.public_id,
             });
+            setErrorMessages([]);
         })
         .catch((error) => {
-            throw error;
+            setErrorMessages(handleError(error));
         });
 }
 
@@ -49,7 +52,8 @@ export async function handleSubmitUtil(
     formData: BuildingInterface | BuildingPostInterface | BuildingSyndicPostInterface,
     building: BuildingInterface | null,
     setBuilding: (value: BuildingInterface) => void,
-    closeModal: () => void
+    closeModal: () => void,
+    setErrorMessages: (s: string[]) => void
 ) {
     event?.preventDefault();
 
@@ -66,10 +70,11 @@ export async function handleSubmitUtil(
     patchBuildingInfo("" + building?.id, toSend)
         .then((res) => {
             setBuilding(res.data);
+            setErrorMessages([]);
             closeModal();
         })
         .catch((error) => {
-            throw error;
+            setErrorMessages(handleError(error));
         });
 }
 

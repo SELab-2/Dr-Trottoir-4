@@ -10,6 +10,7 @@ import { messages } from "@/locales/localizerCalendar";
 import {
     deleteBulkStudentOnTour,
     deleteStudentOnTour,
+    duplicateStudentOnTourSchedule,
     getAllStudentOnTourFromDate,
     patchStudentOnTour,
     postBulkStudentOnTour,
@@ -27,19 +28,19 @@ import { User } from "@/lib/user";
 import { addDays, endOfWeek } from "date-fns";
 import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
-import CopyScheduleEventsModal from "@/components/calendar/copyEvents";
 import { colors } from "@/components/calendar/colors";
 import styles from "./calendar.module.css";
 import { ScheduleEvent } from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import SuccessMessageAlert from "@/components/successMessageAlert";
 import AddTourScheduleModal from "@/components/calendar/addTourSchedule";
+import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 
 function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour[] }) {
     const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
     const [popupIsOpenAddTour, setPopupIsOpenAddTour] = useState(false);
-    const [popupIsOpenLoad, setPopupIsOpenLoad] = useState(false);
+    const [popupIsOpenCopy, setPopupIsOpenCopy] = useState(false);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [successMessages, setSuccessMessages] = useState<string[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
@@ -104,11 +105,6 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
             },
             (err) => setErrorMessages(handleError(err))
         );
-    }
-
-    function onEventsCopy(start: Date, end: Date) {
-        getFromRange({ start, end });
-        setSuccessMessages([`Gekopieerd naar week van ${formatDate(start)}`]);
     }
 
     function onEventSelection(e: ScheduleEvent) {
@@ -275,7 +271,7 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                 <button
                     className={styles.button}
                     onClick={() => {
-                        setPopupIsOpenLoad(true);
+                        setPopupIsOpenCopy(true);
                     }}
                 >
                     Kopieer planning
@@ -341,11 +337,16 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                     setPopupIsOpenAdd(false);
                 }}
             />
-            <CopyScheduleEventsModal
-                range={range}
-                events={events}
-                isOpen={popupIsOpenLoad}
-                onClose={() => setPopupIsOpenLoad(false)}
+
+            <DuplicateScheduleModal
+                closeModal={() => {
+                    setPopupIsOpenCopy(false);
+                    getFromRange({ start: range.start, end: range.end });
+                }}
+                weekStartsOn={0}
+                onSubmit={duplicateStudentOnTourSchedule}
+                show={popupIsOpenCopy}
+                title="Dupliceer planning"
             />
         </>
     );
