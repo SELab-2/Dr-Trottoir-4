@@ -128,7 +128,11 @@ export async function deleteBuildingComment(id: number): Promise<AxiosResponse<a
 
 export async function getBuildingComment(id: number): Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING_COMMENT_BUILDING}${id}`;
-    return await api.get(request_url);
+    return await api.get(request_url,{
+        params: {
+            "most-recent": true
+        }
+    });
 }
 
 export function getDurationFromMinutes(durationInMinutes: number) {

@@ -122,9 +122,9 @@ function AdminDataBuildingsEdit() {
                 const syndic = await getUserInfo(res.data.syndic);
                 setSyndicId(syndic.data.id);
                 const comments = await getBuildingComment(Number(router.query.building));
-                if (comments.data.length) {
-                    setBuildingComments(comments.data[0].comment);
-                    setBuildingCommentsId(comments.data[0].id);
+                if (comments.data) {
+                    setBuildingComments(comments.data.comment);
+                    setBuildingCommentsId(comments.data.id);
                 }
                 return true;
             });
