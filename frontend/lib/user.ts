@@ -81,7 +81,7 @@ export async function getTourUsers(includeInactiveUser: boolean = false) {
     return await api.get(request_url, {
         params: {
             "include-inactive-bool": includeInactiveUser,
-            "include-role-name-list": "[student, admin, superstudent]"
+            "include-role-name-list": ["student", "admin", "superstudent"]
         }
     });
 }
@@ -117,4 +117,8 @@ export async function patchUser(userId: number, data: Object): Promise<AxiosResp
     return await api.patch(patchUrl, JSON.stringify(data), {
         headers: {"Content-Type": "application/json"},
     });
+}
+
+export function getFullName(user : User) {
+    return `${user.first_name} ${user.last_name}`;
 }
