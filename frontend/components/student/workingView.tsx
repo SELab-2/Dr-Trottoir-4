@@ -68,15 +68,13 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                     tour: sots.tour,
                     date: new Date(sots.date),
                     max_building_index: sots.max_building_index - 1,
-                    current_building_index: sots.current_building_index <= 0 ? 0 : sots.current_building_index - 1,
+                    current_building_index: sots.current_building_index <= 1 ? 0 : sots.current_building_index - 1,
                     started_tour: sots.started_tour,
                     completed_tour: sots.completed_tour,
                 };
                 if (sot.completed_tour) {
                     // Tour is completed, redirect to no access
-                    router.replace("/no-access").then((_) => {
-                        console.error("No access");
-                    });
+                    router.replace("/no-access").then((_) => {});
                 }
                 setProgress({
                     step: 0,
