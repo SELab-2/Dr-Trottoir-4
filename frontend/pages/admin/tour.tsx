@@ -14,7 +14,7 @@ BuildingOnTour,
 getAllBuildingsOnTourWithTourID,
 } from "@/lib/building-on-tour";
 import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
-import { BuildingInterface, getBuildingInfo } from "@/lib/building";
+import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useRouter } from "next/router";
 import AdminHeader from "@/components/header/adminHeader";
@@ -31,7 +31,6 @@ interface DataAdminTourQuery extends ParsedUrlQuery {
 function AdminTour() {
     const router = useRouter();
     const [allToursOfStudent, setAllToursOfStudent] = useState<StudentOnTour[]>([]);
-    const [allStudentsOnTour, setAllStudentsOnTour] = useState<StudentOnTour[]>([]);
     const [allStudents, setAllStudents] = useState<User[]>([]);
     const [allBuildingsOnTour, setAllBuildingsOnTour] = useState<BuildingOnTour[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
@@ -42,22 +41,60 @@ function AdminTour() {
     const [selectedTourName, setSelectedTourName] = useState<string>("");
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [validDates, setValidDates] = useState<Date[]>([]);
-    const [studentOnTourId, setStudentOnTourId] = useState<number>(0);
+    const [selectedStudentOnTour, setSelectedStudentOnTour] = useState<StudentOnTour | null>(null);
 
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
 
     const updateValidDates = (sots: StudentOnTour[], tourId: number) => {
         const validDatesArray = sots.filter((sot) => sot.tour === tourId).map((sot) => new Date(sot.date));
+        setValidDates(validDatesArray);
 
-        if (validDatesArray.length > 0) {
-            const sortedDates = validDatesArray.sort((a, b) => a.getTime() - b.getTime());
-            setValidDates(sortedDates);
-            const latestDate = sortedDates.length > 0 ? sortedDates[sortedDates.length - 1] : null;
-            if (latestDate) {
-                setSelectedDate(latestDate);
+        const startedTours = sots.filter(sot => sot.started_tour !== null);
+
+        const latestStartedTour = startedTours.reduce((latest, current) => {
+        const currentStartDate = new Date(current.date);
+        const latestStartDate = latest ? new Date(latest.date) : null;
+
+        if (!latestStartDate || currentStartDate > latestStartDate) {
+            return current;
+        } else {
+            return latest;
+        }
+        }, null as StudentOnTour | null);
+
+        if (latestStartedTour) {
+            setSelectedDate(new Date(latestStartedTour.date));
+        } else {
+            setSelectedDate(validDatesArray[0]);
+        }
+    }
+
+    const getStudentOnTour = (sots: StudentOnTour[], tourId: number, date: Date) => {
+        const sot = sots.find((sot) => sot.tour === tourId && new Date(sot.date).toISOString().split('T')[0] === new Date(date).toISOString().split('T')[0]);
+        return (sot) ? sot : null;
+    }
+
+    const getBuildingIndex = (buildingId: number) => {
+        const buildingOnTour = allBuildingsOnTour.find((buildingOnTour: BuildingOnTour) => buildingOnTour.building === buildingId);
+        return (buildingOnTour) ? buildingOnTour.index : 0;
+    }
+
+    const getBuildingStatus = (buildingId: number) => {
+        const sot: StudentOnTour | null = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
+
+        let returnText = "Nog niet gedaan";
+        if (sot) {
+            if (sot.started_tour) {
+                const buildingIndex = getBuildingIndex(buildingId);
+                if (sot.current_building_index > buildingIndex) {
+                    returnText = "Afgewerkt";
+                } else if (sot.current_building_index === buildingIndex){
+                    returnText = "Bezig";
+                }
             }
         }
+        return returnText;
     }
 
     // First, fetch all students when the router is ready.
@@ -89,17 +126,16 @@ function AdminTour() {
         if (!selectedStudentId) return;
 
         getToursOfStudent(selectedStudentId).then((res) => {
-        const sots: StudentOnTour[] = res.data;
-        console.log(sots);
-        setAllToursOfStudent(sots);
-        let currentSot = sots[0];
-        if (query.tour) {
-            currentSot = sots.find((e) => e.tour === +[query.tour]) || sots[0];
-        }
-        setSelectedTourId(currentSot.tour);
-        console.log(currentSot);
+            const sots: StudentOnTour[] = res.data;
+            setAllToursOfStudent(sots);
+            let currentSot = sots[0];
+            if (query.tour) {
+                currentSot = sots.find((e) => e.tour === +[query.tour]) || sots[0];
+            }
+            setSelectedTourId(currentSot.tour);
+            //setSelectedStudentOnTour(currentSot);
 
-        updateValidDates(sots, currentSot.tour);
+            updateValidDates(sots, currentSot.tour);
         });
     }, [selectedStudentId]);
 
@@ -132,15 +168,19 @@ function AdminTour() {
         .then((responses) => {
             setAllBuildings(responses.map(response =>response.data));
             setLoading(false);
-            }).catch(console.error);
+        }).catch(console.error);
     }, [allBuildingsOnTour]);
 
     // For debuggin purposes
-    useEffect(() => {
-        console.log(`selectedStudentId: ${selectedStudentId}`);
-        console.log(`selectedTourId: ${selectedTourId}`);
-        console.log(`selectedDate: ${selectedDate}`);
-    }, [selectedTourId, selectedStudentId, selectedDate]);
+    // useEffect(() => {
+    //     console.log(`selectedStudentId: ${selectedStudentId}`);
+    //     console.log(`selectedTourId: ${selectedTourId}`);
+    //     console.log(`selectedDate: ${selectedDate}`);
+    //     console.log("selectedStudentOnTour:");
+    //     console.log(selectedStudentOnTour);
+    //     console.log("allToursOfStudent:");
+    //     console.log(allToursOfStudent);
+    // }, [selectedTourId, selectedStudentId, selectedDate, selectedStudentOnTour, allToursOfStudent]);
 
     if (loading) {
         return (
@@ -153,6 +193,7 @@ function AdminTour() {
 
     return (
         <div>
+        <AdminHeader />
         <div>
             <StudentAutocomplete
             initialId={selectedStudentId}
@@ -172,7 +213,7 @@ function AdminTour() {
             filterDate={(date: Date) => validDates.map(d => d.toLocaleDateString()).includes(date.toLocaleDateString())}
             />
         </div>
-        {studentOnTourId && (
+        {selectedStudentId && (
             <div style={{ display: "flex" }}>
             <div style={{ width: "20%" }}>
                 <h2>Tour Details</h2>
@@ -187,12 +228,13 @@ function AdminTour() {
                 <table className="table">
                 <thead>
                     <tr>
-                    <th>Building</th>
+                    <th>Gebouw</th>
+                    <th>Adres</th>
                     <th>Status</th>
-                    <th>Time of Completion</th>
-                    <th>Total Time</th>
-                    <th>Remarks (yes/no)</th>
-                    <th>All Pictures Are Present (yes/no)</th>
+                    <th>Tijdstip afwerking</th>
+                    <th>Tijdsduur</th>
+                    <th>Opmerkingen</th>
+                    <th>Alle foto's aanwezig</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -202,7 +244,8 @@ function AdminTour() {
                     return (
                         <tr key={building.id}>
                         <td>{building.name}</td>
-                        <td>Afgewerkt</td>
+                        <td>{getAddress(building)}</td>
+                        <td>{getBuildingStatus(building.id)}</td>
                         <td>18h55</td>
                         <td>8m23s</td>
                         <td>{building.id ? "yes" : "no"}</td>
