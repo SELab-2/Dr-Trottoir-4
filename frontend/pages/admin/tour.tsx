@@ -38,17 +38,14 @@ interface ProgressWebSocketResponse {
 function AdminTour() {
     const router = useRouter();
     const [allToursOfStudent, setAllToursOfStudent] = useState<StudentOnTour[]>([]);
-    const [allStudents, setAllStudents] = useState<User[]>([]);
     const [allBuildingsOnTour, setAllBuildingsOnTour] = useState<BuildingOnTour[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [selectedStudentId, setSelectedStudentId] = useState<number>(0);
     const [selectedStudentName, setSelectedStudentName] = useState<string>("");
-    const [selectedTour, setSelectedTour] = useState<Tour | null>(null);
     const [selectedTourId, setSelectedTourId] = useState<number>(0);
     const [selectedTourName, setSelectedTourName] = useState<string>("");
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [validDates, setValidDates] = useState<Date[]>([]);
-    const [selectedStudentOnTour, setSelectedStudentOnTour] = useState<StudentOnTour | null>(null);
     const [analysis, setAnalysis] = useState<BuildingAnalysis[]>([]);
     const [remarksRecord, setRemarksRecord] = useState<Record<number, string[]>>({});
     const [currentBuildingIndex, setCurrentBuildingIndex] = useState(0);
@@ -206,7 +203,6 @@ function AdminTour() {
         getStudents().then((res) => {
             const students: User[] = res.data;
             students.filter((e) => e.role === 4);
-            setAllStudents(students);
             let currentStudent = students[0];
             if (query.student) {
             currentStudent =
@@ -235,7 +231,6 @@ function AdminTour() {
                 currentSot = sots.find((e) => e.tour === +[query.tour]) || sots[0];
             }
             setSelectedTourId(currentSot.tour);
-            //setSelectedStudentOnTour(currentSot);
 
             updateValidDates(sots, currentSot.tour);
         });
@@ -250,7 +245,6 @@ function AdminTour() {
 
         getTour(selectedTourId).then((res) => {
         const tour: Tour = res.data;
-        setSelectedTour(tour);
         setSelectedTourName(tour.name);
         }).catch(console.error);
 
@@ -294,7 +288,6 @@ function AdminTour() {
                 const b: BuildingAnalysis[] = res.data;
                 setAnalysis(b);
             }).catch(console.error);
-            setSelectedStudentOnTour(sotObject.sot);
 
 
             const {wsProgress, wsRemarks} = setupWebsocketsForStudentOnTour(sotObject.sot.id);
@@ -311,17 +304,6 @@ function AdminTour() {
 
     }, [selectedStudentId, selectedTourId, selectedDate]);
 
-    //For debugging purposes
-    useEffect(() => {
-        console.log(`selectedStudentId: ${selectedStudentId}`);
-        console.log(`selectedTourId: ${selectedTourId}`);
-        console.log(`selectedDate: ${selectedDate}`);
-        console.log("selectedStudentOnTour:");
-        console.log(selectedStudentOnTour);
-        console.log("allToursOfStudent:");
-        console.log(allToursOfStudent);
-    }, [selectedTourId, selectedStudentId, selectedDate, selectedStudentOnTour, allToursOfStudent]);
-
     if (loading) {
         return (
         <>
@@ -334,7 +316,7 @@ function AdminTour() {
     return (
         <div>
         <AdminHeader />
-        <div style={{ display: "flex", marginTop: "10px",marginBottom: "50px" }}>
+        <div style={{ display: "flex", marginTop: "10px",marginBottom: "50px", marginLeft: "10px"}}>
         <div style={{ flex: 1 }}>
             <StudentAutocomplete
             initialId={selectedStudentId}
@@ -361,7 +343,7 @@ function AdminTour() {
         </div>
         </div>
         {selectedStudentId && (
-            <div style={{ display: "flex" }}>
+            <div style={{ display: "flex", marginLeft: "10px"}}>
             <div style={{ width: "20%" }}>
                 <h2>{selectedTourName}</h2>
                 <b>Verantwoordelijke:</b>
