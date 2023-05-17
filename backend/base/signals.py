@@ -11,29 +11,30 @@ from base.serializers import RemarkAtBuildingSerializer
 
 @receiver(post_save, sender=RemarkAtBuilding)
 def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
-    if instance.type == RemarkAtBuilding.OPMERKING:
-        # Broadcast to remark at building websocket
-        remark_at_building_remark = RemarkAtBuildingSerializer(instance).data
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"remark-at-building_{instance.building.id}",
-            {
-                "type": "remark.at.building.remark.created",
-                "remark_at_building_remark": remark_at_building_remark,
-            },
-        )
-        async_to_sync(channel_layer.group_send)(
-            f"student_on_tour_{instance.student_on_tour.id}_remarks",
-            {
-                "type": "remark.at.building.remark.created",
-                "remark_at_building_remark": remark_at_building_remark,
-            },
-        )
-        return
+
+    # Broadcast all remarks to the building websocket
+    remark_at_building_remark = RemarkAtBuildingSerializer(instance).data
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"remark-at-building_{instance.building.id}",
+        {
+            "type": "remark.at.building.remark.created",
+            "remark_at_building_remark": remark_at_building_remark,
+        },
+    )
 
     student_on_tour = instance.student_on_tour
 
-    if instance.type == RemarkAtBuilding.AANKOMST:
+    if instance.type == RemarkAtBuilding.OPMERKING:
+        # Broadcast only the "OPMERKINGEN" on the student_on_tour websocket
+        async_to_sync(channel_layer.group_send)(
+            f"student_on_tour_{student_on_tour.id}_remarks",
+            {
+                "type": "remark.at.building.remark.created",
+                "remark_at_building_remark": remark_at_building_remark,
+            },
+        )
+    elif instance.type == RemarkAtBuilding.AANKOMST:
         # since we start indexing our BuildingOnTour with index 1, this works (since current_building_index starts at 0)
         student_on_tour.current_building_index += 1
 
@@ -45,7 +46,6 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
         student_on_tour.save()
 
         # Broadcast update to websocket
-        channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             f"student_on_tour_{student_on_tour.id}_progress",
             {
@@ -53,9 +53,7 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
                 "current_building_index": student_on_tour.current_building_index,
             },
         )
-        return
-
-    if (
+    elif (
         instance.type == RemarkAtBuilding.VERTREK
         and student_on_tour.current_building_index == student_on_tour.max_building_index
     ):
@@ -63,7 +61,6 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
         student_on_tour.save()
 
         # Broadcast update to websocket
-        channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             "student_on_tour_updates", {"type": "student.on.tour.completed", "student_on_tour_id": student_on_tour.id}
         )
