@@ -1,6 +1,6 @@
 import ReactDatePicker from "react-datepicker";
 
-import "react-datepicker/dist/react-datepicker.min.css";
+import "react-datepicker/dist/react-datepicker.css";
 import React from "react";
 import nlBE from "date-fns/locale/nl-BE";
 
@@ -31,6 +31,7 @@ export default function LocaleDateRangePicker(
             startDate={startDate}
             endDate={endDate}
             selectsRange
+            monthsShown={2}
         />
     );
 }
