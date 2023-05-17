@@ -17,11 +17,7 @@ class DuplicationView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = DuplicationSerializer
 
-    def __init__(self,
-                 model,
-                 model_ids: str,
-                 filter_on_ids_key: str,
-                 message: str):
+    def __init__(self, model, model_ids: str, filter_on_ids_key: str, message: str):
         super().__init__()
         self.model = model
         self.model_ids = model_ids
@@ -53,9 +49,9 @@ class DuplicationView(APIView):
         raise NotImplementedError
 
     @abstractmethod
-    def filter_instances_to_duplicate(self, instances_to_duplicate, start_date_period: datetime,
-                                      end_date_period: datetime,
-                                      start_date_copy: datetime):
+    def filter_instances_to_duplicate(
+        self, instances_to_duplicate, start_date_period: datetime, end_date_period: datetime, start_date_copy: datetime
+    ):
         """
         Filter the model instances to duplicate only if there are no entries yet on that day
         """
@@ -98,17 +94,15 @@ class DuplicationView(APIView):
             return r
 
         # filter the model instances to duplicate
-        instances_to_duplicate = self.model.objects.filter(
-            date__range=[start_date_period, end_date_period]
-        )
+        instances_to_duplicate = self.model.objects.filter(date__range=[start_date_period, end_date_period])
         # retrieve and apply the optional filtering on related models
         related_model_ids = validated_data.get(self.model_ids, None)
         if related_model_ids:
             instances_to_duplicate = instances_to_duplicate.filter(**{self.filter_on_ids_key: related_model_ids})
 
         # filter the model instances to duplicate
-        remaining_instances_with_copy_date = self.filter_instances_to_duplicate(instances_to_duplicate,
-                                                                                start_date_period,
-                                                                                end_date_period, start_date_copy)
+        remaining_instances_with_copy_date = self.filter_instances_to_duplicate(
+            instances_to_duplicate, start_date_period, end_date_period, start_date_copy
+        )
         self.create_instances(remaining_instances_with_copy_date)
         return Response({"message": _(self.message)}, status=status.HTTP_200_OK)
