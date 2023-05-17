@@ -116,12 +116,15 @@ class RemarkAtBuildingIndividualView(APIView):
         data = request_to_dict(request.data)
 
         # check if patch only edit's the text:
-        forbidden_keys = ['timestamp', 'building', 'student_on_tour', 'type', 'id']
+        forbidden_keys = ["timestamp", "building", "student_on_tour", "type", "id"]
         if any(k in forbidden_keys for k in data.keys()):
-            return Response({
-                # TODO: Translate
-                'message': _("You can only edit the 'remark' text on a remark at building")
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    # TODO: Translate
+                    "message": _("You can only edit the 'remark' text on a remark at building")
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         set_keys_of_instance(remark_at_building_instance, data, TRANSLATE)
 
