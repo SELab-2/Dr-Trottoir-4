@@ -1,17 +1,22 @@
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import router from "next/router";
-import { BuildingInterface, getBuildingsFromOwner } from "@/lib/building";
-import React, { useEffect, useState } from "react";
-import { AxiosResponse } from "axios";
+import {BuildingInterface, getBuildingsFromOwner} from "@/lib/building";
+import React, {useEffect, useState} from "react";
+import {AxiosResponse} from "axios";
 import SyndicFooter from "@/components/footer/syndicFooter";
 import Loading from "@/components/loading";
 import SyndicHeader from "@/components/header/syndicHeader";
+import {Card, Col, Container, Form, Row} from "react-bootstrap";
 
 function SyndicDashboard() {
     const [id, setId] = useState("");
     const [buildings, setBuildings] = useState([]);
+    const [postalcodes, setPostalcodes] = useState([]);
 
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(true)
+    const [streetNameFilter, setStreetNameFilter] = useState('');
+    const [postalcodeFilter, setPostalcodeFilter] = useState('');
+
 
     useEffect(() => {
         setId(sessionStorage.getItem("id") || "");
@@ -24,8 +29,10 @@ function SyndicDashboard() {
 
         async function fetchBuildings() {
             getBuildingsFromOwner(id)
-                .then((buildings: AxiosResponse<any>) => {
-                    setBuildings(buildings.data);
+                .then((res: AxiosResponse<any>) => {
+                    setBuildings(res.data);
+                    // Extract distinct region numbers
+                    setPostalcodes(Array.from(new Set(res.data.map((building: BuildingInterface) => building.postal_code))));
                     setLoading(false);
                 })
                 .catch((error) => {
@@ -37,27 +44,58 @@ function SyndicDashboard() {
         fetchBuildings();
     }, [id]);
 
-    return (
-        <>
-            <SyndicHeader />
-            {loading ? (
-                <Loading />
-            ) : (
-                <div>
-                    <h1>Uw gebouwen</h1>
+    // Filter buildings based on postal code, street name, and region
+    const filteredBuildings = buildings.filter((building: BuildingInterface) =>
+        building.street.toLowerCase().includes(streetNameFilter.toLowerCase()) &&
+        (postalcodeFilter === '' || (building.postal_code && building.postal_code === postalcodeFilter))
+    );
 
-                    <div className="row" style={{ width: "99%", marginLeft: "auto", marginRight: "auto" }}>
-                        {buildings
-                            .sort((a: BuildingInterface, b: BuildingInterface) => {
-                                if (a.city < b.city) return -1;
-                                else if (a.city > b.city) return 1;
-                                if (a.street < b.street) return -1;
-                                else if (a.street > b.street) return 1;
-                                if (a.house_number < b.house_number) return -1;
-                                else if (a.house_number > b.house_number) return 1;
-                                return 0;
-                            })
-                            .map((building: BuildingInterface) => {
+    return (
+        <div className="tablepageContainer">
+            <SyndicHeader/>
+            {loading ? (
+                <Loading/>
+            ) : (
+                <div className="tableContainer">
+                    <Container>
+                        <label className="title">Uw gebouwen</label>
+                        <Card>
+                            <Card.Body>
+                                <Card.Title>Filters</Card.Title>
+                                <Row>
+                                    <Col md={10}>
+                                        <Form.Group>
+                                            <Form.Label>Straatnaam:</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                value={streetNameFilter}
+                                                onChange={(e) => setStreetNameFilter(e.target.value)}
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={2}>
+                                        <Form.Group>
+                                            <Form.Label>Postcode:</Form.Label>
+                                            <Form.Control
+                                                as="select"
+                                                value={postalcodeFilter}
+                                                onChange={(e) => setPostalcodeFilter(e.target.value)}
+                                            >
+                                                <option value="">Alle</option>
+                                                {postalcodes.map((post) => (
+                                                    <option key={post} value={post}>
+                                                        {post}
+                                                    </option>
+                                                ))}
+                                            </Form.Control>
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                            </Card.Body>
+                        </Card>
+                        <div className="row"
+                             style={{width: "99%", paddingTop: '10px', marginLeft: "auto", marginRight: "auto"}}>
+                            {filteredBuildings.map((building: BuildingInterface) => {
                                 return (
                                     <div
                                         className="col-md-4 mb-3 clickable"
@@ -66,28 +104,29 @@ function SyndicDashboard() {
                                             e.preventDefault();
                                             router.push({
                                                 pathname: "building",
-                                                query: { id: building.id },
+                                                query: {id: building.id},
                                             });
                                         }}
                                     >
-                                        <div className="card">
-                                            <div className="card-body">
-                                                <h5 className="card-title">
+                                        <Card>
+                                            <Card.Body>
+                                                <Card.Title>
                                                     {building.name} {building.postal_code} {building.city}
-                                                </h5>
-                                                <p className="card-text">
-                                                    {building.street} {building.house_number}{" "}
-                                                </p>
-                                            </div>
-                                        </div>
+                                                </Card.Title>
+                                                <Card.Text>
+                                                    {building.street} {building.house_number}
+                                                </Card.Text>
+                                            </Card.Body>
+                                        </Card>
                                     </div>
                                 );
                             })}
-                    </div>
+                        </div>
+                    </Container>
                 </div>
             )}
-            <SyndicFooter />
-        </>
+            <SyndicFooter/>
+        </div>
     );
 }
 
