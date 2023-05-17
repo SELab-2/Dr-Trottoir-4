@@ -1,65 +1,61 @@
 import { Button, Form, Modal } from "react-bootstrap";
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { formatDate } from "@/lib/date";
-import { duplicateGarbageCollectionSchedule } from "@/lib/garbage-collection";
+
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {addWeeks, endOfWeek, startOfWeek} from "date-fns";
+import { addDays, addWeeks, endOfWeek, startOfWeek} from "date-fns";
+import { AxiosResponse } from "axios";
 
-export default function DuplicateGarbageCollectionModal({
+export default function DuplicateScheduleModal({
     show,
     closeModal,
-    range,
+    title,
+    onSubmit,
+    weekStartsOn, // the start of the week sunday (0), monday (1)
 }: {
     show: boolean;
     closeModal: () => void;
-    range: { start: Date; end: Date }
+    title: string;
+    onSubmit: (startDate: string, endDate: string, copyToDate: string) => Promise<AxiosResponse<any, any>>;
+    weekStartsOn: 0 | 1;
 }) {
-    const { t } = useTranslation();
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
-    const [startDate, setStartDate] = useState<string>(formatDate(startOfWeek(new Date(), {weekStartsOn: 1})));
-    const [endDate, setEndDate] = useState<string>(formatDate(endOfWeek(new Date(), {weekStartsOn: 1})));
-    const [copyToDate, setCopyToDate] = useState<string>(formatDate(startOfWeek(addWeeks(new Date(), 1), {weekStartsOn: 1})));
+
+    const [startDate, setStartDate] = useState<Date>(startOfWeek(new Date(), { weekStartsOn }));
+    const [endDate, setEndDate] = useState<Date>(endOfWeek(new Date(), { weekStartsOn }));
+    const [copyToDate, setCopyToDate] = useState<Date>(addWeeks(startOfWeek(new Date(), { weekStartsOn }), 1));
 
     // Submit the duplicate request
     function submit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        if (!startDate) {
-            setErrorMessages(["Begindatum is niet ingevuld."]);
-            return;
-        }
-        if (!endDate || new Date(endDate) < new Date(startDate)) {
+        if (endDate < startDate) {
             setErrorMessages(["Einddatum moet na begindatum komen."]);
             return;
         }
-        duplicateGarbageCollectionSchedule(startDate, endDate, copyToDate).then(
-            (_) => {
-                onHide();
-            },
-            (err) => {
-                setErrorMessages(handleError(err));
-            }
-        );
-    }
 
-    function onShow() {
-        setStartDate(formatDate(startOfWeek(range.start, {weekStartsOn: 1})));
-        setEndDate(formatDate(endOfWeek(range.end, {weekStartsOn: 1})));
-        setCopyToDate(formatDate(startOfWeek(addWeeks(range.end, 1), {weekStartsOn: 1})));
+        // Add a day for startDate & copyToDate because backend starts week from monday
+        const start = weekStartsOn === 0 ? addDays(startDate, 1) : startDate;
+        const copy = weekStartsOn === 0 ? addDays(copyToDate, 1) : copyToDate;
+        onSubmit(formatDate(start), formatDate(endDate), formatDate(copy)).then(
+            (_) => onHide(),
+            (err) => setErrorMessages(handleError(err))
+        );
     }
 
     // execute when the modal is hidden
     function onHide() {
         closeModal();
-        onShow();
+        setStartDate(startOfWeek(new Date(), { weekStartsOn }));
+        setEndDate(endOfWeek(new Date(), { weekStartsOn }));
+        setCopyToDate(addWeeks(startOfWeek(new Date(), { weekStartsOn }), 1));
         setErrorMessages([]);
     }
 
     return (
-        <Modal show={show} onHide={() => onHide()} onShow={onShow}>
+        <Modal show={show} onHide={() => onHide()}>
             <Modal.Header>
-                <Modal.Title>Dupliceer vuilophaling schema voor alle gebouwen</Modal.Title>
+                <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Form onSubmit={submit}>
@@ -70,11 +66,9 @@ export default function DuplicateGarbageCollectionModal({
                             <input
                                 type="date"
                                 className="form-control"
-                                value={startDate}
+                                value={formatDate(startDate)}
                                 onChange={(event) =>
-                                    setStartDate(
-                                        formatDate(startOfWeek(new Date(event.target.value), { weekStartsOn: 1 }))
-                                    )
+                                    setStartDate(startOfWeek(new Date(event.target.value), { weekStartsOn }))
                                 }
                             />
                         </div>
@@ -83,23 +77,21 @@ export default function DuplicateGarbageCollectionModal({
                             <input
                                 type="date"
                                 className="form-control"
-                                value={endDate}
+                                value={formatDate(endDate)}
                                 onChange={(event) =>
-                                    setEndDate(formatDate(endOfWeek(new Date(event.target.value), { weekStartsOn: 1 })))
+                                    setEndDate(endOfWeek(new Date(event.target.value), { weekStartsOn }))
                                 }
                             />
                         </div>
                     </div>
                     <div className="form-outline mb-4">
-                        <label className="form-label">Kopieer naar maandag van week:</label>
+                        <label className="form-label">Kopieer naar start van week:</label>
                         <input
                             type="date"
                             className="form-control"
-                            value={copyToDate}
+                            value={formatDate(copyToDate)}
                             onChange={(event) =>
-                                setCopyToDate(
-                                    formatDate(startOfWeek(new Date(event.target.value), { weekStartsOn: 1 }))
-                                )
+                                setCopyToDate(startOfWeek(new Date(event.target.value), { weekStartsOn }))
                             }
                         />
                     </div>

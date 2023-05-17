@@ -10,7 +10,7 @@ export interface RemarkAtBuildingInterface {
     type: "AA" | "BI" | "VE" | "OP";
 }
 
-export function translateRemartAtBuildingType(type: RemarkAtBuildingInterface["type"]) {
+export function translateRemarkAtBuildingType(type: RemarkAtBuildingInterface["type"]) {
     switch (type) {
         case "AA":
             return "Aankomst";
@@ -19,16 +19,19 @@ export function translateRemartAtBuildingType(type: RemarkAtBuildingInterface["t
         case "VE":
             return "Vertrek";
         case "OP":
-            return "Opmerking";
+            return "Algemene Opmerking";
     }
 }
 
-export async function getRemarksAtBuildingOfSpecificBuilding(buildingId: number, mostRecent: boolean = false): Promise<AxiosResponse<any>> {
+export async function getRemarksAtBuildingOfSpecificBuilding(
+    buildingId: number,
+    {mostRecent = false, date = ""}: { mostRecent?: boolean, date?: string }={}): Promise<AxiosResponse<any>> {
     let request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_REMARKS_OF_A_BUILDING}${buildingId}`;
 
     return await api.get(request_url, {
         params: {
-            "most-recent": mostRecent
+            "most-recent": mostRecent,
+            "date": date
         }
     });
 }
