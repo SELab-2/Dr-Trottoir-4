@@ -2,7 +2,7 @@ import AdminHeader from "@/components/header/adminHeader";
 import React, {useEffect, useState} from "react";
 import {addDays, differenceInMinutes, startOfWeek, subDays, subMonths} from "date-fns";
 import {Card, Col, Container, Form, ListGroup, Row} from "react-bootstrap";
-import {formatDate} from "@/lib/date";
+import {datesEqual, formatDate} from "@/lib/date";
 import {getWorkedHours} from "@/lib/analysis";
 import {getAllTours, Tour} from "@/lib/tour";
 import {getAllRegions, RegionInterface} from "@/lib/region";
@@ -127,6 +127,11 @@ function AdminAnalysisWorkingHours() {
             return "Onbekend";
         }
         const region: RegionInterface | undefined = allRegions.find((r) => r.id === tour.region);
+        if (!studentOnTour.completed_tour && !studentOnTour.started_tour && ! datesEqual(new Date(), new Date(studentOnTour.date)) && new Date()> new Date(studentOnTour.date)) {
+            return `${tour.name} (${region ? region.region : "onbekend"}) - ${studentOnTour.date.toLocaleDateString(
+                "en-GB"
+            )} (nooit afgewerkt)`;
+        }
         if (!studentOnTour.completed_tour && !studentOnTour.started_tour) {
             return `${tour.name} (${region ? region.region : "onbekend"}) - ${studentOnTour.date.toLocaleDateString(
                 "en-GB"
