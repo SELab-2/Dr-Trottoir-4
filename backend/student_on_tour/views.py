@@ -10,9 +10,19 @@ from rest_framework.views import APIView
 
 import config.settings
 from base.models import StudentOnTour, User
-from base.permissions import IsAdmin, IsSuperStudent, OwnerAccount, ReadOnlyOwnerAccount, IsStudent
+from base.permissions import (
+    IsAdmin,
+    IsSuperStudent,
+    OwnerAccount,
+    ReadOnlyOwnerAccount,
+    IsStudent,
+    ReadOnlyStartedStudentOnTour,
+)
 from base.serializers import StudOnTourSerializer, ProgressTourSerializer, SuccessSerializer
+from student_on_tour.serializers import StudentOnTourDuplicateSerializer
+from util.duplication.view import DuplicationView
 from util.request_response_util import *
+from util.util import get_sunday_of_previous_week, get_saturday_of_current_week
 
 TRANSLATE = {"tour": "tour_id", "student": "student_id"}
 
@@ -38,7 +48,7 @@ class Default(APIView):
 
 
 class StudentOnTourBulk(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent, ReadOnlyStartedStudentOnTour]
     serializer_class = StudOnTourSerializer
 
     @extend_schema(
@@ -96,18 +106,18 @@ class StudentOnTourBulk(APIView):
         "This enables the frontend to remove assignments in a schedule in 1 request instead of multiple."
         "If a remove fails, the previous removes will **NOT** be undone."
         """
-                                <h3> special</h3>
-                                <br/>**Request body for bulk remove:**<br/>
-                                <i>
-                                    {
-                                        "ids":
-                                            [
-                                                0,
-                                                1,
-                                                3
-                                            ]
-                                    }
-                                </i>""",
+                                                        <h3> special</h3>
+                                                        <br/>**Request body for bulk remove:**<br/>
+                                                        <i>
+                                                            {
+                                                                "ids":
+                                                                    [
+                                                                        0,
+                                                                        1,
+                                                                        3
+                                                                    ]
+                                                            }
+                                                        </i>""",
         request=StudOnTourSerializer,
         responses={200: SuccessSerializer, 400: None},
     )
@@ -126,10 +136,11 @@ class StudentOnTourBulk(APIView):
         }
         """
         for d in data["ids"]:
-            print(d)
             student_on_tour_instance = StudentOnTour.objects.filter(id=d).first()
             if not student_on_tour_instance:
                 return not_found("StudentOnTour")
+
+            self.check_object_permissions(request, student_on_tour_instance)
             student_on_tour_instance.delete()
 
         dummy = type("", (), {})()
@@ -165,13 +176,11 @@ class StudentOnTourBulk(APIView):
         }
         """
         for StudentOnTour_id in data:
-            print(StudentOnTour_id)
             student_on_tour_instance = StudentOnTour.objects.filter(id=StudentOnTour_id).first()
             if not student_on_tour_instance:
                 return not_found("StudentOnTour")
-            print(student_on_tour_instance)
+            self.check_object_permissions(request, student_on_tour_instance)
             set_keys_of_instance(student_on_tour_instance, data[StudentOnTour_id], TRANSLATE)
-            print(student_on_tour_instance)
             if r := try_full_clean_and_save(student_on_tour_instance):
                 return r
 
@@ -215,7 +224,11 @@ class TourPerStudentView(APIView):
 
 
 class StudentOnTourIndividualView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | (IsStudent & ReadOnlyOwnerAccount)]
+    permission_classes = [
+        IsAuthenticated,
+        IsAdmin | IsSuperStudent | (IsStudent & ReadOnlyOwnerAccount),
+        ReadOnlyStartedStudentOnTour,
+    ]
     serializer_class = StudOnTourSerializer
 
     @extend_schema(responses=get_docs(StudOnTourSerializer))
@@ -228,7 +241,7 @@ class StudentOnTourIndividualView(APIView):
         if not stud_tour_instance:
             return not_found("StudentOnTour")
 
-        self.check_object_permissions(request, stud_tour_instance.student)
+        self.check_object_permissions(request, stud_tour_instance)
 
         serializer = StudOnTourSerializer(stud_tour_instance)
         return get_success(serializer)
@@ -245,7 +258,7 @@ class StudentOnTourIndividualView(APIView):
 
         stud_tour_instance = stud_tour_instances[0]
 
-        self.check_object_permissions(request, stud_tour_instance.student)
+        self.check_object_permissions(request, stud_tour_instance)
 
         data = request_to_dict(request.data)
 
@@ -267,7 +280,7 @@ class StudentOnTourIndividualView(APIView):
             return not_found("StudentOnTour")
         stud_tour_instance = stud_tour_instances[0]
 
-        self.check_object_permissions(request, stud_tour_instance.student)
+        self.check_object_permissions(request, stud_tour_instance)
 
         stud_tour_instance.delete()
         return delete_success()
@@ -374,3 +387,50 @@ class ProgressTourView(APIView):
     def get(self, request, student_on_tour_id):
         student_on_tour = StudentOnTour.objects.get(id=student_on_tour_id)
         return get_success(ProgressTourSerializer(student_on_tour))
+
+
+class StudentOnTourDuplicateView(DuplicationView):
+    serializer_class = StudentOnTourDuplicateSerializer
+
+    @classmethod
+    def transform_start_date_period(cls, start_date_period):
+        return get_sunday_of_previous_week(start_date_period)
+
+    @classmethod
+    def transform_end_date_period(cls, end_date_period):
+        return get_saturday_of_current_week(end_date_period)
+
+    @classmethod
+    def transform_start_date_copy(cls, start_date_copy):
+        return get_sunday_of_previous_week(start_date_copy)
+
+    def __init__(self):
+        super().__init__(
+            model=StudentOnTour,
+            model_ids="student_ids",
+            filter_on_ids_key="student_id__in",
+            message="successfully copied the student on tours",
+        )
+
+    def filter_instances_to_duplicate(
+        self, instances_to_duplicate, start_date_period: datetime, end_date_period: datetime, start_date_copy: datetime
+    ):
+        remaining_instance = []
+        for student_on_tour in instances_to_duplicate:
+            copy_date = (
+                datetime.combine(student_on_tour.date, datetime.min.time()) + (start_date_copy - start_date_period)
+            ).date()
+            if not StudentOnTour.objects.filter(
+                date=copy_date,
+                student=student_on_tour.student,
+            ).exists():
+                remaining_instance.append((student_on_tour, copy_date))
+        return remaining_instance
+
+    def create_instances(self, remaining_instances_with_copy_date):
+        for student_on_tour, copy_date in remaining_instances_with_copy_date:
+            StudentOnTour.objects.create(
+                date=copy_date,
+                student=student_on_tour.student,
+                tour=student_on_tour.tour,
+            )

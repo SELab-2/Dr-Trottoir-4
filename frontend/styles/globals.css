@@ -116,3 +116,18 @@ input:focus {
 .clickable {
     cursor: pointer;
 }
+
+.progress-bar-container {
+    position: relative;
+}
+
+.progress-bar-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 4px;
+    background-color: black;
+    z-index: 1;
+}

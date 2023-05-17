@@ -319,7 +319,11 @@ class StudentOnTour(models.Model):
 
     def clean(self):
         super().clean()
-
+        if self.date and self.date < datetime.now().date():
+            raise ValidationError(
+                # TODO translation
+                _("You cannot plan a student on a past date.")
+            )
         if self.student_id and self.tour_id:
             user = self.student
             if user.role.name.lower() == "syndic":
