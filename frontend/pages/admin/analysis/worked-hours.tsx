@@ -1,20 +1,24 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, { useEffect, useState } from "react";
-import { addDays, differenceInMinutes, endOfWeek, startOfWeek, subDays, subMonths } from "date-fns";
-import { Card, Col, Container, Form, ListGroup, Row } from "react-bootstrap";
-import { formatDate } from "@/lib/date";
-import { getWorkedHours } from "@/lib/analysis";
-import { getAllTours, Tour } from "@/lib/tour";
-import { getAllRegions, RegionInterface } from "@/lib/region";
-import { getTourUsers, User } from "@/lib/user";
+import React, {useEffect, useState} from "react";
+import {addDays, differenceInMinutes, startOfWeek, subDays, subMonths} from "date-fns";
+import {Card, Col, Container, Form, ListGroup, Row} from "react-bootstrap";
+import {formatDate} from "@/lib/date";
+import {getWorkedHours} from "@/lib/analysis";
+import {getAllTours, Tour} from "@/lib/tour";
+import {getAllRegions, RegionInterface} from "@/lib/region";
+import {getFullName, getTourUsers, User} from "@/lib/user";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { getAllStudentOnTourFromDate, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
-import { WorkedHours } from "@/types";
-import { handleError } from "@/lib/error";
+import {getAllStudentOnTourFromDate, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import {WorkedHours} from "@/types";
+import {handleError} from "@/lib/error";
 import Link from "next/link";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import Select from "react-select";
+
 
 function AdminAnalysisWorkingHours() {
+    enum sortBy {ALPHABETICALLY="Alphabetisch", DURATION="Gewerkte uren"}
+
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const [allTours, setAllTours] = useState<Tour[]>([]);
@@ -25,6 +29,23 @@ function AdminAnalysisWorkingHours() {
 
     const [startDate, setStartDate] = useState<Date>(startOfWeek(subMonths(new Date(), 1)));
     const [endDate, setEndDate] = useState<Date>(new Date());
+
+    const [sortType, setSortType] = useState<string>(sortBy.ALPHABETICALLY);
+
+    const sortByKey : {[key : string] : (a : WorkedHours, b: WorkedHours) => number} = {
+        ["Gewerkte uren"]: (a : WorkedHours, b : WorkedHours) => b.worked_minutes - a.worked_minutes,
+        ["Alphabetisch"]: (a: WorkedHours, b: WorkedHours) => {
+            const userA : User | undefined = allUsers.find(u => u.id === a.student_id);
+            if (! userA) {
+                return 1;
+            }
+            const userB: User | undefined = allUsers.find(u => u.id === b.student_id);
+            if (! userB) {
+                return -1;
+            }
+            return getFullName(userA).localeCompare(getFullName(userB));
+        }
+    }
 
     useEffect(() => {
         getAllTours().then(
@@ -53,13 +74,13 @@ function AdminAnalysisWorkingHours() {
     }, []);
 
     useEffect(() => {
-        if (allTours.length <= 0) {
+        if (allTours.length <= 0 || allUsers.length <= 0) {
             return;
         }
         getWorkedHours(startDate, endDate).then(
             (res) => {
                 const hours: WorkedHours[] = res.data;
-                setWorkedHours(hours.sort((a, b) => b.worked_minutes - a.worked_minutes));
+                setWorkedHours(hours.sort(sortByKey[sortType]));
             },
             (err) => setErrorMessages(handleError(err))
         );
@@ -83,11 +104,25 @@ function AdminAnalysisWorkingHours() {
             },
             (err) => setErrorMessages(handleError(err))
         );
-    }, [startDate, endDate, allTours]);
+    }, [startDate, endDate, allTours, allUsers]);
+
+    useEffect(() => {
+        if (allTours.length <= 0 || allUsers.length <= 0) {
+            return;
+        }
+        console.log(sortType)
+        setWorkedHours(prevState => {
+            console.log(prevState);
+            console.log(sortByKey[sortType]);
+            const res =  [...prevState].sort(sortByKey[sortType]);
+            console.log(res);
+            return res;
+        });
+    }, [sortType]);
 
     function getStudentName(studentId: number): string {
         const user: User | undefined = allUsers.find((u) => u.id === studentId);
-        return user ? `${user.first_name} ${user.last_name}` : "Onbekend";
+        return user ? getFullName(user) : "Onbekend";
     }
 
     function getTourName(studentOnTour: StudentOnTour): string {
@@ -153,6 +188,21 @@ function AdminAnalysisWorkingHours() {
                         />
                     </Form.Group>
                 </Row>
+                <Select
+                    value={{value: sortType.toString(), label:sortType.toString()}}
+                    isClearable={false}
+                    isSearchable={false}
+                    options={Object.values(sortBy).map(t => {
+                        return {
+                            value : t, label: t
+                        }
+                    })}
+                    onChange={(s) => {
+                        if (s && s.value) {
+                            setSortType(s.value);
+                        }
+                    }}
+                />
             </Form>
             <Row className="m-2">
                 {workedHours.map((worked) => {
