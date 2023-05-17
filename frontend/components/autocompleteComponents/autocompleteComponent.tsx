@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
-import Autocomplete, { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
-import { AxiosResponse } from "axios/index";
-import { Form } from "react-bootstrap";
+import Autocomplete, {AutocompleteRenderInputParams} from "@mui/material/Autocomplete";
+import {AxiosResponse} from "axios/index";
+import {Form} from "react-bootstrap";
+import {CircularProgress} from "@mui/material";
 
 /**
  * The AutocompleteComponent aims to be as generic as possible to suit many use-cases. Therefore, a lot of the typings
@@ -38,18 +39,26 @@ export interface TourUserProps {
     tourId?: number | null;
 }
 
-const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions, mapping, setObjectId }) => {
+const AutocompleteComponent: React.FC<Props> = ({initialId, label, fetchOptions, mapping, setObjectId}) => {
     const [value, setValue] = React.useState<any>();
     const [inputValue, setInputValue] = useState("");
     const [options, setOptions] = useState<string[]>([]);
+    const [open, setOpen] = React.useState(false);
+    const loading = open && options.length === 0;
 
     useEffect(() => {
-        async function fetch() {
+        let active = true;
+
+        if (!loading) {
+            return undefined;
+        }
+
+        (async () => {
             try {
                 const res = await fetchOptions();
                 let availableOptions: any[] = [];
                 for (let data of res.data) {
-                    availableOptions.push({ label: mapping(data), id: data.id });
+                    availableOptions.push({label: mapping(data), id: data.id});
                 }
                 setOptions(availableOptions);
 
@@ -62,10 +71,40 @@ const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions
             } catch (err) {
                 console.error(err);
             }
-        }
+        })().then();
 
-        fetch().then();
-    }, [fetchOptions, initialId]);
+        return () => {
+            active = false;
+        };
+
+
+    }, [loading]);
+
+    React.useEffect(() => {
+        if (!open) {
+            setOptions([]);
+        }
+    }, [open]);
+
+    // async function fetch() {
+    //     try {
+    //         const res = await fetchOptions();
+    //         let availableOptions: any[] = [];
+    //         for (let data of res.data) {
+    //             availableOptions.push({label: mapping(data), id: data.id});
+    //         }
+    //         setOptions(availableOptions);
+    //
+    //         //Set the initial value to the object with the same id
+    //         const initialOption = availableOptions.find((option) => Number(option.id) === Number(initialId));
+    //         if (initialOption) {
+    //             setValue(initialOption);
+    //             setInputValue(initialOption.label);
+    //         }
+    //     } catch (err) {
+    //         console.error(err);
+    //     }
+    // }
 
     return (
         <>
@@ -75,6 +114,13 @@ const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions
                 //implementations checks whether options === value
                 isOptionEqualToValue={(option: { toString: () => any }, value: { toString: () => any }) => true}
                 value={value ?? ""}
+                open={open}
+                onOpen={() => {
+                    setOpen(true);
+                }}
+                onClose={() => {
+                    setOpen(false);
+                }}
                 inputValue={inputValue}
                 onChange={(e: React.SyntheticEvent, newValue: any) => {
                     if (newValue) {
@@ -88,7 +134,22 @@ const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions
                 options={options}
                 getOptionLabel={(option: any) => option.label || ""}
                 renderInput={(params: AutocompleteRenderInputParams) => (
-                    <TextField {...params} variant="outlined" fullWidth />
+                    // <TextField {...params} variant="outlined" fullWidth/>
+                    <TextField
+                        {...params}
+                        label="Asynchronous"
+                        variant="outlined"
+                        fullWidth
+                        InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                                <React.Fragment>
+                                    {loading ? <CircularProgress color="inherit" size={20}/> : null}
+                                    {params.InputProps.endAdornment}
+                                </React.Fragment>
+                            ),
+                        }}
+                    />
                 )}
             />
         </>
