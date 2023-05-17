@@ -33,7 +33,7 @@ class StudentOnTourProgressIndividual(AsyncWebsocketConsumer):
 class StudentOnTourProgressAll(AsyncWebsocketConsumer):
     def __init__(self):
         super().__init__()
-        self.room_group_name = "student_on_tour_updates"
+        self.room_group_name = "student_on_tour_updates_progress"
 
     async def connect(self):
         # join room group
@@ -109,3 +109,24 @@ class StudentOnTourRemarks(AsyncWebsocketConsumer):
         remark_at_building_remark = event["remark_at_building_remark"]
         # send message to WebSocket
         await self.send(text_data=json.dumps(remark_at_building_remark))
+
+
+class StudentOnTourAll(AsyncWebsocketConsumer):
+    def __init__(self):
+        super().__init__()
+        self.room_group_name = "student_on_tour_updates"
+
+    async def connect(self):
+        # join room group
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # leave room group
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+
+    # receive message from room group
+    async def student_on_tour_created_or_adapted(self, event):
+        student_on_tour = event["student_on_tour"]
+        # send message to WebSocket
+        await self.send(text_data=json.dumps(student_on_tour))

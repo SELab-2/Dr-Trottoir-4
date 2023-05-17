@@ -6,7 +6,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 
 from base.models import StudentOnTour, RemarkAtBuilding
-from base.serializers import RemarkAtBuildingSerializer
+from base.serializers import RemarkAtBuildingSerializer, StudOnTourSerializer
 
 
 @receiver(post_save, sender=RemarkAtBuilding)
@@ -56,8 +56,8 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
         return
 
     if (
-        instance.type == RemarkAtBuilding.VERTREK
-        and student_on_tour.current_building_index == student_on_tour.max_building_index
+            instance.type == RemarkAtBuilding.VERTREK
+            and student_on_tour.current_building_index == student_on_tour.max_building_index
     ):
         student_on_tour.completed_tour = timezone.now()
         student_on_tour.save()
@@ -65,7 +65,8 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
         # Broadcast update to websocket
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            "student_on_tour_updates", {"type": "student.on.tour.completed", "student_on_tour_id": student_on_tour.id}
+            "student_on_tour_updates_progress",
+            {"type": "student.on.tour.completed", "student_on_tour_id": student_on_tour.id}
         )
 
 
@@ -74,3 +75,16 @@ def set_max_building_index(sender, instance: StudentOnTour, **kwargs):
     if not instance.max_building_index and instance.started_tour:
         max_index = instance.tour.buildingontour_set.aggregate(Max("index"))["index__max"]
         instance.max_building_index = max_index
+
+
+@receiver(post_save, sender=StudentOnTour)
+def notify_student_on_tour_subscribers(sender, instance: StudentOnTour, **kwargs):
+    student_on_tour = StudOnTourSerializer(instance).data
+    channel = get_channel_layer()
+    async_to_sync(channel.group_send)(
+        "student_on_tour_updates",
+        {
+            "type": "student.on.tour.created.or.adapted",
+            "student_on_tour": student_on_tour,
+        }
+    )

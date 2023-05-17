@@ -344,7 +344,7 @@ class TimeTourViewBase(APIView):
         await student_on_tour_instance.asave()
         channel_layer = get_channel_layer()
         await channel_layer.group_send(
-            "student_on_tour_updates",
+            "student_on_tour_updates_progress",
             {
                 "type": event_type,
                 "student_on_tour_id": student_on_tour_instance.id,
