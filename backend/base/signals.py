@@ -5,8 +5,8 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
-from base.models import StudentOnTour, RemarkAtBuilding
-from base.serializers import RemarkAtBuildingSerializer, StudOnTourSerializer
+from base.models import StudentOnTour, RemarkAtBuilding, GarbageCollection
+from base.serializers import RemarkAtBuildingSerializer, StudOnTourSerializer, GarbageCollectionSerializer
 
 
 @receiver(post_save, sender=RemarkAtBuilding)
@@ -86,5 +86,16 @@ def notify_student_on_tour_subscribers(sender, instance: StudentOnTour, **kwargs
         {
             "type": "student.on.tour.created.or.adapted",
             "student_on_tour": student_on_tour,
+        }
+    )
+@receiver(post_save, sender=GarbageCollection)
+def notify_garbage_collection_subscribers(sender, instance: GarbageCollection, **kwargs):
+    garbage_collection = GarbageCollectionSerializer(instance).data
+    channel = get_channel_layer()
+    async_to_sync(channel.group_send)(
+        "garbage_collection_updates",
+        {
+            "type": "garbage.collection.created.or.adapted",
+            "garbage_collection": garbage_collection,
         }
     )
