@@ -1,24 +1,26 @@
-import { BuildingInterface, getAddress } from "@/lib/building";
+import {BuildingInterface, getAddress} from "@/lib/building";
 import {
     GarbageCollectionInterface,
     garbageTypes,
     getGarbageCollectionFromBuilding,
     getGarbageColor,
 } from "@/lib/garbage-collection";
-import { BuildingComment, getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
-import React, { useEffect, useState } from "react";
-import { BuildingManual, getManualPath, getManualsForBuilding } from "@/lib/building-manual";
-import { addDays, subDays } from "date-fns";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
+import {BuildingComment, getAllBuildingCommentsByBuildingID} from "@/lib/building-comment";
+import React, {useEffect, useState} from "react";
+import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/building-manual";
+import {addDays, subDays} from "date-fns";
+import {Col, ListGroup, ListGroupItem, Row} from "react-bootstrap";
+import {formatDate} from "@/lib/date";
 
 /**
  * The info that is displayed when a student is doing a tour
  */
 export default function BuildingInfoView({
-    building,
-    currentIndex,
-    amountOfBuildings,
-}: {
+                                             building,
+                                             currentIndex,
+                                             amountOfBuildings,
+                                         }: {
+
     building: BuildingInterface | null;
     currentIndex: number;
     amountOfBuildings: number;
@@ -60,7 +62,8 @@ export default function BuildingInfoView({
 
                 setGarbageCollections(grouped);
             })
-            .catch((_) => {});
+            .catch((_) => {
+            });
     }
 
     // Get the comments of a building
@@ -70,7 +73,8 @@ export default function BuildingInfoView({
                 const bc: BuildingComment[] = res.data;
                 setBuildingComments(bc);
             })
-            .catch((_) => {});
+            .catch((_) => {
+            });
     }
 
     // Get the manual for a building
@@ -85,70 +89,90 @@ export default function BuildingInfoView({
                 m.file = getManualPath(m.file);
                 setManual(m);
             })
-            .catch((_) => {});
+            .catch((_) => {
+            });
     }
 
     return (
         <ListGroup>
             <ListGroupItem>
-                <span className="h4 fw-bold">{building ? getAddress(building) : ""}</span>
-                <p className="mb-0">{building ? `Gebouw ${currentIndex + 1}/${amountOfBuildings}` : ""}</p>
+                <div style={{paddingTop: '10px', paddingBottom: '10px'}}>
+                    <span className="h4 fw-bold">{building ? getAddress(building) : ""}</span>
+                    <p className="mb-0">{building ? `Gebouw ${currentIndex + 1} / ${amountOfBuildings}` : ""}</p>
+                </div>
             </ListGroupItem>
-            <ListGroupItem className="m-0 p-0" style={{ display: "flex" }}>
-                {Object.keys(garbageCollections)
-                    .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
-                    .map((key, index) => {
-                        const col = garbageCollections[key];
-                        const isLast = index + 1 === Object.keys(garbageCollections).length;
-                        return (
-                            <div key={key} style={{ flex: 1, borderRight: isLast ? "none" : "1px solid #ccc" }}>
-                                <p className="text-center m-0 p-0" style={{ borderBottom: "1px solid #ccc" }}>
-                                    {new Date(key).toLocaleDateString("en-GB")}
-                                </p>
-                                {col.length === 0 && (
-                                    <p
-                                        key={0}
-                                        style={{
-                                            color: "black",
-                                        }}
-                                        className="text-center m-0 p-0"
+            <ListGroupItem className="m-0 p-0">
+                <Row>
+                    {Object.keys(garbageCollections)
+                        .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+                        .map((key, index) => {
+                            const col = garbageCollections[key];
+                            const isLast = index + 1 === Object.keys(garbageCollections).length;
+                            return (
+                                <Col key={key} xs={4} sm={4} md={4} lg={4} xl={4}
+                                     style={{borderRight: isLast ? 'none' : '1px solid #ccc'}}>
+                                    <p className="text-center m-0 p-2"
+                                       style={{
+                                           borderBottom: '1px solid #ccc',
+                                           fontWeight: col[0]?.date === formatDate(new Date()) ? 'bold' : 'normal'
+                                       }}
                                     >
-                                        Geen ophaling
+                                        {new Date(key).toLocaleDateString('en-GB')}
                                     </p>
-                                )}
-                                {col.map((gar: GarbageCollectionInterface) => (
-                                    <p
-                                        key={gar.id}
-                                        style={{
-                                            backgroundColor: getGarbageColor(garbageTypes[gar.garbage_type]),
-                                            color: "black",
-                                        }}
-                                        className="text-center m-0 p-0"
-                                    >
-                                        {garbageTypes[gar.garbage_type]
-                                            ? garbageTypes[gar.garbage_type]
-                                            : gar.garbage_type}
-                                    </p>
-                                ))}
-                            </div>
-                        );
-                    })}
+                                    {col.length === 0 ? (
+                                        <p
+                                            key={0}
+                                            className="text-center m-0 p-2"
+                                            style={{
+                                                backgroundColor: '#f8f9fa',
+                                                color: '#212529',
+                                                paddingTop: 1,
+                                                borderRadius: '2px',
+                                                height: '20px'
+                                            }}
+                                        >
+                                            Geen ophaling
+                                        </p>
+                                    ) : (
+                                        col.map((gar: GarbageCollectionInterface) => (
+                                            <p
+                                                key={gar.id}
+                                                className="text-center m-0 p-2"
+                                                style={{
+                                                    backgroundColor: getGarbageColor(garbageTypes[gar.garbage_type], col[0].date === formatDate(new Date())),
+                                                    color: 'black',
+                                                    paddingTop: 1,
+                                                    borderRadius: '2px',
+                                                    height: '35px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                }}
+                                            >
+                                                {garbageTypes[gar.garbage_type] ? garbageTypes[gar.garbage_type] : gar.garbage_type}
+                                            </p>
+                                        ))
+                                    )}
+                                </Col>
+                            );
+                        })}
+                </Row>
             </ListGroupItem>
             <ListGroupItem>
                 {manual && (
-                    <a href={manual.file} download style={{ textDecoration: "underline", color: "royalblue" }}>
+                    <a href={manual.file} download style={{textDecoration: "underline", color: "royalblue"}}>
                         Handleiding van gebouw
                     </a>
                 )}
                 {buildingComments.length > 0 && (
-                    <>
+                    <div className="padding">
                         <p className="fw-bold mb-0">Opmerkingen van superstudent/admin:</p>
                         <ul className="mt-0 mb-0">
                             {buildingComments.map((bc: BuildingComment) => (
                                 <li key={bc.id}>{bc.comment}</li>
                             ))}
                         </ul>
-                    </>
+                    </div>
                 )}
             </ListGroupItem>
         </ListGroup>

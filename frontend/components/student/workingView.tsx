@@ -5,26 +5,26 @@ import {
     RemarkAtBuilding,
     remarkTypes,
 } from "@/lib/remark-at-building";
-import React, { useEffect, useState } from "react";
-import { endStudentOnTour, getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
-import { FileListElement, Progress } from "@/types";
-import { BuildingInterface } from "@/lib/building";
-import { getBuildingsOfTour } from "@/lib/tour";
+import React, {useEffect, useState} from "react";
+import {getStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import {FileListElement, Progress} from "@/types";
+import {BuildingInterface} from "@/lib/building";
+import {getBuildingsOfTour} from "@/lib/tour";
 import {
     getPictureOfRemarkOfSpecificRemark,
     getPicturePath,
     PictureOfRemarkInterface,
     postPictureOfRemark,
 } from "@/lib/picture-of-remark";
-import { Apartment, ArrowBack, ArrowForward, AssignmentTurnedIn, Comment } from "@mui/icons-material";
-import { useRouter } from "next/router";
+import {Apartment, ArrowBack, ArrowForward, AssignmentTurnedIn, Comment} from "@mui/icons-material";
+import {useRouter} from "next/router";
 import RemarkModal from "@/components/student/remarkModal";
 import BuildingInfoView from "@/components/student/buildingInfoView";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { Button, ButtonGroup, Form } from "react-bootstrap";
-import { FileList } from "@/components/student/fileList";
+import {Button, ButtonGroup, Form} from "react-bootstrap";
+import {FileList} from "@/components/student/fileList";
 
-export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: string; studentOnTourId: number | null }) {
+export function WorkingView({redirectTo, studentOnTourId}: { redirectTo: string; studentOnTourId: number | null }) {
     const router = useRouter();
 
     const typeNames: string[] = ["Aankomst", "Binnen", "Vertrek"];
@@ -86,7 +86,8 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                 setStudentOnTour(sot);
                 getBuildingsOnTour(sots.tour);
             })
-            .catch((_) => {});
+            .catch((_) => {
+            });
     }, [studentOnTourId]);
 
     useEffect(() => {
@@ -104,7 +105,8 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                 const bot: BuildingInterface[] = res.data;
                 setBuildingsOnTour(bot);
             })
-            .catch((_) => {});
+            .catch((_) => {
+            });
     }
 
     // Get the buildingInfo at the currentIndex
@@ -133,7 +135,8 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                     setGlobalRemarks([]);
                 }
             })
-            .catch((_) => {});
+            .catch((_) => {
+            });
     }
 
     // Get the remark of a step
@@ -169,10 +172,12 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                                 })
                             );
                         })
-                        .catch((_) => {});
+                        .catch((_) => {
+                        });
                 }
             })
-            .catch((_) => {});
+            .catch((_) => {
+            });
     }
 
     // Handle the submit event
@@ -216,7 +221,8 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                     });
                     increaseStep();
                 })
-                .catch((_) => {});
+                .catch((_) => {
+                });
         }
     }
 
@@ -250,7 +256,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                     getGlobalRemarksOfBuilding(b.id);
                 }
                 setProgress((prevState) => {
-                    const newState: Progress = { ...prevState };
+                    const newState: Progress = {...prevState};
                     newState.step = newStep;
                     newState.currentIndex = newIndex;
                     return newState;
@@ -264,7 +270,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
             const newStep = progress.step + 1;
             getRemarkInfo(building.id, newStep);
             setProgress((prevState) => {
-                const newState: Progress = { ...prevState };
+                const newState: Progress = {...prevState};
                 newState.step = newStep;
                 return newState;
             });
@@ -284,7 +290,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                 getGlobalRemarksOfBuilding(b.id);
             }
             setProgress((prevState) => {
-                const newState: Progress = { ...prevState };
+                const newState: Progress = {...prevState};
                 newState.step = newStep;
                 newState.currentIndex = newIndex;
                 return newState;
@@ -296,7 +302,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
             const newStep = progress.step - 1;
             getRemarkInfo(building.id, newStep);
             setProgress((prevState) => {
-                const newState: Progress = { ...prevState };
+                const newState: Progress = {...prevState};
                 newState.step = newStep;
                 return newState;
             });
@@ -341,7 +347,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
         router
             .push({
                 pathname: redirectTo,
-                query: { studentOnTourId },
+                query: {studentOnTourId},
             })
             .then();
     }
@@ -351,29 +357,29 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
      */
     function getNextStepIcon() {
         if (progress.currentIndex === progress.maxIndex && progress.step === 2) {
-            return <AssignmentTurnedIn />;
+            return <AssignmentTurnedIn/>;
         }
         if (progress.step === 2) {
             return (
                 <>
-                    <Apartment />
-                    <ArrowForward />
+                    <Apartment/>
+                    <ArrowForward/>
                 </>
             );
         }
-        return <ArrowForward />;
+        return <ArrowForward/>;
     }
 
     function getPreviousStepIcon() {
         if (progress.step === 0) {
             return (
                 <>
-                    <ArrowBack />
-                    <Apartment />
+                    <ArrowBack/>
+                    <Apartment/>
                 </>
             );
         }
-        return <ArrowBack />;
+        return <ArrowBack/>;
     }
 
     return (
@@ -395,11 +401,31 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                     currentIndex={progress.currentIndex}
                     amountOfBuildings={buildingsOnTour.length}
                 />
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                <span className="subtitle">{typeNames[progress.step]}</span><br/>
+                {globalRemarks.length > 0 && (
+                    <>
+                        <label className="bold_text" style={{paddingTop: '5px'}}>Mijn algemene opmerkingen:</label>
+                        <ul>
+                            {globalRemarks.map((remark, index) => (
+                                <li key={index}>
+                                    <a
+                                        style={{color: "royalblue"}}
+                                        onClick={() => {
+                                            setSelectedGlobalRemark(remark);
+                                            setShowRemarkModal(true);
+                                        }}
+                                    >
+                                        {`Opmerking ${index + 1}`}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </>
+                )}
                 <Form onSubmit={handleSubmit} className="mt-2 mb-2">
-                    <span className="h5 fw-bold mt-2">{typeNames[progress.step]}</span>
                     <Form.Group className="mb-2 mt-2">
-                        <Form.Label>Beschrijving (optioneel):</Form.Label>
+                        <Form.Label>Beschrijving bij foto's (optioneel):</Form.Label>
                         <Form.Control
                             as="textarea"
                             rows={2}
@@ -407,9 +433,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                             onChange={(e) => setStepDescription(e.target.value)}
                         />
                     </Form.Group>
-
-                    <FileList files={picturesAtStep} setFiles={setPicturesAtStep} optional={false} editable />
-
+                    <FileList files={picturesAtStep} setFiles={setPicturesAtStep} optional={false} editable/>
                     <ButtonGroup className="d-flex gap-0 m-0" role="group">
                         {(progress.step > 0 || progress.currentIndex > 0) && (
                             <Button
@@ -423,33 +447,13 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                             </Button>
                         )}
                         <Button variant="primary" className="btn-dark" onClick={() => setShowRemarkModal(true)}>
-                            <Comment />
+                            <Comment/>
                         </Button>
                         <Button variant="primary" className="btn-dark" type="submit">
                             {getNextStepIcon()}
                         </Button>
                     </ButtonGroup>
                 </Form>
-                {globalRemarks.length > 0 && (
-                    <>
-                        <span className="h6 fw-bold">Mijn algemene opmerkingen:</span>
-                        <ul>
-                            {globalRemarks.map((remark, index) => (
-                                <li key={index}>
-                                    <a
-                                        style={{ color: "royalblue" }}
-                                        onClick={() => {
-                                            setSelectedGlobalRemark(remark);
-                                            setShowRemarkModal(true);
-                                        }}
-                                    >
-                                        {`Opmerking ${index + 1}`}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </>
-                )}
             </div>
         </>
     );

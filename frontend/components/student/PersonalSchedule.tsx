@@ -90,6 +90,12 @@ export default function PersonalSchedule({redirectTo}: { redirectTo: string }) {
                     const currentDate: Date = new Date();
                     return d < currentDate && !datesEqual(d, currentDate);
                 });
+
+                // Sort finishedTours in descending order based on the date
+                finishedTours.sort((a: StudentOnTour, b: StudentOnTour) => {
+                    return b.date.getTime() - a.date.getTime();
+                });
+
                 setPrevTours(finishedTours);
 
                 // Get the tours the student is assigned to in the future
