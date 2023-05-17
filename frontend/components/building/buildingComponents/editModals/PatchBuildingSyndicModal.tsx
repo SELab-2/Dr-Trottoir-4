@@ -57,7 +57,7 @@ function PatchBuildingSyndicModal({
                 </Modal.Header>
                 <Modal.Body>
                     <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
-                    <Form>
+                    <>
                         <Form.Group className="mb-3" controlId="formPatchBuilding">
                             <Form.Group controlId={"name"}>
                                 <Form.Label className="normal_text">Naam:</Form.Label>
@@ -78,7 +78,7 @@ function PatchBuildingSyndicModal({
                                         <FormControl
                                             className="form_control"
                                             name="public_id"
-                                            value={formData.public_id}
+                                            value={formData.public_id ? formData.public_id : ""}
                                             onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
                                             placeholder="Vul het public id van het gebouw in"
                                         />
@@ -104,7 +104,7 @@ function PatchBuildingSyndicModal({
                             </Form.Text>
                         </Form.Group>
 
-                    </Form>
+                    </>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" className="btn-light" onClick={closeModal}>
