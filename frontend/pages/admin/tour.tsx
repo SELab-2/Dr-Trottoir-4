@@ -20,7 +20,7 @@ import Loading from "@/components/loading";
 import StudentOnTourAutocomplete from "@/components/autocompleteComponents/studentOnTourAutocomplete";
 import { BuildingAnalysis } from "@/types";
 import { getAnalysisStudentOnTour } from "@/lib/analysis";
-import { getAllRemarksOfStudentOnTour, getRemarksOfStudentOnTourAtBuilding } from "@/lib/remark-at-building";
+import { getAllRemarksOfStudentOnTour, getRemarksOfStudentOnTourAtBuilding, RemarkAtBuildingInterface } from "@/lib/remark-at-building";
 
 interface ParsedUrlQuery {}
 
@@ -44,7 +44,7 @@ function AdminTour() {
     const [validDates, setValidDates] = useState<Date[]>([]);
     const [selectedStudentOnTour, setSelectedStudentOnTour] = useState<StudentOnTour | null>(null);
     const [analysis, setAnalysis] = useState<BuildingAnalysis[]>([]);
-    const [remarksRecord, setRemarksRecord] = useState<Record<number, number>>({});
+    const [remarksRecord, setRemarksRecord] = useState<Record<number, string[]>>({});
 
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
@@ -211,11 +211,12 @@ function AdminTour() {
         if (sot) {
             Promise.all(allBuildingsOnTour.map((buildingOnTour) => getRemarksOfStudentOnTourAtBuilding(buildingOnTour.building, sot.id, "OP")))
             .then((responses) => {
-                let newRemarksRecord: Record<number,number> = {};
-                responses.forEach((response, index) => {
-                    newRemarksRecord[allBuildingsOnTour[index].building] = response.data.length;
+                let tempRemarksRecord: Record<number, string[]> = {};
+                responses.forEach((res, index) => {
+                    console.log(res);
+                    tempRemarksRecord[allBuildingsOnTour[index].building] = res.data.map((remark: RemarkAtBuildingInterface) => remark.remark);
                 });
-                setRemarksRecord(newRemarksRecord);
+                setRemarksRecord(tempRemarksRecord);
             }).catch(console.error);
         }
         
@@ -304,8 +305,6 @@ function AdminTour() {
                 </thead>
                 <tbody>
                     {allBuildings.map((building) => {
-                    // Populate the table with the building details
-                    // Replace the placeholders with actual data from your backend
                     const ba = getBuildingAnalysis(building.id);
                     const durationInSeconds = ba ? ba.duration_in_seconds : 0;
                     const expectedDurationInSeconds = ba ? ba.expected_duration_in_seconds : 0;
@@ -317,7 +316,9 @@ function AdminTour() {
                         <td>{getBuildingStatus(building.id)}</td>
                         <td>{getDepartureTimeString(building.id)}</td>
                         <td style={{ color: timeColor }}>{getBuildingStatus(building.id) === "Afgewerkt" ? secondsToTime(durationInSeconds) : ""}</td>
-                        <td>{remarksRecord[building.id]}</td>
+                        <td style={{ cursor: "pointer" }} title={remarksRecord[building.id] ? remarksRecord[building.id].join('\n') : ''}>
+                            {remarksRecord[building.id] ? remarksRecord[building.id].length : 0}
+                        </td>
                         </tr>
                     );
                     })}
