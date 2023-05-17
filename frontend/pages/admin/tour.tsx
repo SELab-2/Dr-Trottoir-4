@@ -334,18 +334,24 @@ function AdminTour() {
     return (
         <div>
         <AdminHeader />
-        <div>
+        <div style={{ display: "flex", marginTop: "10px",marginBottom: "50px" }}>
+        <div style={{ flex: 1 }}>
             <StudentAutocomplete
             initialId={selectedStudentId}
             setObjectId={setSelectedStudentId}
-            required={true}
+            required={false}
             />
+        </div>
+        <div style={{ flex: 1 }}>
             <StudentOnTourAutocomplete
             initialId={selectedTourId}
             setObjectId={setSelectedTourId}
-            required={true}
+            required={false}
             studentId={selectedStudentId}
             />
+        </div>
+        <div style={{ flex: 1 }}>
+        <label htmlFor="datepicker">Selecteer datum</label>
             <ReactDatePicker
             selected={selectedDate}
             onChange={(date: Date) => setSelectedDate(date)}
@@ -353,18 +359,18 @@ function AdminTour() {
             filterDate={(date: Date) => validDates.map(d => d.toLocaleDateString()).includes(date.toLocaleDateString())}
             />
         </div>
+        </div>
         {selectedStudentId && (
             <div style={{ display: "flex" }}>
             <div style={{ width: "20%" }}>
-                <h2>Tour Details</h2>
-                {/* Display the tour details */}
-                <p>Tour Name: {selectedTourName}</p>
-                <p>Student Name: {selectedStudentName}</p>
-                {/* Add any other relevant information */}
+                <h2>{selectedTourName}</h2>
+                <b>Verantwoordelijke:</b>
+                <p>{selectedStudentName}</p>
+                <b>Datum:</b>
+                <p>{selectedDate.toLocaleDateString()}</p>
             </div>
 
             <div style={{ width: "80%" }}>
-                <h2>Building Details</h2>
                 <table className="table">
                 <thead>
                     <tr>
