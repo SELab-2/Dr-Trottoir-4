@@ -345,7 +345,10 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                 range={range}
                 events={events}
                 isOpen={popupIsOpenLoad}
-                onClose={() => setPopupIsOpenLoad(false)}
+                onClose={() => {
+                    setPopupIsOpenLoad(false);
+                    getFromRange({ start: range.start, end: range.end });
+                }}
             />
         </>
     );

@@ -8,6 +8,7 @@ import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour";
 import { handleError } from "@/lib/error";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
+import LocaleDatePicker from "@/components/datepicker/datepicker";
 
 function AddTourScheduleModal({
     isOpen,
@@ -22,7 +23,7 @@ function AddTourScheduleModal({
 }) {
     const [tourId, setTourId] = useState<number | null>(null);
     const [studentId, setStudentId] = useState<number | null>(null);
-    const [start, setStart] = useState<Date | null>(null);
+    const [start, setStart] = useState<Date>(new Date());
     const [checked, setChecked] = useState(true);
     const [sundayId, setSundayId] = useState<number | null>(null);
     const [mondayId, setMondayId] = useState<number | null>(null);
@@ -124,7 +125,7 @@ function AddTourScheduleModal({
     };
 
     const resetStates = () => {
-        setStart(null);
+        setStart(new Date());
         setSundayId(null);
         setMondayId(null);
         setTuesdayId(null);
@@ -135,10 +136,6 @@ function AddTourScheduleModal({
         setTourId(null);
         setChecked(true);
         setErrorMessages([]);
-    };
-
-    const handleStartDateChange = (e: { target: { value: string | number | Date } }) => {
-        setStart(new Date(e.target.value));
     };
 
     const handleCheckChange = () => {
@@ -182,12 +179,7 @@ function AddTourScheduleModal({
                     <div className="form-row">
                         <div className="col">
                             <label>Start datum:</label>
-                            <input
-                                type="date"
-                                value={start ? formatDate(start) : ""}
-                                onChange={handleStartDateChange}
-                                className="form-control"
-                            />
+                            <LocaleDatePicker setSelectedDate={setStart} selectedDate={start}/>
                         </div>
                         <label>
                             <input type="checkbox" checked={checked} onChange={handleCheckChange} />1 student per week

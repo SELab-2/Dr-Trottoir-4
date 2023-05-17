@@ -8,6 +8,7 @@ import { patchStudentOnTour } from "@/lib/student-on-tour";
 import { formatDate } from "@/lib/date";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 import { ScheduleEvent } from "@/types";
+import LocaleDatePicker from "@/components/datepicker/datepicker";
 
 function EditScheduleEventModal({
     event,
@@ -87,12 +88,7 @@ function EditScheduleEventModal({
                 <form>
                     <div className="form-outline mb-4">
                         <label className="form-label">Datum:</label>
-                        <input
-                            type="date"
-                            className="form-control"
-                            value={formatDate(date)}
-                            onChange={(event) => setDate(new Date(event.target.value))}
-                        />
+                        <LocaleDatePicker setSelectedDate={setDate} selectedDate={date}/>
                     </div>
                     <div className="form-group">
                         <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false} />
