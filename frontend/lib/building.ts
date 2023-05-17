@@ -95,7 +95,7 @@ export async function postBuilding(building: BuildingPostInterface): Promise<Axi
 }
 
 export async function patchBuilding(building: BuildingPostInterface, id: number): Promise<AxiosResponse<any>> {
-    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING_COMMENT}`;
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${id}`;
     return await api.patch(request_url, JSON.stringify(building),
         {
             headers: {"Content-Type": "application/json"},
@@ -112,13 +112,18 @@ export async function postBuildingComment(buildingComment: BuildingCommentPostIn
     );
 }
 
-export async function patchBuildingComment(buildingComment: BuildingCommentPostInterface): Promise<AxiosResponse<any>> {
-    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingComment.building}`;
+export async function patchBuildingComment(buildingComment: BuildingCommentPostInterface, id: number): Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING_COMMENT}${id}`;
     return await api.patch(request_url, JSON.stringify(buildingComment),
         {
             headers: {"Content-Type": "application/json"},
         }
     );
+}
+
+export async function deleteBuildingComment(id: number): Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING_COMMENT}${id}`;
+    return await api.delete(request_url);
 }
 
 export async function getBuildingComment(id: number): Promise<AxiosResponse<any>> {

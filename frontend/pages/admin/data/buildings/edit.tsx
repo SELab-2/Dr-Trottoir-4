@@ -2,6 +2,7 @@ import React, {ChangeEvent, useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {Form} from "react-bootstrap";
 import {
+    deleteBuilding, deleteBuildingComment,
     getBuildingComment,
     getBuildingInfo,
     getDurationFromMinutes,
@@ -37,6 +38,7 @@ function AdminDataBuildingsEdit() {
     const [validated, setValidated] = useState<boolean>(false);
     const [durationInMinutes, setDurationInMinutes] = useState<number>(0);
     const [buildingComments, setBuildingComments] = useState<string>("");
+    const [buildingCommentsId, setBuildingCommentsId] = useState<number | undefined>(undefined);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
@@ -61,10 +63,17 @@ function AdminDataBuildingsEdit() {
             try {
                 if (router.query.building) {
                     await patchBuilding(building, Number(router.query.building));
-                    await patchBuildingComment({
-                        building: Number(router.query.building),
-                        comment: buildingComments
-                    });
+                    if (buildingCommentsId) {
+                        if (buildingComments) {
+                            await patchBuildingComment({
+                                building: Number(router.query.building),
+                                comment: buildingComments
+                            }, buildingCommentsId);
+                        } else {
+                            await deleteBuildingComment(buildingCommentsId);
+                            setBuildingCommentsId(undefined);
+                        }
+                    }
                 } else {
                     await postBuilding(building);
                     if (buildingComments) {
@@ -105,7 +114,10 @@ function AdminDataBuildingsEdit() {
                 const syndic = await getUserInfo(res.data.syndic);
                 setSyndicId(syndic.data.id);
                 const comments = await getBuildingComment(Number(router.query.building));
-                console.log(comments);
+                if (comments.data.length) {
+                    setBuildingComments(comments.data[0].comment);
+                    setBuildingCommentsId(comments.data[0].id);
+                }
                 return true;
             });
         }
