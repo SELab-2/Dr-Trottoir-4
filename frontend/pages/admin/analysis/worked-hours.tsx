@@ -31,6 +31,7 @@ function AdminAnalysisWorkingHours() {
     const [endDate, setEndDate] = useState<Date>(new Date());
 
     const [sortType, setSortType] = useState<string>(sortBy.ALPHABETICALLY);
+    const [filteredRegion, setFilteredRegion] = useState<RegionInterface | null>(null);
 
     const sortByKey : {[key : string] : (a : WorkedHours, b: WorkedHours) => number} = {
         ["Gewerkte uren"]: (a : WorkedHours, b : WorkedHours) => b.worked_minutes - a.worked_minutes,
@@ -77,7 +78,7 @@ function AdminAnalysisWorkingHours() {
         if (allTours.length <= 0 || allUsers.length <= 0) {
             return;
         }
-        getWorkedHours(startDate, endDate).then(
+        getWorkedHours(startDate, endDate, filteredRegion ? filteredRegion.id : null).then(
             (res) => {
                 const hours: WorkedHours[] = res.data;
                 setWorkedHours(hours.sort(sortByKey[sortType]));
@@ -104,19 +105,14 @@ function AdminAnalysisWorkingHours() {
             },
             (err) => setErrorMessages(handleError(err))
         );
-    }, [startDate, endDate, allTours, allUsers]);
+    }, [startDate, endDate, allTours, allUsers, filteredRegion]);
 
     useEffect(() => {
         if (allTours.length <= 0 || allUsers.length <= 0) {
             return;
         }
-        console.log(sortType)
         setWorkedHours(prevState => {
-            console.log(prevState);
-            console.log(sortByKey[sortType]);
-            const res =  [...prevState].sort(sortByKey[sortType]);
-            console.log(res);
-            return res;
+            return [...prevState].sort(sortByKey[sortType]);
         });
     }, [sortType]);
 
@@ -187,22 +183,46 @@ function AdminAnalysisWorkingHours() {
                             }}
                         />
                     </Form.Group>
+                    <Form.Group as={Col} sm={12} md={3} lg={3}>
+                        <Form.Label>Sorteer op:</Form.Label>
+                        <Select
+                            value={{value: sortType.toString(), label:sortType.toString()}}
+                            isClearable={false}
+                            isSearchable={false}
+                            options={Object.values(sortBy).map(t => {
+                                return {
+                                    value : t, label: t
+                                }
+                            })}
+                            onChange={(s) => {
+                                if (s && s.value) {
+                                    setSortType(s.value);
+                                }
+                            }}
+                            menuPortalTarget={document.querySelector("body")}
+                        />
+                    </Form.Group>
+                    <Form.Group as={Col} sm={12} md={3} lg={3}>
+                        <Form.Label>Filter regio:</Form.Label>
+                        <Select
+                            value={filteredRegion ? {value: filteredRegion.id, label: filteredRegion.region} : {value: -1, label: "Alle regio's"}}
+                            isClearable={false}
+                            isSearchable={false}
+                            options={[{value: -1, label: "Alle regio's"}, ...allRegions.map(r => {
+                                return {
+                                    value : r.id, label: r.region
+                                }
+                            })]}
+                            onChange={(s) => {
+                                if (s && s.value) {
+                                    const r : RegionInterface | undefined = allRegions.find(region => region.id === s.value);
+                                    setFilteredRegion(r ? r : null);
+                                }
+                            }}
+                            menuPortalTarget={document.querySelector("body")}
+                        />
+                    </Form.Group>
                 </Row>
-                <Select
-                    value={{value: sortType.toString(), label:sortType.toString()}}
-                    isClearable={false}
-                    isSearchable={false}
-                    options={Object.values(sortBy).map(t => {
-                        return {
-                            value : t, label: t
-                        }
-                    })}
-                    onChange={(s) => {
-                        if (s && s.value) {
-                            setSortType(s.value);
-                        }
-                    }}
-                />
             </Form>
             <Row className="m-2">
                 {workedHours.map((worked) => {
