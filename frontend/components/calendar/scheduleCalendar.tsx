@@ -283,8 +283,8 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                 messages={messages}
                 culture={"nl-BE"}
                 defaultDate={new Date()}
-                defaultView="week"
-                views={["week"]}
+                defaultView="month"
+                views={["month", "week"]}
                 events={events}
                 components={{ event: CustomDisplay }}
                 eventPropGetter={(event: any) => {
@@ -292,7 +292,7 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                     return { style: { backgroundColor, color: "white" } };
                 }}
                 localizer={localizer}
-                drilldownView={null}
+                drilldownView="week"
                 selectable
                 onSelectEvent={(e: Event) => {
                     const scheduleEvent: ScheduleEvent = e as ScheduleEvent;
@@ -304,6 +304,8 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                 }}
                 step={60}
                 timeslots={1}
+
+                style={{ height: "100vh" }}
                 onEventDrop={onEventDragAndDrop}
                 onEventResize={onEventResize}
                 onRangeChange={getFromRange}
