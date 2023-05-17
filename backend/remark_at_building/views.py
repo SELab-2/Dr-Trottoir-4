@@ -119,6 +119,7 @@ class RemarkAtBuildingIndividualView(APIView):
         forbidden_keys = ['timestamp', 'building', 'student_on_tour', 'type', 'id']
         if any(k in forbidden_keys for k in data.keys()):
             return Response({
+                # TODO: Translate
                 'message': _("You can only edit the 'remark' text on a remark at building")
             }, status=status.HTTP_400_BAD_REQUEST)
 
