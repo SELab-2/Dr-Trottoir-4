@@ -11,7 +11,6 @@ from base.serializers import RemarkAtBuildingSerializer
 
 @receiver(post_save, sender=RemarkAtBuilding)
 def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
-
     # Broadcast all remarks to the building websocket
     remark_at_building_remark = RemarkAtBuildingSerializer(instance).data
     channel_layer = get_channel_layer()
