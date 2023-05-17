@@ -171,11 +171,17 @@ class Building(models.Model):
 
 class BuildingComment(models.Model):
     comment = models.TextField()
-    date = models.DateTimeField()
+    date = models.DateTimeField(null=True, blank=True)
     building = models.ForeignKey(Building, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"Comment: {self.comment} ({self.date}) for {self.building}"
+
+    def clean(self):
+        super().clean()
+
+        if not self.date:
+            self.date = datetime.now()
 
     class Meta:
         constraints = [
