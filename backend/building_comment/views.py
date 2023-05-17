@@ -18,7 +18,7 @@ from util.request_response_util import (
     delete_docs,
     delete_success,
     patch_docs,
-    patch_success
+    patch_success,
 )
 
 TRANSLATE = {"building": "building_id"}
