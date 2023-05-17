@@ -1,26 +1,33 @@
-import { TiPencil } from "react-icons/ti";
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
-import { BuildingInterface } from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { useRouter } from "next/router";
+import {BuildingInterface} from "@/lib/building";
+import {getRegion} from "@/lib/region";
+import {useRouter} from "next/router";
+import {Button} from "react-bootstrap";
+import {IconButton} from "@mui/material";
+import { MdContentCopy } from 'react-icons/md';
+// @ts-ignore
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 function BuildingInfo({
-    building,
-    setBuilding,
-    type,
-}: {
+                          building,
+                          setBuilding,
+                          type,
+                      }: {
     building: BuildingInterface;
     setBuilding: (b: any) => void;
     type: "syndic" | "admin" | "public";
 }) {
     const router = useRouter();
     const [editBuilding, setEditBuilding] = useState(false);
-    const [regionName, setRegionName] = useState("/");
+    const [regionName, setRegionName] = useState("");
+
+    const publicId = building && building.public_id || "-";
 
     useEffect(() => {
         if (building) {
-            get_region_name("region");
+            building.public_id = "test";
+            get_region_name();
         }
     }, [building]);
 
@@ -30,23 +37,9 @@ function BuildingInfo({
         }
     }, [editBuilding]);
 
-    function get_building_key(key: string) {
-        if (building) {
-            // @ts-ignore
-            return building[key] || "/";
-        }
-        return "/";
-    }
-
-    async function get_region_name(key: string) {
-        const region_id = get_building_key("region");
-
-        if (isNaN(region_id)) {
-            setRegionName("/");
-        }
-
+    async function get_region_name() {
         try {
-            const region = await getRegion(region_id);
+            const region = await getRegion(building.region);
             const regionName = region.data.region;
             setRegionName(regionName);
         } catch (error) {
@@ -56,47 +49,68 @@ function BuildingInfo({
     }
 
     return (
-        <>
-            {type == "syndic" ? (
-                <PatchBuildingSyndicModal
-                    show={editBuilding}
-                    closeModal={() => setEditBuilding(false)}
-                    building={building}
-                    setBuilding={setBuilding}
-                />
-            ) : null}
+        <div>
+            <div>
+                {type === "syndic" && (
+                    <PatchBuildingSyndicModal
+                        show={editBuilding}
+                        closeModal={() => setEditBuilding(false)}
+                        building={building}
+                        setBuilding={setBuilding}
+                    />
+                )}
 
-            {/*type == "admin" ? <PatchBuildingAdminModal
-                show={editBuilding}
-                closeModal={() => setEditBuilding(false)}
-                building={building}
-                setBuilding={setBuilding} />
-            : null*/}
-
-            <h1>
-                Gebouw{" "}
-                {type == "syndic" ? (
-                    <TiPencil
-                        className={"clickable"}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setEditBuilding(true);
-                        }}
-                    ></TiPencil>
-                ) : null}
-            </h1>
-            <p>ID: {get_building_key("id")} </p>
-            <p>Naam: {get_building_key("name")}</p>
-            <p>Stad: {get_building_key("city")}</p>
-            <p>Postcode: {get_building_key("postal_code")}</p>
-            <p>Straat: {get_building_key("street")}</p>
-            <p>Nr: {get_building_key("house_number")}</p>
-            <p>Bus: {get_building_key("bus")}</p>
-            <p>Region: {regionName} </p>
-            <p>Werktijd: {get_building_key("duration")}</p>
-            <p>Client id: {get_building_key("client_id")}</p>
-            <p>Public id: {get_building_key("public_id")}</p>
-        </>
+                <label className="title">
+                    Gebouw
+                </label>
+                {building && (
+                    <div>
+                        < p>
+                            < strong> Naam:</strong> {building.name ? building.name : "-"}
+                        </p>
+                        <strong>Adres:</strong>
+                        <p>
+                            {building.city} {building.postal_code}
+                            <br/>
+                            {building.street} {building.house_number}, {building.bus}
+                        </p>
+                        <p>
+                            <strong>Regio:</strong> {regionName}
+                        </p>
+                        <p>
+                            <strong>Werktijd:</strong> {building.duration}
+                        </p>
+                        <p>
+                            <strong>Klant id:</strong> {building.client_number ? building.client_number : "-"}
+                        </p>
+                        <div style={{display: 'flex', alignItems: 'center'}}>
+                            <p>
+                                <strong>Publiek id:</strong> {building && building.public_id ? building.public_id : "-"}
+                            </p>
+                            {building && building.public_id && (
+                                <CopyToClipboard style={{marginBottom: '12px'}} text={building.public_id}>
+                                    <IconButton>
+                                        <MdContentCopy size={18}/>
+                                    </IconButton>
+                                </CopyToClipboard>
+                            )}
+                        </div>
+                    </div>
+                )}
+                {type === "syndic" && (
+                    <div className="padding">
+                        <Button
+                            size="lg"
+                            className="wide_button"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setEditBuilding(true);
+                            }}
+                        >Bewerk</Button>
+                    </div>
+                )}
+            </div>
+        </div>
     );
 }
 

@@ -5,6 +5,7 @@ import {AxiosResponse} from "axios/index";
 import BuildingInfo from "@/components/building/buildingComponents/BuildingInfo";
 import LatestCollections from "@/components/building/buildingComponents/LatestCollections";
 import CollectionCards from "@/components/building/buildingComponents/CollectionCards";
+import {Col, Container, Row} from "react-bootstrap";
 
 
 interface BuildingQuery {
@@ -48,17 +49,21 @@ function BuildingPage({type}: { type: "syndic" | "admin" | "public" }) {
 
     return (
         <>
-            <div style={{display: "flex", justifyContent: "space-evenly"}}>
-                <div style={{flex: "1"}}>
-                    <BuildingInfo building={building} setBuilding={setBuilding} type={type}/>
-                </div>
-                <div style={{flex: "1"}}>
-                    <CollectionCards building={building ? building.id : 0} date={query.date ? query.date : null}/>
-                </div>
-                <div style={{flex: "1"}}>
-                    <LatestCollections building={building ? building.id : 0}/>
-                </div>
-            </div>
+            <Container style={{flex: "1"}}>
+                <Row>
+                    <Col md={4} style={{backgroundColor: '#FAFAFA', borderLeft: '10px solid #F6BE00'}}>
+                        <div >
+                            <BuildingInfo building={building} setBuilding={setBuilding} type={type}/>
+                        </div>
+                    </Col>
+                    <Col md={4}>
+                        <CollectionCards building={building ? building.id : 0} date={query.date ? query.date : null}/>
+                    </Col>
+                    <Col md={4} style={{backgroundColor: '#FAFAFA'}}>
+                        <LatestCollections building={building ? building.id : 0}/>
+                    </Col>
+                </Row>
+            </Container>
         </>
     );
 }

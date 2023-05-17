@@ -111,10 +111,10 @@ function SyndicDashboard() {
                                         <Card>
                                             <Card.Body>
                                                 <Card.Title>
-                                                    {building.name} {building.postal_code} {building.city}
+                                                    {building.street} {building.house_number}
                                                 </Card.Title>
                                                 <Card.Text>
-                                                    {building.street} {building.house_number}
+                                                    {building.name} {building.postal_code} {building.city}
                                                 </Card.Text>
                                             </Card.Body>
                                         </Card>

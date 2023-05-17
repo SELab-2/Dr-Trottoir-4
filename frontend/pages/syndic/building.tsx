@@ -8,9 +8,7 @@ function SyndicBuilding() {
     return (
         <>
             <SyndicHeader />
-
             <BuildingPage type={"syndic"} />
-
             <SyndicFooter />
         </>
     );

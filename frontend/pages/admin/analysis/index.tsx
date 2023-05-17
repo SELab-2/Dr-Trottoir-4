@@ -3,7 +3,6 @@ import { withAuthorisation } from "@/components/withAuthorisation";
 import { LocationOn, Schedule, School } from "@mui/icons-material";
 import Link from "next/link";
 import { Card, Col, Container, Row } from "react-bootstrap";
-import styles from "styles/Welcome.module.css";
 
 function AdminAnalysis() {
     interface CardProps {
@@ -42,7 +41,7 @@ function AdminAnalysis() {
         <>
             <>
                 <AdminHeader />
-                <p className={`${styles.title} text-start`}>Dashboard.</p>
+                <p className="title">Dashboard.</p>
                 <Container fluid className="mt-3">
                     <Row xs={1} sm={2} md={3} className="g-3">
                         {cardData.map((data) => (
