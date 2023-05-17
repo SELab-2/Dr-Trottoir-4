@@ -9,6 +9,7 @@ from .views import (
     StartTourView,
     EndTourView,
     ProgressTourView,
+    StudentOnTourDuplicateView,
 )
 
 urlpatterns = [
@@ -22,5 +23,6 @@ urlpatterns = [
     path("student/<int:student_id>/", TourPerStudentView.as_view()),
     path("all/", AllView.as_view()),
     path("bulk/", StudentOnTourBulk.as_view()),
+    path("duplicate/", StudentOnTourDuplicateView.as_view()),
     path("", Default.as_view()),
 ]

@@ -67,12 +67,14 @@ export async function postBulkStudentOnTour(data: StudentOnTourPost[]) {
   });
 }
 
-export async function patchBulkStudentOnTour(data: any) {
-  //TODO to right format
-  const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_STUDENT_ON_TOUR}`;
-  return await api.patch(request_url, JSON.stringify(data), {
-    headers: { "Content-Type": "application/json" },
-  });
+export async function patchBulkStudentOnTour(data : any) {
+    //TODO to right format
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_STUDENT_ON_TOUR}`;
+    return await api.patch(request_url, JSON.stringify(data),
+        {
+            headers: {"Content-Type": "application/json"},
+        }
+    );
 }
 
 export async function deleteBulkStudentOnTour(data: number[]) {
