@@ -3,8 +3,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from "react-datepicker";
 import { getAllTours, getTour, Tour } from "@/lib/tour";
 import {
-getAllStudentOnTourFromDate,
-getAllStudentOnTourFromToday,
 getToursOfStudent,
 StudentOnTour,
 } from "@/lib/student-on-tour";
@@ -20,6 +18,8 @@ import { useRouter } from "next/router";
 import AdminHeader from "@/components/header/adminHeader";
 import Loading from "@/components/loading";
 import StudentOnTourAutocomplete from "@/components/autocompleteComponents/studentOnTourAutocomplete";
+import { BuildingAnalysis } from "@/types";
+import { getAnalysisStudentOnTour } from "@/lib/analysis";
 
 interface ParsedUrlQuery {}
 
@@ -42,6 +42,7 @@ function AdminTour() {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [validDates, setValidDates] = useState<Date[]>([]);
     const [selectedStudentOnTour, setSelectedStudentOnTour] = useState<StudentOnTour | null>(null);
+    const [analysis, setAnalysis] = useState<BuildingAnalysis[]>([]);
 
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
@@ -167,9 +168,22 @@ function AdminTour() {
         Promise.all(allBuildingsOnTour.map((buildingOnTour) => getBuildingInfo(buildingOnTour.building)))
         .then((responses) => {
             setAllBuildings(responses.map(response =>response.data));
-            setLoading(false);
         }).catch(console.error);
     }, [allBuildingsOnTour]);
+
+
+    useEffect(() => {
+        const sot = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
+        if (sot) {
+            getAnalysisStudentOnTour(sot.id).then((res) => {
+                const b: BuildingAnalysis[] = res.data;
+                setAnalysis(b);
+            })
+        }
+        
+        setLoading(false);
+
+    }, [selectedStudentId, selectedTourId, selectedDate]);
 
     // For debuggin purposes
     // useEffect(() => {
