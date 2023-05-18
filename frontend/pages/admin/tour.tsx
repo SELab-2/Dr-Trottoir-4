@@ -5,14 +5,11 @@ import { getAllTours, getTour, Tour } from "@/lib/tour";
 import {
     getStudentOnTourIndividualProgressWS,
     getStudentOnTourIndividualRemarkWS,
-getToursOfStudent,
-StudentOnTour,
+    getToursOfStudent,
+    StudentOnTour,
 } from "@/lib/student-on-tour";
-import { getAllUsers, getStudents, User, userSearchString } from "@/lib/user";
-import {
-BuildingOnTour,
-getAllBuildingsOnTourWithTourID,
-} from "@/lib/building-on-tour";
+import { getAllUsers, getStudents, getTourUsers, User, userSearchString } from "@/lib/user";
+import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
 import { withAuthorisation } from "@/components/withAuthorisation";
@@ -22,7 +19,13 @@ import Loading from "@/components/loading";
 import StudentOnTourAutocomplete from "@/components/autocompleteComponents/studentOnTourAutocomplete";
 import { BuildingAnalysis } from "@/types";
 import { getAnalysisStudentOnTour } from "@/lib/analysis";
-import { getAllRemarksOfStudentOnTour, getRemarksOfStudentOnTourAtBuilding, RemarkAtBuilding, RemarkAtBuildingInterface } from "@/lib/remark-at-building";
+import {
+    getAllRemarksOfStudentOnTour,
+    getRemarksOfStudentOnTourAtBuilding,
+    RemarkAtBuilding,
+    RemarkAtBuildingInterface,
+} from "@/lib/remark-at-building";
+import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
 interface ParsedUrlQuery {}
 
@@ -51,7 +54,6 @@ function AdminTour() {
     const [currentBuildingIndex, setCurrentBuildingIndex] = useState(0);
     const [refreshKey, setRefreshKey] = useState(0);
 
-
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
 
@@ -59,17 +61,17 @@ function AdminTour() {
         const validDatesArray = sots.filter((sot) => sot.tour === tourId).map((sot) => new Date(sot.date));
         setValidDates(validDatesArray);
 
-        const startedTours = sots.filter(sot => sot.started_tour !== null);
+        const startedTours = sots.filter((sot) => sot.started_tour !== null);
 
         const latestStartedTour = startedTours.reduce((latest, current) => {
-        const currentStartDate = new Date(current.date);
-        const latestStartDate = latest ? new Date(latest.date) : null;
+            const currentStartDate = new Date(current.date);
+            const latestStartDate = latest ? new Date(latest.date) : null;
 
-        if (!latestStartDate || currentStartDate > latestStartDate) {
-            return current;
-        } else {
-            return latest;
-        }
+            if (!latestStartDate || currentStartDate > latestStartDate) {
+                return current;
+            } else {
+                return latest;
+            }
         }, null as StudentOnTour | null);
 
         if (latestStartedTour) {
@@ -77,18 +79,23 @@ function AdminTour() {
         } else {
             setSelectedDate(validDatesArray[0]);
         }
-    }
+    };
 
     const getStudentOnTour = (sots: StudentOnTour[], tourId: number, date: Date) => {
-        const sot = sots.find((sot) => sot.tour === tourId && new Date(sot.date).toISOString().split('T')[0] === new Date(date).toISOString().split('T')[0]);
-        return (sot) ? { sot, current_building_index: sot.current_building_index } : null;
-    }
-    
+        const sot = sots.find(
+            (sot) =>
+                sot.tour === tourId &&
+                new Date(sot.date).toISOString().split("T")[0] === new Date(date).toISOString().split("T")[0]
+        );
+        return sot ? { sot, current_building_index: sot.current_building_index } : null;
+    };
 
     const getBuildingIndex = (buildingId: number) => {
-        const buildingOnTour = allBuildingsOnTour.find((buildingOnTour: BuildingOnTour) => buildingOnTour.building === buildingId);
-        return (buildingOnTour) ? buildingOnTour.index : 0;
-    }
+        const buildingOnTour = allBuildingsOnTour.find(
+            (buildingOnTour: BuildingOnTour) => buildingOnTour.building === buildingId
+        );
+        return buildingOnTour ? buildingOnTour.index : 0;
+    };
 
     const getBuildingStatus = (buildingId: number) => {
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
@@ -105,11 +112,11 @@ function AdminTour() {
             }
         }
         return returnText;
-    }
+    };
 
     const getBuildingAnalysis = (buildingId: number) => {
         return analysis.find((a) => a.building_id === buildingId) || null;
-    }
+    };
 
     const getDepartureTimeString = (buildingId: number) => {
         let returnString = "";
@@ -119,18 +126,18 @@ function AdminTour() {
             const hours = date.getHours();
             const minutes = date.getMinutes();
             let prefix = minutes < 10 ? "0" : "";
-            
+
             returnString = hours + ":" + prefix + minutes;
-        } 
+        }
         return returnString;
-    }
+    };
 
     const secondsToTime = (seconds: number) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
         return minutes + "m" + (remainingSeconds < 10 ? "0" : "") + remainingSeconds + "s";
-    }
-    
+    };
+
     const getSpentTimeColor = (expected: number, actual: number) => {
         const ratio = actual / expected;
         if (ratio > 1.25) {
@@ -140,32 +147,31 @@ function AdminTour() {
         } else {
             return "green";
         }
-    }
+    };
 
     const goToBuildingPage = (buildingId: number) => {
         router.push({
-            pathname: '/admin/building',
-            query: { 
+            pathname: "/admin/building",
+            query: {
                 id: buildingId,
-                date: selectedDate.toISOString().split('T')[0]
+                date: selectedDate.toISOString().split("T")[0],
             },
         });
-    }
+    };
 
     const goToAnalysisPage = () => {
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
         if (sotObject) {
             router.push({
-                pathname: '/admin/analysis/student-on-tour',
+                pathname: "/admin/analysis/student-on-tour",
                 query: { studentOnTour: sotObject.sot.id },
             });
         } else {
             router.push({
-                pathname: '/admin/analysis/worked-hours',
+                pathname: "/admin/analysis/worked-hours",
             });
         }
-        
-    }
+    };
 
     const setupWebsocketsForStudentOnTour = (studentOnTourId: number) => {
         const wsProgress = getStudentOnTourIndividualProgressWS(studentOnTourId);
@@ -173,7 +179,7 @@ function AdminTour() {
 
         wsProgress.addEventListener("message", (event) => {
             const data: ProgressWebSocketResponse = JSON.parse(event.data);
-            setRefreshKey(prevKey => prevKey + 1); // retrigger useEffects
+            setRefreshKey((prevKey) => prevKey + 1); // retrigger useEffects
             setCurrentBuildingIndex(data.current_building_index);
         });
 
@@ -191,31 +197,28 @@ function AdminTour() {
                 });
             }
         });
-        
 
-        return {wsProgress, wsRemarks};
-    }
+        return { wsProgress, wsRemarks };
+    };
 
     // First, fetch all students when the router is ready.
     // Set the selected student ID based on the router query or default to the first student.
     useEffect(() => {
         try {
-        getStudents().then((res) => {
-            const students: User[] = res.data;
-            students.filter((e) => e.role === 4);
-            let currentStudent = students[0];
-            if (query.student) {
-            currentStudent =
-                students.find((e) => e.id === +[query.student]) || students[0];
-            }
-            setSelectedStudentId(currentStudent.id);
-            setSelectedStudentName(userSearchString(currentStudent));
-        });
+            getTourUsers().then((res) => {
+                const students: User[] = res.data;
+                students.filter((e) => e.role === 4);
+                let currentStudent = students[0];
+                if (query.student) {
+                    currentStudent = students.find((e) => e.id === +[query.student]) || students[0];
+                }
+                setSelectedStudentId(currentStudent.id);
+                setSelectedStudentName(userSearchString(currentStudent));
+            });
         } catch (error) {
-        console.error(error);
+            console.error(error);
         }
     }, [router.isReady]);
-
 
     // When selected student ID changes, fetch all tours of that student.
     // Set the selected tour ID based on the router query or default to the first tour.
@@ -236,46 +239,55 @@ function AdminTour() {
         });
     }, [selectedStudentId, refreshKey]);
 
-
     // When selected tour ID changes, fetch details of the tour and update selected tour.
     // Also fetch all buildings on that tour.
     // Also change the validDates
     useEffect(() => {
         if (!selectedTourId) return;
 
-        getTour(selectedTourId).then((res) => {
-        const tour: Tour = res.data;
-        setSelectedTourName(tour.name);
-        }).catch(console.error);
+        getTour(selectedTourId)
+            .then((res) => {
+                const tour: Tour = res.data;
+                setSelectedTourName(tour.name);
+            })
+            .catch(console.error);
 
-        getAllBuildingsOnTourWithTourID(selectedTourId).then((res) => {
-            setAllBuildingsOnTour(res.data);
-        }).catch(console.error);
+        getAllBuildingsOnTourWithTourID(selectedTourId)
+            .then((res) => {
+                setAllBuildingsOnTour(res.data);
+            })
+            .catch(console.error);
 
         updateValidDates(allToursOfStudent, selectedTourId);
     }, [selectedTourId]);
-
 
     // When the list of buildings on tour changes, fetch all building details.
     useEffect(() => {
         if (!allBuildingsOnTour.length) return;
 
         Promise.all(allBuildingsOnTour.map((buildingOnTour) => getBuildingInfo(buildingOnTour.building)))
-        .then((responses) => {
-            setAllBuildings(responses.map(response =>response.data));
-        }).catch(console.error);
+            .then((responses) => {
+                setAllBuildings(responses.map((response) => response.data));
+            })
+            .catch(console.error);
 
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
         if (sotObject) {
-            Promise.all(allBuildingsOnTour.map((buildingOnTour) => getRemarksOfStudentOnTourAtBuilding(buildingOnTour.building, sotObject.sot.id, "OP")))
-            .then((responses) => {
-                let tempRemarksRecord: Record<number, string[]> = {};
-                responses.forEach((res, index) => {
-
-                    tempRemarksRecord[allBuildingsOnTour[index].building] = res.data.map((remark: RemarkAtBuildingInterface) => remark.remark);
-                });
-                setRemarksRecord(tempRemarksRecord);
-            }).catch(console.error);
+            Promise.all(
+                allBuildingsOnTour.map((buildingOnTour) =>
+                    getRemarksOfStudentOnTourAtBuilding(buildingOnTour.building, sotObject.sot.id, "OP")
+                )
+            )
+                .then((responses) => {
+                    let tempRemarksRecord: Record<number, string[]> = {};
+                    responses.forEach((res, index) => {
+                        tempRemarksRecord[allBuildingsOnTour[index].building] = res.data.map(
+                            (remark: RemarkAtBuildingInterface) => remark.remark
+                        );
+                    });
+                    setRemarksRecord(tempRemarksRecord);
+                })
+                .catch(console.error);
         }
     }, [allBuildingsOnTour]);
 
@@ -284,114 +296,134 @@ function AdminTour() {
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
         if (sotObject) {
             setCurrentBuildingIndex(sotObject.current_building_index);
-            getAnalysisStudentOnTour(sotObject.sot.id).then((res) => {
-                const b: BuildingAnalysis[] = res.data;
-                setAnalysis(b);
-            }).catch(console.error);
+            getAnalysisStudentOnTour(sotObject.sot.id)
+                .then((res) => {
+                    const b: BuildingAnalysis[] = res.data;
+                    setAnalysis(b);
+                })
+                .catch(console.error);
 
-
-            const {wsProgress, wsRemarks} = setupWebsocketsForStudentOnTour(sotObject.sot.id);
+            const { wsProgress, wsRemarks } = setupWebsocketsForStudentOnTour(sotObject.sot.id);
 
             setLoading(false);
 
             return () => {
                 wsProgress.close();
                 wsRemarks.close();
-            }
+            };
         }
 
         setLoading(false);
-
     }, [selectedStudentId, selectedTourId, selectedDate]);
 
     if (loading) {
         return (
-        <>
-            <AdminHeader />
-            <Loading />
-        </>
+            <>
+                <AdminHeader />
+                <Loading />
+            </>
         );
     }
 
     return (
         <div>
-        <AdminHeader />
-        <div style={{ display: "flex", marginTop: "10px",marginBottom: "50px", marginLeft: "10px"}}>
-        <div style={{ flex: 1 }}>
-            <StudentAutocomplete
-            initialId={selectedStudentId}
-            setObjectId={setSelectedStudentId}
-            required={false}
-            />
-        </div>
-        <div style={{ flex: 1 }}>
-            <StudentOnTourAutocomplete
-            initialId={selectedTourId}
-            setObjectId={setSelectedTourId}
-            required={false}
-            studentId={selectedStudentId}
-            />
-        </div>
-        <div style={{ flex: 1 }}>
-        <label htmlFor="datepicker">Selecteer datum</label>
-            <ReactDatePicker
-            selected={selectedDate}
-            onChange={(date: Date) => setSelectedDate(date)}
-            highlightDates={validDates} // highlight valid dates
-            filterDate={(date: Date) => validDates.map(d => d.toLocaleDateString()).includes(date.toLocaleDateString())}
-            />
-        </div>
-        </div>
-        {selectedStudentId && (
-            <div style={{ display: "flex", marginLeft: "10px"}}>
-            <div style={{ width: "20%" }}>
-                <h2>{selectedTourName}</h2>
-                <b>Verantwoordelijke:</b>
-                <p>{selectedStudentName}</p>
-                <b>Datum:</b>
-                <p>{selectedDate.toLocaleDateString()}</p>
+            <AdminHeader />
+            <div style={{ display: "flex", marginTop: "10px", marginBottom: "50px", marginLeft: "10px" }}>
+                <div style={{ flex: 1 }}>
+                    <TourUserAutocomplete initialId={selectedStudentId} setObjectId={setSelectedStudentId} />
+                </div>
+                <div style={{ flex: 1 }}>
+                    <StudentOnTourAutocomplete
+                        initialId={selectedTourId}
+                        setObjectId={setSelectedTourId}
+                        required={false}
+                        studentId={selectedStudentId}
+                    />
+                </div>
+                <div style={{ flex: 1 }}>
+                    <label htmlFor="datepicker">Selecteer datum</label>
+                    <ReactDatePicker
+                        selected={selectedDate}
+                        onChange={(date: Date) => setSelectedDate(date)}
+                        highlightDates={validDates} // highlight valid dates
+                        filterDate={(date: Date) =>
+                            validDates.map((d) => d.toLocaleDateString()).includes(date.toLocaleDateString())
+                        }
+                    />
+                </div>
             </div>
+            {selectedStudentId && (
+                <div style={{ display: "flex", marginLeft: "10px" }}>
+                    <div style={{ width: "20%" }}>
+                        <h2>{selectedTourName}</h2>
+                        <b>Verantwoordelijke:</b>
+                        <p>{selectedStudentName}</p>
+                        <b>Datum:</b>
+                        <p>{selectedDate.toLocaleDateString()}</p>
+                    </div>
 
-            <div style={{ width: "80%" }}>
-                <table className="table">
-                <thead>
-                    <tr>
-                    <th>Gebouw</th>
-                    <th>Adres</th>
-                    <th>Status</th>
-                    <th>Tijdstip afwerking</th>
-                    <th>Tijdsduur</th>
-                    <th>Opmerkingen</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {allBuildings.map((building) => {
-                    const ba = getBuildingAnalysis(building.id);
-                    const durationInSeconds = ba ? ba.duration_in_seconds : 0;
-                    const expectedDurationInSeconds = ba ? ba.expected_duration_in_seconds : 0;
-                    const timeColor = getSpentTimeColor(expectedDurationInSeconds, durationInSeconds);
-                    return (
-                        <tr key={building.id}>
-                        <td style={{ textDecoration: "underline", cursor: "pointer" }} onClick={() => goToBuildingPage(building.id)}>
-                            {(building.name) ? building.name : `Gebouw ${getBuildingIndex(building.id)}`}
-                        </td>
-                        <td>{getAddress(building)}</td>
-                        <td>{getBuildingStatus(building.id)}</td>
-                        <td>{getDepartureTimeString(building.id)}</td>
-                        <td style={{ textDecoration: "underline", cursor: "pointer", color: timeColor }} onClick={goToAnalysisPage}>
-                            {getBuildingStatus(building.id) === "Afgewerkt" ? secondsToTime(durationInSeconds) : ""}
-                        </td>
-                        <td style={{ textDecoration: "underline", cursor: "pointer" }} onClick={() => goToBuildingPage(building.id)} title={remarksRecord[building.id] ? remarksRecord[building.id].join('\n') : ''}>
-                            {remarksRecord[building.id] ? remarksRecord[building.id].length : 0}
-                        </td>
-                        </tr>
-                    );
-                    })}
-                </tbody>
-                </table>
-            </div>
-            </div>
-        )}
+                    <div style={{ width: "80%" }}>
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>Gebouw</th>
+                                    <th>Adres</th>
+                                    <th>Status</th>
+                                    <th>Tijdstip afwerking</th>
+                                    <th>Tijdsduur</th>
+                                    <th>Opmerkingen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {allBuildings.map((building) => {
+                                    const ba = getBuildingAnalysis(building.id);
+                                    const durationInSeconds = ba ? ba.duration_in_seconds : 0;
+                                    const expectedDurationInSeconds = ba ? ba.expected_duration_in_seconds : 0;
+                                    const timeColor = getSpentTimeColor(expectedDurationInSeconds, durationInSeconds);
+                                    return (
+                                        <tr key={building.id}>
+                                            <td
+                                                style={{ textDecoration: "underline", cursor: "pointer" }}
+                                                onClick={() => goToBuildingPage(building.id)}
+                                            >
+                                                {building.name
+                                                    ? building.name
+                                                    : `Gebouw ${getBuildingIndex(building.id)}`}
+                                            </td>
+                                            <td>{getAddress(building)}</td>
+                                            <td>{getBuildingStatus(building.id)}</td>
+                                            <td>{getDepartureTimeString(building.id)}</td>
+                                            <td
+                                                style={{
+                                                    textDecoration: "underline",
+                                                    cursor: "pointer",
+                                                    color: timeColor,
+                                                }}
+                                                onClick={goToAnalysisPage}
+                                            >
+                                                {getBuildingStatus(building.id) === "Afgewerkt"
+                                                    ? secondsToTime(durationInSeconds)
+                                                    : ""}
+                                            </td>
+                                            <td
+                                                style={{ textDecoration: "underline", cursor: "pointer" }}
+                                                onClick={() => goToBuildingPage(building.id)}
+                                                title={
+                                                    remarksRecord[building.id]
+                                                        ? remarksRecord[building.id].join("\n")
+                                                        : ""
+                                                }
+                                            >
+                                                {remarksRecord[building.id] ? remarksRecord[building.id].length : 0}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
