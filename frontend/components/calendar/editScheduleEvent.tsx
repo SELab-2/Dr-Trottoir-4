@@ -123,7 +123,7 @@ function EditScheduleEventModal({
                     </Form.Group>
                     <Form.Group className="form-group">
                         <Form.Label>Selecteer student</Form.Label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId}/>
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} matchId={tourId}/>
                     </Form.Group>
                 </Form>
             </Modal.Body>
