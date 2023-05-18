@@ -4,8 +4,13 @@ import PatchBuildingSyndicModal from "@/components/building/buildingComponents/e
 import { BuildingInterface } from "@/lib/building";
 import { getRegion } from "@/lib/region";
 import { useRouter } from "next/router";
+import ManualList from "@/components/manual/ManualList";
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+
+interface BuildingQuery {
+    id?: string;
+}
 
 function BuildingInfo({
     building,
@@ -17,6 +22,8 @@ function BuildingInfo({
     type: "syndic" | "admin" | "public";
 }) {
     const router = useRouter();
+    const query = router.query as BuildingQuery;
+
     const [editBuilding, setEditBuilding] = useState(false);
     const [regionName, setRegionName] = useState("/");
 
@@ -118,6 +125,15 @@ function BuildingInfo({
                         get_building_key("public_id")
                     )}
                 </p>
+            ) : null}
+
+            <br />
+
+            {query.id && type != "public" ? (
+                <>
+                    <h3>Handleiding</h3>
+                    <ManualList id={query.id} type={type} />
+                </>
             ) : null}
         </>
     );
