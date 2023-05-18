@@ -7,6 +7,7 @@ import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
 import { handleError } from "@/lib/error";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
+import LocaleDatePicker from "@/components/datepicker/datepicker";
 
 function AddScheduleEventModal({
     isOpen,
@@ -21,7 +22,7 @@ function AddScheduleEventModal({
 }) {
     const [tourId, setTourId] = useState<number | null>(null);
     const [studentId, setStudentId] = useState<number | null>(null);
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
@@ -61,7 +62,7 @@ function AddScheduleEventModal({
             onHide={() => {
                 setTourId(null);
                 setStudentId(null);
-                setSelectedDate(null);
+                setSelectedDate(new Date());
                 onClose();
             }}
         >
@@ -81,12 +82,7 @@ function AddScheduleEventModal({
                     <div className="form-row">
                         <div className="col">
                             <label>Datum:</label>
-                            <input
-                                type="date"
-                                value={selectedDate ? formatDate(selectedDate) : ""}
-                                onChange={handleStartDateChange}
-                                className="form-control"
-                            />
+                            <LocaleDatePicker setSelectedDate={setSelectedDate} selectedDate={selectedDate}/>
                         </div>
                     </div>
                 </form>
