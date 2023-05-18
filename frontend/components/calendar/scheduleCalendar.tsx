@@ -25,7 +25,7 @@ import CustomDisplay from "@/components/calendar/customEvent";
 import AddScheduleEventModal from "@/components/calendar/addScheduleEvent";
 import { Tour } from "@/lib/tour";
 import { User } from "@/lib/user";
-import {add, addDays, endOfMonth, startOfMonth, sub} from "date-fns";
+import {add, addDays, endOfMonth, endOfWeek, startOfDay, startOfMonth, sub} from "date-fns";
 import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
 import { colors } from "@/components/calendar/colors";
@@ -193,17 +193,19 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
     function onEventDragAndDrop(args: EventInteractionArgs<object>): void {
         const { event, start } = args;
         const scheduleEvent: ScheduleEvent = event as ScheduleEvent;
-        patchStudentOnTour(
-            scheduleEvent.id,
-            scheduleEvent.tour.id,
-            scheduleEvent.student.id,
-            formatDate(new Date(start))
-        ).then(
-            (res) => {
-                onEventEdit(scheduleEvent.id, scheduleEvent.tour.id, scheduleEvent.student.id, new Date(res.data.date));
-            },
-            (err) => setErrorMessages(handleError(err))
-        );
+        if (scheduleEvent.start >= startOfDay(new Date())) {
+            patchStudentOnTour(
+                scheduleEvent.id,
+                scheduleEvent.tour.id,
+                scheduleEvent.student.id,
+                formatDate(new Date(start))
+            ).then(
+                (res) => {
+                    onEventEdit(scheduleEvent.id, scheduleEvent.tour.id, scheduleEvent.student.id, new Date(res.data.date));
+                },
+                (err) => setErrorMessages(handleError(err))
+            );
+        }
     }
 
     function addSingleEvent(sot: StudentOnTour) {
@@ -264,7 +266,7 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
 
     function onEventsDelete(event: ScheduleEvent) {
         const removedTours: ScheduleEvent[] = events.filter((e) => {
-            return e.tour.id == event.tour.id && e.start >= range.start && e.start <= range.end;
+            return e.tour.id == event.tour.id && e.start >= startOfWeek(event.start) && e.start <= endOfWeek(event.start);
         });
         deleteBulkStudentOnTour(
             removedTours.map((event: ScheduleEvent) => {
@@ -330,8 +332,10 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                     onEventSelection(scheduleEvent);
                 }}
                 onSelectSlot={(info) => {
-                    setSelectedDate(info.start);
-                    setPopupIsOpenAdd(true);
+                    if (info.start >= startOfDay(new Date)) {
+                        setSelectedDate(info.start);
+                        setPopupIsOpenAdd(true);
+                    }
                 }}
                 step={60}
                 timeslots={1}

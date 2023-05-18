@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {
     duplicateGarbageCollectionSchedule,
     GarbageCollectionInterface,
-    garbageTypes,
+    garbageTypes, getAllGarbageCollectionChanges,
     getGarbageCollectionFromBuilding,
     getGarbageColor,
 } from "@/lib/garbage-collection";
@@ -99,6 +99,23 @@ function GarbageCollectionSchedule() {
             }
         }, console.error);
     }, [router.isReady]);
+
+    useEffect(() => {
+        setUpWebsocket();
+    }, [allBuildings]);
+
+    function setUpWebsocket() {
+        getAllGarbageCollectionChanges().addEventListener("message", (event) => {
+            const g : GarbageCollectionInterface = JSON.parse(event.data);
+            const obj : GarbageCollectionInterface | undefined =
+                garbageCollectionRef.current.find(col => col.id === Number(g.id));
+            if (obj) {
+                onPatch({...g, date: new Date(g.date)});
+            } else {
+                onPost([{...g, date: new Date(g.date)}]);
+            }
+        })
+    }
 
     // Add the searched building to the list
     useEffect(() => {
@@ -274,7 +291,7 @@ function GarbageCollectionSchedule() {
     // After a successful post of an event, add it to the collections list
     function onPost(g: GarbageCollectionInterface[]) {
         setGarbageCollection((prevState) => {
-            return [...prevState, ...g];
+            return [...prevState, ...g.filter(col => ! prevState.some(gar => gar.id === col.id))];
         });
     }
 
