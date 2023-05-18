@@ -96,7 +96,7 @@ function BuildingInfo({
                         ${getPublicLink()}`}
                             >
                                 <strong>Publiek id:</strong><br/>
-                                {publicId ? (
+                                {publicId && publicId !== "-" ? (
                                     <a href={getPublicLink(false)} target={"_blank"}>
                                         {publicId}
                                     </a>
