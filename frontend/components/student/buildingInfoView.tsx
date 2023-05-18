@@ -101,7 +101,7 @@ export default function BuildingInfoView({
                     <p className="mb-0">{building ? `Gebouw ${currentIndex + 1} / ${amountOfBuildings}` : ""}</p>
                 </div>
             </ListGroupItem>
-            <ListGroupItem className="m-0 p-0">
+            <ListGroupItem style={{minHeight: '120px'}}>
                 <Row>
                     {Object.keys(garbageCollections)
                         .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
@@ -128,7 +128,6 @@ export default function BuildingInfoView({
                                                 color: '#212529',
                                                 paddingTop: 1,
                                                 borderRadius: '2px',
-                                                height: '20px'
                                             }}
                                         >
                                             Geen ophaling

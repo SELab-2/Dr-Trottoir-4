@@ -25,14 +25,12 @@ function Logout() {
 
     return (
         <>
-            <a
-                onClick={(e) => {
-                    e.preventDefault();
-                    setShowModal(true);
-                }}
+            <label
+                style={{cursor: 'clickable'}}
+                onClick={() => {setShowModal(true);}}
             >
                 Log uit
-            </a>
+            </label>
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
