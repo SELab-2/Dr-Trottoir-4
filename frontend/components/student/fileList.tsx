@@ -59,8 +59,11 @@ export function FileList({
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             {editable && (
                 <div>
-                    <label className="form-label">{`Upload foto's ${optional ? "(Optioneel)" : ""}:`}</label>
+                    <label data-testid="upload-label" htmlFor={"photos"} className="form-label">{`Upload foto's ${
+                        optional ? "(Optioneel)" : ""
+                    }:`}</label>
                     <input
+                        id={"photos"}
                         className="form-control"
                         type="file"
                         onChange={(e) => {
@@ -79,7 +82,7 @@ export function FileList({
                                 {`upload_${index + 1}`}
                             </a>
                             {editable && (
-                                <Tooltip arrow placement="right" title="Verwijder">
+                                <Tooltip arrow placement="right" title="Verwijder" data-testid="delete-button">
                                     <IconButton onClick={() => handleRemoveFile(index)}>
                                         <Delete />
                                     </IconButton>

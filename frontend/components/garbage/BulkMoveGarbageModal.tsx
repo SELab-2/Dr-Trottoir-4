@@ -1,19 +1,19 @@
-import React, {useState} from "react";
-import {bulkMoveGarbageCollectionSchedule, garbageTypes} from "@/lib/garbage-collection";
-import {handleError} from "@/lib/error";
-import {formatDate} from "@/lib/date";
-import {Button, Form, Modal} from "react-bootstrap";
-import {addDays} from "date-fns";
-import {BuildingInterface} from "@/lib/building";
+import React, { useState } from "react";
+import { bulkMoveGarbageCollectionSchedule, garbageTypes } from "@/lib/garbage-collection";
+import { handleError } from "@/lib/error";
+import { formatDate } from "@/lib/date";
+import { Button, Form, Modal } from "react-bootstrap";
+import { addDays } from "date-fns";
+import { BuildingInterface } from "@/lib/building";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import LocaleDatePicker from "@/components/datepicker/datepicker";
 import Select from "react-select";
 
 export default function BulkMoveGarbageModal({
-                                                 show,
-                                                 buildings,
-                                                 closeModal,
-                                             }: {
+    show,
+    buildings,
+    closeModal,
+}: {
     show: boolean;
     buildings: BuildingInterface[];
     closeModal: () => void;
@@ -63,31 +63,26 @@ export default function BulkMoveGarbageModal({
             <Modal.Header>
                 <Modal.Title>Bulk operatie voor geselecteerde gebouwen</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <Form.Group>
                         <Form.Label>Verplaats van:</Form.Label>
-                        <LocaleDatePicker
-                            selectedDate={dateToMove}
-                            setSelectedDate={setDateToMove}
-                        />
+                        <LocaleDatePicker selectedDate={dateToMove} setSelectedDate={setDateToMove} />
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>naar:</Form.Label>
-                        <LocaleDatePicker
-                            selectedDate={moveToDate}
-                            setSelectedDate={setMoveToDate}
-                        />
+                        <LocaleDatePicker selectedDate={moveToDate} setSelectedDate={setMoveToDate} />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Type:</Form.Label>
+                        <Form.Label id={"type"}>Type:</Form.Label>
                         <Select
+                            aria-labelledby={"type"}
                             options={Object.keys(garbageTypes).map((key: string) => {
                                 const v = garbageTypes[key];
-                                return {value: v, label: v};
+                                return { value: v, label: v };
                             })}
-                            value={garbageType ? {value: garbageType, label: garbageType} : {}}
+                            value={garbageType ? { value: garbageType, label: garbageType } : {}}
                             onChange={(s) => {
                                 if (s && s.value) {
                                     setGarbageType(s.value);
