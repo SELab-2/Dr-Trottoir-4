@@ -109,7 +109,7 @@ export default function PlannedBuildingList({
             <div className="mt-3 mb-1 ms-2 me-2">
                 <span className="h1 fw-bold">{tour ? `Ronde ${tour?.name}` : ""}</span>
                 <p className="h5 fw-bold">{region ? `Regio ${region}` : ""}</p>
-                <p className="h">{studentOnTour ? studentOnTour.date.toLocaleDateString("en-GB") : ""}</p>
+                <p className="h">{studentOnTour ? studentOnTour.date.toLocaleDateString("nl-BE") : ""}</p>
                 {buildings.length > 0 && (
                     <>
                         <p>Gebouwen op deze ronde:</p>
@@ -153,13 +153,13 @@ export default function PlannedBuildingList({
                         !datesEqual(new Date(), studentOnTour.date) &&
                         new Date() < studentOnTour.date && (
                             <p>{`U kan deze ronde nog niet starten, kom terug op ${studentOnTour.date.toLocaleDateString(
-                                "en-GB"
+                                "nl-BE"
                             )}`}</p>
                         )}
                     {studentOnTour &&
                         ((!datesEqual(new Date(), studentOnTour.date) && new Date() > studentOnTour.date) ||
                             studentOnTour.completed_tour) && (
-                            <p>{`U hebt deze ronde afgewerkt op ${studentOnTour.date.toLocaleDateString("en-GB")}.`}</p>
+                            <p>{`U hebt deze ronde afgewerkt op ${studentOnTour.date.toLocaleDateString("nl-BE")}.`}</p>
                         )}
                 </div>
             </div>
