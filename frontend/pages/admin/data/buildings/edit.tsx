@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { Form } from "react-bootstrap";
+import {Button, Form} from "react-bootstrap";
 import { getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding } from "@/lib/building";
 import { getRegion } from "@/lib/region";
 import { getUserInfo } from "@/lib/user";
@@ -193,20 +193,20 @@ function AdminDataBuildingsEdit() {
                         initialId={regionId}
                         setObjectId={setRegionId}
                         required={true}
-                    ></RegionAutocomplete>
+                    />
                     <SyndicAutoCompleteComponent
                         initialId={syndicId}
                         setObjectId={setSyndicId}
                         required={true}
-                    ></SyndicAutoCompleteComponent>
-                    {!router.query.building && <PDFUploader onUpload={setManual}></PDFUploader>}
+                    />
+                    {!router.query.building && <PDFUploader onUpload={setManual}/>}
                 </Form>
-                <button onClick={goBack} className="ml-2">
+                <Button variant="secondary" className="btn-light" onClick={goBack}>
                     Terug
-                </button>
-                <button onClick={handleSubmit} type="button">
+                </Button>
+                <Button variant="primary" className="btn-dark" onClick={handleSubmit}>
                     Opslaan
-                </button>
+                </Button>
             </div>
         </>
     );

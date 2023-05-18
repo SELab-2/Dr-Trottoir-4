@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import styles from "@/components/header/roleHeader.module.css";
 import Image from "next/image";
 import logo from "@/public/logo.png";
@@ -9,6 +9,25 @@ import Logout from "@/components/logout";
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 
 const AdminHeader = () => {
+    const [isDropdownPlanningHovered, setIsDropdownPlanningHovered] = useState(false);
+    const [isDropdownDataHovered, setIsDropdownDataHovered] = useState(false);
+
+    const handlePlanningDropdownMouseEnter = () => {
+        setIsDropdownPlanningHovered(true);
+    };
+
+    const handlePlanningDropdownMouseLeave = () => {
+        setIsDropdownPlanningHovered(false);
+    };
+
+    const handleDataDropdownMouseEnter = () => {
+        setIsDropdownDataHovered(true);
+    };
+
+    const handleDataDropdownMouseLeave = () => {
+        setIsDropdownDataHovered(false);
+    };
+
     return (
         <Navbar bg="dark" variant="dark" expand="lg">
             <div className="container-fluid">
@@ -23,14 +42,27 @@ const AdminHeader = () => {
                             Dashboard
                         </Nav.Link>
                         <NavDropdown
+                            title="Planning"
+                            className={styles.text}
+                            id="navbarDropdownData"
+                            menuVariant="dark"
+                            show={isDropdownPlanningHovered}
+                            onMouseEnter={handlePlanningDropdownMouseEnter}
+                            onMouseLeave={handlePlanningDropdownMouseLeave}
+                        >
+                            <NavDropdown.Item href="/admin/data/schedules">Rondes</NavDropdown.Item>
+                            <NavDropdown.Item href="/admin/data/garbage-collection">Vuilophaling</NavDropdown.Item>
+                        </NavDropdown>
+                        <NavDropdown
                             title="Data"
                             className={styles.text}
                             id="navbarDropdownData"
                             menuVariant="dark"
+                            show={isDropdownDataHovered}
+                            onMouseEnter={handleDataDropdownMouseEnter}
+                            onMouseLeave={handleDataDropdownMouseLeave}
                         >
                             <NavDropdown.Item href="/admin/data/users">Gebruikers</NavDropdown.Item>
-                            <NavDropdown.Item href="/admin/data/schedules">Planning</NavDropdown.Item>
-                            <NavDropdown.Item href="/admin/data/garbage-collection">Vuilophaling</NavDropdown.Item>
                             <NavDropdown.Item href="/admin/data/tours">Rondes</NavDropdown.Item>
                             <NavDropdown.Item href="/admin/data/buildings">Gebouwen</NavDropdown.Item>
                             <NavDropdown.Item href="/admin/data/regions">Regio's</NavDropdown.Item>
@@ -49,14 +81,18 @@ const AdminHeader = () => {
                     </Nav>
                 </Navbar.Collapse>
                 <div style={{display: 'flex', alignItems: 'center'}}>
-                    <Navbar.Toggle className={styles.menuIcon} aria-controls="navbarSupportedContent"
-                                   aria-label="Toggle navigation">
+                    <Navbar.Toggle
+                        className={styles.menuIcon}
+                        aria-controls="navbarSupportedContent"
+                        aria-label="Toggle navigation"
+                    >
                         <Image src={menu} alt="My App Menu" height={24}/>
                     </Navbar.Toggle>
                     <NavDropdown
                         id="navbarDropdown1"
                         menuVariant="dark"
                         align="end"
+                        style={{marginLeft: '10px', marginRight: '-10px'}}
                         title={
                             <Image
                                 src={person}
@@ -68,9 +104,9 @@ const AdminHeader = () => {
                     >
                         <NavDropdown.Item href="/user/profile">Bewerk account</NavDropdown.Item>
                         <NavDropdown.Divider/>
-                        <NavDropdown.ItemText>
+                        <NavDropdown.Item>
                             <Logout/>
-                        </NavDropdown.ItemText>
+                        </NavDropdown.Item>
                     </NavDropdown>
                 </div>
             </div>

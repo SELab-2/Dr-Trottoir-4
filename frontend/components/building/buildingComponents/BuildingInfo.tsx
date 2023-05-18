@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {TiPencil} from "react-icons/ti";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
 import {BuildingInterface} from "@/lib/building";
 import {getRegion} from "@/lib/region";
@@ -58,68 +59,69 @@ function BuildingInfo({
 
     return (
         <div>
-            <div>
-                {type === "syndic" && (
-                    <PatchBuildingSyndicModal
-                        show={editBuilding}
-                        closeModal={() => setEditBuilding(false)}
-                        building={building}
-                        setBuilding={setBuilding}
-                    />
-                )}
-                <label className="title">
-                    Gebouw
-                </label>
-                {building && (
-                    <div>
-                        < p>
-                            < strong> Naam:</strong> {building.name ? building.name : "-"}
-                        </p>
-                        <strong>Adres:</strong>
-                        <p>
-                            {building.street} {building.house_number}, {building.bus}
-                            <br/>
-                            {building.city} {building.postal_code}
-                        </p>
-                        <p>
-                            <strong>Regio:</strong> {regionName}
-                        </p>
-                        <p>
-                            <strong>Werktijd:</strong> {building.duration}
-                        </p>
-                        <p>
-                            <strong>Klant id:</strong> {building.client_number ? building.client_number : "-"}
-                        </p>
-                        {type != "public" ? (
-                            <p
-                                title={`De inwoners van het gebouw kunnen de info van dit gebouw raadplegen via de link: 
+            {type === "syndic" && (
+                <PatchBuildingSyndicModal
+                    show={editBuilding}
+                    closeModal={() => setEditBuilding(false)}
+                    building={building}
+                    setBuilding={setBuilding}
+                />
+            )}
+            <label className="title">
+                Gebouw
+            </label>
+            {building && (
+                <div>
+                    < p>
+                        < strong> Naam:</strong> {building.name ? building.name : "-"}
+                    </p>
+                    <strong>Adres:</strong>
+                    <p>
+                        {building.street} {building.house_number}, {building.bus}
+                        <br/>
+                        {building.city} {building.postal_code}
+                    </p>
+                    <p>
+                        <strong>Regio:</strong> {regionName}
+                    </p>
+                    <p>
+                        <strong>Werktijd:</strong> {building.duration}
+                    </p>
+                    <p>
+                        <strong>Klant id:</strong> {building.client_number ? building.client_number : "-"}
+                    </p>
+                    {type != "public" ? (
+                        <p style={{wordWrap: 'break-word', width: '100%', maxWidth: '100%'}}
+                            title={`De inwoners van het gebouw kunnen de info van dit gebouw raadplegen via de link: 
                         ${getPublicLink()}`}
-                            >
-                                <strong>Publiek id:</strong><br/>
-                                {publicId && publicId !== "-" ? (
-                                    <a href={getPublicLink(false)} target={"_blank"}>
-                                        {publicId}
-                                    </a>
-                                ) : (
-                                    publicId
-                                )}
-                            </p>
-                        ) : null}
-                    </div>
-                )}
-                {type === "syndic" && (
-                    <div className="padding" style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                        <Button
-                            size="lg"
-                            className="wide_button"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                setEditBuilding(true);
-                            }}
-                        >Bewerk</Button>
-                    </div>
-                )}
-            </div>
+                        >
+                            <strong>Publiek id:</strong><br/>
+                            {publicId && publicId !== "-" ? (
+                                <a href={getPublicLink(false)} target={"_blank"}>
+                                    {publicId}
+                                </a>
+                            ) : (
+                                publicId
+                            )}
+                        </p>
+                    ) : null}
+                </div>
+            )}
+            {type === "syndic" && (
+                <div className="padding" style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+
+                    <Button
+                        size="lg"
+                        className="wide_button"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setEditBuilding(true);
+                        }}
+                    >
+                        <TiPencil/> Bewerk
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }
