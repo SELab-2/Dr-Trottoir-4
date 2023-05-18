@@ -43,17 +43,9 @@ const AutocompleteComponent: React.FC<Props> = ({initialId, label, fetchOptions,
     const [value, setValue] = React.useState<any>();
     const [inputValue, setInputValue] = useState("");
     const [options, setOptions] = useState<string[]>([]);
-    const [open, setOpen] = React.useState(false);
-    const loading = open && options.length === 0;
 
     useEffect(() => {
-        let active = true;
-
-        if (!loading) {
-            return undefined;
-        }
-
-        (async () => {
+        async function fetch() {
             try {
                 const res = await fetchOptions();
                 let availableOptions: any[] = [];
@@ -71,20 +63,10 @@ const AutocompleteComponent: React.FC<Props> = ({initialId, label, fetchOptions,
             } catch (err) {
                 console.error(err);
             }
-        })().then();
-
-        return () => {
-            active = false;
-        };
-
-
-    }, [loading]);
-
-    React.useEffect(() => {
-        if (!open) {
-            setOptions([]);
         }
-    }, [open]);
+
+        fetch().then();
+    }, [fetchOptions, initialId]);
 
     return (
         <>
@@ -94,13 +76,6 @@ const AutocompleteComponent: React.FC<Props> = ({initialId, label, fetchOptions,
                 //implementations checks whether options === value
                 isOptionEqualToValue={(option: { toString: () => any }, value: { toString: () => any }) => true}
                 value={value ?? ""}
-                open={open}
-                onOpen={() => {
-                    setOpen(true);
-                }}
-                onClose={() => {
-                    setOpen(false);
-                }}
                 inputValue={inputValue}
                 onChange={(e: React.SyntheticEvent, newValue: any) => {
                     if (newValue) {
@@ -108,30 +83,16 @@ const AutocompleteComponent: React.FC<Props> = ({initialId, label, fetchOptions,
                         setObjectId(newValue.id);
                     } else {
                         setValue("");
-                        setObjectId(0);
+                        setObjectId(-1);
                     }
                 }}
                 onInputChange={(e: React.SyntheticEvent, newInputValue: string) => {
                     setInputValue(newInputValue);
                 }}
                 options={options}
-                loading={loading}
                 getOptionLabel={(option: any) => option.label || ""}
                 renderInput={(params: AutocompleteRenderInputParams) => (
-                    <TextField
-                        {...params}
-                        variant="outlined"
-                        fullWidth
-                        InputProps={{
-                            ...params.InputProps,
-                            endAdornment: (
-                                <React.Fragment>
-                                    {loading ? <CircularProgress color="inherit" size={20}/> : null}
-                                    {params.InputProps.endAdornment}
-                                </React.Fragment>
-                            ),
-                        }}
-                    />
+                    <TextField {...params} variant="outlined" fullWidth/>
                 )}
             />
         </>

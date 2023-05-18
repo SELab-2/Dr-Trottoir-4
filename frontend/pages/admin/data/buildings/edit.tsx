@@ -39,7 +39,7 @@ function AdminDataBuildingsEdit() {
     const [validated, setValidated] = useState<boolean>(false);
     const [durationInMinutes, setDurationInMinutes] = useState<number>(0);
     const [buildingComments, setBuildingComments] = useState<string>("");
-    const [buildingCommentsId, setBuildingCommentsId] = useState<number | undefined>(undefined);
+    const [buildingCommentsId, setBuildingCommentsId] = useState<number>(-1);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
@@ -65,7 +65,7 @@ function AdminDataBuildingsEdit() {
                 let buildingId = Number(router.query.building);
                 if (router.query.building) {
                     await patchBuilding(building, Number(router.query.building));
-                    if (buildingCommentsId) {
+                    if (buildingCommentsId >= 0) {
                         if (buildingComments) {
                             await patchBuildingComment({
                                 building: Number(router.query.building),
@@ -73,7 +73,7 @@ function AdminDataBuildingsEdit() {
                             }, buildingCommentsId);
                         } else {
                             await deleteBuildingComment(buildingCommentsId);
-                            setBuildingCommentsId(undefined);
+                            setBuildingCommentsId(-1);
                         }
                     } else {
                         if (buildingComments) {
