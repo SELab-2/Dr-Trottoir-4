@@ -2,7 +2,7 @@ import React, {ChangeEvent, useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {Form} from "react-bootstrap";
 import {
-    deleteBuilding, deleteBuildingComment,
+    deleteBuildingComment,
     getBuildingComment,
     getBuildingInfo,
     getDurationFromMinutes,
@@ -19,7 +19,6 @@ import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
-import UsersFromRegionAutocomplete from "@/components/autocompleteComponents/userFromRegionAutocomplete";
 import SyndicAutocomplete from "@/components/autocompleteComponents/syndicAutocomplete";
 
 function AdminDataBuildingsEdit() {
@@ -35,7 +34,7 @@ function AdminDataBuildingsEdit() {
     const [syndicId, setSyndicId] = useState<number>(-1); //used for collecting the right id to post/patch
     const [manual, setManual] = useState<File | null>(null);
     const [duration, setDuration] = useState<string>("00:00");
-    const [public_id, setPublicId] = useState<string>("");
+    const [publicId, setPublicId] = useState<string>("");
     const [validated, setValidated] = useState<boolean>(false);
     const [durationInMinutes, setDurationInMinutes] = useState<number>(0);
     const [buildingComments, setBuildingComments] = useState<string>("");
@@ -59,7 +58,7 @@ function AdminDataBuildingsEdit() {
                 client_number: clientNumber,
                 duration: getDurationFromMinutes(durationInMinutes),
                 region: regionId,
-                public_id: public_id,
+                public_id: publicId,
             };
             try {
                 if (router.query.building) {
@@ -126,6 +125,7 @@ function AdminDataBuildingsEdit() {
                     setBuildingComments(comments.data.comment);
                     setBuildingCommentsId(comments.data.id);
                 }
+                setPublicId(res.data.public_id);
                 return true;
             });
         }
@@ -215,6 +215,15 @@ function AdminDataBuildingsEdit() {
                             type="text"
                             value={clientNumber}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => setClientNumber(e.target.value)}
+                        />
+                    </Form.Group>
+
+                    <Form.Group controlId="publicId">
+                        <Form.Label>Publieke identificatie (voor bewoners)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={publicId}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setPublicId(e.target.value)}
                         />
                     </Form.Group>
 
