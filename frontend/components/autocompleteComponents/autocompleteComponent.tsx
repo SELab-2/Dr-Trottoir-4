@@ -24,6 +24,7 @@ interface Props {
     fetchOptions: () => Promise<AxiosResponse<any>>;
     mapping: (value: any) => any;
     setObjectId: (value: any) => void;
+    disabled?: boolean;
 }
 
 export interface GenericProps {
@@ -43,9 +44,10 @@ export interface StudentOnTourProps {
     setObjectId: (value: any) => void;
     required: boolean;
     studentId: number;
+    disabled?: boolean;
 }
 
-const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions, mapping, setObjectId }) => {
+const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions, mapping, setObjectId, disabled = false }) => {
     const [value, setValue] = React.useState<any>();
     const [inputValue, setInputValue] = useState("");
     const [options, setOptions] = useState<string[]>([]);
@@ -94,6 +96,7 @@ const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions
                 }}
                 options={options}
                 getOptionLabel={(option: any) => option.label || ""}
+                disabled={disabled}
                 renderInput={(params: AutocompleteRenderInputParams) => (
                     <TextField {...params} variant="outlined" fullWidth />
                 )}

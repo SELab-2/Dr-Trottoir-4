@@ -53,6 +53,7 @@ function AdminTour() {
     const [remarksRecord, setRemarksRecord] = useState<Record<number, string[]>>({});
     const [currentBuildingIndex, setCurrentBuildingIndex] = useState(0);
     const [refreshKey, setRefreshKey] = useState(0);
+    const [validTourUser, setValidTourUser] = useState(true); 
 
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
@@ -228,14 +229,21 @@ function AdminTour() {
 
         getToursOfStudent(selectedStudentId).then((res) => {
             const sots: StudentOnTour[] = res.data;
-            setAllToursOfStudent(sots);
-            let currentSot = sots[0];
-            if (query.tour) {
-                currentSot = sots.find((e) => e.tour === +[query.tour]) || sots[0];
-            }
-            setSelectedTourId(currentSot.tour);
+            if (sots.length) {
+                setValidTourUser(true);
+                setAllToursOfStudent(sots);
+                let currentSot = sots[0];
+                if (query.tour) {
+                    currentSot = sots.find((e) => e.tour === +[query.tour]) || sots[0];
+                }
+                console.log(currentSot);
+                setSelectedTourId(currentSot.tour);
 
-            updateValidDates(sots, currentSot.tour);
+                updateValidDates(sots, currentSot.tour);
+            } else {
+                setValidTourUser(false);
+            }
+            
         });
     }, [selectedStudentId, refreshKey]);
 
@@ -243,7 +251,7 @@ function AdminTour() {
     // Also fetch all buildings on that tour.
     // Also change the validDates
     useEffect(() => {
-        if (!selectedTourId) return;
+        if (!selectedTourId || !validTourUser) return;
 
         getTour(selectedTourId)
             .then((res) => {
@@ -263,7 +271,7 @@ function AdminTour() {
 
     // When the list of buildings on tour changes, fetch all building details.
     useEffect(() => {
-        if (!allBuildingsOnTour.length) return;
+        if (!allBuildingsOnTour.length || !validTourUser) return;
 
         Promise.all(allBuildingsOnTour.map((buildingOnTour) => getBuildingInfo(buildingOnTour.building)))
             .then((responses) => {
@@ -293,6 +301,8 @@ function AdminTour() {
 
     // Get new analysis upon change of the student, tour or date
     useEffect(() => {
+        if (!validTourUser) return;
+
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
         if (sotObject) {
             setCurrentBuildingIndex(sotObject.current_building_index);
@@ -330,6 +340,7 @@ function AdminTour() {
             <AdminHeader />
             <div style={{ display: "flex", marginTop: "10px", marginBottom: "50px", marginLeft: "10px" }}>
                 <div style={{ flex: 1 }}>
+                <label style={{marginBottom: "10px"}}  htmlFor="tourautocomplete">Selecteer student</label>
                     <TourUserAutocomplete initialId={selectedStudentId} setObjectId={setSelectedStudentId} />
                 </div>
                 <div style={{ flex: 1 }}>
@@ -338,10 +349,11 @@ function AdminTour() {
                         setObjectId={setSelectedTourId}
                         required={false}
                         studentId={selectedStudentId}
+                        disabled={!validTourUser}
                     />
                 </div>
                 <div style={{ flex: 1 }}>
-                    <label htmlFor="datepicker">Selecteer datum</label>
+                    <label style={{marginBottom: "10px"}} htmlFor="datepicker">Selecteer datum</label>
                     <ReactDatePicker
                         selected={selectedDate}
                         onChange={(date: Date) => setSelectedDate(date)}
@@ -349,10 +361,11 @@ function AdminTour() {
                         filterDate={(date: Date) =>
                             validDates.map((d) => d.toLocaleDateString()).includes(date.toLocaleDateString())
                         }
+                        disabled={!validTourUser}
                     />
                 </div>
             </div>
-            {selectedStudentId && (
+            {validTourUser ? (
                 <div style={{ display: "flex", marginLeft: "10px" }}>
                     <div style={{ width: "20%" }}>
                         <h2>{selectedTourName}</h2>
@@ -427,6 +440,10 @@ function AdminTour() {
                             </tbody>
                         </table>
                     </div>
+                </div>
+            ): (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center"}}>
+                    <h3>Deze gebruiker heeft nog geen rondes gedaan.</h3>
                 </div>
             )}
         </div>
