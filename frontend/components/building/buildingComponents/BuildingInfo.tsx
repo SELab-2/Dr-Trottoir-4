@@ -147,6 +147,20 @@ function BuildingInfo({
                         className="wide_button"
                         onClick={(e) => {
                             e.preventDefault();
+                            setEditBuilding(true);
+                        }}
+                    >
+                        <TiPencil /> Bewerk
+                    </Button>
+                </div>
+            )}
+            {type === "admin" && (
+                <div className="padding" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Button
+                        size="lg"
+                        className="wide_button"
+                        onClick={(e) => {
+                            e.preventDefault();
                             router.push(`/admin/data/buildings/edit?building=${building.id}`);
                         }}
                     >
@@ -157,5 +171,4 @@ function BuildingInfo({
         </div>
     );
 }
-
 export default BuildingInfo;
