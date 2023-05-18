@@ -51,6 +51,20 @@ export default function RemarkModal({
     useEffect(() => {
         if (selectedRemark) {
             setRemark(selectedRemark.remark);
+            getPictureOfRemarkOfSpecificRemark(selectedRemark.id)
+                .then((res) => {
+                    const pictures: PictureOfRemarkInterface[] = res.data;
+                    setRemarkFiles(
+                        pictures.map((picture) => {
+                            return {
+                                url: getPicturePath(picture.picture),
+                                pictureId: picture.id,
+                                file: null,
+                            };
+                        })
+                    );
+                })
+                .catch(err => setErrorMessages(handleError(err)));
         } else {
             setRemark("");
             setRemarkFiles([]);
@@ -92,7 +106,7 @@ export default function RemarkModal({
                     onPost(r);
                     remarkFiles.forEach((f: FileListElement) => {
                         if (f.file) {
-                            postPictureOfRemark(f.file, r.id).catch(console.error);
+                            postPictureOfRemark(f.file, r.id).catch(err => setErrorMessages(handleError(err)));
                         }
                     });
                     closeModal();
@@ -111,7 +125,7 @@ export default function RemarkModal({
             }
             remarkFiles.forEach((f: FileListElement) => {
                 if (f.file) {
-                    postPictureOfRemark(f.file, selectedRemark.id).catch(console.error);
+                    postPictureOfRemark(f.file, selectedRemark.id).catch(err => setErrorMessages(handleError(err)));
                 }
             });
             closeModal();

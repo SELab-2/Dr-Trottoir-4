@@ -38,7 +38,7 @@ export default function EditLobbyModal({
         getAllRoles().then((res) => {
             const r: Role[] = res.data;
             setAllRoles(r);
-        }, console.error);
+        }, err => setErrorMessages(handleError(err)));
     }, []);
 
     useEffect(() => {
@@ -119,7 +119,7 @@ export default function EditLobbyModal({
             const lobby: Lobby = res.data;
             setVerificationCode(lobby.verification_code);
             onNewVerificationCode(lobby);
-        }, console.error);
+        }, err => setErrorMessages(handleError(err)));
     }
 
     function hideModal() {

@@ -5,6 +5,8 @@ import { getRemarksOfStudentOnTourAtBuilding, RemarkAtBuilding } from "@/lib/rem
 import { StudentOnTour } from "@/lib/student-on-tour";
 import { getPictureOfRemarkOfSpecificRemark, getPicturePath, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
 import { FileList } from "@/components/student/fileList";
+import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function FinishedBuildingModal({
     show,
@@ -22,26 +24,31 @@ export default function FinishedBuildingModal({
     const typeNames: string[] = ["Aankomst", "Binnen", "Vertrek", "Opmerkingen"];
     const [remarks, setRemarks] = useState<RemarkAtBuilding[]>([]);
     const [picturesOfRemarks, setPicturesOfRemarks] = useState<{ [remarkId: number]: PictureOfRemarkInterface[] }>({});
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (!building || !studentOnTour) {
             return;
         }
-        getRemarksOfStudentOnTourAtBuilding(building.id, studentOnTour.id).then((res) => {
-            const r: RemarkAtBuilding[] = res.data;
-            setRemarks(r);
-            const pictures: { [remarkId: number]: PictureOfRemarkInterface[] } = {};
-            r.forEach((remark) => (pictures[remark.id] = []));
-            Promise.all(r.map((remark) => getPictureOfRemarkOfSpecificRemark(remark.id))).then((results: any[]) => {
-                results.forEach((res) => {
-                    const p: PictureOfRemarkInterface[] = res.data;
-                    if (p.length > 0) {
-                        pictures[p[0].remark_at_building] = p;
-                    }
-                });
-                setPicturesOfRemarks(pictures);
-            }, console.error);
-        }, console.error);
+        getRemarksOfStudentOnTourAtBuilding(building.id, studentOnTour.id)
+            .then((res) => {
+                const r: RemarkAtBuilding[] = res.data;
+                setRemarks(r);
+                const pictures: { [remarkId: number]: PictureOfRemarkInterface[] } = {};
+                r.forEach((remark) => (pictures[remark.id] = []));
+                Promise.all(r.map((remark) => getPictureOfRemarkOfSpecificRemark(remark.id)))
+                    .then((results: any[]) => {
+                        results.forEach((res) => {
+                            const p: PictureOfRemarkInterface[] = res.data;
+                            if (p.length > 0) {
+                                pictures[p[0].remark_at_building] = p;
+                            }
+                        });
+                        setPicturesOfRemarks(pictures);
+                    })
+                    .catch((err) => setErrorMessages(handleError(err)));
+            })
+            .catch((err) => setErrorMessages(handleError(err)));
     }, [building]);
 
     function getRemarksOfType(type: string): RemarkAtBuilding[] {
@@ -61,6 +68,7 @@ export default function FinishedBuildingModal({
                 <Modal.Title>Overzicht gebouw</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
                 {["AA", "BI", "VE", "OP"].map((t, index) => (
                     <div className="ms-2 me-2" key={index}>
                         {getRemarksOfType(t).length > 0 && (
