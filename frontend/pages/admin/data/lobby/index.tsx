@@ -10,6 +10,7 @@ import { Button } from "react-bootstrap";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import EditLobbyModal from "@/components/admin/editLobbyModal";
 import { withAuthorisation } from "@/components/withAuthorisation";
+import {handleError} from "@/lib/error";
 
 function LobbyPage() {
     const { t } = useTranslation();
@@ -18,6 +19,8 @@ function LobbyPage() {
     const [showCreateLobbyModal, setShowCreateLobbyModal] = useState<boolean>(false);
     const [showRemoveDialog, setShowRemoveDialog] = useState<boolean>(false);
     const [selectedLobby, setSelectedLobby] = useState<Lobby | null>(null);
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     // The columns for the lobby table
     const columns = useMemo<MRT_ColumnDef<Lobby>[]>(
@@ -88,7 +91,7 @@ function LobbyPage() {
                 setLoading(false);
             },
             (err) => {
-                console.error(err);
+                handleError(err)
             }
         );
     }
@@ -152,7 +155,7 @@ function LobbyPage() {
             setSelectedLobby(null);
             setShowRemoveDialog(false);
             hideModal();
-        }, console.error);
+        }, err => handleError(err));
     }
 
     return (

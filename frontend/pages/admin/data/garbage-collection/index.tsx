@@ -19,7 +19,6 @@ import { add, addDays, endOfMonth, startOfMonth, sub } from "date-fns";
 import { useRouter } from "next/router";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
-import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 import { Button } from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
 import { GarbageCollectionEvent } from "@/types";
@@ -29,8 +28,11 @@ import { getBuildingsOfTour } from "@/lib/tour";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 import BulkMoveGarbageModal from "@/components/garbage/BulkMoveGarbageModal";
 import { AxiosResponse } from "axios";
+import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 
 interface ParsedUrlQuery {}
 
@@ -69,6 +71,8 @@ function GarbageCollectionSchedule() {
 
     const [buildingList, setBuildingList] = useState<BuildingInterface[]>([]);
 
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
     useEffect(() => {
         const query: DataBuildingQuery = router.query as DataBuildingQuery;
         // Get all the buildings
@@ -90,7 +94,7 @@ function GarbageCollectionSchedule() {
             if (query.region) {
                 addBuildingsOfRegion(d, query.region);
             }
-        }, console.error);
+        }, err => setErrorMessages(handleError(err)));
     }, [router.isReady]);
 
     // Add the searched building to the list
@@ -129,7 +133,7 @@ function GarbageCollectionSchedule() {
             setGarbageCollection((prevState) => {
                 return [...prevState, ...data];
             });
-        }, console.error);
+        }, err => setErrorMessages(handleError(err)));
     }
 
     // Adds the garbage schedule for all the buildings of a given tour
@@ -142,7 +146,7 @@ function GarbageCollectionSchedule() {
                 return newState;
             });
             addBuildingsToList(buildings);
-        }, console.error);
+        }, err => setErrorMessages(handleError(err)));
     }
 
     function addBuildingsToList(buildings: BuildingInterface[]) {
@@ -167,7 +171,7 @@ function GarbageCollectionSchedule() {
             setGarbageCollection((prevState) => {
                 return [...prevState, ...data];
             });
-        }, console.error);
+        }, err => setErrorMessages(handleError(err)));
     }
 
     // Remove a building from the schedule
@@ -218,7 +222,7 @@ function GarbageCollectionSchedule() {
                 const newState: GarbageCollectionInterface[] = [...prevState];
                 return newState.filter((g) => !tourBuildings.some((b) => g.building === b.id));
             });
-        }, console.error);
+        }, err => setErrorMessages(handleError(err)));
     }
 
     // Get the garbage collection schedule from a date range
@@ -241,7 +245,7 @@ function GarbageCollectionSchedule() {
                 const data = g.map((el) => el.data).flat();
                 setGarbageCollection(data);
             },
-            console.error
+            err => setErrorMessages(handleError(err))
         );
     }
 
@@ -328,6 +332,7 @@ function GarbageCollectionSchedule() {
     return (
         <>
             <AdminHeader />
+            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
             <DuplicateScheduleModal
                 closeModal={closeDuplicateModal}
                 show={showDuplicateModal}
