@@ -239,6 +239,11 @@
     display: none;
 }
 
+.card:hover {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
 @media (prefers-color-scheme: light) {
     html {
         color-scheme: light;

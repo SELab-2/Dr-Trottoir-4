@@ -5,7 +5,7 @@ import BaseHeader from "@/components/header/baseHeader";
 function PublicBuilding() {
     return (
         <>
-            <BaseHeader />
+            <BaseHeader/>
             <BuildingPage type={"public"} />
         </>
     );
