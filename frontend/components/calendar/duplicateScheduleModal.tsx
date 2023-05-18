@@ -33,7 +33,6 @@ export default function DuplicateScheduleModal({
             setErrorMessages(["Einddatum moet na begindatum komen."]);
             return;
         }
-
         // Add a day for startDate & copyToDate because backend starts week from monday
         const start = weekStartsOn === 0 ? addDays(startDate, 1) : startDate;
         const copy = weekStartsOn === 0 ? addDays(copyToDate, 1) : copyToDate;
