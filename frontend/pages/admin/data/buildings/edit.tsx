@@ -12,7 +12,7 @@ import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 import { postManual } from "@/lib/building-manual";
 
 function AdminDataBuildingsEdit() {

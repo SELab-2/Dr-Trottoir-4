@@ -5,16 +5,16 @@ import { getRemarksOfStudentOnTourAtBuilding, RemarkAtBuilding } from "@/lib/rem
 import { StudentOnTour } from "@/lib/student-on-tour";
 import { getPictureOfRemarkOfSpecificRemark, getPicturePath, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
 import { FileList } from "@/components/student/fileList";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function FinishedBuildingModal({
-                                                  show,
-                                                  onHide,
-                                                  studentOnTour,
-                                                  building,
-                                                  setBuilding,
-                                              }: {
+    show,
+    onHide,
+    studentOnTour,
+    building,
+    setBuilding,
+}: {
     show: boolean;
     onHide: () => void;
     studentOnTour: StudentOnTour | null;
@@ -46,9 +46,9 @@ export default function FinishedBuildingModal({
                         });
                         setPicturesOfRemarks(pictures);
                     })
-                    .catch(err => setErrorMessages(handleError(err)));
+                    .catch((err) => setErrorMessages(handleError(err)));
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
     }, [building]);
 
     function getRemarksOfType(type: string): RemarkAtBuilding[] {
@@ -68,7 +68,7 @@ export default function FinishedBuildingModal({
                 <Modal.Title>Overzicht gebouw</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
                 {["AA", "BI", "VE", "OP"].map((t, index) => (
                     <div className="ms-2 me-2" key={index}>
                         {getRemarksOfType(t).length > 0 && (
@@ -88,8 +88,7 @@ export default function FinishedBuildingModal({
                                                     };
                                                 })}
                                                 optional={false}
-                                                setFiles={() => {
-                                                }}
+                                                setFiles={() => {}}
                                             />
                                         )}
                                     </div>
