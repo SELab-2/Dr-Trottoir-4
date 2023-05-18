@@ -108,7 +108,7 @@ export default function BuildingInfoView({
                             return (
                                 <div key={key} style={{ flex: 1, borderRight: isLast ? "none" : "1px solid #ccc" }}>
                                     <p className="text-center m-0 p-0" style={{ borderBottom: "1px solid #ccc" }}>
-                                        {new Date(key).toLocaleDateString("en-GB")}
+                                        {new Date(key).toLocaleDateString("nl-BE")}
                                     </p>
                                     {col.length === 0 && (
                                         <p

@@ -197,11 +197,11 @@ function AnalysisStudentOnTour() {
                         new Date(tour.modified_at) > new Date(buildingsAnalysis[0].arrival_time) && (
                             <p className="text-muted">{`Dit is een oudere versie van de ronde (laatst aangepast: ${new Date(
                                 tour.modified_at
-                            ).toLocaleString("en-GB")})`}</p>
+                            ).toLocaleString("nl-BE")})`}</p>
                         )}
                     {student && studentOnTour && studentOnTour.started_tour && studentOnTour.completed_tour && (
                         <p className="h5">
-                            {`${getFullName(student)} op ${new Date(studentOnTour.date).toLocaleDateString("en-GB")} 
+                            {`${getFullName(student)} op ${new Date(studentOnTour.date).toLocaleDateString("nl-BE")} 
                             ${getTimeIntervalString(
                                 new Date(studentOnTour.started_tour),
                                 new Date(studentOnTour.completed_tour)
