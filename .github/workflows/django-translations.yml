@@ -1,0 +1,36 @@
+name: Django Translations
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Make and compile messages
+        run: |
+          cd backend
+          django-admin makemessages --all --ignore=env
+          django-admin compilemessages --ignore=env
+        with:
+          commit_message: "Auto compile translation messages"
+          only_changed: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
