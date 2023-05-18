@@ -52,7 +52,9 @@ function LoginForm() {
             )}
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <div className="form-outline mb-4">
-                <label htmlFor={"email"} className="form-label">E-mailadres</label>
+                <label htmlFor={"email"} className="form-label">
+                    E-mailadres
+                </label>
                 <input
                     id={"email"}
                     type="email"

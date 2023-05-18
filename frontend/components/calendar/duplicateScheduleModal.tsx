@@ -86,7 +86,9 @@ export default function DuplicateScheduleModal({
                         </div>
                     </div>
                     <div className="form-outline mb-4">
-                        <label htmlFor={"kopieer"} className="form-label">Kopieer naar start van week:</label>
+                        <label htmlFor={"kopieer"} className="form-label">
+                            Kopieer naar start van week:
+                        </label>
                         <input
                             id={"kopieer"}
                             type="date"
