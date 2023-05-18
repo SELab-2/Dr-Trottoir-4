@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getAllTours, Tour } from "@/lib/tour";
-import { getAllStudentOnTourFromDate, getAllStudentOnTourFromToday, StudentOnTour } from "@/lib/student-on-tour";
+import { getAllStudentOnTourFromToday, StudentOnTour } from "@/lib/student-on-tour";
 import { getAllUsers, User } from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
@@ -14,7 +14,7 @@ import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-
 import {
     getRemarksAtBuildingOfSpecificBuilding,
     RemarkAtBuildingInterface,
-    translateRemartAtBuildingType,
+    translateRemarkAtBuildingType,
 } from "@/lib/remark-at-building";
 
 const GreenLinearProgress = styled(LinearProgress)(() => ({
@@ -57,7 +57,7 @@ function AdminDashboard() {
                         // don't actually care about the remark, just the count
                         const remarks: RemarkAtBuildingInterface[] = remarkRes.data;
                         for (const remark of remarks) {
-                            if (translateRemartAtBuildingType(remark.type) === "Opmerking") {
+                            if (translateRemarkAtBuildingType(remark.type) === "Algemene Opmerking") {
                                 remarksCount++;
                             }
                         }

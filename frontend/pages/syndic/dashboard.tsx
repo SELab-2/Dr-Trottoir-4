@@ -3,7 +3,6 @@ import router from "next/router";
 import { BuildingInterface, getBuildingsFromOwner } from "@/lib/building";
 import React, { useEffect, useState } from "react";
 import { AxiosResponse } from "axios";
-import DefaultHeader from "@/components/header/defaultHeader";
 import SyndicFooter from "@/components/footer/syndicFooter";
 import Loading from "@/components/loading";
 import SyndicHeader from "@/components/header/syndicHeader";

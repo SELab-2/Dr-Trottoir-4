@@ -1,13 +1,12 @@
 import AdminHeader from "@/components/header/adminHeader";
-import { BuildingComment, getAllBuildingComments } from "@/lib/building-comment";
 import { EmailTemplate, getAllEmailTemplates } from "@/lib/email-template";
 import { ChangeEvent, useEffect, useState } from "react";
 import styles from "styles/Welcome.module.css";
 import { Button, FloatingLabel, Form } from "react-bootstrap";
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
-import { getAllUsers, User, userSearchString } from "@/lib/user";
-import SyndicAutoComplete from "@/components/autocompleteComponents/syndicAutocomplete";
+import { getAllUsers, User } from "@/lib/user";
+import UserAutoComplete from "@/components/autocompleteComponents/userAutocomplete";
 import { useRouter } from "next/router";
 import { withAuthorisation } from "@/components/withAuthorisation";
 
@@ -15,20 +14,18 @@ interface ParsedUrlQuery {}
 
 interface DataCommunicationQuery extends ParsedUrlQuery {
     template?: number;
-    syndic?: string;
+    user?: number;
 }
 
 function AdminCommunication() {
     const [allTemplates, setAllTemplates] = useState<EmailTemplate[]>([]);
-    const [allComments, setAllComments] = useState<BuildingComment[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
-    const [allSyndics, setAllSyndics] = useState<User[]>([]);
+    const [allUsers, setAllUsers] = useState<User[]>([]);
 
     const [templateText, setTemplateText] = useState("");
     const [updatedTemplateText, setUpdatedTemplateText] = useState("");
-    const [templateId, setTemplateId] = useState("");
-    const [syndicId, setSyndicId] = useState("");
-    const [buildingId, setBuildingId] = useState("");
+    const [templateId, setTemplateId] = useState<number>();
+    const [userId, setUserId] = useState<number>();
     const router = useRouter();
     const query: DataCommunicationQuery = router.query as DataCommunicationQuery;
 
@@ -38,17 +35,13 @@ function AdminCommunication() {
     };
 
     const fillInVariables = (input: string): string => {
-        const currentSyndic = allSyndics.find((e) => e.id === Number(syndicId));
-        if (currentSyndic) {
-            const currentBuilding = allBuildings.find((e) => e.syndic === currentSyndic.id);
+        const currentUser = allUsers.find((e) => e.id === Number(userId));
+        if (currentUser) {
+            const currentBuilding = allBuildings.find((e) => e.syndic === currentUser.id);
 
-            const replacedName = replaceVariable(
-                input,
-                "name",
-                currentSyndic.first_name + " " + currentSyndic.last_name
-            );
+            const replacedName = replaceVariable(input, "name", currentUser.first_name + " " + currentUser.last_name);
             if (currentBuilding) {
-                const replacedAddress = replaceVariable(
+                return replaceVariable(
                     replacedName,
                     "address",
                     currentBuilding.street +
@@ -60,7 +53,6 @@ function AdminCommunication() {
                         currentBuilding.city +
                         ")"
                 );
-                return replacedAddress;
             }
         }
 
@@ -72,11 +64,11 @@ function AdminCommunication() {
         setUpdatedTemplateText(changedVariablesText);
     };
 
-    async function routeToBuildings(syndicId: string) {
-        const currentSyndic = allSyndics.find((e) => e.id === Number(syndicId));
+    async function routeToBuildings(syndicId: number) {
+        const currentUser = allUsers.find((e) => e.id === syndicId);
         await router.push({
             pathname: `data/buildings/`,
-            query: { syndic: currentSyndic?.email },
+            query: { syndic: currentUser?.email },
         });
     }
 
@@ -87,9 +79,9 @@ function AdminCommunication() {
                 setAllTemplates(emailTemplates);
                 let currentTemplate = emailTemplates[0];
                 if (query.template) {
-                    currentTemplate = emailTemplates.find((e) => e.id === Number(query.template)) || emailTemplates[0];
+                    currentTemplate = emailTemplates.find((e) => e.id === query.template) || emailTemplates[0];
                 }
-                setTemplateId(currentTemplate.id.toString());
+                setTemplateId(currentTemplate.id);
                 setTemplateText(currentTemplate.template);
             },
             (err) => {
@@ -97,25 +89,14 @@ function AdminCommunication() {
             }
         );
 
-        getAllBuildingComments().then(
-            (res) => {
-                const buildingComments: BuildingComment[] = res.data;
-                setAllComments(buildingComments);
-            },
-            (err) => {
-                console.error(err);
-            }
-        );
-
-        // change this to getAllSyndics when it's available
         getAllUsers().then((res) => {
             const users: User[] = res.data;
-            setAllSyndics(users);
-            let currentSyndic = users[0];
-            if (query.syndic) {
-                currentSyndic = users.find((e) => e.email === query.syndic) || users[0];
+            setAllUsers(users);
+            let currentUser = users[0];
+            if (query.user) {
+                currentUser = users.find((e) => e.id == query.user) || users[0];
             }
-            setSyndicId(currentSyndic.id.toString());
+            setUserId(currentUser.id);
         });
 
         getAllBuildings().then((res) => {
@@ -128,17 +109,19 @@ function AdminCommunication() {
         const changedVariablesText = fillInVariables(templateText);
         setUpdatedTemplateText(changedVariablesText);
 
-        const template = allTemplates.find((e) => e.id === Number(templateId));
-        const syndic = allSyndics.find((e) => e.id === Number(syndicId));
-        const building = allBuildings.find((e) => e.syndic === Number(syndicId));
+        const template = allTemplates.find((e) => e.id === templateId);
         if (template) {
             setTemplateText(template.template);
         }
+    }, [allTemplates, allUsers, allBuildings, templateId, userId, templateText]);
 
-        if (building) {
-            setBuildingId(building.id.toString());
+    function getSelectedUserMail() {
+        const user = allUsers.find((e) => e.id === Number(userId));
+        if (user) {
+            return user.email;
         }
-    }, [allTemplates, allSyndics, allBuildings, templateId, syndicId, templateText]);
+        return "";
+    }
 
     return (
         <>
@@ -156,22 +139,35 @@ function AdminCommunication() {
                             ></TemplateAutocomplete>
                         </div>
                         <div style={{ width: "33%" }}>
-                            <SyndicAutoComplete
-                                initialId={syndicId}
-                                setObjectId={setSyndicId}
+                            <UserAutoComplete
+                                initialId={userId}
+                                setObjectId={setUserId}
                                 required={false}
-                            ></SyndicAutoComplete>
+                            ></UserAutoComplete>
                         </div>
                         <div style={{ width: "33%" }}>
                             <Button
                                 variant="secondary"
                                 size="lg"
                                 onClick={() => {
-                                    routeToBuildings(syndicId).then();
+                                    if (userId) {
+                                        routeToBuildings(userId).then();
+                                    }
                                 }}
                             >
                                 Gebouw
                             </Button>
+                        </div>
+                        <div style={{ width: "33%" }}>
+                            <a
+                                href={`mailto:${getSelectedUserMail()}?body=${updatedTemplateText.replace(
+                                    /\n/g,
+                                    "%0D%0A"
+                                )}`}
+                                style={{ textDecoration: "underline", color: "royalblue" }}
+                            >
+                                Verstuur mail
+                            </a>
                         </div>
                     </div>
                     <div style={{ width: "10%" }}></div>

@@ -103,7 +103,6 @@ export function getDurationFromMinutes(durationInMinutes: number) {
 
 export const getNewPublicId = async () => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GET_NEW_PUBLIC_ID_BUILDING}`;
-    console.log(request_url)
     return await api.get(request_url)
 }
 

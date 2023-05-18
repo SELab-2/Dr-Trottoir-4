@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import {AxiosResponse} from "axios";
 import api from "@/lib/api/axios";
 
 export interface BuildingOnTour {

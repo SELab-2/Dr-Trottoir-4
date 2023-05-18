@@ -1,3 +1,5 @@
+import os
+import uuid
 from datetime import date, datetime
 
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -6,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint, Q
 from django.db.models.functions import Lower
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -310,7 +313,11 @@ class StudentOnTour(models.Model):
 
     def clean(self):
         super().clean()
-
+        if self.date and self.date < datetime.now().date():
+            raise ValidationError(
+                # TODO translation
+                _("You cannot plan a student on a past date.")
+            )
         if self.student_id and self.tour_id:
             user = self.student
             if user.role.name.lower() == "syndic":
@@ -369,7 +376,15 @@ class RemarkAtBuilding(models.Model):
     def clean(self):
         super().clean()
         if not self.timestamp:
-            self.timestamp = datetime.now()
+            self.timestamp = timezone.now()
+        if self.type == "AA" or self.type == "BI" or type == "VE":
+            remark_instances = RemarkAtBuilding.objects.filter(
+                building=self.building, student_on_tour=self.student_on_tour, type=self.type
+            )
+            if remark_instances.count() == 1:
+                raise ValidationError(
+                    _("There already exists a remark of this type from this student on tour at this building.")
+                )
 
     def __str__(self):
         return f"{self.type} for {self.building}"
@@ -381,6 +396,7 @@ class RemarkAtBuilding(models.Model):
                 "building",
                 "student_on_tour",
                 "timestamp",
+                "type",
                 name="unique_remark_for_building",
                 violation_error_message=_(
                     "This remark was already uploaded to this building by this student on the tour."
@@ -389,8 +405,14 @@ class RemarkAtBuilding(models.Model):
         ]
 
 
+def get_file_path_image(instance, filename):
+    extension = filename.split(".")[-1]
+    filename = str(uuid.uuid4()) + "." + extension
+    return os.path.join("building_images/", filename)
+
+
 class PictureOfRemark(models.Model):
-    picture = models.ImageField(upload_to="building_pictures/")
+    picture = models.ImageField(upload_to=get_file_path_image)
     remark_at_building = models.ForeignKey(RemarkAtBuilding, on_delete=models.SET_NULL, null=True)
     hash = models.TextField(blank=True, null=True)
 

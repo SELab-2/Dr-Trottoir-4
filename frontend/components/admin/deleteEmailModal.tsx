@@ -1,6 +1,5 @@
 import { Button, Modal } from "react-bootstrap";
 import React, { useState } from "react";
-import { UserView } from "@/types";
 import { handleError } from "@/lib/error";
 import { useTranslation } from "react-i18next";
 import { deleteMailTemplate, Emailtemplate } from "@/lib/emailtemplate";

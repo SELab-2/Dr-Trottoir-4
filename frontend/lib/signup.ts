@@ -1,6 +1,6 @@
-import { SignUp } from "@/types";
+import {SignUp} from "@/types";
 import api from "@/lib/api/axios";
-import { AxiosResponse } from "axios";
+import {AxiosResponse} from "axios";
 
 const signup = async (
     firstname: string,
