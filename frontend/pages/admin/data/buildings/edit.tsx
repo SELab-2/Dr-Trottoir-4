@@ -1,7 +1,14 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Form } from "react-bootstrap";
-import { getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding } from "@/lib/building";
+import {
+    deleteBuildingComment, getBuildingComment,
+    getBuildingInfo,
+    getDurationFromMinutes,
+    patchBuilding,
+    patchBuildingComment,
+    postBuilding, postBuildingComment
+} from "@/lib/building";
 import { getRegion } from "@/lib/region";
 import { getUserInfo } from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
