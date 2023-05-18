@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-18 14:42+0000\n"
+"POT-Creation-Date: 2023-05-18 19:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,10 +104,6 @@ msgstr ""
 msgid "Email already exists in database for a user (id: {user_id}).{addendum}"
 msgstr ""
 
-#: base/models.py:120
-msgid "No bus"
-msgstr ""
-
 #: base/models.py:136
 msgid "The house number of the building must be positive and not zero."
 msgstr ""
@@ -154,44 +150,44 @@ msgstr ""
 msgid "This index is already in use."
 msgstr ""
 
-#: base/models.py:328
+#: base/models.py:327
 msgid "You cannot plan a student on a past date."
 msgstr ""
 
-#: base/models.py:333
+#: base/models.py:331
 msgid "A syndic can't do tours"
 msgstr ""
 
-#: base/models.py:337
+#: base/models.py:335
 #, python-brace-format
 msgid "Student ({user_email}) doesn't do tours in this region ({tour_region})."
 msgstr ""
 
-#: base/models.py:358
+#: base/models.py:356
 msgid "The student is already assigned to this tour on this date."
 msgstr ""
 
-#: base/models.py:395
+#: base/models.py:393
 msgid ""
 "There already exists a remark of this type from this student on tour at this "
 "building."
 msgstr ""
 
-#: base/models.py:411
+#: base/models.py:409
 msgid ""
 "This remark was already uploaded to this building by this student on the "
 "tour."
 msgstr ""
 
-#: base/models.py:437
+#: base/models.py:435
 msgid "The building already has this upload."
 msgstr ""
 
-#: base/models.py:473
+#: base/models.py:471
 msgid "The building already has a manual with the same version number"
 msgstr ""
 
-#: base/models.py:490
+#: base/models.py:488
 msgid "The name for this template already exists."
 msgstr ""
 
@@ -293,7 +289,11 @@ msgstr ""
 msgid "The query param 'building' should be a list of ints"
 msgstr ""
 
-#: remark_at_building/views.py:200
+#: remark_at_building/views.py:122
+msgid "You can only edit the 'remark' text on a remark at building"
+msgstr ""
+
+#: remark_at_building/views.py:207
 msgid "Cannot use both most-recent and date for RemarkAtBuilding"
 msgstr ""
 
