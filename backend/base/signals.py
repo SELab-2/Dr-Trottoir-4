@@ -1,7 +1,7 @@
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db.models import Max
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import receiver
 from django.utils import timezone
 
@@ -61,8 +61,8 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
     print(f"Student on tour current building index: {student_on_tour.current_building_index}")
     print(f"Student on tour max building index: {student_on_tour.max_building_index}")
     if (
-        instance.type == RemarkAtBuilding.VERTREK
-        and student_on_tour.current_building_index == student_on_tour.max_building_index
+            instance.type == RemarkAtBuilding.VERTREK
+            and student_on_tour.current_building_index == student_on_tour.max_building_index
     ):
         print("Vertrek")
         student_on_tour.completed_tour = timezone.now()
@@ -97,6 +97,19 @@ def notify_student_on_tour_subscribers(sender, instance: StudentOnTour, **kwargs
         )
 
 
+@receiver(post_delete, sender=StudentOnTour)
+def notify_student_on_tour_subscribers(sender, instance: StudentOnTour, **kwargs):
+    student_on_tour = StudOnTourSerializer(instance).data
+    channel = get_channel_layer()
+    async_to_sync(channel.group_send)(
+        "student_on_tour_updates",
+        {
+            "type": "student.on.tour.deleted",
+            "student_on_tour": student_on_tour,
+        },
+    )
+
+
 @receiver(post_save, sender=GarbageCollection)
 def notify_garbage_collection_subscribers(sender, instance: GarbageCollection, **kwargs):
     garbage_collection = GarbageCollectionSerializer(instance).data
@@ -105,6 +118,19 @@ def notify_garbage_collection_subscribers(sender, instance: GarbageCollection, *
         "garbage_collection_updates",
         {
             "type": "garbage.collection.created.or.adapted",
+            "garbage_collection": garbage_collection,
+        },
+    )
+
+
+@receiver(post_delete, sender=GarbageCollection)
+def notify_garbage_collection_subscribers(sender, instance: GarbageCollection, **kwargs):
+    garbage_collection = GarbageCollectionSerializer(instance).data
+    channel = get_channel_layer()
+    async_to_sync(channel.group_send)(
+        "garbage_collection_updates",
+        {
+            "type": "garbage.collection.deleted",
             "garbage_collection": garbage_collection,
         },
     )

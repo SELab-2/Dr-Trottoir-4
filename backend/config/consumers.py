@@ -85,7 +85,18 @@ class StudentOnTourAll(GeneralAsyncConsumer):
     async def student_on_tour_created_or_adapted(self, event):
         student_on_tour = event["student_on_tour"]
         # send message to WebSocket
-        await self.send(text_data=json.dumps(student_on_tour))
+        await self.send(text_data=json.dumps({
+            "type": "created_or_adapted",
+            "student_on_tour": student_on_tour,
+        }))
+
+    async def student_on_tour_deleted(self, event):
+        student_on_tour = event["student_on_tour"]
+        # send message to WebSocket
+        await self.send(text_data=json.dumps({
+            "type": "deleted",
+            "student_on_tour": student_on_tour,
+        }))
 
 
 class GarbageCollectionAll(GeneralAsyncConsumer):
@@ -95,4 +106,15 @@ class GarbageCollectionAll(GeneralAsyncConsumer):
     async def garbage_collection_created_or_adapted(self, event):
         garbage_collection = event["garbage_collection"]
         # send message to WebSocket
-        await self.send(text_data=json.dumps(garbage_collection))
+        await self.send(text_data=json.dumps({
+            "type": "created_or_adapted",
+            "garbage_collection": garbage_collection,
+        }))
+
+    async def garbage_collection_deleted(self, event):
+        garbage_collection = event["garbage_collection"]
+        # send message to WebSocket
+        await self.send(text_data=json.dumps({
+            "type": "deleted",
+            "garbage_collection": garbage_collection,
+        }))
