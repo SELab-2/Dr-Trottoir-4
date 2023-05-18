@@ -8,7 +8,7 @@ import {
     getToursOfStudent,
     StudentOnTour,
 } from "@/lib/student-on-tour";
-import { getAllUsers, getStudents, User, userSearchString } from "@/lib/user";
+import {getAllUsers, getStudents, getTourUsers, User, userSearchString} from "@/lib/user";
 import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
@@ -25,6 +25,7 @@ import {
     RemarkAtBuilding,
     RemarkAtBuildingInterface,
 } from "@/lib/remark-at-building";
+import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 
 interface ParsedUrlQuery {}
 
@@ -204,7 +205,7 @@ function AdminTour() {
     // Set the selected student ID based on the router query or default to the first student.
     useEffect(() => {
         try {
-            getStudents().then((res) => {
+            getTourUsers().then((res) => {
                 const students: User[] = res.data;
                 students.filter((e) => e.role === 4);
                 let currentStudent = students[0];
@@ -329,10 +330,9 @@ function AdminTour() {
             <AdminHeader />
             <div style={{ display: "flex", marginTop: "10px", marginBottom: "50px", marginLeft: "10px" }}>
                 <div style={{ flex: 1 }}>
-                    <StudentAutocomplete
+                    <TourUserAutocomplete
                         initialId={selectedStudentId}
                         setObjectId={setSelectedStudentId}
-                        required={false}
                     />
                 </div>
                 <div style={{ flex: 1 }}>
