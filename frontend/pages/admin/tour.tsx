@@ -72,6 +72,7 @@ function AdminTour() {
     const [refreshKey, setRefreshKey] = useState(0);
     const [validTourUser, setValidTourUser] = useState(true);
     const [usersRecord, setUsersRecord] = useState<Record<number, User>>({});
+    const [completionRecord, setCompletionRecord] = useState<Record<number, boolean>>({});
 
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
@@ -99,6 +100,18 @@ function AdminTour() {
             setSelectedDate(validDatesArray[0]);
         }
     };
+
+    const getProgress = () => {
+        if (!maxBuildingIndex) {
+            return 0;
+        }
+        const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
+        if (sotObject && completionRecord[sotObject.sot.id]) {
+            return (currentBuildingIndex / maxBuildingIndex) * 100;
+        }
+
+        return ((currentBuildingIndex - 1) / maxBuildingIndex) * 100;
+    }
 
     const getStudentOnTour = (sots: StudentOnTour[], tourId: number, date: Date) => {
         const sot = sots.find(
@@ -225,6 +238,12 @@ function AdminTour() {
         ws.addEventListener("message", (event) => {
         const data: AllWebSocketsResponse = JSON.parse(event.data);
         if (data.state === "completed") {
+            setCompletionRecord((prevState) => {
+                return {
+                    ...prevState,
+                    [data.student_on_tour_id]: true,
+                };
+            });
             setRefreshKey((prevKey) => prevKey + 1); // retrigger useEffects
         }
         });
@@ -268,12 +287,16 @@ function AdminTour() {
     // Also change the validDates
     useEffect(() => {
         if (!selectedStudentId) return;
+    
+        setCompletionRecord({});
+        setCurrentBuildingIndex(0);
 
         getToursOfStudent(selectedStudentId).then((res) => {
             const sots: StudentOnTour[] = res.data;
             if (sots.length) {
                 setValidTourUser(true);
                 setAllToursOfStudent(sots);
+
                 let currentSot = sots[0];
                 if (query.tour) {
                     currentSot = sots.find((e) => e.tour === +[query.tour]) || sots[0];
@@ -281,6 +304,13 @@ function AdminTour() {
                 setSelectedTourId(currentSot.tour);
                 setMaxBuildingIndex(currentSot.max_building_index);
                 updateValidDates(sots, currentSot.tour);
+
+
+                let completionStatus: Record<number, boolean> = {};
+                sots.forEach(sot => {
+                    completionStatus[sot.id] = sot.completed_tour !== null;
+                });
+                setCompletionRecord(completionStatus);
             } else {
                 setValidTourUser(false);
             }
@@ -486,9 +516,7 @@ function AdminTour() {
                             <GreenLinearProgress
                             variant="determinate"
                             value={
-                                (currentBuildingIndex /
-                                maxBuildingIndex) *
-                                100 || 0
+                                getProgress()
                             }
                             />
                         </Box>
