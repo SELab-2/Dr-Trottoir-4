@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { IconButton, Tooltip } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { getAllTours, Tour } from "@/lib/tour";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 export default function SelectedBuildingList({
     show,
@@ -26,10 +26,13 @@ export default function SelectedBuildingList({
     const [allTours, setAllTours] = useState<Tour[]>([]);
 
     useEffect(() => {
-        getAllTours().then((res) => {
-            const data: Tour[] = res.data;
-            setAllTours(data);
-        }, err => handleError(err));
+        getAllTours().then(
+            (res) => {
+                const data: Tour[] = res.data;
+                setAllTours(data);
+            },
+            (err) => handleError(err)
+        );
     }, []);
 
     function getTourName(tourId: number) {

@@ -117,7 +117,7 @@ class Building(models.Model):
     postal_code = models.CharField(max_length=10)
     street = models.CharField(max_length=60)
     house_number = models.PositiveIntegerField()
-    bus = models.CharField(max_length=10, blank=True, null=False, default=_("No bus"))
+    bus = models.CharField(max_length=10, blank=True, null=False, default="")
     client_number = models.CharField(max_length=40, blank=True, null=True)
     duration = models.TimeField(default="00:00")
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
