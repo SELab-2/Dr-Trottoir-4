@@ -3,12 +3,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from "react-datepicker";
 import { getAllTours, getTour, Tour } from "@/lib/tour";
 import {
+    getStudentOnTourAllProgressWS,
     getStudentOnTourIndividualProgressWS,
     getStudentOnTourIndividualRemarkWS,
     getToursOfStudent,
     StudentOnTour,
 } from "@/lib/student-on-tour";
-import {getAllUsers, getStudents, getTourUsers, User, userSearchString} from "@/lib/user";
+import { getAllUsers, getStudents, getTourUsers, User, userSearchString } from "@/lib/user";
 import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
@@ -38,13 +39,17 @@ interface ProgressWebSocketResponse {
     current_building_index: number;
 }
 
+interface AllWebSocketsResponse {
+    state: string;
+    student_on_tour_id: number;
+}
+
 function AdminTour() {
     const router = useRouter();
     const [allToursOfStudent, setAllToursOfStudent] = useState<StudentOnTour[]>([]);
     const [allBuildingsOnTour, setAllBuildingsOnTour] = useState<BuildingOnTour[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [selectedStudentId, setSelectedStudentId] = useState<number>(0);
-    const [selectedStudentName, setSelectedStudentName] = useState<string>("");
     const [selectedTourId, setSelectedTourId] = useState<number>(0);
     const [selectedTourName, setSelectedTourName] = useState<string>("");
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -53,6 +58,8 @@ function AdminTour() {
     const [remarksRecord, setRemarksRecord] = useState<Record<number, string[]>>({});
     const [currentBuildingIndex, setCurrentBuildingIndex] = useState(0);
     const [refreshKey, setRefreshKey] = useState(0);
+    const [validTourUser, setValidTourUser] = useState(true);
+    const [usersRecord, setUsersRecord] = useState<Record<number, User>>({});
 
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
@@ -107,7 +114,7 @@ function AdminTour() {
                 if (currentBuildingIndex > buildingIndex) {
                     returnText = "Afgewerkt";
                 } else if (currentBuildingIndex === buildingIndex) {
-                    returnText = "Bezig";
+                    returnText = (sotObject.sot.completed_tour) ? "Afgewerkt" : "Bezig";
                 }
             }
         }
@@ -184,7 +191,6 @@ function AdminTour() {
         });
 
         wsRemarks.addEventListener("message", (event) => {
-            console.log(JSON.parse(event.data));
             const data: RemarkAtBuildingInterface = JSON.parse(event.data);
             const remark = data.remark || null;
             if (remark) {
@@ -201,19 +207,44 @@ function AdminTour() {
         return { wsProgress, wsRemarks };
     };
 
+    const setupWebSocketForAllStudentOnTours = () => {
+        const ws = getStudentOnTourAllProgressWS();
+
+        ws.addEventListener("message", (event) => {
+        const data: AllWebSocketsResponse = JSON.parse(event.data);
+        if (data.state === "completed") {
+            setRefreshKey((prevKey) => prevKey + 1); // retrigger useEffects
+        }
+        });
+
+        return ws;
+    };
+
     // First, fetch all students when the router is ready.
     // Set the selected student ID based on the router query or default to the first student.
     useEffect(() => {
         try {
             getTourUsers().then((res) => {
                 const students: User[] = res.data;
+                
+                const studentsRecord: Record<number, User> = {}
+                students.forEach((student) => {
+                    studentsRecord[student.id] = student;
+                })
+                setUsersRecord(studentsRecord);
+
                 students.filter((e) => e.role === 4);
                 let currentStudent = students[0];
                 if (query.student) {
                     currentStudent = students.find((e) => e.id === +[query.student]) || students[0];
                 }
                 setSelectedStudentId(currentStudent.id);
-                setSelectedStudentName(userSearchString(currentStudent));
+
+                const ws = setupWebSocketForAllStudentOnTours();
+
+                return () => {
+                    ws.close();
+                }
             });
         } catch (error) {
             console.error(error);
@@ -228,14 +259,20 @@ function AdminTour() {
 
         getToursOfStudent(selectedStudentId).then((res) => {
             const sots: StudentOnTour[] = res.data;
-            setAllToursOfStudent(sots);
-            let currentSot = sots[0];
-            if (query.tour) {
-                currentSot = sots.find((e) => e.tour === +[query.tour]) || sots[0];
-            }
-            setSelectedTourId(currentSot.tour);
+            if (sots.length) {
+                setValidTourUser(true);
+                setAllToursOfStudent(sots);
+                let currentSot = sots[0];
+                if (query.tour) {
+                    currentSot = sots.find((e) => e.tour === +[query.tour]) || sots[0];
+                }
+                setSelectedTourId(currentSot.tour);
 
-            updateValidDates(sots, currentSot.tour);
+                updateValidDates(sots, currentSot.tour);
+            } else {
+                setValidTourUser(false);
+            }
+            
         });
     }, [selectedStudentId, refreshKey]);
 
@@ -243,7 +280,7 @@ function AdminTour() {
     // Also fetch all buildings on that tour.
     // Also change the validDates
     useEffect(() => {
-        if (!selectedTourId) return;
+        if (!selectedTourId || !validTourUser) return;
 
         getTour(selectedTourId)
             .then((res) => {
@@ -263,7 +300,7 @@ function AdminTour() {
 
     // When the list of buildings on tour changes, fetch all building details.
     useEffect(() => {
-        if (!allBuildingsOnTour.length) return;
+        if (!allBuildingsOnTour.length || !validTourUser) return;
 
         Promise.all(allBuildingsOnTour.map((buildingOnTour) => getBuildingInfo(buildingOnTour.building)))
             .then((responses) => {
@@ -293,6 +330,8 @@ function AdminTour() {
 
     // Get new analysis upon change of the student, tour or date
     useEffect(() => {
+        if (!validTourUser) return;
+
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
         if (sotObject) {
             setCurrentBuildingIndex(sotObject.current_building_index);
@@ -330,10 +369,8 @@ function AdminTour() {
             <AdminHeader />
             <div style={{ display: "flex", marginTop: "10px", marginBottom: "50px", marginLeft: "10px" }}>
                 <div style={{ flex: 1 }}>
-                    <TourUserAutocomplete
-                        initialId={selectedStudentId}
-                        setObjectId={setSelectedStudentId}
-                    />
+                <label style={{marginBottom: "10px"}}  htmlFor="tourautocomplete">Selecteer student</label>
+                    <TourUserAutocomplete initialId={selectedStudentId} setObjectId={setSelectedStudentId} />
                 </div>
                 <div style={{ flex: 1 }}>
                     <StudentOnTourAutocomplete
@@ -341,10 +378,11 @@ function AdminTour() {
                         setObjectId={setSelectedTourId}
                         required={false}
                         studentId={selectedStudentId}
+                        disabled={!validTourUser}
                     />
                 </div>
                 <div style={{ flex: 1 }}>
-                    <label htmlFor="datepicker">Selecteer datum</label>
+                    <label style={{marginBottom: "10px"}} htmlFor="datepicker">Selecteer datum</label>
                     <ReactDatePicker
                         selected={selectedDate}
                         onChange={(date: Date) => setSelectedDate(date)}
@@ -352,17 +390,23 @@ function AdminTour() {
                         filterDate={(date: Date) =>
                             validDates.map((d) => d.toLocaleDateString()).includes(date.toLocaleDateString())
                         }
+                        disabled={!validTourUser}
                     />
                 </div>
             </div>
-            {selectedStudentId && (
+            {validTourUser ? (
                 <div style={{ display: "flex", marginLeft: "10px" }}>
                     <div style={{ width: "20%" }}>
                         <h2>{selectedTourName}</h2>
                         <b>Verantwoordelijke:</b>
-                        <p>{selectedStudentName}</p>
+                        <p>{`${usersRecord[selectedStudentId]?.first_name} ${usersRecord[selectedStudentId]?.last_name}`}</p>
                         <b>Datum:</b>
                         <p>{selectedDate.toLocaleDateString()}</p>
+                        <b>Contactinformatie:</b>
+                        <br></br>
+                        <>{`Telefoonnummer: ${usersRecord[selectedStudentId]?.phone_number}`}</>
+                        <br></br>
+                        <>{`E-mailadres: ${usersRecord[selectedStudentId]?.email}`}</>
                     </div>
 
                     <div style={{ width: "80%" }}>
@@ -383,6 +427,8 @@ function AdminTour() {
                                     const durationInSeconds = ba ? ba.duration_in_seconds : 0;
                                     const expectedDurationInSeconds = ba ? ba.expected_duration_in_seconds : 0;
                                     const timeColor = getSpentTimeColor(expectedDurationInSeconds, durationInSeconds);
+                                    const buildingStatus = getBuildingStatus(building.id);
+                                    const isDone = buildingStatus === "Afgewerkt";
                                     return (
                                         <tr key={building.id}>
                                             <td
@@ -394,8 +440,8 @@ function AdminTour() {
                                                     : `Gebouw ${getBuildingIndex(building.id)}`}
                                             </td>
                                             <td>{getAddress(building)}</td>
-                                            <td>{getBuildingStatus(building.id)}</td>
-                                            <td>{getDepartureTimeString(building.id)}</td>
+                                            <td>{buildingStatus}</td>
+                                            <td>{isDone ? getDepartureTimeString(building.id) : ""}</td>
                                             <td
                                                 style={{
                                                     textDecoration: "underline",
@@ -404,9 +450,7 @@ function AdminTour() {
                                                 }}
                                                 onClick={goToAnalysisPage}
                                             >
-                                                {getBuildingStatus(building.id) === "Afgewerkt"
-                                                    ? secondsToTime(durationInSeconds)
-                                                    : ""}
+                                                {isDone ? secondsToTime(durationInSeconds) : ""}
                                             </td>
                                             <td
                                                 style={{ textDecoration: "underline", cursor: "pointer" }}
@@ -425,6 +469,10 @@ function AdminTour() {
                             </tbody>
                         </table>
                     </div>
+                </div>
+            ): (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center"}}>
+                    <h3>Deze gebruiker heeft nog geen rondes gedaan.</h3>
                 </div>
             )}
         </div>

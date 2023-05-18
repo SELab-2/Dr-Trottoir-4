@@ -3,6 +3,7 @@ import { Button, Modal } from "react-bootstrap";
 import PasswordInput from "./passwordInput";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { changePassword } from "@/lib/authentication";
+import { handleError } from "@/lib/error";
 
 interface PasswordModalProps {
     show: boolean;
@@ -42,8 +43,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ show, closeModal }) => {
                 });
                 closeModal();
             } catch (error: any) {
-                console.error("An error occurred:", error.request.responseText);
-                setErrorMessages([error.request.responseText]);
+                setErrorMessages(handleError(error));
             }
         }
     };

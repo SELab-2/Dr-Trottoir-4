@@ -12,6 +12,7 @@ import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
+import { handleError } from "@/lib/error";
 import { postManual } from "@/lib/building-manual";
 
 function AdminDataBuildingsEdit() {
@@ -65,8 +66,7 @@ function AdminDataBuildingsEdit() {
                 setShowConfirmation(true);
             } catch (error: any) {
                 setShowConfirmation(false);
-                console.error("An error occurred:", error.request.responseText);
-                setErrorMessages([error.request.responseText]);
+                setErrorMessages(handleError(error));
             }
         } else {
             setErrorMessages([requiredFieldsNotFilledMessage]);

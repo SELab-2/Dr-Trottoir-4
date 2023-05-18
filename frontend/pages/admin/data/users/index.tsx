@@ -11,6 +11,7 @@ import { withAuthorisation } from "@/components/withAuthorisation";
 import { UserEditModal } from "@/components/admin/userEditModal";
 import { UserDeleteModal } from "@/components/admin/userDeleteModal";
 import { useRouter } from "next/router";
+import { handleError } from "@/lib/error";
 
 function AdminDataUsers() {
     const router = useRouter();
@@ -113,7 +114,7 @@ function AdminDataUsers() {
                 setAllRegions(regions);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
         setLoading(false);
@@ -131,7 +132,7 @@ function AdminDataUsers() {
                 setAllUsers(users);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }

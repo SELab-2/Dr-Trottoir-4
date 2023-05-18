@@ -16,6 +16,7 @@ const StudentOnTourAutocomplete: React.FC<StudentOnTourProps> = ({
   setObjectId,
   required,
   studentId,
+  disabled = false,
 }) => {
   return (
     <AutocompleteComponent
@@ -24,6 +25,7 @@ const StudentOnTourAutocomplete: React.FC<StudentOnTourProps> = ({
       fetchOptions={() => getActualToursOfStudent(studentId)}
       mapping={(tour: Tour) => tour.name}
       setObjectId={setObjectId}
+      disabled={disabled}
     />
   );
 };
