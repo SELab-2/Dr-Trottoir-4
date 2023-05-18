@@ -4,20 +4,17 @@ import "react-datepicker/dist/react-datepicker.css";
 import React from "react";
 import nlBE from "date-fns/locale/nl-BE";
 
-export default function LocaleDateRangePicker(
-    {
-        startDate,
-        endDate,
-        setStartDate,
-        setEndDate,
-    }: {
-        startDate: Date | null,
-        endDate: Date | null,
-        setStartDate: (d: Date | null) => void,
-        setEndDate: (d: Date | null) => void,
-    }
-) {
-
+export default function LocaleDateRangePicker({
+    startDate,
+    endDate,
+    setStartDate,
+    setEndDate,
+}: {
+    startDate: Date | null;
+    endDate: Date | null;
+    setStartDate: (d: Date | null) => void;
+    setEndDate: (d: Date | null) => void;
+}) {
     return (
         <ReactDatePicker
             locale={nlBE}
