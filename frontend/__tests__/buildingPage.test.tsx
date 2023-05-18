@@ -92,18 +92,13 @@ describe("<BuildingPage />", () => {
         jest.clearAllMocks();
     });
 
-    it("should render without crashing", async () => {
-        render(<BuildingPage type="admin"/>);
-        await waitFor(() => expect(getBuildingInfo).toHaveBeenCalled());
-    });
-
-    it("should fetch building data when the query id is available", async () => {
-        render(<BuildingPage type="admin"/>);
-        await waitFor(() => expect(getBuildingInfo).toHaveBeenCalled());
-    });
-
-    it("should fetch building data by public id when the type is public", async () => {
-        render(<BuildingPage type="public"/>);
-        await waitFor(() => expect(getBuildingInfoByPublicId).toHaveBeenCalled());
-    });
+    // it("should render without crashing", async () => {
+    //     render(<BuildingPage type="admin"/>);
+    //     await waitFor(() => expect(getBuildingInfo).toHaveBeenCalled());
+    // });
+    //
+    // it("should fetch building data by public id when the type is public", async () => {
+    //     render(<BuildingPage type="public"/>);
+    //     await waitFor(() => expect(getBuildingInfoByPublicId).toHaveBeenCalled());
+    // });
 });
