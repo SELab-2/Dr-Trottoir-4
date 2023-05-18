@@ -30,6 +30,8 @@ import LinearProgress from "@mui/material/LinearProgress";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/system";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 interface ParsedUrlQuery {}
 
@@ -73,6 +75,8 @@ function AdminTour() {
     const [validTourUser, setValidTourUser] = useState(true);
     const [usersRecord, setUsersRecord] = useState<Record<number, User>>({});
     const [completionRecord, setCompletionRecord] = useState<Record<number, boolean>>({});
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
@@ -278,7 +282,7 @@ function AdminTour() {
                 }
             });
         } catch (error) {
-            console.error(error);
+            setErrorMessages(handleError(error));
         }
     }, [router.isReady]);
 
@@ -329,13 +333,13 @@ function AdminTour() {
                 const tour: Tour = res.data;
                 setSelectedTourName(tour.name);
             })
-            .catch(console.error);
+            .catch(err => setErrorMessages(handleError(err)));
 
         getAllBuildingsOnTourWithTourID(selectedTourId)
             .then((res) => {
                 setAllBuildingsOnTour(res.data);
             })
-            .catch(console.error);
+            .catch(err => setErrorMessages(handleError(err)));
 
         updateValidDates(allToursOfStudent, selectedTourId);
     }, [selectedTourId]);
@@ -348,7 +352,7 @@ function AdminTour() {
             .then((responses) => {
                 setAllBuildings(responses.map((response) => response.data));
             })
-            .catch(console.error);
+            .catch(err => setErrorMessages(handleError(err)));
 
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
         if (sotObject) {
@@ -410,6 +414,7 @@ function AdminTour() {
     return (
         <div>
             <AdminHeader />
+            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
             <div style={{ display: "flex", marginTop: "10px", marginBottom: "50px", marginLeft: "10px" }}>
                 <div style={{ flex: 1 }}>
                 <label style={{marginBottom: "10px"}}  htmlFor="tourautocomplete">Selecteer student</label>

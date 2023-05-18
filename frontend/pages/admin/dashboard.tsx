@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { getAllTours, Tour } from "@/lib/tour";
+import React, {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {getAllTours, Tour} from "@/lib/tour";
 import {
-getAllStudentOnTourFromToday,
-getStudentOnTourAllProgressWS,
-getStudentOnTourIndividualProgressWS,
-getStudentOnTourIndividualRemarkWS,
-getStudentOnTourProgress,
-StudentOnTour,
+    getAllStudentOnTourFromToday,
+    getStudentOnTourAllProgressWS,
+    getStudentOnTourIndividualProgressWS,
+    getStudentOnTourIndividualRemarkWS,
+    getStudentOnTourProgress,
+    StudentOnTour,
 } from "@/lib/student-on-tour";
-import { getAllUsers, User } from "@/lib/user";
+import {getAllUsers, User} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import Loading from "@/components/loading";
 import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
-import { styled } from "@mui/system";
-import { getAllRemarksOfStudentOnTour } from "@/lib/remark-at-building";
+import {styled} from "@mui/system";
+import {getAllRemarksOfStudentOnTour} from "@/lib/remark-at-building";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 interface IndividualProgressWebSocketsResponse {
     current_building_index: number;
@@ -67,6 +69,8 @@ function AdminDashboard() {
 
     const [completionRecord, setCompletionRecord] = useState<Record<number, boolean>>({});
 
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
     const getRemarkText = (numberOfRemarks: number): string => {
         if (numberOfRemarks === 0) {
             return "Geen opmerkingen";
@@ -74,7 +78,7 @@ function AdminDashboard() {
 
         let extension = "";
         if (numberOfRemarks > 1) {
-        extension = "en";
+            extension = "en";
         }
 
         return `${numberOfRemarks} opmerking${extension}`;
@@ -101,22 +105,22 @@ function AdminDashboard() {
         const ws = getStudentOnTourAllProgressWS();
 
         ws.addEventListener("message", (event) => {
-        const data: AllWebSocketsResponse = JSON.parse(event.data);
-        if (data.state === "started") {
-            setStartedStudentOnTourIds((prevState) => [
-            ...prevState,
-            data.student_on_tour_id,
-            ]);
-        }
-
-        if (data.state === "completed") {
-            setCompletionRecord((prevState) => {
-                return {
+            const data: AllWebSocketsResponse = JSON.parse(event.data);
+            if (data.state === "started") {
+                setStartedStudentOnTourIds((prevState) => [
                     ...prevState,
-                    [data.student_on_tour_id]: true,
-                };
-            });
-        }
+                    data.student_on_tour_id,
+                ]);
+            }
+
+            if (data.state === "completed") {
+                setCompletionRecord((prevState) => {
+                    return {
+                        ...prevState,
+                        [data.student_on_tour_id]: true,
+                    };
+                });
+            }
         });
 
         return ws;
@@ -136,16 +140,14 @@ function AdminDashboard() {
             }));
             if (!maxBuildingIndex[studentOnTourId]) {
                 getStudentOnTourProgress(studentOnTourId).then(
-                (res) => {
-                    const data: ProgressResponse = res.data;
-                    setMaxBuildingIndex((prevState) => ({
-                    ...prevState,
-                    [studentOnTourId]: data.max_building_index,
-                    }));
-                },
-                (err) => {
-                    console.error(err);
-                }
+                    (res) => {
+                        const data: ProgressResponse = res.data;
+                        setMaxBuildingIndex((prevState) => ({
+                            ...prevState,
+                            [studentOnTourId]: data.max_building_index,
+                        }));
+                    },
+                    (err) => setErrorMessages(handleError(err))
                 );
             }
         });
@@ -163,33 +165,29 @@ function AdminDashboard() {
 
     const setInitialData = async (studentOnTourId: number) => {
         await fetchRemarks(studentOnTourId).then(
-        (remarksCount: number) => {
-            setRemarksRecord((prevState) => ({
-            ...prevState,
-            [studentOnTourId]: remarksCount,
-            }));
-        },
-        (err) => {
-            console.error(err);
-        }
+            (remarksCount: number) => {
+                setRemarksRecord((prevState) => ({
+                    ...prevState,
+                    [studentOnTourId]: remarksCount,
+                }));
+            },
+            (err) => setErrorMessages(handleError(err))
         );
 
         await getStudentOnTourProgress(studentOnTourId).then(
-        (res) => {
-            const data: ProgressResponse = res.data;
-            setMaxBuildingIndex((prevState) => ({
-            ...prevState,
-            [studentOnTourId]: data.max_building_index,
-            }));
+            (res) => {
+                const data: ProgressResponse = res.data;
+                setMaxBuildingIndex((prevState) => ({
+                    ...prevState,
+                    [studentOnTourId]: data.max_building_index,
+                }));
 
-            setCurrentBuildingIndex((prevState) => ({
-            ...prevState,
-            [studentOnTourId]: data.current_building_index,
-            }));
-        },
-        (err) => {
-            console.error(err);
-        }
+                setCurrentBuildingIndex((prevState) => ({
+                    ...prevState,
+                    [studentOnTourId]: data.current_building_index,
+                }));
+            },
+            (err) => setErrorMessages(handleError(err))
         );
     };
 
@@ -203,30 +201,30 @@ function AdminDashboard() {
     const redirectToRemarksPage = async (studentOnTour: StudentOnTour) => {
         // Redirect to the specific tour page
         await router.push({
-        pathname: `tour/`,
-        query: {
-            student: studentOnTour.student,
-            tour: studentOnTour.tour,
-        },
+            pathname: `tour/`,
+            query: {
+                student: studentOnTour.student,
+                tour: studentOnTour.tour,
+            },
         });
     };
 
     useEffect(() => {
         const fetchData = async () => {
-        try {
-            const tourResponse = await getAllTours();
-            const studentOnTourResponse = await getAllStudentOnTourFromToday();
-            const allUsersResponse = await getAllUsers();
+            try {
+                const tourResponse = await getAllTours();
+                const studentOnTourResponse = await getAllStudentOnTourFromToday();
+                const allUsersResponse = await getAllUsers();
 
-            setTours(tourResponse.data);
-            setStudentsOnTours(studentOnTourResponse.data);
+                setTours(tourResponse.data);
+                setStudentsOnTours(studentOnTourResponse.data);
 
-            setUsers(allUsersResponse.data);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
+                setUsers(allUsersResponse.data);
+            } catch (error) {
+                setErrorMessages(handleError(error));
+            } finally {
+                setLoading(false);
+            }
         };
 
         fetchData();
@@ -246,14 +244,14 @@ function AdminDashboard() {
             if (studentOnTour.started_tour) {
                 setStartedStudentOnTourIds((prevState) => [...prevState, studentOnTour.id]);
             }
-            
+
             completionStatus[studentOnTour.id] = studentOnTour.completed_tour !== null;
         });
 
         setCompletionRecord(completionStatus);
-        
+
         const wsAll = setupWebSocketForAllStudentOnTours();
-        
+
         setRemarksRecord(newRemarks);
 
         return () => {
@@ -279,17 +277,17 @@ function AdminDashboard() {
 
     if (loading) {
         return (
-        <>
-            <AdminHeader />
-            <Loading />
-        </>
+            <>
+                <AdminHeader/>
+                <Loading/>
+            </>
         );
     }
 
     if (studentsOnTours.length === 0) {
         return (
             <div>
-                <AdminHeader />
+                <AdminHeader/>
                 <h2>Er zijn vandaag geen studenten ingepland</h2>
             </div>
         );
@@ -297,57 +295,59 @@ function AdminDashboard() {
 
     return (
         <div>
-        <AdminHeader />
-        {studentsOnTours.length > 0 ? (
-            <>
-            <h2>Rondes van vandaag</h2>
-            {startedStudentOnTours.length > 0 ? (
+            <AdminHeader/>
+            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+            {studentsOnTours.length > 0 ? (
                 <>
-                <h3>Bezig</h3>
-            <table className="table">
-                <thead>
-                <tr>
-                    <th style={{width: "25%"}}>Ronde</th>
-                    <th style={{width: "25%"}}>Student</th>
-                    <th style={{width: "25%"}}>Voortgang</th>
-                    <th style={{width: "25%"}}>Opmerkingen</th>
-                </tr>
-                </thead>
-                <tbody>
-                {startedStudentOnTours.map((studentOnTour) => {
-                    const tour = tours.find((t) => t.id === studentOnTour.tour);
-                    const user = users.find((u) => u.id === studentOnTour.student);
+                    <h2>Rondes van vandaag</h2>
+                    {startedStudentOnTours.length > 0 ? (
+                        <>
+                            <h3>Bezig</h3>
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                    <th style={{width: "25%"}}>Ronde</th>
+                                    <th style={{width: "25%"}}>Student</th>
+                                    <th style={{width: "25%"}}>Voortgang</th>
+                                    <th style={{width: "25%"}}>Opmerkingen</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {startedStudentOnTours.map((studentOnTour) => {
+                                    const tour = tours.find((t) => t.id === studentOnTour.tour);
+                                    const user = users.find((u) => u.id === studentOnTour.student);
 
-                    if (!tour || !user) return null;
+                                    if (!tour || !user) return null;
 
-                    return (
-                    <tr key={studentOnTour.id} style={{ cursor: "pointer" }} onClick={() => redirectToRemarksPage(studentOnTour)}>
-                        <td style={{ textDecoration: "underline" }}>{tour.name}</td>
-                        <td>{`${user.first_name} ${user.last_name}`}</td>
-                        <td>
-                        <Box sx={{ width: "100%" }}>
-                            <GreenLinearProgress
-                            variant="determinate"
-                            value={
-                                getProgress(studentOnTour.id)
-                            }
-                            />
-                        </Box>
-                        </td>
+                                    return (
+                                        <tr key={studentOnTour.id} style={{cursor: "pointer"}}
+                                            onClick={() => redirectToRemarksPage(studentOnTour)}>
+                                            <td style={{textDecoration: "underline"}}>{tour.name}</td>
+                                            <td>{`${user.first_name} ${user.last_name}`}</td>
+                                            <td>
+                                                <Box sx={{width: "100%"}}>
+                                                    <GreenLinearProgress
+                                                        variant="determinate"
+                                                        value={
+                                                            getProgress(studentOnTour.id)
+                                                        }
+                                                    />
+                                                </Box>
+                                            </td>
 
-                        <td>
-                            {getRemarkText(remarksRecord[studentOnTour.id])}
-                        </td>
-                    </tr>
-                    );
-                })}
-                </tbody>
-            </table>
-                </>
-            ) : (<></>)}
-            {(notYetStartedStudentOnTours.length > 0) ? (
-                <>
-                <h3>Nog niet begonnen</h3>
+                                            <td>
+                                                {getRemarkText(remarksRecord[studentOnTour.id])}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                                </tbody>
+                            </table>
+                        </>
+                    ) : (<></>)}
+                    {(notYetStartedStudentOnTours.length > 0) ? (
+                        <>
+                            <h3>Nog niet begonnen</h3>
                             <table className="table">
                                 <thead>
                                 <tr>
@@ -365,33 +365,33 @@ function AdminDashboard() {
                                     if (!tour || !user) return null;
 
                                     return (
-                                    <tr key={studentOnTour.id}>
-                                        <td>{tour.name}</td>
-                                        <td>{`${user.first_name} ${user.last_name}`}</td>
-                                        <td>
-                                        <Box sx={{ width: "100%" }}>
-                                            <GreenLinearProgress
-                                            variant="determinate"
-                                            value={0}
-                                            />
-                                        </Box>
-                                        </td>
+                                        <tr key={studentOnTour.id}>
+                                            <td>{tour.name}</td>
+                                            <td>{`${user.first_name} ${user.last_name}`}</td>
+                                            <td>
+                                                <Box sx={{width: "100%"}}>
+                                                    <GreenLinearProgress
+                                                        variant="determinate"
+                                                        value={0}
+                                                    />
+                                                </Box>
+                                            </td>
 
-                                        <td>
-                                            {getRemarkText(remarksRecord[studentOnTour.id])}
-                                        </td>
-                                    </tr>
+                                            <td>
+                                                {getRemarkText(remarksRecord[studentOnTour.id])}
+                                            </td>
+                                        </tr>
                                     );
                                 })}
                                 </tbody>
                             </table>
+                        </>
+                    ) : (<></>)}
+
                 </>
-            ) : (<></>)}
-           
-            </>
-        ) : (
-            <h2>Geen rondes vandaag</h2>
-        )}
+            ) : (
+                <h2>Geen rondes vandaag</h2>
+            )}
         </div>
     );
 }

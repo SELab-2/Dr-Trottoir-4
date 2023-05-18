@@ -83,7 +83,7 @@ const AdminHeader = () => {
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link className={`nav-link ${styles.text}`} href="/admin/analysis/worked-hours">
+                            <Link className={`nav-link ${styles.text}`} href="/admin/analysis">
                                 Analyse
                             </Link>
                         </li>
