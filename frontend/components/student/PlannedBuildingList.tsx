@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { getStudentOnTour, startStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
 import { getBuildingsOfTour, getTour, Tour } from "@/lib/tour";
 import { getRegion, RegionInterface } from "@/lib/region";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function PlannedBuildingList({
@@ -47,14 +47,15 @@ export default function PlannedBuildingList({
                                 const r: RegionInterface = res.data;
                                 setRegion(r.region);
                             })
-                            .catch(err => setErrorMessages(handleError(err)));
+                            .catch((err) => setErrorMessages(handleError(err)));
                     })
-                    .catch(err => setErrorMessages(handleError(err)));
+                    .catch((err) => setErrorMessages(handleError(err)));
                 getBuildingsOfTour(sots.tour).then(
-                    res => {
+                    (res) => {
                         const buildings: BuildingInterface[] = res.data;
                         setBuildings(buildings);
-                    }, err => setErrorMessages(handleError(err))
+                    },
+                    (err) => setErrorMessages(handleError(err))
                 );
                 // Set the studentOnTour state
                 setStudentOnTour({
@@ -68,7 +69,7 @@ export default function PlannedBuildingList({
                     completed_tour: sots.completed_tour,
                 });
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
     }, [studentOnTourId]);
 
     async function routeToFirstBuilding() {
@@ -82,7 +83,7 @@ export default function PlannedBuildingList({
                     query: { studentOnTourId: studentOnTour?.id },
                 });
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
     }
 
     function getStartButtonText() {
@@ -104,7 +105,7 @@ export default function PlannedBuildingList({
                 setBuilding={setSelectedBuilding}
                 studentOnTour={studentOnTour}
             />
-            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
             <div className="mt-3 mb-1 ms-2 me-2">
                 <span className="h1 fw-bold">{tour ? `Ronde ${tour?.name}` : ""}</span>
                 <p className="h5 fw-bold">{region ? `Regio ${region}` : ""}</p>

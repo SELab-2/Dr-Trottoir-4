@@ -35,10 +35,13 @@ export default function EditLobbyModal({
     const [allRoles, setAllRoles] = useState<Role[]>([]);
 
     useEffect(() => {
-        getAllRoles().then((res) => {
-            const r: Role[] = res.data;
-            setAllRoles(r);
-        }, err => setErrorMessages(handleError(err)));
+        getAllRoles().then(
+            (res) => {
+                const r: Role[] = res.data;
+                setAllRoles(r);
+            },
+            (err) => setErrorMessages(handleError(err))
+        );
     }, []);
 
     useEffect(() => {
@@ -115,11 +118,14 @@ export default function EditLobbyModal({
         if (!selectedLobby) {
             return;
         }
-        newVerificationCode(selectedLobby.id).then((res) => {
-            const lobby: Lobby = res.data;
-            setVerificationCode(lobby.verification_code);
-            onNewVerificationCode(lobby);
-        }, err => setErrorMessages(handleError(err)));
+        newVerificationCode(selectedLobby.id).then(
+            (res) => {
+                const lobby: Lobby = res.data;
+                setVerificationCode(lobby.verification_code);
+                onNewVerificationCode(lobby);
+            },
+            (err) => setErrorMessages(handleError(err))
+        );
     }
 
     function hideModal() {
