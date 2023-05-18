@@ -86,26 +86,6 @@ const AutocompleteComponent: React.FC<Props> = ({initialId, label, fetchOptions,
         }
     }, [open]);
 
-    // async function fetch() {
-    //     try {
-    //         const res = await fetchOptions();
-    //         let availableOptions: any[] = [];
-    //         for (let data of res.data) {
-    //             availableOptions.push({label: mapping(data), id: data.id});
-    //         }
-    //         setOptions(availableOptions);
-    //
-    //         //Set the initial value to the object with the same id
-    //         const initialOption = availableOptions.find((option) => Number(option.id) === Number(initialId));
-    //         if (initialOption) {
-    //             setValue(initialOption);
-    //             setInputValue(initialOption.label);
-    //         }
-    //     } catch (err) {
-    //         console.error(err);
-    //     }
-    // }
-
     return (
         <>
             <Form.Label> {label} </Form.Label>
@@ -126,15 +106,18 @@ const AutocompleteComponent: React.FC<Props> = ({initialId, label, fetchOptions,
                     if (newValue) {
                         setValue(newValue);
                         setObjectId(newValue.id);
+                    } else {
+                        setValue("");
+                        setObjectId(0);
                     }
                 }}
                 onInputChange={(e: React.SyntheticEvent, newInputValue: string) => {
                     setInputValue(newInputValue);
                 }}
                 options={options}
+                loading={loading}
                 getOptionLabel={(option: any) => option.label || ""}
                 renderInput={(params: AutocompleteRenderInputParams) => (
-                    // <TextField {...params} variant="outlined" fullWidth/>
                     <TextField
                         {...params}
                         variant="outlined"
