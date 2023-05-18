@@ -47,9 +47,10 @@ function LoginForm() {
             )}
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <div>
-                <Form.Label className="normal_text">E-mailadres</Form.Label>
+                <Form.Label htmlFor={"email"} className="normal_text">E-mailadres</Form.Label>
                 <InputGroup className="input">
                     <Form.Control
+                        id={"email"}
                         className="form_control"
                         type="email"
                         value={username}

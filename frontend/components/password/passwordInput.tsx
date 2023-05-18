@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, InputGroup, Button, Form } from 'react-bootstrap';
+import {Button, Form, FormControl, InputGroup} from 'react-bootstrap';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
@@ -42,23 +42,24 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 
     return (
         <div>
-            <Form.Label className="normal_text">{label}</Form.Label>
+            <Form.Label htmlFor={"password"} className="normal_text">{label}</Form.Label>
             <InputGroup className="input">
                 <FormControl
                     className="form_control"
+                    id={"password"}
                     type={showPassword ? 'text' : 'password'}
                     value={value}
-                    onInput={handleInput}
+                    onChange={handleInput}
                     onInvalid={handleInvalid}
                     required
                     placeholder={placeholder}
                 />
                 <Button
-                        variant="light"
-                        onClick={handlePasswordVisibility}
-                    >
-                        {showPassword ? <Visibility/> : <VisibilityOff/>}
-                    </Button>
+                    variant="light"
+                    onClick={handlePasswordVisibility}
+                >
+                    {showPassword ? <Visibility/> : <VisibilityOff/>}
+                </Button>
             </InputGroup>
         </div>
     );

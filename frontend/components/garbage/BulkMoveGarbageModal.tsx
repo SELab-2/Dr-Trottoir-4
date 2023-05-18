@@ -66,8 +66,9 @@ export default function BulkMoveGarbageModal({
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <Form.Group>
-                        <Form.Label>Verplaats van:</Form.Label>
+                        <Form.Label htmlFor={"verplaats-van"}>Verplaats van:</Form.Label>
                         <Form.Control
+                            id={"verplaats-van"}
                             type="date"
                             className="form-control"
                             value={dateToMove}
@@ -75,8 +76,9 @@ export default function BulkMoveGarbageModal({
                         />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>naar:</Form.Label>
+                        <Form.Label htmlFor={"naar"}>naar:</Form.Label>
                         <Form.Control
+                            id={"naar"}
                             type="date"
                             className="form-control"
                             value={moveToDate}
@@ -84,8 +86,9 @@ export default function BulkMoveGarbageModal({
                         />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Type:</Form.Label>
+                        <Form.Label id={"type"}>Type:</Form.Label>
                         <Select
+                            aria-labelledby={"type"}
                             options={Object.keys(garbageTypes).map((key: string) => {
                                 const v = garbageTypes[key];
                                 return { value: v, label: v };

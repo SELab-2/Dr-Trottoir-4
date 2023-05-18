@@ -179,8 +179,9 @@ export default function GarbageEditModal({
             <Form onSubmit={submit}>
                 <Modal.Body>
                     <div className="form-outline mb-4">
-                        <label className="form-label">Datum:</label>
+                        <label htmlFor={"date"} className="form-label">Datum:</label>
                         <input
+                            id={"date"}
                             type="date"
                             className="form-control"
                             value={selectedDate}
@@ -189,8 +190,9 @@ export default function GarbageEditModal({
                     </div>
                     {selectedEvent && (
                         <div className="form-outline mb-4">
-                            <label className="form-label">Gebouw:</label>
+                            <label htmlFor={"building"} className="form-label">Gebouw:</label>
                             <Select
+                                id={"building"}
                                 options={buildings.map((b) => {
                                     return { value: b.id, label: getAddress(b) };
                                 })}
@@ -207,8 +209,9 @@ export default function GarbageEditModal({
                     {!selectedEvent && (
                         <>
                             <div className="form-outline mb-4">
-                                <label className="form-label">Gebouw(en):</label>
+                                <label htmlFor={"buildings"} className="form-label">Gebouw(en):</label>
                                 <Select
+                                    id={"buildings"}
                                     options={buildings.map((b) => {
                                         return { value: b.id, label: getAddress(b) };
                                     })}
@@ -235,8 +238,9 @@ export default function GarbageEditModal({
                         </>
                     )}
                     <div className="form-outline mb-4">
-                        <label className="form-label">Type:</label>
+                        <label htmlFor={"type"} className="form-label">Type:</label>
                         <Select
+                            id={"type"}
                             options={Object.keys(garbageTypes).map((key: string) => {
                                 const v = garbageTypes[key];
                                 return { value: v, label: v };
