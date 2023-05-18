@@ -2,12 +2,14 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Form } from "react-bootstrap";
 import {
-    deleteBuildingComment, getBuildingComment,
+    deleteBuildingComment,
+    getBuildingComment,
     getBuildingInfo,
     getDurationFromMinutes,
     patchBuilding,
     patchBuildingComment,
-    postBuilding, postBuildingComment
+    postBuilding,
+    postBuildingComment,
 } from "@/lib/building";
 import { getRegion } from "@/lib/region";
 import { getUserInfo } from "@/lib/user";
@@ -67,10 +69,13 @@ function AdminDataBuildingsEdit() {
                     await patchBuilding(building, Number(router.query.building));
                     if (buildingCommentsId >= 0) {
                         if (buildingComments) {
-                            await patchBuildingComment({
-                                building: Number(router.query.building),
-                                comment: buildingComments
-                            }, buildingCommentsId);
+                            await patchBuildingComment(
+                                {
+                                    building: Number(router.query.building),
+                                    comment: buildingComments,
+                                },
+                                buildingCommentsId
+                            );
                         } else {
                             await deleteBuildingComment(buildingCommentsId);
                             setBuildingCommentsId(-1);
@@ -79,7 +84,7 @@ function AdminDataBuildingsEdit() {
                         if (buildingComments) {
                             await postBuildingComment({
                                 building: Number(router.query.building),
-                                comment: buildingComments
+                                comment: buildingComments,
                             });
                         }
                     }
@@ -89,7 +94,7 @@ function AdminDataBuildingsEdit() {
                     if (buildingComments) {
                         await postBuildingComment({
                             building: buildingId,
-                            comment: buildingComments
+                            comment: buildingComments,
                         });
                     }
                 }
@@ -146,14 +151,14 @@ function AdminDataBuildingsEdit() {
 
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <div className={styles.container}>
                 <ConfirmationMessage
                     showConfirm={showConfirmation}
                     confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
                     onClose={setShowConfirmation}
                 />
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                 <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
                     <Form.Group controlId="buildingName">
                         <Form.Label>Gebouw naam</Form.Label>
