@@ -1,4 +1,3 @@
-
 import { render, waitFor } from "@testing-library/react";
 import { useRouter } from "next/router";
 import { BuildingInterface, getBuildingInfo, getBuildingInfoByPublicId } from "@/lib/building";
