@@ -1,17 +1,16 @@
 from django.core.exceptions import BadRequest
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample, inline_serializer
+from rest_framework import serializers
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import serializers
 
 from analysis.serializers import WorkedHoursAnalysisSerializer, StudentOnTourAnalysisSerializer
 from base.models import StudentOnTour, RemarkAtBuilding
 from base.permissions import IsAdmin, IsSuperStudent
 from util.request_response_util import (
-    get_success,
     get_filter_object,
     filter_instances,
     bad_request_custom_error_message,

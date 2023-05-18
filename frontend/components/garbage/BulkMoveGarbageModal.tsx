@@ -5,10 +5,10 @@ import { formatDate } from "@/lib/date";
 import { Button, Form, Modal } from "react-bootstrap";
 import { addDays } from "date-fns";
 import { BuildingInterface } from "@/lib/building";
-import styles from "@/styles/Login.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import Select from "react-select";
 
-export default function BulkOperationModal({
+export default function BulkMoveGarbageModal({
     show,
     buildings,
     closeModal,
@@ -65,49 +65,39 @@ export default function BulkOperationModal({
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Form onSubmit={submit}>
                 <Modal.Body>
-                    <div className="form-row">
-                        <div className="col">
-                            <label htmlFor={"verplaats-van"}>Verplaats van:</label>
-                            <input
-                                id={"verplaats-van"}
-                                type="date"
-                                className="form-control"
-                                value={dateToMove}
-                                onChange={(event) => setDateToMove(event.target.value)}
-                            />
-                        </div>
-                        <div className="col">
-                            <label htmlFor={"naar"}>naar:</label>
-                            <input
-                                id={"naar"}
-                                type="date"
-                                className="form-control"
-                                value={moveToDate}
-                                onChange={(event) => setMoveToDate(event.target.value)}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-outline mb-4">
-                        <label htmlFor={"garbage-select"} className="form-label">Type:</label>
-                        <select
-                            id={"garbage-select"}
-                            className={`form-select form-control form-control-lg ${styles.input}`}
-                            value={garbageType ? garbageType : ""}
-                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                setGarbageType(e.target.value);
-                            }}
-                        >
-                            <option disabled value="" key="" />
-                            {Object.keys(garbageTypes).map((key: string) => {
-                                const value = garbageTypes[key];
-                                return (
-                                    <option value={key} key={key}>
-                                        {value}
-                                    </option>
-                                );
+                    <Form.Group>
+                        <Form.Label>Verplaats van:</Form.Label>
+                        <Form.Control
+                            type="date"
+                            className="form-control"
+                            value={dateToMove}
+                            onChange={(event) => setDateToMove(event.target.value)}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>naar:</Form.Label>
+                        <Form.Control
+                            type="date"
+                            className="form-control"
+                            value={moveToDate}
+                            onChange={(event) => setMoveToDate(event.target.value)}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Type:</Form.Label>
+                        <Select
+                            options={Object.keys(garbageTypes).map((key: string) => {
+                                const v = garbageTypes[key];
+                                return { value: v, label: v };
                             })}
-                        </select>
-                    </div>
+                            value={garbageType ? { value: garbageType, label: garbageType } : {}}
+                            onChange={(s) => {
+                                if (s && s.value) {
+                                    setGarbageType(s.value);
+                                }
+                            }}
+                        />
+                    </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button

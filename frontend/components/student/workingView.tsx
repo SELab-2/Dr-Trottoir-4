@@ -23,6 +23,7 @@ import BuildingInfoView from "@/components/student/buildingInfoView";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
 import { FileList } from "@/components/student/fileList";
+import { handleError } from "@/lib/error";
 
 export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: string; studentOnTourId: number | null }) {
     const router = useRouter();
@@ -74,9 +75,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                 };
                 if (sot.completed_tour) {
                     // Tour is completed, redirect to no access
-                    router.replace("/no-access").then((_) => {
-                        console.error("No access");
-                    });
+                    router.replace("/no-access").then();
                 }
                 setProgress({
                     step: 0,
@@ -86,7 +85,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                 setStudentOnTour(sot);
                 getBuildingsOnTour(sots.tour);
             })
-            .catch((_) => {});
+            .catch((err) => setErrorMessages(handleError(err)));
     }, [studentOnTourId]);
 
     useEffect(() => {
@@ -104,7 +103,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                 const bot: BuildingInterface[] = res.data;
                 setBuildingsOnTour(bot);
             })
-            .catch((_) => {});
+            .catch((err) => setErrorMessages(handleError(err)));
     }
 
     // Get the buildingInfo at the currentIndex
@@ -133,7 +132,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                     setGlobalRemarks([]);
                 }
             })
-            .catch((_) => {});
+            .catch((err) => setErrorMessages(handleError(err)));
     }
 
     // Get the remark of a step
@@ -169,10 +168,10 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                                 })
                             );
                         })
-                        .catch((_) => {});
+                        .catch((err) => setErrorMessages(handleError(err)));
                 }
             })
-            .catch((_) => {});
+            .catch((err) => setErrorMessages(handleError(err)));
     }
 
     // Handle the submit event
@@ -189,11 +188,15 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
         if (stepRemark) {
             // PATCH the remark
             if (stepDescription != stepRemark.remark) {
-                patchRemarkAtBuilding(stepRemark.id, stepDescription).then().catch(console.error);
+                patchRemarkAtBuilding(stepRemark.id, stepDescription)
+                    .then()
+                    .catch((err) => setErrorMessages(handleError(err)));
             }
             picturesAtStep.forEach((f: FileListElement) => {
                 if (f.file && !f.pictureId) {
-                    postPictureOfRemark(f.file, stepRemark.id).then().catch(console.error);
+                    postPictureOfRemark(f.file, stepRemark.id)
+                        .then()
+                        .catch((err) => setErrorMessages(handleError(err)));
                 }
             });
             increaseStep();
@@ -211,12 +214,14 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                     const remark: RemarkAtBuilding = res.data;
                     picturesAtStep.forEach((f: FileListElement) => {
                         if (f.file && !f.pictureId) {
-                            postPictureOfRemark(f.file, remark.id).catch(console.error);
+                            postPictureOfRemark(f.file, remark.id)
+                                .then()
+                                .catch((err) => setErrorMessages(handleError(err)));
                         }
                     });
                     increaseStep();
                 })
-                .catch((_) => {});
+                .catch((err) => setErrorMessages(handleError(err)));
         }
     }
 
@@ -338,7 +343,6 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
 
     // Redirect to the schedule page
     function redirectToSchedule(studentOnTourId: number): void {
-        endStudentOnTour(studentOnTourId).catch(() => {});
         router
             .push({
                 pathname: redirectTo,

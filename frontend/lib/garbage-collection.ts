@@ -84,8 +84,8 @@ export async function bulkMoveGarbageCollectionSchedule(
     buildings: number[] | null = null,
     region: number | null = null,
     tour: number | null = null
-) {
-    const params : {[key : string] : string | number | number[]} = {garbage_type, date, move_to_date};
+): Promise<AxiosResponse<any, any>> {
+    const params: { [key: string]: string | number | number[] } = {garbage_type, date, move_to_date};
     if (region) {
         params["region"] = region;
     } else if (tour) {
@@ -97,6 +97,6 @@ export async function bulkMoveGarbageCollectionSchedule(
     return await api.post(post_url, {},
         {
             headers: {"Content-Type": "application/json"},
-            params : params
+            params: params
         });
 }

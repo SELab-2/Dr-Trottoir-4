@@ -73,6 +73,19 @@ export async function patchBulkStudentOnTour(data : any) {
     );
 }
 
+export async function duplicateStudentOnTourSchedule(startDatePeriod: string, endDatePeriod: string, startDateCopy: string) {
+    let data: { [name: string]: string } = {
+        start_date_period: startDatePeriod,
+        end_date_period: endDatePeriod,
+        start_date_copy: startDateCopy
+    };
+    const post_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_STUDENT_ON_TOUR_DUPLICATE}`;
+    return await api.post(post_url, data,
+        {
+            headers: {"Content-Type": "application/json"},
+        });
+}
+
 export async function deleteBulkStudentOnTour(data : number[]) {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BULK_STUDENT_ON_TOUR}`;
     return await api.delete(request_url, { data: {ids: data }});

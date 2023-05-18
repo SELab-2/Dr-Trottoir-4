@@ -1,9 +1,8 @@
+from django.utils.translation import gettext_lazy as _
 from rest_framework.permissions import BasePermission
 
 from base.models import Building, User, Role, Manual, Tour, StudentOnTour
 from util.request_response_util import request_to_dict
-from django.utils.translation import gettext_lazy as _
-
 
 SAFE_METHODS = ["GET", "HEAD", "OPTIONS"]
 
@@ -156,7 +155,8 @@ class ReadOnlyOwnerAccount(BasePermission):
 
     message = _("You can only access your own account")
 
-    def has_object_permission(self, request, view, obj: User):
+    def has_object_permission(self, request, view, SoTobj: StudentOnTour):
+        obj = SoTobj.student
         if request.method in SAFE_METHODS:
             return request.user.id == obj.id
         return False
@@ -233,7 +233,7 @@ class ReadOnlyManualFromSyndic(BasePermission):
     message = _("You can only view manuals that are linked to one of your buildings")
 
     def has_permission(self, request, view):
-        return request.user.role.name == "syndic" and request.method in SAFE_METHODS
+        return request.user.role.name.lower() == "syndic" and request.method in SAFE_METHODS
 
     def has_object_permission(self, request, view, obj: Manual):
         return request.user.id == obj.building.syndic_id
@@ -248,4 +248,14 @@ class NoStudentWorkingOnTour(BasePermission):
                 tour=obj, started_tour__isnull=False, completed_tour__isnull=True
             ).first()
             return active_student_on_tour is None
+        return True
+
+
+class ReadOnlyStartedStudentOnTour(BasePermission):
+    # TODO: Translations
+    message = _("The student has already started or finished this tour, this entry can't be edited anymore.")
+
+    def has_object_permission(self, request, view, obj: StudentOnTour):
+        if request.method == "PATCH":
+            return obj.started_tour is None
         return True
