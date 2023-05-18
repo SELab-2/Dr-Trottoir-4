@@ -1,11 +1,13 @@
 import ToursList from "@/components/student/toursList";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getCurrentUser, User } from "@/lib/user";
 import { getToursOfStudent, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
 import { getTour, Tour } from "@/lib/tour";
 import { getRegion, RegionInterface } from "@/lib/region";
 import { datesEqual } from "@/lib/date";
 import { useRouter } from "next/router";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import { handleError } from "@/lib/error";
 
 export default function PersonalSchedule({ redirectTo }: { redirectTo: string }) {
     const router = useRouter();
@@ -16,6 +18,7 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
     const [upcomingTours, setUpcomingTours] = useState<StudentOnTour[]>([]);
     const [tours, setTours] = useState<Record<number, Tour>>({});
     const [regions, setRegions] = useState<Record<number, RegionInterface>>({});
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         getCurrentUser()
@@ -23,7 +26,7 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
                 const u: User = res.data;
                 setUser(u);
             })
-            .catch((_) => {});
+            .catch((err) => setErrorMessages(handleError(err)));
     }, []);
 
     useEffect(() => {
@@ -58,8 +61,8 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
                                 r[region.id] = region;
                                 setRegions(r);
                             }
-                        } catch (e) {
-                            console.error(e);
+                        } catch (err) {
+                            setErrorMessages(handleError(err));
                         }
                     }
                 }
@@ -99,7 +102,7 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
                 });
                 setUpcomingTours(futureTours);
             })
-            .catch((_) => {});
+            .catch((err) => setErrorMessages(handleError(err)));
     }, [user]);
 
     function redirectToSchedule(studentOnTourId: number): void {
@@ -113,6 +116,7 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
 
     return (
         <>
+            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
             <ToursList
                 studentOnTours={toursToday}
                 listTitle="Vandaag"
