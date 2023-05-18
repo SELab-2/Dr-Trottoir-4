@@ -30,6 +30,20 @@ export interface BuildingPostInterface {
     public_id: string;
 }
 
+export interface EditBuildingInterface {
+    syndic: number;
+    name: string;
+    city: string;
+    postal_code: string;
+    street: string;
+    house_number: string;
+    bus: string;
+    client_number: string;
+    duration: string;
+    region: number;
+    public_id: string;
+}
+
 export interface BuildingSyndicPostInterface {
     name: string;
     public_id: string;

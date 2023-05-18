@@ -13,7 +13,7 @@ import {
 import {getRegion} from "@/lib/region";
 import {getUserInfo} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
@@ -94,7 +94,7 @@ function AdminDataBuildingsEdit() {
                     }
                 }
                 if (manual) {
-                    await postManual({building: buildingId, file: manual})
+                    await postManual({ building: buildingId, file: manual });
                 }
                 setShowConfirmation(true);
             } catch (error: any) {
