@@ -50,6 +50,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
                     className="form_control"
                     id={"password"}
                     type={showPassword ? "text" : "password"}
+
                     value={value}
                     onChange={handleInput}
                     onInvalid={handleInvalid}
@@ -60,6 +61,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
                     {showPassword ? <Visibility /> : <VisibilityOff />}
                 </Button>
             </InputGroup>
+
         </div>
     );
 };

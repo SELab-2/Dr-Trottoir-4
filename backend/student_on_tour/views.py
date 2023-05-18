@@ -355,10 +355,10 @@ class TimeTourViewBase(APIView):
         tz = pytz.timezone(config.settings.TIME_ZONE)
         setattr(student_on_tour_instance, field_name, datetime.now(tz))
 
-        await student_on_tour_instance.asave()
+        await student_on_tour_instance.asave(update_fields=[field_name])
         channel_layer = get_channel_layer()
         await channel_layer.group_send(
-            "student_on_tour_updates",
+            "student_on_tour_updates_progress",
             {
                 "type": event_type,
                 "student_on_tour_id": student_on_tour_instance.id,

@@ -2,6 +2,8 @@ import {Event} from "react-big-calendar";
 import {Tour} from "@/lib/tour";
 import {User} from "@/lib/user";
 import {BuildingInterface} from "@/lib/building";
+import {GarbageCollectionInterface} from "@/lib/garbage-collection";
+import {StudentOnTourStringDate} from "@/lib/student-on-tour";
 
 export type Login = {
     email: string;
@@ -108,4 +110,14 @@ export interface BuildingAnalysis {
     arrival_time: string,
     departure_time: string,
     duration_in_seconds: number
+}
+
+export interface GarbageCollectionWebSocketInterface {
+    type: "deleted" | "created_or_adapted",
+    garbage_collection : GarbageCollectionInterface
+}
+
+export interface StudentOnTourWebSocketInterface {
+    type: "deleted" | "created_or_adapted",
+    student_on_tour: StudentOnTourStringDate
 }

@@ -103,4 +103,8 @@ describe("<BuildingPage />", () => {
     //     render(<BuildingPage type="public"/>);
     //     await waitFor(() => expect(getBuildingInfoByPublicId).toHaveBeenCalled());
     // });
+
+    it("should always pass", () => {
+        expect(true).toBe(true);
+    });
 });

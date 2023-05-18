@@ -107,3 +107,8 @@ export async function bulkMoveGarbageCollectionSchedule(
             params: params
         });
 }
+
+export function getAllGarbageCollectionChanges() {
+    const url: string = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}${process.env.NEXT_PUBLIC_WEBSOCKET_ALL_GARBAGE_COLLECTION}`;
+    return new WebSocket(url);
+}

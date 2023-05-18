@@ -9,6 +9,8 @@ import { Button } from "react-bootstrap";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { handleError } from "@/lib/error";
 import ManualList from "@/components/manual/ManualList";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import { getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
 
 interface BuildingQuery {
     id?: string;
@@ -30,12 +32,13 @@ function BuildingInfo({
     const [regionName, setRegionName] = useState("");
 
     const publicId = (building && building.public_id) || "-";
-
+    const [buildingComment, setBuildingComment] = useState<string>("Geen opmerkingen");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (building) {
             get_region_name();
+            getBuildingComment();
         }
     }, [building]);
 
@@ -55,6 +58,21 @@ function BuildingInfo({
             setErrorMessages(handleError(error));
             setRegionName("/");
         }
+    }
+
+    function getBuildingComment() {
+        getAllBuildingCommentsByBuildingID(building.id, true)
+            .then((comment) => {
+                if (comment.data.length > 0) {
+                    setBuildingComment(comment.data.comment);
+                } else {
+                    setBuildingComment("Geen opmerkingen");
+                }
+            })
+            .catch((error) => {
+                setErrorMessages(handleError(error));
+                setBuildingComment("Geen opmerkingen");
+            });
     }
 
     function getPublicLink(fullLink = true) {
@@ -129,7 +147,7 @@ function BuildingInfo({
                         className="wide_button"
                         onClick={(e) => {
                             e.preventDefault();
-                            setEditBuilding(true);
+                            router.push(`/admin/data/buildings/edit?building=${building.id}`);
                         }}
                     >
                         <TiPencil /> Bewerk

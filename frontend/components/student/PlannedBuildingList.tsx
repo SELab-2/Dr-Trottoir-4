@@ -76,6 +76,7 @@ export default function PlannedBuildingList({
         if (buildings.length === 0 || !studentOnTourId || !studentOnTour) {
             return;
         }
+
         if (!studentOnTour.started_tour) {
             startStudentOnTour(studentOnTourId)
                 .then(async (_) => {
