@@ -7,6 +7,7 @@ import SyndicFooter from "@/components/footer/syndicFooter";
 import Loading from "@/components/loading";
 import SyndicHeader from "@/components/header/syndicHeader";
 import {Card, Col, Container, Form, Row} from "react-bootstrap";
+import { handleError } from "@/lib/error";
 
 function SyndicDashboard() {
     const [id, setId] = useState("");
@@ -36,7 +37,7 @@ function SyndicDashboard() {
                     setLoading(false);
                 })
                 .catch((error) => {
-                    console.error(error);
+                    handleError(error);
                     setLoading(false);
                 });
         }

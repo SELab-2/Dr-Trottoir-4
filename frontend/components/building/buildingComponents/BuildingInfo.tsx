@@ -8,6 +8,11 @@ import {Button} from "react-bootstrap";
 // @ts-ignore
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import {handleError} from "@/lib/error";
+import ManualList from "@/components/manual/ManualList";
+
+interface BuildingQuery {
+    id?: string;
+}
 
 function BuildingInfo({
                           building,
@@ -19,6 +24,8 @@ function BuildingInfo({
     type: "syndic" | "admin" | "public";
 }) {
     const router = useRouter();
+    const query = router.query as BuildingQuery;
+
     const [editBuilding, setEditBuilding] = useState(false);
     const [regionName, setRegionName] = useState("");
 
@@ -105,6 +112,14 @@ function BuildingInfo({
                             )}
                         </p>
                     ) : null}
+                    <br />
+
+            {query.id && type != "public" ? (
+                <>
+                    <h3>Handleiding</h3>
+                    <ManualList id={query.id} type={type} />
+                </>
+            ) : null}
                 </div>
             )}
             {type === "syndic" && (

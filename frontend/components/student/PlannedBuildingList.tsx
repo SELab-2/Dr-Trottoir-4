@@ -7,6 +7,8 @@ import {useRouter} from "next/router";
 import {getStudentOnTour, startStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
 import {getBuildingsOfTour, getTour, Tour} from "@/lib/tour";
 import {getRegion, RegionInterface} from "@/lib/region";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function PlannedBuildingList({
                                                 studentOnTourId,
@@ -16,6 +18,8 @@ export default function PlannedBuildingList({
     redirectTo: string;
 }) {
     const router = useRouter();
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const [tour, setTour] = useState<Tour | null>(null);
     const [studentOnTour, setStudentOnTour] = useState<StudentOnTour | null>(null);
@@ -43,19 +47,15 @@ export default function PlannedBuildingList({
                                 const r: RegionInterface = res.data;
                                 setRegion(r.region);
                             })
-                            .catch((_) => {
-                            });
+                            .catch((err) => setErrorMessages(handleError(err)));
                     })
-                    .catch((_) => {
-                    });
+                    .catch((err) => setErrorMessages(handleError(err)));
                 getBuildingsOfTour(sots.tour).then(
                     (res) => {
                         const buildings: BuildingInterface[] = res.data;
                         setBuildings(buildings);
                     },
-                    (err) => {
-                        console.error(err);
-                    }
+                    (err) => setErrorMessages(handleError(err))
                 );
                 // Set the studentOnTour state
                 setStudentOnTour({
@@ -69,23 +69,29 @@ export default function PlannedBuildingList({
                     completed_tour: sots.completed_tour,
                 });
             })
-            .catch((_) => {
-            });
+            .catch((err) => setErrorMessages(handleError(err)));
     }, [studentOnTourId]);
 
     async function routeToFirstBuilding() {
-        if (buildings.length === 0 || !studentOnTourId) {
+        if (buildings.length === 0 || !studentOnTourId || !studentOnTour) {
             return;
         }
-        startStudentOnTour(studentOnTourId)
-            .then(async (_) => {
-                await router.push({
-                    pathname: redirectTo,
-                    query: {studentOnTourId: studentOnTour?.id},
-                });
-            })
-            .catch((_) => {
+        if (!studentOnTour.started_tour) {
+            startStudentOnTour(studentOnTourId)
+                .then(async (_) => {
+                    await router.push({
+                        pathname: redirectTo,
+                        query: {studentOnTourId: studentOnTour?.id},
+                    });
+                })
+                .catch((err) => setErrorMessages(handleError(err)));
+            return;
+        } else {
+            await router.push({
+                pathname: redirectTo,
+                query: {studentOnTourId: studentOnTour.id},
             });
+        }
     }
 
     function getStartButtonText() {
@@ -108,6 +114,7 @@ export default function PlannedBuildingList({
                 studentOnTour={studentOnTour}
             />
             <div>
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
                 <label style={{
                     fontWeight: 'bolder',
                     fontSize: '24px',
@@ -155,7 +162,8 @@ export default function PlannedBuildingList({
                 <div>
                     {(studentOnTour ? datesEqual(new Date(), studentOnTour.date) : false) &&
                     !studentOnTour?.completed_tour && (
-                        <div className="padding" style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                        <div className="padding"
+                             style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                             <Button
                                 className="wide_button"
                                 onClick={() => routeToFirstBuilding().then()}

@@ -121,7 +121,7 @@ function AdminDataToursEdit() {
                     setPossibleRegions(res.data);
                 },
                 (err) => {
-                    console.error(err);
+                    setErrorMessages(handleError(err));
                 }
             );
             return;
@@ -133,7 +133,7 @@ function AdminDataToursEdit() {
                     setTourView({name: r.name, region: "", tour_id: Number(query.tour), last_modified: ""});
                 },
                 (err) => {
-                    console.error(err);
+                    setErrorMessages(handleError(err));
                 }
             );
         }
@@ -150,7 +150,7 @@ function AdminDataToursEdit() {
                 setRegion(res.data);
             },
             (err) => {
-                console.error(err);
+                setErrorMessages(handleError(err));
             }
         );
         // Get all the buildings in a region TODO: wait for this endpoint and change this
@@ -163,7 +163,7 @@ function AdminDataToursEdit() {
                 setAllBuildingsInRegion(buildingsInRegion);
             },
             (err) => {
-                console.error(err);
+                setErrorMessages(handleError(err));
             }
         );
         // Get all the buildingOnTour objects of a tour
@@ -173,7 +173,7 @@ function AdminDataToursEdit() {
                 setBuildingsOnTour(allBuildingsOnTour);
             },
             (err) => {
-                console.error(err);
+                setErrorMessages(handleError(err));
             }
         );
     }, [tour]);
@@ -210,7 +210,7 @@ function AdminDataToursEdit() {
                 setAllBuildingsInRegion(buildingsInRegion);
             },
             (err) => {
-                console.error(err);
+                setErrorMessages(handleError(err));
             }
         );
     }, [selectedRegion]);
@@ -322,8 +322,7 @@ function AdminDataToursEdit() {
                                 router.push("/admin/data/tours/").then();
                             },
                             (err) => {
-                                const e = handleError(err);
-                                setErrorMessages(e);
+                                setErrorMessages(handleError(err));
                             }
                         );
                     } else {
@@ -331,8 +330,7 @@ function AdminDataToursEdit() {
                     }
                 },
                 (err) => {
-                    const e = handleError(err);
-                    setErrorMessages(e);
+                    setErrorMessages(handleError(err));
                 }
             );
         } else {
@@ -342,10 +340,8 @@ function AdminDataToursEdit() {
 
     // Function to create a new tour & post this new tour
     function createTour() {
-        setErrorMessages([]);
         if (!selectedRegion) {
-            errorMessages.push("Een ronde moet een regio hebben.");
-            setErrorMessages([...errorMessages]);
+            setErrorMessages(["Een ronde moet een regio hebben."]);
             return;
         }
         const region: RegionInterface = possibleRegions.find((r: RegionInterface) => r.region === selectedRegion)!;
@@ -364,8 +360,7 @@ function AdminDataToursEdit() {
                             router.push("/admin/data/tours/").then();
                         },
                         (err) => {
-                            const e = handleError(err);
-                            setErrorMessages(e);
+                            setErrorMessages(handleError(err));
                         }
                     );
                 } else {
@@ -373,8 +368,7 @@ function AdminDataToursEdit() {
                 }
             },
             (err) => {
-                const e = handleError(err);
-                setErrorMessages(e);
+                setErrorMessages(handleError(err));
             }
         );
     }

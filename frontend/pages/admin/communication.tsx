@@ -9,6 +9,7 @@ import UserAutoComplete from "@/components/autocompleteComponents/userAutocomple
 import {useRouter} from "next/router";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import {Send} from "@mui/icons-material";
+import { handleError } from "@/lib/error";
 
 interface ParsedUrlQuery {
 }
@@ -70,7 +71,7 @@ function AdminCommunication() {
                 setTemplateText(currentTemplate.template);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
 

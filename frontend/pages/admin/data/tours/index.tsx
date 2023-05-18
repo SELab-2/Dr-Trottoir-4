@@ -11,6 +11,7 @@ import {CalendarMonth, Delete, Edit} from "@mui/icons-material";
 import {BuildingInterface, getAddress} from "@/lib/building";
 import {TourView} from "@/types";
 import {TourDeleteModal} from "@/components/admin/tourDeleteModal";
+import { handleError } from "@/lib/error";
 
 function AdminDataTours() {
     const router = useRouter();
@@ -93,7 +94,7 @@ function AdminDataTours() {
                 setRegions(regions);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }, []);
@@ -125,7 +126,7 @@ function AdminDataTours() {
                 setAllTours(tours);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }
@@ -142,7 +143,7 @@ function AdminDataTours() {
                 setBuildingsOfTour(buildingsOfTour);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }

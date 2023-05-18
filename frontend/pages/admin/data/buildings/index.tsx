@@ -10,6 +10,8 @@ import {CalendarMonth, Delete, Edit, Email, Info} from "@mui/icons-material";
 import {BuildingView} from "@/types";
 import {getUserInfo} from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 interface ParsedUrlQuery {
 }
@@ -26,6 +28,8 @@ function AdminDataBuildings() {
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedBuilding, setSelectedBuilding] = useState<BuildingView | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const columns = useMemo<MRT_ColumnDef<BuildingView>[]>(
         () => [
@@ -116,7 +120,7 @@ function AdminDataBuildings() {
                 setAllBuildings(buildings);
             },
             (err) => {
-                console.error(err);
+                setErrorMessages(handleError(err));
             }
         );
     }, []);
@@ -158,7 +162,7 @@ function AdminDataBuildings() {
                 }
                 setBuildingViews(buildingViews);
             } catch (err) {
-                console.error(err);
+                setErrorMessages(handleError(err));
             }
         }
 
@@ -186,7 +190,7 @@ function AdminDataBuildings() {
                 setBuildingViews([...buildingViews]);
             },
             (err) => {
-                console.error(err);
+                setErrorMessages(handleError(err));
             }
         );
     }
@@ -216,6 +220,7 @@ function AdminDataBuildings() {
         <div className="tablepageContainer">
             <AdminHeader/>
             <div className="tableContainer">
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
                 <MaterialReactTable
                     enablePagination={false}
                     enableBottomToolbar={false}

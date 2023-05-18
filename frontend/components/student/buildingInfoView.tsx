@@ -11,6 +11,8 @@ import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/buildi
 import {addDays, subDays} from "date-fns";
 import {Col, ListGroup, ListGroupItem, Row} from "react-bootstrap";
 import {formatDate} from "@/lib/date";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import {handleError} from "@/lib/error";
 
 /**
  * The info that is displayed when a student is doing a tour
@@ -28,6 +30,7 @@ export default function BuildingInfoView({
     const [garbageCollections, setGarbageCollections] = useState<{ [p: string]: GarbageCollectionInterface[] }>({});
     const [buildingComments, setBuildingComments] = useState<BuildingComment[]>([]);
     const [manual, setManual] = useState<BuildingManual | null>(null);
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (!building) {
@@ -62,8 +65,7 @@ export default function BuildingInfoView({
 
                 setGarbageCollections(grouped);
             })
-            .catch((_) => {
-            });
+            .catch((err) => setErrorMessages(handleError(err)));
     }
 
     // Get the comments of a building
@@ -73,8 +75,7 @@ export default function BuildingInfoView({
                 const bc: BuildingComment[] = res.data;
                 setBuildingComments(bc);
             })
-            .catch((_) => {
-            });
+            .catch((err) => setErrorMessages(handleError(err)));
     }
 
     // Get the manual for a building
@@ -89,11 +90,12 @@ export default function BuildingInfoView({
                 m.file = getManualPath(m.file);
                 setManual(m);
             })
-            .catch((_) => {
-            });
+            .catch((err) => setErrorMessages(handleError(err)));
     }
 
-    return (
+return (
+    <>
+        <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
         <ListGroup>
             <ListGroupItem>
                 <div style={{paddingTop: '10px', paddingBottom: '10px'}}>
@@ -175,5 +177,6 @@ export default function BuildingInfoView({
                 )}
             </ListGroupItem>
         </ListGroup>
-    );
+    </>
+);
 }

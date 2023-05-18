@@ -55,7 +55,7 @@ function UserProfile() {
                 setUserInfo(u);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }, []);
@@ -97,8 +97,7 @@ function UserProfile() {
                 setSuccessPatch(true);
             },
             (err) => {
-                const e = handleError(err);
-                setErrorMessages(e);
+                setErrorMessages(handleError(err));
             }
         );
     }

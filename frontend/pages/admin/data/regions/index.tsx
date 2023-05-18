@@ -7,8 +7,9 @@ import {Box, IconButton, Tooltip} from "@mui/material";
 import {CalendarMonth, Delete, Edit} from "@mui/icons-material";
 import {useRouter} from "next/router";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
-import {Button} from "react-bootstrap";
-import RegionModal, {ModalMode} from "@/components/regionModal";
+import { Button } from "react-bootstrap";
+import RegionModal, { ModalMode } from "@/components/regionModal";
+import { handleError } from "@/lib/error";
 
 interface RegionView extends RegionInterface {
 }
@@ -83,7 +84,7 @@ function AdminDataRegions() {
                 setLoading(false);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
                 setLoading(false);
             }
         );
@@ -97,7 +98,7 @@ function AdminDataRegions() {
             setRegionName("");
             setAddDialogOpen(false);
         } catch (error) {
-            console.error(error);
+            handleError(error);
         }
     }
 
@@ -111,7 +112,7 @@ function AdminDataRegions() {
                 setRegionName("");
                 setEditDialogOpen(false);
             } catch (error) {
-                console.error(error);
+                handleError(error);
             }
         }
     }
@@ -128,55 +129,52 @@ function AdminDataRegions() {
         <div className="tablepageContainer">
             <AdminHeader/>
             <div className="tableContainer">
-                <MaterialReactTable
-                    enablePagination={false}
-                    enableBottomToolbar={false}
-                    columns={columns}
-                    data={regions}
-                    state={{isLoading: loading}}
-                    enableHiding={false}
-                    enableRowActions={false}
-                    renderTopToolbarCustomActions={() => (
-                        <Button
-                            className="wide_button"
-                            size="lg"
-                            onClick={() => setAddDialogOpen(true)}>
-                            Maak nieuwe regio aan
-                        </Button>
-                    )}
-                />
-                <RegionModal
-                    show={addDialogOpen}
-                    closeModal={() => setAddDialogOpen(false)}
-                    onSubmit={addNewRegion}
-                    mode={ModalMode.ADD}
-                    regionName={regionName}
-                    setRegionName={setRegionName}
-                />
-                <RegionModal
-                    show={editDialogOpen}
-                    closeModal={() => setEditDialogOpen(false)}
-                    onSubmit={updateRegion}
-                    mode={ModalMode.EDIT}
-                    regionName={regionName}
-                    setRegionName={setRegionName}
-                />
-                <DeleteConfirmationDialog
-                    open={deleteDialogOpen}
-                    title="Verwijder Regio"
-                    description="Weet u zeker dat u deze regio wilt verwijderen?"
-                    handleClose={() => setDeleteDialogOpen(false)}
-                    handleConfirm={async () => {
-                        if (selectedRegion) {
-                            try {
-                                await deleteRegion(selectedRegion.id);
-                                setRegions(regions.filter((region) => region.id !== selectedRegion.id));
-                            } catch (error) {
-                                console.error(error);
-                            }
+            <MaterialReactTable
+                enablePagination={false}
+                enableBottomToolbar={false}
+                columns={columns}
+                data={regions}
+                state={{ isLoading: loading }}
+                enableHiding={false}
+                enableRowActions={false}
+                renderTopToolbarCustomActions={() => (
+                    <Button onClick={() => setAddDialogOpen(true)} variant="warning">
+                        Maak nieuwe regio aan
+                    </Button>
+                )}
+            />
+            <RegionModal
+                show={addDialogOpen}
+                closeModal={() => setAddDialogOpen(false)}
+                onSubmit={addNewRegion}
+                mode={ModalMode.ADD}
+                regionName={regionName}
+                setRegionName={setRegionName}
+            />
+            <RegionModal
+                show={editDialogOpen}
+                closeModal={() => setEditDialogOpen(false)}
+                onSubmit={updateRegion}
+                mode={ModalMode.EDIT}
+                regionName={regionName}
+                setRegionName={setRegionName}
+            />
+            <DeleteConfirmationDialog
+                open={deleteDialogOpen}
+                title="Verwijder Regio"
+                description="Weet u zeker dat u deze regio wilt verwijderen?"
+                handleClose={() => setDeleteDialogOpen(false)}
+                handleConfirm={async () => {
+                    if (selectedRegion) {
+                        try {
+                            await deleteRegion(selectedRegion.id);
+                            setRegions(regions.filter((region) => region.id !== selectedRegion.id));
+                        } catch (error) {
+                            handleError(error);
                         }
                         setDeleteDialogOpen(false);
-                    }}
+                    }
+                }}
                     confirmButtonText="Verwijderen"
                     cancelButtonText="Annuleren"
                 />

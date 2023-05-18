@@ -6,11 +6,12 @@ import {UserView} from "@/types";
 import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
 import {Box, IconButton, Tooltip} from "@mui/material";
 import {Check, Clear, Delete, Edit, Email} from "@mui/icons-material";
-import {useTranslation} from "react-i18next";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {UserEditModal} from "@/components/admin/userEditModal";
-import {UserDeleteModal} from "@/components/admin/userDeleteModal";
-import {useRouter} from "next/router";
+import { useTranslation } from "react-i18next";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { UserEditModal } from "@/components/admin/userEditModal";
+import { UserDeleteModal } from "@/components/admin/userDeleteModal";
+import { useRouter } from "next/router";
+import { handleError } from "@/lib/error";
 
 function AdminDataUsers() {
     const router = useRouter();
@@ -113,7 +114,7 @@ function AdminDataUsers() {
                 setAllRegions(regions);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
         setLoading(false);
@@ -131,7 +132,7 @@ function AdminDataUsers() {
                 setAllUsers(users);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }

@@ -12,6 +12,8 @@ import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
+import { handleError } from "@/lib/error";
+import { postManual } from "@/lib/building-manual";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -36,7 +38,6 @@ function AdminDataBuildingsEdit() {
 
     const handleSubmit = async () => {
         const form = document.getElementById("buildingForm") as HTMLFormElement;
-        setErrorMessages([requiredFieldsNotFilledMessage]);
         if (form.checkValidity()) {
             const building = {
                 syndic: syndicId,
@@ -52,17 +53,23 @@ function AdminDataBuildingsEdit() {
                 public_id: public_id,
             };
             try {
+                let buildingId = Number(router.query.building);
                 if (router.query.building) {
                     const res = await patchBuilding(building, Number(router.query.building));
                 } else {
                     const res = await postBuilding(building);
+                    buildingId = res.data.id;
+                }
+                if (manual) {
+                    await postManual({ building: buildingId, file: manual });
                 }
                 setShowConfirmation(true);
             } catch (error: any) {
                 setShowConfirmation(false);
-                console.error("An error occurred:", error.request.responseText);
-                setErrorMessages([error.request.responseText]);
+                setErrorMessages(handleError(error));
             }
+        } else {
+            setErrorMessages([requiredFieldsNotFilledMessage]);
         }
     };
 
@@ -71,7 +78,6 @@ function AdminDataBuildingsEdit() {
     };
 
     useEffect(() => {
-        setErrorMessages([requiredFieldsNotFilledMessage]);
         if (router.query.building) {
             getBuildingInfo(Number(router.query.building)).then(async (res) => {
                 setStreet(res.data.street);
@@ -199,7 +205,7 @@ function AdminDataBuildingsEdit() {
                         setObjectId={setSyndicId}
                         required={true}
                     />
-                    {!router.query.building && <PDFUploader onUpload={setManual}/>}
+                    <PDFUploader onUpload={setManual}/>
                 </Form>
                 <Button variant="secondary" className="btn-light" onClick={goBack}>
                     Terug

@@ -8,10 +8,13 @@ import {useRouter} from "next/router";
 import {getRoleDirection} from "@/lib/reroute";
 import setSessionStorage from "@/lib/storage";
 import {getCurrentUser} from "@/lib/user";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function Login() {
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(true);
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     // try and log in to the application using existing refresh token
     useEffect(() => {
@@ -25,7 +28,7 @@ export default function Login() {
             },
             (err) => {
                 setLoading(false);
-                console.error(err);
+                setErrorMessages(handleError(err));
             }
         );
     }, [getCurrentUser]);
@@ -38,6 +41,7 @@ export default function Login() {
                     <Loading/>
                 ) : (
                     <Container className="center_container">
+                        <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
                         <Card>
                             <Row>
                                 <Col md={6} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>

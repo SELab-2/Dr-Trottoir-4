@@ -4,22 +4,29 @@ import BaseHeader from "@/components/header/baseHeader";
 import reset from "@/lib/reset";
 import {Button, Card, Col, Container, Form, InputGroup, Row} from "react-bootstrap";
 import CarouselComponent from "@/components/imageCarousel";
+import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import SuccessMessageAlert from "@/components/successMessageAlert";
 
 export default function ForgotPassword() {
     const router = useRouter();
     const [email, setEmail] = useState<string>("");
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
+    const [succesMessages, setSuccessMessages] = useState<string[]>([]);
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         reset(email).then(
             async (res) => {
                 if (res.status == 200) {
-                    alert("A password reset e-mail has been sent to the provided e-mail address");
+                    setSuccessMessages([
+                        "Er is een email verstuurd naar het gegeven e-mailadres om uw wachtwoord te wijzigen.",
+                    ]);
                     await router.push("/login");
                 }
             },
             (err) => {
-                console.error(err);
+                setErrorMessages(handleError(err));
             }
         );
     };
@@ -35,8 +42,15 @@ export default function ForgotPassword() {
                         </Col>
                         <Col md={6}>
                             <Form onSubmit={handleSubmit}>
+                                <SuccessMessageAlert
+                                                setSuccessMessages={setSuccessMessages}
+                                                successmessages={succesMessages}
+                                            />
+                                            <ErrorMessageAlert
+                                                setErrorMessages={setErrorMessages}
+                                                errorMessages={errorMessages}
+                                            />
                                 <Form.Label className="title">Wachtwoord vergeten.</Form.Label>
-
                                 <p className="normal_text">Vul je e-mailadres is om je account terug te vinden</p>
                                 <Form.Label className="normal_text">E-mailadres</Form.Label>
                                 <InputGroup className="input">
