@@ -7,7 +7,7 @@ const SyndicFooter = () => {
             style={{ position: "absolute", bottom: "0", width: "100%" }}
         >
             <div className="container-fluid" style={{ color: "yellow" }}>
-                <span style={{ margin: "auto auto" }}>
+                <span style={{ margin: "auto auto", fontSize: ".75em" }}>
                     Vragen? Contacteer:{" "}
                     <a style={{ color: "yellow", textDecoration: "underline" }} href="mailto:help@drtrottoir.be">
                         help@drtrottoir.be

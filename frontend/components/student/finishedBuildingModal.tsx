@@ -5,6 +5,8 @@ import { getRemarksOfStudentOnTourAtBuilding, RemarkAtBuilding } from "@/lib/rem
 import { StudentOnTour } from "@/lib/student-on-tour";
 import { getPictureOfRemarkOfSpecificRemark, getPicturePath, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
 import { FileList } from "@/components/student/fileList";
+import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function FinishedBuildingModal({
     show,
@@ -22,6 +24,7 @@ export default function FinishedBuildingModal({
     const typeNames: string[] = ["Aankomst", "Binnen", "Vertrek", "Opmerkingen"];
     const [remarks, setRemarks] = useState<RemarkAtBuilding[]>([]);
     const [picturesOfRemarks, setPicturesOfRemarks] = useState<{ [remarkId: number]: PictureOfRemarkInterface[] }>({});
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (!building || !studentOnTour) {
@@ -43,9 +46,9 @@ export default function FinishedBuildingModal({
                         });
                         setPicturesOfRemarks(pictures);
                     })
-                    .catch((_) => {});
+                    .catch((err) => setErrorMessages(handleError(err)));
             })
-            .catch((_) => {});
+            .catch((err) => setErrorMessages(handleError(err)));
     }, [building]);
 
     function getRemarksOfType(type: string): RemarkAtBuilding[] {
@@ -65,6 +68,7 @@ export default function FinishedBuildingModal({
                 <Modal.Title>Overzicht gebouw</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
                 {["AA", "BI", "VE", "OP"].map((t, index) => (
                     <div className="ms-2 me-2" key={index}>
                         {getRemarksOfType(t).length > 0 && (

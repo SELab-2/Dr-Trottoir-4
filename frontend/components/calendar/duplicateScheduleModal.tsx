@@ -1,10 +1,10 @@
 import { Button, Form, Modal } from "react-bootstrap";
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { formatDate } from "@/lib/date";
+
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { addDays, addWeeks, endOfWeek, startOfWeek, subDays } from "date-fns";
+import { addDays, addWeeks, endOfWeek, startOfWeek } from "date-fns";
 import { AxiosResponse } from "axios";
 
 export default function DuplicateScheduleModal({
@@ -21,6 +21,7 @@ export default function DuplicateScheduleModal({
     weekStartsOn: 0 | 1;
 }) {
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
     const [startDate, setStartDate] = useState<Date>(startOfWeek(new Date(), { weekStartsOn }));
     const [endDate, setEndDate] = useState<Date>(endOfWeek(new Date(), { weekStartsOn }));
     const [copyToDate, setCopyToDate] = useState<Date>(addWeeks(startOfWeek(new Date(), { weekStartsOn }), 1));
