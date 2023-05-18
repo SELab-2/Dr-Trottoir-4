@@ -176,7 +176,7 @@ function AddTourScheduleModal({
                     {checked && (
                         <div className="form-group">
                             <label>Selecteer student</label>
-                            <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId} />
+                            <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} matchId={tourId} />
                         </div>
                     )}
                     <div className="form-row">
@@ -199,7 +199,7 @@ function AddTourScheduleModal({
                                     <TourUserAutocomplete
                                         initialId={sundayId}
                                         setObjectId={setSundayId}
-                                        tourId={tourId}
+                                        matchId={tourId}
                                     />
                                 </div>
                                 <div>
@@ -207,7 +207,7 @@ function AddTourScheduleModal({
                                     <TourUserAutocomplete
                                         initialId={mondayId}
                                         setObjectId={setMondayId}
-                                        tourId={tourId}
+                                        matchId={tourId}
                                     />
                                 </div>
                                 <div>
@@ -215,7 +215,7 @@ function AddTourScheduleModal({
                                     <TourUserAutocomplete
                                         initialId={tuesdayId}
                                         setObjectId={setTuesdayId}
-                                        tourId={tourId}
+                                        matchId={tourId}
                                     />
                                 </div>
                                 <div>
@@ -223,7 +223,7 @@ function AddTourScheduleModal({
                                     <TourUserAutocomplete
                                         initialId={wednesdayId}
                                         setObjectId={setWednesdayId}
-                                        tourId={tourId}
+                                        matchId={tourId}
                                     />
                                 </div>
                                 <div>
@@ -231,7 +231,7 @@ function AddTourScheduleModal({
                                     <TourUserAutocomplete
                                         initialId={thursdayId}
                                         setObjectId={setThursdayId}
-                                        tourId={tourId}
+                                        matchId={tourId}
                                     />
                                 </div>
                                 <div>
@@ -239,7 +239,7 @@ function AddTourScheduleModal({
                                     <TourUserAutocomplete
                                         initialId={fridayId}
                                         setObjectId={setFridayId}
-                                        tourId={tourId}
+                                        matchId={tourId}
                                     />
                                 </div>
                             </div>

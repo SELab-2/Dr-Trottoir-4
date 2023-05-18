@@ -99,7 +99,7 @@ function EditScheduleEventModal({
                     </div>
                     <div className="form-group">
                         <label>Selecteer student</label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId} />
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} matchId={tourId} />
                     </div>
                 </form>
             </Modal.Body>
