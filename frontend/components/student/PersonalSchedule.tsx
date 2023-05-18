@@ -7,7 +7,7 @@ import { getRegion, RegionInterface } from "@/lib/region";
 import { datesEqual } from "@/lib/date";
 import { useRouter } from "next/router";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 export default function PersonalSchedule({ redirectTo }: { redirectTo: string }) {
     const router = useRouter();
@@ -20,14 +20,13 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
     const [regions, setRegions] = useState<Record<number, RegionInterface>>({});
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-
     useEffect(() => {
         getCurrentUser()
             .then((res) => {
                 const u: User = res.data;
                 setUser(u);
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
     }, []);
 
     useEffect(() => {
@@ -63,7 +62,7 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
                                 setRegions(r);
                             }
                         } catch (err) {
-                            setErrorMessages(handleError(err))
+                            setErrorMessages(handleError(err));
                         }
                     }
                 }
@@ -103,7 +102,7 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
                 });
                 setUpcomingTours(futureTours);
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
     }, [user]);
 
     function redirectToSchedule(studentOnTourId: number): void {
@@ -117,7 +116,7 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
 
     return (
         <>
-            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
             <ToursList
                 studentOnTours={toursToday}
                 listTitle="Vandaag"
