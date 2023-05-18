@@ -8,7 +8,7 @@ import {
     getToursOfStudent,
     StudentOnTour,
 } from "@/lib/student-on-tour";
-import {getAllUsers, getStudents, getTourUsers, User, userSearchString} from "@/lib/user";
+import { getAllUsers, getStudents, getTourUsers, User, userSearchString } from "@/lib/user";
 import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
 import StudentAutocomplete from "@/components/autocompleteComponents/studentAutocomplete";
 import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
@@ -330,10 +330,7 @@ function AdminTour() {
             <AdminHeader />
             <div style={{ display: "flex", marginTop: "10px", marginBottom: "50px", marginLeft: "10px" }}>
                 <div style={{ flex: 1 }}>
-                    <TourUserAutocomplete
-                        initialId={selectedStudentId}
-                        setObjectId={setSelectedStudentId}
-                    />
+                    <TourUserAutocomplete initialId={selectedStudentId} setObjectId={setSelectedStudentId} />
                 </div>
                 <div style={{ flex: 1 }}>
                     <StudentOnTourAutocomplete
