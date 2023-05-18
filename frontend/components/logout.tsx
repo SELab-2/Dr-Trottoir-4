@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { logout } from "@/lib/logout";
 import { useRouter } from "next/router";
 import { Button, Modal } from "react-bootstrap";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 function Logout() {
@@ -42,7 +42,7 @@ function Logout() {
                 <Modal.Header closeButton>
                     <Modal.Title>Log out</Modal.Title>
                 </Modal.Header>
-                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
                 <Modal.Body>Are you sure you want to log out?</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" className="btn-light" onClick={() => setShowModal(false)}>

@@ -5,7 +5,7 @@ import styles from "@/styles/Login.module.css";
 import Image from "next/image";
 import filler_image from "@/public/filler_image.png";
 import reset from "@/lib/reset";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import SuccessMessageAlert from "@/components/successMessageAlert";
 
@@ -13,14 +13,16 @@ export default function ForgotPassword() {
     const router = useRouter();
     const [email, setEmail] = useState<string>("");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
-    const [succesMessages, setSuccessMessages] = useState<string[]>([])
+    const [succesMessages, setSuccessMessages] = useState<string[]>([]);
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         reset(email).then(
             async (res) => {
                 if (res.status == 200) {
-                    setSuccessMessages(["Er is een email verstuurd naar het gegeven e-mailadres om uw wachtwoord te wijzigen."]);
+                    setSuccessMessages([
+                        "Er is een email verstuurd naar het gegeven e-mailadres om uw wachtwoord te wijzigen.",
+                    ]);
                     await router.push("/login");
                 }
             },
@@ -44,8 +46,14 @@ export default function ForgotPassword() {
                                 <div className="col-md-6 col-lg-7 d-flex align-items-center">
                                     <div className="card-body p-4 p-lg-5 text-black">
                                         <form>
-                                            <SuccessMessageAlert setSuccessMessages={setSuccessMessages} successmessages={succesMessages}/>
-                                            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+                                            <SuccessMessageAlert
+                                                setSuccessMessages={setSuccessMessages}
+                                                successmessages={succesMessages}
+                                            />
+                                            <ErrorMessageAlert
+                                                setErrorMessages={setErrorMessages}
+                                                errorMessages={errorMessages}
+                                            />
                                             <div className="d-flex align-items-center mb-3 pb-1">
                                                 <i className="fas fa-cubes fa-2x me-3" />
                                                 <span className="h1 fw-bold mb-0">Wachtwoord vergeten.</span>

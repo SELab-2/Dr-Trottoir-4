@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import { Button } from "react-bootstrap";
 import RegionModal, { ModalMode } from "@/components/regionModal";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 interface RegionView extends RegionInterface {}
 

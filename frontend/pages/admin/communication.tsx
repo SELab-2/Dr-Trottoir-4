@@ -9,7 +9,7 @@ import { getAllUsers, User } from "@/lib/user";
 import UserAutoComplete from "@/components/autocompleteComponents/userAutocomplete";
 import { useRouter } from "next/router";
 import { withAuthorisation } from "@/components/withAuthorisation";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 interface ParsedUrlQuery {}
 
