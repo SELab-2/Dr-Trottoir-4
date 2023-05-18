@@ -17,4 +17,4 @@ function AdminBuilding() {
     );
 }
 
-export default withAuthorisation(AdminBuilding, ["Admin"]);
+export default withAuthorisation(AdminBuilding, ["Admin", "Superstudent"]);

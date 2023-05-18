@@ -1,5 +1,3 @@
-import uuid
-
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
@@ -88,8 +86,16 @@ class PictureOfRemarkSerializer(serializers.ModelSerializer):
 class StudOnTourSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentOnTour
-        fields = ["id", "tour", "date", "student", "started_tour", "completed_tour", "current_building_index",
-                  "max_building_index"]
+        fields = [
+            "id",
+            "tour",
+            "date",
+            "student",
+            "started_tour",
+            "completed_tour",
+            "current_building_index",
+            "max_building_index",
+        ]
         read_only_fields = ["id"]
 
 
@@ -149,4 +155,4 @@ class PublicIdSerializer(serializers.Serializer):
 class ProgressTourSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentOnTour
-        fields = ('current_building_index', 'max_building_index')
+        fields = ("current_building_index", "max_building_index")

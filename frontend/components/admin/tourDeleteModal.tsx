@@ -1,4 +1,4 @@
-import { TourView, UserView } from "@/types";
+import { TourView } from "@/types";
 import { useTranslation } from "react-i18next";
 import { deleteTour } from "@/lib/tour";
 import React, { useState } from "react";

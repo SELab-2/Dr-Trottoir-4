@@ -7,7 +7,6 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter
 from rest_framework import status
-from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 
 
@@ -59,7 +58,7 @@ def get_boolean_param(request, name, required=False):
 
 
 def get_list_param(request, name, required=False):
-    param = request.GET.getlist(name)
+    param = request.GET.getlist(name + "[]", None)
     if not param:
         if required:
             raise BadRequest(_("The query parameter {name} is required").format(name=name))
@@ -260,3 +259,22 @@ def param_docs(values):
     for name, value in values.items():
         docs.append(OpenApiParameter(name=name, description=value[0], required=value[1], type=value[2]))
     return docs
+
+
+def validate_duplication_period(start_period: datetime, end_period: datetime, start_copy: datetime) -> Response | None:
+    # validate period itself
+    if start_period > end_period:
+        return Response(
+            {"message": _("the start date of the period can't be in a later week than the week of the end date")},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    # validate interaction with copy period
+    if start_copy <= end_period:
+        return Response(
+            {
+                "message": _(
+                    "the start date of the period to which you want to copy must be, at a minimum, in the week immediately following the end date of the original period"
+                )
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )

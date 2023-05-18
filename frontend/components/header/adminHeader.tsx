@@ -83,8 +83,13 @@ const AdminHeader = () => {
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link className={`nav-link ${styles.text}`} href="/admin/analysis">
+                            <Link className={`nav-link ${styles.text}`} href="/admin/analysis/worked-hours">
                                 Analyse
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className={`nav-link ${styles.text}`} href="/admin/my-schedule">
+                                Mijn agenda
                             </Link>
                         </li>
                     </ul>

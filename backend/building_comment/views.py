@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -5,7 +6,21 @@ from rest_framework.views import APIView
 from base.models import BuildingComment
 from base.permissions import IsAdmin, IsSuperStudent, OwnerOfBuilding, ReadOnlyStudent, ReadOnlyOwnerOfBuilding
 from base.serializers import BuildingCommentSerializer
-from util.request_response_util import *
+from util.request_response_util import (
+    post_docs,
+    set_keys_of_instance,
+    not_found,
+    request_to_dict,
+    try_full_clean_and_save,
+    post_success,
+    get_docs,
+    get_success,
+    delete_docs,
+    delete_success,
+    patch_docs,
+    patch_success,
+    bad_request,
+)
 
 TRANSLATE = {"building": "building_id"}
 
@@ -17,16 +32,18 @@ class DefaultBuildingComment(APIView):
     @extend_schema(responses=post_docs(BuildingCommentSerializer))
     def post(self, request):
         """
-        Create a new BuildingComment
+        Create a new BuildingComment. If no date is set, the current date and time will be used.
         """
         data = request_to_dict(request.data)
+        if len(data) == 0:
+            return bad_request("BuildingComment")
 
         building_comment_instance = BuildingComment()
 
         set_keys_of_instance(building_comment_instance, data, TRANSLATE)
 
         if building_comment_instance.building is None:
-            return bad_request("BuildingComment")
+            return not_found(_("Building (with id {id})".format(id=building_comment_instance.building_id)))
 
         self.check_object_permissions(request, building_comment_instance.building)
 
@@ -105,9 +122,6 @@ class BuildingCommentBuildingView(APIView):
         Get all BuildingComments of building with given building id
         """
         building_comment_instance = BuildingComment.objects.filter(building_id=building_id)
-
-        if not building_comment_instance:
-            return bad_request_relation("BuildingComment", "building")
 
         serializer = BuildingCommentSerializer(building_comment_instance, many=True)
         return get_success(serializer)

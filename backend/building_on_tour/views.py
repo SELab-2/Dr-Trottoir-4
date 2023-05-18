@@ -58,7 +58,7 @@ class BuildingTourIndividualView(APIView):
         if not building_on_tour_instance:
             return not_found("BuildingOnTour")
 
-        self.check_object_permissions(request, building_on_tour_instance)
+        self.check_object_permissions(request, building_on_tour_instance.tour)
 
         data = request_to_dict(request.data)
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-03 15:53+0200\n"
+"POT-Creation-Date: 2023-05-14 01:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,32 +68,32 @@ msgstr "refresh token validatie succesvol"
 msgid "new password has been saved"
 msgstr "nieuw wachtwoord is opgeslagen"
 
-#: base/models.py:20
+#: base/models.py:23
 msgid "This region already exists"
 msgstr "Deze regio bestaat al"
 
-#: base/models.py:40
+#: base/models.py:43
 #, python-brace-format
 msgid "The maximum rank allowed is {highest_rank}."
 msgstr "De hoogste toegestane rang is {highest_rank}."
 
-#: base/models.py:48
+#: base/models.py:51
 msgid "This role name already exists."
 msgstr "Deze rolnaam bestaat al."
 
-#: base/models.py:59
+#: base/models.py:62
 msgid "A user already exists with this email."
 msgstr "Er bestaat al een gebruiker met deze e-mail"
 
-#: base/models.py:83
+#: base/models.py:86
 msgid "This email is already in the lobby."
 msgstr "Dit e-mailadres is al in de lobby aanwezig."
 
-#: base/models.py:87
+#: base/models.py:90
 msgid "This verification code already exists."
 msgstr "Deze verificatiecode bestaat al."
 
-#: base/models.py:102
+#: base/models.py:105
 msgid ""
 " This email belongs to an INACTIVE user. Instead of trying to register this "
 "user, you can simply reactivate the account."
@@ -102,50 +102,50 @@ msgstr ""
 "gebruiker te proberen te registreren, kunt u het account eenvoudig "
 "reactiveren."
 
-#: base/models.py:105
+#: base/models.py:108
 #, python-brace-format
 msgid "Email already exists in database for a user (id: {user_id}).{addendum}"
 msgstr ""
 "E-mailadres bestaat al in de database voor een gebruiker (id: {user_id})."
 "{addendum}"
 
-#: base/models.py:116
+#: base/models.py:119
 msgid "No bus"
 msgstr "Geen bus"
 
-#: base/models.py:132
+#: base/models.py:135
 msgid "The house number of the building must be positive and not zero."
 msgstr ""
 "Het huisnummer van het gebouw moet een positief getal zijn, groter dan nul."
 
-#: base/models.py:139
+#: base/models.py:142
 msgid "Only a user with role \"syndic\" can own a building."
 msgstr "Alleen een gebruiker met de rol \"syndicus\" kan een gebouw bezitten."
 
-#: base/models.py:145
+#: base/models.py:148
 #, python-brace-format
 msgid "{public_id} already exists as public_id of another building"
 msgstr "{public_id} bestaat al als public_id van een ander gebouw"
 
-#: base/models.py:157
+#: base/models.py:160
 msgid "A building with this address already exists."
 msgstr "Er bestaat al een gebouw met dit adres."
 
-#: base/models.py:180
+#: base/models.py:183
 msgid "This comment already exists, and was posted at the exact same time."
 msgstr "Deze opmerking bestaat al, en is op exact hetzelfde moment geplaatst."
 
-#: base/models.py:218
+#: base/models.py:221
 msgid ""
 "This type of garbage is already being collected on the same day for this "
 "building."
 msgstr "Dit soort afval wordt al op dezelfde dag voor dit gebouw opgehaald."
 
-#: base/models.py:244
+#: base/models.py:247
 msgid "There is already a tour with the same name in the region."
 msgstr "Er bestaat al een tour met dezelfde naam in de regio."
 
-#: base/models.py:267
+#: base/models.py:270
 #, python-brace-format
 msgid ""
 "The regions for tour ({tour_region}) and building ({building_region}) are "
@@ -154,75 +154,81 @@ msgstr ""
 "De regio's voor tour ({tour_region}) en gebouw ({building_region}) zijn "
 "verschillend."
 
-#: base/models.py:281
+#: base/models.py:284
 msgid "This building is already on this tour."
 msgstr "Dit gebouw staat al op deze tour."
 
-#: base/models.py:287
+#: base/models.py:290
 msgid "This index is already in use."
 msgstr "Deze index is al in gebruik"
 
-#: base/models.py:317
+#: base/models.py:320
 msgid "A syndic can't do tours"
 msgstr "Een syndicus kan geen rondes doen"
 
-#: base/models.py:321
+#: base/models.py:324
 #, python-brace-format
 msgid "Student ({user_email}) doesn't do tours in this region ({tour_region})."
 msgstr "Student ({user_email}) doet geen rondes in deze regio ({tour_region})."
 
-#: base/models.py:342
+#: base/models.py:345
 msgid "The student is already assigned to this tour on this date."
 msgstr "De student is al toegewezen aan deze tour op deze datum."
 
-#: base/models.py:386
+#: base/models.py:382
+msgid ""
+"There already exists a remark of this type from this student on tour at this "
+"building."
+msgstr "Er bestaat al een opmerking van dit type van deze student op tour in dit gebouw."
+
+#: base/models.py:398
 msgid ""
 "This remark was already uploaded to this building by this student on the "
 "tour."
 msgstr ""
 "Deze opmerking is al geüpload naar dit gebouw door deze student op de tour."
 
-#: base/models.py:406
+#: base/models.py:424
 msgid "The building already has this upload."
 msgstr "Het gebouw heeft al deze upload."
 
-#: base/models.py:442
+#: base/models.py:460
 msgid "The building already has a manual with the same version number"
 msgstr "Het gebouw heeft al een handleiding met hetzelfde versienummer"
 
-#: base/models.py:459
+#: base/models.py:477
 msgid "The name for this template already exists."
 msgstr "De naam van deze template bestaat al."
 
-#: base/permissions.py:19
+#: base/permissions.py:18
 msgid "Admin permission required"
 msgstr "Admin permissie vereist"
 
-#: base/permissions.py:30
+#: base/permissions.py:29
 msgid "Super student permission required"
 msgstr "Superstudent permisie vereist"
 
-#: base/permissions.py:41
+#: base/permissions.py:40
 msgid "Student permission required"
 msgstr "Student permissie vereist"
 
-#: base/permissions.py:52
+#: base/permissions.py:51
 msgid "Students are only allowed to read"
 msgstr "Studenten mogen alleen lezen"
 
-#: base/permissions.py:64
+#: base/permissions.py:63
 msgid "Syndic permission required"
 msgstr "Syndicus permissie vereist"
 
-#: base/permissions.py:88
+#: base/permissions.py:87
 msgid "You can only access/edit the buildings that you own"
 msgstr "Je kan alleen de gebouwen zien/bewerken die je zelf bezit"
 
-#: base/permissions.py:102
+#: base/permissions.py:101
 msgid "You can only read the building that you own"
 msgstr "Je kan enkel de gebouwen lezen die je zelf bezit"
 
-#: base/permissions.py:118
+#: base/permissions.py:117
 msgid ""
 "You can only patch the building public id and the name of the building that "
 "you own"
@@ -230,27 +236,27 @@ msgstr ""
 "Je kan alleen de public id en de naam van een gebouw bewerken dat je zelf "
 "bezit"
 
-#: base/permissions.py:146
+#: base/permissions.py:145
 msgid "You can only access/edit your own account"
 msgstr "Je kan alleen je eigen account zien/bewerken"
 
-#: base/permissions.py:157
+#: base/permissions.py:156
 msgid "You can only access your own account"
 msgstr "Je kan alleen je eigen account raadplegen"
 
-#: base/permissions.py:170
+#: base/permissions.py:169
 msgid "You can't create a user of a higher role"
 msgstr "Je kan geen gebruiker met een hogere rol aanmaken"
 
-#: base/permissions.py:188
+#: base/permissions.py:187
 msgid "You don't have the right permissions to delete this user"
 msgstr "Je hebt niet de juiste permissies om deze gebruiker te verwijderen"
 
-#: base/permissions.py:201
+#: base/permissions.py:200
 msgid "You don't have the right permissions to edit this user"
 msgstr "Je hebt niet de juiste permissies om deze gebruiker te bewerken"
 
-#: base/permissions.py:214
+#: base/permissions.py:213
 msgid ""
 "You can't assign a role to yourself or assign a role that is higher than "
 "your own"
@@ -258,24 +264,24 @@ msgstr ""
 "Je kan geen rol toekennen aan jezelf of een rol toekennen die hoger is dan "
 "je eigen rol"
 
-#: base/permissions.py:233
+#: base/permissions.py:232
 msgid "You can only view manuals that are linked to one of your buildings"
 msgstr ""
 "Je kan enkel handleidingen bekijken die gelinkt zijn aan een van je eigen "
 "gebouwen"
 
-#: base/permissions.py:243
+#: base/permissions.py:242
 msgid ""
 "You cannot edit buildings on a tour when a student is actively doing the tour"
 msgstr ""
 "Je kan geen gebouwen bewerken op een ronde wanneer een student actief is op "
 "de ronde"
 
-#: config/settings.py:237
+#: config/settings.py:238
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: config/settings.py:238
+#: config/settings.py:239
 msgid "English"
 msgstr "Engels"
 
@@ -296,11 +302,11 @@ msgstr ""
 "de startdatum van de periode waarnaar je wilt kopiëren moet, op zijn minst, "
 "in de week direct volgend na de einddatum van de originele periode liggen"
 
-#: garbage_collection/views.py:233
+#: garbage_collection/views.py:243
 msgid "successfully copied the garbage collections"
 msgstr "de vuilnisophalingen zijn succesvol gekopieerd"
 
-#: garbage_collection/views.py:275
+#: garbage_collection/views.py:285
 msgid ""
 "The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list "
 "of id's) should be given"
@@ -308,11 +314,15 @@ msgstr ""
 "De parameter(s) 'region' (id) en/of 'tour' (id) en/of 'buildings' (lijst van "
 "id's) moet(en) gegeven worden"
 
-#: garbage_collection/views.py:279
+#: garbage_collection/views.py:289
 #, fuzzy
 #| msgid "The query parameter {name} should be an integer"
 msgid "The query param 'building' should be a list of ints"
 msgstr "De query parameter {name} moet een getal zijn"
+
+#: remark_at_building/views.py:196
+msgid "Cannot use both most-recent and date for RemarkAtBuilding"
+msgstr "Je kan niet zowel most-recent als de date query parameter gebruiken gebruiken voor RemarkAtBuilding"
 
 #: users/managers.py:16
 msgid "Email is required"
@@ -326,19 +336,19 @@ msgstr "Superuser moet is_staff=True hebben."
 msgid "Superuser must have is_superuser=True."
 msgstr "Superuser moet is_superuser=True hebben."
 
-#: util/request_response_util.py:18
+#: util/request_response_util.py:17
 #, python-brace-format
 msgid "The query parameter {name} should be an integer"
 msgstr "De query parameter {name} moet een getal zijn"
 
-#: util/request_response_util.py:21 util/request_response_util.py:38
-#: util/request_response_util.py:46 util/request_response_util.py:65
-#: util/request_response_util.py:77
+#: util/request_response_util.py:20 util/request_response_util.py:37
+#: util/request_response_util.py:45 util/request_response_util.py:64
+#: util/request_response_util.py:76
 #, python-brace-format
 msgid "The query parameter {name} is required"
 msgstr "De query parameter {name} is vereist"
 
-#: util/request_response_util.py:32
+#: util/request_response_util.py:31
 #, python-brace-format
 msgid ""
 "The date parameter '{name}': '{param}' hasn't the appropriate form (=YYYY-MM-"
@@ -347,7 +357,7 @@ msgstr ""
 "De datum parameter '{name}': '{param}' heeft niet het juiste formaat (=YYYY-"
 "MM-DD)."
 
-#: util/request_response_util.py:55
+#: util/request_response_util.py:54
 #, python-brace-format
 msgid ""
 "Invalid value for boolean parameter '{name}': '{param}' (true or false "
@@ -355,21 +365,21 @@ msgid ""
 msgstr ""
 "Ongeldige booleaanse parameter '{name}': '{param}' (true of false verwacht)"
 
-#: util/request_response_util.py:83
+#: util/request_response_util.py:82
 #, fuzzy, python-brace-format
 #| msgid "The query parameter {name} should be an integer"
 msgid "The query param {name} must be a value in {allowed_keys}"
 msgstr "De query parameter {name} moet een waarde in {allowed_keys} zijn"
 
-#: util/request_response_util.py:174
+#: util/request_response_util.py:173
 msgid "{} was not found"
 msgstr "{} werd niet gevonden"
 
-#: util/request_response_util.py:178
+#: util/request_response_util.py:177
 msgid "bad input for {}"
 msgstr "slechte input voor {}"
 
-#: util/request_response_util.py:188
+#: util/request_response_util.py:187
 #, python-brace-format
 msgid "There is no {object1} that is linked to {object2} with given id."
 msgstr "Er is geen {object1} dat gelinkt is aan {object2} met de gegeven id."

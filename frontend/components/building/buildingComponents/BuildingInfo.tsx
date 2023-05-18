@@ -4,6 +4,8 @@ import PatchBuildingSyndicModal from "@/components/building/buildingComponents/e
 import { BuildingInterface } from "@/lib/building";
 import { getRegion } from "@/lib/region";
 import { useRouter } from "next/router";
+import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 function BuildingInfo({
     building,
@@ -17,6 +19,8 @@ function BuildingInfo({
     const router = useRouter();
     const [editBuilding, setEditBuilding] = useState(false);
     const [regionName, setRegionName] = useState("/");
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (building) {
@@ -49,10 +53,18 @@ function BuildingInfo({
             const region = await getRegion(region_id);
             const regionName = region.data.region;
             setRegionName(regionName);
+            setErrorMessages([]);
         } catch (error) {
-            console.error(error);
+            setErrorMessages(handleError(error));
             setRegionName("/");
         }
+    }
+
+    function getPublicLink(fullLink = true) {
+        return (
+            (fullLink ? `${process.env.NEXT_PUBLIC_HOST}` : "") +
+            `/public/building?id=${building?.public_id ? building?.public_id : "<public_id>"}`
+        );
     }
 
     return (
@@ -66,13 +78,6 @@ function BuildingInfo({
                 />
             ) : null}
 
-            {/*type == "admin" ? <PatchBuildingAdminModal
-                show={editBuilding}
-                closeModal={() => setEditBuilding(false)}
-                building={building}
-                setBuilding={setBuilding} />
-            : null*/}
-
             <h1>
                 Gebouw{" "}
                 {type == "syndic" ? (
@@ -85,6 +90,9 @@ function BuildingInfo({
                     ></TiPencil>
                 ) : null}
             </h1>
+
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+
             <p>ID: {get_building_key("id")} </p>
             <p>Naam: {get_building_key("name")}</p>
             <p>Stad: {get_building_key("city")}</p>
@@ -95,7 +103,22 @@ function BuildingInfo({
             <p>Region: {regionName} </p>
             <p>Werktijd: {get_building_key("duration")}</p>
             <p>Client id: {get_building_key("client_id")}</p>
-            <p>Public id: {get_building_key("public_id")}</p>
+
+            {type != "public" ? (
+                <p
+                    title={`De inwoners van het gebouw kunnen de info van dit gebouw raadplegen via de link: 
+                        ${getPublicLink()}`}
+                >
+                    Public id:{" "}
+                    {building?.public_id ? (
+                        <a href={getPublicLink(false)} target={"_blank"}>
+                            {get_building_key("public_id")}
+                        </a>
+                    ) : (
+                        get_building_key("public_id")
+                    )}
+                </p>
+            ) : null}
         </>
     );
 }

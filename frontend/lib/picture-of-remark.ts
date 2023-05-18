@@ -23,3 +23,11 @@ export async function postPictureOfRemark(picture: File, remarkId: number): Prom
     });
 }
 
+export async function deletePictureOfRemark(pictureOfRemarkId : number): Promise<AxiosResponse<any>> {
+    const delete_url : string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_PICTURE_OF_REMARK}${pictureOfRemarkId}`;
+    return await api.delete(delete_url);
+}
+
+export function getPicturePath(relativePath : string) {
+    return `${process.env.NEXT_PUBLIC_BASE_API_URL}${relativePath.substring(1)}` // Remove first / of relativePath
+}
