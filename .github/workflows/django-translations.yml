@@ -5,6 +5,8 @@ on:
     branches:
       - develop
       - main
+    paths:
+      - 'backend/**'
 
 jobs:
   build:
@@ -40,4 +42,5 @@ jobs:
       - name: Commit translation changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-            commit_message: "Auto compile translation messages"
+          commit_message: "Auto compile translation messages"
+
