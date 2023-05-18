@@ -14,6 +14,7 @@ import { handleError } from "@/lib/error";
 import Link from "next/link";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import Select from "react-select";
+import LocaleDateRangePicker from "@/components/datepicker/DateRangePicker";
 
 function AdminAnalysisWorkingHours() {
     enum sortBy {
@@ -29,8 +30,8 @@ function AdminAnalysisWorkingHours() {
     const [studentOnTours, setStudentOnTours] = useState<StudentOnTour[]>([]);
     const [workedHours, setWorkedHours] = useState<WorkedHours[]>([]);
 
-    const [startDate, setStartDate] = useState<Date>(startOfWeek(subMonths(new Date(), 1)));
-    const [endDate, setEndDate] = useState<Date>(new Date());
+    const [startDate, setStartDate] = useState<Date | null>(startOfWeek(subMonths(new Date(), 1)));
+    const [endDate, setEndDate] = useState<Date | null>(new Date());
 
     const [sortType, setSortType] = useState<string>(sortBy.ALPHABETICALLY);
     const [filteredRegion, setFilteredRegion] = useState<RegionInterface | null>(null);
@@ -77,7 +78,7 @@ function AdminAnalysisWorkingHours() {
     }, []);
 
     useEffect(() => {
-        if (allTours.length <= 0 || allUsers.length <= 0) {
+        if (!startDate || !endDate || allTours.length <= 0 || allUsers.length <= 0) {
             return;
         }
         getWorkedHours(startDate, endDate, filteredRegion ? filteredRegion.id : null).then(
@@ -174,25 +175,12 @@ function AdminAnalysisWorkingHours() {
             <Form className="m-2">
                 <Row>
                     <Form.Group as={Col} sm={12} md={3} lg={3}>
-                        <Form.Label>Start periode:</Form.Label>
-                        <Form.Control
-                            type="date"
-                            value={formatDate(startDate)}
-                            max={formatDate(subDays(endDate, 1))}
-                            onChange={(e) => {
-                                setStartDate(new Date(e.target.value));
-                            }}
-                        />
-                    </Form.Group>
-                    <Form.Group as={Col} sm={12} md={3} lg={3}>
-                        <Form.Label>Einde periode:</Form.Label>
-                        <Form.Control
-                            type="date"
-                            min={formatDate(addDays(startDate, 1))}
-                            value={formatDate(endDate)}
-                            onChange={(e) => {
-                                setEndDate(new Date(e.target.value));
-                            }}
+                        <Form.Label>Periode:</Form.Label>
+                        <LocaleDateRangePicker
+                            startDate={startDate}
+                            setStartDate={setStartDate}
+                            endDate={endDate}
+                            setEndDate={setEndDate}
                         />
                     </Form.Group>
                     <Form.Group as={Col} sm={12} md={3} lg={3}>

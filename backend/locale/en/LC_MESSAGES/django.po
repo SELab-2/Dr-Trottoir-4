@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-14 01:41+0200\n"
+"POT-Creation-Date: 2023-05-18 21:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,126 +68,126 @@ msgstr ""
 msgid "new password has been saved"
 msgstr ""
 
-#: base/models.py:23
+#: base/models.py:24
 msgid "This region already exists"
 msgstr ""
 
-#: base/models.py:43
+#: base/models.py:44
 #, python-brace-format
 msgid "The maximum rank allowed is {highest_rank}."
 msgstr ""
 
-#: base/models.py:51
+#: base/models.py:52
 msgid "This role name already exists."
 msgstr ""
 
-#: base/models.py:62
+#: base/models.py:63
 msgid "A user already exists with this email."
 msgstr ""
 
-#: base/models.py:86
+#: base/models.py:87
 msgid "This email is already in the lobby."
 msgstr ""
 
-#: base/models.py:90
+#: base/models.py:91
 msgid "This verification code already exists."
 msgstr ""
 
-#: base/models.py:105
+#: base/models.py:106
 msgid ""
 " This email belongs to an INACTIVE user. Instead of trying to register this "
 "user, you can simply reactivate the account."
 msgstr ""
 
-#: base/models.py:108
+#: base/models.py:109
 #, python-brace-format
 msgid "Email already exists in database for a user (id: {user_id}).{addendum}"
 msgstr ""
 
-#: base/models.py:119
-msgid "No bus"
-msgstr ""
-
-#: base/models.py:135
+#: base/models.py:136
 msgid "The house number of the building must be positive and not zero."
 msgstr ""
 
-#: base/models.py:142
+#: base/models.py:143
 msgid "Only a user with role \"syndic\" can own a building."
 msgstr ""
 
-#: base/models.py:148
+#: base/models.py:149
 #, python-brace-format
 msgid "{public_id} already exists as public_id of another building"
 msgstr ""
 
-#: base/models.py:160
+#: base/models.py:164
 msgid "A building with this address already exists."
 msgstr ""
 
-#: base/models.py:183
+#: base/models.py:193
 msgid "This comment already exists, and was posted at the exact same time."
 msgstr ""
 
-#: base/models.py:221
+#: base/models.py:231
 msgid ""
 "This type of garbage is already being collected on the same day for this "
 "building."
 msgstr ""
 
-#: base/models.py:247
+#: base/models.py:257
 msgid "There is already a tour with the same name in the region."
 msgstr ""
 
-#: base/models.py:270
+#: base/models.py:280
 #, python-brace-format
 msgid ""
 "The regions for tour ({tour_region}) and building ({building_region}) are "
 "different."
 msgstr ""
 
-#: base/models.py:284
+#: base/models.py:294
 msgid "This building is already on this tour."
 msgstr ""
 
-#: base/models.py:290
+#: base/models.py:300
 msgid "This index is already in use."
 msgstr ""
 
-#: base/models.py:320
+#: base/models.py:327
+msgid "You cannot plan a student on a past date."
+msgstr ""
+
+#: base/models.py:331
 msgid "A syndic can't do tours"
 msgstr ""
 
-#: base/models.py:324
+#: base/models.py:335
 #, python-brace-format
 msgid "Student ({user_email}) doesn't do tours in this region ({tour_region})."
 msgstr ""
 
-#: base/models.py:345
+#: base/models.py:356
 msgid "The student is already assigned to this tour on this date."
 msgstr ""
 
-#: base/models.py:382
+#: base/models.py:393
 msgid ""
 "There already exists a remark of this type from this student on tour at this "
 "building."
 msgstr ""
 
-#: base/models.py:398
+#: base/models.py:409
 msgid ""
 "This remark was already uploaded to this building by this student on the "
 "tour."
 msgstr ""
 
-#: base/models.py:424
+#: base/models.py:435
 msgid "The building already has this upload."
 msgstr ""
 
-#: base/models.py:460
+#: base/models.py:471
 msgid "The building already has a manual with the same version number"
 msgstr ""
 
-#: base/models.py:477
+#: base/models.py:488
 msgid "The name for this template already exists."
 msgstr ""
 
@@ -233,31 +233,42 @@ msgstr ""
 msgid "You can only access your own account"
 msgstr ""
 
-#: base/permissions.py:169
+#: base/permissions.py:170
 msgid "You can't create a user of a higher role"
 msgstr ""
 
-#: base/permissions.py:187
+#: base/permissions.py:188
 msgid "You don't have the right permissions to delete this user"
 msgstr ""
 
-#: base/permissions.py:200
+#: base/permissions.py:201
 msgid "You don't have the right permissions to edit this user"
 msgstr ""
 
-#: base/permissions.py:213
+#: base/permissions.py:214
 msgid ""
 "You can't assign a role to yourself or assign a role that is higher than "
 "your own"
 msgstr ""
 
-#: base/permissions.py:232
+#: base/permissions.py:233
 msgid "You can only view manuals that are linked to one of your buildings"
 msgstr ""
 
-#: base/permissions.py:242
+#: base/permissions.py:243
 msgid ""
 "You cannot edit buildings on a tour when a student is actively doing the tour"
+msgstr ""
+
+#: base/permissions.py:255
+msgid ""
+"The student has already started or finished this tour, this entry can't be "
+"edited anymore."
+msgstr ""
+
+#: building_comment/views.py:53
+#, python-brace-format
+msgid "Building (with id {id})"
 msgstr ""
 
 #: config/settings.py:238
@@ -268,34 +279,21 @@ msgstr "Nederlands"
 msgid "English"
 msgstr "Engels"
 
-#: garbage_collection/views.py:171
-msgid ""
-"the start date of the period can't be in a later week than the week of the "
-"end date"
-msgstr ""
-
-#: garbage_collection/views.py:179
-msgid ""
-"the start date of the period to which you want to copy must be, at a "
-"minimum, in the week immediately following the end date of the original "
-"period"
-msgstr ""
-
-#: garbage_collection/views.py:243
-msgid "successfully copied the garbage collections"
-msgstr ""
-
-#: garbage_collection/views.py:285
+#: garbage_collection/views.py:250
 msgid ""
 "The parameter(s) 'region' (id) and/or 'tour' (id) and/or 'buildings' (list "
 "of id's) should be given"
 msgstr ""
 
-#: garbage_collection/views.py:289
+#: garbage_collection/views.py:254
 msgid "The query param 'building' should be a list of ints"
 msgstr ""
 
-#: remark_at_building/views.py:196
+#: remark_at_building/views.py:122
+msgid "You can only edit the 'remark' text on a remark at building"
+msgstr ""
+
+#: remark_at_building/views.py:207
 msgid "Cannot use both most-recent and date for RemarkAtBuilding"
 msgstr ""
 
@@ -353,6 +351,19 @@ msgstr ""
 #: util/request_response_util.py:187
 #, python-brace-format
 msgid "There is no {object1} that is linked to {object2} with given id."
+msgstr ""
+
+#: util/request_response_util.py:268
+msgid ""
+"the start date of the period can't be in a later week than the week of the "
+"end date"
+msgstr ""
+
+#: util/request_response_util.py:276
+msgid ""
+"the start date of the period to which you want to copy must be, at a "
+"minimum, in the week immediately following the end date of the original "
+"period"
 msgstr ""
 
 #: venv/lib/python3.10/site-packages/django/contrib/messages/apps.py:15

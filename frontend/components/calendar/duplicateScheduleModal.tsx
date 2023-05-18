@@ -1,11 +1,12 @@
 import { Button, Form, Modal } from "react-bootstrap";
 import React, { useState } from "react";
 import { formatDate } from "@/lib/date";
-
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { addDays, addWeeks, endOfWeek, startOfWeek } from "date-fns";
 import { AxiosResponse } from "axios";
+import LocaleDateRangePicker from "@/components/datepicker/DateRangePicker";
+import LocaleDatePicker from "@/components/datepicker/datepicker";
 
 export default function DuplicateScheduleModal({
     show,
@@ -21,15 +22,14 @@ export default function DuplicateScheduleModal({
     weekStartsOn: 0 | 1;
 }) {
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
-
-    const [startDate, setStartDate] = useState<Date>(startOfWeek(new Date(), { weekStartsOn }));
-    const [endDate, setEndDate] = useState<Date>(endOfWeek(new Date(), { weekStartsOn }));
+    const [startDate, setStartDate] = useState<Date | null>(startOfWeek(new Date(), { weekStartsOn }));
+    const [endDate, setEndDate] = useState<Date | null>(endOfWeek(new Date(), { weekStartsOn }));
     const [copyToDate, setCopyToDate] = useState<Date>(addWeeks(startOfWeek(new Date(), { weekStartsOn }), 1));
 
     // Submit the duplicate request
     function submit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        if (endDate < startDate) {
+        if (!startDate || !endDate) {
             setErrorMessages(["Einddatum moet na begindatum komen."]);
             return;
         }
@@ -59,41 +59,34 @@ export default function DuplicateScheduleModal({
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Form onSubmit={submit}>
                 <Modal.Body>
-                    <div className="form-row">
-                        <div className="col">
-                            <label>Van start van week:</label>
-                            <input
-                                type="date"
-                                className="form-control"
-                                value={formatDate(startDate)}
-                                onChange={(event) =>
-                                    setStartDate(startOfWeek(new Date(event.target.value), { weekStartsOn }))
+                    <Form.Group>
+                        <Form.Label>Periode die u wilt kopiëren:</Form.Label>
+                        <LocaleDateRangePicker
+                            startDate={startDate}
+                            setStartDate={(d) => {
+                                if (d) {
+                                    setStartDate(startOfWeek(d, { weekStartsOn }));
+                                } else {
+                                    setStartDate(null);
                                 }
-                            />
-                        </div>
-                        <div className="col">
-                            <label>Tot einde van week:</label>
-                            <input
-                                type="date"
-                                className="form-control"
-                                value={formatDate(endDate)}
-                                onChange={(event) =>
-                                    setEndDate(endOfWeek(new Date(event.target.value), { weekStartsOn }))
+                            }}
+                            endDate={endDate}
+                            setEndDate={(d) => {
+                                if (d) {
+                                    setEndDate(endOfWeek(d, { weekStartsOn }));
+                                } else {
+                                    setEndDate(null);
                                 }
-                            />
-                        </div>
-                    </div>
-                    <div className="form-outline mb-4">
-                        <label className="form-label">Kopieer naar start van week:</label>
-                        <input
-                            type="date"
-                            className="form-control"
-                            value={formatDate(copyToDate)}
-                            onChange={(event) =>
-                                setCopyToDate(startOfWeek(new Date(event.target.value), { weekStartsOn }))
-                            }
+                            }}
                         />
-                    </div>
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Kopieer naar start van week:</Form.Label>
+                        <LocaleDatePicker
+                            selectedDate={copyToDate}
+                            setSelectedDate={(d) => setCopyToDate(startOfWeek(d, { weekStartsOn }))}
+                        />
+                    </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button

@@ -1,6 +1,8 @@
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from base.models import BuildingComment
@@ -20,7 +22,11 @@ from util.request_response_util import (
     patch_docs,
     patch_success,
     bad_request,
+    get_boolean_param,
+    param_docs,
+    get_most_recent_param_docs,
 )
+
 
 TRANSLATE = {"building": "building_id"}
 
@@ -116,14 +122,27 @@ class BuildingCommentBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]
     serializer_class = BuildingCommentSerializer
 
-    @extend_schema(responses=get_docs(BuildingCommentSerializer))
+    @extend_schema(
+        responses=get_docs(BuildingCommentSerializer),
+        parameters=param_docs(get_most_recent_param_docs("BuildingComment")),
+    )
     def get(self, request, building_id):
         """
         Get all BuildingComments of building with given building id
         """
-        building_comment_instance = BuildingComment.objects.filter(building_id=building_id)
 
-        serializer = BuildingCommentSerializer(building_comment_instance, many=True)
+        try:
+            most_recent_only = get_boolean_param(request, "most-recent")
+        except BadRequest as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        building_comment_instances = BuildingComment.objects.filter(building_id=building_id)
+
+        if most_recent_only:
+            building_comment_instances = building_comment_instances.order_by("-date").first()
+
+        serializer = BuildingCommentSerializer(building_comment_instances, many=not most_recent_only)
+
         return get_success(serializer)
 
 

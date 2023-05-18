@@ -1,22 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import { handleError } from "@/lib/error";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { patchStudentOnTour } from "@/lib/student-on-tour";
-import { formatDate } from "@/lib/date";
+import {patchStudentOnTour} from "@/lib/student-on-tour";
+import {formatDate} from "@/lib/date";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
-import { ScheduleEvent } from "@/types";
+import {ScheduleEvent} from "@/types";
+import LocaleDatePicker from "@/components/datepicker/datepicker";
+import {Form} from "react-bootstrap";
+import Link from "next/link";
+import {startOfDay} from "date-fns";
 
 function EditScheduleEventModal({
-    event,
-    isOpen,
-    onClose,
-    onDelete,
-    onDeleteTour,
-    onEdit,
-}: {
+                                    event,
+                                    isOpen,
+                                    onClose,
+                                    onDelete,
+                                    onDeleteTour,
+                                    onEdit,
+                                }: {
     event: ScheduleEvent | null;
     isOpen: boolean;
     onClose: () => void;
@@ -71,6 +75,13 @@ function EditScheduleEventModal({
         onClose();
     };
 
+    function isEditable() {
+        if (!event) {
+            return true;
+        }
+        return new Date(event.start) >= startOfDay(new Date())
+    }
+
     return (
         <Modal
             show={isOpen}
@@ -82,37 +93,55 @@ function EditScheduleEventModal({
             <Modal.Header closeButton>
                 <Modal.Title>Bewerk ronde dag</Modal.Title>
             </Modal.Header>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <Modal.Body>
-                <form>
-                    <div className="form-outline mb-4">
-                        <label className="form-label">Datum:</label>
-                        <input
-                            type="date"
-                            className="form-control"
-                            value={formatDate(date)}
-                            onChange={(event) => setDate(new Date(event.target.value))}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false} />
-                    </div>
-                    <div className="form-group">
-                        <label>Selecteer student</label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} matchId={tourId} />
-                    </div>
-                </form>
+                {
+                    !isEditable() &&
+                    <>
+                        <div className="m-2">U kunt planningen in het verleden niet meer bewerken.</div>
+                        <label>Bekijk de </label>
+                        <Link style={{
+                            textDecoration: "underline",
+                            color: "royalblue",
+                        }}
+                              href={{
+                                  pathname: "/admin/analysis/student-on-tour",
+                                  query: {
+                                      studentOnTour: event?.id,
+                                  },
+                              }}> analyse </Link>
+                        <label> van deze student.</label>
+                    </>
+                }
+                <Form style={isEditable() ? undefined : {pointerEvents: "none", opacity: 0.6}}>
+                    <Form.Group className="form-outline mb-4">
+                        <Form.Label className="form-label">Datum:</Form.Label>
+                        <LocaleDatePicker setSelectedDate={setDate} selectedDate={date}/>
+                    </Form.Group>
+                    <Form.Group className="form-group">
+                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false}/>
+                    </Form.Group>
+                    <Form.Group className="form-group">
+                        <Form.Label>Selecteer student</Form.Label>
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId}/>
+                    </Form.Group>
+                </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="danger" onClick={handleTourDelete}>
-                    Verwijder ronde (voor hele week)
-                </Button>
-                <Button variant="danger" onClick={handleDelete}>
-                    Verwijder
-                </Button>
-                <Button variant="primary" onClick={handleSave}>
-                    Sla op
-                </Button>
+                {
+                    isEditable() &&
+                    <>
+                        <Button variant="danger" onClick={handleTourDelete}>
+                            Verwijder ronde (voor hele week)
+                        </Button>
+                        <Button variant="danger" onClick={handleDelete}>
+                            Verwijder
+                        </Button>
+                        <Button variant="primary" onClick={handleSave}>
+                            Sla op
+                        </Button>
+                    </>
+                }
             </Modal.Footer>
         </Modal>
     );

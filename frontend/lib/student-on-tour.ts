@@ -131,3 +131,11 @@ export async function endStudentOnTour(studentOnTourId: number) {
     const post_url: string= `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_STUDENT_ON_TOUR}${studentOnTourId}/end/`;
     return await api.post(post_url);
 }
+
+/**
+ * When a student-on-tour is posted or patched, this websocket returns the patched/posted object
+ */
+export function getAllStudentOnTourChanges() : WebSocket {
+    const url: string = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}${process.env.NEXT_PUBLIC_WEBSOCKET_ALL_STUDENT_ON_TOUR}`;
+    return new WebSocket(url);
+}

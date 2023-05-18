@@ -33,7 +33,9 @@ const RegionModal: React.FC<RegionModalProps> = ({ show, closeModal, onSubmit, m
             </Modal.Header>
             <Modal.Body>
                 <div className="form-outline mb-4">
-                    <label className="form-label">Regio naam</label>
+                    <label htmlFor={"name"} className="form-label">
+                        Regio naam
+                    </label>
                     <input
                         type="text"
                         className={`form-control form-control-lg ${styles.input}`}
