@@ -137,7 +137,6 @@ const AutocompleteComponent: React.FC<Props> = ({initialId, label, fetchOptions,
                     // <TextField {...params} variant="outlined" fullWidth/>
                     <TextField
                         {...params}
-                        label="Asynchronous"
                         variant="outlined"
                         fullWidth
                         InputProps={{
