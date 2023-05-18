@@ -369,7 +369,6 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                     setPopupIsOpenAdd(false);
                 }}
             />
-
             <DuplicateScheduleModal
                 closeModal={() => {
                     setPopupIsOpenCopy(false);
