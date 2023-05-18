@@ -1,18 +1,18 @@
 import AdminHeader from "@/components/header/adminHeader";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { getStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
-import { getAnalysisStudentOnTour, getWorkedHours } from "@/lib/analysis";
-import { BuildingAnalysis } from "@/types";
-import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
-import { Col, Container, ListGroup, ListGroupItem, ProgressBar, Row } from "react-bootstrap";
-import { Tooltip } from "@mui/material";
-import { getFullName, getUserInfo, User } from "@/lib/user";
-import { getTour, Tour } from "@/lib/tour";
-import { getRegion, RegionInterface } from "@/lib/region";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {getStudentOnTour, StudentOnTour} from "@/lib/student-on-tour";
+import {getAnalysisStudentOnTour, getWorkedHours} from "@/lib/analysis";
+import {BuildingAnalysis} from "@/types";
+import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
+import {Col, Container, ListGroup, ListGroupItem, ProgressBar, Row} from "react-bootstrap";
+import {Tooltip} from "@mui/material";
+import {getFullName, getUserInfo, User} from "@/lib/user";
+import {getTour, Tour} from "@/lib/tour";
+import {getRegion, RegionInterface} from "@/lib/region";
 import Link from "next/link";
-import { formatDate } from "@/lib/date";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {formatDate} from "@/lib/date";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
 interface StudentOnTourQuery {
     studentOnTour?: number;
@@ -40,7 +40,8 @@ function AnalysisStudentOnTour() {
                 getTourWithTourId(sot.tour);
                 getStudent(sot.student);
             },
-            () => {}
+            () => {
+            }
         );
 
         getAnalysisStudentOnTour(studentOnTourId).then(
@@ -53,10 +54,12 @@ function AnalysisStudentOnTour() {
                         const buildings: BuildingInterface[] = res.map((r) => r.data);
                         setBuildings(buildings);
                     },
-                    () => {}
+                    () => {
+                    }
                 );
             },
-            () => {}
+            () => {
+            }
         );
     }, [router.isReady]);
 
@@ -71,10 +74,12 @@ function AnalysisStudentOnTour() {
                             const r: RegionInterface = resp.data;
                             setRegion(r);
                         },
-                        () => {}
+                        () => {
+                        }
                     );
                 },
-                () => {}
+                () => {
+                }
             );
         }
     }
@@ -85,7 +90,8 @@ function AnalysisStudentOnTour() {
                 const u: User = res.data;
                 setStudent(u);
             },
-            () => {}
+            () => {
+            }
         );
     }
 
@@ -105,8 +111,11 @@ function AnalysisStudentOnTour() {
         const departureHours = departureTime.getHours();
         const departureMinutes = departureTime.getMinutes();
 
-        return `${arrivalHours.toString().padStart(2, "0")}:${arrivalMinutes.toString().padStart(2, "0")} - 
-        ${departureHours.toString().padStart(2, "0")}:${departureMinutes.toString().padStart(2, "0")}`;
+        return `${arrivalHours.toString().padStart(2, "0")}:${arrivalMinutes.toString().padStart(2, "0")} - ${
+            isNaN(departureHours) ? 
+                "..." : 
+                `${departureHours.toString().padStart(2, "0")}:${departureMinutes.toString().padStart(2, "0")}`
+        }`;
     }
 
     /**
@@ -121,10 +130,10 @@ function AnalysisStudentOnTour() {
                 // More than 25 % faster
                 return (
                     <div className="text-center">
-                        <h5 style={{ color: "green" }}>{minString}</h5>
+                        <h5 style={{color: "green"}}>{minString}</h5>
                         <div className="progress-bar-container">
                             <ProgressBar>
-                                <ProgressBar now={50} style={{ backgroundColor: "lightgreen" }} />
+                                <ProgressBar now={50} style={{backgroundColor: "lightgreen"}}/>
                             </ProgressBar>
                         </div>
                     </div>
@@ -133,11 +142,11 @@ function AnalysisStudentOnTour() {
             const empty: number = 50 - per * 2;
             return (
                 <div className="text-center">
-                    <h5 style={{ color: "green" }}>{minString}</h5>
+                    <h5 style={{color: "green"}}>{minString}</h5>
                     <div className="progress-bar-container">
                         <ProgressBar max={50}>
-                            <ProgressBar className="invisible" now={empty} key={1} />
-                            <ProgressBar now={per * 2} key={2} style={{ backgroundColor: "lightgreen" }} />
+                            <ProgressBar className="invisible" now={empty} key={1}/>
+                            <ProgressBar now={per * 2} key={2} style={{backgroundColor: "lightgreen"}}/>
                         </ProgressBar>
                     </div>
                 </div>
@@ -148,11 +157,11 @@ function AnalysisStudentOnTour() {
                 // More than 25 % slower
                 return (
                     <div className="text-center">
-                        <h5 style={{ color: "indianred" }}>{minString}</h5>
+                        <h5 style={{color: "indianred"}}>{minString}</h5>
                         <div className="progress-bar-container">
                             <ProgressBar>
-                                <ProgressBar className="invisible" now={50} key={1} />
-                                <ProgressBar now={50} key={2} style={{ backgroundColor: "indianred" }} />
+                                <ProgressBar className="invisible" now={50} key={1}/>
+                                <ProgressBar now={50} key={2} style={{backgroundColor: "indianred"}}/>
                             </ProgressBar>
                         </div>
                     </div>
@@ -160,11 +169,11 @@ function AnalysisStudentOnTour() {
             }
             return (
                 <div className="text-center">
-                    <h5 style={{ color: "orange" }}>{minString}</h5>
+                    <h5 style={{color: "orange"}}>{minString}</h5>
                     <div className="progress-bar-container">
                         <ProgressBar>
                             <ProgressBar className="invisible" now={50} key={1}></ProgressBar>
-                            <ProgressBar now={per * 2} key={2} style={{ backgroundColor: "orange" }} />
+                            <ProgressBar now={per * 2} key={2} style={{backgroundColor: "orange"}}/>
                         </ProgressBar>
                     </div>
                 </div>
@@ -173,9 +182,9 @@ function AnalysisStudentOnTour() {
             // Equal
             return (
                 <div className="text-center">
-                    <h5 style={{ color: "green" }}>{minString}</h5>
+                    <h5 style={{color: "green"}}>{minString}</h5>
                     <div className="progress-bar-container">
-                        <ProgressBar now={100} style={{ backgroundColor: "lightgreen" }} />
+                        <ProgressBar now={100} style={{backgroundColor: "lightgreen"}}/>
                     </div>
                 </div>
             );
@@ -184,7 +193,7 @@ function AnalysisStudentOnTour() {
 
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             <Container fluid="md">
                 <div className="m-3">
                     {tour && (
@@ -252,7 +261,7 @@ function AnalysisStudentOnTour() {
                                             {`Ingeplande duur: ${convertSecondsToString(
                                                 analysis.expected_duration_in_seconds
                                             )}`}
-                                            <br />
+                                            <br/>
                                             {`Duur: ${convertSecondsToString(analysis.duration_in_seconds)}`}
                                         </div>
                                     }
