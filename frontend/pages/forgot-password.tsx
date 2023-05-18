@@ -1,8 +1,8 @@
-import {useRouter} from "next/router";
-import React, {FormEvent, useState} from "react";
+import { useRouter } from "next/router";
+import React, { FormEvent, useState } from "react";
 import BaseHeader from "@/components/header/baseHeader";
 import reset from "@/lib/reset";
-import {Button, Card, Col, Container, Form, InputGroup, Row} from "react-bootstrap";
+import { Button, Card, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
 import CarouselComponent from "@/components/imageCarousel";
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
@@ -33,23 +33,20 @@ export default function ForgotPassword() {
 
     return (
         <>
-            <BaseHeader/>
+            <BaseHeader />
             <Container className="center_container">
                 <Card>
                     <Row>
-                        <Col md={6} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                            <CarouselComponent/>
+                        <Col md={6} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            <CarouselComponent />
                         </Col>
                         <Col md={6}>
                             <Form onSubmit={handleSubmit}>
                                 <SuccessMessageAlert
-                                                setSuccessMessages={setSuccessMessages}
-                                                successmessages={succesMessages}
-                                            />
-                                            <ErrorMessageAlert
-                                                setErrorMessages={setErrorMessages}
-                                                errorMessages={errorMessages}
-                                            />
+                                    setSuccessMessages={setSuccessMessages}
+                                    successmessages={succesMessages}
+                                />
+                                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
                                 <Form.Label className="title">Wachtwoord vergeten.</Form.Label>
                                 <p className="normal_text">Vul je e-mailadres is om je account terug te vinden</p>
                                 <Form.Label className="normal_text">E-mailadres</Form.Label>
@@ -58,23 +55,21 @@ export default function ForgotPassword() {
                                         className="form_control"
                                         type="email"
                                         value={email}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                            setEmail(e.target.value)
-                                        }
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                                         required
                                         placeholder="naam@voorbeeld.com"
                                     />
                                 </InputGroup>
                                 <div className="padding">
-                                    <Button
-                                        className="wide_button"
-                                        size="lg"
-                                        type="submit">
+                                    <Button className="wide_button" size="lg" type="submit">
                                         Reset
                                     </Button>
                                 </div>
                                 <p className="normal_text">
-                                    Geheugen opgefrist? <a className="link" href="/login">Ga naar login</a>
+                                    Geheugen opgefrist?{" "}
+                                    <a className="link" href="/login">
+                                        Ga naar login
+                                    </a>
                                 </p>
                             </Form>
                         </Col>

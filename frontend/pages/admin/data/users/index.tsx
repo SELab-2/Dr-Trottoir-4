@@ -1,11 +1,11 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, {useEffect, useMemo, useState} from "react";
-import {getAllUsers, getUserRole, User} from "@/lib/user";
-import {getAllRegions, RegionInterface} from "@/lib/region";
-import {UserView} from "@/types";
-import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {Check, Clear, Delete, Edit, Email} from "@mui/icons-material";
+import React, { useEffect, useMemo, useState } from "react";
+import { getAllUsers, getUserRole, User } from "@/lib/user";
+import { getAllRegions, RegionInterface } from "@/lib/region";
+import { UserView } from "@/types";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { Check, Clear, Delete, Edit, Email } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { UserEditModal } from "@/components/admin/userEditModal";
@@ -15,7 +15,7 @@ import { handleError } from "@/lib/error";
 
 function AdminDataUsers() {
     const router = useRouter();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [allUsers, setAllUsers] = useState<User[]>([]);
     const [allUserViews, setAllUserViews] = useState<UserView[]>([]);
     const [allRegions, setAllRegions] = useState<RegionInterface[]>([]);
@@ -56,7 +56,7 @@ function AdminDataUsers() {
             },
             {
                 accessorFn: (userView) => {
-                    return userView.isActive ? <Check/> : <Clear/>;
+                    return userView.isActive ? <Check /> : <Clear />;
                 },
                 id: "isActive",
                 header: "Actief",
@@ -64,8 +64,8 @@ function AdminDataUsers() {
             {
                 header: "Acties",
                 id: "actions",
-                Cell: ({row}) => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                Cell: ({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Tooltip arrow placement="right" title="Verstuur mail">
                             <IconButton
                                 onClick={() => {
@@ -73,7 +73,7 @@ function AdminDataUsers() {
                                     routeToCommunication(userView).then();
                                 }}
                             >
-                                <Email/>
+                                <Email />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="left" title="Pas aan">
@@ -84,7 +84,7 @@ function AdminDataUsers() {
                                     setShowEditModal(true);
                                 }}
                             >
-                                <Edit/>
+                                <Edit />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -95,7 +95,7 @@ function AdminDataUsers() {
                                     setShowDeleteModal(true);
                                 }}
                             >
-                                <Delete/>
+                                <Delete />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -167,13 +167,13 @@ function AdminDataUsers() {
     async function routeToCommunication(userView: UserView) {
         await router.push({
             pathname: `/admin/communication`,
-            query: {user: userView.userId},
+            query: { user: userView.userId },
         });
     }
 
     return (
         <div className="tablepageContainer">
-            <AdminHeader/>
+            <AdminHeader />
             <div className="tableContainer">
                 <UserDeleteModal
                     show={showDeleteModal}
@@ -194,11 +194,11 @@ function AdminDataUsers() {
                     enableBottomToolbar={false}
                     columns={columns}
                     data={allUserViews}
-                    state={{isLoading: loading}}
+                    state={{ isLoading: loading }}
                     enableRowNumbers
                     enableHiding={false}
                     enableRowActions={false}
-                    initialState={{columnVisibility: {userId: false}}}
+                    initialState={{ columnVisibility: { userId: false } }}
                     renderTopToolbarCustomActions={() => (
                         <div className="form-check form-switch">
                             <label className="form-check-label" htmlFor="switchCheckbox">

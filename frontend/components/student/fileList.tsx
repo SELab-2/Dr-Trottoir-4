@@ -1,20 +1,20 @@
-import {IconButton, Tooltip} from "@mui/material";
-import {FileListElement} from "@/types";
-import {deletePictureOfRemark} from "@/lib/picture-of-remark";
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import ClearIcon from '@mui/icons-material/Clear';
-import {Button} from "react-bootstrap";
+import { IconButton, Tooltip } from "@mui/material";
+import { FileListElement } from "@/types";
+import { deletePictureOfRemark } from "@/lib/picture-of-remark";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import ClearIcon from "@mui/icons-material/Clear";
+import { Button } from "react-bootstrap";
 import { Delete } from "@mui/icons-material";
 import React, { useState } from "react";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { handleError } from "@/lib/error";
 
 export function FileList({
-                             files,
-                             setFiles,
-                             optional,
-                             editable,
-                         }: {
+    files,
+    setFiles,
+    optional,
+    editable,
+}: {
     files: FileListElement[];
     setFiles: (f: FileListElement[]) => void;
     optional: boolean;
@@ -63,16 +63,16 @@ export function FileList({
                         <Button
                             type="button"
                             style={{
-                                height: '40px',
-                                backgroundColor: '#1d1d1d',
-                                color: 'white',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
+                                height: "40px",
+                                backgroundColor: "#1d1d1d",
+                                color: "white",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
                             }}
                             onClick={() => document.getElementById("fileInput")?.click()}
                         >
-                            <CameraAltIcon style={{marginRight: '5px', height: '20px'}}/>
+                            <CameraAltIcon style={{ marginRight: "5px", height: "20px" }} />
                             Upload foto's
                         </Button>
                     </label>
@@ -86,29 +86,34 @@ export function FileList({
                     />
                 </div>
             )}
-            <ul style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                listStyle: 'none',
-                padding: 3,
-            }}>
+            <ul
+                style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    listStyle: "none",
+                    padding: 3,
+                }}
+            >
                 {files.map((fileEl, index) => {
                     return (
-                        <li key={index} style={{
-                            marginRight: '3px',
-                            marginBottom: '3px',
-                            paddingLeft: '8px',
-                            backgroundColor: 'lightgray',
-                            borderRadius: '3px',
-                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-                        }}>
-                            <a href={fileEl.url} download style={{textDecoration: 'underline', color: 'royalblue'}}>
+                        <li
+                            key={index}
+                            style={{
+                                marginRight: "3px",
+                                marginBottom: "3px",
+                                paddingLeft: "8px",
+                                backgroundColor: "lightgray",
+                                borderRadius: "3px",
+                                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                            }}
+                        >
+                            <a href={fileEl.url} download style={{ textDecoration: "underline", color: "royalblue" }}>
                                 {`upload_${index + 1}`}
                             </a>
                             {editable && (
                                 <Tooltip arrow placement="right" title="Verwijder">
                                     <IconButton onClick={() => handleRemoveFile(index)}>
-                                        <ClearIcon/>
+                                        <ClearIcon />
                                     </IconButton>
                                 </Tooltip>
                             )}

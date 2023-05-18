@@ -2,13 +2,13 @@ import BaseHeader from "@/components/header/baseHeader";
 import Loading from "@/components/loading";
 import LoginForm from "@/components/loginForm";
 import CarouselComponent from "@/components/imageCarousel";
-import {Card, Col, Container, Row} from "react-bootstrap";
-import React, {useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import {getRoleDirection} from "@/lib/reroute";
+import { Card, Col, Container, Row } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { getRoleDirection } from "@/lib/reroute";
 import setSessionStorage from "@/lib/storage";
-import {getCurrentUser} from "@/lib/user";
-import {handleError} from "@/lib/error";
+import { getCurrentUser } from "@/lib/user";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function Login() {
@@ -35,20 +35,20 @@ export default function Login() {
 
     return (
         <>
-            <BaseHeader/>
+            <BaseHeader />
             <div>
                 {loading ? (
-                    <Loading/>
+                    <Loading />
                 ) : (
                     <Container className="center_container">
-                        <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+                        <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
                         <Card>
                             <Row>
-                                <Col md={6} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                                    <CarouselComponent/>
+                                <Col md={6} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                    <CarouselComponent />
                                 </Col>
                                 <Col md={6}>
-                                    <LoginForm/>
+                                    <LoginForm />
                                 </Col>
                             </Row>
                         </Card>

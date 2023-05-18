@@ -1,17 +1,17 @@
-import React, {useEffect, useState} from "react";
-import {getCurrentUser, getUserRole, patchUser, User} from "@/lib/user";
-import {useTranslation} from "react-i18next";
-import {getAllRegions, RegionInterface} from "@/lib/region";
+import React, { useEffect, useState } from "react";
+import { getCurrentUser, getUserRole, patchUser, User } from "@/lib/user";
+import { useTranslation } from "react-i18next";
+import { getAllRegions, RegionInterface } from "@/lib/region";
 import AdminHeader from "@/components/header/adminHeader";
 import StudentHeader from "@/components/header/studentHeader";
 import SyndicHeader from "@/components/header/syndicHeader";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {Button, Card, Col, Container, Form, FormCheck, FormControl, InputGroup, Row} from "react-bootstrap";
+import { Button, Card, Col, Container, Form, FormCheck, FormControl, InputGroup, Row } from "react-bootstrap";
 import PhoneInput from "react-phone-input-2";
 import PasswordInput from "@/components/password/passwordInput";
-import {changePassword} from "@/lib/authentication";
-import {Divider} from "@mui/material";
+import { changePassword } from "@/lib/authentication";
+import { Divider } from "@mui/material";
 import { withAuthorisation } from "@/components/withAuthorisation";
 
 function UserProfile() {
@@ -40,7 +40,6 @@ function UserProfile() {
     const handleCurrentPasswordVisibility = () => {
         setShowCurrentPassword(!showCurrentPassword);
     };
-
 
     useEffect(() => {
         getCurrentUser().then(
@@ -115,45 +114,49 @@ function UserProfile() {
                 old_password: currentPassword,
                 new_password1: newPassword1,
                 new_password2: newPassword2,
-            }).then((_) => {
+            }).then(
+                (_) => {
                     setSuccessPass(true);
                 },
                 (err) => {
-                    const e = handleError(err)
+                    const e = handleError(err);
                     setErrorMessages(e);
-                });
+                }
+            );
         }
     }
 
     return (
         <>
-            {["Admin", "Superstudent"].includes(role) && <AdminHeader/>}
-            {"Student" === role && <StudentHeader/>}
-            {"Syndic" === role && <SyndicHeader/>}
+            {["Admin", "Superstudent"].includes(role) && <AdminHeader />}
+            {"Student" === role && <StudentHeader />}
+            {"Syndic" === role && <SyndicHeader />}
             <Container className="center_container">
-                <Card className="padding" style={{maxWidth: '700px', width: '100%'}}>
+                <Card className="padding" style={{ maxWidth: "700px", width: "100%" }}>
                     <Row>
                         <Col md={6} className="column_padding">
-                            <label className="title">Profiel</label> <br/>
+                            <label className="title">Profiel</label> <br />
                             <label className="normal_text">
-                                   Rol : <strong> {`${user ? t(getUserRole(user.role.toString())) : ""}`}</strong>
-                                </label>
-                            <Divider style={{backgroundColor: 'black'}}/>
+                                Rol : <strong> {`${user ? t(getUserRole(user.role.toString())) : ""}`}</strong>
+                            </label>
+                            <Divider style={{ backgroundColor: "black" }} />
                             {succesPass && (
                                 <div className={"visible alert alert-success alert-dismissible fade show"}>
                                     <strong>Succes!</strong> Uw wachtwoord werd met succes gewijzigd!
-                                    <button type="button" className="btn-close"
-                                            onClick={() => setSuccessPass(false)}/>
+                                    <button type="button" className="btn-close" onClick={() => setSuccessPass(false)} />
                                 </div>
                             )}
                             {succesPatch && (
                                 <div className={"visible alert alert-success alert-dismissible fade show"}>
                                     <strong>Succes!</strong> Uw profiel werd met succes gewijzigd!
-                                    <button type="button" className="btn-close"
-                                            onClick={() => setSuccessPatch(false)}/>
+                                    <button
+                                        type="button"
+                                        className="btn-close"
+                                        onClick={() => setSuccessPatch(false)}
+                                    />
                                 </div>
                             )}
-                            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                             <PasswordInput
                                 value={currentPassword}
                                 setPassword={setCurrentPassword}
@@ -181,13 +184,14 @@ function UserProfile() {
                                 placeholder="Voer uw nieuwe wachtwoord opnieuw in"
                                 showIconButton={false}
                             />
-                            <div style={{paddingLeft: '10px'}}>
+                            <div style={{ paddingLeft: "10px" }}>
                                 <Button
                                     className="wide_button"
                                     size="lg"
                                     onClick={() => {
-                                        submitPasswordChange()
-                                    }}>
+                                        submitPasswordChange();
+                                    }}
+                                >
                                     Wijzig wachtwoord
                                 </Button>
                             </div>
@@ -207,20 +211,28 @@ function UserProfile() {
                                                                 <FormCheck
                                                                     value={r.id}
                                                                     id={r.id.toString()}
-                                                                    style={{paddingLeft: '15px'}}
-                                                                    checked={selectedRegions.some((n: number) => n === r.id)}
-                                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                                    style={{ paddingLeft: "15px" }}
+                                                                    checked={selectedRegions.some(
+                                                                        (n: number) => n === r.id
+                                                                    )}
+                                                                    onChange={(
+                                                                        e: React.ChangeEvent<HTMLInputElement>
+                                                                    ) => {
                                                                         const regionId = Number(e.target.value);
                                                                         const regions = [...selectedRegions];
                                                                         if (
                                                                             e.target.checked &&
-                                                                            !selectedRegions.find((el: number) => el === regionId)
+                                                                            !selectedRegions.find(
+                                                                                (el: number) => el === regionId
+                                                                            )
                                                                         ) {
                                                                             regions.push(regionId);
                                                                             setSelectedRegions(regions);
                                                                         } else if (
                                                                             !e.target.checked &&
-                                                                            selectedRegions.find((el: number) => el === regionId)
+                                                                            selectedRegions.find(
+                                                                                (el: number) => el === regionId
+                                                                            )
                                                                         ) {
                                                                             const i = regions.indexOf(regionId);
                                                                             if (i > -1) {
@@ -232,8 +244,10 @@ function UserProfile() {
                                                                 />
                                                             </Col>
                                                             <Col>
-                                                                <label className="normal_text"
-                                                                       htmlFor={r.id.toString()}>
+                                                                <label
+                                                                    className="normal_text"
+                                                                    htmlFor={r.id.toString()}
+                                                                >
                                                                     {r.region}
                                                                 </label>
                                                             </Col>
@@ -304,20 +318,17 @@ function UserProfile() {
                                             onChange={(phone) => setPhoneNumber("+" + phone)}
                                             inputClass="form_control"
                                             inputStyle={{
-                                                height: '40px',
-                                                background: '#f8f9fa',
-                                                fontSize: '15px',
-                                                width: '100%',
-                                                maxWidth: '300px'
+                                                height: "40px",
+                                                background: "#f8f9fa",
+                                                fontSize: "15px",
+                                                width: "100%",
+                                                maxWidth: "300px",
                                             }}
                                         />
                                     </InputGroup>
                                 </div>
-                                <div style={{paddingLeft: '15px'}}>
-                                    <Button
-                                        className="wide_button"
-                                        size="lg"
-                                        onClick={submit}>
+                                <div style={{ paddingLeft: "15px" }}>
+                                    <Button className="wide_button" size="lg" onClick={submit}>
                                         Pas aan
                                     </Button>
                                 </div>

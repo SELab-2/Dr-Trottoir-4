@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from "react";
-import {TiPencil} from "react-icons/ti";
+import React, { useEffect, useState } from "react";
+import { TiPencil } from "react-icons/ti";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
-import {BuildingInterface} from "@/lib/building";
-import {getRegion} from "@/lib/region";
-import {useRouter} from "next/router";
-import {Button} from "react-bootstrap";
+import { BuildingInterface } from "@/lib/building";
+import { getRegion } from "@/lib/region";
+import { useRouter } from "next/router";
+import { Button } from "react-bootstrap";
 // @ts-ignore
-import {CopyToClipboard} from 'react-copy-to-clipboard';
-import {handleError} from "@/lib/error";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { handleError } from "@/lib/error";
 import ManualList from "@/components/manual/ManualList";
 
 interface BuildingQuery {
@@ -15,10 +15,10 @@ interface BuildingQuery {
 }
 
 function BuildingInfo({
-                          building,
-                          setBuilding,
-                          type,
-                      }: {
+    building,
+    setBuilding,
+    type,
+}: {
     building: BuildingInterface;
     setBuilding: (b: any) => void;
     type: "syndic" | "admin" | "public";
@@ -29,7 +29,7 @@ function BuildingInfo({
     const [editBuilding, setEditBuilding] = useState(false);
     const [regionName, setRegionName] = useState("");
 
-    const publicId = building && building.public_id || "-";
+    const publicId = (building && building.public_id) || "-";
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
@@ -74,18 +74,16 @@ function BuildingInfo({
                     setBuilding={setBuilding}
                 />
             )}
-            <label className="title">
-                Gebouw
-            </label>
+            <label className="title">Gebouw</label>
             {building && (
                 <div>
-                    < p>
-                        < strong> Naam:</strong> {building.name ? building.name : "-"}
+                    <p>
+                        <strong> Naam:</strong> {building.name ? building.name : "-"}
                     </p>
                     <strong>Adres:</strong>
                     <p>
                         {building.street} {building.house_number}, {building.bus}
-                        <br/>
+                        <br />
                         {building.city} {building.postal_code}
                     </p>
                     <p>
@@ -98,11 +96,13 @@ function BuildingInfo({
                         <strong>Klant id:</strong> {building.client_number ? building.client_number : "-"}
                     </p>
                     {type != "public" ? (
-                        <p style={{wordWrap: 'break-word', width: '100%', maxWidth: '100%'}}
+                        <p
+                            style={{ wordWrap: "break-word", width: "100%", maxWidth: "100%" }}
                             title={`De inwoners van het gebouw kunnen de info van dit gebouw raadplegen via de link: 
                         ${getPublicLink()}`}
                         >
-                            <strong>Publiek id:</strong><br/>
+                            <strong>Publiek id:</strong>
+                            <br />
                             {publicId && publicId !== "-" ? (
                                 <a href={getPublicLink(false)} target={"_blank"}>
                                     {publicId}
@@ -114,17 +114,16 @@ function BuildingInfo({
                     ) : null}
                     <br />
 
-            {query.id && type != "public" ? (
-                <>
-                    <h3>Handleiding</h3>
-                    <ManualList id={query.id} type={type} />
-                </>
-            ) : null}
+                    {query.id && type != "public" ? (
+                        <>
+                            <h3>Handleiding</h3>
+                            <ManualList id={query.id} type={type} />
+                        </>
+                    ) : null}
                 </div>
             )}
             {type === "syndic" && (
-                <div className="padding" style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-
+                <div className="padding" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <Button
                         size="lg"
                         className="wide_button"
@@ -133,7 +132,7 @@ function BuildingInfo({
                             setEditBuilding(true);
                         }}
                     >
-                        <TiPencil/> Bewerk
+                        <TiPencil /> Bewerk
                     </Button>
                 </div>
             )}

@@ -1,18 +1,17 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, {useEffect, useMemo, useState} from "react";
-import {deleteRegion, getAllRegions, patchRegion, postRegion, RegionInterface} from "@/lib/region";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {CalendarMonth, Delete, Edit} from "@mui/icons-material";
-import {useRouter} from "next/router";
+import React, { useEffect, useMemo, useState } from "react";
+import { deleteRegion, getAllRegions, patchRegion, postRegion, RegionInterface } from "@/lib/region";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { CalendarMonth, Delete, Edit } from "@mui/icons-material";
+import { useRouter } from "next/router";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import { Button } from "react-bootstrap";
 import RegionModal, { ModalMode } from "@/components/regionModal";
 import { handleError } from "@/lib/error";
 
-interface RegionView extends RegionInterface {
-}
+interface RegionView extends RegionInterface {}
 
 function AdminDataRegions() {
     const router = useRouter();
@@ -34,8 +33,8 @@ function AdminDataRegions() {
                 header: "Acties",
                 id: "actions",
                 enableColumnActions: false,
-                Cell: ({row}) => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                Cell: ({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Tooltip arrow placement="left" title="Edit">
                             <IconButton
                                 onClick={() => {
@@ -45,7 +44,7 @@ function AdminDataRegions() {
                                     setEditDialogOpen(true);
                                 }}
                             >
-                                <Edit/>
+                                <Edit />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -56,7 +55,7 @@ function AdminDataRegions() {
                                     setDeleteDialogOpen(true);
                                 }}
                             >
-                                <Delete/>
+                                <Delete />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Vuilophaling">
@@ -66,7 +65,7 @@ function AdminDataRegions() {
                                     routeToGarbageSchedule(regionView).then();
                                 }}
                             >
-                                <CalendarMonth/>
+                                <CalendarMonth />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -92,7 +91,7 @@ function AdminDataRegions() {
 
     async function addNewRegion() {
         try {
-            const newRegion = {region: regionName};
+            const newRegion = { region: regionName };
             const res = await postRegion(newRegion);
             setRegions([...regions, res.data]);
             setRegionName("");
@@ -105,8 +104,8 @@ function AdminDataRegions() {
     async function updateRegion() {
         if (selectedRegion) {
             try {
-                const updatedRegion = {...selectedRegion, region: regionName};
-                await patchRegion(selectedRegion.id, {region: updatedRegion.region});
+                const updatedRegion = { ...selectedRegion, region: regionName };
+                await patchRegion(selectedRegion.id, { region: updatedRegion.region });
                 setRegions(regions.map((region) => (region.id === selectedRegion.id ? updatedRegion : region)));
                 setSelectedRegion(null);
                 setRegionName("");
@@ -121,60 +120,60 @@ function AdminDataRegions() {
     async function routeToGarbageSchedule(regionView: RegionView) {
         await router.push({
             pathname: `/admin/data/garbage-collection`,
-            query: {region: regionView.id},
+            query: { region: regionView.id },
         });
     }
 
     return (
         <div className="tablepageContainer">
-            <AdminHeader/>
+            <AdminHeader />
             <div className="tableContainer">
-            <MaterialReactTable
-                enablePagination={false}
-                enableBottomToolbar={false}
-                columns={columns}
-                data={regions}
-                state={{ isLoading: loading }}
-                enableHiding={false}
-                enableRowActions={false}
-                renderTopToolbarCustomActions={() => (
-                    <Button onClick={() => setAddDialogOpen(true)} variant="warning">
-                        Maak nieuwe regio aan
-                    </Button>
-                )}
-            />
-            <RegionModal
-                show={addDialogOpen}
-                closeModal={() => setAddDialogOpen(false)}
-                onSubmit={addNewRegion}
-                mode={ModalMode.ADD}
-                regionName={regionName}
-                setRegionName={setRegionName}
-            />
-            <RegionModal
-                show={editDialogOpen}
-                closeModal={() => setEditDialogOpen(false)}
-                onSubmit={updateRegion}
-                mode={ModalMode.EDIT}
-                regionName={regionName}
-                setRegionName={setRegionName}
-            />
-            <DeleteConfirmationDialog
-                open={deleteDialogOpen}
-                title="Verwijder Regio"
-                description="Weet u zeker dat u deze regio wilt verwijderen?"
-                handleClose={() => setDeleteDialogOpen(false)}
-                handleConfirm={async () => {
-                    if (selectedRegion) {
-                        try {
-                            await deleteRegion(selectedRegion.id);
-                            setRegions(regions.filter((region) => region.id !== selectedRegion.id));
-                        } catch (error) {
-                            handleError(error);
+                <MaterialReactTable
+                    enablePagination={false}
+                    enableBottomToolbar={false}
+                    columns={columns}
+                    data={regions}
+                    state={{ isLoading: loading }}
+                    enableHiding={false}
+                    enableRowActions={false}
+                    renderTopToolbarCustomActions={() => (
+                        <Button onClick={() => setAddDialogOpen(true)} variant="warning">
+                            Maak nieuwe regio aan
+                        </Button>
+                    )}
+                />
+                <RegionModal
+                    show={addDialogOpen}
+                    closeModal={() => setAddDialogOpen(false)}
+                    onSubmit={addNewRegion}
+                    mode={ModalMode.ADD}
+                    regionName={regionName}
+                    setRegionName={setRegionName}
+                />
+                <RegionModal
+                    show={editDialogOpen}
+                    closeModal={() => setEditDialogOpen(false)}
+                    onSubmit={updateRegion}
+                    mode={ModalMode.EDIT}
+                    regionName={regionName}
+                    setRegionName={setRegionName}
+                />
+                <DeleteConfirmationDialog
+                    open={deleteDialogOpen}
+                    title="Verwijder Regio"
+                    description="Weet u zeker dat u deze regio wilt verwijderen?"
+                    handleClose={() => setDeleteDialogOpen(false)}
+                    handleConfirm={async () => {
+                        if (selectedRegion) {
+                            try {
+                                await deleteRegion(selectedRegion.id);
+                                setRegions(regions.filter((region) => region.id !== selectedRegion.id));
+                            } catch (error) {
+                                handleError(error);
+                            }
+                            setDeleteDialogOpen(false);
                         }
-                        setDeleteDialogOpen(false);
-                    }
-                }}
+                    }}
                     confirmButtonText="Verwijderen"
                     cancelButtonText="Annuleren"
                 />

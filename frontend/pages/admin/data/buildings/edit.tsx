@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import {Button, Form} from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding } from "@/lib/building";
 import { getRegion } from "@/lib/region";
 import { getUserInfo } from "@/lib/user";
@@ -195,17 +195,9 @@ function AdminDataBuildingsEdit() {
                             }
                         />
                     </Form.Group>
-                    <RegionAutocomplete
-                        initialId={regionId}
-                        setObjectId={setRegionId}
-                        required={true}
-                    />
-                    <SyndicAutoCompleteComponent
-                        initialId={syndicId}
-                        setObjectId={setSyndicId}
-                        required={true}
-                    />
-                    <PDFUploader onUpload={setManual}/>
+                    <RegionAutocomplete initialId={regionId} setObjectId={setRegionId} required={true} />
+                    <SyndicAutoCompleteComponent initialId={syndicId} setObjectId={setSyndicId} required={true} />
+                    <PDFUploader onUpload={setManual} />
                 </Form>
                 <Button variant="secondary" className="btn-light" onClick={goBack}>
                     Terug

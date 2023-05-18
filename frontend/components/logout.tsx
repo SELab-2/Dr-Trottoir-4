@@ -1,8 +1,8 @@
-import React, {useState} from "react";
-import {logout} from "@/lib/logout";
-import {useRouter} from "next/router";
-import {Button, Modal} from "react-bootstrap";
-import {handleError} from "@/lib/error";
+import React, { useState } from "react";
+import { logout } from "@/lib/logout";
+import { useRouter } from "next/router";
+import { Button, Modal } from "react-bootstrap";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 function Logout() {
@@ -29,7 +29,7 @@ function Logout() {
     return (
         <>
             <label
-                style={{cursor: 'clickable'}}
+                style={{ cursor: "clickable" }}
                 onClick={() => {
                     setShowModal(true);
                 }}
@@ -41,7 +41,7 @@ function Logout() {
                 <Modal.Header closeButton>
                     <Modal.Title>Uitloggen</Modal.Title>
                 </Modal.Header>
-                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
                 <Modal.Body>Zeker dat je wil uitloggen?</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" className="btn-light" onClick={() => setShowModal(false)}>

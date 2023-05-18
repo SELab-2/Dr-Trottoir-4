@@ -1,12 +1,12 @@
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import router from "next/router";
-import {BuildingInterface, getBuildingsFromOwner} from "@/lib/building";
-import React, {useEffect, useState} from "react";
-import {AxiosResponse} from "axios";
+import { BuildingInterface, getBuildingsFromOwner } from "@/lib/building";
+import React, { useEffect, useState } from "react";
+import { AxiosResponse } from "axios";
 import SyndicFooter from "@/components/footer/syndicFooter";
 import Loading from "@/components/loading";
 import SyndicHeader from "@/components/header/syndicHeader";
-import {Card, Col, Container, Form, Row} from "react-bootstrap";
+import { Card, Col, Container, Form, Row } from "react-bootstrap";
 import { handleError } from "@/lib/error";
 
 function SyndicDashboard() {
@@ -14,10 +14,9 @@ function SyndicDashboard() {
     const [buildings, setBuildings] = useState([]);
     const [postalcodes, setPostalcodes] = useState([]);
 
-    const [loading, setLoading] = useState<boolean>(true)
-    const [streetNameFilter, setStreetNameFilter] = useState('');
-    const [postalcodeFilter, setPostalcodeFilter] = useState('');
-
+    const [loading, setLoading] = useState<boolean>(true);
+    const [streetNameFilter, setStreetNameFilter] = useState("");
+    const [postalcodeFilter, setPostalcodeFilter] = useState("");
 
     useEffect(() => {
         setId(sessionStorage.getItem("id") || "");
@@ -33,7 +32,9 @@ function SyndicDashboard() {
                 .then((res: AxiosResponse<any>) => {
                     setBuildings(res.data);
                     // Extract distinct region numbers
-                    setPostalcodes(Array.from(new Set(res.data.map((building: BuildingInterface) => building.postal_code))));
+                    setPostalcodes(
+                        Array.from(new Set(res.data.map((building: BuildingInterface) => building.postal_code)))
+                    );
                     setLoading(false);
                 })
                 .catch((error) => {
@@ -46,16 +47,17 @@ function SyndicDashboard() {
     }, [id]);
 
     // Filter buildings based on postal code, street name, and region
-    const filteredBuildings = buildings.filter((building: BuildingInterface) =>
-        building.street.toLowerCase().includes(streetNameFilter.toLowerCase()) &&
-        (postalcodeFilter === '' || (building.postal_code && building.postal_code === postalcodeFilter))
+    const filteredBuildings = buildings.filter(
+        (building: BuildingInterface) =>
+            building.street.toLowerCase().includes(streetNameFilter.toLowerCase()) &&
+            (postalcodeFilter === "" || (building.postal_code && building.postal_code === postalcodeFilter))
     );
 
     return (
         <div className="tablepageContainer">
-            <SyndicHeader/>
+            <SyndicHeader />
             {loading ? (
-                <Loading/>
+                <Loading />
             ) : (
                 <div className="tableContainer">
                     <Container>
@@ -94,8 +96,10 @@ function SyndicDashboard() {
                                 </Row>
                             </Card.Body>
                         </Card>
-                        <div className="row"
-                             style={{width: "99%", paddingTop: '10px', marginLeft: "auto", marginRight: "auto"}}>
+                        <div
+                            className="row"
+                            style={{ width: "99%", paddingTop: "10px", marginLeft: "auto", marginRight: "auto" }}
+                        >
                             {filteredBuildings.map((building: BuildingInterface) => {
                                 return (
                                     <div
@@ -105,7 +109,7 @@ function SyndicDashboard() {
                                             e.preventDefault();
                                             router.push({
                                                 pathname: "building",
-                                                query: {id: building.id},
+                                                query: { id: building.id },
                                             });
                                         }}
                                     >
@@ -126,7 +130,7 @@ function SyndicDashboard() {
                     </Container>
                 </div>
             )}
-            <SyndicFooter/>
+            <SyndicFooter />
         </div>
     );
 }

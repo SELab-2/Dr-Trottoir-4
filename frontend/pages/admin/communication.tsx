@@ -1,18 +1,17 @@
 import AdminHeader from "@/components/header/adminHeader";
-import {EmailTemplate, getAllEmailTemplates} from "@/lib/email-template";
-import {ChangeEvent, useEffect, useState} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import { EmailTemplate, getAllEmailTemplates } from "@/lib/email-template";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
-import {BuildingInterface, getAllBuildings} from "@/lib/building";
-import {getAllUsers, User} from "@/lib/user";
+import { BuildingInterface, getAllBuildings } from "@/lib/building";
+import { getAllUsers, User } from "@/lib/user";
 import UserAutoComplete from "@/components/autocompleteComponents/userAutocomplete";
-import {useRouter} from "next/router";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {Send} from "@mui/icons-material";
+import { useRouter } from "next/router";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { Send } from "@mui/icons-material";
 import { handleError } from "@/lib/error";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DataCommunicationQuery extends ParsedUrlQuery {
     template?: number;
@@ -33,7 +32,7 @@ function AdminCommunication() {
 
     const replaceVariable = (str: string, variable: string, value: string): string => {
         const regex = new RegExp(`\\{\\{\\s*${variable}\\s*\\}\\}`, "g");
-        return str.replace(regex, value);;
+        return str.replace(regex, value);
     };
 
     const fillInVariables = (input: string): string => {
@@ -54,7 +53,7 @@ function AdminCommunication() {
         const currentUser = allUsers.find((e) => e.id === syndicId);
         await router.push({
             pathname: `data/buildings/`,
-            query: {syndic: currentUser?.email},
+            query: { syndic: currentUser?.email },
         });
     }
 
@@ -111,7 +110,7 @@ function AdminCommunication() {
 
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <Container>
                 <p className="title">Communicatie extern</p>
                 <div>
@@ -125,11 +124,7 @@ function AdminCommunication() {
                                 />
                             </Row>
                             <Row>
-                                <UserAutoComplete
-                                    initialId={userId}
-                                    setObjectId={setUserId}
-                                    required={false}
-                                />
+                                <UserAutoComplete initialId={userId} setObjectId={setUserId} required={false} />
                             </Row>
                             <Row>
                                 <div className="padding">
@@ -149,7 +144,7 @@ function AdminCommunication() {
                         </Col>
                         <Col md={9}>
                             <Row>
-                                <div style={{display: "flex"}}>
+                                <div style={{ display: "flex" }}>
                                     <Form.Control
                                         as="textarea"
                                         className="mail_area"
@@ -162,7 +157,7 @@ function AdminCommunication() {
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={{span: 3, offset: 3}}>
+                        <Col md={{ span: 3, offset: 3 }}>
                             <div className="padding mt-auto">
                                 <Button
                                     href={`mailto:${getSelectedUserMail()}?body=${encodeURIComponent(
@@ -172,19 +167,16 @@ function AdminCommunication() {
                                     size="lg"
                                     style={{
                                         display: "flex",
-                                        alignItems: "center"
+                                        alignItems: "center",
                                     }}
                                 >
                                     Verstuur mail
-                                    <Send
-                                        style={{height: '10px', paddingLeft: '10px', marginRight: "0.5em"}}
-                                    />
+                                    <Send style={{ height: "10px", paddingLeft: "10px", marginRight: "0.5em" }} />
                                 </Button>
                             </div>
                         </Col>
                     </Row>
                 </div>
-
             </Container>
         </>
     );

@@ -1,11 +1,11 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, {useEffect, useMemo, useState} from "react";
-import {Emailtemplate, getAllMailTemplates} from "@/lib/emailtemplate";
-import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {Delete, Edit, Email} from "@mui/icons-material";
-import {Button} from "react-bootstrap";
-import {useRouter} from "next/router";
+import React, { useEffect, useMemo, useState } from "react";
+import { Emailtemplate, getAllMailTemplates } from "@/lib/emailtemplate";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { Delete, Edit, Email } from "@mui/icons-material";
+import { Button } from "react-bootstrap";
+import { useRouter } from "next/router";
 import EditEmailModal from "@/components/admin/editEmailModal";
 import { DeleteEmailModal } from "@/components/admin/deleteEmailModal";
 import { handleError } from "@/lib/error";
@@ -30,7 +30,7 @@ function AdminDataMails() {
                 header: "Acties",
                 id: "actions",
                 enableColumnActions: false,
-                Cell: ({row}) => (
+                Cell: ({ row }) => (
                     <Box>
                         <Tooltip arrow placement="right" title="Pas aan">
                             <IconButton
@@ -41,7 +41,7 @@ function AdminDataMails() {
                                     setShowEditModal(true);
                                 }}
                             >
-                                <Edit/>
+                                <Edit />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -52,7 +52,7 @@ function AdminDataMails() {
                                     setShowDeleteModal(true);
                                 }}
                             >
-                                <Delete/>
+                                <Delete />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verstuur mail">
@@ -62,7 +62,7 @@ function AdminDataMails() {
                                     routeToCommunication(emailtemplate).then();
                                 }}
                             >
-                                <Email/>
+                                <Email />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -99,13 +99,13 @@ function AdminDataMails() {
     async function routeToCommunication(mailTemplate: Emailtemplate) {
         await router.push({
             pathname: `/admin/communication`,
-            query: {template: mailTemplate.id},
+            query: { template: mailTemplate.id },
         });
     }
 
     return (
         <div className="tablepageContainer">
-            <AdminHeader/>
+            <AdminHeader />
             <div className="tableContainer">
                 <EditEmailModal
                     show={showEditModal}
@@ -125,8 +125,8 @@ function AdminDataMails() {
                     enableBottomToolbar={false}
                     columns={columns}
                     data={emailTemplates}
-                    state={{isLoading: loading}}
-                    renderDetailPanel={({row}) => {
+                    state={{ isLoading: loading }}
+                    renderDetailPanel={({ row }) => {
                         const emailtemplate: Emailtemplate = row.original;
                         return <pre>{emailtemplate.template}</pre>;
                     }}

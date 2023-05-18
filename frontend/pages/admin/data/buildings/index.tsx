@@ -1,20 +1,19 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, {useEffect, useMemo, useState} from "react";
-import {BuildingInterface, deleteBuilding, getAddress, getAllBuildings} from "@/lib/building";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {useRouter} from "next/router";
-import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {Button} from "react-bootstrap";
-import {CalendarMonth, Delete, Edit, Email, Info} from "@mui/icons-material";
-import {BuildingView} from "@/types";
-import {getUserInfo} from "@/lib/user";
+import React, { useEffect, useMemo, useState } from "react";
+import { BuildingInterface, deleteBuilding, getAddress, getAllBuildings } from "@/lib/building";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { useRouter } from "next/router";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { Button } from "react-bootstrap";
+import { CalendarMonth, Delete, Edit, Email, Info } from "@mui/icons-material";
+import { BuildingView } from "@/types";
+import { getUserInfo } from "@/lib/user";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DataBuildingsQuery extends ParsedUrlQuery {
     syndic?: string;
@@ -53,8 +52,8 @@ function AdminDataBuildings() {
                 header: "Acties",
                 id: "actions",
                 enableColumnActions: false,
-                Cell: ({row}) => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                Cell: ({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Tooltip arrow placement="left" title="Details">
                             <IconButton
                                 onClick={() => {
@@ -62,7 +61,7 @@ function AdminDataBuildings() {
                                     routeToIndividualView(buildingView).then();
                                 }}
                             >
-                                <Info/>
+                                <Info />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="left" title="Pas aan">
@@ -72,7 +71,7 @@ function AdminDataBuildings() {
                                     routeToEditView(buildingView).then();
                                 }}
                             >
-                                <Edit/>
+                                <Edit />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -83,7 +82,7 @@ function AdminDataBuildings() {
                                     setDeleteDialogOpen(true);
                                 }}
                             >
-                                <Delete/>
+                                <Delete />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verstuur mail">
@@ -93,7 +92,7 @@ function AdminDataBuildings() {
                                     routeToCommunication(buildingView).then();
                                 }}
                             >
-                                <Email/>
+                                <Email />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Vuilophaling">
@@ -103,7 +102,7 @@ function AdminDataBuildings() {
                                     routeToGarbageSchedule(buildingView).then();
                                 }}
                             >
-                                <CalendarMonth/>
+                                <CalendarMonth />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -145,7 +144,7 @@ function AdminDataBuildings() {
                         const res = await getUserInfo(building.syndic.toString());
                         syndicEmail = res.data.email;
                         syndicId = res.data.id;
-                        cache[s] = {syndic: syndicId, syndicEmail: syndicEmail};
+                        cache[s] = { syndic: syndicId, syndicEmail: syndicEmail };
                     }
 
                     if (!query.syndic || (query.syndic && query.syndic === syndicEmail)) {
@@ -176,7 +175,7 @@ function AdminDataBuildings() {
     async function routeToEditView(buildingView: BuildingView) {
         await router.push({
             pathname: `${router.pathname}/edit`,
-            query: {building: buildingView.building_id},
+            query: { building: buildingView.building_id },
         });
     }
 
@@ -198,43 +197,44 @@ function AdminDataBuildings() {
     async function routeToCommunication(buildingView: BuildingView) {
         await router.push({
             pathname: `/admin/communication`,
-            query: {user: buildingView.syndicId},
+            query: { user: buildingView.syndicId },
         });
     }
 
     async function routeToIndividualView(buildingView: BuildingView) {
         await router.push({
             pathname: `/admin/building`,
-            query: {id: buildingView.building_id},
+            query: { id: buildingView.building_id },
         });
     }
 
     async function routeToGarbageSchedule(buildingView: BuildingView) {
         await router.push({
             pathname: `/admin/data/garbage-collection`,
-            query: {building: buildingView.building_id},
+            query: { building: buildingView.building_id },
         });
     }
 
     return (
         <div className="tablepageContainer">
-            <AdminHeader/>
+            <AdminHeader />
             <div className="tableContainer">
-                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
                 <MaterialReactTable
                     enablePagination={false}
                     enableBottomToolbar={false}
                     columns={columns}
                     data={buildingViews}
-                    state={{isLoading: loading}}
+                    state={{ isLoading: loading }}
                     enableHiding={false}
                     enableRowActions={false}
-                    initialState={{columnVisibility: {building_id: false}}}
+                    initialState={{ columnVisibility: { building_id: false } }}
                     renderTopToolbarCustomActions={() => (
                         <Button
                             className="wide_button"
                             size="lg"
-                            onClick={() => router.push(`${router.pathname}/edit`)}>
+                            onClick={() => router.push(`${router.pathname}/edit`)}
+                        >
                             Maak nieuw gebouw aan
                         </Button>
                     )}
