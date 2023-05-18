@@ -44,7 +44,7 @@ function AdminTour() {
     const [allBuildingsOnTour, setAllBuildingsOnTour] = useState<BuildingOnTour[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [selectedStudentId, setSelectedStudentId] = useState<number>(0);
-    const [selectedStudent, setSelectedStudent] = useState<User | null>(null);
+    //const [selectedStudent, setSelectedStudent] = useState<User | null>(null);
     const [selectedTourId, setSelectedTourId] = useState<number>(0);
     const [selectedTourName, setSelectedTourName] = useState<string>("");
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -53,7 +53,8 @@ function AdminTour() {
     const [remarksRecord, setRemarksRecord] = useState<Record<number, string[]>>({});
     const [currentBuildingIndex, setCurrentBuildingIndex] = useState(0);
     const [refreshKey, setRefreshKey] = useState(0);
-    const [validTourUser, setValidTourUser] = useState(true); 
+    const [validTourUser, setValidTourUser] = useState(true);
+    const [usersRecord, setUsersRecord] = useState<Record<number, User>>({});
 
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
@@ -208,12 +209,20 @@ function AdminTour() {
         try {
             getTourUsers().then((res) => {
                 const students: User[] = res.data;
+                
+                const studentsRecord: Record<number, User> = {}
+                students.forEach((student) => {
+                    studentsRecord[student.id] = student;
+                })
+                setUsersRecord(studentsRecord);
+
                 students.filter((e) => e.role === 4);
                 let currentStudent = students[0];
                 if (query.student) {
                     currentStudent = students.find((e) => e.id === +[query.student]) || students[0];
                 }
-                setSelectedStudent(currentStudent);
+                //setSelectedStudent(currentStudent);
+                console.log(currentStudent);
                 setSelectedStudentId(currentStudent.id);
             });
         } catch (error) {
@@ -370,14 +379,14 @@ function AdminTour() {
                     <div style={{ width: "20%" }}>
                         <h2>{selectedTourName}</h2>
                         <b>Verantwoordelijke:</b>
-                        <p>{`${selectedStudent?.first_name} ${selectedStudent?.last_name}`}</p>
+                        <p>{`${usersRecord[selectedStudentId]?.first_name} ${usersRecord[selectedStudentId]?.last_name}`}</p>
                         <b>Datum:</b>
                         <p>{selectedDate.toLocaleDateString()}</p>
                         <b>Contactinformatie:</b>
                         <br></br>
-                        <>{`Telefoonnummer: ${selectedStudent?.phone_number}`}</>
+                        <>{`Telefoonnummer: ${usersRecord[selectedStudentId]?.phone_number}`}</>
                         <br></br>
-                        <>{`E-mailadres: ${selectedStudent?.email}`}</>
+                        <>{`E-mailadres: ${usersRecord[selectedStudentId]?.email}`}</>
                     </div>
 
                     <div style={{ width: "80%" }}>
