@@ -345,6 +345,7 @@ function GarbageCollectionSchedule() {
 
     const DnDCalendar = withDragAndDrop(Calendar);
 
+    // @ts-ignore
     return (
         <>
             <AdminHeader />
@@ -427,7 +428,11 @@ function GarbageCollectionSchedule() {
                     return event;
                 })}
                 components={{
-                    event: GarbageCollectionEventComponentWithAddress,
+                    //@ts-ignore
+                    event:
+                        buildingList.length > 1
+                            ? GarbageCollectionEventComponentWithAddress
+                            : GarbageCollectionEventComponentWithoutAddress,
                 }}
                 localizer={loc}
                 eventPropGetter={(e) => {
