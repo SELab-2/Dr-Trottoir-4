@@ -11,7 +11,7 @@ import { withAuthorisation } from "@/components/withAuthorisation";
 import { UserEditModal } from "@/components/admin/userEditModal";
 import { UserDeleteModal } from "@/components/admin/userDeleteModal";
 import { useRouter } from "next/router";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 function AdminDataUsers() {
     const router = useRouter();
