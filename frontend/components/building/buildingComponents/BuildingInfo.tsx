@@ -6,6 +6,7 @@ import { getRegion } from "@/lib/region";
 import { useRouter } from "next/router";
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import { getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
 
 function BuildingInfo({
     building,
@@ -19,12 +20,13 @@ function BuildingInfo({
     const router = useRouter();
     const [editBuilding, setEditBuilding] = useState(false);
     const [regionName, setRegionName] = useState("/");
-
+    const [buildingComment, setBuildingComment] = useState<string>("Geen opmerkingen");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (building) {
             get_region_name("region");
+            getBuildingComment();
         }
     }, [building]);
 
@@ -60,9 +62,24 @@ function BuildingInfo({
         }
     }
 
+    function getBuildingComment() {
+        getAllBuildingCommentsByBuildingID(building.id, true)
+            .then((comment) => {
+                if (comment) {
+                    setBuildingComment(comment.data.comment);
+                } else {
+                    setBuildingComment("Geen opmerkingen");
+                }
+            })
+            .catch((error) => {
+                setErrorMessages(handleError(error));
+                setBuildingComment("Geen opmerkingen");
+            });
+    }
+
     return (
         <>
-            {type == "syndic" ? (
+            {type === "syndic" ? (
                 <PatchBuildingSyndicModal
                     show={editBuilding}
                     closeModal={() => setEditBuilding(false)}
@@ -81,10 +98,26 @@ function BuildingInfo({
                             setEditBuilding(true);
                         }}
                     ></TiPencil>
+                ) : type == "admin" ? (
+                    <TiPencil
+                        className={"clickable"}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.push(`/admin/data/buildings/edit?building=${building.id}`);
+                        }}
+                    ></TiPencil>
                 ) : null}
             </h1>
 
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+
+            {type != "public" ? (
+                <div>
+                    <h3>Algemene opmerking</h3>
+                    <p>{buildingComment}</p>
+                    <br />
+                </div>
+            ) : null}
 
             <p>ID: {get_building_key("id")} </p>
             <p>Naam: {get_building_key("name")}</p>

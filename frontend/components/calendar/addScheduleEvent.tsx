@@ -76,7 +76,7 @@ function AddScheduleEventModal({
                     </div>
                     <div className="form-group">
                         <label>Selecteer student</label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId} />
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} matchId={tourId} />
                     </div>
                     <div className="form-row">
                         <div className="col">

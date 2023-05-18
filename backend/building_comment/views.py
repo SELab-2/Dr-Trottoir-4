@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -26,7 +27,7 @@ class DefaultBuildingComment(APIView):
         set_keys_of_instance(building_comment_instance, data, TRANSLATE)
 
         if building_comment_instance.building is None:
-            return bad_request("BuildingComment")
+            return not_found(_("Building (with id {id})".format(id=building_comment_instance.building_id)))
 
         self.check_object_permissions(request, building_comment_instance.building)
 
@@ -99,17 +100,25 @@ class BuildingCommentBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]
     serializer_class = BuildingCommentSerializer
 
-    @extend_schema(responses=get_docs(BuildingCommentSerializer))
+    @extend_schema(responses=get_docs(BuildingCommentSerializer),
+                   parameters=param_docs(get_most_recent_param_docs("BuildingComment")),
+                   )
     def get(self, request, building_id):
         """
         Get all BuildingComments of building with given building id
         """
-        building_comment_instance = BuildingComment.objects.filter(building_id=building_id)
 
-        if not building_comment_instance:
-            return bad_request_relation("BuildingComment", "building")
+        try:
+            most_recent_only = get_boolean_param(request, "most-recent")
+        except BadRequest as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = BuildingCommentSerializer(building_comment_instance, many=True)
+        building_comment_instances = BuildingComment.objects.filter(building_id=building_id)
+
+        if most_recent_only:
+            building_comment_instances = building_comment_instances.order_by('-date').first()
+
+        serializer = BuildingCommentSerializer(building_comment_instances, many=not most_recent_only)
         return get_success(serializer)
 
 

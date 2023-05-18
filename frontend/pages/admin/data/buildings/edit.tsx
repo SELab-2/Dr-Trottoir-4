@@ -1,17 +1,25 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { Form } from "react-bootstrap";
-import { getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding } from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { getUserInfo } from "@/lib/user";
+import React, {ChangeEvent, useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {Form} from "react-bootstrap";
+import {
+    deleteBuildingComment,
+    getBuildingComment,
+    getBuildingInfo,
+    getDurationFromMinutes,
+    patchBuilding,
+    patchBuildingComment,
+    postBuilding, postBuildingComment
+} from "@/lib/building";
+import {getRegion} from "@/lib/region";
+import {getUserInfo} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
-import SyndicAutoCompleteComponent from "@/components/autocompleteComponents/userAutocomplete";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
+import SyndicAutocomplete from "@/components/autocompleteComponents/syndicAutocomplete";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -26,9 +34,11 @@ function AdminDataBuildingsEdit() {
     const [syndicId, setSyndicId] = useState<number>(-1); //used for collecting the right id to post/patch
     const [manual, setManual] = useState<File | null>(null);
     const [duration, setDuration] = useState<string>("00:00");
-    const [public_id, setPublicId] = useState<string>("");
+    const [publicId, setPublicId] = useState<string>("");
     const [validated, setValidated] = useState<boolean>(false);
     const [durationInMinutes, setDurationInMinutes] = useState<number>(0);
+    const [buildingComments, setBuildingComments] = useState<string>("");
+    const [buildingCommentsId, setBuildingCommentsId] = useState<number | undefined>(undefined);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
@@ -36,7 +46,6 @@ function AdminDataBuildingsEdit() {
 
     const handleSubmit = async () => {
         const form = document.getElementById("buildingForm") as HTMLFormElement;
-        setErrorMessages([requiredFieldsNotFilledMessage]);
         if (form.checkValidity()) {
             const building = {
                 syndic: syndicId,
@@ -49,13 +58,37 @@ function AdminDataBuildingsEdit() {
                 client_number: clientNumber,
                 duration: getDurationFromMinutes(durationInMinutes),
                 region: regionId,
-                public_id: public_id,
+                public_id: publicId,
             };
             try {
                 if (router.query.building) {
-                    const res = await patchBuilding(building, Number(router.query.building));
+                    await patchBuilding(building, Number(router.query.building));
+                    if (buildingCommentsId) {
+                        if (buildingComments) {
+                            await patchBuildingComment({
+                                building: Number(router.query.building),
+                                comment: buildingComments
+                            }, buildingCommentsId);
+                        } else {
+                            await deleteBuildingComment(buildingCommentsId);
+                            setBuildingCommentsId(undefined);
+                        }
+                    } else {
+                        if (buildingComments) {
+                            await postBuildingComment({
+                                building: Number(router.query.building),
+                                comment: buildingComments
+                            });
+                        }
+                    }
                 } else {
                     const res = await postBuilding(building);
+                    if (buildingComments) {
+                        await postBuildingComment({
+                            building: res.data.id,
+                            comment: buildingComments
+                        });
+                    }
                 }
                 setShowConfirmation(true);
             } catch (error: any) {
@@ -63,6 +96,8 @@ function AdminDataBuildingsEdit() {
                 console.error("An error occurred:", error.request.responseText);
                 setErrorMessages([error.request.responseText]);
             }
+        } else {
+            setErrorMessages([requiredFieldsNotFilledMessage]);
         }
     };
 
@@ -71,7 +106,6 @@ function AdminDataBuildingsEdit() {
     };
 
     useEffect(() => {
-        setErrorMessages([requiredFieldsNotFilledMessage]);
         if (router.query.building) {
             getBuildingInfo(Number(router.query.building)).then(async (res) => {
                 setStreet(res.data.street);
@@ -86,6 +120,12 @@ function AdminDataBuildingsEdit() {
                 setRegionId(region.data.id);
                 const syndic = await getUserInfo(res.data.syndic);
                 setSyndicId(syndic.data.id);
+                const comments = await getBuildingComment(Number(router.query.building));
+                if (comments.data) {
+                    setBuildingComments(comments.data.comment);
+                    setBuildingCommentsId(comments.data.id);
+                }
+                setPublicId(res.data.public_id);
                 return true;
             });
         }
@@ -101,14 +141,14 @@ function AdminDataBuildingsEdit() {
 
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             <div className={styles.container}>
                 <ConfirmationMessage
                     showConfirm={showConfirmation}
                     confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
                     onClose={setShowConfirmation}
                 />
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
                     <Form.Group controlId="buildingName">
                         <Form.Label>Gebouw naam</Form.Label>
@@ -178,6 +218,15 @@ function AdminDataBuildingsEdit() {
                         />
                     </Form.Group>
 
+                    <Form.Group controlId="publicId">
+                        <Form.Label>Publieke identificatie (voor bewoners)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={publicId}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setPublicId(e.target.value)}
+                        />
+                    </Form.Group>
+
                     <Form.Group controlId="duration">
                         <Form.Label>Duur van een ronde (in minuten)*</Form.Label>
                         <Form.Control
@@ -189,16 +238,24 @@ function AdminDataBuildingsEdit() {
                             }
                         />
                     </Form.Group>
+                    <Form.Group controlId="opmerkingen">
+                        <Form.Label>Opmerkingen</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            value={buildingComments}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setBuildingComments(e.target.value)}
+                        />
+                    </Form.Group>
                     <RegionAutocomplete
                         initialId={regionId}
                         setObjectId={setRegionId}
                         required={true}
                     ></RegionAutocomplete>
-                    <SyndicAutoCompleteComponent
+                    <SyndicAutocomplete
                         initialId={syndicId}
                         setObjectId={setSyndicId}
                         required={true}
-                    ></SyndicAutoCompleteComponent>
+                    ></SyndicAutocomplete>
                     {!router.query.building && <PDFUploader onUpload={setManual}></PDFUploader>}
                 </Form>
                 <button onClick={goBack} className="ml-2">
