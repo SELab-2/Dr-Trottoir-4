@@ -267,7 +267,7 @@ function AdminAnalysisWorkingHours() {
                                     <Card className="card">
                                         <Card.Body>
                                             <label className="subtitle">{name}</label>
-                                            <Card.Text className="text-muted mt-1">{time}</Card.Text>
+                                            <Card.Text className="text-muted mt-1" style={{paddingLeft: '10px'}}>{time}</Card.Text>
                                             <ListGroup className="list-group-flush">
                                                 <ListGroup.Item/>
                                                 {worked.student_on_tour_ids.map((s, index) => {

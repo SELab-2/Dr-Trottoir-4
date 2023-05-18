@@ -239,6 +239,10 @@
     display: none;
 }
 
+.shadow {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
 .card:hover {
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
     transition: box-shadow 0.3s ease-in-out;
@@ -285,6 +289,12 @@
 
 .clickable {
     cursor: pointer;
+}
+
+.progress_bar {
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 10px;
 }
 
 .progress-bar-container {
