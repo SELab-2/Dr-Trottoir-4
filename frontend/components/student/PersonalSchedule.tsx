@@ -1,5 +1,5 @@
 import ToursList from "@/components/student/toursList";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getCurrentUser, User } from "@/lib/user";
 import {
   getToursOfStudent,
@@ -10,6 +10,8 @@ import { getTour, Tour } from "@/lib/tour";
 import { getRegion, RegionInterface } from "@/lib/region";
 import { datesEqual } from "@/lib/date";
 import { useRouter } from "next/router";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import {handleError} from "@/lib/error";
 
 export default function PersonalSchedule({
   redirectTo,
@@ -18,21 +20,23 @@ export default function PersonalSchedule({
 }) {
   const router = useRouter();
 
-  const [user, setUser] = useState<User | null>(null);
-  const [toursToday, setToursToday] = useState<StudentOnTour[]>([]);
-  const [prevTours, setPrevTours] = useState<StudentOnTour[]>([]);
-  const [upcomingTours, setUpcomingTours] = useState<StudentOnTour[]>([]);
-  const [tours, setTours] = useState<Record<number, Tour>>({});
-  const [regions, setRegions] = useState<Record<number, RegionInterface>>({});
+    const [user, setUser] = useState<User | null>(null);
+    const [toursToday, setToursToday] = useState<StudentOnTour[]>([]);
+    const [prevTours, setPrevTours] = useState<StudentOnTour[]>([]);
+    const [upcomingTours, setUpcomingTours] = useState<StudentOnTour[]>([]);
+    const [tours, setTours] = useState<Record<number, Tour>>({});
+    const [regions, setRegions] = useState<Record<number, RegionInterface>>({});
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-  useEffect(() => {
-    getCurrentUser()
-      .then((res) => {
-        const u: User = res.data;
-        setUser(u);
-      })
-      .catch((_) => {});
-  }, []);
+
+    useEffect(() => {
+        getCurrentUser()
+            .then((res) => {
+                const u: User = res.data;
+                setUser(u);
+            })
+            .catch(err => setErrorMessages(handleError(err)));
+    }, []);
 
   useEffect(() => {
     if (!user) {
@@ -62,37 +66,37 @@ export default function PersonalSchedule({
               t[tour.id] = tour;
               setTours(t);
 
-              if (!(tour.region in r)) {
-                // get the region
-                const resRegion = await getRegion(tour.region);
-                const region: RegionInterface = resRegion.data;
-                r[region.id] = region;
-                setRegions(r);
-              }
-            } catch (e) {
-              console.error(e);
-            }
-          }
-        }
-        // Get the tours today
-        const sot: StudentOnTour[] = data.map((s: StudentOnTourStringDate) => {
-          return {
-            id: s.id,
-            student: s.student,
-            tour: s.tour,
-            date: new Date(s.date),
-            completed_tour: s.completed_tour,
-            started_tour: s.started_tour,
-            current_building_index: s.current_building_index,
-            max_building_index: s.max_building_index,
-          };
-        });
-        const today: StudentOnTour[] = sot.filter((s: StudentOnTour) => {
-          const d: Date = s.date;
-          const currentDate: Date = new Date();
-          return datesEqual(d, currentDate);
-        });
-        setToursToday(today);
+                            if (!(tour.region in r)) {
+                                // get the region
+                                const resRegion = await getRegion(tour.region);
+                                const region: RegionInterface = resRegion.data;
+                                r[region.id] = region;
+                                setRegions(r);
+                            }
+                        } catch (err) {
+                            setErrorMessages(handleError(err))
+                        }
+                    }
+                }
+                // Get the tours today
+                const sot: StudentOnTour[] = data.map((s: StudentOnTourStringDate) => {
+                    return {
+                        id: s.id,
+                        student: s.student,
+                        tour: s.tour,
+                        date: new Date(s.date),
+                        completed_tour: s.completed_tour,
+                        started_tour: s.started_tour,
+                        current_building_index: s.current_building_index,
+                        max_building_index: s.max_building_index,
+                    };
+                });
+                const today: StudentOnTour[] = sot.filter((s: StudentOnTour) => {
+                    const d: Date = s.date;
+                    const currentDate: Date = new Date();
+                    return datesEqual(d, currentDate);
+                });
+                setToursToday(today);
 
         // Get the tours the student has done prev month
         const finishedTours: StudentOnTour[] = sot.filter(
@@ -104,16 +108,16 @@ export default function PersonalSchedule({
         );
         setPrevTours(finishedTours);
 
-        // Get the tours the student is assigned to in the future
-        const futureTours: StudentOnTour[] = sot.filter((s: StudentOnTour) => {
-          const d: Date = s.date;
-          const currentDate: Date = new Date();
-          return d > currentDate && !datesEqual(d, currentDate);
-        });
-        setUpcomingTours(futureTours);
-      })
-      .catch((_) => {});
-  }, [user]);
+                // Get the tours the student is assigned to in the future
+                const futureTours: StudentOnTour[] = sot.filter((s: StudentOnTour) => {
+                    const d: Date = s.date;
+                    const currentDate: Date = new Date();
+                    return d > currentDate && !datesEqual(d, currentDate);
+                });
+                setUpcomingTours(futureTours);
+            })
+            .catch(err => setErrorMessages(handleError(err)));
+    }, [user]);
 
   function redirectToSchedule(studentOnTourId: number): void {
     router
@@ -124,29 +128,30 @@ export default function PersonalSchedule({
       .then();
   }
 
-  return (
-    <>
-      <ToursList
-        studentOnTours={toursToday}
-        listTitle="Vandaag"
-        onSelect={redirectToSchedule}
-        allTours={tours}
-        allRegions={regions}
-      />
-      <ToursList
-        studentOnTours={upcomingTours}
-        listTitle="Gepland"
-        onSelect={redirectToSchedule}
-        allTours={tours}
-        allRegions={regions}
-      />
-      <ToursList
-        studentOnTours={prevTours}
-        listTitle="Afgelopen maand"
-        onSelect={redirectToSchedule}
-        allTours={tours}
-        allRegions={regions}
-      />
-    </>
-  );
+    return (
+        <>
+            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+            <ToursList
+                studentOnTours={toursToday}
+                listTitle="Vandaag"
+                onSelect={redirectToSchedule}
+                allTours={tours}
+                allRegions={regions}
+            />
+            <ToursList
+                studentOnTours={upcomingTours}
+                listTitle="Gepland"
+                onSelect={redirectToSchedule}
+                allTours={tours}
+                allRegions={regions}
+            />
+            <ToursList
+                studentOnTours={prevTours}
+                listTitle="Afgelopen maand"
+                onSelect={redirectToSchedule}
+                allTours={tours}
+                allRegions={regions}
+            />
+        </>
+    );
 }

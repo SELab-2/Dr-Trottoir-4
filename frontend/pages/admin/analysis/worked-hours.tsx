@@ -1,23 +1,25 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, {useEffect, useState} from "react";
-import {addDays, differenceInMinutes, startOfWeek, subDays, subMonths} from "date-fns";
-import {Card, Col, Container, Form, ListGroup, Row} from "react-bootstrap";
-import {datesEqual, formatDate} from "@/lib/date";
-import {getWorkedHours} from "@/lib/analysis";
-import {getAllTours, Tour} from "@/lib/tour";
-import {getAllRegions, RegionInterface} from "@/lib/region";
-import {getFullName, getTourUsers, User} from "@/lib/user";
+import React, { useEffect, useState } from "react";
+import { addDays, differenceInMinutes, startOfWeek, subDays, subMonths } from "date-fns";
+import { Card, Col, Container, Form, ListGroup, Row } from "react-bootstrap";
+import { datesEqual, formatDate } from "@/lib/date";
+import { getWorkedHours } from "@/lib/analysis";
+import { getAllTours, Tour } from "@/lib/tour";
+import { getAllRegions, RegionInterface } from "@/lib/region";
+import { getFullName, getTourUsers, User } from "@/lib/user";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {getAllStudentOnTourFromDate, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
-import {WorkedHours} from "@/types";
-import {handleError} from "@/lib/error";
+import { getAllStudentOnTourFromDate, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import { WorkedHours } from "@/types";
+import { handleError } from "@/lib/error";
 import Link from "next/link";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import Select from "react-select";
 
-
 function AdminAnalysisWorkingHours() {
-    enum sortBy {ALPHABETICALLY="Alphabetisch", DURATION="Gewerkte uren"}
+    enum sortBy {
+        ALPHABETICALLY = "Alphabetisch",
+        DURATION = "Gewerkte uren",
+    }
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
@@ -33,20 +35,20 @@ function AdminAnalysisWorkingHours() {
     const [sortType, setSortType] = useState<string>(sortBy.ALPHABETICALLY);
     const [filteredRegion, setFilteredRegion] = useState<RegionInterface | null>(null);
 
-    const sortByKey : {[key : string] : (a : WorkedHours, b: WorkedHours) => number} = {
-        ["Gewerkte uren"]: (a : WorkedHours, b : WorkedHours) => b.worked_minutes - a.worked_minutes,
+    const sortByKey: { [key: string]: (a: WorkedHours, b: WorkedHours) => number } = {
+        ["Gewerkte uren"]: (a: WorkedHours, b: WorkedHours) => b.worked_minutes - a.worked_minutes,
         ["Alphabetisch"]: (a: WorkedHours, b: WorkedHours) => {
-            const userA : User | undefined = allUsers.find(u => u.id === a.student_id);
-            if (! userA) {
+            const userA: User | undefined = allUsers.find((u) => u.id === a.student_id);
+            if (!userA) {
                 return 1;
             }
-            const userB: User | undefined = allUsers.find(u => u.id === b.student_id);
-            if (! userB) {
+            const userB: User | undefined = allUsers.find((u) => u.id === b.student_id);
+            if (!userB) {
                 return -1;
             }
             return getFullName(userA).localeCompare(getFullName(userB));
-        }
-    }
+        },
+    };
 
     useEffect(() => {
         getAllTours().then(
@@ -111,7 +113,7 @@ function AdminAnalysisWorkingHours() {
         if (allTours.length <= 0 || allUsers.length <= 0) {
             return;
         }
-        setWorkedHours(prevState => {
+        setWorkedHours((prevState) => {
             return [...prevState].sort(sortByKey[sortType]);
         });
     }, [sortType]);
@@ -127,7 +129,12 @@ function AdminAnalysisWorkingHours() {
             return "Onbekend";
         }
         const region: RegionInterface | undefined = allRegions.find((r) => r.id === tour.region);
-        if (!studentOnTour.completed_tour && !studentOnTour.started_tour && ! datesEqual(new Date(), new Date(studentOnTour.date)) && new Date()> new Date(studentOnTour.date)) {
+        if (
+            !studentOnTour.completed_tour &&
+            !studentOnTour.started_tour &&
+            !datesEqual(new Date(), new Date(studentOnTour.date)) &&
+            new Date() > new Date(studentOnTour.date)
+        ) {
             return `${tour.name} (${region ? region.region : "onbekend"}) - ${studentOnTour.date.toLocaleDateString(
                 "en-GB"
             )} (nooit afgewerkt)`;
@@ -191,13 +198,14 @@ function AdminAnalysisWorkingHours() {
                     <Form.Group as={Col} sm={12} md={3} lg={3}>
                         <Form.Label>Sorteer op:</Form.Label>
                         <Select
-                            value={{value: sortType.toString(), label:sortType.toString()}}
+                            value={{ value: sortType.toString(), label: sortType.toString() }}
                             isClearable={false}
                             isSearchable={false}
-                            options={Object.values(sortBy).map(t => {
+                            options={Object.values(sortBy).map((t) => {
                                 return {
-                                    value : t, label: t
-                                }
+                                    value: t,
+                                    label: t,
+                                };
                             })}
                             onChange={(s) => {
                                 if (s && s.value) {
@@ -210,17 +218,27 @@ function AdminAnalysisWorkingHours() {
                     <Form.Group as={Col} sm={12} md={3} lg={3}>
                         <Form.Label>Filter regio:</Form.Label>
                         <Select
-                            value={filteredRegion ? {value: filteredRegion.id, label: filteredRegion.region} : {value: -1, label: "Alle regio's"}}
+                            value={
+                                filteredRegion
+                                    ? { value: filteredRegion.id, label: filteredRegion.region }
+                                    : { value: -1, label: "Alle regio's" }
+                            }
                             isClearable={false}
                             isSearchable={false}
-                            options={[{value: -1, label: "Alle regio's"}, ...allRegions.map(r => {
-                                return {
-                                    value : r.id, label: r.region
-                                }
-                            })]}
+                            options={[
+                                { value: -1, label: "Alle regio's" },
+                                ...allRegions.map((r) => {
+                                    return {
+                                        value: r.id,
+                                        label: r.region,
+                                    };
+                                }),
+                            ]}
                             onChange={(s) => {
                                 if (s && s.value) {
-                                    const r : RegionInterface | undefined = allRegions.find(region => region.id === s.value);
+                                    const r: RegionInterface | undefined = allRegions.find(
+                                        (region) => region.id === s.value
+                                    );
                                     setFilteredRegion(r ? r : null);
                                 }
                             }}
