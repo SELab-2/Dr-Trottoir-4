@@ -18,7 +18,7 @@ coverage==7.2.5
 cryptography==40.0.2
 daphne==4.0.0
 defusedxml==0.7.1
-dj-rest-auth==3.0.0
+dj-rest-auth==4.0.0
 django-allauth==0.54.0
 django-cors-headers==3.14.0
 django-csp==3.7
