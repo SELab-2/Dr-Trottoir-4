@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import {addDays, differenceInDays, eachDayOfInterval, endOfWeek} from "date-fns";
+import {addDays, eachDayOfInterval, endOfWeek} from "date-fns";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import {formatDate} from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
@@ -15,12 +15,10 @@ function AddTourScheduleModal({
                                   isOpen,
                                   onClose,
                                   onPost,
-                                  range,
                               }: {
     isOpen: boolean;
     onClose: () => void;
     onPost: () => void;
-    range: { start: Date; end: Date };
 }) {
     const [tourId, setTourId] = useState<number | null>(null);
     const [studentId, setStudentId] = useState<number | null>(null);

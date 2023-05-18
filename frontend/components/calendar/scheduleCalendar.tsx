@@ -59,6 +59,7 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
             assignColors(tours);
             getFromRange(range);
         }
+        setUpWebsocket();
     }, [tourUsers, tours]);
 
     useEffect(() => {
@@ -66,8 +67,7 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
         eventsRef.current = events;
     }, [events]);
 
-    useEffect(() => {
-        // Subscribe websocket
+    function setUpWebsocket() {
         getAllStudentOnTourChanges().addEventListener("message", event => {
             const data : StudentOnTourStringDate = JSON.parse(event.data);
             if (range.start <= new Date(data.date) && new Date(data.date) <= range.end) {
@@ -87,7 +87,7 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                     });
                 }
             }});
-    }, [events]);
+    }
 
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
@@ -358,7 +358,6 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                 isOpen={popupIsOpenAddTour}
                 onPost={() => getFromRange({ start: range.start, end: range.end })}
                 onClose={() => setPopupIsOpenAddTour(false)}
-                range={range}
             />
             <AddScheduleEventModal
                 isOpen={popupIsOpenAdd}

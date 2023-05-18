@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
     duplicateGarbageCollectionSchedule,
     GarbageCollectionInterface,
@@ -68,6 +68,13 @@ function GarbageCollectionSchedule() {
     const [showBulkMoveModal, setShowBulkMoveModal] = useState<boolean>(false);
 
     const [buildingList, setBuildingList] = useState<BuildingInterface[]>([]);
+
+    const garbageCollectionRef = useRef(garbageCollection);
+
+    useEffect(() => {
+        garbageCollectionRef.current = garbageCollection;
+    }, [garbageCollection]);
+
 
     useEffect(() => {
         const query: DataBuildingQuery = router.query as DataBuildingQuery;
