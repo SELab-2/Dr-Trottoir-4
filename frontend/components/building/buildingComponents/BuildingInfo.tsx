@@ -60,6 +60,13 @@ function BuildingInfo({
         }
     }
 
+    function getPublicLink(fullLink = true) {
+        return (
+            (fullLink ? `${process.env.NEXT_PUBLIC_HOST}` : "") +
+            `/public/building?id=${building?.public_id ? building?.public_id : "<public_id>"}`
+        );
+    }
+
     return (
         <>
             {type == "syndic" ? (
@@ -96,7 +103,22 @@ function BuildingInfo({
             <p>Region: {regionName} </p>
             <p>Werktijd: {get_building_key("duration")}</p>
             <p>Client id: {get_building_key("client_id")}</p>
-            <p>Public id: {get_building_key("public_id")}</p>
+
+            {type != "public" ? (
+                <p
+                    title={`De inwoners van het gebouw kunnen de info van dit gebouw raadplegen via de link: 
+                        ${getPublicLink()}`}
+                >
+                    Public id:{" "}
+                    {building?.public_id ? (
+                        <a href={getPublicLink(false)} target={"_blank"}>
+                            {get_building_key("public_id")}
+                        </a>
+                    ) : (
+                        get_building_key("public_id")
+                    )}
+                </p>
+            ) : null}
         </>
     );
 }
