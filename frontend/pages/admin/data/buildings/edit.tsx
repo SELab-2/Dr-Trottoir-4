@@ -1,17 +1,9 @@
-import React, {ChangeEvent, useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import {Form} from "react-bootstrap";
-import {
-    deleteBuildingComment,
-    getBuildingComment,
-    getBuildingInfo,
-    getDurationFromMinutes,
-    patchBuilding,
-    patchBuildingComment,
-    postBuilding, postBuildingComment
-} from "@/lib/building";
-import {getRegion} from "@/lib/region";
-import {getUserInfo} from "@/lib/user";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { Form } from "react-bootstrap";
+import { getBuildingInfo, getDurationFromMinutes, patchBuilding, postBuilding } from "@/lib/building";
+import { getRegion } from "@/lib/region";
+import { getUserInfo } from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
@@ -20,7 +12,8 @@ import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
 import SyndicAutocomplete from "@/components/autocompleteComponents/syndicAutocomplete";
-import {postManual} from "@/lib/building-manual";
+import { handleError } from "@/lib/error";
+import { postManual } from "@/lib/building-manual";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -99,8 +92,7 @@ function AdminDataBuildingsEdit() {
                 setShowConfirmation(true);
             } catch (error: any) {
                 setShowConfirmation(false);
-                console.error("An error occurred:", error.request.responseText);
-                setErrorMessages([error.request.responseText]);
+                setErrorMessages(handleError(error));
             }
         } else {
             setErrorMessages([requiredFieldsNotFilledMessage]);
