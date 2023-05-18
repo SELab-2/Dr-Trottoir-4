@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
+    duplicateGarbageCollectionSchedule,
     GarbageCollectionInterface,
     garbageTypes,
     getGarbageCollectionFromBuilding,
     getGarbageColor,
+    patchGarbageCollection,
 } from "@/lib/garbage-collection";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
@@ -18,7 +20,6 @@ import { add, addDays, endOfMonth, startOfMonth, sub } from "date-fns";
 import { useRouter } from "next/router";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
-import DuplicateGarbageCollectionModal from "@/components/garbage/duplicateGarbageCollectionModal";
 import { Button } from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
 import { GarbageCollectionEvent } from "@/types";
@@ -28,7 +29,13 @@ import { getBuildingsOfTour } from "@/lib/tour";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import BulkOperationModal from "@/components/garbage/BulkOperationModal";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import BulkMoveGarbageModal from "@/components/garbage/BulkMoveGarbageModal";
+import { AxiosResponse } from "axios";
+import withDragAndDrop, { EventInteractionArgs } from "react-big-calendar/lib/addons/dragAndDrop";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
+import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 
 interface ParsedUrlQuery {}
 
@@ -63,32 +70,39 @@ function GarbageCollectionSchedule() {
     const [showBuildingListModal, setShowBuildingListModal] = useState<boolean>(false);
 
     // The bulk operation modal
-    const [showBulkOperationModal, setShowBulkOperationModal] = useState<boolean>(false);
+    const [showBulkMoveModal, setShowBulkMoveModal] = useState<boolean>(false);
 
     const [buildingList, setBuildingList] = useState<BuildingInterface[]>([]);
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         const query: DataBuildingQuery = router.query as DataBuildingQuery;
         // Get all the buildings
-        getAllBuildings().then((res) => {
-            const d: BuildingInterface[] = res.data;
-            setAllBuildings(d);
-            // If a query is passed, set add building to list
-            if (query.building) {
-                const matchingBuilding: BuildingInterface | undefined = d.find((b) => b.id === Number(query.building));
-                if (!matchingBuilding) {
+        getAllBuildings().then(
+            (res) => {
+                const d: BuildingInterface[] = res.data;
+                setAllBuildings(d);
+                // If a query is passed, set add building to list
+                if (query.building) {
+                    const matchingBuilding: BuildingInterface | undefined = d.find(
+                        (b) => b.id === Number(query.building)
+                    );
+                    if (!matchingBuilding) {
+                        return;
+                    }
+                    addBuildingsToList([matchingBuilding]);
                     return;
                 }
-                addBuildingsToList([matchingBuilding]);
-                return;
-            }
-            if (query.tour) {
-                addBuildingsOfTourToList(query.tour);
-            }
-            if (query.region) {
-                addBuildingsOfRegion(d, query.region);
-            }
-        }, console.error);
+                if (query.tour) {
+                    addBuildingsOfTourToList(query.tour);
+                }
+                if (query.region) {
+                    addBuildingsOfRegion(d, query.region);
+                }
+            },
+            (err) => setErrorMessages(handleError(err))
+        );
     }, [router.isReady]);
 
     // Add the searched building to the list
@@ -121,26 +135,32 @@ function GarbageCollectionSchedule() {
                     endDate: currentRange.end,
                 })
             )
-        ).then((res) => {
-            const g: any[] = res;
-            const data = g.map((el) => el.data).flat();
-            setGarbageCollection((prevState) => {
-                return [...prevState, ...data];
-            });
-        }, console.error);
+        ).then(
+            (res) => {
+                const g: any[] = res;
+                const data = g.map((el) => el.data).flat();
+                setGarbageCollection((prevState) => {
+                    return [...prevState, ...data];
+                });
+            },
+            (err) => setErrorMessages(handleError(err))
+        );
     }
 
     // Adds the garbage schedule for all the buildings of a given tour
     function addBuildingsOfTourToList(tourId: number) {
-        getBuildingsOfTour(tourId).then((res) => {
-            const buildings: BuildingInterface[] = res.data;
-            setTourList((prevState) => {
-                const newState = { ...prevState };
-                newState[tourId] = buildings;
-                return newState;
-            });
-            addBuildingsToList(buildings);
-        }, console.error);
+        getBuildingsOfTour(tourId).then(
+            (res) => {
+                const buildings: BuildingInterface[] = res.data;
+                setTourList((prevState) => {
+                    const newState = { ...prevState };
+                    newState[tourId] = buildings;
+                    return newState;
+                });
+                addBuildingsToList(buildings);
+            },
+            (err) => setErrorMessages(handleError(err))
+        );
     }
 
     function addBuildingsToList(buildings: BuildingInterface[]) {
@@ -159,13 +179,16 @@ function GarbageCollectionSchedule() {
                     endDate: currentRange.end,
                 })
             )
-        ).then((res) => {
-            const g: any[] = res;
-            const data = g.map((el) => el.data).flat();
-            setGarbageCollection((prevState) => {
-                return [...prevState, ...data];
-            });
-        }, console.error);
+        ).then(
+            (res) => {
+                const g: any[] = res;
+                const data = g.map((el) => el.data).flat();
+                setGarbageCollection((prevState) => {
+                    return [...prevState, ...data];
+                });
+            },
+            (err) => setErrorMessages(handleError(err))
+        );
     }
 
     // Remove a building from the schedule
@@ -204,19 +227,22 @@ function GarbageCollectionSchedule() {
             delete newState[tourId];
             return newState;
         });
-        getBuildingsOfTour(tourId).then((res) => {
-            const tourBuildings: BuildingInterface[] = res.data;
+        getBuildingsOfTour(tourId).then(
+            (res) => {
+                const tourBuildings: BuildingInterface[] = res.data;
 
-            setBuildingList((prevState) => {
-                const newState: BuildingInterface[] = [...prevState];
-                return newState.filter((b) => !tourBuildings.some((tb) => tb.id === b.id));
-            });
+                setBuildingList((prevState) => {
+                    const newState: BuildingInterface[] = [...prevState];
+                    return newState.filter((b) => !tourBuildings.some((tb) => tb.id === b.id));
+                });
 
-            setGarbageCollection((prevState) => {
-                const newState: GarbageCollectionInterface[] = [...prevState];
-                return newState.filter((g) => !tourBuildings.some((b) => g.building === b.id));
-            });
-        }, console.error);
+                setGarbageCollection((prevState) => {
+                    const newState: GarbageCollectionInterface[] = [...prevState];
+                    return newState.filter((g) => !tourBuildings.some((b) => g.building === b.id));
+                });
+            },
+            (err) => setErrorMessages(handleError(err))
+        );
     }
 
     // Get the garbage collection schedule from a date range
@@ -239,7 +265,7 @@ function GarbageCollectionSchedule() {
                 const data = g.map((el) => el.data).flat();
                 setGarbageCollection(data);
             },
-            console.error
+            (err) => setErrorMessages(handleError(err))
         );
     }
 
@@ -281,6 +307,31 @@ function GarbageCollectionSchedule() {
         });
     }
 
+    async function duplicateSchedule(
+        startDate: string,
+        endDate: string,
+        copyToDate: string
+    ): Promise<AxiosResponse<any, any>> {
+        return await duplicateGarbageCollectionSchedule(
+            startDate,
+            endDate,
+            copyToDate,
+            buildingList.map((b) => b.id)
+        );
+    }
+
+    function dragAndDrop(args: EventInteractionArgs<object>): void {
+        const { event, start } = args;
+        const garbageCollectionEvent: GarbageCollectionEvent = event as GarbageCollectionEvent;
+        patchGarbageCollection(garbageCollectionEvent.id, { date: formatDate(new Date(start)) }).then(
+            (res) => {
+                const g: GarbageCollectionInterface = res.data;
+                onPatch(g);
+            },
+            (err) => setErrorMessages(handleError(err))
+        );
+    }
+
     // Closes the duplicate modal
     function closeDuplicateModal() {
         setShowDuplicateModal(false);
@@ -288,7 +339,7 @@ function GarbageCollectionSchedule() {
     }
 
     function closeBulkOperationModal() {
-        setShowBulkOperationModal(false);
+        setShowBulkMoveModal(false);
         getFromRange(currentRange);
     }
 
@@ -310,18 +361,24 @@ function GarbageCollectionSchedule() {
         },
     });
 
+    const DnDCalendar = withDragAndDrop(Calendar);
+
+    // @ts-ignore
     return (
         <>
             <AdminHeader />
-            <DuplicateGarbageCollectionModal
+            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
+            <DuplicateScheduleModal
                 closeModal={closeDuplicateModal}
                 show={showDuplicateModal}
-                buildings={buildingList}
+                onSubmit={duplicateSchedule}
+                weekStartsOn={1}
+                title="Dupliceer vuilophaling schema voor geselecteerde gebouwen"
             />
-            <BulkOperationModal
+            <BulkMoveGarbageModal
                 buildings={buildingList}
                 closeModal={closeBulkOperationModal}
-                show={showBulkOperationModal}
+                show={showBulkMoveModal}
             />
             <GarbageEditModal
                 closeModal={closeEditModal}
@@ -350,7 +407,7 @@ function GarbageCollectionSchedule() {
                         </Button>
                     </div>
                     <div className="col">
-                        <Button variant="primary" className="btn-dark" onClick={() => setShowBulkOperationModal(true)}>
+                        <Button variant="primary" className="btn-dark" onClick={() => setShowBulkMoveModal(true)}>
                             Verplaats ophaling
                         </Button>
                     </div>
@@ -370,10 +427,10 @@ function GarbageCollectionSchedule() {
                 </div>
             </div>
 
-            <Calendar
+            <DnDCalendar
                 messages={messages}
                 culture={"nl-BE"}
-                defaultView="month"
+                defaultView="week"
                 events={garbageCollection.map((g) => {
                     const s: Date = new Date(g.date);
                     let e = addDays(s, 1);
@@ -390,13 +447,15 @@ function GarbageCollectionSchedule() {
                     return event;
                 })}
                 components={{
+                    //@ts-ignore
                     event:
                         buildingList.length > 1
                             ? GarbageCollectionEventComponentWithAddress
                             : GarbageCollectionEventComponentWithoutAddress,
                 }}
                 localizer={loc}
-                eventPropGetter={(event) => {
+                eventPropGetter={(e) => {
+                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
                     const backgroundColor = getGarbageColor(event.garbageType);
                     return { style: { backgroundColor, color: "black" } };
                 }}
@@ -409,7 +468,8 @@ function GarbageCollectionSchedule() {
                     setSelectedDate(slotInfo.start);
                     setShowEditModal(true);
                 }}
-                onSelectEvent={(event: GarbageCollectionEvent) => {
+                onSelectEvent={(e) => {
+                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
                     if (buildingList.length <= 0) {
                         return;
                     }
@@ -420,8 +480,9 @@ function GarbageCollectionSchedule() {
                     setSelectedEvent(event);
                     setShowEditModal(true);
                 }}
+                onEventDrop={dragAndDrop}
                 onRangeChange={getFromRange}
-                views={["month", "week"]}
+                views={["week"]}
                 style={{ height: "100vh" }}
                 step={60}
                 timeslots={1}

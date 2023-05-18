@@ -6,6 +6,7 @@ import { AxiosResponse } from "axios";
 import SyndicFooter from "@/components/footer/syndicFooter";
 import Loading from "@/components/loading";
 import SyndicHeader from "@/components/header/syndicHeader";
+import { handleError } from "@/lib/error";
 
 function SyndicDashboard() {
     const [id, setId] = useState("");
@@ -29,7 +30,7 @@ function SyndicDashboard() {
                     setLoading(false);
                 })
                 .catch((error) => {
-                    console.error(error);
+                    handleError(error);
                     setLoading(false);
                 });
         }

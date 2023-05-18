@@ -1,7 +1,7 @@
-import React from 'react';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import React from "react";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import styles from "@/styles/Login.module.css";
 
 interface PasswordInputProps {
@@ -17,16 +17,16 @@ interface PasswordInputProps {
 }
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
-                                                         value,
-                                                         setPassword,
-                                                         handlePasswordVisibility,
-                                                         showPassword,
-                                                         label,
-                                                         placeholder,
-                                                         showIconButton,
-                                                         customOnInput,
-                                                         customOnInvalid,
-                                                     }) => {
+    value,
+    setPassword,
+    handlePasswordVisibility,
+    showPassword,
+    label,
+    placeholder,
+    showIconButton,
+    customOnInput,
+    customOnInvalid,
+}) => {
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
         if (customOnInput) {
@@ -44,29 +44,32 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 
     return (
         <div className={`form-outline mb-4`}>
-            <label className="form-label">{label}</label>
-            <div style={{position: 'relative'}}>
+            <label htmlFor={"password"} className="form-label">
+                {label}
+            </label>
+            <div style={{ position: "relative" }}>
                 <input
-                    type={showPassword ? 'text' : 'password'}
+                    id={"password"}
+                    type={showPassword ? "text" : "password"}
                     className={`form-control form-control-lg ${styles.input}`}
                     value={value}
-                    onInput={handleInput}
+                    onChange={handleInput}
                     onInvalid={handleInvalid}
                     required
                     placeholder={placeholder}
-                    style={{paddingRight: '40px'}}
+                    style={{ paddingRight: "40px" }}
                 />
                 {showIconButton && (
                     <IconButton
                         onClick={handlePasswordVisibility}
                         style={{
-                            position: 'absolute',
-                            top: '50%',
-                            right: '40px',
-                            transform: 'translateY(-50%)',
+                            position: "absolute",
+                            top: "50%",
+                            right: "40px",
+                            transform: "translateY(-50%)",
                         }}
                     >
-                        {showPassword ? <Visibility/> : <VisibilityOff/>}
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                 )}
             </div>

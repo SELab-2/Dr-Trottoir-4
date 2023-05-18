@@ -9,8 +9,9 @@ import SyndicHeader from "@/components/header/syndicHeader";
 import { handleError } from "@/lib/error";
 import PasswordModal from "@/components/password/passwordModal";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
-export default function UserProfile() {
+function UserProfile() {
     const { t } = useTranslation();
     const [user, setUser] = useState<User | null>(null);
     const [firstName, setFirstName] = useState<string>("");
@@ -38,7 +39,7 @@ export default function UserProfile() {
                 setUserInfo(u);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }, []);
@@ -87,8 +88,7 @@ export default function UserProfile() {
                 setSuccessPatch(true);
             },
             (err) => {
-                const e = handleError(err);
-                setErrorMessages(e);
+                setErrorMessages(handleError(err));
             }
         );
     }
@@ -228,3 +228,5 @@ export default function UserProfile() {
         </>
     );
 }
+
+export default withAuthorisation(UserProfile, ["Admin", "Superstudent", "Syndic", "Student", "Default"]);

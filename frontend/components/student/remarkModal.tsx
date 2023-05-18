@@ -64,7 +64,7 @@ export default function RemarkModal({
                         })
                     );
                 })
-                .catch((_) => {});
+                .catch((err) => setErrorMessages(handleError(err)));
         } else {
             setRemark("");
             setRemarkFiles([]);
@@ -106,7 +106,7 @@ export default function RemarkModal({
                     onPost(r);
                     remarkFiles.forEach((f: FileListElement) => {
                         if (f.file) {
-                            postPictureOfRemark(f.file, r.id).catch(console.error);
+                            postPictureOfRemark(f.file, r.id).catch((err) => setErrorMessages(handleError(err)));
                         }
                     });
                     closeModal();
@@ -125,7 +125,7 @@ export default function RemarkModal({
             }
             remarkFiles.forEach((f: FileListElement) => {
                 if (f.file) {
-                    postPictureOfRemark(f.file, selectedRemark.id).catch(console.error);
+                    postPictureOfRemark(f.file, selectedRemark.id).catch((err) => setErrorMessages(handleError(err)));
                 }
             });
             closeModal();
