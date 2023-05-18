@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import styles from "@/components/header/roleHeader.module.css";
 import Image from "next/image";
 import logo from "@/public/logo.png";
@@ -9,25 +9,6 @@ import Logout from "@/components/logout";
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 
 const AdminHeader = () => {
-    const [isDropdownPlanningHovered, setIsDropdownPlanningHovered] = useState(false);
-    const [isDropdownDataHovered, setIsDropdownDataHovered] = useState(false);
-
-    const handlePlanningDropdownMouseEnter = () => {
-        setIsDropdownPlanningHovered(true);
-    };
-
-    const handlePlanningDropdownMouseLeave = () => {
-        setIsDropdownPlanningHovered(false);
-    };
-
-    const handleDataDropdownMouseEnter = () => {
-        setIsDropdownDataHovered(true);
-    };
-
-    const handleDataDropdownMouseLeave = () => {
-        setIsDropdownDataHovered(false);
-    };
-
     return (
         <Navbar bg="dark" variant="dark" expand="lg">
             <div className="container-fluid">
@@ -36,7 +17,8 @@ const AdminHeader = () => {
                         <Image src={logo} alt="My App Logo" width={120} height={30}/>
                     </Navbar.Brand>
                 </Link>
-                <Navbar.Collapse id="navbarSupportedContent">
+                <Navbar.Collapse id="navbarSupportedContent"
+                                 style={{height: '100%', marginBottom: '0px', paddingBottom: '0px'}}>
                     <Nav className="ms-auto mb-2 mb-lg-0">
                         <Nav.Link className={styles.text} href="/admin/dashboard">
                             Dashboard
@@ -46,9 +28,6 @@ const AdminHeader = () => {
                             className={styles.text}
                             id="navbarDropdownData"
                             menuVariant="dark"
-                            show={isDropdownPlanningHovered}
-                            onMouseEnter={handlePlanningDropdownMouseEnter}
-                            onMouseLeave={handlePlanningDropdownMouseLeave}
                         >
                             <NavDropdown.Item href="/admin/data/schedules">Rondes</NavDropdown.Item>
                             <NavDropdown.Item href="/admin/data/garbage-collection">Vuilophaling</NavDropdown.Item>
@@ -58,9 +37,6 @@ const AdminHeader = () => {
                             className={styles.text}
                             id="navbarDropdownData"
                             menuVariant="dark"
-                            show={isDropdownDataHovered}
-                            onMouseEnter={handleDataDropdownMouseEnter}
-                            onMouseLeave={handleDataDropdownMouseLeave}
                         >
                             <NavDropdown.Item href="/admin/data/users">Gebruikers</NavDropdown.Item>
                             <NavDropdown.Item href="/admin/data/tours">Rondes</NavDropdown.Item>
