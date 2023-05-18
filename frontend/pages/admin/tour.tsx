@@ -44,7 +44,7 @@ function AdminTour() {
     const [allBuildingsOnTour, setAllBuildingsOnTour] = useState<BuildingOnTour[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [selectedStudentId, setSelectedStudentId] = useState<number>(0);
-    const [selectedStudentName, setSelectedStudentName] = useState<string>("");
+    const [selectedStudent, setSelectedStudent] = useState<User | null>(null);
     const [selectedTourId, setSelectedTourId] = useState<number>(0);
     const [selectedTourName, setSelectedTourName] = useState<string>("");
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -212,8 +212,8 @@ function AdminTour() {
                 if (query.student) {
                     currentStudent = students.find((e) => e.id === +[query.student]) || students[0];
                 }
+                setSelectedStudent(currentStudent);
                 setSelectedStudentId(currentStudent.id);
-                setSelectedStudentName(userSearchString(currentStudent));
             });
         } catch (error) {
             console.error(error);
@@ -357,9 +357,14 @@ function AdminTour() {
                     <div style={{ width: "20%" }}>
                         <h2>{selectedTourName}</h2>
                         <b>Verantwoordelijke:</b>
-                        <p>{selectedStudentName}</p>
+                        <p>{`${selectedStudent?.first_name} ${selectedStudent?.last_name}`}</p>
                         <b>Datum:</b>
                         <p>{selectedDate.toLocaleDateString()}</p>
+                        <b>Contactinformatie:</b>
+                        <br></br>
+                        <>{`Telefoonnummer: ${selectedStudent?.phone_number}`}</>
+                        <br></br>
+                        <>{`E-mailadres: ${selectedStudent?.email}`}</>
                     </div>
 
                     <div style={{ width: "80%" }}>
