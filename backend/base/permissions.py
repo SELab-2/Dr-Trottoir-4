@@ -252,7 +252,6 @@ class NoStudentWorkingOnTour(BasePermission):
 
 
 class ReadOnlyStartedStudentOnTour(BasePermission):
-    # TODO: Translations
     message = _("The student has already started or finished this tour, this entry can't be edited anymore.")
 
     def has_object_permission(self, request, view, obj: StudentOnTour):

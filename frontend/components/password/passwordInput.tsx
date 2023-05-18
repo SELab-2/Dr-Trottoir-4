@@ -44,13 +44,14 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 
     return (
         <div className={`form-outline mb-4`}>
-            <label className="form-label">{label}</label>
+            <label htmlFor={"password"} className="form-label">{label}</label>
             <div style={{position: 'relative'}}>
                 <input
+                    id={"password"}
                     type={showPassword ? 'text' : 'password'}
                     className={`form-control form-control-lg ${styles.input}`}
                     value={value}
-                    onInput={handleInput}
+                    onChange={handleInput}
                     onInvalid={handleInvalid}
                     required
                     placeholder={placeholder}

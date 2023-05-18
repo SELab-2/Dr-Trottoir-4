@@ -9,9 +9,9 @@ function ManualList({ id, type }: { id: number | string; type: "syndic" | "admin
 
     useEffect(() => {
         fetchManuals();
-    });
+    }, []);
 
-    async function fetchManuals() {
+    function fetchManuals() {
         if (type == "public") {
             return;
         }

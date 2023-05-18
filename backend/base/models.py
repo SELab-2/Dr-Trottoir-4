@@ -117,7 +117,7 @@ class Building(models.Model):
     postal_code = models.CharField(max_length=10)
     street = models.CharField(max_length=60)
     house_number = models.PositiveIntegerField()
-    bus = models.CharField(max_length=10, blank=True, null=False, default=_("No bus"))
+    bus = models.CharField(max_length=10, blank=True, null=False, default="")
     client_number = models.CharField(max_length=40, blank=True, null=True)
     duration = models.TimeField(default="00:00")
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
@@ -324,10 +324,7 @@ class StudentOnTour(models.Model):
     def clean(self):
         super().clean()
         if self.date and self.date < datetime.now().date():
-            raise ValidationError(
-                # TODO translation
-                _("You cannot plan a student on a past date.")
-            )
+            raise ValidationError(_("You cannot plan a student on a past date."))
         if self.student_id and self.tour_id:
             user = self.student
             if user.role.name.lower() == "syndic":

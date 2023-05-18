@@ -105,7 +105,7 @@ class RemarkAtBuildingIndividualView(APIView):
     @extend_schema(responses=patch_docs(serializer_class))
     def patch(self, request, remark_at_building_id):
         """
-        Edit building with given ID
+        Edit remark at building with given ID
         """
         remark_at_building_instance = RemarkAtBuilding.objects.filter(id=remark_at_building_id).first()
         if not remark_at_building_instance:
@@ -115,10 +115,17 @@ class RemarkAtBuildingIndividualView(APIView):
 
         data = request_to_dict(request.data)
 
+        # check if patch only edit's the text:
+        forbidden_keys = ["timestamp", "building", "student_on_tour", "type", "id"]
+        if any(k in forbidden_keys for k in data.keys()):
+            return Response(
+                {"message": _("You can only edit the 'remark' text on a remark at building")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         set_keys_of_instance(remark_at_building_instance, data, TRANSLATE)
 
-        if r := try_full_clean_and_save(remark_at_building_instance):
-            return r
+        remark_at_building_instance.save(update_fields=["remark"])
 
         return patch_success(self.serializer_class(remark_at_building_instance))
 

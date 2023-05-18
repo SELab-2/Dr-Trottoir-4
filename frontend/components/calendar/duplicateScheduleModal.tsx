@@ -61,8 +61,9 @@ export default function DuplicateScheduleModal({
                 <Modal.Body>
                     <div className="form-row">
                         <div className="col">
-                            <label>Van start van week:</label>
+                            <label htmlFor={"start-week"}>Van start van week:</label>
                             <input
+                                id={"start-week"}
                                 type="date"
                                 className="form-control"
                                 value={formatDate(startDate)}
@@ -72,8 +73,9 @@ export default function DuplicateScheduleModal({
                             />
                         </div>
                         <div className="col">
-                            <label>Tot einde van week:</label>
+                            <label htmlFor={"einde-week"}>Tot einde van week:</label>
                             <input
+                                id={"einde-week"}
                                 type="date"
                                 className="form-control"
                                 value={formatDate(endDate)}
@@ -84,8 +86,9 @@ export default function DuplicateScheduleModal({
                         </div>
                     </div>
                     <div className="form-outline mb-4">
-                        <label className="form-label">Kopieer naar start van week:</label>
+                        <label htmlFor={"kopieer"} className="form-label">Kopieer naar start van week:</label>
                         <input
+                            id={"kopieer"}
                             type="date"
                             className="form-control"
                             value={formatDate(copyToDate)}

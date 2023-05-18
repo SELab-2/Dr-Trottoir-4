@@ -1,19 +1,19 @@
 import FinishedBuildingModal from "@/components/student/finishedBuildingModal";
-import { Button, ListGroup, ListGroupItem } from "react-bootstrap";
-import { BuildingInterface, getAddress } from "@/lib/building";
-import { datesEqual } from "@/lib/date";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { getStudentOnTour, startStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
-import { getBuildingsOfTour, getTour, Tour } from "@/lib/tour";
-import { getRegion, RegionInterface } from "@/lib/region";
-import { handleError } from "@/lib/error";
+import {Button, ListGroup, ListGroupItem} from "react-bootstrap";
+import {BuildingInterface, getAddress} from "@/lib/building";
+import {datesEqual} from "@/lib/date";
+import React, {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {getStudentOnTour, startStudentOnTour, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
+import {getBuildingsOfTour, getTour, Tour} from "@/lib/tour";
+import {getRegion, RegionInterface} from "@/lib/region";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function PlannedBuildingList({
-    studentOnTourId,
-    redirectTo,
-}: {
+                                                studentOnTourId,
+                                                redirectTo,
+                                            }: {
     studentOnTourId: number | null;
     redirectTo: string;
 }) {
@@ -73,17 +73,27 @@ export default function PlannedBuildingList({
     }, [studentOnTourId]);
 
     async function routeToFirstBuilding() {
-        if (buildings.length === 0 || !studentOnTourId) {
+        if (buildings.length === 0 || !studentOnTourId || !studentOnTour) {
             return;
         }
-        startStudentOnTour(studentOnTourId)
-            .then(async (_) => {
-                await router.push({
-                    pathname: redirectTo,
-                    query: { studentOnTourId: studentOnTour?.id },
-                });
-            })
-            .catch((err) => setErrorMessages(handleError(err)));
+
+        if (!studentOnTour.started_tour) {
+            startStudentOnTour(studentOnTourId)
+                .then(async (_) => {
+                    await router.push({
+                        pathname: redirectTo,
+                        query: {studentOnTourId: studentOnTour?.id},
+                    });
+                })
+                .catch((err) => setErrorMessages(handleError(err)));
+            return;
+        } else {
+            await router.push({
+                pathname: redirectTo,
+                query: {studentOnTourId: studentOnTour.id},
+            });
+        }
+
     }
 
     function getStartButtonText() {
@@ -105,7 +115,7 @@ export default function PlannedBuildingList({
                 setBuilding={setSelectedBuilding}
                 studentOnTour={studentOnTour}
             />
-            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
+            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
             <div className="mt-3 mb-1 ms-2 me-2">
                 <span className="h1 fw-bold">{tour ? `Ronde ${tour?.name}` : ""}</span>
                 <p className="h5 fw-bold">{region ? `Regio ${region}` : ""}</p>
