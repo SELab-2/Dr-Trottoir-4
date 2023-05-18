@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+    duplicateGarbageCollectionSchedule,
     GarbageCollectionInterface,
     garbageTypes,
     getGarbageCollectionFromBuilding,
@@ -18,7 +19,6 @@ import { add, addDays, endOfMonth, startOfMonth, sub } from "date-fns";
 import { useRouter } from "next/router";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
-import DuplicateGarbageCollectionModal from "@/components/garbage/duplicateGarbageCollectionModal";
 import { Button } from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
 import { GarbageCollectionEvent } from "@/types";
@@ -28,9 +28,11 @@ import { getBuildingsOfTour } from "@/lib/tour";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import BulkOperationModal from "@/components/garbage/BulkOperationModal";
 import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import BulkMoveGarbageModal from "@/components/garbage/BulkMoveGarbageModal";
+import { AxiosResponse } from "axios";
+import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 
 interface ParsedUrlQuery {}
 
@@ -65,7 +67,7 @@ function GarbageCollectionSchedule() {
     const [showBuildingListModal, setShowBuildingListModal] = useState<boolean>(false);
 
     // The bulk operation modal
-    const [showBulkOperationModal, setShowBulkOperationModal] = useState<boolean>(false);
+    const [showBulkMoveModal, setShowBulkMoveModal] = useState<boolean>(false);
 
     const [buildingList, setBuildingList] = useState<BuildingInterface[]>([]);
 
@@ -285,6 +287,19 @@ function GarbageCollectionSchedule() {
         });
     }
 
+    async function duplicateSchedule(
+        startDate: string,
+        endDate: string,
+        copyToDate: string
+    ): Promise<AxiosResponse<any, any>> {
+        return await duplicateGarbageCollectionSchedule(
+            startDate,
+            endDate,
+            copyToDate,
+            buildingList.map((b) => b.id)
+        );
+    }
+
     // Closes the duplicate modal
     function closeDuplicateModal() {
         setShowDuplicateModal(false);
@@ -292,7 +307,7 @@ function GarbageCollectionSchedule() {
     }
 
     function closeBulkOperationModal() {
-        setShowBulkOperationModal(false);
+        setShowBulkMoveModal(false);
         getFromRange(currentRange);
     }
 
@@ -318,15 +333,17 @@ function GarbageCollectionSchedule() {
         <>
             <AdminHeader />
             <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
-            <DuplicateGarbageCollectionModal
+            <DuplicateScheduleModal
                 closeModal={closeDuplicateModal}
                 show={showDuplicateModal}
-                buildings={buildingList}
+                onSubmit={duplicateSchedule}
+                weekStartsOn={1}
+                title="Dupliceer vuilophaling schema voor geselecteerde gebouwen"
             />
-            <BulkOperationModal
+            <BulkMoveGarbageModal
                 buildings={buildingList}
                 closeModal={closeBulkOperationModal}
-                show={showBulkOperationModal}
+                show={showBulkMoveModal}
             />
             <GarbageEditModal
                 closeModal={closeEditModal}
@@ -355,7 +372,7 @@ function GarbageCollectionSchedule() {
                         </Button>
                     </div>
                     <div className="col">
-                        <Button variant="primary" className="btn-dark" onClick={() => setShowBulkOperationModal(true)}>
+                        <Button variant="primary" className="btn-dark" onClick={() => setShowBulkMoveModal(true)}>
                             Verplaats ophaling
                         </Button>
                     </div>
