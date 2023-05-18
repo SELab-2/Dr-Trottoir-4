@@ -1,26 +1,26 @@
-import {BuildingInterface, getAddress} from "@/lib/building";
+import { BuildingInterface, getAddress } from "@/lib/building";
 import {
     GarbageCollectionInterface,
     garbageTypes,
     getGarbageCollectionFromBuilding,
     getGarbageColor,
 } from "@/lib/garbage-collection";
-import {BuildingComment, getAllBuildingCommentsByBuildingID} from "@/lib/building-comment";
-import React, {useEffect, useState} from "react";
-import {BuildingManual, getManualPath, getManualsForBuilding} from "@/lib/building-manual";
-import {addDays, subDays} from "date-fns";
-import {ListGroup, ListGroupItem} from "react-bootstrap";
+import { BuildingComment, getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
+import React, { useEffect, useState } from "react";
+import { BuildingManual, getManualPath, getManualsForBuilding } from "@/lib/building-manual";
+import { addDays, subDays } from "date-fns";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 /**
  * The info that is displayed when a student is doing a tour
  */
 export default function BuildingInfoView({
-                                             building,
-                                             currentIndex,
-                                             amountOfBuildings,
-                                         }: {
+    building,
+    currentIndex,
+    amountOfBuildings,
+}: {
     building: BuildingInterface | null;
     currentIndex: number;
     amountOfBuildings: number;
@@ -63,7 +63,7 @@ export default function BuildingInfoView({
 
                 setGarbageCollections(grouped);
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
     }
 
     // Get the comments of a building
@@ -73,7 +73,7 @@ export default function BuildingInfoView({
                 const bc: BuildingComment[] = res.data;
                 setBuildingComments(bc);
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
     }
 
     // Get the manual for a building
@@ -88,26 +88,26 @@ export default function BuildingInfoView({
                 m.file = getManualPath(m.file);
                 setManual(m);
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
     }
 
     return (
         <>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <ListGroup>
                 <ListGroupItem>
                     <span className="h4 fw-bold">{building ? getAddress(building) : ""}</span>
                     <p className="mb-0">{building ? `Gebouw ${currentIndex + 1}/${amountOfBuildings}` : ""}</p>
                 </ListGroupItem>
-                <ListGroupItem className="m-0 p-0" style={{display: "flex"}}>
+                <ListGroupItem className="m-0 p-0" style={{ display: "flex" }}>
                     {Object.keys(garbageCollections)
                         .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
                         .map((key, index) => {
                             const col = garbageCollections[key];
                             const isLast = index + 1 === Object.keys(garbageCollections).length;
                             return (
-                                <div key={key} style={{flex: 1, borderRight: isLast ? "none" : "1px solid #ccc"}}>
-                                    <p className="text-center m-0 p-0" style={{borderBottom: "1px solid #ccc"}}>
+                                <div key={key} style={{ flex: 1, borderRight: isLast ? "none" : "1px solid #ccc" }}>
+                                    <p className="text-center m-0 p-0" style={{ borderBottom: "1px solid #ccc" }}>
                                         {new Date(key).toLocaleDateString("en-GB")}
                                     </p>
                                     {col.length === 0 && (
@@ -141,7 +141,7 @@ export default function BuildingInfoView({
                 </ListGroupItem>
                 <ListGroupItem>
                     {manual && (
-                        <a href={manual.file} download style={{textDecoration: "underline", color: "royalblue"}}>
+                        <a href={manual.file} download style={{ textDecoration: "underline", color: "royalblue" }}>
                             Handleiding van gebouw
                         </a>
                     )}

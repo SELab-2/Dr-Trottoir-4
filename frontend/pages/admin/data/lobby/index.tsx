@@ -10,7 +10,7 @@ import { Button } from "react-bootstrap";
 import DeleteConfirmationDialog from "@/components/deleteConfirmationDialog";
 import EditLobbyModal from "@/components/admin/editLobbyModal";
 import { withAuthorisation } from "@/components/withAuthorisation";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 
 function LobbyPage() {
     const { t } = useTranslation();
@@ -91,7 +91,7 @@ function LobbyPage() {
                 setLoading(false);
             },
             (err) => {
-                handleError(err)
+                handleError(err);
             }
         );
     }
@@ -142,20 +142,23 @@ function LobbyPage() {
         if (!selectedLobby) {
             return;
         }
-        deleteLobby(selectedLobby.id).then((_) => {
-            const i = lobbies.findIndex((l) => l.id === selectedLobby.id);
-            if (i < 0) {
-                return;
-            }
-            setLobbies((prevLobbies) => {
-                const el = [...prevLobbies];
-                el.splice(i, 1);
-                return el;
-            });
-            setSelectedLobby(null);
-            setShowRemoveDialog(false);
-            hideModal();
-        }, err => handleError(err));
+        deleteLobby(selectedLobby.id).then(
+            (_) => {
+                const i = lobbies.findIndex((l) => l.id === selectedLobby.id);
+                if (i < 0) {
+                    return;
+                }
+                setLobbies((prevLobbies) => {
+                    const el = [...prevLobbies];
+                    el.splice(i, 1);
+                    return el;
+                });
+                setSelectedLobby(null);
+                setShowRemoveDialog(false);
+                hideModal();
+            },
+            (err) => handleError(err)
+        );
     }
 
     return (
