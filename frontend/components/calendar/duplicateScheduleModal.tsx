@@ -1,10 +1,10 @@
 import { Button, Form, Modal } from "react-bootstrap";
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { formatDate } from "@/lib/date";
+
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { addDays, addWeeks, endOfWeek, startOfWeek, subDays } from "date-fns";
+import { addDays, addWeeks, endOfWeek, startOfWeek } from "date-fns";
 import { AxiosResponse } from "axios";
 
 export default function DuplicateScheduleModal({
@@ -21,6 +21,7 @@ export default function DuplicateScheduleModal({
     weekStartsOn: 0 | 1;
 }) {
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
     const [startDate, setStartDate] = useState<Date>(startOfWeek(new Date(), { weekStartsOn }));
     const [endDate, setEndDate] = useState<Date>(endOfWeek(new Date(), { weekStartsOn }));
     const [copyToDate, setCopyToDate] = useState<Date>(addWeeks(startOfWeek(new Date(), { weekStartsOn }), 1));
@@ -60,8 +61,9 @@ export default function DuplicateScheduleModal({
                 <Modal.Body>
                     <div className="form-row">
                         <div className="col">
-                            <label>Van start van week:</label>
+                            <label htmlFor={"start-week"}>Van start van week:</label>
                             <input
+                                id={"start-week"}
                                 type="date"
                                 className="form-control"
                                 value={formatDate(startDate)}
@@ -71,8 +73,9 @@ export default function DuplicateScheduleModal({
                             />
                         </div>
                         <div className="col">
-                            <label>Tot einde van week:</label>
+                            <label htmlFor={"einde-week"}>Tot einde van week:</label>
                             <input
+                                id={"einde-week"}
                                 type="date"
                                 className="form-control"
                                 value={formatDate(endDate)}
@@ -83,8 +86,9 @@ export default function DuplicateScheduleModal({
                         </div>
                     </div>
                     <div className="form-outline mb-4">
-                        <label className="form-label">Kopieer naar start van week:</label>
+                        <label htmlFor={"kopieer"} className="form-label">Kopieer naar start van week:</label>
                         <input
+                            id={"kopieer"}
                             type="date"
                             className="form-control"
                             value={formatDate(copyToDate)}

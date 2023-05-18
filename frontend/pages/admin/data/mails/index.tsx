@@ -8,6 +8,7 @@ import { Button } from "react-bootstrap";
 import { useRouter } from "next/router";
 import EditEmailModal from "@/components/admin/editEmailModal";
 import { DeleteEmailModal } from "@/components/admin/deleteEmailModal";
+import { handleError } from "@/lib/error";
 import { withAuthorisation } from "@/components/withAuthorisation";
 
 function AdminDataMails() {
@@ -83,7 +84,7 @@ function AdminDataMails() {
                 setLoading(false);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }
