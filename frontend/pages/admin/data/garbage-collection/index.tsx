@@ -22,7 +22,7 @@ import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
 import { Button } from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
-import {GarbageCollectionEvent, GarbageCollectionWebSocketInterface} from "@/types";
+import { GarbageCollectionEvent, GarbageCollectionWebSocketInterface } from "@/types";
 import GarbageCollectionEventComponentWithAddress from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
 import GarbageCollectionEventComponentWithoutAddress from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
 import { getBuildingsOfTour } from "@/lib/tour";
@@ -120,10 +120,10 @@ function GarbageCollectionSchedule() {
 
     function setUpWebsocket() {
         getAllGarbageCollectionChanges().addEventListener("message", (event) => {
-            const data : GarbageCollectionWebSocketInterface = JSON.parse(event.data);
+            const data: GarbageCollectionWebSocketInterface = JSON.parse(event.data);
             const g: GarbageCollectionInterface = data.garbage_collection;
             if (rangeRef.current.start <= new Date(g.date) && new Date(g.date) <= rangeRef.current.end) {
-                if (! buildingListRef.current.some(b => b.id === g.building)) {
+                if (!buildingListRef.current.some((b) => b.id === g.building)) {
                     return;
                 }
                 if (data.type === "deleted") {

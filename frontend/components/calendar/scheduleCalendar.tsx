@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
 import withDragAndDrop, { EventInteractionArgs } from "react-big-calendar/lib/addons/dragAndDrop";
 import format from "date-fns/format";
@@ -10,12 +10,14 @@ import { messages } from "@/locales/localizerCalendar";
 import {
     deleteBulkStudentOnTour,
     deleteStudentOnTour,
-    duplicateStudentOnTourSchedule, getAllStudentOnTourChanges,
+    duplicateStudentOnTourSchedule,
+    getAllStudentOnTourChanges,
     getAllStudentOnTourFromDate,
     patchStudentOnTour,
     postBulkStudentOnTour,
     StudentOnTour,
-    StudentOnTourPost, StudentOnTourStringDate,
+    StudentOnTourPost,
+    StudentOnTourStringDate,
 } from "@/lib/student-on-tour";
 
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
@@ -25,12 +27,12 @@ import CustomDisplay from "@/components/calendar/customEvent";
 import AddScheduleEventModal from "@/components/calendar/addScheduleEvent";
 import { Tour } from "@/lib/tour";
 import { User } from "@/lib/user";
-import {add, addDays, endOfMonth, endOfWeek, startOfDay, startOfMonth, sub} from "date-fns";
+import { add, addDays, endOfMonth, endOfWeek, startOfDay, startOfMonth, sub } from "date-fns";
 import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
 import { colors } from "@/components/calendar/colors";
 import styles from "./calendar.module.css";
-import {ScheduleEvent, StudentOnTourWebSocketInterface} from "@/types";
+import { ScheduleEvent, StudentOnTourWebSocketInterface } from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import SuccessMessageAlert from "@/components/successMessageAlert";
 import AddTourScheduleModal from "@/components/calendar/addTourSchedule";
@@ -73,11 +75,12 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
     }, [range]);
 
     function setUpWebsocket() {
-        getAllStudentOnTourChanges().addEventListener("message", event => {
-            const data : StudentOnTourWebSocketInterface = JSON.parse(event.data);
-            const sots : StudentOnTourStringDate = data.student_on_tour;
+        getAllStudentOnTourChanges().addEventListener("message", (event) => {
+            const data: StudentOnTourWebSocketInterface = JSON.parse(event.data);
+            const sots: StudentOnTourStringDate = data.student_on_tour;
             if (rangeRef.current.start <= new Date(sots.date) && new Date(sots.date) <= rangeRef.current.end) {
-                if (data.type === "deleted") { // DELETE
+                if (data.type === "deleted") {
+                    // DELETE
                     setEvents((currentEvents) => {
                         return currentEvents
                             .filter((currentEvent) => {
@@ -86,10 +89,12 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                             .sort(compareScheduleEvents);
                     });
                 } else {
-                    const obj : ScheduleEvent | undefined = eventsRef.current.find(e => e.id === Number(sots.id));
-                    if (obj) { // PATCH
+                    const obj: ScheduleEvent | undefined = eventsRef.current.find((e) => e.id === Number(sots.id));
+                    if (obj) {
+                        // PATCH
                         onEventEdit(Number(obj.id), Number(sots.tour), Number(sots.student), new Date(sots.date));
-                    } else { // POST
+                    } else {
+                        // POST
                         addSingleEvent({
                             tour: Number(sots.tour),
                             id: Number(sots.id),
@@ -102,7 +107,8 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                         });
                     }
                 }
-            }});
+            }
+        });
     }
 
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
@@ -217,7 +223,12 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                 formatDate(new Date(start))
             ).then(
                 (res) => {
-                    onEventEdit(scheduleEvent.id, scheduleEvent.tour.id, scheduleEvent.student.id, new Date(res.data.date));
+                    onEventEdit(
+                        scheduleEvent.id,
+                        scheduleEvent.tour.id,
+                        scheduleEvent.student.id,
+                        new Date(res.data.date)
+                    );
                 },
                 (err) => setErrorMessages(handleError(err))
             );
@@ -228,7 +239,7 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
         setEvents((prevState) => {
             const tour: Tour | undefined = tours.find((t: Tour) => sot.tour === t.id);
             const student: User | undefined = tourUsers.find((s: User) => sot.student === s.id);
-            const alreadyExists = prevState.some(s => sot.id === s.id);
+            const alreadyExists = prevState.some((s) => sot.id === s.id);
             if (!tour || !student || alreadyExists) {
                 return [...prevState];
             }
@@ -282,7 +293,9 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
 
     function onEventsDelete(event: ScheduleEvent) {
         const removedTours: ScheduleEvent[] = events.filter((e) => {
-            return e.tour.id == event.tour.id && e.start >= startOfWeek(event.start) && e.start <= endOfWeek(event.start);
+            return (
+                e.tour.id == event.tour.id && e.start >= startOfWeek(event.start) && e.start <= endOfWeek(event.start)
+            );
         });
         deleteBulkStudentOnTour(
             removedTours.map((event: ScheduleEvent) => {
@@ -348,7 +361,7 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                     onEventSelection(scheduleEvent);
                 }}
                 onSelectSlot={(info) => {
-                    if (info.start >= startOfDay(new Date)) {
+                    if (info.start >= startOfDay(new Date())) {
                         setSelectedDate(info.start);
                         setPopupIsOpenAdd(true);
                     }
