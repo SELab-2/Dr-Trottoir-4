@@ -57,7 +57,7 @@ function BuildingPage({type}: { type: "syndic" | "admin" | "public" }) {
             <Container style={{flex: "1"}}>
                 <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <Row>
-                    <Col md={4} style={{backgroundColor: '#FAFAFA', borderLeft: '10px solid #F6BE00'}}>
+                    <Col md={4} style={{backgroundColor: '#ECECEC', borderLeft: '10px solid #F6BE00'}}>
                         <div>
                             <BuildingInfo building={building} setBuilding={setBuilding} type={type}/>
                         </div>
@@ -65,7 +65,7 @@ function BuildingPage({type}: { type: "syndic" | "admin" | "public" }) {
                     <Col md={4}>
                         <CollectionCards building={building ? building.id : 0} date={query.date ? query.date : null}/>
                     </Col>
-                    <Col md={4} style={{backgroundColor: '#FAFAFA'}}>
+                    <Col md={4} style={{backgroundColor: '#ECECEC'}}>
                         <LatestCollections building={building ? building.id : 0}/>
                     </Col>
                 </Row>

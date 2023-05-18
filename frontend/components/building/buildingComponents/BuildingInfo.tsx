@@ -74,9 +74,9 @@ function BuildingInfo({
                         </p>
                         <strong>Adres:</strong>
                         <p>
-                            {building.city} {building.postal_code}
-                            <br/>
                             {building.street} {building.house_number}, {building.bus}
+                            <br/>
+                            {building.city} {building.postal_code}
                         </p>
                         <p>
                             <strong>Regio:</strong> {regionName}
@@ -102,7 +102,7 @@ function BuildingInfo({
                     </div>
                 )}
                 {type === "syndic" && (
-                    <div className="padding">
+                    <div className="padding" style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                         <Button
                             size="lg"
                             className="wide_button"

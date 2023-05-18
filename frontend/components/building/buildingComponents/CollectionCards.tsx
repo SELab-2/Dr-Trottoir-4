@@ -105,7 +105,7 @@ function CollectionCards({building, date}: { building: number; date: string | nu
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
             <div>
                 {collectionDetails.length == 0 ? (
-                    <p>Er zijn geen ophalingen gevonden.</p>
+                    <p className="normal_text">Er zijn geen ophalingen gevonden.</p>
                 ) : (
                     <Accordion alwaysOpen>
                         {collectionDetails.map(([remark, pictures]) => (
