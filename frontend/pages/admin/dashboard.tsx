@@ -93,7 +93,6 @@ function AdminDashboard() {
         if (completed) {
             return (currentIndex / maxIndex) * 100;
         } else {
-            console.log(`RESULT: ${(currentIndex - 1) / maxIndex * 100}`)
             return ((currentIndex - 1) / maxIndex) * 100;
         }
     }
