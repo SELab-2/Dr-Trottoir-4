@@ -1,32 +1,29 @@
-import {render, fireEvent, screen} from '@testing-library/react';
-import PasswordInput from '@/components/password/passwordInput';
+import { render, fireEvent, screen } from "@testing-library/react";
+import PasswordInput from "@/components/password/passwordInput";
 
-describe('PasswordInput', () => {
-    it('renders without crashing', () => {
+describe("PasswordInput", () => {
+    it("renders without crashing", () => {
         render(
             <PasswordInput
                 value=""
-                setPassword={() => {
-                }}
-                handlePasswordVisibility={() => {
-                }}
+                setPassword={() => {}}
+                handlePasswordVisibility={() => {}}
                 showPassword={false}
                 label="Password"
                 placeholder="Enter your password"
                 showIconButton={true}
             />
         );
-        expect(screen.getByLabelText('Password')).toBeInTheDocument();
+        expect(screen.getByLabelText("Password")).toBeInTheDocument();
     });
 
-    it('triggers setPassword when input value changes', () => {
+    it("triggers setPassword when input value changes", () => {
         const setPassword = jest.fn();
         render(
             <PasswordInput
                 value=""
                 setPassword={setPassword}
-                handlePasswordVisibility={() => {
-                }}
+                handlePasswordVisibility={() => {}}
                 showPassword={false}
                 label="Password"
                 placeholder="Enter your password"
@@ -34,18 +31,17 @@ describe('PasswordInput', () => {
             />
         );
 
-        fireEvent.change(screen.getByLabelText('Password'), {target: {value: '123456'}});
+        fireEvent.change(screen.getByLabelText("Password"), { target: { value: "123456" } });
 
-        expect(setPassword).toHaveBeenCalledWith('123456');
+        expect(setPassword).toHaveBeenCalledWith("123456");
     });
 
-    it('triggers handlePasswordVisibility when visibility icon is clicked', () => {
+    it("triggers handlePasswordVisibility when visibility icon is clicked", () => {
         const handlePasswordVisibility = jest.fn();
         render(
             <PasswordInput
                 value=""
-                setPassword={() => {
-                }}
+                setPassword={() => {}}
                 handlePasswordVisibility={handlePasswordVisibility}
                 showPassword={false}
                 label="Password"
@@ -54,18 +50,16 @@ describe('PasswordInput', () => {
             />
         );
 
-        fireEvent.click(screen.getByRole('button'));
+        fireEvent.click(screen.getByRole("button"));
         expect(handlePasswordVisibility).toHaveBeenCalledTimes(1);
     });
 
-    it('shows password in plain text when showPassword is true', () => {
+    it("shows password in plain text when showPassword is true", () => {
         render(
             <PasswordInput
                 value="123456"
-                setPassword={() => {
-                }}
-                handlePasswordVisibility={() => {
-                }}
+                setPassword={() => {}}
+                handlePasswordVisibility={() => {}}
                 showPassword={true}
                 label="Password"
                 placeholder="Enter your password"
@@ -73,17 +67,15 @@ describe('PasswordInput', () => {
             />
         );
 
-        expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'text');
+        expect(screen.getByLabelText("Password")).toHaveAttribute("type", "text");
     });
 
-    it('shows password as hidden when showPassword is false', () => {
+    it("shows password as hidden when showPassword is false", () => {
         render(
             <PasswordInput
                 value="123456"
-                setPassword={() => {
-                }}
-                handlePasswordVisibility={() => {
-                }}
+                setPassword={() => {}}
+                handlePasswordVisibility={() => {}}
                 showPassword={false}
                 label="Password"
                 placeholder="Enter your password"
@@ -91,6 +83,6 @@ describe('PasswordInput', () => {
             />
         );
 
-        expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'password');
+        expect(screen.getByLabelText("Password")).toHaveAttribute("type", "password");
     });
 });

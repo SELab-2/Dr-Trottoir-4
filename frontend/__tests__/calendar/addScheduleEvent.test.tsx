@@ -1,28 +1,27 @@
-import {render, screen, fireEvent, waitFor} from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
 import AddTourScheduleModal from "@/components/calendar/addTourSchedule";
-import {AxiosResponse} from "axios";
-import {getTourUsersFromRegion, User} from "@/lib/user";
-import {act} from "react-dom/test-utils";
+import { AxiosResponse } from "axios";
+import { getTourUsersFromRegion, User } from "@/lib/user";
+import { act } from "react-dom/test-utils";
 
-jest.mock('@/lib/student-on-tour');
-jest.mock('@/lib/date');
+jest.mock("@/lib/student-on-tour");
+jest.mock("@/lib/date");
 
-jest.mock('@/lib/student-on-tour', () => ({
+jest.mock("@/lib/student-on-tour", () => ({
     postBulkStudentOnTour: jest.fn(),
 }));
 
-jest.mock('@/lib/date', () => ({
+jest.mock("@/lib/date", () => ({
     formatDate: jest.fn(),
 }));
 
-jest.mock('@/lib/user', () => ({
+jest.mock("@/lib/user", () => ({
     getTourUsersFromRegion: jest.fn(),
-    userSearchString: jest.fn().mockResolvedValue("user")
+    userSearchString: jest.fn().mockResolvedValue("user"),
 }));
 
-
-describe('AddTourScheduleModal', () => {
+describe("AddTourScheduleModal", () => {
     const onClose = jest.fn();
     const onPost = jest.fn();
 
@@ -34,8 +33,8 @@ describe('AddTourScheduleModal', () => {
         last_name: "string",
         phone_number: "string",
         region: [1],
-        role: 1
-    }
+        role: 1,
+    };
 
     beforeEach(() => {
         (getTourUsersFromRegion as jest.MockedFunction<typeof getTourUsersFromRegion>).mockResolvedValue({
@@ -49,10 +48,16 @@ describe('AddTourScheduleModal', () => {
 
     //isOpen should be true for the modal to be rendered, but this causes warnings that I have not been able to fix.
     //The warnings are related to the test and are not an bug in the component.
-    it('renders AddTourScheduleModal', async () => {
+    it("renders AddTourScheduleModal", async () => {
         await act(async () => {
-            render(<AddTourScheduleModal isOpen={false} onClose={onClose} onPost={onPost}
-                                         range={{start: new Date(), end: new Date()}}/>);
+            render(
+                <AddTourScheduleModal
+                    isOpen={false}
+                    onClose={onClose}
+                    onPost={onPost}
+                    range={{ start: new Date(), end: new Date() }}
+                />
+            );
         });
     });
 
