@@ -99,6 +99,7 @@ function EditScheduleEventModal({
                     !isEditable() &&
                     <>
                         <div className="m-2">U kunt planningen in het verleden niet meer bewerken.</div>
+                        <label>Bekijk de </label>
                         <Link style={{
                             textDecoration: "underline",
                             color: "royalblue",
@@ -108,7 +109,8 @@ function EditScheduleEventModal({
                                   query: {
                                       studentOnTour: event?.id,
                                   },
-                              }}>Bekijk de analyse van deze student</Link>
+                              }}> analyse </Link>
+                        <label> van deze student.</label>
                     </>
                 }
                 <Form style={isEditable() ? undefined : {pointerEvents: "none", opacity: 0.6}}>
