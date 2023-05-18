@@ -14,6 +14,7 @@ const PDFUploader: React.FC<Props> = ({ onUpload }) => {
             const file = event.target.files[0];
             if (file.type === "application/pdf") {
                 setSelectedFile(file);
+                onUpload(file);
             } else {
                 alert("Selecteer een PDF-bestand.");
             }
