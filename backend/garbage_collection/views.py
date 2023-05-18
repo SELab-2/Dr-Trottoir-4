@@ -189,15 +189,14 @@ class GarbageCollectionDuplicateView(DuplicationView):
         )
 
     def filter_instances_to_duplicate(
-            self, instances_to_duplicate, start_date_period: datetime, end_date_period: datetime,
-            start_date_copy: datetime
+        self, instances_to_duplicate, start_date_period: datetime, end_date_period: datetime, start_date_copy: datetime
     ):
         remaining_garbage_collections = []
         for gc in instances_to_duplicate:
             # offset the date by the start date difference
             copy_date = (datetime.combine(gc.date, datetime.min.time()) + (start_date_copy - start_date_period)).date()
             if not GarbageCollection.objects.filter(
-                    date=copy_date, building=gc.building, garbage_type=gc.garbage_type
+                date=copy_date, building=gc.building, garbage_type=gc.garbage_type
             ).exists():
                 remaining_garbage_collections.append((gc, copy_date))
         return remaining_garbage_collections

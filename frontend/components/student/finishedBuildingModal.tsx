@@ -1,18 +1,18 @@
-import {BuildingInterface} from "@/lib/building";
-import {Button, Modal} from "react-bootstrap";
-import React, {useEffect, useState} from "react";
-import {getRemarksOfStudentOnTourAtBuilding, RemarkAtBuilding} from "@/lib/remark-at-building";
-import {StudentOnTour} from "@/lib/student-on-tour";
-import {getPictureOfRemarkOfSpecificRemark, getPicturePath, PictureOfRemarkInterface} from "@/lib/picture-of-remark";
-import {FileList} from "@/components/student/fileList";
+import { BuildingInterface } from "@/lib/building";
+import { Button, Modal } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { getRemarksOfStudentOnTourAtBuilding, RemarkAtBuilding } from "@/lib/remark-at-building";
+import { StudentOnTour } from "@/lib/student-on-tour";
+import { getPictureOfRemarkOfSpecificRemark, getPicturePath, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
+import { FileList } from "@/components/student/fileList";
 
 export default function FinishedBuildingModal({
-                                                  show,
-                                                  onHide,
-                                                  studentOnTour,
-                                                  building,
-                                                  setBuilding,
-                                              }: {
+    show,
+    onHide,
+    studentOnTour,
+    building,
+    setBuilding,
+}: {
     show: boolean;
     onHide: () => void;
     studentOnTour: StudentOnTour | null;
@@ -80,8 +80,7 @@ export default function FinishedBuildingModal({
                                                     };
                                                 })}
                                                 optional={false}
-                                                setFiles={() => {
-                                                }}
+                                                setFiles={() => {}}
                                             />
                                         )}
                                     </div>

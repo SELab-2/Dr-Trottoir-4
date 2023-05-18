@@ -1,23 +1,23 @@
-import {TiPencil} from "react-icons/ti";
-import React, {useEffect, useState} from "react";
+import { TiPencil } from "react-icons/ti";
+import React, { useEffect, useState } from "react";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
-import {BuildingInterface} from "@/lib/building";
-import {getRegion} from "@/lib/region";
-import {useRouter} from "next/router";
+import { BuildingInterface } from "@/lib/building";
+import { getRegion } from "@/lib/region";
+import { useRouter } from "next/router";
 import ManualList from "@/components/manual/ManualList";
-import {handleError} from "@/lib/error";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {getAllBuildingCommentsByBuildingID} from "@/lib/building-comment";
+import { getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
 
 interface BuildingQuery {
     id?: string;
 }
 
 function BuildingInfo({
-                          building,
-                          setBuilding,
-                          type,
-                      }: {
+    building,
+    setBuilding,
+    type,
+}: {
     building: BuildingInterface;
     setBuilding: (b: any) => void;
     type: "syndic" | "admin" | "public";
@@ -123,13 +123,13 @@ function BuildingInfo({
                 ) : null}
             </h1>
 
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
 
             {type != "public" ? (
                 <div>
                     <h3>Algemene opmerking</h3>
                     <p>{buildingComment}</p>
-                    <br/>
+                    <br />
                 </div>
             ) : null}
 
@@ -160,12 +160,12 @@ function BuildingInfo({
                 </p>
             ) : null}
 
-            <br/>
+            <br />
 
             {query.id && type != "public" ? (
                 <>
                     <h3>Handleiding</h3>
-                    <ManualList id={query.id} type={type}/>
+                    <ManualList id={query.id} type={type} />
                 </>
             ) : null}
         </>

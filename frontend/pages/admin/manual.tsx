@@ -1,18 +1,15 @@
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import AdminHeader from "@/components/header/adminHeader";
 import ManualView from "@/components/manual/ManualView";
 
 function AdminManual() {
-
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
 
-            <ManualView/>
-
+            <ManualView />
         </>
     );
-
 }
 
 export default withAuthorisation(AdminManual, ["Admin"]);

@@ -22,7 +22,10 @@ from util.request_response_util import (
     delete_success,
     patch_docs,
     patch_success,
-    bad_request, get_boolean_param, param_docs, get_most_recent_param_docs,
+    bad_request,
+    get_boolean_param,
+    param_docs,
+    get_most_recent_param_docs,
 )
 
 
@@ -120,9 +123,10 @@ class BuildingCommentBuildingView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | OwnerOfBuilding | ReadOnlyStudent]
     serializer_class = BuildingCommentSerializer
 
-    @extend_schema(responses=get_docs(BuildingCommentSerializer),
-                   parameters=param_docs(get_most_recent_param_docs("BuildingComment")),
-                   )
+    @extend_schema(
+        responses=get_docs(BuildingCommentSerializer),
+        parameters=param_docs(get_most_recent_param_docs("BuildingComment")),
+    )
     def get(self, request, building_id):
         """
         Get all BuildingComments of building with given building id
@@ -136,7 +140,7 @@ class BuildingCommentBuildingView(APIView):
         building_comment_instances = BuildingComment.objects.filter(building_id=building_id)
 
         if most_recent_only:
-            building_comment_instances = building_comment_instances.order_by('-date').first()
+            building_comment_instances = building_comment_instances.order_by("-date").first()
 
         serializer = BuildingCommentSerializer(building_comment_instances, many=not most_recent_only)
 
