@@ -10,6 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -30,7 +33,8 @@ jobs:
           cd backend
           django-admin makemessages --all --ignore=env
           django-admin compilemessages --ignore=env
+
+      - name: Commit translation changes
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "Auto compile translation messages"
-          only_changed: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+            commit_message: "Auto compile translation messages"
