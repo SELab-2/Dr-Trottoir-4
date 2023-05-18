@@ -4,12 +4,9 @@ import {BuildingInterface} from "@/lib/building";
 import {getRegion} from "@/lib/region";
 import {useRouter} from "next/router";
 import {Button} from "react-bootstrap";
-import {IconButton} from "@mui/material";
-import { MdContentCopy } from 'react-icons/md';
 // @ts-ignore
 import {CopyToClipboard} from 'react-copy-to-clipboard';
-import { handleError } from "@/lib/error";
-import ErrorMessageAlert from "@/components/errorMessageAlert";
+import {handleError} from "@/lib/error";
 
 function BuildingInfo({
                           building,
@@ -52,6 +49,13 @@ function BuildingInfo({
         }
     }
 
+    function getPublicLink(fullLink = true) {
+        return (
+            (fullLink ? `${process.env.NEXT_PUBLIC_HOST}` : "") +
+            `/public/building?id=${building?.public_id ? building?.public_id : "<public_id>"}`
+        );
+    }
+
     return (
         <div>
             <div>
@@ -63,7 +67,6 @@ function BuildingInfo({
                         setBuilding={setBuilding}
                     />
                 )}
-
                 <label className="title">
                     Gebouw
                 </label>
@@ -87,18 +90,21 @@ function BuildingInfo({
                         <p>
                             <strong>Klant id:</strong> {building.client_number ? building.client_number : "-"}
                         </p>
-                        <div style={{display: 'flex', alignItems: 'center'}}>
-                            <p>
-                                <strong>Publiek id:</strong> {building && building.public_id ? building.public_id : "-"}
+                        {type != "public" ? (
+                            <p
+                                title={`De inwoners van het gebouw kunnen de info van dit gebouw raadplegen via de link: 
+                        ${getPublicLink()}`}
+                            >
+                                <strong>Publiek id:</strong><br/>
+                                {publicId ? (
+                                    <a href={getPublicLink(false)} target={"_blank"}>
+                                        {publicId}
+                                    </a>
+                                ) : (
+                                    publicId
+                                )}
                             </p>
-                            {building && building.public_id && (
-                                <CopyToClipboard text={building.public_id}>
-                                    <IconButton>
-                                        <MdContentCopy size={18}/>
-                                    </IconButton>
-                                </CopyToClipboard>
-                            )}
-                        </div>
+                        ) : null}
                     </div>
                 )}
                 {type === "syndic" && (
