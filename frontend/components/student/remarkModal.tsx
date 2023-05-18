@@ -51,20 +51,6 @@ export default function RemarkModal({
     useEffect(() => {
         if (selectedRemark) {
             setRemark(selectedRemark.remark);
-            getPictureOfRemarkOfSpecificRemark(selectedRemark.id)
-                .then((res) => {
-                    const pictures: PictureOfRemarkInterface[] = res.data;
-                    setRemarkFiles(
-                        pictures.map((picture) => {
-                            return {
-                                url: getPicturePath(picture.picture),
-                                pictureId: picture.id,
-                                file: null,
-                            };
-                        })
-                    );
-                })
-                .catch((_) => {});
         } else {
             setRemark("");
             setRemarkFiles([]);

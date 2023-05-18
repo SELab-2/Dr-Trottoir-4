@@ -1,23 +1,30 @@
-import { TiPencil } from "react-icons/ti";
-import React, { useEffect, useState } from "react";
+import {TiPencil} from "react-icons/ti";
+import React, {useEffect, useState} from "react";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
-import { BuildingInterface } from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { useRouter } from "next/router";
-import { handleError } from "@/lib/error";
+import {BuildingInterface} from "@/lib/building";
+import {getRegion} from "@/lib/region";
+import {useRouter} from "next/router";
+import ManualList from "@/components/manual/ManualList";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
+import {getAllBuildingCommentsByBuildingID} from "@/lib/building-comment";
+
+interface BuildingQuery {
+    id?: string;
+}
 
 function BuildingInfo({
-    building,
-    setBuilding,
-    type,
-}: {
+                          building,
+                          setBuilding,
+                          type,
+                      }: {
     building: BuildingInterface;
     setBuilding: (b: any) => void;
     type: "syndic" | "admin" | "public";
 }) {
     const router = useRouter();
+    const query = router.query as BuildingQuery;
+
     const [editBuilding, setEditBuilding] = useState(false);
     const [regionName, setRegionName] = useState("/");
     const [buildingComment, setBuildingComment] = useState<string>("Geen opmerkingen");
@@ -65,7 +72,7 @@ function BuildingInfo({
     function getBuildingComment() {
         getAllBuildingCommentsByBuildingID(building.id, true)
             .then((comment) => {
-                if (comment) {
+                if (comment.data.length > 0) {
                     setBuildingComment(comment.data.comment);
                 } else {
                     setBuildingComment("Geen opmerkingen");
@@ -75,6 +82,13 @@ function BuildingInfo({
                 setErrorMessages(handleError(error));
                 setBuildingComment("Geen opmerkingen");
             });
+    }
+
+    function getPublicLink(fullLink = true) {
+        return (
+            (fullLink ? `${process.env.NEXT_PUBLIC_HOST}` : "") +
+            `/public/building?id=${building?.public_id ? building?.public_id : "<public_id>"}`
+        );
     }
 
     return (
@@ -109,13 +123,13 @@ function BuildingInfo({
                 ) : null}
             </h1>
 
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
 
             {type != "public" ? (
                 <div>
                     <h3>Algemene opmerking</h3>
                     <p>{buildingComment}</p>
-                    <br />
+                    <br/>
                 </div>
             ) : null}
 
@@ -126,10 +140,34 @@ function BuildingInfo({
             <p>Straat: {get_building_key("street")}</p>
             <p>Nr: {get_building_key("house_number")}</p>
             <p>Bus: {get_building_key("bus")}</p>
-            <p>Region: {regionName} </p>
+            <p>Regio: {regionName} </p>
             <p>Werktijd: {get_building_key("duration")}</p>
             <p>Client id: {get_building_key("client_id")}</p>
-            <p>Public id: {get_building_key("public_id")}</p>
+
+            {type != "public" ? (
+                <p
+                    title={`De inwoners van het gebouw kunnen de info van dit gebouw raadplegen via de link: 
+                        ${getPublicLink()}`}
+                >
+                    Public id:{" "}
+                    {building?.public_id ? (
+                        <a href={getPublicLink(false)} target={"_blank"}>
+                            {get_building_key("public_id")}
+                        </a>
+                    ) : (
+                        get_building_key("public_id")
+                    )}
+                </p>
+            ) : null}
+
+            <br/>
+
+            {query.id && type != "public" ? (
+                <>
+                    <h3>Handleiding</h3>
+                    <ManualList id={query.id} type={type}/>
+                </>
+            ) : null}
         </>
     );
 }

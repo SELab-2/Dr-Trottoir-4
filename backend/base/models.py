@@ -13,10 +13,11 @@ from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
 from users.managers import UserManager
+from util.request_response_util import get_unique_uuid
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
-MAX_INT = 2 ** 31 - 1
+MAX_INT = 2**31 - 1
 
 
 class Region(models.Model):
@@ -135,7 +136,7 @@ class Building(models.Model):
             raise ValidationError(_("The house number of the building must be positive and not zero."))
 
         # With this if, a building is not required to have a syndic. If a syndic should be required, blank has to be False
-        # If this if is removed, an internal server error will be thrown since youll try to access a non existing attribute of type 'NoneType'
+        # If this if is removed, an internal server error will be thrown since you'll try to access a non existing attribute of type 'NoneType'
         if self.syndic:
             user = self.syndic
             if user.role.name.lower() != "syndic":
@@ -147,6 +148,9 @@ class Building(models.Model):
                 raise ValidationError(
                     _("{public_id} already exists as public_id of another building").format(public_id=self.public_id)
                 )
+        # If no public_id is initialized, a random one should be generated
+        else:
+            self.public_id = get_unique_uuid(lambda p_id: Building.objects.filter(public_id=p_id).exists())
 
     class Meta:
         constraints = [
@@ -455,9 +459,9 @@ class Manual(models.Model):
         max_version_number = max(version_numbers)
 
         if (
-                self.version_number == 0
-                or self.version_number > max_version_number + 1
-                or self.version_number in version_numbers
+            self.version_number == 0
+            or self.version_number > max_version_number + 1
+            or self.version_number in version_numbers
         ):
             self.version_number = max_version_number + 1
 
