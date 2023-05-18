@@ -107,15 +107,6 @@
 },
 {
     "model": "base.role",
-    "pk": 1,
-    "fields": {
-        "name": "Default",
-        "rank": 2147483647,
-        "description": "The default role"
-    }
-},
-{
-    "model": "base.role",
     "pk": 2,
     "fields": {
         "name": "Admin",
