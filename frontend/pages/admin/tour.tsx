@@ -3,6 +3,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from "react-datepicker";
 import { getAllTours, getTour, Tour } from "@/lib/tour";
 import {
+    getStudentOnTourAllProgressWS,
     getStudentOnTourIndividualProgressWS,
     getStudentOnTourIndividualRemarkWS,
     getToursOfStudent,
@@ -38,13 +39,17 @@ interface ProgressWebSocketResponse {
     current_building_index: number;
 }
 
+interface AllWebSocketsResponse {
+    state: string;
+    student_on_tour_id: number;
+}
+
 function AdminTour() {
     const router = useRouter();
     const [allToursOfStudent, setAllToursOfStudent] = useState<StudentOnTour[]>([]);
     const [allBuildingsOnTour, setAllBuildingsOnTour] = useState<BuildingOnTour[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [selectedStudentId, setSelectedStudentId] = useState<number>(0);
-    //const [selectedStudent, setSelectedStudent] = useState<User | null>(null);
     const [selectedTourId, setSelectedTourId] = useState<number>(0);
     const [selectedTourName, setSelectedTourName] = useState<string>("");
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -109,7 +114,7 @@ function AdminTour() {
                 if (currentBuildingIndex > buildingIndex) {
                     returnText = "Afgewerkt";
                 } else if (currentBuildingIndex === buildingIndex) {
-                    returnText = "Bezig";
+                    returnText = (sotObject.sot.completed_tour) ? "Afgewerkt" : "Bezig";
                 }
             }
         }
@@ -186,7 +191,6 @@ function AdminTour() {
         });
 
         wsRemarks.addEventListener("message", (event) => {
-            console.log(JSON.parse(event.data));
             const data: RemarkAtBuildingInterface = JSON.parse(event.data);
             const remark = data.remark || null;
             if (remark) {
@@ -201,6 +205,19 @@ function AdminTour() {
         });
 
         return { wsProgress, wsRemarks };
+    };
+
+    const setupWebSocketForAllStudentOnTours = () => {
+        const ws = getStudentOnTourAllProgressWS();
+
+        ws.addEventListener("message", (event) => {
+        const data: AllWebSocketsResponse = JSON.parse(event.data);
+        if (data.state === "completed") {
+            setRefreshKey((prevKey) => prevKey + 1); // retrigger useEffects
+        }
+        });
+
+        return ws;
     };
 
     // First, fetch all students when the router is ready.
@@ -221,9 +238,13 @@ function AdminTour() {
                 if (query.student) {
                     currentStudent = students.find((e) => e.id === +[query.student]) || students[0];
                 }
-                //setSelectedStudent(currentStudent);
-                console.log(currentStudent);
                 setSelectedStudentId(currentStudent.id);
+
+                const ws = setupWebSocketForAllStudentOnTours();
+
+                return () => {
+                    ws.close();
+                }
             });
         } catch (error) {
             console.error(error);
@@ -245,7 +266,6 @@ function AdminTour() {
                 if (query.tour) {
                     currentSot = sots.find((e) => e.tour === +[query.tour]) || sots[0];
                 }
-                console.log(currentSot);
                 setSelectedTourId(currentSot.tour);
 
                 updateValidDates(sots, currentSot.tour);
