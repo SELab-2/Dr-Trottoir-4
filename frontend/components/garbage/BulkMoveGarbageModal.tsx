@@ -81,8 +81,9 @@ export default function BulkMoveGarbageModal({
                         />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Type:</Form.Label>
+                        <Form.Label id={"type"}>Type:</Form.Label>
                         <Select
+                            aria-labelledby={"type"}
                             options={Object.keys(garbageTypes).map((key: string) => {
                                 const v = garbageTypes[key];
                                 return {value: v, label: v};

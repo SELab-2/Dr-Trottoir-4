@@ -6,6 +6,7 @@ import {
     getAllGarbageCollectionChanges,
     getGarbageCollectionFromBuilding,
     getGarbageColor,
+    patchGarbageCollection,
 } from "@/lib/garbage-collection";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
@@ -33,6 +34,9 @@ import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import BulkMoveGarbageModal from "@/components/garbage/BulkMoveGarbageModal";
 import { AxiosResponse } from "axios";
+import withDragAndDrop, { EventInteractionArgs } from "react-big-calendar/lib/addons/dragAndDrop";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
 import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 
 interface ParsedUrlQuery {}
@@ -357,6 +361,18 @@ function GarbageCollectionSchedule() {
         );
     }
 
+    function dragAndDrop(args: EventInteractionArgs<object>): void {
+        const { event, start } = args;
+        const garbageCollectionEvent: GarbageCollectionEvent = event as GarbageCollectionEvent;
+        patchGarbageCollection(garbageCollectionEvent.id, { date: formatDate(new Date(start)) }).then(
+            (res) => {
+                const g: GarbageCollectionInterface = res.data;
+                onPatch(g);
+            },
+            (err) => setErrorMessages(handleError(err))
+        );
+    }
+
     // Closes the duplicate modal
     function closeDuplicateModal() {
         setShowDuplicateModal(false);
@@ -386,6 +402,9 @@ function GarbageCollectionSchedule() {
         },
     });
 
+    const DnDCalendar = withDragAndDrop(Calendar);
+
+    // @ts-ignore
     return (
         <>
             <AdminHeader />
@@ -449,10 +468,10 @@ function GarbageCollectionSchedule() {
                 </div>
             </div>
 
-            <Calendar
+            <DnDCalendar
                 messages={messages}
                 culture={"nl-BE"}
-                defaultView="month"
+                defaultView="week"
                 events={garbageCollection.map((g) => {
                     const s: Date = new Date(g.date);
                     let e = addDays(s, 1);
@@ -469,13 +488,15 @@ function GarbageCollectionSchedule() {
                     return event;
                 })}
                 components={{
+                    //@ts-ignore
                     event:
                         buildingList.length > 1
                             ? GarbageCollectionEventComponentWithAddress
                             : GarbageCollectionEventComponentWithoutAddress,
                 }}
                 localizer={loc}
-                eventPropGetter={(event) => {
+                eventPropGetter={(e) => {
+                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
                     const backgroundColor = getGarbageColor(event.garbageType);
                     return { style: { backgroundColor, color: "black" } };
                 }}
@@ -488,7 +509,8 @@ function GarbageCollectionSchedule() {
                     setSelectedDate(slotInfo.start);
                     setShowEditModal(true);
                 }}
-                onSelectEvent={(event: GarbageCollectionEvent) => {
+                onSelectEvent={(e) => {
+                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
                     if (buildingList.length <= 0) {
                         return;
                     }
@@ -499,8 +521,9 @@ function GarbageCollectionSchedule() {
                     setSelectedEvent(event);
                     setShowEditModal(true);
                 }}
+                onEventDrop={dragAndDrop}
                 onRangeChange={getFromRange}
-                views={["month", "week"]}
+                views={["week"]}
                 style={{ height: "100vh" }}
                 step={60}
                 timeslots={1}

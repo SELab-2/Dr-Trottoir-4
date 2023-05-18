@@ -41,7 +41,7 @@ const PhotoSelector = ({ photos, onSelectionChange }: PhotoSelectorProps) => {
                                 style={{ border: isSelected(photo) ? "3px solid blue" : "none" }}
                                 onClick={() => toggleSelection(photo)}
                             >
-                                <Image src={photo} thumbnail fluid />
+                                <Image src={photo} thumbnail fluid alt={photo} />
                             </div>
                         </Col>
                     ))}
