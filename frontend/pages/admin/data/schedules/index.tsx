@@ -1,11 +1,12 @@
 import AdminHeader from "@/components/header/adminHeader";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { getAllTours, Tour } from "@/lib/tour";
-import { getTourUsersFromRegion, User } from "@/lib/user";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {getAllTours, Tour} from "@/lib/tour";
+import {getTourUsersFromRegion, User} from "@/lib/user";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import Loading from "@/components/loading";
 import ScheduleCalendar from "@/components/calendar/scheduleCalendar";
+import {handleError} from "@/lib/error";
 
 function AdminDataSchedule() {
     const router = useRouter();
@@ -26,7 +27,7 @@ function AdminDataSchedule() {
                 setAllTourUsers(res.data);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }
@@ -39,19 +40,19 @@ function AdminDataSchedule() {
                 setAllTours(tours);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }
 
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             {loading ? (
-                <Loading />
+                <Loading/>
             ) : (
                 <div>
-                    <ScheduleCalendar tourUsers={allTourUsers} tours={allTours} />
+                    <ScheduleCalendar tourUsers={allTourUsers} tours={allTours}/>
                 </div>
             )}
         </>

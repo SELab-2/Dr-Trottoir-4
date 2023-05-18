@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+    duplicateGarbageCollectionSchedule,
     GarbageCollectionInterface,
     garbageTypes,
     getGarbageCollectionFromBuilding,
@@ -18,7 +19,6 @@ import { add, addDays, endOfMonth, startOfMonth, sub } from "date-fns";
 import { useRouter } from "next/router";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
-import DuplicateGarbageCollectionModal from "@/components/garbage/duplicateGarbageCollectionModal";
 import { Button } from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
 import { GarbageCollectionEvent } from "@/types";
@@ -28,7 +28,11 @@ import { getBuildingsOfTour } from "@/lib/tour";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import BulkOperationModal from "@/components/garbage/BulkOperationModal";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import BulkMoveGarbageModal from "@/components/garbage/BulkMoveGarbageModal";
+import { AxiosResponse } from "axios";
+import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 
 interface ParsedUrlQuery {}
 
@@ -63,9 +67,11 @@ function GarbageCollectionSchedule() {
     const [showBuildingListModal, setShowBuildingListModal] = useState<boolean>(false);
 
     // The bulk operation modal
-    const [showBulkOperationModal, setShowBulkOperationModal] = useState<boolean>(false);
+    const [showBulkMoveModal, setShowBulkMoveModal] = useState<boolean>(false);
 
     const [buildingList, setBuildingList] = useState<BuildingInterface[]>([]);
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         const query: DataBuildingQuery = router.query as DataBuildingQuery;
@@ -88,7 +94,7 @@ function GarbageCollectionSchedule() {
             if (query.region) {
                 addBuildingsOfRegion(d, query.region);
             }
-        }, console.error);
+        }, err => setErrorMessages(handleError(err)));
     }, [router.isReady]);
 
     // Add the searched building to the list
@@ -127,7 +133,7 @@ function GarbageCollectionSchedule() {
             setGarbageCollection((prevState) => {
                 return [...prevState, ...data];
             });
-        }, console.error);
+        }, err => setErrorMessages(handleError(err)));
     }
 
     // Adds the garbage schedule for all the buildings of a given tour
@@ -140,7 +146,7 @@ function GarbageCollectionSchedule() {
                 return newState;
             });
             addBuildingsToList(buildings);
-        }, console.error);
+        }, err => setErrorMessages(handleError(err)));
     }
 
     function addBuildingsToList(buildings: BuildingInterface[]) {
@@ -165,7 +171,7 @@ function GarbageCollectionSchedule() {
             setGarbageCollection((prevState) => {
                 return [...prevState, ...data];
             });
-        }, console.error);
+        }, err => setErrorMessages(handleError(err)));
     }
 
     // Remove a building from the schedule
@@ -216,7 +222,7 @@ function GarbageCollectionSchedule() {
                 const newState: GarbageCollectionInterface[] = [...prevState];
                 return newState.filter((g) => !tourBuildings.some((b) => g.building === b.id));
             });
-        }, console.error);
+        }, err => setErrorMessages(handleError(err)));
     }
 
     // Get the garbage collection schedule from a date range
@@ -239,7 +245,7 @@ function GarbageCollectionSchedule() {
                 const data = g.map((el) => el.data).flat();
                 setGarbageCollection(data);
             },
-            console.error
+            err => setErrorMessages(handleError(err))
         );
     }
 
@@ -281,6 +287,19 @@ function GarbageCollectionSchedule() {
         });
     }
 
+    async function duplicateSchedule(
+        startDate: string,
+        endDate: string,
+        copyToDate: string
+    ): Promise<AxiosResponse<any, any>> {
+        return await duplicateGarbageCollectionSchedule(
+            startDate,
+            endDate,
+            copyToDate,
+            buildingList.map((b) => b.id)
+        );
+    }
+
     // Closes the duplicate modal
     function closeDuplicateModal() {
         setShowDuplicateModal(false);
@@ -288,7 +307,7 @@ function GarbageCollectionSchedule() {
     }
 
     function closeBulkOperationModal() {
-        setShowBulkOperationModal(false);
+        setShowBulkMoveModal(false);
         getFromRange(currentRange);
     }
 
@@ -313,15 +332,18 @@ function GarbageCollectionSchedule() {
     return (
         <>
             <AdminHeader />
-            <DuplicateGarbageCollectionModal
+            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+            <DuplicateScheduleModal
                 closeModal={closeDuplicateModal}
                 show={showDuplicateModal}
-                buildings={buildingList}
+                onSubmit={duplicateSchedule}
+                weekStartsOn={1}
+                title="Dupliceer vuilophaling schema voor geselecteerde gebouwen"
             />
-            <BulkOperationModal
+            <BulkMoveGarbageModal
                 buildings={buildingList}
                 closeModal={closeBulkOperationModal}
-                show={showBulkOperationModal}
+                show={showBulkMoveModal}
             />
             <GarbageEditModal
                 closeModal={closeEditModal}
@@ -350,7 +372,7 @@ function GarbageCollectionSchedule() {
                         </Button>
                     </div>
                     <div className="col">
-                        <Button variant="primary" className="btn-dark" onClick={() => setShowBulkOperationModal(true)}>
+                        <Button variant="primary" className="btn-dark" onClick={() => setShowBulkMoveModal(true)}>
                             Verplaats ophaling
                         </Button>
                     </div>

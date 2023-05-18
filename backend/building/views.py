@@ -134,7 +134,7 @@ class BuildingNewPublicId(APIView):
 
         self.check_object_permissions(request, building_instance)
 
-        building_instance.public_id = get_unique_uuid()
+        building_instance.public_id = get_unique_uuid(lambda p_id: Building.objects.filter(public_id=p_id).exists())
 
         if r := try_full_clean_and_save(building_instance):
             return r

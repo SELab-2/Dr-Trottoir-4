@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import collections
 import os
-import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -144,7 +143,8 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "csp.middleware.CSPMiddleware",
     "django.middleware.locale.LocaleMiddleware",
 ]
 
@@ -267,6 +267,33 @@ MEDIA_URL = "/media/"
 # allow upload big file
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 20  # 20M
 FILE_UPLOAD_MAX_MEMORY_SIZE = DATA_UPLOAD_MAX_MEMORY_SIZE
+
+# Used for embedding PDFs
+# X_FRAME_OPTIONS = "SAMEORIGIN"
+# X_FRAME_OPTIONS = f'ALLOW-FROM {"http://localhost/" if os.environ["ENVIRONMENT"] == "development" else "https://sel2-4.ugent.be"}'
+CSP_FRAME_ANCESTORS = (
+    "'self'",
+    "http://localhost:2002",
+    "http://localhost",
+    "https://sel2-4.ugent.be",
+    "https://sel2-4.ugent.be:2002",
+)
+CSP_DEFAULT_SRC = (
+    "'self'",
+    "http://localhost:2002",
+    "http://localhost",
+    "https://sel2-4.ugent.be",
+    "https://sel2-4.ugent.be:2002",
+    "https://*.jsdelivr.net",
+    "data:",
+)
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "https://*.jsdelivr.net",
+    "'unsafe-inline'",
+    # "'unsafe-eval'"
+)
+CSP_STYLE_SRC_ELEM = ("'self'", "https://*.jsdelivr.net", "'unsafe-inline'")
 
 # to support websockets
 ASGI_APPLICATION = "config.asgi.application"

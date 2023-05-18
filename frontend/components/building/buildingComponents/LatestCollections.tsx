@@ -1,8 +1,13 @@
 import { GarbageCollectionInterface, getGarbageCollectionFromBuilding } from "@/lib/garbage-collection";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import { convertToSensibleDateShort } from "@/lib/dateUtil";
 
 function LatestCollections({ building }: { building: number }) {
     const [collections, setCollections] = useState<GarbageCollectionInterface[]>([]);
+
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (building) {
@@ -17,34 +22,49 @@ function LatestCollections({ building }: { building: number }) {
             })
                 .then((res) => {
                     setCollections(res.data);
+                    setErrorMessages([]);
                 })
                 .catch((error) => {
-                    //TODO: generieke functie nodig voor error messages
-                    //  De error message zou dan kunnen pop uppen in een modal
-                    console.error(error);
+                    setErrorMessages(handleError(error));
                 });
         }
     }, [building]);
 
+    function getNewBuildingDateUrl(date: Date) {
+        const url = new URL(window.location.href);
+        const queryParams = new URLSearchParams(url.search);
+        queryParams.set("date", date + "");
+        url.search = queryParams.toString();
+        return url.toString();
+    }
+
     return (
-        <div style={{ height: "100%", overflowY: "scroll" }}>
-            <h1>Recente ophalingen</h1>
-            {collections.length > 0 ? (
-                <ul>
-                    {collections.map((collection: GarbageCollectionInterface) => (
-                        <li key={collection.id}>
-                            <>
-                                Type: {collection.garbage_type} <br />
-                                Datum: {collection.date}
-                                <br />
-                            </>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>Er zijn geen ophalingen gevonden in de voorbije maand.</p>
-            )}
-        </div>
+        <>
+            <div style={{ height: "100%", overflowY: "scroll" }}>
+                <h1>Recente ophalingen</h1>
+
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+
+                {collections.length > 0 ? (
+                    <ul>
+                        {collections.map((collection: GarbageCollectionInterface) => (
+                            <li key={collection.id}>
+                                <>
+                                    Type: {collection.garbage_type} <br />
+                                    Datum:&nbsp;
+                                    <a href={getNewBuildingDateUrl(collection.date)}>
+                                        {convertToSensibleDateShort(collection.date)}
+                                    </a>
+                                    <br />
+                                </>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>Er zijn geen ophalingen gevonden in de voorbije maand.</p>
+                )}
+            </div>
+        </>
     );
 }
 
