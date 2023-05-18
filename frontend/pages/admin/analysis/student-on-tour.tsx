@@ -235,7 +235,7 @@ function AnalysisStudentOnTour() {
                                                     {building ? getAddress(building) : ""}
                                                 </label> <br/>
                                                 <label className="small_text"
-                                                       style={{paddingTop: '0px'}}>
+                                                       style={{paddingTop: '0px', marginRight: '10px'}}>
                                                     {getTimeIntervalString(
                                                         new Date(analysis.arrival_time),
                                                         new Date(analysis.departure_time)
@@ -243,7 +243,7 @@ function AnalysisStudentOnTour() {
                                                 </label>
                                             </Col>
                                             <Col md={3}>
-                                                <div style={{marginTop: '10px'}}>
+                                                <div style={{marginTop: '10px', paddingLeft: '10px'}}>
                                                     <Link
                                                         style={{fontSize: '14px'}}
                                                         className="link"
@@ -260,7 +260,7 @@ function AnalysisStudentOnTour() {
                                                 </div>
                                             </Col>
                                         </Row>
-                                        <div style={{paddingBottom: '10px'}}>
+                                        <div style={{paddingTop: '5px', paddingBottom: '10px'}}>
                                             <Tooltip
                                                 title={
                                                     <div>
