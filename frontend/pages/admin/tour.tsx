@@ -385,6 +385,8 @@ function AdminTour() {
                                     const durationInSeconds = ba ? ba.duration_in_seconds : 0;
                                     const expectedDurationInSeconds = ba ? ba.expected_duration_in_seconds : 0;
                                     const timeColor = getSpentTimeColor(expectedDurationInSeconds, durationInSeconds);
+                                    const buildingStatus = getBuildingStatus(building.id);
+                                    const isDone = buildingStatus === "Afgewerkt";
                                     return (
                                         <tr key={building.id}>
                                             <td
@@ -396,8 +398,8 @@ function AdminTour() {
                                                     : `Gebouw ${getBuildingIndex(building.id)}`}
                                             </td>
                                             <td>{getAddress(building)}</td>
-                                            <td>{getBuildingStatus(building.id)}</td>
-                                            <td>{getDepartureTimeString(building.id)}</td>
+                                            <td>{buildingStatus}</td>
+                                            <td>{isDone ? getDepartureTimeString(building.id) : ""}</td>
                                             <td
                                                 style={{
                                                     textDecoration: "underline",
@@ -406,9 +408,7 @@ function AdminTour() {
                                                 }}
                                                 onClick={goToAnalysisPage}
                                             >
-                                                {getBuildingStatus(building.id) === "Afgewerkt"
-                                                    ? secondsToTime(durationInSeconds)
-                                                    : ""}
+                                                {isDone ? secondsToTime(durationInSeconds) : ""}
                                             </td>
                                             <td
                                                 style={{ textDecoration: "underline", cursor: "pointer" }}
