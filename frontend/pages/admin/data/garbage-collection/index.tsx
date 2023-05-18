@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     duplicateGarbageCollectionSchedule,
     GarbageCollectionInterface,
     garbageTypes,
+    getAllGarbageCollectionChanges,
     getGarbageCollectionFromBuilding,
     getGarbageColor,
     patchGarbageCollection,
@@ -22,7 +23,7 @@ import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
 import { Button } from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
-import { GarbageCollectionEvent } from "@/types";
+import { GarbageCollectionEvent, GarbageCollectionWebSocketInterface } from "@/types";
 import GarbageCollectionEventComponentWithAddress from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
 import GarbageCollectionEventComponentWithoutAddress from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
 import { getBuildingsOfTour } from "@/lib/tour";
@@ -73,8 +74,19 @@ function GarbageCollectionSchedule() {
     const [showBulkMoveModal, setShowBulkMoveModal] = useState<boolean>(false);
 
     const [buildingList, setBuildingList] = useState<BuildingInterface[]>([]);
-
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
+    const garbageCollectionRef = useRef(garbageCollection);
+    const buildingListRef = useRef(buildingList);
+    const rangeRef = useRef(currentRange);
+
+    useEffect(() => {
+        garbageCollectionRef.current = garbageCollection;
+    }, [garbageCollection]);
+
+    useEffect(() => {
+        buildingListRef.current = buildingList;
+    }, [buildingList]);
 
     useEffect(() => {
         const query: DataBuildingQuery = router.query as DataBuildingQuery;
@@ -104,6 +116,34 @@ function GarbageCollectionSchedule() {
             (err) => setErrorMessages(handleError(err))
         );
     }, [router.isReady]);
+
+    useEffect(() => {
+        setUpWebsocket();
+    }, [allBuildings]);
+
+    function setUpWebsocket() {
+        getAllGarbageCollectionChanges().addEventListener("message", (event) => {
+            const data: GarbageCollectionWebSocketInterface = JSON.parse(event.data);
+            const g: GarbageCollectionInterface = data.garbage_collection;
+            if (rangeRef.current.start <= new Date(g.date) && new Date(g.date) <= rangeRef.current.end) {
+                if (!buildingListRef.current.some((b) => b.id === g.building)) {
+                    return;
+                }
+                if (data.type === "deleted") {
+                    onDelete(g.id);
+                } else {
+                    const obj: GarbageCollectionInterface | undefined = garbageCollectionRef.current.find(
+                        (col) => col.id === Number(g.id)
+                    );
+                    if (obj) {
+                        onPatch({ ...g, date: new Date(g.date) });
+                    } else {
+                        onPost([{ ...g, date: new Date(g.date) }]);
+                    }
+                }
+            }
+        });
+    }
 
     // Add the searched building to the list
     useEffect(() => {
@@ -291,7 +331,7 @@ function GarbageCollectionSchedule() {
     // After a successful post of an event, add it to the collections list
     function onPost(g: GarbageCollectionInterface[]) {
         setGarbageCollection((prevState) => {
-            return [...prevState, ...g];
+            return [...prevState, ...g.filter((col) => !prevState.some((gar) => gar.id === col.id))];
         });
     }
 
@@ -459,7 +499,7 @@ function GarbageCollectionSchedule() {
                     const backgroundColor = getGarbageColor(event.garbageType);
                     return { style: { backgroundColor, color: "black" } };
                 }}
-                drilldownView={null}
+                drilldownView="week"
                 selectable
                 onSelectSlot={(slotInfo) => {
                     if (buildingList.length <= 0) {

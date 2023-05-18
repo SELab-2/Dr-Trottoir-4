@@ -95,6 +95,10 @@ input:focus {
     word-wrap: break-word;
 }
 
+.rbc-event {
+    min-height: 60px;
+}
+
 /* Style for all icons */
 .icon {
     display: inline-block;
