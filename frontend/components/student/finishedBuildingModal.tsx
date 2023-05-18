@@ -9,12 +9,12 @@ import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function FinishedBuildingModal({
-    show,
-    onHide,
-    studentOnTour,
-    building,
-    setBuilding,
-}: {
+                                                  show,
+                                                  onHide,
+                                                  studentOnTour,
+                                                  building,
+                                                  setBuilding,
+                                              }: {
     show: boolean;
     onHide: () => void;
     studentOnTour: StudentOnTour | null;
@@ -88,7 +88,8 @@ export default function FinishedBuildingModal({
                                                     };
                                                 })}
                                                 optional={false}
-                                                setFiles={() => {}}
+                                                setFiles={() => {
+                                                }}
                                             />
                                         )}
                                     </div>
