@@ -19,6 +19,7 @@ from util.request_response_util import (
     delete_success,
     patch_docs,
     patch_success,
+    bad_request,
 )
 
 TRANSLATE = {"building": "building_id"}
@@ -34,6 +35,8 @@ class DefaultBuildingComment(APIView):
         Create a new BuildingComment. If no date is set, the current date and time will be used.
         """
         data = request_to_dict(request.data)
+        if len(data) == 0:
+            return bad_request("BuildingComment")
 
         building_comment_instance = BuildingComment()
 
