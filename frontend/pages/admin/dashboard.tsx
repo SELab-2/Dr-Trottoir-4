@@ -16,7 +16,6 @@ import Loading from "@/components/loading";
 import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/system";
-import LiveField from "@/components/liveField";
 import { getAllRemarksOfStudentOnTour } from "@/lib/remark-at-building";
 
 interface IndividualProgressWebSocketsResponse {
@@ -66,6 +65,8 @@ function AdminDashboard() {
         Record<string, number>
     >({});
 
+    const [completionRecord, setCompletionRecord] = useState<Record<number, boolean>>({});
+
     const getRemarkText = (numberOfRemarks: number): string => {
         if (numberOfRemarks === 0) {
             return "Geen opmerkingen";
@@ -79,6 +80,23 @@ function AdminDashboard() {
         return `${numberOfRemarks} opmerking${extension}`;
     };
 
+    const getProgress = (studentOnTourId: number) => {
+        const maxIndex = maxBuildingIndex[studentOnTourId];
+
+        if (!maxIndex) {
+            return 0;
+        }
+
+        const currentIndex = currentBuildingIndex[studentOnTourId];
+        const completed = completionRecord[studentOnTourId];
+
+        if (completed) {
+            return (currentIndex / maxIndex) * 100;
+        } else {
+            return ((currentIndex - 1) / maxIndex) * 100;
+        }
+    }
+
     const setupWebSocketForAllStudentOnTours = () => {
         const ws = getStudentOnTourAllProgressWS();
 
@@ -89,6 +107,15 @@ function AdminDashboard() {
             ...prevState,
             data.student_on_tour_id,
             ]);
+        }
+
+        if (data.state === "completed") {
+            setCompletionRecord((prevState) => {
+                return {
+                    ...prevState,
+                    [data.student_on_tour_id]: true,
+                };
+            });
         }
         });
 
@@ -209,6 +236,8 @@ function AdminDashboard() {
         if (!studentsOnTours.length) return;
         const webSocketConnections: WebSocket[] = [];
         const newRemarks: Record<string, number> = {};
+        let completionStatus: Record<number, boolean> = {};
+
         studentsOnTours.forEach(async (studentOnTour) => {
             await setInitialData(studentOnTour.id);
             const {wsProgress, wsRemarks} = setupWebSocketForIndividualStudentOnTour(studentOnTour.id);
@@ -217,7 +246,11 @@ function AdminDashboard() {
             if (studentOnTour.started_tour) {
                 setStartedStudentOnTourIds((prevState) => [...prevState, studentOnTour.id]);
             }
+            
+            completionStatus[studentOnTour.id] = studentOnTour.completed_tour !== null;
         });
+
+        setCompletionRecord(completionStatus);
         
         const wsAll = setupWebSocketForAllStudentOnTours();
         
@@ -296,9 +329,7 @@ function AdminDashboard() {
                             <GreenLinearProgress
                             variant="determinate"
                             value={
-                                (currentBuildingIndex[studentOnTour.id] /
-                                maxBuildingIndex[studentOnTour.id]) *
-                                100 || 0
+                                getProgress(studentOnTour.id)
                             }
                             />
                         </Box>
@@ -341,11 +372,7 @@ function AdminDashboard() {
                                         <Box sx={{ width: "100%" }}>
                                             <GreenLinearProgress
                                             variant="determinate"
-                                            value={
-                                                (currentBuildingIndex[studentOnTour.id] /
-                                                maxBuildingIndex[studentOnTour.id]) *
-                                                100 || 0
-                                            }
+                                            value={0}
                                             />
                                         </Box>
                                         </td>

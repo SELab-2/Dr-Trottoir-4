@@ -26,7 +26,10 @@ import {
     RemarkAtBuilding,
     RemarkAtBuildingInterface,
 } from "@/lib/remark-at-building";
+import LinearProgress from "@mui/material/LinearProgress";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
+import Box from "@mui/material/Box";
+import { styled } from "@mui/system";
 
 interface ParsedUrlQuery {}
 
@@ -44,6 +47,14 @@ interface AllWebSocketsResponse {
     student_on_tour_id: number;
 }
 
+const GreenLinearProgress = styled(LinearProgress)(() => ({
+    height: "20px",
+    backgroundColor: "#c8e6c9", // Light green background color
+    "& .MuiLinearProgress-bar": {
+        backgroundColor: "#4caf50", // Main green progress bar color
+    },
+}));
+
 function AdminTour() {
     const router = useRouter();
     const [allToursOfStudent, setAllToursOfStudent] = useState<StudentOnTour[]>([]);
@@ -57,9 +68,11 @@ function AdminTour() {
     const [analysis, setAnalysis] = useState<BuildingAnalysis[]>([]);
     const [remarksRecord, setRemarksRecord] = useState<Record<number, string[]>>({});
     const [currentBuildingIndex, setCurrentBuildingIndex] = useState(0);
+    const [maxBuildingIndex, setMaxBuildingIndex] = useState(0);
     const [refreshKey, setRefreshKey] = useState(0);
     const [validTourUser, setValidTourUser] = useState(true);
     const [usersRecord, setUsersRecord] = useState<Record<number, User>>({});
+    const [completionRecord, setCompletionRecord] = useState<Record<number, boolean>>({});
 
     const query: DataAdminTourQuery = router.query as DataAdminTourQuery;
     const [loading, setLoading] = useState(true);
@@ -88,13 +101,25 @@ function AdminTour() {
         }
     };
 
+    const getProgress = () => {
+        if (!maxBuildingIndex) {
+            return 0;
+        }
+        const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
+        if (sotObject && completionRecord[sotObject.sot.id]) {
+            return (currentBuildingIndex / maxBuildingIndex) * 100;
+        }
+
+        return ((currentBuildingIndex - 1) / maxBuildingIndex) * 100;
+    }
+
     const getStudentOnTour = (sots: StudentOnTour[], tourId: number, date: Date) => {
         const sot = sots.find(
             (sot) =>
                 sot.tour === tourId &&
                 new Date(sot.date).toISOString().split("T")[0] === new Date(date).toISOString().split("T")[0]
         );
-        return sot ? { sot, current_building_index: sot.current_building_index } : null;
+        return sot ? { sot, current_building_index: sot.current_building_index, max_building_index: sot.max_building_index } : null;
     };
 
     const getBuildingIndex = (buildingId: number) => {
@@ -213,6 +238,12 @@ function AdminTour() {
         ws.addEventListener("message", (event) => {
         const data: AllWebSocketsResponse = JSON.parse(event.data);
         if (data.state === "completed") {
+            setCompletionRecord((prevState) => {
+                return {
+                    ...prevState,
+                    [data.student_on_tour_id]: true,
+                };
+            });
             setRefreshKey((prevKey) => prevKey + 1); // retrigger useEffects
         }
         });
@@ -256,19 +287,30 @@ function AdminTour() {
     // Also change the validDates
     useEffect(() => {
         if (!selectedStudentId) return;
+    
+        setCompletionRecord({});
+        setCurrentBuildingIndex(0);
 
         getToursOfStudent(selectedStudentId).then((res) => {
             const sots: StudentOnTour[] = res.data;
             if (sots.length) {
                 setValidTourUser(true);
                 setAllToursOfStudent(sots);
+
                 let currentSot = sots[0];
                 if (query.tour) {
                     currentSot = sots.find((e) => e.tour === +[query.tour]) || sots[0];
                 }
                 setSelectedTourId(currentSot.tour);
-
+                setMaxBuildingIndex(currentSot.max_building_index);
                 updateValidDates(sots, currentSot.tour);
+
+
+                let completionStatus: Record<number, boolean> = {};
+                sots.forEach(sot => {
+                    completionStatus[sot.id] = sot.completed_tour !== null;
+                });
+                setCompletionRecord(completionStatus);
             } else {
                 setValidTourUser(false);
             }
@@ -335,6 +377,7 @@ function AdminTour() {
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
         if (sotObject) {
             setCurrentBuildingIndex(sotObject.current_building_index);
+            setMaxBuildingIndex(sotObject.max_building_index);
             getAnalysisStudentOnTour(sotObject.sot.id)
                 .then((res) => {
                     const b: BuildingAnalysis[] = res.data;
@@ -468,6 +511,15 @@ function AdminTour() {
                                 })}
                             </tbody>
                         </table>
+                        <b style={{ marginTop: "20px" }}>Voortgang:</b>
+                        <Box sx={{ width: "40%" }}>
+                            <GreenLinearProgress
+                            variant="determinate"
+                            value={
+                                getProgress()
+                            }
+                            />
+                        </Box>
                     </div>
                 </div>
             ): (
