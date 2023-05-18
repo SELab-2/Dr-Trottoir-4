@@ -1,7 +1,7 @@
-import React from 'react';
-import {Button, Form, FormControl, InputGroup} from 'react-bootstrap';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import React from "react";
+import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 interface PasswordInputProps {
     value: string;
@@ -16,15 +16,15 @@ interface PasswordInputProps {
 }
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
-                                                         value,
-                                                         setPassword,
-                                                         handlePasswordVisibility,
-                                                         showPassword,
-                                                         label,
-                                                         placeholder,
-                                                         customOnInput,
-                                                         customOnInvalid,
-                                                     }) => {
+    value,
+    setPassword,
+    handlePasswordVisibility,
+    showPassword,
+    label,
+    placeholder,
+    customOnInput,
+    customOnInvalid,
+}) => {
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
         if (customOnInput) {
@@ -42,23 +42,22 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 
     return (
         <div>
-            <Form.Label htmlFor={"password"} className="normal_text">{label}</Form.Label>
+            <Form.Label htmlFor={"password"} className="normal_text">
+                {label}
+            </Form.Label>
             <InputGroup className="input">
                 <FormControl
                     className="form_control"
                     id={"password"}
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     value={value}
                     onChange={handleInput}
                     onInvalid={handleInvalid}
                     required
                     placeholder={placeholder}
                 />
-                <Button
-                    variant="light"
-                    onClick={handlePasswordVisibility}
-                >
-                    {showPassword ? <Visibility/> : <VisibilityOff/>}
+                <Button variant="light" onClick={handlePasswordVisibility}>
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
                 </Button>
             </InputGroup>
         </div>

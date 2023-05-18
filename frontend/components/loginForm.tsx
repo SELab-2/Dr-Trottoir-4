@@ -1,13 +1,13 @@
-import React, {FormEvent, useState} from "react";
-import {useRouter} from "next/router";
+import React, { FormEvent, useState } from "react";
+import { useRouter } from "next/router";
 import login from "@/lib/login";
 import setSessionStorage from "@/lib/storage";
-import {getRoleDirection} from "@/lib/reroute";
-import {handleError} from "@/lib/error";
+import { getRoleDirection } from "@/lib/reroute";
+import { handleError } from "@/lib/error";
 import Link from "next/link";
 import PasswordInput from "@/components/password/passwordInput";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {Button, Form, InputGroup} from "react-bootstrap";
+import { Button, Form, InputGroup } from "react-bootstrap";
 
 function LoginForm() {
     const router = useRouter();
@@ -42,12 +42,14 @@ function LoginForm() {
             {router.query.createdAccount && (
                 <div className={"visible alert alert-success alert-dismissible fade show"}>
                     <strong>Succes!</strong> Uw account werd met succes aangemaakt!
-                    <button type="button" className="btn-close" data-bs-dismiss="alert"/>
+                    <button type="button" className="btn-close" data-bs-dismiss="alert" />
                 </div>
             )}
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <div>
-                <Form.Label htmlFor={"email"} className="normal_text">E-mailadres</Form.Label>
+                <Form.Label htmlFor={"email"} className="normal_text">
+                    E-mailadres
+                </Form.Label>
                 <InputGroup className="input">
                     <Form.Control
                         id={"email"}
@@ -74,10 +76,7 @@ function LoginForm() {
                 <label className="small_text">Wachtwoord vergeten?</label>
             </a>
             <div className="padding">
-                <Button
-                    className="wide_button"
-                    size="lg"
-                    type="submit">
+                <Button className="wide_button" size="lg" type="submit">
                     Login
                 </Button>
             </div>
