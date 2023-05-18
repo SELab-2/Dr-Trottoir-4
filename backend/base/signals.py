@@ -61,8 +61,8 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
     print(f"Student on tour current building index: {student_on_tour.current_building_index}")
     print(f"Student on tour max building index: {student_on_tour.max_building_index}")
     if (
-            instance.type == RemarkAtBuilding.VERTREK
-            and student_on_tour.current_building_index == student_on_tour.max_building_index
+        instance.type == RemarkAtBuilding.VERTREK
+        and student_on_tour.current_building_index == student_on_tour.max_building_index
     ):
         print("Vertrek")
         student_on_tour.completed_tour = timezone.now()
@@ -72,7 +72,7 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             "student_on_tour_updates_progress",
-            {"type": "student.on.tour.completed", "student_on_tour_id": student_on_tour.id}
+            {"type": "student.on.tour.completed", "student_on_tour_id": student_on_tour.id},
         )
 
 
@@ -93,7 +93,7 @@ def notify_student_on_tour_subscribers(sender, instance: StudentOnTour, **kwargs
             {
                 "type": "student.on.tour.created.or.adapted",
                 "student_on_tour": student_on_tour,
-            }
+            },
         )
 
 
@@ -106,5 +106,5 @@ def notify_garbage_collection_subscribers(sender, instance: GarbageCollection, *
         {
             "type": "garbage.collection.created.or.adapted",
             "garbage_collection": garbage_collection,
-        }
+        },
     )

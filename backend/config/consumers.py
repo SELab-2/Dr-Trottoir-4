@@ -17,7 +17,6 @@ class GeneralAsyncConsumer(AsyncWebsocketConsumer):
 
 
 class StudentOnTourProgressIndividual(GeneralAsyncConsumer):
-
     async def connect(self):
         student_on_tour_id = self.scope["url_route"]["kwargs"]["student_on_tour_id"]
         self.room_group_name = f"student_on_tour_{student_on_tour_id}_progress"
@@ -49,7 +48,6 @@ class StudentOnTourProgressAll(GeneralAsyncConsumer):
 
 
 class RemarkAtBuildingBuildingRemarks(GeneralAsyncConsumer):
-
     async def connect(self):
         building_id = self.scope["url_route"]["kwargs"]["building_id"]
         self.room_group_name = f"remark-at-building_{building_id}"
@@ -63,7 +61,6 @@ class RemarkAtBuildingBuildingRemarks(GeneralAsyncConsumer):
 
 
 class StudentOnTourRemarks(GeneralAsyncConsumer):
-
     async def connect(self):
         student_on_tour_id = self.scope["url_route"]["kwargs"]["student_on_tour_id"]
         self.room_group_name = f"student_on_tour_{student_on_tour_id}_remarks"
