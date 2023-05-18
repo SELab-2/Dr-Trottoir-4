@@ -1,19 +1,19 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, {useEffect, useState} from "react";
-import {addDays, differenceInMinutes, startOfWeek, subDays, subMonths} from "date-fns";
-import {Card, Col, Container, Form, ListGroup, Row} from "react-bootstrap";
-import {datesEqual, formatDate} from "@/lib/date";
-import {getWorkedHours} from "@/lib/analysis";
-import {getAllTours, Tour} from "@/lib/tour";
-import {getAllRegions, RegionInterface} from "@/lib/region";
-import {getFullName, getTourUsers, User} from "@/lib/user";
+import React, { useEffect, useState } from "react";
+import { addDays, differenceInMinutes, startOfWeek, subDays, subMonths } from "date-fns";
+import { Card, Col, Container, Form, ListGroup, Row } from "react-bootstrap";
+import { datesEqual, formatDate } from "@/lib/date";
+import { getWorkedHours } from "@/lib/analysis";
+import { getAllTours, Tour } from "@/lib/tour";
+import { getAllRegions, RegionInterface } from "@/lib/region";
+import { getFullName, getTourUsers, User } from "@/lib/user";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {getAllStudentOnTourFromDate, StudentOnTour, StudentOnTourStringDate} from "@/lib/student-on-tour";
-import {WorkedHours} from "@/types";
-import {handleError} from "@/lib/error";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { getAllStudentOnTourFromDate, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import { WorkedHours } from "@/types";
+import { handleError } from "@/lib/error";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import Select from "react-select";
-import Masonry from '@mui/lab/Masonry';
+import Masonry from "@mui/lab/Masonry";
 import Link from "next/link";
 import LocaleDateRangePicker from "@/components/datepicker/DateRangePicker";
 
@@ -58,8 +58,7 @@ function AdminAnalysisWorkingHours() {
                 const tours: Tour[] = res.data;
                 setAllTours(tours);
             },
-            () => {
-            }
+            () => {}
         );
 
         getAllRegions().then(
@@ -67,8 +66,7 @@ function AdminAnalysisWorkingHours() {
                 const regions: RegionInterface[] = res.data;
                 setAllRegions(regions);
             },
-            () => {
-            }
+            () => {}
         );
 
         getTourUsers(true).then(
@@ -76,8 +74,7 @@ function AdminAnalysisWorkingHours() {
                 const users: User[] = res.data;
                 setAllUsers(users);
             },
-            () => {
-            }
+            () => {}
         );
     }, []);
 
@@ -92,7 +89,7 @@ function AdminAnalysisWorkingHours() {
             },
             (err) => setErrorMessages(handleError(err))
         );
-        getAllStudentOnTourFromDate({startDate, endDate}).then(
+        getAllStudentOnTourFromDate({ startDate, endDate }).then(
             (res) => {
                 const sots: StudentOnTourStringDate[] = res.data;
                 setStudentOnTours(
@@ -175,27 +172,27 @@ function AdminAnalysisWorkingHours() {
 
     return (
         <div className="tablepageContainer">
-            <AdminHeader/>
+            <AdminHeader />
             <div className="tableContainer">
                 <Container>
                     <label className="title">Overzicht gewerkte uren</label>
-                    <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                    <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                     <Card>
                         <Form className="m-2">
                             <Row>
                                 <Form.Group as={Col} sm={12} md={3} lg={3}>
-                        <Form.Label>Periode:</Form.Label>
-                        <LocaleDateRangePicker
-                            startDate={startDate}
-                            setStartDate={setStartDate}
-                            endDate={endDate}
-                            setEndDate={setEndDate}
-                        />
-                    </Form.Group>
+                                    <Form.Label>Periode:</Form.Label>
+                                    <LocaleDateRangePicker
+                                        startDate={startDate}
+                                        setStartDate={setStartDate}
+                                        endDate={endDate}
+                                        setEndDate={setEndDate}
+                                    />
+                                </Form.Group>
                                 <Form.Group as={Col} sm={12} md={3} lg={3}>
                                     <Form.Label>Sorteer op:</Form.Label>
                                     <Select
-                                        value={{value: sortType.toString(), label: sortType.toString()}}
+                                        value={{ value: sortType.toString(), label: sortType.toString() }}
                                         isClearable={false}
                                         isSearchable={false}
                                         options={Object.values(sortBy).map((t) => {
@@ -217,13 +214,13 @@ function AdminAnalysisWorkingHours() {
                                     <Select
                                         value={
                                             filteredRegion
-                                                ? {value: filteredRegion.id, label: filteredRegion.region}
-                                                : {value: -1, label: "Alle regio's"}
+                                                ? { value: filteredRegion.id, label: filteredRegion.region }
+                                                : { value: -1, label: "Alle regio's" }
                                         }
                                         isClearable={false}
                                         isSearchable={false}
                                         options={[
-                                            {value: -1, label: "Alle regio's"},
+                                            { value: -1, label: "Alle regio's" },
                                             ...allRegions.map((r) => {
                                                 return {
                                                     value: r.id,
@@ -245,7 +242,7 @@ function AdminAnalysisWorkingHours() {
                             </Row>
                         </Form>
                     </Card>
-                    <br/>
+                    <br />
                     <Masonry columns={{ xs: 1, sm: 2, md: 3, lg: 4 }} spacing={2}>
                         {workedHours.map((worked) => {
                             const name: string = getStudentName(worked.student_id);
@@ -255,24 +252,28 @@ function AdminAnalysisWorkingHours() {
                                     <Card className="card">
                                         <Card.Body>
                                             <label className="subtitle">{name}</label>
-                                            <Card.Text className="text-muted mt-1" style={{paddingLeft: '10px'}}>{time}</Card.Text>
+                                            <Card.Text className="text-muted mt-1" style={{ paddingLeft: "10px" }}>
+                                                {time}
+                                            </Card.Text>
                                             <ListGroup className="list-group-flush">
-                                                <ListGroup.Item/>
+                                                <ListGroup.Item />
                                                 {worked.student_on_tour_ids.map((s, index) => {
-                                                    const sot: StudentOnTour | undefined = studentOnTours.find((st) => st.id === s);
+                                                    const sot: StudentOnTour | undefined = studentOnTours.find(
+                                                        (st) => st.id === s
+                                                    );
                                                     if (!sot) {
-                                                        return <div key={index}/>;
+                                                        return <div key={index} />;
                                                     }
                                                     return (
                                                         <ListGroup.Item key={index}>
                                                             {sot.completed_tour || sot.started_tour ? (
                                                                 <Link
                                                                     style={{
-                                                                        textDecoration: 'underline',
-                                                                        color: 'royalblue'
+                                                                        textDecoration: "underline",
+                                                                        color: "royalblue",
                                                                     }}
                                                                     href={{
-                                                                        pathname: '/admin/analysis/student-on-tour',
+                                                                        pathname: "/admin/analysis/student-on-tour",
                                                                         query: {
                                                                             studentOnTour: sot.id,
                                                                         },

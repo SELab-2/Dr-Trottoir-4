@@ -485,67 +485,67 @@ function GarbageCollectionSchedule() {
                         </Col>
                     </Row>
                 </div>
-            <DnDCalendar
-                messages={messages}
-                culture={"nl-BE"}
-                defaultView="week"
-                events={garbageCollection.map((g) => {
-                    const s: Date = new Date(g.date);
-                    let e = addDays(s, 1);
-                    s.setHours(0);
-                    e.setHours(0);
-                    const b = allBuildings.find((b) => b.id === g.building)!;
-                    const event: GarbageCollectionEvent = {
-                        start: s,
-                        end: e,
-                        garbageType: garbageTypes[g.garbage_type],
-                        id: g.id,
-                        building: b,
-                    };
-                    return event;
-                })}
-                components={{
-                    //@ts-ignore
-                    event:
-                        buildingList.length > 1
-                            ? GarbageCollectionEventComponentWithAddress
-                            : GarbageCollectionEventComponentWithoutAddress,
-                }}
-                localizer={loc}
-                eventPropGetter={(e) => {
-                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
-                    const backgroundColor = getGarbageColor(event.garbageType);
-                    return { style: { backgroundColor, color: "black" } };
-                }}
-                drilldownView="week"
-                selectable
-                onSelectSlot={(slotInfo) => {
-                    if (buildingList.length <= 0) {
-                        return;
-                    }
-                    setSelectedDate(slotInfo.start);
-                    setShowEditModal(true);
-                }}
-                onSelectEvent={(e) => {
-                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
-                    if (buildingList.length <= 0) {
-                        return;
-                    }
-                    const building = buildingList.find((b) => b.id === event.building.id);
-                    if (!building) {
-                        return;
-                    }
-                    setSelectedEvent(event);
-                    setShowEditModal(true);
-                }}
-                onEventDrop={dragAndDrop}
-                onRangeChange={getFromRange}
-                views={["week"]}
-                style={{ height: "100vh" }}
-                step={60}
-                timeslots={1}
-            />
-        </div>
+                <DnDCalendar
+                    messages={messages}
+                    culture={"nl-BE"}
+                    defaultView="week"
+                    events={garbageCollection.map((g) => {
+                        const s: Date = new Date(g.date);
+                        let e = addDays(s, 1);
+                        s.setHours(0);
+                        e.setHours(0);
+                        const b = allBuildings.find((b) => b.id === g.building)!;
+                        const event: GarbageCollectionEvent = {
+                            start: s,
+                            end: e,
+                            garbageType: garbageTypes[g.garbage_type],
+                            id: g.id,
+                            building: b,
+                        };
+                        return event;
+                    })}
+                    components={{
+                        //@ts-ignore
+                        event:
+                            buildingList.length > 1
+                                ? GarbageCollectionEventComponentWithAddress
+                                : GarbageCollectionEventComponentWithoutAddress,
+                    }}
+                    localizer={loc}
+                    eventPropGetter={(e) => {
+                        const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
+                        const backgroundColor = getGarbageColor(event.garbageType);
+                        return { style: { backgroundColor, color: "black" } };
+                    }}
+                    drilldownView="week"
+                    selectable
+                    onSelectSlot={(slotInfo) => {
+                        if (buildingList.length <= 0) {
+                            return;
+                        }
+                        setSelectedDate(slotInfo.start);
+                        setShowEditModal(true);
+                    }}
+                    onSelectEvent={(e) => {
+                        const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
+                        if (buildingList.length <= 0) {
+                            return;
+                        }
+                        const building = buildingList.find((b) => b.id === event.building.id);
+                        if (!building) {
+                            return;
+                        }
+                        setSelectedEvent(event);
+                        setShowEditModal(true);
+                    }}
+                    onEventDrop={dragAndDrop}
+                    onRangeChange={getFromRange}
+                    views={["week"]}
+                    style={{ height: "100vh" }}
+                    step={60}
+                    timeslots={1}
+                />
+            </div>
         </div>
     );
 }

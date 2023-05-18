@@ -61,8 +61,8 @@ def process_remark_at_building(sender, instance: RemarkAtBuilding, **kwargs):
     print(f"Student on tour current building index: {student_on_tour.current_building_index}")
     print(f"Student on tour max building index: {student_on_tour.max_building_index}")
     if (
-            instance.type == RemarkAtBuilding.VERTREK
-            and student_on_tour.current_building_index == student_on_tour.max_building_index
+        instance.type == RemarkAtBuilding.VERTREK
+        and student_on_tour.current_building_index == student_on_tour.max_building_index
     ):
         print("Vertrek")
         student_on_tour.completed_tour = timezone.now()

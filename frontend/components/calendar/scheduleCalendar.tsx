@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Calendar, dateFnsLocalizer, Event} from "react-big-calendar";
-import withDragAndDrop, {EventInteractionArgs} from "react-big-calendar/lib/addons/dragAndDrop";
+import React, { useEffect, useRef, useState } from "react";
+import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
+import withDragAndDrop, { EventInteractionArgs } from "react-big-calendar/lib/addons/dragAndDrop";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import nlBE from "date-fns/locale/nl-BE";
-import {messages} from "@/locales/localizerCalendar";
+import { messages } from "@/locales/localizerCalendar";
 import {
     deleteBulkStudentOnTour,
     deleteStudentOnTour,
@@ -37,10 +37,10 @@ import { ScheduleEvent, StudentOnTourWebSocketInterface } from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import SuccessMessageAlert from "@/components/successMessageAlert";
 import AddTourScheduleModal from "@/components/calendar/addTourSchedule";
-import {Col, Row} from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 
-function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[] }) {
+function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour[] }) {
     const [popupIsOpenEdit, setPopupIsOpenEdit] = useState(false);
     const [popupIsOpenAdd, setPopupIsOpenAdd] = useState(false);
     const [popupIsOpenAddTour, setPopupIsOpenAddTour] = useState(false);
@@ -116,19 +116,19 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
         let endDate: Date | null = Array.isArray(range) ? range[range.length - 1] : range.end;
-        setRange({start: startDate, end: endDate});
-        onEventsLoad({start_date: startDate, end_date: endDate});
+        setRange({ start: startDate, end: endDate });
+        onEventsLoad({ start_date: startDate, end_date: endDate });
     }
 
     function postEvents(start: Date, end: Date, data: StudentOnTourPost[]) {
         postBulkStudentOnTour(data).then(
-            (_) => getFromRange({start: range.start, end: range.end}),
+            (_) => getFromRange({ start: range.start, end: range.end }),
             (err) => setErrorMessages(handleError(err))
         );
     }
 
-    function onEventsLoad({start_date, end_date}: { start_date: Date; end_date: Date }) {
-        getAllStudentOnTourFromDate({startDate: new Date(start_date), endDate: new Date(end_date)}).then(
+    function onEventsLoad({ start_date, end_date }: { start_date: Date; end_date: Date }) {
+        getAllStudentOnTourFromDate({ startDate: new Date(start_date), endDate: new Date(end_date) }).then(
             (res) => {
                 const list: StudentOnTour[] = res.data;
                 setEvents(
@@ -193,7 +193,7 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
     }
 
     function onEventResize(args: EventInteractionArgs<object>): void {
-        const {event, start, end} = args;
+        const { event, start, end } = args;
         let resizedEvents: StudentOnTourPost[] = [];
         let currentDate = new Date(start);
         currentDate.setHours(0);
@@ -215,7 +215,7 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
     }
 
     function onEventDragAndDrop(args: EventInteractionArgs<object>): void {
-        const {event, start} = args;
+        const { event, start } = args;
         const scheduleEvent: ScheduleEvent = event as ScheduleEvent;
         if (scheduleEvent.start >= startOfDay(new Date())) {
             patchStudentOnTour(
@@ -325,10 +325,11 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
         <>
             <div>
                 <Row>
-                    <Col md={6} style={{display: "flex", alignItems: "center"}}>
-                        <div className="padding" style={{display: "flex", alignItems: "center"}}>
+                    <Col md={6} style={{ display: "flex", alignItems: "center" }}>
+                        <div className="padding" style={{ display: "flex", alignItems: "center" }}>
                             <button
-                                className="button" style={{marginRight: "10px"}}
+                                className="button"
+                                style={{ marginRight: "10px" }}
                                 onClick={() => {
                                     setPopupIsOpenAddTour(true);
                                 }}
@@ -336,7 +337,8 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
                                 Plan ronde voor hele week
                             </button>
                             <button
-                                className="button" style={{marginRight: "10px"}}
+                                className="button"
+                                style={{ marginRight: "10px" }}
                                 onClick={() => {
                                     setPopupIsOpenCopy(true);
                                 }}
@@ -346,8 +348,11 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
                         </div>
                     </Col>
                     <Col md={6}>
-                        <SuccessMessageAlert successmessages={successMessages} setSuccessMessages={setSuccessMessages}/>
-                        <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                        <SuccessMessageAlert
+                            successmessages={successMessages}
+                            setSuccessMessages={setSuccessMessages}
+                        />
+                        <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                     </Col>
                 </Row>
             </div>
@@ -358,10 +363,10 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
                 defaultView="month"
                 views={["month", "week"]}
                 events={events}
-                components={{event: CustomDisplay}}
+                components={{ event: CustomDisplay }}
                 eventPropGetter={(event: any) => {
                     const backgroundColor = tourColors[event.tour.id];
-                    return {style: {backgroundColor, color: "white"}};
+                    return { style: { backgroundColor, color: "white" } };
                 }}
                 localizer={localizer}
                 drilldownView="week"
@@ -399,7 +404,7 @@ function ScheduleCalendar({tourUsers, tours}: { tourUsers: User[]; tours: Tour[]
             )}
             <AddTourScheduleModal
                 isOpen={popupIsOpenAddTour}
-                onPost={() => getFromRange({start: range.start, end: range.end})}
+                onPost={() => getFromRange({ start: range.start, end: range.end })}
                 onClose={() => setPopupIsOpenAddTour(false)}
             />
             <AddScheduleEventModal

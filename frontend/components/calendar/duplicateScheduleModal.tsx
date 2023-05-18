@@ -81,7 +81,7 @@ export default function DuplicateScheduleModal({
                         />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label >Kopieer naar start van week:</Form.Label>
+                        <Form.Label>Kopieer naar start van week:</Form.Label>
                         <LocaleDatePicker
                             selectedDate={copyToDate}
                             setSelectedDate={(d) => setCopyToDate(startOfWeek(d, { weekStartsOn }))}
