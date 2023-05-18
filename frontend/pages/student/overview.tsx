@@ -1,10 +1,11 @@
 import StudentHeader from "@/components/header/studentHeader";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import PlannedBuildingList from "@/components/student/PlannedBuildingList";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DataScheduleQuery extends ParsedUrlQuery {
     studentOnTourId?: number;
@@ -22,10 +23,12 @@ function StudentSchedule() {
     }, [router.isReady]);
 
     return (
-        <>
-            <StudentHeader />
-            <PlannedBuildingList studentOnTourId={studentOnTourId} redirectTo="/student/working" />
-        </>
+        <div className="tablepageContainer">
+            <StudentHeader/>
+            <div className="tableContainer">
+                <PlannedBuildingList studentOnTourId={studentOnTourId} redirectTo="/student/working"/>
+            </div>
+        </div>
     );
 }
 

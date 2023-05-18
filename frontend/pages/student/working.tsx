@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import React, {useEffect, useState} from "react";
+import {useRouter} from "next/router";
 import StudentHeader from "@/components/header/studentHeader";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { WorkingView } from "@/components/student/workingView";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {WorkingView} from "@/components/student/workingView";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DataBuildingIdQuery extends ParsedUrlQuery {
     studentOnTourId?: number;
@@ -25,10 +26,12 @@ function StudentWorking() {
     }, [router.isReady]);
 
     return (
-        <>
-            <StudentHeader />
-            <WorkingView studentOnTourId={studentOnTourId} redirectTo="/student/overview" />
-        </>
+        <div className="tablepageContainer">
+            <StudentHeader/>
+            <div className="tableContainer">
+                <WorkingView studentOnTourId={studentOnTourId} redirectTo="/student/overview"/>
+            </div>
+        </div>
     );
 }
 

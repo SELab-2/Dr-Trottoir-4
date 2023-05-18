@@ -6,6 +6,7 @@ import {getTour, Tour} from "@/lib/tour";
 import {getRegion, RegionInterface} from "@/lib/region";
 import {datesEqual} from "@/lib/date";
 import {useRouter} from "next/router";
+import {Container} from "react-bootstrap";
 
 export default function PersonalSchedule({redirectTo}: { redirectTo: string }) {
     const router = useRouter();
@@ -120,7 +121,7 @@ export default function PersonalSchedule({redirectTo}: { redirectTo: string }) {
     }
 
     return (
-        <>
+        <Container>
             <p className="title">Overzicht rondes</p>
             <ToursList
                 studentOnTours={toursToday}
@@ -143,6 +144,6 @@ export default function PersonalSchedule({redirectTo}: { redirectTo: string }) {
                 allTours={tours}
                 allRegions={regions}
             />
-        </>
+        </Container>
     );
 }

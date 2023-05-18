@@ -4,10 +4,12 @@ import PersonalSchedule from "@/components/student/PersonalSchedule";
 
 function StudentDashboard() {
     return (
-        <>
+        <div className="tablepageContainer">
             <StudentHeader />
-            <PersonalSchedule redirectTo="/student/overview" />
-        </>
+            <div className="tableContainer">
+                <PersonalSchedule redirectTo="/student/overview" />
+            </div>
+        </div>
     );
 }
 
