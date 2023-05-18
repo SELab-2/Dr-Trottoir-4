@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
 import withDragAndDrop, { EventInteractionArgs } from "react-big-calendar/lib/addons/dragAndDrop";
 import format from "date-fns/format";
@@ -10,12 +10,12 @@ import { messages } from "@/locales/localizerCalendar";
 import {
     deleteBulkStudentOnTour,
     deleteStudentOnTour,
-    duplicateStudentOnTourSchedule,
+    duplicateStudentOnTourSchedule, getAllStudentOnTourChanges,
     getAllStudentOnTourFromDate,
     patchStudentOnTour,
     postBulkStudentOnTour,
     StudentOnTour,
-    StudentOnTourPost,
+    StudentOnTourPost, StudentOnTourStringDate,
 } from "@/lib/student-on-tour";
 
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
@@ -25,7 +25,7 @@ import CustomDisplay from "@/components/calendar/customEvent";
 import AddScheduleEventModal from "@/components/calendar/addScheduleEvent";
 import { Tour } from "@/lib/tour";
 import { User } from "@/lib/user";
-import {add, addDays, endOfMonth, endOfWeek, startOfMonth, sub} from "date-fns";
+import {add, addDays, endOfMonth, startOfMonth, sub} from "date-fns";
 import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
 import { colors } from "@/components/calendar/colors";
@@ -52,12 +52,42 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
     });
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
+    const eventsRef = useRef(events);
+
     useEffect(() => {
         if (tourUsers.length > 0 && tours.length > 0) {
             assignColors(tours);
             getFromRange(range);
         }
     }, [tourUsers, tours]);
+
+    useEffect(() => {
+        // Update the reference when events changes
+        eventsRef.current = events;
+    }, [events]);
+
+    useEffect(() => {
+        // Subscribe websocket
+        getAllStudentOnTourChanges().addEventListener("message", event => {
+            const data : StudentOnTourStringDate = JSON.parse(event.data);
+            if (range.start <= new Date(data.date) && new Date(data.date) <= range.end) {
+                const obj : ScheduleEvent | undefined = eventsRef.current.find(e => e.id === Number(data.id));
+                if (obj) { // PATCH
+                    onEventEdit(Number(obj.id), Number(data.tour), Number(data.student), new Date(data.date));
+                } else { // POST
+                    addSingleEvent({
+                        tour: Number(data.tour),
+                        id: Number(data.id),
+                        student: Number(data.student),
+                        date: new Date(data.date),
+                        completed_tour: data.completed_tour,
+                        started_tour: data.started_tour,
+                        current_building_index: data.current_building_index,
+                        max_building_index: data.max_building_index,
+                    });
+                }
+            }});
+    }, [events]);
 
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
         let startDate: Date = Array.isArray(range) ? range[0] : range.start;
@@ -180,7 +210,8 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
         setEvents((prevState) => {
             const tour: Tour | undefined = tours.find((t: Tour) => sot.tour === t.id);
             const student: User | undefined = tourUsers.find((s: User) => sot.student === s.id);
-            if (!tour || !student) {
+            const alreadyExists = prevState.some(s => sot.id === s.id);
+            if (!tour || !student || alreadyExists) {
                 return [...prevState];
             }
             const startDate = new Date(sot.date);
