@@ -30,7 +30,7 @@ import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
 import { colors } from "@/components/calendar/colors";
 import styles from "./calendar.module.css";
-import { ScheduleEvent } from "@/types";
+import {ScheduleEvent, StudentOnTourWebSocketInterface} from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import SuccessMessageAlert from "@/components/successMessageAlert";
 import AddTourScheduleModal from "@/components/calendar/addTourSchedule";
@@ -53,6 +53,7 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
     const eventsRef = useRef(events);
+    const rangeRef = useRef(range);
 
     useEffect(() => {
         if (tourUsers.length > 0 && tours.length > 0) {
@@ -67,24 +68,39 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
         eventsRef.current = events;
     }, [events]);
 
+    useEffect(() => {
+        rangeRef.current = range;
+    }, [range]);
+
     function setUpWebsocket() {
         getAllStudentOnTourChanges().addEventListener("message", event => {
-            const data : StudentOnTourStringDate = JSON.parse(event.data);
-            if (range.start <= new Date(data.date) && new Date(data.date) <= range.end) {
-                const obj : ScheduleEvent | undefined = eventsRef.current.find(e => e.id === Number(data.id));
-                if (obj) { // PATCH
-                    onEventEdit(Number(obj.id), Number(data.tour), Number(data.student), new Date(data.date));
-                } else { // POST
-                    addSingleEvent({
-                        tour: Number(data.tour),
-                        id: Number(data.id),
-                        student: Number(data.student),
-                        date: new Date(data.date),
-                        completed_tour: data.completed_tour,
-                        started_tour: data.started_tour,
-                        current_building_index: data.current_building_index,
-                        max_building_index: data.max_building_index,
+            const data : StudentOnTourWebSocketInterface = JSON.parse(event.data);
+            const sots : StudentOnTourStringDate = data.student_on_tour;
+            if (rangeRef.current.start <= new Date(sots.date) && new Date(sots.date) <= rangeRef.current.end) {
+                if (data.type === "deleted") { // DELETE
+                    setEvents((currentEvents) => {
+                        return currentEvents
+                            .filter((currentEvent) => {
+                                return currentEvent.id !== sots.id;
+                            })
+                            .sort(compareScheduleEvents);
                     });
+                } else {
+                    const obj : ScheduleEvent | undefined = eventsRef.current.find(e => e.id === Number(sots.id));
+                    if (obj) { // PATCH
+                        onEventEdit(Number(obj.id), Number(sots.tour), Number(sots.student), new Date(sots.date));
+                    } else { // POST
+                        addSingleEvent({
+                            tour: Number(sots.tour),
+                            id: Number(sots.id),
+                            student: Number(sots.student),
+                            date: new Date(sots.date),
+                            completed_tour: sots.completed_tour,
+                            started_tour: sots.started_tour,
+                            current_building_index: sots.current_building_index,
+                            max_building_index: sots.max_building_index,
+                        });
+                    }
                 }
             }});
     }

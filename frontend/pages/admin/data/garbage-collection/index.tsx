@@ -22,7 +22,7 @@ import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
 import { Button } from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
-import { GarbageCollectionEvent } from "@/types";
+import {GarbageCollectionEvent, GarbageCollectionWebSocketInterface} from "@/types";
 import GarbageCollectionEventComponentWithAddress from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
 import GarbageCollectionEventComponentWithoutAddress from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
 import { getBuildingsOfTour } from "@/lib/tour";
@@ -74,10 +74,16 @@ function GarbageCollectionSchedule() {
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const garbageCollectionRef = useRef(garbageCollection);
+    const buildingListRef = useRef(buildingList);
+    const rangeRef = useRef(currentRange);
 
     useEffect(() => {
         garbageCollectionRef.current = garbageCollection;
     }, [garbageCollection]);
+
+    useEffect(() => {
+        buildingListRef.current = buildingList;
+    }, [buildingList]);
 
     useEffect(() => {
         const query: DataBuildingQuery = router.query as DataBuildingQuery;
@@ -114,14 +120,24 @@ function GarbageCollectionSchedule() {
 
     function setUpWebsocket() {
         getAllGarbageCollectionChanges().addEventListener("message", (event) => {
-            const g: GarbageCollectionInterface = JSON.parse(event.data);
-            const obj: GarbageCollectionInterface | undefined = garbageCollectionRef.current.find(
-                (col) => col.id === Number(g.id)
-            );
-            if (obj) {
-                onPatch({ ...g, date: new Date(g.date) });
-            } else {
-                onPost([{ ...g, date: new Date(g.date) }]);
+            const data : GarbageCollectionWebSocketInterface = JSON.parse(event.data);
+            const g: GarbageCollectionInterface = data.garbage_collection;
+            if (rangeRef.current.start <= new Date(g.date) && new Date(g.date) <= rangeRef.current.end) {
+                if (! buildingListRef.current.some(b => b.id === g.building)) {
+                    return;
+                }
+                if (data.type === "deleted") {
+                    onDelete(g.id);
+                } else {
+                    const obj: GarbageCollectionInterface | undefined = garbageCollectionRef.current.find(
+                        (col) => col.id === Number(g.id)
+                    );
+                    if (obj) {
+                        onPatch({ ...g, date: new Date(g.date) });
+                    } else {
+                        onPost([{ ...g, date: new Date(g.date) }]);
+                    }
+                }
             }
         });
     }
