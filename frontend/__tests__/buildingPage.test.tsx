@@ -1,15 +1,15 @@
-import {render, waitFor} from "@testing-library/react";
-import {useRouter} from "next/router";
-import {BuildingInterface, getBuildingInfo, getBuildingInfoByPublicId} from "@/lib/building";
-import {AxiosResponse} from "axios/index";
+import { render, waitFor } from "@testing-library/react";
+import { useRouter } from "next/router";
+import { BuildingInterface, getBuildingInfo, getBuildingInfoByPublicId } from "@/lib/building";
+import { AxiosResponse } from "axios/index";
 import BuildingPage from "@/components/building/BuildingPage";
-import {getRemarksAtBuildingOfSpecificBuilding, RemarkAtBuildingInterface} from "@/lib/remark-at-building";
-import {getFromDate} from "@/lib/date";
-import {GarbageCollectionInterface} from "@/lib/garbage-collection";
-import {getRegion, RegionInterface} from "@/lib/region";
+import { getRemarksAtBuildingOfSpecificBuilding, RemarkAtBuildingInterface } from "@/lib/remark-at-building";
+import { getFromDate } from "@/lib/date";
+import { GarbageCollectionInterface } from "@/lib/garbage-collection";
+import { getRegion, RegionInterface } from "@/lib/region";
 
 jest.mock("next/router", () => ({
-    useRouter: jest.fn()
+    useRouter: jest.fn(),
 }));
 
 jest.mock("@/lib/building", () => ({
@@ -42,7 +42,7 @@ describe("<BuildingPage />", () => {
         client_number: "1",
         duration: "1",
         region: 1,
-        public_id: "public1"
+        public_id: "public1",
     };
 
     const remarkAtBuilding: RemarkAtBuildingInterface = {
@@ -51,33 +51,35 @@ describe("<BuildingPage />", () => {
         building: 1,
         timestamp: new Date(),
         remark: "foo",
-        type: "AA"
+        type: "AA",
     };
 
     const garbageCollection: GarbageCollectionInterface = {
         id: 1,
         building: 1,
         date: new Date(),
-        garbage_type: "GFT"
+        garbage_type: "GFT",
     };
 
     const region: RegionInterface = {
         id: 1,
-        region: "region"
+        region: "region",
     };
 
     beforeEach(() => {
         (useRouter as jest.Mock).mockReturnValue({
-            query: {id: "1"},
+            query: { id: "1" },
             push: jest.fn(),
         });
         (getBuildingInfo as jest.MockedFunction<typeof getBuildingInfo>).mockResolvedValue({
-            data: building
+            data: building,
         } as AxiosResponse);
         (getBuildingInfoByPublicId as jest.MockedFunction<typeof getBuildingInfoByPublicId>).mockResolvedValue({
-            data: building
+            data: building,
         } as AxiosResponse);
-        (getRemarksAtBuildingOfSpecificBuilding as jest.MockedFunction<typeof getRemarksAtBuildingOfSpecificBuilding>).mockResolvedValue({
+        (
+            getRemarksAtBuildingOfSpecificBuilding as jest.MockedFunction<typeof getRemarksAtBuildingOfSpecificBuilding>
+        ).mockResolvedValue({
             data: [remarkAtBuilding],
         } as AxiosResponse);
         (getFromDate as jest.MockedFunction<typeof getFromDate>).mockResolvedValue({
