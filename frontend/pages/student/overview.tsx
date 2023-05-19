@@ -3,6 +3,7 @@ import {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
 import {withAuthorisation} from "@/components/withAuthorisation";
 import PlannedBuildingList from "@/components/student/PlannedBuildingList";
+import {Container} from "react-bootstrap";
 
 interface ParsedUrlQuery {
 }
@@ -25,9 +26,9 @@ function StudentSchedule() {
     return (
         <div className="tablepageContainer">
             <StudentHeader/>
-            <div className="tableContainer">
+            <Container className="tableContainer">
                 <PlannedBuildingList studentOnTourId={studentOnTourId} redirectTo="/student/working"/>
-            </div>
+            </Container>
         </div>
     );
 }

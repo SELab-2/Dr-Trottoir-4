@@ -69,7 +69,7 @@ export function FileList({
                                 alignItems: "center",
                                 justifyContent: "center",
                             }}
-                            onClick={() => document.getElementById("fileInput")?.click()}
+                            onClick={(e) => document.getElementById("photos")?.click()}
                         >
                             <CameraAltIcon style={{ marginRight: "5px", height: "20px" }} />
                             Upload foto's

@@ -17,11 +17,11 @@ import LinearProgress from "@mui/material/LinearProgress";
 import {styled} from "@mui/system";
 import {getAllRemarksOfStudentOnTour,} from "@/lib/remark-at-building";
 import Box from "@mui/material/Box";
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckIcon from '@mui/icons-material/Check';
 import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {Tooltip} from "@mui/material";
-import {Card, Container} from "react-bootstrap";
+import {Divider, Tooltip} from "@mui/material";
+import {Card, Container, Table} from "react-bootstrap";
 
 interface IndividualProgressWebSocketsResponse {
     current_building_index: number;
@@ -269,16 +269,17 @@ function AdminDashboard() {
                 }
             }
         }
-        console.log(completedStudentOnTours)
-        console.log(startedStudentOnTours)
-        console.log(notYetStartedStudentOnTours)
     }, [startedStudentOnTourIds, studentsOnTours, completionRecord]);
 
     if (studentsOnTours.length === 0) {
         return (
             <div>
                 <AdminHeader/>
-                <h2>Er zijn vandaag geen studenten ingepland</h2>
+                <Container>
+                    <Card>
+                        <p className="title">Er zijn vandaag geen studenten ingepland</p>
+                    </Card>
+                </Container>
             </div>
         );
     }
@@ -296,10 +297,11 @@ function AdminDashboard() {
                             {studentsOnTours.length > 0 ? (
                                 <>
                                     <p className="title">Rondes van vandaag</p>
+                                    <Divider/>
                                     {completedStudentOnTours.length > 0 ? (
                                         <>
                                             <label className="subtitle">Voltooid</label>
-                                            <table className="table">
+                                            <Table responsive className="table">
                                                 <thead>
                                                 <tr>
                                                     <th>Ronde</th>
@@ -323,24 +325,17 @@ function AdminDashboard() {
                                                             <td>
                                                                 <Tooltip title={`Klaar met alle gebouwen.`}>
                                                                     <Box sx={{width: "100%", position: "relative"}}>
-                                                                        <GreenLinearProgress
-                                                                            variant="determinate"
-                                                                            value={
-                                                                                100
-                                                                            }
+                                                                        <GreenLinearProgress variant="determinate"
+                                                                                             value={100}/>
+                                                                        <CheckIcon
+                                                                            style={{
+                                                                                position: "absolute",
+                                                                                top: "50%",
+                                                                                left: "50%",
+                                                                                transform: "translate(-50%, -50%)",
+                                                                                color: "white",
+                                                                            }}
                                                                         />
-                                                                        {
-                                                                            <Box sx={{
-                                                                                position: 'absolute',
-                                                                                top: '-20%',
-                                                                                right: '50%',
-                                                                                transform: 'translateY(-50%, -50%)',
-                                                                                color: 'white'
-                                                                            }}>
-                                                                                <CheckCircleOutlineIcon/>
-                                                                            </Box>
-                                                                        }
-
                                                                     </Box>
                                                                 </Tooltip>
                                                             </td>
@@ -352,13 +347,13 @@ function AdminDashboard() {
                                                     );
                                                 })}
                                                 </tbody>
-                                            </table>
+                                            </Table>
                                         </>
                                     ) : (<></>)}
                                     {startedStudentOnTours.length > 0 ? (
                                         <>
                                             <label className="subtitle">Bezig</label>
-                                            <table className="table">
+                                            <Table className="table">
                                                 <thead>
                                                 <tr>
                                                     <th>Ronde</th>
@@ -400,13 +395,13 @@ function AdminDashboard() {
                                                     );
                                                 })}
                                                 </tbody>
-                                            </table>
+                                            </Table>
                                         </>
                                     ) : (<></>)}
                                     {(notYetStartedStudentOnTours.length > 0) ? (
                                         <>
-                                            <label className="subtitle">Nog niet begonnen rondes</label>
-                                            <table className="table">
+                                            <label className="subtitle">Nog niet gestarte rondes</label>
+                                            <Table className="table">
                                                 <thead>
                                                 <tr>
                                                     <th>Ronde</th>
@@ -446,7 +441,7 @@ function AdminDashboard() {
                                                     );
                                                 })}
                                                 </tbody>
-                                            </table>
+                                            </Table>
                                         </>
                                     ) : (<></>)}
 
