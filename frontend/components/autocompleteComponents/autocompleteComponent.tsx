@@ -86,7 +86,7 @@ const AutocompleteComponent: React.FC<Props> = ({
     }, [fetchOptions, initialId]);
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+        <div>
             <Form.Label> {label} </Form.Label><br/>
             <Autocomplete
                 //our option and value are different but without this line it will give warnings as the default
