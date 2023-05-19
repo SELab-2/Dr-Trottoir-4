@@ -1,8 +1,8 @@
 import React from "react";
-import { getTourUsersFromRegion, getUsersFromRegion, User, userSearchString } from "@/lib/user";
-import AutocompleteComponent, { UserProps } from "@/components/autocompleteComponents/autocompleteComponent";
+import { getUsersFromRegion, User, userSearchString } from "@/lib/user";
+import AutocompleteComponent, { MatchProps } from "@/components/autocompleteComponents/autocompleteComponent";
 
-const UsersFromRegionAutocomplete: React.FC<UserProps> = ({ initialId, setObjectId, matchId = null }) => {
+const UsersFromRegionAutocomplete: React.FC<MatchProps> = ({ initialId, setObjectId, matchId = null }) => {
     return (
         <AutocompleteComponent
             initialId={initialId}

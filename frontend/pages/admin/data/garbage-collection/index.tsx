@@ -462,7 +462,7 @@ function GarbageCollectionSchedule() {
                         <BuildingAutocomplete initialId={0} setObjectId={setSearchedBuilding} required={false} />
                     </div>
                     <div className="col">
-                        <TourAutocomplete initialId={0} setObjectId={setSearchedTour} required={false} />
+                        <TourAutocomplete initialId={0} setObjectId={setSearchedTour} />
                     </div>
                 </div>
             </div>
