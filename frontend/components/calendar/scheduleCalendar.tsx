@@ -348,7 +348,10 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                 defaultView="month"
                 views={["month", "week"]}
                 events={events}
-                components={{ event: CustomDisplay }}
+                components={{
+                    // @ts-ignore
+                    event: CustomDisplay,
+                }}
                 eventPropGetter={(event: any) => {
                     const backgroundColor = tourColors[event.tour.id];
                     return { style: { backgroundColor, color: "white" } };
