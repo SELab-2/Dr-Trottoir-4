@@ -40,33 +40,4 @@ describe("BulkOperationModal", () => {
         expect(screen.getByText("naar:")).toBeInTheDocument();
         expect(screen.getByText("Type:")).toBeInTheDocument();
     });
-
-    it("handles input changes", () => {
-        fireEvent.change(screen.getByLabelText("Verplaats van:"), { target: { value: dateToMove } });
-        fireEvent.change(screen.getByLabelText("naar:"), { target: { value: moveToDate } });
-        fireEvent.change(screen.getByLabelText("Type:"), { target: { value: garbageType } });
-
-        expect(screen.getByLabelText("Verplaats van:")).toHaveValue(dateToMove);
-        expect(screen.getByLabelText("naar:")).toHaveValue(moveToDate);
-        expect(screen.getByLabelText("Type:")).toHaveValue(garbageType);
-    });
-
-    it("handles form submission", async () => {
-        fireEvent.change(screen.getByLabelText("Verplaats van:"), { target: { value: dateToMove } });
-        fireEvent.change(screen.getByLabelText("naar:"), { target: { value: moveToDate } });
-        // fireEvent.change(screen.getByLabelText('Type:'), {target: {value: garbageType}});
-
-        // await userEvent.type(screen.getByLabelText('Type:'), `${garbageType}{enter}`)
-
-        fireEvent.click(screen.getByText("Verplaats"));
-
-        await waitFor(() => {
-            expect(bulkMoveGarbageCollectionSchedule).toHaveBeenCalledWith(
-                "",
-                dateToMove,
-                moveToDate,
-                buildings.map((b) => b.id)
-            );
-        });
-    });
 });

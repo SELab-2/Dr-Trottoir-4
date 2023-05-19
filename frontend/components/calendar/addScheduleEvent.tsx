@@ -6,7 +6,7 @@ import { formatDate } from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { postStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
 import { handleError } from "@/lib/error";
-import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
+import TourUserAutocomplete from "@/components/autocompleteComponents/tourUserAutocomplete";
 import LocaleDatePicker from "@/components/datepicker/datepicker";
 
 function AddScheduleEventModal({
@@ -73,16 +73,16 @@ function AddScheduleEventModal({
             <Modal.Body>
                 <form>
                     <div className="form-group">
-                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false} />
+                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} matchId={studentId} />
                     </div>
                     <div className="form-group">
                         <label>Selecteer student</label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId} />
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} matchId={tourId} />
                     </div>
                     <div className="form-row">
                         <div className="col">
                             <label>Datum:</label>
-                            <LocaleDatePicker setSelectedDate={setSelectedDate} selectedDate={selectedDate}/>
+                            <LocaleDatePicker setSelectedDate={setSelectedDate} selectedDate={selectedDate} />
                         </div>
                     </div>
                 </form>

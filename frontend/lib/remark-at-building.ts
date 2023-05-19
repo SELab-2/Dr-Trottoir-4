@@ -23,9 +23,13 @@ export function translateRemarkAtBuildingType(type: RemarkAtBuildingInterface["t
     }
 }
 
+export function getRemarksAtBuildingWS(building: string | number) {
+    return `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}building/${building}/remarks/`
+}
+
 export async function getRemarksAtBuildingOfSpecificBuilding(
     buildingId: number,
-    {mostRecent = false, date = ""}: { mostRecent?: boolean, date?: string }={}): Promise<AxiosResponse<any>> {
+    {mostRecent = false, date = ""}: { mostRecent?: boolean, date?: string } = {}): Promise<AxiosResponse<any>> {
     let request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_REMARKS_OF_A_BUILDING}${buildingId}`;
 
     return await api.get(request_url, {
@@ -99,6 +103,18 @@ export async function getRemarksOfStudentOnTourAtBuilding(buildingId: number, st
             "type": type
         } : {
             "building": buildingId,
+            "student-on-tour": studentOnTourId
+        }
+    });
+}
+
+export async function getAllRemarksOfStudentOnTour(studentOnTourId: number, type: "AA" | "BI" | "VE" | "OP" | null = null) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_REMARKS}`;
+    return await api.get(request_url, {
+        params: type ? {
+            "student-on-tour": studentOnTourId,
+            "type": type
+        } : {
             "student-on-tour": studentOnTourId
         }
     });
