@@ -1,10 +1,9 @@
 import { FC } from "react";
 import { EventProps } from "react-big-calendar";
-import MyEvent from "./scheduleCalendar";
 import styles from "./calendar.module.css";
+import { ScheduleEvent } from "@/types";
 
-// @ts-ignore
-const CustomDisplay: FC<EventProps<MyEvent>> = ({ event }) => {
+const CustomDisplay: FC<EventProps<ScheduleEvent>> = ({ event }) => {
     return (
         <div>
             <label className={styles.tour}>{event.tour.name}</label>
