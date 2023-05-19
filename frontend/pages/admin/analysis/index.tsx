@@ -1,8 +1,8 @@
 import AdminHeader from "@/components/header/adminHeader";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {Schedule, School} from "@mui/icons-material";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { Schedule, School } from "@mui/icons-material";
 import Link from "next/link";
-import {Card, Col, Container, Row} from "react-bootstrap";
+import { Card, Col, Container, Row } from "react-bootstrap";
 
 function AdminAnalysis() {
     interface CardProps {
@@ -18,27 +18,27 @@ function AdminAnalysis() {
             id: 1,
             title: "Rondes",
             description: "Overzicht van een student op een ronde",
-            icon: <School fontSize="large"/>,
+            icon: <School fontSize="large" />,
             url: "/admin/tour",
         },
         {
             id: 2,
             title: "Gewerkte uren",
             description: "Overzicht gewerkte tijden per student",
-            icon: <Schedule fontSize="large"/>,
+            icon: <Schedule fontSize="large" />,
             url: "/admin/analysis/working-hours",
         },
     ];
 
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <div
                 style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '100vh', // Adjust the height based on your needs
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100vh", // Adjust the height based on your needs
                 }}
             >
                 <Container>
@@ -50,9 +50,9 @@ function AdminAnalysis() {
                                         <Card.Body>
                                             <div
                                                 style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center'
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
                                                 }}
                                             >
                                                 {data.icon}
