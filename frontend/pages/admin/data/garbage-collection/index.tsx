@@ -23,18 +23,18 @@ import GarbageEditModal from "@/components/garbage/GarbageEditModal";
 import {Col, Row} from "react-bootstrap";
 import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
-import { GarbageCollectionEvent, GarbageCollectionWebSocketInterface } from "@/types";
-import GarbageCollectionEventComponentWithAddress from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
-import { getBuildingsOfTour } from "@/lib/tour";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {GarbageCollectionEvent, GarbageCollectionWebSocketInterface} from "@/types";
+import GarbageCollectionEventComponentWithAddress
+    from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
+import {getBuildingsOfTour} from "@/lib/tour";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import BulkMoveGarbageModal from "@/components/garbage/BulkMoveGarbageModal";
 import {AxiosResponse} from "axios";
 import {formatDate} from "@/lib/date";
-import { handleError } from "@/lib/error";
-import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
+import {handleError} from "@/lib/error";
 
 interface ParsedUrlQuery {
 }
@@ -474,63 +474,64 @@ function GarbageCollectionSchedule() {
                         </Col>
                     </Row>
                 </div>
-            <Calendar
-                messages={messages}
-                culture={"nl-BE"}
-                defaultView="month"
-                views={["month", "week"]}
-                events={garbageCollection.map((g) => {
-                    const s: Date = new Date(g.date);
-                    let e = addDays(s, 1);
-                    s.setHours(0);
-                    e.setHours(0);
-                    const b = allBuildings.find((b) => b.id === g.building)!;
-                    const event: GarbageCollectionEvent = {
-                        start: s,
-                        end: e,
-                        garbageType: garbageTypes[g.garbage_type],
-                        id: g.id,
-                        building: b,
-                    };
-                    return event;
-                })}
-                components={{
-                    //@ts-ignore
-                    event: GarbageCollectionEventComponentWithAddress,
-                }}
-                localizer={loc}
-                eventPropGetter={(e) => {
-                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
-                    const backgroundColor = getGarbageColor(event.garbageType);
-                    return { style: { backgroundColor, color: "black" } };
-                }}
-                drilldownView="week"
-                selectable
-                onSelectSlot={(slotInfo) => {
-                    if (buildingList.length <= 0) {
-                        return;
-                    }
-                    setSelectedDate(slotInfo.start);
-                    setShowEditModal(true);
-                }}
-                onSelectEvent={(e) => {
-                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
-                    if (buildingList.length <= 0) {
-                        return;
-                    }
-                    const building = buildingList.find((b) => b.id === event.building.id);
-                    if (!building) {
-                        return;
-                    }
-                    setSelectedEvent(event);
-                    setShowEditModal(true);
-                }}
-                onRangeChange={getFromRange}
-                style={{ height: "100vh" }}
-                step={60}
-                timeslots={1}
-            />
-        </>
+                <Calendar
+                    messages={messages}
+                    culture={"nl-BE"}
+                    defaultView="month"
+                    views={["month", "week"]}
+                    events={garbageCollection.map((g) => {
+                        const s: Date = new Date(g.date);
+                        let e = addDays(s, 1);
+                        s.setHours(0);
+                        e.setHours(0);
+                        const b = allBuildings.find((b) => b.id === g.building)!;
+                        const event: GarbageCollectionEvent = {
+                            start: s,
+                            end: e,
+                            garbageType: garbageTypes[g.garbage_type],
+                            id: g.id,
+                            building: b,
+                        };
+                        return event;
+                    })}
+                    components={{
+                        //@ts-ignore
+                        event: GarbageCollectionEventComponentWithAddress,
+                    }}
+                    localizer={loc}
+                    eventPropGetter={(e) => {
+                        const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
+                        const backgroundColor = getGarbageColor(event.garbageType);
+                        return {style: {backgroundColor, color: "black"}};
+                    }}
+                    drilldownView="week"
+                    selectable
+                    onSelectSlot={(slotInfo) => {
+                        if (buildingList.length <= 0) {
+                            return;
+                        }
+                        setSelectedDate(slotInfo.start);
+                        setShowEditModal(true);
+                    }}
+                    onSelectEvent={(e) => {
+                        const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
+                        if (buildingList.length <= 0) {
+                            return;
+                        }
+                        const building = buildingList.find((b) => b.id === event.building.id);
+                        if (!building) {
+                            return;
+                        }
+                        setSelectedEvent(event);
+                        setShowEditModal(true);
+                    }}
+                    onRangeChange={getFromRange}
+                    style={{height: "100vh"}}
+                    step={60}
+                    timeslots={1}
+                />
+            </div>
+        </div>
     );
 }
 
