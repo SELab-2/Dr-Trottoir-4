@@ -14,15 +14,15 @@ import AdminHeader from "@/components/header/adminHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import Loading from "@/components/loading";
 import LinearProgress from "@mui/material/LinearProgress";
-import {styled} from "@mui/system";
-import {getAllRemarksOfStudentOnTour,} from "@/lib/remark-at-building";
+import { styled } from "@mui/system";
+import { getAllRemarksOfStudentOnTour } from "@/lib/remark-at-building";
 import Box from "@mui/material/Box";
-import CheckIcon from '@mui/icons-material/Check';
-import {handleError} from "@/lib/error";
+import CheckIcon from "@mui/icons-material/Check";
+import { handleError } from "@/lib/error";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import {Divider, Tooltip} from "@mui/material";
-import {Card, Container, Table} from "react-bootstrap";
+import { Divider, Tooltip } from "@mui/material";
+import { Card, Container, Table } from "react-bootstrap";
 
 interface IndividualProgressWebSocketsResponse {
     current_building_index: number;
@@ -269,7 +269,7 @@ function AdminDashboard() {
     if (studentsOnTours.length === 0) {
         return (
             <div>
-                <AdminHeader/>
+                <AdminHeader />
                 <Container>
                     <Card>
                         <p className="title">Er zijn vandaag geen studenten ingepland</p>
@@ -281,165 +281,185 @@ function AdminDashboard() {
 
     return (
         <div className="tablePageContainer">
-            <AdminHeader/>
+            <AdminHeader />
             {loading ? (
-                <Loading/>
+                <Loading />
             ) : (
                 <div className="tableContainer">
                     <Container>
-                        <Card className="shadow" style={{paddingLeft: '20px', paddingRight: '20px'}}>
-                            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+                        <Card className="shadow" style={{ paddingLeft: "20px", paddingRight: "20px" }}>
+                            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
                             {studentsOnTours.length > 0 ? (
                                 <>
                                     <p className="title">Rondes van vandaag</p>
-                                    <Divider/>
+                                    <Divider />
                                     {completedStudentOnTours.length > 0 ? (
                                         <>
                                             <label className="subtitle">Voltooid</label>
                                             <Table responsive className="table">
                                                 <thead>
-                                                <tr>
-                                                    <th>Ronde</th>
-                                                    <th>Student</th>
-                                                    <th>Voortgang</th>
-                                                    <th>Opmerkingen</th>
-                                                </tr>
+                                                    <tr>
+                                                        <th>Ronde</th>
+                                                        <th>Student</th>
+                                                        <th>Voortgang</th>
+                                                        <th>Opmerkingen</th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
-                                                {completedStudentOnTours.map((studentOnTour) => {
-                                                    const tour = tours.find((t) => t.id === studentOnTour.tour);
-                                                    const user = users.find((u) => u.id === studentOnTour.student);
+                                                    {completedStudentOnTours.map((studentOnTour) => {
+                                                        const tour = tours.find((t) => t.id === studentOnTour.tour);
+                                                        const user = users.find((u) => u.id === studentOnTour.student);
 
-                                                    if (!tour || !user) return null;
+                                                        if (!tour || !user) return null;
 
-                                                    return (
-                                                        <tr key={studentOnTour.id} style={{cursor: "pointer"}}
-                                                            onClick={() => redirectToRemarksPage(studentOnTour)}>
-                                                            <td style={{textDecoration: "underline"}}>{tour.name}</td>
-                                                            <td>{`${user.first_name} ${user.last_name}`}</td>
-                                                            <td>
-                                                                <Tooltip title={`Klaar met alle gebouwen.`}>
-                                                                    <Box sx={{width: "100%", position: "relative"}}>
-                                                                        <GreenLinearProgress variant="determinate"
-                                                                                             value={100}/>
-                                                                        <CheckIcon
-                                                                            style={{
-                                                                                position: "absolute",
-                                                                                top: "50%",
-                                                                                left: "50%",
-                                                                                transform: "translate(-50%, -50%)",
-                                                                                color: "white",
-                                                                            }}
-                                                                        />
-                                                                    </Box>
-                                                                </Tooltip>
-                                                            </td>
+                                                        return (
+                                                            <tr
+                                                                key={studentOnTour.id}
+                                                                style={{ cursor: "pointer" }}
+                                                                onClick={() => redirectToRemarksPage(studentOnTour)}
+                                                            >
+                                                                <td style={{ textDecoration: "underline" }}>
+                                                                    {tour.name}
+                                                                </td>
+                                                                <td>{`${user.first_name} ${user.last_name}`}</td>
+                                                                <td>
+                                                                    <Tooltip title={`Klaar met alle gebouwen.`}>
+                                                                        <Box
+                                                                            sx={{ width: "100%", position: "relative" }}
+                                                                        >
+                                                                            <GreenLinearProgress
+                                                                                variant="determinate"
+                                                                                value={100}
+                                                                            />
+                                                                            <CheckIcon
+                                                                                style={{
+                                                                                    position: "absolute",
+                                                                                    top: "50%",
+                                                                                    left: "50%",
+                                                                                    transform: "translate(-50%, -50%)",
+                                                                                    color: "white",
+                                                                                }}
+                                                                            />
+                                                                        </Box>
+                                                                    </Tooltip>
+                                                                </td>
 
-                                                            <td>
-                                                                {getRemarkText(remarksRecord[studentOnTour.id])}
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
+                                                                <td>
+                                                                    {getRemarkText(remarksRecord[studentOnTour.id])}
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
                                                 </tbody>
                                             </Table>
                                         </>
-                                    ) : (<></>)}
+                                    ) : (
+                                        <></>
+                                    )}
                                     {startedStudentOnTours.length > 0 ? (
                                         <>
                                             <label className="subtitle">Bezig</label>
                                             <Table className="table">
                                                 <thead>
-                                                <tr>
-                                                    <th>Ronde</th>
-                                                    <th>Student</th>
-                                                    <th>Voortgang</th>
-                                                    <th>Opmerkingen</th>
-                                                </tr>
+                                                    <tr>
+                                                        <th>Ronde</th>
+                                                        <th>Student</th>
+                                                        <th>Voortgang</th>
+                                                        <th>Opmerkingen</th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
-                                                {startedStudentOnTours.map((studentOnTour) => {
-                                                    const tour = tours.find((t) => t.id === studentOnTour.tour);
-                                                    const user = users.find((u) => u.id === studentOnTour.student);
+                                                    {startedStudentOnTours.map((studentOnTour) => {
+                                                        const tour = tours.find((t) => t.id === studentOnTour.tour);
+                                                        const user = users.find((u) => u.id === studentOnTour.student);
 
-                                                    if (!tour || !user) return null;
+                                                        if (!tour || !user) return null;
 
-                                                    return (
-                                                        <tr key={studentOnTour.id} style={{cursor: "pointer"}}
-                                                            onClick={() => redirectToRemarksPage(studentOnTour)}>
-                                                            <td style={{textDecoration: "underline"}}>{tour.name}</td>
-                                                            <td>{`${user.first_name} ${user.last_name}`}</td>
-                                                            <td>
-                                                                <Tooltip
-                                                                    title={`Momenteel bezig met gebouw ${currentBuildingIndex[studentOnTour.id] || 0} van de ${maxBuildingIndex[studentOnTour.id] || 0}.`}>
-                                                                    <Box sx={{width: "100%"}}>
-                                                                        <GreenLinearProgress
-                                                                            variant="determinate"
-                                                                            value={
-                                                                                getProgress(studentOnTour.id)
-                                                                            }
-                                                                        />
-                                                                    </Box>
-                                                                </Tooltip>
-                                                            </td>
+                                                        return (
+                                                            <tr
+                                                                key={studentOnTour.id}
+                                                                style={{ cursor: "pointer" }}
+                                                                onClick={() => redirectToRemarksPage(studentOnTour)}
+                                                            >
+                                                                <td style={{ textDecoration: "underline" }}>
+                                                                    {tour.name}
+                                                                </td>
+                                                                <td>{`${user.first_name} ${user.last_name}`}</td>
+                                                                <td>
+                                                                    <Tooltip
+                                                                        title={`Momenteel bezig met gebouw ${
+                                                                            currentBuildingIndex[studentOnTour.id] || 0
+                                                                        } van de ${
+                                                                            maxBuildingIndex[studentOnTour.id] || 0
+                                                                        }.`}
+                                                                    >
+                                                                        <Box sx={{ width: "100%" }}>
+                                                                            <GreenLinearProgress
+                                                                                variant="determinate"
+                                                                                value={getProgress(studentOnTour.id)}
+                                                                            />
+                                                                        </Box>
+                                                                    </Tooltip>
+                                                                </td>
 
-                                                            <td>
-                                                                {getRemarkText(remarksRecord[studentOnTour.id])}
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
+                                                                <td>
+                                                                    {getRemarkText(remarksRecord[studentOnTour.id])}
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
                                                 </tbody>
                                             </Table>
                                         </>
-                                    ) : (<></>)}
-                                    {(notYetStartedStudentOnTours.length > 0) ? (
+                                    ) : (
+                                        <></>
+                                    )}
+                                    {notYetStartedStudentOnTours.length > 0 ? (
                                         <>
                                             <label className="subtitle">Nog niet gestarte rondes</label>
                                             <Table className="table">
                                                 <thead>
-                                                <tr>
-                                                    <th>Ronde</th>
-                                                    <th>Student</th>
-                                                    <th>Voortgang</th>
-                                                    <th>Opmerkingen</th>
-                                                </tr>
+                                                    <tr>
+                                                        <th>Ronde</th>
+                                                        <th>Student</th>
+                                                        <th>Voortgang</th>
+                                                        <th>Opmerkingen</th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
-                                                {notYetStartedStudentOnTours.map((studentOnTour) => {
-                                                    const tour = tours.find((t) => t.id === studentOnTour.tour);
-                                                    const user = users.find((u) => u.id === studentOnTour.student);
+                                                    {notYetStartedStudentOnTours.map((studentOnTour) => {
+                                                        const tour = tours.find((t) => t.id === studentOnTour.tour);
+                                                        const user = users.find((u) => u.id === studentOnTour.student);
 
-                                                    if (!tour || !user) return null;
+                                                        if (!tour || !user) return null;
 
-                                                    return (
-                                                        <tr key={studentOnTour.id}>
-                                                            <td>{tour.name}</td>
-                                                            <td>{`${user.first_name} ${user.last_name}`}</td>
-                                                            <td>
-                                                                <Tooltip title={`Nog niet begonnen.`}>
+                                                        return (
+                                                            <tr key={studentOnTour.id}>
+                                                                <td>{tour.name}</td>
+                                                                <td>{`${user.first_name} ${user.last_name}`}</td>
+                                                                <td>
+                                                                    <Tooltip title={`Nog niet begonnen.`}>
+                                                                        <Box sx={{ width: "100%" }}>
+                                                                            <GreenLinearProgress
+                                                                                variant="determinate"
+                                                                                value={0}
+                                                                            />
+                                                                        </Box>
+                                                                    </Tooltip>
+                                                                </td>
 
-
-                                                                    <Box sx={{width: "100%"}}>
-                                                                        <GreenLinearProgress
-                                                                            variant="determinate"
-                                                                            value={0}
-                                                                        />
-                                                                    </Box>
-                                                                </Tooltip>
-                                                            </td>
-
-                                                            <td>
-                                                                {getRemarkText(remarksRecord[studentOnTour.id])}
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
+                                                                <td>
+                                                                    {getRemarkText(remarksRecord[studentOnTour.id])}
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
                                                 </tbody>
                                             </Table>
                                         </>
-                                    ) : (<></>)}
-
+                                    ) : (
+                                        <></>
+                                    )}
                                 </>
                             ) : (
                                 <p className="title">Geen rondes vandaag</p>
