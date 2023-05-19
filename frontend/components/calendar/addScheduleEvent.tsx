@@ -82,7 +82,7 @@ function AddScheduleEventModal({
                     <div className="form-row">
                         <div className="col">
                             <label>Datum:</label>
-                            <LocaleDatePicker setSelectedDate={setSelectedDate} selectedDate={selectedDate}/>
+                            <LocaleDatePicker setSelectedDate={setSelectedDate} selectedDate={selectedDate} />
                         </div>
                     </div>
                 </form>
