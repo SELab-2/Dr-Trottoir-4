@@ -27,7 +27,7 @@ function AdminAnalysis() {
             title: "Gewerkte uren",
             description: "Overzicht gewerkte tijden per student",
             icon: <Schedule style={{ fontSize: "100px" }} />,
-            url: "/admin/analysis/working-hours",
+            url: "/admin/analysis/worked-hours",
         },
     ];
 
