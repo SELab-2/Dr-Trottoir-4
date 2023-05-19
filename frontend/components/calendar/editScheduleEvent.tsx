@@ -6,7 +6,7 @@ import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { patchStudentOnTour } from "@/lib/student-on-tour";
 import { formatDate } from "@/lib/date";
-import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
+import TourUserAutocomplete from "@/components/autocompleteComponents/tourUserAutocomplete";
 import { ScheduleEvent } from "@/types";
 import LocaleDatePicker from "@/components/datepicker/datepicker";
 import { Form } from "react-bootstrap";
@@ -123,7 +123,7 @@ function EditScheduleEventModal({
                         <LocaleDatePicker setSelectedDate={setDate} selectedDate={date} />
                     </Form.Group>
                     <Form.Group className="form-group">
-                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false} />
+                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} matchId={studentId} />
                     </Form.Group>
                     <Form.Group className="form-group">
                         <Form.Label>Selecteer student</Form.Label>

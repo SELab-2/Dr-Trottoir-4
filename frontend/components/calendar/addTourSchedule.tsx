@@ -7,7 +7,7 @@ import { formatDate } from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { postBulkStudentOnTour, StudentOnTourPost } from "@/lib/student-on-tour";
 import { handleError } from "@/lib/error";
-import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
+import TourUserAutocomplete from "@/components/autocompleteComponents/tourUserAutocomplete";
 import { Form } from "react-bootstrap";
 import LocaleDateRangePicker from "@/components/datepicker/DateRangePicker";
 
@@ -95,7 +95,7 @@ function AddTourScheduleModal({
                 <Form>
                     <Form.Group>
                         <Form.Label>Selecteer een ronde:</Form.Label>
-                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false} />
+                        <TourAutocomplete initialId={tourId} setObjectId={setTourId} matchId={studentId} />
                     </Form.Group>
 
                     <Form.Group>
