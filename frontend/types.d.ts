@@ -66,6 +66,7 @@ export type UserView = {
     last_name : string;
     role : string;
     phone_number : string;
+    regions: string;
     userId : number;
     isActive : boolean;
 }
