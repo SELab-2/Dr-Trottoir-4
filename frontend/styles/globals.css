@@ -75,6 +75,7 @@
     align-items: center;
     justify-content: center;
     background-color: #1D1D1D;
+    border-color: black;
     box-sizing: border-box;
 }
 
@@ -84,6 +85,7 @@
     padding-left: 10px;
     padding-right: 10px;
     background-color: transparent;
+    border-color: black;
     color: #1D1D1D;
     transition: ease-in 0.2s;
 }
@@ -100,6 +102,7 @@
     align-items: center;
     justify-content: center;
     background-color: #1D1D1D;
+    border-color: black;
     box-sizing: border-box;
 }
 
@@ -110,6 +113,7 @@
     padding-right: 10px;
     background-color: transparent;
     color: #1D1D1D;
+    border-color: black;
     transition: ease-in 0.2s;
 }
 
@@ -123,6 +127,7 @@
     align-items: center;
     justify-content: center;
     background-color: #1D1D1D;
+    border-color: black;
     box-sizing: border-box;
     border-radius: 5px;
 }
@@ -132,6 +137,7 @@
     padding-right: 10px;
     background-color: transparent;
     color: #1D1D1D;
+    border-color: black;
     transition: ease-in 0.2s;
     border-radius: 5px;
 }
