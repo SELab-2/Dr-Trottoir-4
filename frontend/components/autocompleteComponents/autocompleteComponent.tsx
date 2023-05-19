@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
-import Autocomplete, {AutocompleteRenderInputParams} from "@mui/material/Autocomplete";
-import {AxiosResponse} from "axios/index";
-import {Form} from "react-bootstrap";
-import {CircularProgress} from "@mui/material";
+import Autocomplete, { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
+import { AxiosResponse } from "axios/index";
+import { Form } from "react-bootstrap";
+import { CircularProgress } from "@mui/material";
 
 /**
  * The AutocompleteComponent aims to be as generic as possible to suit many use-cases. Therefore, a lot of the typings
@@ -25,6 +25,7 @@ interface Props {
     fetchOptions: () => Promise<AxiosResponse<any>>;
     mapping: (value: any) => any;
     setObjectId: (value: any) => void;
+    disabled?: boolean;
 }
 
 export interface GenericProps {
@@ -39,7 +40,22 @@ export interface UserProps {
     matchId?: number | null;
 }
 
-const AutocompleteComponent: React.FC<Props> = ({initialId, label, fetchOptions, mapping, setObjectId}) => {
+export interface StudentOnTourProps {
+    initialId: any;
+    setObjectId: (value: any) => void;
+    required: boolean;
+    studentId: number;
+    disabled?: boolean;
+}
+
+const AutocompleteComponent: React.FC<Props> = ({
+    initialId,
+    label,
+    fetchOptions,
+    mapping,
+    setObjectId,
+    disabled = false,
+}) => {
     const [value, setValue] = React.useState<any>();
     const [inputValue, setInputValue] = useState("");
     const [options, setOptions] = useState<string[]>([]);
@@ -50,7 +66,7 @@ const AutocompleteComponent: React.FC<Props> = ({initialId, label, fetchOptions,
                 const res = await fetchOptions();
                 let availableOptions: any[] = [];
                 for (let data of res.data) {
-                    availableOptions.push({label: mapping(data), id: data.id});
+                    availableOptions.push({ label: mapping(data), id: data.id });
                 }
                 setOptions(availableOptions);
 
@@ -91,8 +107,9 @@ const AutocompleteComponent: React.FC<Props> = ({initialId, label, fetchOptions,
                 }}
                 options={options}
                 getOptionLabel={(option: any) => option.label || ""}
+                disabled={disabled}
                 renderInput={(params: AutocompleteRenderInputParams) => (
-                    <TextField {...params} variant="outlined" fullWidth/>
+                    <TextField {...params} variant="outlined" fullWidth />
                 )}
             />
         </>
