@@ -105,6 +105,7 @@ export default function ({
                         <label className="form-label">Template:</label>
                         <label className="form-label small">{`* mogelijke variabelen in de template zijn {{name}} en {{address}}`}</label>
                         <textarea
+                            rows={12}
                             className={`form-control form-control-lg`}
                             value={selectedEmail ? selectedEmail.template : ""}
                             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
