@@ -6,7 +6,6 @@ import {
     getAllGarbageCollectionChanges,
     getGarbageCollectionFromBuilding,
     getGarbageColor,
-    patchGarbageCollection,
 } from "@/lib/garbage-collection";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
@@ -25,7 +24,6 @@ import { Button } from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
 import { GarbageCollectionEvent, GarbageCollectionWebSocketInterface } from "@/types";
 import GarbageCollectionEventComponentWithAddress from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
-import GarbageCollectionEventComponentWithoutAddress from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
 import { getBuildingsOfTour } from "@/lib/tour";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
@@ -33,8 +31,6 @@ import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomple
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import BulkMoveGarbageModal from "@/components/garbage/BulkMoveGarbageModal";
 import { AxiosResponse } from "axios";
-import withDragAndDrop, { EventInteractionArgs } from "react-big-calendar/lib/addons/dragAndDrop";
-import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
 import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 

@@ -36,6 +36,7 @@ export default function BulkMoveGarbageModal({
         }
         if (!garbageType) {
             setErrorMessages(["Er is geen type aangeduid."]);
+            return;
         }
         // For now duplicate for all the buildings
         bulkMoveGarbageCollectionSchedule(
@@ -80,9 +81,9 @@ export default function BulkMoveGarbageModal({
                             aria-labelledby={"type"}
                             options={Object.keys(garbageTypes).map((key: string) => {
                                 const v = garbageTypes[key];
-                                return { value: v, label: v };
+                                return { value: key, label: v };
                             })}
-                            value={garbageType ? { value: garbageType, label: garbageType } : {}}
+                            value={garbageType ? { value: garbageType, label: garbageTypes[garbageType] ?? "" } : {value: "", label:""}}
                             onChange={(s) => {
                                 if (s && s.value) {
                                     setGarbageType(s.value);
