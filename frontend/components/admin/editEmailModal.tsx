@@ -82,7 +82,7 @@ export default function ({
             <Modal.Body>
                 <Form>
                     <div className="form-outline mb-4">
-                        <label className="form-label">Naam emailtemplate:</label>
+                        <label className="form-label">Naam email template:</label>
                         <input
                             type="text"
                             className={`form-control form-control-lg`}
