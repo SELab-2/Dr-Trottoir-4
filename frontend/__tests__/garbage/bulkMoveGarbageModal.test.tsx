@@ -40,5 +40,4 @@ describe("BulkOperationModal", () => {
         expect(screen.getByText("naar:")).toBeInTheDocument();
         expect(screen.getByText("Type:")).toBeInTheDocument();
     });
-
 });

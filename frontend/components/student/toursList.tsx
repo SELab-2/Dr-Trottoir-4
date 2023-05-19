@@ -54,7 +54,7 @@ export default function ToursList({
                                                 ? allRegions[allTours[el.tour].region].region
                                                 : ""}
                                         </p>
-                                        <small>{el.date.toLocaleDateString("en-GB")}</small>
+                                        <small>{el.date.toLocaleDateString("nl-BE")}</small>
                                     </div>
                                 </ListGroupItem>
                             );
