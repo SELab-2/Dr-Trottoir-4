@@ -240,7 +240,7 @@ function AnalysisStudentOnTour() {
                                                     pathname: "/admin/building/",
                                                     query: {
                                                         id: building ? building.id : -1,
-                                                        date: formatDate(new Date(analysis.departure_time)),
+                                                        date: studentOnTour ? formatDate(new Date(studentOnTour?.date)) : formatDate(new Date())
                                                     },
                                                 }}
                                             >
