@@ -8,7 +8,9 @@ const BuildingAutocomplete: React.FC<GenericProps> = ({ initialId, setObjectId, 
             initialId={initialId}
             label={`Selecteer gebouw${required ? "*" : ""}`}
             fetchOptions={getAllBuildings}
-            mapping={(building: BuildingInterface) => `${getAddress(building)} (${building.name})`}
+            mapping={(building: BuildingInterface) =>
+                `${getAddress(building)} ${building.name ? "(" + building.name + ")" : ""}`
+            }
             setObjectId={setObjectId}
         />
     );

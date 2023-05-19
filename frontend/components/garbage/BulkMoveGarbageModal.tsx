@@ -6,6 +6,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { addDays } from "date-fns";
 import { BuildingInterface } from "@/lib/building";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import LocaleDatePicker from "@/components/datepicker/datepicker";
 import Select from "react-select";
 
 export default function BulkMoveGarbageModal({
@@ -18,8 +19,8 @@ export default function BulkMoveGarbageModal({
     closeModal: () => void;
 }) {
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
-    const [dateToMove, setDateToMove] = useState<string>(formatDate(new Date()));
-    const [moveToDate, setMoveToDate] = useState<string>(formatDate(addDays(new Date(), 1)));
+    const [dateToMove, setDateToMove] = useState<Date>(new Date());
+    const [moveToDate, setMoveToDate] = useState<Date>(addDays(new Date(), 1));
     const [garbageType, setGarbageType] = useState<string>("");
 
     // Submit the duplicate request
@@ -39,8 +40,8 @@ export default function BulkMoveGarbageModal({
         // For now duplicate for all the buildings
         bulkMoveGarbageCollectionSchedule(
             garbageType,
-            dateToMove,
-            moveToDate,
+            formatDate(dateToMove),
+            formatDate(moveToDate),
             buildings.map((b) => b.id)
         ).then(
             (_) => onHide(),
@@ -51,8 +52,8 @@ export default function BulkMoveGarbageModal({
     // execute when the modal is hidden
     function onHide() {
         closeModal();
-        setDateToMove(formatDate(new Date()));
-        setMoveToDate(formatDate(addDays(new Date(), 1)));
+        setDateToMove(new Date());
+        setMoveToDate(addDays(new Date(), 1));
         setGarbageType("");
         setErrorMessages([]);
     }
@@ -67,25 +68,16 @@ export default function BulkMoveGarbageModal({
                 <Modal.Body>
                     <Form.Group>
                         <Form.Label>Verplaats van:</Form.Label>
-                        <Form.Control
-                            type="date"
-                            className="form-control"
-                            value={dateToMove}
-                            onChange={(event) => setDateToMove(event.target.value)}
-                        />
+                        <LocaleDatePicker selectedDate={dateToMove} setSelectedDate={setDateToMove} />
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>naar:</Form.Label>
-                        <Form.Control
-                            type="date"
-                            className="form-control"
-                            value={moveToDate}
-                            onChange={(event) => setMoveToDate(event.target.value)}
-                        />
+                        <LocaleDatePicker selectedDate={moveToDate} setSelectedDate={setMoveToDate} />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Type:</Form.Label>
+                        <Form.Label id={"type"}>Type:</Form.Label>
                         <Select
+                            aria-labelledby={"type"}
                             options={Object.keys(garbageTypes).map((key: string) => {
                                 const v = garbageTypes[key];
                                 return { value: v, label: v };

@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     duplicateGarbageCollectionSchedule,
     GarbageCollectionInterface,
     garbageTypes,
+    getAllGarbageCollectionChanges,
     getGarbageCollectionFromBuilding,
     getGarbageColor,
+    patchGarbageCollection,
 } from "@/lib/garbage-collection";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
@@ -21,17 +23,19 @@ import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
 import { Button } from "react-bootstrap";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
-import { GarbageCollectionEvent } from "@/types";
+import { GarbageCollectionEvent, GarbageCollectionWebSocketInterface } from "@/types";
 import GarbageCollectionEventComponentWithAddress from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
 import GarbageCollectionEventComponentWithoutAddress from "@/components/garbage/GarbageCollectionEventComponentWithoutAddress";
 import { getBuildingsOfTour } from "@/lib/tour";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import BuildingAutocomplete from "@/components/autocompleteComponents/buildingAutocomplete";
 import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomplete";
-import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import BulkMoveGarbageModal from "@/components/garbage/BulkMoveGarbageModal";
 import { AxiosResponse } from "axios";
+import withDragAndDrop, { EventInteractionArgs } from "react-big-calendar/lib/addons/dragAndDrop";
+import { formatDate } from "@/lib/date";
+import { handleError } from "@/lib/error";
 import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 
 interface ParsedUrlQuery {}
@@ -70,8 +74,19 @@ function GarbageCollectionSchedule() {
     const [showBulkMoveModal, setShowBulkMoveModal] = useState<boolean>(false);
 
     const [buildingList, setBuildingList] = useState<BuildingInterface[]>([]);
-
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
+    const garbageCollectionRef = useRef(garbageCollection);
+    const buildingListRef = useRef(buildingList);
+    const rangeRef = useRef(currentRange);
+
+    useEffect(() => {
+        garbageCollectionRef.current = garbageCollection;
+    }, [garbageCollection]);
+
+    useEffect(() => {
+        buildingListRef.current = buildingList;
+    }, [buildingList]);
 
     useEffect(() => {
         const query: DataBuildingQuery = router.query as DataBuildingQuery;
@@ -101,6 +116,34 @@ function GarbageCollectionSchedule() {
             (err) => setErrorMessages(handleError(err))
         );
     }, [router.isReady]);
+
+    useEffect(() => {
+        setUpWebsocket();
+    }, [allBuildings]);
+
+    function setUpWebsocket() {
+        getAllGarbageCollectionChanges().addEventListener("message", (event) => {
+            const data: GarbageCollectionWebSocketInterface = JSON.parse(event.data);
+            const g: GarbageCollectionInterface = data.garbage_collection;
+            if (rangeRef.current.start <= new Date(g.date) && new Date(g.date) <= rangeRef.current.end) {
+                if (!buildingListRef.current.some((b) => b.id === g.building)) {
+                    return;
+                }
+                if (data.type === "deleted") {
+                    onDelete(g.id);
+                } else {
+                    const obj: GarbageCollectionInterface | undefined = garbageCollectionRef.current.find(
+                        (col) => col.id === Number(g.id)
+                    );
+                    if (obj) {
+                        onPatch({ ...g, date: new Date(g.date) });
+                    } else {
+                        onPost([{ ...g, date: new Date(g.date) }]);
+                    }
+                }
+            }
+        });
+    }
 
     // Add the searched building to the list
     useEffect(() => {
@@ -288,7 +331,7 @@ function GarbageCollectionSchedule() {
     // After a successful post of an event, add it to the collections list
     function onPost(g: GarbageCollectionInterface[]) {
         setGarbageCollection((prevState) => {
-            return [...prevState, ...g];
+            return [...prevState, ...g.filter((col) => !prevState.some((gar) => gar.id === col.id))];
         });
     }
 
@@ -314,6 +357,18 @@ function GarbageCollectionSchedule() {
             endDate,
             copyToDate,
             buildingList.map((b) => b.id)
+        );
+    }
+
+    function dragAndDrop(args: EventInteractionArgs<object>): void {
+        const { event, start } = args;
+        const garbageCollectionEvent: GarbageCollectionEvent = event as GarbageCollectionEvent;
+        patchGarbageCollection(garbageCollectionEvent.id, { date: formatDate(new Date(start)) }).then(
+            (res) => {
+                const g: GarbageCollectionInterface = res.data;
+                onPatch(g);
+            },
+            (err) => setErrorMessages(handleError(err))
         );
     }
 
@@ -346,6 +401,9 @@ function GarbageCollectionSchedule() {
         },
     });
 
+    const DnDCalendar = withDragAndDrop(Calendar);
+
+    // @ts-ignore
     return (
         <>
             <AdminHeader />
@@ -409,10 +467,10 @@ function GarbageCollectionSchedule() {
                 </div>
             </div>
 
-            <Calendar
+            <DnDCalendar
                 messages={messages}
                 culture={"nl-BE"}
-                defaultView="month"
+                defaultView="week"
                 events={garbageCollection.map((g) => {
                     const s: Date = new Date(g.date);
                     let e = addDays(s, 1);
@@ -429,17 +487,19 @@ function GarbageCollectionSchedule() {
                     return event;
                 })}
                 components={{
+                    //@ts-ignore
                     event:
                         buildingList.length > 1
                             ? GarbageCollectionEventComponentWithAddress
                             : GarbageCollectionEventComponentWithoutAddress,
                 }}
                 localizer={loc}
-                eventPropGetter={(event) => {
+                eventPropGetter={(e) => {
+                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
                     const backgroundColor = getGarbageColor(event.garbageType);
                     return { style: { backgroundColor, color: "black" } };
                 }}
-                drilldownView={null}
+                drilldownView="week"
                 selectable
                 onSelectSlot={(slotInfo) => {
                     if (buildingList.length <= 0) {
@@ -448,7 +508,8 @@ function GarbageCollectionSchedule() {
                     setSelectedDate(slotInfo.start);
                     setShowEditModal(true);
                 }}
-                onSelectEvent={(event: GarbageCollectionEvent) => {
+                onSelectEvent={(e) => {
+                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
                     if (buildingList.length <= 0) {
                         return;
                     }
@@ -459,8 +520,9 @@ function GarbageCollectionSchedule() {
                     setSelectedEvent(event);
                     setShowEditModal(true);
                 }}
+                onEventDrop={dragAndDrop}
                 onRangeChange={getFromRange}
-                views={["month", "week"]}
+                views={["week"]}
                 style={{ height: "100vh" }}
                 step={60}
                 timeslots={1}

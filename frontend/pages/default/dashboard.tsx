@@ -6,7 +6,7 @@ function DefaultDashboard() {
     return (
         <>
             <DefaultHeader />
-            <p className={styles.title}>Dit is het dashboard voor de default rol, u hebt nog geen rol.</p>
+            <p className={styles.title}>This is the default dashboard, you don't have a role yet.</p>
         </>
     );
 }

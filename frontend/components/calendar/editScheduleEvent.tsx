@@ -8,6 +8,10 @@ import { patchStudentOnTour } from "@/lib/student-on-tour";
 import { formatDate } from "@/lib/date";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
 import { ScheduleEvent } from "@/types";
+import LocaleDatePicker from "@/components/datepicker/datepicker";
+import { Form } from "react-bootstrap";
+import Link from "next/link";
+import { startOfDay } from "date-fns";
 
 function EditScheduleEventModal({
     event,
@@ -71,6 +75,13 @@ function EditScheduleEventModal({
         onClose();
     };
 
+    function isEditable() {
+        if (!event) {
+            return true;
+        }
+        return new Date(event.start) >= startOfDay(new Date());
+    }
+
     return (
         <Modal
             show={isOpen}
@@ -84,35 +95,56 @@ function EditScheduleEventModal({
             </Modal.Header>
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
-                <form>
-                    <div className="form-outline mb-4">
-                        <label className="form-label">Datum:</label>
-                        <input
-                            type="date"
-                            className="form-control"
-                            value={formatDate(date)}
-                            onChange={(event) => setDate(new Date(event.target.value))}
-                        />
-                    </div>
-                    <div className="form-group">
+                {!isEditable() && (
+                    <>
+                        <div className="m-2">U kunt planningen in het verleden niet meer bewerken.</div>
+                        <label>Bekijk de </label>
+                        <Link
+                            style={{
+                                textDecoration: "underline",
+                                color: "royalblue",
+                            }}
+                            href={{
+                                pathname: "/admin/analysis/student-on-tour",
+                                query: {
+                                    studentOnTour: event?.id,
+                                },
+                            }}
+                        >
+                            {" "}
+                            analyse{" "}
+                        </Link>
+                        <label> van deze student.</label>
+                    </>
+                )}
+                <Form style={isEditable() ? undefined : { pointerEvents: "none", opacity: 0.6 }}>
+                    <Form.Group className="form-outline mb-4">
+                        <Form.Label className="form-label">Datum:</Form.Label>
+                        <LocaleDatePicker setSelectedDate={setDate} selectedDate={date} />
+                    </Form.Group>
+                    <Form.Group className="form-group">
                         <TourAutocomplete initialId={tourId} setObjectId={setTourId} required={false} />
-                    </div>
-                    <div className="form-group">
-                        <label>Selecteer student</label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId} />
-                    </div>
-                </form>
+                    </Form.Group>
+                    <Form.Group className="form-group">
+                        <Form.Label>Selecteer student</Form.Label>
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} matchId={tourId}/>
+                    </Form.Group>
+                </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="danger" onClick={handleTourDelete}>
-                    Verwijder ronde (voor hele week)
-                </Button>
-                <Button variant="danger" onClick={handleDelete}>
-                    Verwijder
-                </Button>
-                <Button variant="primary" onClick={handleSave}>
-                    Sla op
-                </Button>
+                {isEditable() && (
+                    <>
+                        <Button variant="danger" onClick={handleTourDelete}>
+                            Verwijder ronde (voor hele week)
+                        </Button>
+                        <Button variant="danger" onClick={handleDelete}>
+                            Verwijder
+                        </Button>
+                        <Button variant="primary" onClick={handleSave}>
+                            Sla op
+                        </Button>
+                    </>
+                )}
             </Modal.Footer>
         </Modal>
     );

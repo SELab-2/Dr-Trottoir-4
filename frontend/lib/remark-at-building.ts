@@ -23,9 +23,13 @@ export function translateRemarkAtBuildingType(type: RemarkAtBuildingInterface["t
     }
 }
 
+export function getRemarksAtBuildingWS(building: string | number) {
+    return `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}building/${building}/remarks/`
+}
+
 export async function getRemarksAtBuildingOfSpecificBuilding(
     buildingId: number,
-    {mostRecent = false, date = ""}: { mostRecent?: boolean, date?: string }={}): Promise<AxiosResponse<any>> {
+    {mostRecent = false, date = ""}: { mostRecent?: boolean, date?: string } = {}): Promise<AxiosResponse<any>> {
     let request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_REMARKS_OF_A_BUILDING}${buildingId}`;
 
     return await api.get(request_url, {

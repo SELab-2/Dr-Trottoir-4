@@ -105,8 +105,11 @@ function AnalysisStudentOnTour() {
         const departureHours = departureTime.getHours();
         const departureMinutes = departureTime.getMinutes();
 
-        return `${arrivalHours.toString().padStart(2, "0")}:${arrivalMinutes.toString().padStart(2, "0")} - 
-        ${departureHours.toString().padStart(2, "0")}:${departureMinutes.toString().padStart(2, "0")}`;
+        return `${arrivalHours.toString().padStart(2, "0")}:${arrivalMinutes.toString().padStart(2, "0")} - ${
+            isNaN(departureHours)
+                ? "..."
+                : `${departureHours.toString().padStart(2, "0")}:${departureMinutes.toString().padStart(2, "0")}`
+        }`;
     }
 
     /**

@@ -7,7 +7,7 @@ import {
 } from "@/lib/garbage-collection";
 import { BuildingComment, getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
 import React, { useEffect, useState } from "react";
-import { BuildingManual, getManualPath, getManualsForBuilding } from "@/lib/building-manual";
+import { ManualInterface, getManualPath, getManualsForBuilding } from "@/lib/building-manual";
 import { addDays, subDays } from "date-fns";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
@@ -27,7 +27,7 @@ export default function BuildingInfoView({
 }) {
     const [garbageCollections, setGarbageCollections] = useState<{ [p: string]: GarbageCollectionInterface[] }>({});
     const [buildingComments, setBuildingComments] = useState<BuildingComment[]>([]);
-    const [manual, setManual] = useState<BuildingManual | null>(null);
+    const [manual, setManual] = useState<ManualInterface | null>(null);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
@@ -80,11 +80,11 @@ export default function BuildingInfoView({
     function getBuildingManual(buildingId: number) {
         getManualsForBuilding(buildingId)
             .then((res) => {
-                const manuals: BuildingManual[] = res.data;
+                const manuals: ManualInterface[] = res.data;
                 if (manuals.length === 0) {
                     return;
                 }
-                const m: BuildingManual = manuals[0];
+                const m: ManualInterface = manuals[0];
                 m.file = getManualPath(m.file);
                 setManual(m);
             })
@@ -108,7 +108,7 @@ export default function BuildingInfoView({
                             return (
                                 <div key={key} style={{ flex: 1, borderRight: isLast ? "none" : "1px solid #ccc" }}>
                                     <p className="text-center m-0 p-0" style={{ borderBottom: "1px solid #ccc" }}>
-                                        {new Date(key).toLocaleDateString("nl-BE")}
+                                        {new Date(key).toLocaleDateString("en-GB")}
                                     </p>
                                     {col.length === 0 && (
                                         <p
