@@ -142,7 +142,7 @@ export default function PlannedBuildingList({
                         marginLeft: 10,
                     }}
                 >
-                    {studentOnTour ? studentOnTour.date.toLocaleDateString("en-GB") : ""}
+                    {studentOnTour ? studentOnTour.date.toLocaleDateString("nl-BE") : ""}
                 </label>
                 {buildings.length > 0 && (
                     <>
@@ -190,13 +190,13 @@ export default function PlannedBuildingList({
                         !datesEqual(new Date(), studentOnTour.date) &&
                         new Date() < studentOnTour.date && (
                             <p>{`U kan deze ronde nog niet starten, kom terug op ${studentOnTour.date.toLocaleDateString(
-                                "en-GB"
+                                "nl-BE"
                             )}`}</p>
                         )}
                     {studentOnTour &&
                         ((!datesEqual(new Date(), studentOnTour.date) && new Date() > studentOnTour.date) ||
                             studentOnTour.completed_tour) && (
-                            <p>{`U hebt deze ronde afgewerkt op ${studentOnTour.date.toLocaleDateString("en-GB")}.`}</p>
+                            <p>{`U hebt deze ronde afgewerkt op ${studentOnTour.date.toLocaleDateString("nl-BE")}.`}</p>
                         )}
                 </div>
             </div>

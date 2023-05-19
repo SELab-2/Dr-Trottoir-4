@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {
     getRemarksAtBuildingOfSpecificBuilding,
+    getRemarksAtBuildingWS,
     RemarkAtBuildingInterface,
     translateRemarkAtBuildingType,
 } from "@/lib/remark-at-building";
@@ -23,15 +24,9 @@ function CollectionCards({building, date}: { building: number; date: string | nu
     const connectToWebSocket = (websocketURL: string, callback: () => void) => {
         const client = new WebSocket(websocketURL);
 
-        client.onopen = () => {
-        };
-
-        client.addEventListener("message", () => {
+        client.addEventListener("message", (_) => {
             callback();
         });
-
-        client.onclose = () => {
-        };
     };
 
     function handleRemarksAtBuildingsCall(response: AxiosResponse) {
@@ -89,7 +84,7 @@ function CollectionCards({building, date}: { building: number; date: string | nu
 
     useEffect(() => {
         fetchData();
-        connectToWebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}building/${building}/remarks/`, fetchData);
+        connectToWebSocket(getRemarksAtBuildingWS(building), fetchData);
     }, [building]);
 
     function imageClick(url: string) {

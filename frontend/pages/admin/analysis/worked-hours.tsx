@@ -138,24 +138,24 @@ function AdminAnalysisWorkingHours() {
             new Date() > new Date(studentOnTour.date)
         ) {
             return `${tour.name} (${region ? region.region : "onbekend"}) - ${studentOnTour.date.toLocaleDateString(
-                "en-GB"
+                "nl-BE"
             )} (nooit afgewerkt)`;
         }
         if (!studentOnTour.completed_tour && !studentOnTour.started_tour) {
             return `${tour.name} (${region ? region.region : "onbekend"}) - ${studentOnTour.date.toLocaleDateString(
-                "en-GB"
+                "nl-BE"
             )} (gepland)`;
         }
         if (!studentOnTour.completed_tour || !studentOnTour.started_tour) {
             return `${tour.name} (${region ? region.region : "onbekend"}) - ${studentOnTour.date.toLocaleDateString(
-                "en-GB"
+                "nl-BE"
             )} (bezig)`;
         }
         const completionTime = new Date(studentOnTour.completed_tour);
         const startingTime = new Date(studentOnTour.started_tour);
         const minutes = Math.abs(differenceInMinutes(completionTime, startingTime));
         return `${tour.name} (${region ? region.region : "onbekend"}) - ${studentOnTour.date.toLocaleDateString(
-            "en-GB"
+            "nl-BE"
         )} (${toHoursAndMinutes(minutes, false)})`;
     }
 

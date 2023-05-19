@@ -62,7 +62,7 @@ export async function getSyndics() {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
     return await api.get(request_url, {
         params: {
-            "include-role-name-list": "syndic"
+            "include-role-name-list": ["syndic"]
         }
     });
 }
@@ -71,7 +71,7 @@ export async function getStudents() {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
     return await api.get(request_url, {
         params: {
-            "include-role-name-list": "student"
+            "include-role-name-list": ["student"]
         }
     });
 }
@@ -107,6 +107,27 @@ export async function getTourUsersFromRegion(tourId: number | null, includeInact
     }
 }
 
+export async function getUsersFromRegion(regionId: number | null, includeInactiveUser: boolean = false) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
+    if (regionId) {
+        return await api.get(request_url, {
+            params: {
+                "include-inactive-bool": includeInactiveUser,
+                "include-role-name-list": ["syndic"]
+            }
+        });
+    } else {
+        return await api.get(request_url, {
+            params: {
+                "region-id-list": [regionId],
+                "include-inactive-bool": includeInactiveUser,
+                "include-role-name-list": ["syndic"]
+            }
+        });
+    }
+
+}
+
 export async function deleteUser(userId: number): Promise<AxiosResponse<any, any>> {
     const delete_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_USER}${userId}`;
     return await api.delete(delete_url);
@@ -119,6 +140,6 @@ export async function patchUser(userId: number, data: Object): Promise<AxiosResp
     });
 }
 
-export function getFullName(user : User) {
+export function getFullName(user: User) {
     return `${user.first_name} ${user.last_name}`;
 }

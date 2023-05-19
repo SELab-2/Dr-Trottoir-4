@@ -3,6 +3,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete, { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
 import { AxiosResponse } from "axios/index";
 import { Form } from "react-bootstrap";
+import { CircularProgress } from "@mui/material";
 
 /**
  * The AutocompleteComponent aims to be as generic as possible to suit many use-cases. Therefore, a lot of the typings
@@ -24,6 +25,7 @@ interface Props {
     fetchOptions: () => Promise<AxiosResponse<any>>;
     mapping: (value: any) => any;
     setObjectId: (value: any) => void;
+    disabled?: boolean;
 }
 
 export interface GenericProps {
@@ -32,13 +34,28 @@ export interface GenericProps {
     required: boolean;
 }
 
-export interface TourUserProps {
+export interface UserProps {
     initialId: any;
     setObjectId: (value: any) => void;
-    tourId?: number | null;
+    matchId?: number | null;
 }
 
-const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions, mapping, setObjectId }) => {
+export interface StudentOnTourProps {
+    initialId: any;
+    setObjectId: (value: any) => void;
+    required: boolean;
+    studentId: number;
+    disabled?: boolean;
+}
+
+const AutocompleteComponent: React.FC<Props> = ({
+    initialId,
+    label,
+    fetchOptions,
+    mapping,
+    setObjectId,
+    disabled = false,
+}) => {
     const [value, setValue] = React.useState<any>();
     const [inputValue, setInputValue] = useState("");
     const [options, setOptions] = useState<string[]>([]);
@@ -80,6 +97,9 @@ const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions
                     if (newValue) {
                         setValue(newValue);
                         setObjectId(newValue.id);
+                    } else {
+                        setValue("");
+                        setObjectId(-1);
                     }
                 }}
                 onInputChange={(e: React.SyntheticEvent, newInputValue: string) => {
@@ -87,6 +107,7 @@ const AutocompleteComponent: React.FC<Props> = ({ initialId, label, fetchOptions
                 }}
                 options={options}
                 getOptionLabel={(option: any) => option.label || ""}
+                disabled={disabled}
                 renderInput={(params: AutocompleteRenderInputParams) => (
                     <TextField {...params} variant="outlined" fullWidth/>
                 )}

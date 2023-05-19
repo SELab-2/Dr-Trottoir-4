@@ -40,7 +40,10 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
 
         const nextMonth: Date = new Date();
         nextMonth.setMonth(nextMonth.getMonth() + 1);
-        getToursOfStudent(user.id, { startDate: monthAgo, endDate: nextMonth })
+        getToursOfStudent(user.id, {
+            startDate: monthAgo,
+            endDate: nextMonth,
+        })
             .then(async (res) => {
                 // Some cache to recognize duplicate tours (to not do unnecessary requests)
                 const t: Record<number, Tour> = {};

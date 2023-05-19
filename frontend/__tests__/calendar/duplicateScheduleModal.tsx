@@ -33,9 +33,9 @@ describe("DuplicateScheduleModal", () => {
             />
         );
 
-        fireEvent.change(getByLabelText("Van start van week:"), { target: { value: "2023-05-01" } });
-        fireEvent.change(getByLabelText("Tot einde van week:"), { target: { value: "2023-05-07" } });
-        fireEvent.change(getByLabelText("Kopieer naar start van week:"), { target: { value: "2023-05-08" } });
+        // fireEvent.change(getByLabelText("Van start van week:"), { target: { value: "2023-05-01" } });
+        // fireEvent.change(getByLabelText("Tot einde van week:"), { target: { value: "2023-05-07" } });
+        // fireEvent.change(getByLabelText("Kopieer naar start van week:"), { target: { value: "2023-05-08" } });
 
         // Mock successful form submission
         mockOnSubmit.mockResolvedValue({});

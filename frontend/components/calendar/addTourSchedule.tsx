@@ -100,7 +100,7 @@ function AddTourScheduleModal({
 
                     <Form.Group>
                         <Form.Label>Selecteer een student:</Form.Label>
-                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} tourId={tourId} />
+                        <TourUserAutocomplete initialId={studentId} setObjectId={setStudentId} matchId={tourId} />
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Selecteer een periode:</Form.Label>

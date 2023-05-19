@@ -6,7 +6,7 @@ import person from "@/public/icons/person.svg";
 import menu from "@/public/icons/menu.svg";
 import Link from "next/link";
 import Logout from "@/components/logout";
-import { Nav, Navbar, NavDropdown } from "react-bootstrap";
+import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 
 const AdminHeader = () => {
     return (
@@ -14,12 +14,12 @@ const AdminHeader = () => {
             <div className="container-fluid">
                 <Link href="/admin/dashboard">
                     <Navbar.Brand>
-                        <Image src={logo} alt="My App Logo" width={120} height={30} />
+                        <Image src={logo} alt="My App Logo" width={120} height={30}/>
                     </Navbar.Brand>
                 </Link>
                 <Navbar.Collapse
                     id="navbarSupportedContent"
-                    style={{ height: "100%", marginBottom: "0px", paddingBottom: "0px" }}
+                    style={{height: "100%", marginBottom: "0px", paddingBottom: "0px"}}
                 >
                     <Nav className="ms-auto mb-2 mb-lg-0">
                         <Nav.Link className={styles.text} href="/admin/dashboard">
@@ -45,7 +45,7 @@ const AdminHeader = () => {
                         <Nav.Link className={styles.text} href="/admin/communication">
                             Communicatie
                         </Nav.Link>
-                        <Nav.Link className={styles.text} href="/admin/analysis/worked-hours">
+                        <Nav.Link className={styles.text} href="/admin/analysis">
                             Analyse
                         </Nav.Link>
                         <Nav.Link className={styles.text} href="/admin/my-schedule">
@@ -53,25 +53,25 @@ const AdminHeader = () => {
                         </Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
-                <div style={{ display: "flex", alignItems: "center" }}>
+                <div style={{display: "flex", alignItems: "center"}}>
                     <Navbar.Toggle
                         className={styles.menuIcon}
                         aria-controls="navbarSupportedContent"
                         aria-label="Toggle navigation"
                     >
-                        <Image src={menu} alt="My App Menu" height={24} />
+                        <Image src={menu} alt="My App Menu" height={24}/>
                     </Navbar.Toggle>
                     <NavDropdown
                         id="navbarDropdown1"
                         menuVariant="dark"
                         align="end"
-                        style={{ marginLeft: "10px", marginRight: "-10px" }}
-                        title={<Image src={person} alt="My App Logo" className={styles.person} height={24} />}
+                        style={{marginLeft: "10px", marginRight: "-10px"}}
+                        title={<Image src={person} alt="My App Logo" className={styles.person} height={24}/>}
                     >
                         <NavDropdown.Item href="/user/profile">Bewerk account</NavDropdown.Item>
-                        <NavDropdown.Divider />
+                        <NavDropdown.Divider/>
                         <NavDropdown.Item>
-                            <Logout />
+                            <Logout/>
                         </NavDropdown.Item>
                     </NavDropdown>
                 </div>
