@@ -27,6 +27,7 @@ import {styled} from "@mui/system";
 import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { Tooltip } from "@mui/material";
 
 interface ParsedUrlQuery {
 }
@@ -520,6 +521,11 @@ function AdminTour() {
                             </tbody>
                         </table>
                         <b style={{marginTop: "20px"}}>Voortgang:</b>
+                        <Tooltip title={(isCompleted()) ? 
+                            `Klaar met alle gebouwen.` 
+                            : (maxBuildingIndex) ? 
+                                `Momenteel bezig met gebouw ${currentBuildingIndex} van de ${maxBuildingIndex}.` 
+                                : `Nog niet begonnen.` }>
                         <Box sx={{width: "40%", position: "relative"}}>
                             <GreenLinearProgress
                                 variant="determinate"
@@ -539,6 +545,7 @@ function AdminTour() {
                                 </Box>
                             }
                         </Box>
+                        </Tooltip>
                     </div>
                 </div>
             ) : (

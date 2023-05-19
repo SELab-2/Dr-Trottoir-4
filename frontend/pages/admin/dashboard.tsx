@@ -20,6 +20,7 @@ import {styled} from "@mui/system";
 import {getAllRemarksOfStudentOnTour} from "@/lib/remark-at-building";
 import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import { Tooltip } from "@mui/material";
 
 interface IndividualProgressWebSocketsResponse {
     current_building_index: number;
@@ -323,6 +324,7 @@ function AdminDashboard() {
                                             <td style={{textDecoration: "underline"}}>{tour.name}</td>
                                             <td>{`${user.first_name} ${user.last_name}`}</td>
                                             <td>
+                                            <Tooltip title={`Klaar met alle gebouwen.`}>
                                                 <Box sx={{width: "100%", position: "relative"}}>
                                                     <GreenLinearProgress
                                                         variant="determinate"
@@ -343,6 +345,7 @@ function AdminDashboard() {
                                                     }
                                                     
                                                 </Box>
+                                            </Tooltip>
                                             </td>
 
                                             <td>
@@ -380,6 +383,7 @@ function AdminDashboard() {
                                             <td style={{textDecoration: "underline"}}>{tour.name}</td>
                                             <td>{`${user.first_name} ${user.last_name}`}</td>
                                             <td>
+                                            <Tooltip title={`Momenteel bezig met gebouw ${currentBuildingIndex[studentOnTour.id] || 0} van de ${maxBuildingIndex[studentOnTour.id] || 0}.`}>
                                                 <Box sx={{width: "100%"}}>
                                                     <GreenLinearProgress
                                                         variant="determinate"
@@ -388,6 +392,7 @@ function AdminDashboard() {
                                                         }
                                                     />
                                                 </Box>
+                                            </Tooltip>
                                             </td>
 
                                             <td>
@@ -424,12 +429,16 @@ function AdminDashboard() {
                                             <td>{tour.name}</td>
                                             <td>{`${user.first_name} ${user.last_name}`}</td>
                                             <td>
+                                            <Tooltip title={`Nog niet begonnen.`}>
+
+                                            
                                                 <Box sx={{width: "100%"}}>
                                                     <GreenLinearProgress
                                                         variant="determinate"
                                                         value={0}
                                                     />
                                                 </Box>
+                                            </Tooltip>
                                             </td>
 
                                             <td>
