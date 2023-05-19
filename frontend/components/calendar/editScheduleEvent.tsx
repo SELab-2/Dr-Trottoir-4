@@ -97,7 +97,7 @@ function EditScheduleEventModal({
             <Modal.Body>
                 {!isEditable() && (
                     <>
-                        <div className="m-2">U kunt planningen in het verleden niet meer bewerken.</div>
+                        <div>U kunt planningen in het verleden niet meer bewerken.</div>
                         <label>Bekijk de </label>
                         <Link
                             style={{
