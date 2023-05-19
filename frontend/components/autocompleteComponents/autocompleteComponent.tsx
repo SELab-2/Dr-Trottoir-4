@@ -110,9 +110,9 @@ const AutocompleteComponent: React.FC<Props> = ({
                 getOptionLabel={(option: any) => option.label || ""}
                 disabled={disabled}
                 renderInput={(params: AutocompleteRenderInputParams) => (
-                    <TextField {...params} variant="outlined" fullWidth  style={{ minWidth: '300px' }}/>
+                    <TextField {...params} variant="outlined" fullWidth style={{ minWidth: "300px" }} />
                 )}
-                ListboxProps={{ style: { maxHeight: 200, overflowY: 'auto' } }}
+                ListboxProps={{ style: { maxHeight: 200, overflowY: "auto" } }}
             />
         </div>
     );

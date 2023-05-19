@@ -16,16 +16,16 @@ const StudentOnTourAutocomplete: React.FC<StudentOnTourProps> = ({
     studentId,
     disabled = false,
 }) => {
-  return (
-    <AutocompleteComponent
-      initialId={initialId}
-      label={""}
-      fetchOptions={() => getActualToursOfStudent(studentId)}
-      mapping={(tour: Tour) => tour.name}
-      setObjectId={setObjectId}
-      disabled={disabled}
-    />
-  );
+    return (
+        <AutocompleteComponent
+            initialId={initialId}
+            label={""}
+            fetchOptions={() => getActualToursOfStudent(studentId)}
+            mapping={(tour: Tour) => tour.name}
+            setObjectId={setObjectId}
+            disabled={disabled}
+        />
+    );
 };
 
 export default StudentOnTourAutocomplete;
