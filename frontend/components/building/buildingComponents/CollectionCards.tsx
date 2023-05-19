@@ -1,19 +1,19 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     getRemarksAtBuildingOfSpecificBuilding,
     getRemarksAtBuildingWS,
     RemarkAtBuildingInterface,
     translateRemarkAtBuildingType,
 } from "@/lib/remark-at-building";
-import {getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface} from "@/lib/picture-of-remark";
-import {Accordion, Card} from "react-bootstrap";
+import { getPictureOfRemarkOfSpecificRemark, PictureOfRemarkInterface } from "@/lib/picture-of-remark";
+import { Accordion, Card } from "react-bootstrap";
 import ImageEnlargeModal from "@/components/ImageEnlargeModal";
-import {convertToSensibleDateLong, convertToSensibleDateShort} from "@/lib/dateUtil";
-import {AxiosResponse} from "axios/index";
-import {handleError} from "@/lib/error";
+import { convertToSensibleDateLong, convertToSensibleDateShort } from "@/lib/dateUtil";
+import { AxiosResponse } from "axios/index";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
-function CollectionCards({building, date}: { building: number; date: string | null }) {
+function CollectionCards({ building, date }: { building: number; date: string | null }) {
     const [collectionDetails, setCollectionDetails] = useState<
         [RemarkAtBuildingInterface, PictureOfRemarkInterface[]][] | []
     >([]);
@@ -29,7 +29,6 @@ function CollectionCards({building, date}: { building: number; date: string | nu
         client.addEventListener("message", (_) => {
             callback();
         });
-
     };
 
     function handleRemarksAtBuildingsCall(response: AxiosResponse) {
@@ -65,7 +64,7 @@ function CollectionCards({building, date}: { building: number; date: string | nu
 
     function fetchData() {
         if (date) {
-            getRemarksAtBuildingOfSpecificBuilding(building, {date: date})
+            getRemarksAtBuildingOfSpecificBuilding(building, { date: date })
                 .then((response) => {
                     handleRemarksAtBuildingsCall(response);
                     setErrorMessages([]);
@@ -74,7 +73,7 @@ function CollectionCards({building, date}: { building: number; date: string | nu
                     setErrorMessages(handleError(error));
                 });
         } else {
-            getRemarksAtBuildingOfSpecificBuilding(building, {mostRecent: true})
+            getRemarksAtBuildingOfSpecificBuilding(building, { mostRecent: true })
                 .then((response) => {
                     handleRemarksAtBuildingsCall(response);
                     setErrorMessages([]);
@@ -97,11 +96,11 @@ function CollectionCards({building, date}: { building: number; date: string | nu
 
     return (
         <>
-            <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL}/>
+            <ImageEnlargeModal show={enlargeImageShow} setShow={setEnlargeImageShow} imageURL={enlargeImageURL} />
 
             <h1>Details laatste ophaling {date ? "(" + convertToSensibleDateShort(date) + ")" : null}</h1>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
-            <div style={{margin: "0 0", width: "75%", maxWidth: "95%"}}>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+            <div style={{ margin: "0 0", width: "75%", maxWidth: "95%" }}>
                 {collectionDetails.length == 0 ? (
                     <p>Er zijn geen ophalingen gevonden.</p>
                 ) : (
