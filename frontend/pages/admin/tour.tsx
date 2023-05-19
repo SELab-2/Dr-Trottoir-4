@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from "react-datepicker";
-import {getTour, Tour} from "@/lib/tour";
+import { getTour, Tour } from "@/lib/tour";
 import {
     getStudentOnTourAllProgressWS,
     getStudentOnTourIndividualProgressWS,
@@ -9,28 +9,27 @@ import {
     getToursOfStudent,
     StudentOnTour,
 } from "@/lib/student-on-tour";
-import {getTourUsers, User} from "@/lib/user";
-import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
-import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {useRouter} from "next/router";
+import { getTourUsers, User } from "@/lib/user";
+import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
+import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { useRouter } from "next/router";
 import AdminHeader from "@/components/header/adminHeader";
 import Loading from "@/components/loading";
 import StudentOnTourAutocomplete from "@/components/autocompleteComponents/studentOnTourAutocomplete";
-import {BuildingAnalysis} from "@/types";
-import {getAnalysisStudentOnTour} from "@/lib/analysis";
-import {getRemarksOfStudentOnTourAtBuilding, RemarkAtBuildingInterface,} from "@/lib/remark-at-building";
+import { BuildingAnalysis } from "@/types";
+import { getAnalysisStudentOnTour } from "@/lib/analysis";
+import { getRemarksOfStudentOnTourAtBuilding, RemarkAtBuildingInterface } from "@/lib/remark-at-building";
 import LinearProgress from "@mui/material/LinearProgress";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUserAutocomplete";
 import Box from "@mui/material/Box";
-import {styled} from "@mui/system";
-import {handleError} from "@/lib/error";
+import { styled } from "@mui/system";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { Tooltip } from "@mui/material";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DataAdminTourQuery extends ParsedUrlQuery {
     student?: number;
@@ -106,14 +105,14 @@ function AdminTour() {
         if (!maxBuildingIndex) {
             return 0;
         }
-        
+
         return (currentBuildingIndex / maxBuildingIndex) * 100;
-    }
+    };
 
     const isCompleted = () => {
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
-        return (sotObject && completionRecord[sotObject.sot.id]);
-    }
+        return sotObject && completionRecord[sotObject.sot.id];
+    };
 
     const getStudentOnTour = (sots: StudentOnTour[], tourId: number, date: Date) => {
         const sot = sots.find(
@@ -121,11 +120,13 @@ function AdminTour() {
                 sot.tour === tourId &&
                 new Date(sot.date).toISOString().split("T")[0] === new Date(date).toISOString().split("T")[0]
         );
-        return sot ? {
-            sot,
-            current_building_index: sot.current_building_index,
-            max_building_index: sot.max_building_index
-        } : null;
+        return sot
+            ? {
+                  sot,
+                  current_building_index: sot.current_building_index,
+                  max_building_index: sot.max_building_index,
+              }
+            : null;
     };
 
     const getBuildingIndex = (buildingId: number) => {
@@ -145,7 +146,7 @@ function AdminTour() {
                 if (currentBuildingIndex > buildingIndex) {
                     returnText = "Afgewerkt";
                 } else if (currentBuildingIndex === buildingIndex) {
-                    returnText = (sotObject.sot.completed_tour) ? "Afgewerkt" : "Bezig";
+                    returnText = sotObject.sot.completed_tour ? "Afgewerkt" : "Bezig";
                 }
             }
         }
@@ -202,7 +203,7 @@ function AdminTour() {
         if (sotObject) {
             router.push({
                 pathname: "/admin/analysis/student-on-tour",
-                query: {studentOnTour: sotObject.sot.id},
+                query: { studentOnTour: sotObject.sot.id },
             });
         } else {
             router.push({
@@ -235,7 +236,7 @@ function AdminTour() {
             }
         });
 
-        return {wsProgress, wsRemarks};
+        return { wsProgress, wsRemarks };
     };
 
     const setupWebSocketForAllStudentOnTours = () => {
@@ -264,10 +265,10 @@ function AdminTour() {
             getTourUsers().then((res) => {
                 const students: User[] = res.data;
 
-                const studentsRecord: Record<number, User> = {}
+                const studentsRecord: Record<number, User> = {};
                 students.forEach((student) => {
                     studentsRecord[student.id] = student;
-                })
+                });
                 setUsersRecord(studentsRecord);
 
                 students.filter((e) => e.role === 4);
@@ -281,7 +282,7 @@ function AdminTour() {
 
                 return () => {
                     ws.close();
-                }
+                };
             });
         } catch (error) {
             setErrorMessages(handleError(error));
@@ -311,16 +312,14 @@ function AdminTour() {
                 setMaxBuildingIndex(currentSot.max_building_index);
                 updateValidDates(sots, currentSot.tour);
 
-
                 let completionStatus: Record<number, boolean> = {};
-                sots.forEach(sot => {
+                sots.forEach((sot) => {
                     completionStatus[sot.id] = sot.completed_tour !== null;
                 });
                 setCompletionRecord(completionStatus);
             } else {
                 setValidTourUser(false);
             }
-
         });
     }, [selectedStudentId, refreshKey]);
 
@@ -335,13 +334,13 @@ function AdminTour() {
                 const tour: Tour = res.data;
                 setSelectedTourName(tour.name);
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
 
         getAllBuildingsOnTourWithTourID(selectedTourId)
             .then((res) => {
                 setAllBuildingsOnTour(res.data);
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
 
         updateValidDates(allToursOfStudent, selectedTourId);
     }, [selectedTourId]);
@@ -354,7 +353,7 @@ function AdminTour() {
             .then((responses) => {
                 setAllBuildings(responses.map((response) => response.data));
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
 
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
         if (sotObject) {
@@ -391,7 +390,7 @@ function AdminTour() {
                 })
                 .catch(console.error);
 
-            const {wsProgress, wsRemarks} = setupWebsocketsForStudentOnTour(sotObject.sot.id);
+            const { wsProgress, wsRemarks } = setupWebsocketsForStudentOnTour(sotObject.sot.id);
 
             setLoading(false);
 
@@ -407,22 +406,24 @@ function AdminTour() {
     if (loading) {
         return (
             <>
-                <AdminHeader/>
-                <Loading/>
+                <AdminHeader />
+                <Loading />
             </>
         );
     }
 
     return (
         <div>
-            <AdminHeader/>
-            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
-            <div style={{display: "flex", marginTop: "10px", marginBottom: "50px", marginLeft: "10px"}}>
-                <div style={{flex: 1}}>
-                    <label style={{marginBottom: "10px"}} htmlFor="tourautocomplete">Selecteer student</label>
-                    <TourUserAutocomplete initialId={selectedStudentId} setObjectId={setSelectedStudentId}/>
+            <AdminHeader />
+            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
+            <div style={{ display: "flex", marginTop: "10px", marginBottom: "50px", marginLeft: "10px" }}>
+                <div style={{ flex: 1 }}>
+                    <label style={{ marginBottom: "10px" }} htmlFor="tourautocomplete">
+                        Selecteer student
+                    </label>
+                    <TourUserAutocomplete initialId={selectedStudentId} setObjectId={setSelectedStudentId} />
                 </div>
-                <div style={{flex: 1}}>
+                <div style={{ flex: 1 }}>
                     <StudentOnTourAutocomplete
                         initialId={selectedTourId}
                         setObjectId={setSelectedTourId}
@@ -431,8 +432,10 @@ function AdminTour() {
                         disabled={!validTourUser}
                     />
                 </div>
-                <div style={{flex: 1}}>
-                    <label style={{marginBottom: "10px"}} htmlFor="datepicker">Selecteer datum</label>
+                <div style={{ flex: 1 }}>
+                    <label style={{ marginBottom: "10px" }} htmlFor="datepicker">
+                        Selecteer datum
+                    </label>
                     <ReactDatePicker
                         selected={selectedDate}
                         onChange={(date: Date) => setSelectedDate(date)}
@@ -445,8 +448,8 @@ function AdminTour() {
                 </div>
             </div>
             {validTourUser ? (
-                <div style={{display: "flex", marginLeft: "10px"}}>
-                    <div style={{width: "20%"}}>
+                <div style={{ display: "flex", marginLeft: "10px" }}>
+                    <div style={{ width: "20%" }}>
                         <h2>{selectedTourName}</h2>
                         <b>Verantwoordelijke:</b>
                         <p>{`${usersRecord[selectedStudentId]?.first_name} ${usersRecord[selectedStudentId]?.last_name}`}</p>
@@ -454,102 +457,111 @@ function AdminTour() {
                         <p>{selectedDate.toLocaleDateString()}</p>
                         <b>Contactinformatie:</b>
                         <br></br>
-                        <>Telefoonnummer: <a
-                            href={`tel:${usersRecord[selectedStudentId]?.phone_number}`}>{usersRecord[selectedStudentId]?.phone_number}</a></>
+                        <>
+                            Telefoonnummer:{" "}
+                            <a href={`tel:${usersRecord[selectedStudentId]?.phone_number}`}>
+                                {usersRecord[selectedStudentId]?.phone_number}
+                            </a>
+                        </>
                         <br></br>
-                        <>E-mailadres: <a
-                            href={`mailto:${usersRecord[selectedStudentId]?.email}`}>{usersRecord[selectedStudentId]?.email}</a></>
+                        <>
+                            E-mailadres:{" "}
+                            <a href={`mailto:${usersRecord[selectedStudentId]?.email}`}>
+                                {usersRecord[selectedStudentId]?.email}
+                            </a>
+                        </>
                     </div>
 
-                    <div style={{width: "80%"}}>
+                    <div style={{ width: "80%" }}>
                         <table className="table">
                             <thead>
-                            <tr>
-                                <th>Gebouw</th>
-                                <th>Adres</th>
-                                <th>Status</th>
-                                <th>Tijdstip afwerking</th>
-                                <th>Tijdsduur</th>
-                                <th>Opmerkingen</th>
-                            </tr>
+                                <tr>
+                                    <th>Gebouw</th>
+                                    <th>Adres</th>
+                                    <th>Status</th>
+                                    <th>Tijdstip afwerking</th>
+                                    <th>Tijdsduur</th>
+                                    <th>Opmerkingen</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {allBuildings.map((building) => {
-                                const ba = getBuildingAnalysis(building.id);
-                                const durationInSeconds = ba ? ba.duration_in_seconds : 0;
-                                const expectedDurationInSeconds = ba ? ba.expected_duration_in_seconds : 0;
-                                const timeColor = getSpentTimeColor(expectedDurationInSeconds, durationInSeconds);
-                                const buildingStatus = getBuildingStatus(building.id);
-                                const isDone = buildingStatus === "Afgewerkt";
-                                return (
-                                    <tr key={building.id}>
-                                        <td
-                                            style={{textDecoration: "underline", cursor: "pointer"}}
-                                            onClick={() => goToBuildingPage(building.id)}
-                                        >
-                                            {building.name
-                                                ? building.name
-                                                : `Gebouw ${getBuildingIndex(building.id)}`}
-                                        </td>
-                                        <td>{getAddress(building)}</td>
-                                        <td>{buildingStatus}</td>
-                                        <td>{isDone ? getDepartureTimeString(building.id) : ""}</td>
-                                        <td
-                                            style={{
-                                                textDecoration: "underline",
-                                                cursor: "pointer",
-                                                color: timeColor,
-                                            }}
-                                            onClick={goToAnalysisPage}
-                                        >
-                                            {isDone ? secondsToTime(durationInSeconds) : ""}
-                                        </td>
-                                        <td
-                                            style={{textDecoration: "underline", cursor: "pointer"}}
-                                            onClick={() => goToBuildingPage(building.id)}
-                                            title={
-                                                remarksRecord[building.id]
-                                                    ? remarksRecord[building.id].join("\n")
-                                                    : ""
-                                            }
-                                        >
-                                            {remarksRecord[building.id] ? remarksRecord[building.id].length : 0}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
+                                {allBuildings.map((building) => {
+                                    const ba = getBuildingAnalysis(building.id);
+                                    const durationInSeconds = ba ? ba.duration_in_seconds : 0;
+                                    const expectedDurationInSeconds = ba ? ba.expected_duration_in_seconds : 0;
+                                    const timeColor = getSpentTimeColor(expectedDurationInSeconds, durationInSeconds);
+                                    const buildingStatus = getBuildingStatus(building.id);
+                                    const isDone = buildingStatus === "Afgewerkt";
+                                    return (
+                                        <tr key={building.id}>
+                                            <td
+                                                style={{ textDecoration: "underline", cursor: "pointer" }}
+                                                onClick={() => goToBuildingPage(building.id)}
+                                            >
+                                                {building.name
+                                                    ? building.name
+                                                    : `Gebouw ${getBuildingIndex(building.id)}`}
+                                            </td>
+                                            <td>{getAddress(building)}</td>
+                                            <td>{buildingStatus}</td>
+                                            <td>{isDone ? getDepartureTimeString(building.id) : ""}</td>
+                                            <td
+                                                style={{
+                                                    textDecoration: "underline",
+                                                    cursor: "pointer",
+                                                    color: timeColor,
+                                                }}
+                                                onClick={goToAnalysisPage}
+                                            >
+                                                {isDone ? secondsToTime(durationInSeconds) : ""}
+                                            </td>
+                                            <td
+                                                style={{ textDecoration: "underline", cursor: "pointer" }}
+                                                onClick={() => goToBuildingPage(building.id)}
+                                                title={
+                                                    remarksRecord[building.id]
+                                                        ? remarksRecord[building.id].join("\n")
+                                                        : ""
+                                                }
+                                            >
+                                                {remarksRecord[building.id] ? remarksRecord[building.id].length : 0}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
-                        <b style={{marginTop: "20px"}}>Voortgang:</b>
-                        <Tooltip title={(isCompleted()) ? 
-                            `Klaar met alle gebouwen.` 
-                            : (maxBuildingIndex) ? 
-                                `Momenteel bezig met gebouw ${currentBuildingIndex} van de ${maxBuildingIndex}.` 
-                                : `Nog niet begonnen.` }>
-                        <Box sx={{width: "40%", position: "relative"}}>
-                            <GreenLinearProgress
-                                variant="determinate"
-                                value={
-                                    getProgress()
-                                }
-                            />
-                            { isCompleted() && 
-                                <Box sx={{
-                                    position: 'absolute', 
-                                    top: '-20%',
-                                    right: '50%', 
-                                    transform: 'translateY(-50%, -50%)', 
-                                    color: 'white'
-                                }}>
-                                    <CheckCircleOutlineIcon />
-                                </Box>
+                        <b style={{ marginTop: "20px" }}>Voortgang:</b>
+                        <Tooltip
+                            title={
+                                isCompleted()
+                                    ? `Klaar met alle gebouwen.`
+                                    : maxBuildingIndex
+                                    ? `Momenteel bezig met gebouw ${currentBuildingIndex} van de ${maxBuildingIndex}.`
+                                    : `Nog niet begonnen.`
                             }
-                        </Box>
+                        >
+                            <Box sx={{ width: "40%", position: "relative" }}>
+                                <GreenLinearProgress variant="determinate" value={getProgress()} />
+                                {isCompleted() && (
+                                    <Box
+                                        sx={{
+                                            position: "absolute",
+                                            top: "-20%",
+                                            right: "50%",
+                                            transform: "translateY(-50%, -50%)",
+                                            color: "white",
+                                        }}
+                                    >
+                                        <CheckCircleOutlineIcon />
+                                    </Box>
+                                )}
+                            </Box>
                         </Tooltip>
                     </div>
                 </div>
             ) : (
-                <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <h3>Deze gebruiker heeft nog geen rondes gedaan.</h3>
                 </div>
             )}
