@@ -1,4 +1,6 @@
 from django.core.exceptions import BadRequest
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -31,6 +33,10 @@ from util.request_response_util import (
     get_boolean_param,
     post_success,
     bad_request,
+    get_id_param,
+    get_arbitrary_param,
+    bad_request_custom_error_message,
+    get_date_param,
 )
 
 TRANSLATE = {
@@ -99,7 +105,7 @@ class RemarkAtBuildingIndividualView(APIView):
     @extend_schema(responses=patch_docs(serializer_class))
     def patch(self, request, remark_at_building_id):
         """
-        Edit building with given ID
+        Edit remark at building with given ID
         """
         remark_at_building_instance = RemarkAtBuilding.objects.filter(id=remark_at_building_id).first()
         if not remark_at_building_instance:
@@ -109,23 +115,62 @@ class RemarkAtBuildingIndividualView(APIView):
 
         data = request_to_dict(request.data)
 
+        # check if patch only edit's the text:
+        forbidden_keys = ["timestamp", "building", "student_on_tour", "type", "id"]
+        if any(k in forbidden_keys for k in data.keys()):
+            return Response(
+                {"message": _("You can only edit the 'remark' text on a remark at building")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         set_keys_of_instance(remark_at_building_instance, data, TRANSLATE)
 
-        if r := try_full_clean_and_save(remark_at_building_instance):
-            return r
+        remark_at_building_instance.save(update_fields=["remark"])
 
         return patch_success(self.serializer_class(remark_at_building_instance))
 
 
 class AllRemarkAtBuilding(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent | IsStudent]
     serializer_class = RemarkAtBuildingSerializer
 
+    @extend_schema(
+        responses={200: serializer_class, 400: None},
+        parameters=param_docs(
+            {
+                "student-on-tour": ("The StudentOnTour id", False, OpenApiTypes.INT),
+                "building": ("The Building id", False, OpenApiTypes.INT),
+                "type": ("The type of the garbage", False, OpenApiTypes.STR),
+            }
+        ),
+    )
     def get(self, request):
         """
-        Get all remarks for each building
+        Get all remarks for each building. A students only see their own remarks.
         """
+
+        # We support the params student-on-tour, building, and type
+        try:
+            student_on_tour_id = get_id_param(request, "student-on-tour", required=False)
+            building_id = get_id_param(request, "building", required=False)
+            garbage_type = get_arbitrary_param(request, "type", allowed_keys={"AA", "BI", "VE", "OP"}, required=False)
+        except BadRequest as e:
+            return bad_request_custom_error_message(str(e))
+
         remark_at_building_instances = RemarkAtBuilding.objects.all()
+
+        # Query params are specified, so filter the queryset
+        if student_on_tour_id:
+            remark_at_building_instances = remark_at_building_instances.filter(student_on_tour_id=student_on_tour_id)
+        if building_id:
+            remark_at_building_instances = remark_at_building_instances.filter(building_id=building_id)
+        if garbage_type:
+            remark_at_building_instances = remark_at_building_instances.filter(type=garbage_type)
+
+        # A student should only be able to see their own remarks
+        if request.user.role.name.lower() == "student":
+            remark_at_building_instances = remark_at_building_instances.filter(student_on_tour__student=request.user.id)
+
         return get_success(self.serializer_class(remark_at_building_instances, many=True))
 
 
@@ -134,7 +179,17 @@ class RemarksAtBuildingView(APIView):
     serializer_class = RemarkAtBuildingSerializer
 
     @extend_schema(
-        responses=get_docs(serializer_class), parameters=param_docs(get_most_recent_param_docs("RemarksAtBuilding"))
+        responses=get_docs(serializer_class),
+        parameters=param_docs(
+            get_most_recent_param_docs("RemarksAtBuilding")
+            | {
+                "date": (
+                    "The date to get remarks for. You cannot use both the most-recent query parameter and the date parameter.",
+                    False,
+                    OpenApiTypes.DATE,
+                )
+            }
+        ),
     )
     def get(self, request, building_id):
         """
@@ -144,15 +199,22 @@ class RemarksAtBuildingView(APIView):
 
         try:
             most_recent_only = get_boolean_param(request, "most-recent")
+            date = get_date_param(request, "date")
         except BadRequest as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+        if most_recent_only and date:
+            return bad_request_custom_error_message(_("Cannot use both most-recent and date for RemarkAtBuilding"))
+
         if most_recent_only:
-            instances = remark_at_building_instances.order_by("-timestamp").first()
+            most_recent_remark = remark_at_building_instances.order_by("-timestamp").first()
+            if most_recent_remark:
+                # Now we have the most recent one, now get all remarks from that day
+                most_recent_day = most_recent_remark.timestamp.date()
 
-            # Now we have the most recent one, but there are more remarks on that same day
-            most_recent_day = str(instances.timestamp.date())
+                remark_at_building_instances = remark_at_building_instances.filter(timestamp__gte=most_recent_day)
 
-            remark_at_building_instances = remark_at_building_instances.filter(timestamp__gte=most_recent_day)
+        elif date:
+            remark_at_building_instances = remark_at_building_instances.filter(timestamp__date=date)
 
         return get_success(self.serializer_class(remark_at_building_instances, many=True))

@@ -1,6 +1,7 @@
 import {AxiosResponse} from "axios";
 import api from "@/lib/api/axios";
 import * as process from "process";
+import {getTour} from "@/lib/tour";
 
 export interface User {
     id: number,
@@ -61,9 +62,70 @@ export async function getSyndics() {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
     return await api.get(request_url, {
         params: {
-            "include-role-name-list": "syndic"
+            "include-role-name-list": ["syndic"]
         }
     });
+}
+
+export async function getStudents() {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
+    return await api.get(request_url, {
+        params: {
+            "include-role-name-list": ["student"]
+        }
+    });
+}
+
+export async function getTourUsers(includeInactiveUser: boolean = false) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
+    return await api.get(request_url, {
+        params: {
+            "include-inactive-bool": includeInactiveUser,
+            "include-role-name-list": ["student", "admin", "superstudent"]
+        }
+    });
+}
+
+export async function getTourUsersFromRegion(tourId: number | null, includeInactiveUser: boolean = false) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
+    if (tourId && tourId >= 0) {
+        const res = await getTour(tourId);
+        return await api.get(request_url, {
+            params: {
+                "region-id-list": [res.data.region],
+                "include-inactive-bool": includeInactiveUser,
+                "include-role-name-list": ["student", "admin", "superstudent"]
+            }
+        });
+    } else {
+        return await api.get(request_url, {
+            params: {
+                "include-inactive-bool": includeInactiveUser,
+                "include-role-name-list": ["student", "admin", "superstudent"]
+            }
+        });
+    }
+}
+
+export async function getUsersFromRegion(regionId: number | null, includeInactiveUser: boolean = false) {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
+    if (regionId && regionId >= 0) {
+        return await api.get(request_url, {
+            params: {
+                "region-id-list": [regionId],
+                "include-inactive-bool": includeInactiveUser,
+                "include-role-name-list": ["syndic"]
+            }
+        });
+    } else {
+        return await api.get(request_url, {
+            params: {
+                "include-inactive-bool": includeInactiveUser,
+                "include-role-name-list": ["syndic"]
+            }
+        });
+    }
+
 }
 
 export async function deleteUser(userId: number): Promise<AxiosResponse<any, any>> {
@@ -76,4 +138,8 @@ export async function patchUser(userId: number, data: Object): Promise<AxiosResp
     return await api.patch(patchUrl, JSON.stringify(data), {
         headers: {"Content-Type": "application/json"},
     });
+}
+
+export function getFullName(user: User) {
+    return `${user.first_name} ${user.last_name}`;
 }

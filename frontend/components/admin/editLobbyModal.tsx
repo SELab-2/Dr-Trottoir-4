@@ -7,6 +7,9 @@ import { Replay } from "@mui/icons-material";
 import { addToLobby, Lobby, newVerificationCode, patchLobby } from "@/lib/lobby";
 import { useTranslation } from "react-i18next";
 import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import { UserView } from "@/types";
+import Select from "react-select";
 
 export default function EditLobbyModal({
     selectedLobby,
@@ -32,10 +35,13 @@ export default function EditLobbyModal({
     const [allRoles, setAllRoles] = useState<Role[]>([]);
 
     useEffect(() => {
-        getAllRoles().then((res) => {
-            const r: Role[] = res.data;
-            setAllRoles(r);
-        }, console.error);
+        getAllRoles().then(
+            (res) => {
+                const r: Role[] = res.data;
+                setAllRoles(r);
+            },
+            (err) => setErrorMessages(handleError(err))
+        );
     }, []);
 
     useEffect(() => {
@@ -112,11 +118,14 @@ export default function EditLobbyModal({
         if (!selectedLobby) {
             return;
         }
-        newVerificationCode(selectedLobby.id).then((res) => {
-            const lobby: Lobby = res.data;
-            setVerificationCode(lobby.verification_code);
-            onNewVerificationCode(lobby);
-        }, console.error);
+        newVerificationCode(selectedLobby.id).then(
+            (res) => {
+                const lobby: Lobby = res.data;
+                setVerificationCode(lobby.verification_code);
+                onNewVerificationCode(lobby);
+            },
+            (err) => setErrorMessages(handleError(err))
+        );
     }
 
     function hideModal() {
@@ -139,16 +148,7 @@ export default function EditLobbyModal({
             </Modal.Header>
             <Form onSubmit={changeLobby}>
                 <Modal.Body>
-                    {errorMessages.length !== 0 && (
-                        <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                            <ul>
-                                {errorMessages.map((err, i) => (
-                                    <li key={i}>{t(err)}</li>
-                                ))}
-                            </ul>
-                            <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                        </div>
-                    )}
+                    <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                     <div className="card-body p-4 p-lg-5 text-black">
                         <div className="form-outline mb-4">
                             <label className="form-label">Email:</label>
@@ -165,20 +165,18 @@ export default function EditLobbyModal({
                         </div>
                         <div className="form-outline mb-4">
                             <label className="form-label">Rol:</label>
-                            <select
-                                value={role}
-                                className={`form-select form-control form-control-lg ${styles.input}`}
-                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                    setRole(e.target.value);
+                            <Select
+                                options={allRoles.map((role: Role) => {
+                                    return { value: role.name, label: t(role.name) as string };
+                                })}
+                                value={role ? { value: role, label: t(role) } : {}}
+                                onChange={(s) => {
+                                    if (s && s.value) {
+                                        setRole(s.value);
+                                    }
                                 }}
-                            >
-                                <option disabled value=""></option>
-                                {allRoles.map((role: Role) => (
-                                    <option value={role.name} key={role.name}>
-                                        {t(role.name)}
-                                    </option>
-                                ))}
-                            </select>
+                                placeholder={"Selecteer rol"}
+                            />
                         </div>
                         {selectedLobby && (
                             <div className="form-outline mb-4">

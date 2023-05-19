@@ -1,3 +1,5 @@
 FROM nginx:alpine
 
-COPY nginx.conf /etc/nginx/nginx.conf
+ARG ENVIRONMENT
+
+COPY nginx.${ENVIRONMENT:-development}.conf /etc/nginx/nginx.conf

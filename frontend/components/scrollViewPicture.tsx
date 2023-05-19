@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, Row, Col, Image } from "react-bootstrap";
+import { Col, Container, Image, Row } from "react-bootstrap";
 
 type PhotoSelectorProps = {
     photos: string[];
@@ -41,7 +41,7 @@ const PhotoSelector = ({ photos, onSelectionChange }: PhotoSelectorProps) => {
                                 style={{ border: isSelected(photo) ? "3px solid blue" : "none" }}
                                 onClick={() => toggleSelection(photo)}
                             >
-                                <Image src={photo} thumbnail fluid />
+                                <Image src={photo} thumbnail fluid alt={photo} />
                             </div>
                         </Col>
                     ))}

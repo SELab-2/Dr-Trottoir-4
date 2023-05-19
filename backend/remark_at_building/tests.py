@@ -49,11 +49,7 @@ class RemarkAtBuildingTests(BaseTest):
     def test_patch_remark_at_building(self):
         r_id = insert_dummy_remark_at_building()
         self.data1 = {
-            "student_on_tour": insert_dummy_student_on_tour(),
-            "building": insert_dummy_building(),
-            "timestamp": str(datetime.now(pytz.timezone("CET"))).replace(" ", "T"),
             "remark": "couldn't enter the building",
-            "type": "AA",
         }
         self.patch(f"remark-at-building/{r_id}")
 
@@ -97,7 +93,7 @@ class RemarkAtBuildingAuthorizationTests(BaseAuthTest):
         super().__init__(methodName)
 
     def test_remark_at_building_list(self):
-        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 403, "Syndic": 403}
+        codes = {"Default": 403, "Admin": 200, "Superstudent": 200, "Student": 200, "Syndic": 403}
         self.list_view("remark-at-building/", codes)
 
     def test_insert_remark_at_building(self):
@@ -124,11 +120,7 @@ class RemarkAtBuildingAuthorizationTests(BaseAuthTest):
         RaB_id = insert_dummy_remark_at_building()
         specialStudent = RemarkAtBuilding.objects.get(id=RaB_id).student_on_tour.student.id
         self.data1 = {
-            "student_on_tour": insert_dummy_student_on_tour(),
-            "building": insert_dummy_building(),
-            "timestamp": str(datetime.now(pytz.timezone("CET"))).replace(" ", "T"),
             "remark": "no bins present",
-            "type": "AA",
         }
         self.patch_view(f"remark-at-building/{RaB_id}", codes, special=[(specialStudent, 200)])
 

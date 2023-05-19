@@ -1,78 +1,256 @@
 /* General Styles */
 
-/* Reset default margin, padding, and border for all elements */
-* {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
+.title {
+    font-size: 36px;
+    font-weight: bolder;
+    padding-top: 35px;
+    padding-left: 10px;
+    padding-bottom: 15px;
 }
 
-/* Define font and font size for the whole document */
-body {
-    font-family: Helvetica, sans-serif;
+.subtitle {
+    font-size: 28px;
+    font-weight: bolder;
+    padding-left: 10px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.bold_text {
     font-size: 16px;
+    font-weight: bold;
+    padding-left: 10px;
+    padding-bottom: 10px;
 }
 
-/* Button Styles */
-
-/* Style for all buttons */
-Button, button {
-    height: 50px;
-    width: 150px;
-    margin: 5px;
-    outline: 0;
-    cursor: pointer;
-    border: 2px solid #000;
-    border-radius: 5px;
-    color: #fff;
-    background: #000;
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 24px;
-    padding: 5px 10px;
-    text-align: center;
-    transition: ease-in 0.2s;
+.text {
+    font-size: 16px;
+    padding-left: 10px;
+    padding-bottom: 10px;
 }
 
-/* Style for buttons when hovering */
-Button:hover, button:hover {
-    color: #000;
-    background: rgb(255, 218, 87);
-}
-
-/* Link Styles */
-
-/* Style for all links */
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-/* Style for links when hovering */
-a:hover {
-    text-decoration: underline;
-}
-
-/* Input Styles */
-
-/* Style for all inputs */
-input {
-    min-width: 250px;
-    max-width: 350px;
-    height: 40px;
-    background-color: #E8F0FC;
-    overflow: hidden;
-    padding: 10px 5px;
-    margin: 5px;
-    border: solid #1D1D1D 1px;
-    border-radius: 5px;
+.small_text {
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 10px;
     font-size: 14px;
 }
 
-input:focus {
-    border: none;
+.normal_text {
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    font-size: 16px;
+}
+
+.input {
+    width: 100%;
+    max-width: 300px;
+    padding: 5px 10px 15px;
+}
+
+.form_control {
+    height: 40px;
+    background: #f8f9fa;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form_control:focus {
     outline: none;
-    box-shadow: 0 0 0 0.1rem lightgray;
+    box-shadow: 0 0 0 0.2rem #e5f3fd;
+}
+
+.wide_button {
+    width: 100%;
+    height: 40px;
+    max-width: 280px;
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1D1D1D;
+    border-color: black;
+    box-sizing: border-box;
+}
+
+.wide_button:hover {
+    width: 100%;
+    max-width: 280px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: transparent;
+    border-color: black;
+    color: #1D1D1D;
+    transition: ease-in 0.2s;
+}
+
+.small_button {
+    width: 100%;
+    height: 40px;
+    max-width: 100px;
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1D1D1D;
+    border-color: black;
+    box-sizing: border-box;
+}
+
+.small_button:hover {
+    width: 100%;
+    max-width: 100px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: transparent;
+    color: #1D1D1D;
+    border-color: black;
+    transition: ease-in 0.2s;
+}
+
+.button {
+    height: 40px;
+    color: #FFFFFF;
+    font-size: 14px;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1D1D1D;
+    border-color: black;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+.button:hover {
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: transparent;
+    color: #1D1D1D;
+    border-color: black;
+    transition: ease-in 0.2s;
+    border-radius: 5px;
+}
+
+.padding {
+    padding: 5px 10px;
+}
+
+.link {
+    text-decoration: underline;
+    color: royalblue;
+}
+
+.center_container {
+    display: flex;
+    justify-content: center;
+    height: 60%;
+    margin-top: 3rem;
+}
+
+.container {
+    margin-top: 3rem;
+}
+
+.tablepageContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Take up the full height of the screen */
+}
+
+.tableContainer {
+    flex-grow: 1; /* Take the remaining vertical space */
+    overflow: auto; /* Enable scrolling if necessary */
+}
+
+
+.filler_image {
+    max-height: 500px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+
+@media screen and (max-width: 768px) {
+    .carousel {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .column_padding {
+        margin-left: auto;
+    }
+}
+
+
+::-webkit-scrollbar-track {
+    background-color: #FFFFFF;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #3e3a3a;
+    border: 2px solid #FFFFFF;
+}
+
+.building_list {
+    list-style-type: decimal; /* Use numbers as list markers */
+    margin-left: 1.5rem; /* Add some left margin to the list */
+}
+
+.building_item {
+    margin-bottom: 0.5rem; /* Add some spacing between list items */
+}
+
+.mail_area {
+    width: 100%;
+    height: 400px;
+}
+
+.custom-file-input-label {
+    display: inline-block;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.custom-file-input-label button {
+    display: inline-block;
+    background-color: #e9e9e9;
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+}
+
+.custom-file-input {
+    display: none;
+}
+
+.shadow {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.card:hover {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease-in-out;
 }
 
 @media (prefers-color-scheme: light) {
@@ -86,9 +264,16 @@ input:focus {
 }
 
 .rbc-time-view .rbc-allday-cell {
-    height: calc(90vh) !important;
+    min-height: calc(90vh) !important;
     max-height: unset !important;
 }
+
+.rbc-allday-cell {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
 /* Style for all icons */
 .icon {
     display: inline-block;
@@ -109,4 +294,31 @@ input:focus {
 
 .clickable {
     cursor: pointer;
+}
+
+.progress_bar {
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 10px;
+}
+
+.progress-bar-container {
+    position: relative;
+}
+
+.progress-bar-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 4px;
+    background-color: black;
+    z-index: 1;
+}
+
+.custom-datepicker {
+  height: 56px;
+  max-width: 200px;
+  width: 100%;
 }

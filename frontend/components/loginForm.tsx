@@ -1,23 +1,16 @@
-import Image from "next/image";
-import filler_image from "@/public/filler_image.png";
-import styles from "@/styles/Login.module.css";
 import React, { FormEvent, useState } from "react";
-import { useTranslation } from "react-i18next";
+
 import { useRouter } from "next/router";
 import login from "@/lib/login";
 import setSessionStorage from "@/lib/storage";
 import { getRoleDirection } from "@/lib/reroute";
 import { handleError } from "@/lib/error";
 import Link from "next/link";
-import IconButton from "@mui/material/IconButton";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import InputAdornment from "@mui/material/InputAdornment";
-import TextField from "@mui/material/TextField";
 import PasswordInput from "@/components/password/passwordInput";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import { Button, Form, InputGroup } from "react-bootstrap";
 
 function LoginForm() {
-    const { t } = useTranslation();
     const router = useRouter();
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -45,36 +38,30 @@ function LoginForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="d-flex align-items-center mb-3 pb-1">
-                <i className="fas fa-cubes fa-2x me-3" />
-                <span className="h1 fw-bold mb-0">Login.</span>
-            </div>
+        <Form onSubmit={handleSubmit}>
+            <Form.Label className="title">Login.</Form.Label>
+
             {router.query.createdAccount && (
                 <div className={"visible alert alert-success alert-dismissible fade show"}>
                     <strong>Succes!</strong> Uw account werd met succes aangemaakt!
-                    <button type="button" className="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" className="btn-close" data-bs-dismiss="alert" />
                 </div>
             )}
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                </div>
-            )}
-            <div className="form-outline mb-4">
-                <label className="form-label">E-mailadres</label>
-                <input
-                    type="email"
-                    className={`form-control form-control-lg ${styles.input}`}
-                    value={username}
-                    placeholder="naam@voorbeeld.com"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
-                />
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+            <div>
+                <Form.Label htmlFor={"email"} className="normal_text">
+                    E-mailadres
+                </Form.Label>
+                <InputGroup className="input">
+                    <Form.Control
+                        id={"email"}
+                        className="form_control"
+                        type="email"
+                        value={username}
+                        placeholder="naam@voorbeeld.com"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+                    />
+                </InputGroup>
             </div>
 
             <PasswordInput
@@ -85,24 +72,23 @@ function LoginForm() {
                 label={"Wachtwoord"}
                 placeholder={"Wachtwoord"}
                 showIconButton={true}
-            ></PasswordInput>
-
-            <div className="pt-1 mb-4">
-                <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} type="submit">
+            />
+            <a href="/forgot-password">
+                <label className="small_text">Wachtwoord vergeten?</label>
+            </a>
+            <div className="padding">
+                <Button className="wide_button" size="lg" type="submit">
                     Login
-                </button>
+                </Button>
             </div>
 
-            <a className="small text-muted" href="/reset-password">
-                Wachtwoord vergeten?
-            </a>
-            <p className="mb-5 pb-lg-2">
+            <p className="normal_text">
                 Heb je nog geen account?{" "}
-                <Link href="/signup" style={{ textDecoration: "underline" }}>
+                <Link className="link" href="/signup">
                     Registreer je hier!
                 </Link>
             </p>
-        </form>
+        </Form>
     );
 }
 

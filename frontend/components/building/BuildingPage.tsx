@@ -1,32 +1,48 @@
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { BuildingInterface, getBuildingInfo } from "@/lib/building";
-import { AxiosResponse } from "axios/index";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {BuildingInterface, getBuildingInfo, getBuildingInfoByPublicId} from "@/lib/building";
+import {AxiosResponse} from "axios/index";
 import BuildingInfo from "@/components/building/buildingComponents/BuildingInfo";
-import LatestCollectionDetail from "@/components/building/buildingComponents/LatestCollectionDetail";
 import LatestCollections from "@/components/building/buildingComponents/LatestCollections";
+import CollectionCards from "@/components/building/buildingComponents/CollectionCards";
+import {Col, Container, Row} from "react-bootstrap";
+import {handleError} from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
-interface ParsedUrlQuery {}
-
-interface DashboardQuery extends ParsedUrlQuery {
+interface BuildingQuery {
     id?: string;
+    date?: string;
 }
 
-function BuildingPage({ type }: { type: "syndic" | "admin" | "" }) {
+function BuildingPage({type}: { type: "syndic" | "admin" | "public" }) {
     const router = useRouter();
-    const query = router.query as DashboardQuery;
+    const query = router.query as BuildingQuery;
 
     // @ts-ignore
     const [building, setBuilding] = useState<BuildingInterface>(null);
 
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
     async function fetchBuilding() {
-        getBuildingInfo(Number(query.id))
-            .then((buildings: AxiosResponse<any>) => {
-                setBuilding(buildings.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        if (type !== "public" /*&& /^\d+$/.test(query.id+"")*/) {
+            getBuildingInfo(Number(query.id))
+                .then((buildings: AxiosResponse) => {
+                    setBuilding(buildings.data);
+                    setErrorMessages([]);
+                })
+                .catch((error) => {
+                    setErrorMessages(handleError(error));
+                });
+        } else {
+            getBuildingInfoByPublicId(query.id)
+                .then((buildings: AxiosResponse) => {
+                    setBuilding(buildings.data);
+                    setErrorMessages([]);
+                })
+                .catch((error) => {
+                    setErrorMessages(handleError(error));
+                });
+        }
     }
 
     useEffect(() => {
@@ -36,21 +52,24 @@ function BuildingPage({ type }: { type: "syndic" | "admin" | "" }) {
         fetchBuilding();
     }, [query.id]);
 
-    // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=16-1310&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
-
     return (
         <>
-            <div style={{ display: "flex" }}>
-                <div style={{ flex: "1" }}>
-                    <BuildingInfo building={building} setBuilding={setBuilding} type={type} />
-                </div>
-                <div style={{ flex: "1" }}>
-                    <LatestCollectionDetail building={building ? building.id : 0} />
-                </div>
-                <div style={{ flex: "1" }}>
-                    <LatestCollections building={building ? building.id : 0} />
-                </div>
-            </div>
+            <Container style={{flex: "1"}}>
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                <Row>
+                    <Col md={4} style={{backgroundColor: '#ECECEC', borderLeft: '10px solid #F6BE00'}}>
+                        <div>
+                            <BuildingInfo building={building} setBuilding={setBuilding} type={type}/>
+                        </div>
+                    </Col>
+                    <Col md={4}>
+                        <CollectionCards building={building ? building.id : 0} date={query.date ? query.date : null}/>
+                    </Col>
+                    <Col md={4} style={{backgroundColor: '#ECECEC'}}>
+                        <LatestCollections building={building ? building.id : 0}/>
+                    </Col>
+                </Row>
+            </Container>
         </>
     );
 }

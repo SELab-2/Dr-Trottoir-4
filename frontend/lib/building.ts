@@ -30,9 +30,34 @@ export interface BuildingPostInterface {
     public_id: string;
 }
 
+export interface EditBuildingInterface {
+    syndic: number;
+    name: string;
+    city: string;
+    postal_code: string;
+    street: string;
+    house_number: string;
+    bus: string;
+    client_number: string;
+    duration: string;
+    region: number;
+    public_id: string;
+}
+
 export interface BuildingSyndicPostInterface {
     name: string;
     public_id: string;
+}
+
+export interface BuildingCommentPostInterface{
+    building: number,
+    comment: string
+}
+
+export interface BuildingCommentInterface {
+    building: number,
+    comment: string
+    id: number
 }
 
 export const getBuildingsFromOwner = async (ownerId: number | string): Promise<AxiosResponse<any>> => {
@@ -44,6 +69,11 @@ export const getBuildingInfo = async (buildingId: string | undefined | number): 
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING}${buildingId}`;
     return await api.get(request_url);
 };
+
+export const getBuildingInfoByPublicId = async (publicId: string | undefined | number): Promise<AxiosResponse<any>> => {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_PUBLIC_ID_BUILDING}${publicId}`;
+    return await api.get(request_url);
+}
 
 export async function getAllBuildings(): Promise<AxiosResponse<any>> {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_BUILDINGS}`;
@@ -87,6 +117,38 @@ export async function patchBuilding(building: BuildingPostInterface, id: number)
     );
 }
 
+export async function postBuildingComment(buildingComment: BuildingCommentPostInterface): Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING_COMMENT}`;
+    return await api.post(request_url, JSON.stringify(buildingComment),
+        {
+            headers: {"Content-Type": "application/json"},
+        }
+    );
+}
+
+export async function patchBuildingComment(buildingComment: BuildingCommentPostInterface, id: number): Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING_COMMENT}${id}`;
+    return await api.patch(request_url, JSON.stringify(buildingComment),
+        {
+            headers: {"Content-Type": "application/json"},
+        }
+    );
+}
+
+export async function deleteBuildingComment(id: number): Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING_COMMENT}${id}`;
+    return await api.delete(request_url);
+}
+
+export async function getBuildingComment(id: number): Promise<AxiosResponse<any>> {
+    const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_BUILDING_COMMENT_BUILDING}${id}`;
+    return await api.get(request_url,{
+        params: {
+            "most-recent": true
+        }
+    });
+}
+
 export function getDurationFromMinutes(durationInMinutes: number) {
     return `${Math.floor(durationInMinutes / 60)
         .toString()
@@ -98,7 +160,6 @@ export function getDurationFromMinutes(durationInMinutes: number) {
 
 export const getNewPublicId = async () => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GET_NEW_PUBLIC_ID_BUILDING}`;
-    console.log(request_url)
     return await api.get(request_url)
 }
 

@@ -2,34 +2,32 @@ import AdminHeader from "@/components/header/adminHeader";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { getAllTours, Tour } from "@/lib/tour";
-import { getAllUsers, User } from "@/lib/user";
+import { getTourUsersFromRegion, User } from "@/lib/user";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import Loading from "@/components/loading";
-import MyCalendar from "@/components/calendar/calendar";
+import ScheduleCalendar from "@/components/calendar/scheduleCalendar";
+import { handleError } from "@/lib/error";
 
 function AdminDataSchedule() {
     const router = useRouter();
     const [allTours, setAllTours] = useState<Tour[]>([]);
-    const [allStudents, setAllStudents] = useState<User[]>([]);
+    const [allTourUsers, setAllTourUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        getStudents();
+        getTourAllUsers();
         getTours();
         setLoading(false);
     }, [router.isReady]);
 
     // Get all the active students
-    function getStudents() {
-        getAllUsers(false).then(
+    function getTourAllUsers() {
+        getTourUsersFromRegion(null, false).then(
             (res) => {
-                const students: User[] = res.data.filter(function (user: User) {
-                    return user.role == 4;
-                });
-                setAllStudents(students);
+                setAllTourUsers(res.data);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }
@@ -42,22 +40,22 @@ function AdminDataSchedule() {
                 setAllTours(tours);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }
 
     return (
-        <>
+        <div className="tablepageContainer">
             <AdminHeader />
             {loading ? (
                 <Loading />
             ) : (
-                <div>
-                    <MyCalendar students={allStudents} tours={allTours} />
+                <div className="tableContainer">
+                    <ScheduleCalendar tourUsers={allTourUsers} tours={allTours} />
                 </div>
             )}
-        </>
+        </div>
     );
 }
 

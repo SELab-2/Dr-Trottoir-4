@@ -1,3 +1,5 @@
+import os
+import uuid
 from datetime import date, datetime
 
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -6,10 +8,12 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint, Q
 from django.db.models.functions import Lower
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
 from users.managers import UserManager
+from util.request_response_util import get_unique_uuid
 
 # sys.maxsize throws psycopg2.errors.NumericValueOutOfRange: integer out of range
 # Set the max int manually
@@ -113,13 +117,13 @@ class Building(models.Model):
     postal_code = models.CharField(max_length=10)
     street = models.CharField(max_length=60)
     house_number = models.PositiveIntegerField()
-    bus = models.CharField(max_length=10, blank=True, null=False, default=_("No bus"))
+    bus = models.CharField(max_length=10, blank=True, null=False, default="")
     client_number = models.CharField(max_length=40, blank=True, null=True)
     duration = models.TimeField(default="00:00")
     syndic = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
-    public_id = models.CharField(max_length=32, blank=True, null=True)
+    public_id = models.CharField(max_length=32, blank=True, null=True, unique=True)
 
     """
     Only a syndic can own a building, not a student.
@@ -132,7 +136,7 @@ class Building(models.Model):
             raise ValidationError(_("The house number of the building must be positive and not zero."))
 
         # With this if, a building is not required to have a syndic. If a syndic should be required, blank has to be False
-        # If this if is removed, an internal server error will be thrown since youll try to access a non existing attribute of type 'NoneType'
+        # If this if is removed, an internal server error will be thrown since you'll try to access a non existing attribute of type 'NoneType'
         if self.syndic:
             user = self.syndic
             if user.role.name.lower() != "syndic":
@@ -144,6 +148,9 @@ class Building(models.Model):
                 raise ValidationError(
                     _("{public_id} already exists as public_id of another building").format(public_id=self.public_id)
                 )
+        # If no public_id is initialized, a random one should be generated
+        else:
+            self.public_id = get_unique_uuid(lambda p_id: Building.objects.filter(public_id=p_id).exists())
 
     class Meta:
         constraints = [
@@ -164,11 +171,17 @@ class Building(models.Model):
 
 class BuildingComment(models.Model):
     comment = models.TextField()
-    date = models.DateTimeField()
+    date = models.DateTimeField(null=True, blank=True)
     building = models.ForeignKey(Building, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"Comment: {self.comment} ({self.date}) for {self.building}"
+
+    def clean(self):
+        super().clean()
+
+        if not self.date:
+            self.date = datetime.now()
 
     class Meta:
         constraints = [
@@ -298,6 +311,10 @@ class StudentOnTour(models.Model):
     tour = models.ForeignKey(Tour, on_delete=models.SET_NULL, null=True)
     date = models.DateField()
     student = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    started_tour = models.DateTimeField(null=True, blank=True)
+    completed_tour = models.DateTimeField(null=True, blank=True)
+    current_building_index = models.IntegerField(default=0, blank=True)
+    max_building_index = models.IntegerField(null=True, blank=True)  # gets set by a signal
 
     """
     A syndic can't do tours, so we need to check that a student assigned to the building on the tour is not a syndic.
@@ -306,7 +323,8 @@ class StudentOnTour(models.Model):
 
     def clean(self):
         super().clean()
-
+        if self.date and self.date < datetime.now().date():
+            raise ValidationError(_("You cannot plan a student on a past date."))
         if self.student_id and self.tour_id:
             user = self.student
             if user.role.name.lower() == "syndic":
@@ -318,6 +336,15 @@ class StudentOnTour(models.Model):
                         user_email=user.email, tour_region=tour_region
                     )
                 )
+
+        if self.started_tour and self.completed_tour:
+            self.started_tour = self.started_tour.astimezone()
+            self.completed_tour = self.completed_tour.astimezone()
+
+            if not self.completed_tour > self.started_tour:
+                raise ValidationError(f"Time of completion must come after time of starting the tour.")
+        elif self.completed_tour:
+            raise ValidationError(f"Started tour time must be set before completion time.")
 
     class Meta:
         constraints = [
@@ -356,7 +383,15 @@ class RemarkAtBuilding(models.Model):
     def clean(self):
         super().clean()
         if not self.timestamp:
-            self.timestamp = datetime.now()
+            self.timestamp = timezone.now()
+        if self.type == "AA" or self.type == "BI" or type == "VE":
+            remark_instances = RemarkAtBuilding.objects.filter(
+                building=self.building, student_on_tour=self.student_on_tour, type=self.type
+            )
+            if remark_instances.count() == 1:
+                raise ValidationError(
+                    _("There already exists a remark of this type from this student on tour at this building.")
+                )
 
     def __str__(self):
         return f"{self.type} for {self.building}"
@@ -368,6 +403,7 @@ class RemarkAtBuilding(models.Model):
                 "building",
                 "student_on_tour",
                 "timestamp",
+                "type",
                 name="unique_remark_for_building",
                 violation_error_message=_(
                     "This remark was already uploaded to this building by this student on the tour."
@@ -376,8 +412,14 @@ class RemarkAtBuilding(models.Model):
         ]
 
 
+def get_file_path_image(instance, filename):
+    extension = filename.split(".")[-1]
+    filename = str(uuid.uuid4()) + "." + extension
+    return os.path.join("building_images/", filename)
+
+
 class PictureOfRemark(models.Model):
-    picture = models.ImageField(upload_to="building_pictures/")
+    picture = models.ImageField(upload_to=get_file_path_image)
     remark_at_building = models.ForeignKey(RemarkAtBuilding, on_delete=models.SET_NULL, null=True)
     hash = models.TextField(blank=True, null=True)
 

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { logout } from "@/lib/logout";
 import { useRouter } from "next/router";
-import { Modal, Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
+import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 function Logout() {
     const router = useRouter();
     const [showModal, setShowModal] = useState(false);
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const handleLogout = () => {
         logout().then(
@@ -17,7 +20,7 @@ function Logout() {
                 }
             },
             (err) => {
-                console.error(err);
+                setErrorMessages(handleError(err));
             }
         );
         setShowModal(false);
@@ -25,27 +28,27 @@ function Logout() {
 
     return (
         <>
-            <a
-                className="dropdown-item"
-                onClick={(e) => {
-                    e.preventDefault();
+            <label
+                style={{ cursor: "clickable" }}
+                onClick={() => {
                     setShowModal(true);
                 }}
             >
-                Log out
-            </a>
+                Log uit
+            </label>
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Log out</Modal.Title>
+                    <Modal.Title>Uitloggen</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure you want to log out?</Modal.Body>
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
+                <Modal.Body>Zeker dat je wil uitloggen?</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" className="btn-light" onClick={() => setShowModal(false)}>
-                        Cancel
+                        Annuleer
                     </Button>
                     <Button variant="primary" className="btn-dark" onClick={handleLogout}>
-                        Log out
+                        Log uit
                     </Button>
                 </Modal.Footer>
             </Modal>

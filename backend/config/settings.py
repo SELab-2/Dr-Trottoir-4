@@ -10,18 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import collections
+import os
 from datetime import timedelta
 from pathlib import Path
 
 from django.utils.translation import gettext_lazy as _
-import os
-
-try:
-    from .secrets import DJANGO_SECRET_KEY, SECRET_EMAIL_USER, SECRET_EMAIL_USER_PSWD
-except ImportError:
-    DJANGO_SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-    SECRET_EMAIL_USER = os.environ.get("SECRET_EMAIL_USER")
-    SECRET_EMAIL_USER_PSWD = os.environ.get("SECRET_EMAIL_USER_PSWD")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,15 +22,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-SECRET_KEY = DJANGO_SECRET_KEY
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ["ENVIRONMENT"] == "development"
 
 ALLOWED_HOSTS = ["*", "localhost", "127.0.0.1", "172.17.0.0"]
 
 # Application definition
 DJANGO_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -58,13 +51,17 @@ AUTHENTICATION = [
 ]
 
 THIRD_PARTY_APPS = AUTHENTICATION + [
+    "channels",
     "corsheaders",
     "rest_framework",
     "phonenumber_field",
     "drf_spectacular",
 ]
 
-CREATED_APPS = ["base"]
+CREATED_APPS = [
+    "base",
+    "config",
+]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CREATED_APPS
 
@@ -89,10 +86,10 @@ NOSE_ARGS = ["--cover-xml", "--cover-xml-file=./coverage.xml"]
 # drf-spectacular settings
 SPECTACULAR_SETTINGS = {
     "TITLE": "Dr-Trottoir API",
-    "DESCRIPTION": "This is the documentation for the Dr-Trottoir API",
+    "DESCRIPTION": "This is the documentation for the Dr-Trottoir API. You can access this API directly by using port "
+    "2002.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
-    "SCHEMA_PATH_PREFIX_INSERT": "/api",
     # OTHER SETTINGS
 }
 
@@ -146,7 +143,8 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "csp.middleware.CSPMiddleware",
     "django.middleware.locale.LocaleMiddleware",
 ]
 
@@ -194,15 +192,15 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "drtrottoir",
-        "USER": "django",
-        "PASSWORD": "password",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ["POSTGRES_DB"],
+        "USER": os.environ["POSTGRES_USER"],
+        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
         # since testing is run outside the docker, we need a localhost db
         # the postgres docker port is exposed to it should be used as well
         # this 'hack' is just to fix the name resolving of 'web'
         # "HOST": "localhost" if "test" in sys.argv else "web",
-        "HOST": "web",
+        "HOST": "database",
         "PORT": "5432",
     }
 }
@@ -227,6 +225,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
+
+
 USE_I18N = True
 
 LANGUAGE_COOKIE_AGE = 3600
@@ -240,7 +240,6 @@ LANGUAGES = [
 ]
 
 TIME_ZONE = "CET"
-
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
@@ -258,8 +257,8 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
-EMAIL_HOST_USER = SECRET_EMAIL_USER
-EMAIL_HOST_PASSWORD = SECRET_EMAIL_USER_PSWD
+EMAIL_HOST_USER = os.environ["SECRET_EMAIL_USER"]
+EMAIL_HOST_PASSWORD = os.environ["SECRET_EMAIL_USER_PSWD"]
 
 # Media
 MEDIA_ROOT = "/app/media"
@@ -268,3 +267,41 @@ MEDIA_URL = "/media/"
 # allow upload big file
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 20  # 20M
 FILE_UPLOAD_MAX_MEMORY_SIZE = DATA_UPLOAD_MAX_MEMORY_SIZE
+
+# Used for embedding PDFs
+# X_FRAME_OPTIONS = "SAMEORIGIN"
+# X_FRAME_OPTIONS = f'ALLOW-FROM {"http://localhost/" if os.environ["ENVIRONMENT"] == "development" else "https://sel2-4.ugent.be"}'
+CSP_FRAME_ANCESTORS = (
+    "'self'",
+    "http://localhost:2002",
+    "http://localhost",
+    "https://sel2-4.ugent.be",
+    "https://sel2-4.ugent.be:2002",
+)
+CSP_DEFAULT_SRC = (
+    "'self'",
+    "http://localhost:2002",
+    "http://localhost",
+    "https://sel2-4.ugent.be",
+    "https://sel2-4.ugent.be:2002",
+    "https://*.jsdelivr.net",
+    "data:",
+)
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "https://*.jsdelivr.net",
+    "'unsafe-inline'",
+    # "'unsafe-eval'"
+)
+CSP_STYLE_SRC_ELEM = ("'self'", "https://*.jsdelivr.net", "'unsafe-inline'")
+
+# to support websockets
+ASGI_APPLICATION = "config.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}

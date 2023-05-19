@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { verifyToken } from "@/lib/authentication";
 import setSessionStorage from "@/lib/storage";
-import { getRoleDirection } from "@/lib/reroute";
 import { getCurrentUser, getUserRole, User } from "@/lib/user";
 
 /**
@@ -31,25 +30,19 @@ export const withAuthorisation = (WrappedComponent: any, allowedRoles: string[])
                                 setSessionStorage(user.role.toString(), user.id.toString());
                                 setRole(getUserRole(user.role.toString()));
                             },
-                            (err) => {
-                                console.error(err);
-                            }
+                            () => {}
                         );
                     }
                 },
-                (err) => {
-                    router.push("/login").then((_) => {
-                        console.error(err);
-                    });
+                () => {
+                    router.push("/login").then();
                 }
             );
         }, []);
 
         useEffect(() => {
             if (role && !allowedRoles.includes(role)) {
-                router.replace("/no-access").then((_) => {
-                    console.error("No access");
-                });
+                router.replace("/no-access").then();
             }
         }, [role]);
 

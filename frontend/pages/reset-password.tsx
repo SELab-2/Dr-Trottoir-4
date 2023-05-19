@@ -1,31 +1,54 @@
-import { useRouter } from "next/router";
-import React, { FormEvent, useState } from "react";
 import BaseHeader from "@/components/header/baseHeader";
-import styles from "@/styles/Login.module.css";
+import React, { useState } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
-import filler_image from "@/public/filler_image.png";
-import reset from "@/lib/reset";
-import { Button } from "bootstrap";
+import filler_image from "@/public/filler_image_1.png";
+import styles from "@/styles/Login.module.css";
+import PasswordInput from "@/components/password/passwordInput";
+import { resetPassword } from "@/lib/authentication";
+import { Button } from "react-bootstrap";
+import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
-export default function ResetPassword() {
+export default function ResetPasswordPage() {
     const router = useRouter();
-    const [email, setEmail] = useState<string>("");
+    const [newPassword1, setNewPassword1] = useState<string>("");
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [newPassword2, setNewPassword2] = useState<string>("");
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-    const handleSubmit = async (event: FormEvent) => {
-        event.preventDefault();
-        reset(email).then(
-            async (res) => {
-                if (res.status == 200) {
-                    alert("A password reset e-mail has been sent to the provided e-mail address");
-                    await router.push("/login");
-                }
-            },
-            (err) => {
-                console.error(err);
-            }
-        );
+    const handlePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
+    const { token, uid } = router.query;
+
+    const handleSubmit = async () => {
+        if (newPassword1 !== newPassword2) {
+            setErrorMessages(["De ingevoerde wachtwoorden komen niet overeen."]);
+            return;
+        } else if (!newPassword1 || !newPassword2) {
+            setErrorMessages(["Gelieve alle velden in te vullen"]);
+        } else if (!token || !uid) {
+            setErrorMessages([
+                "Gelieve de link te gebruiken die u heeft onvangen via email om uw wachtwoord opnieuw in te stellen",
+            ]);
+        } else {
+            try {
+                await router.push("/login");
+                console.log(uid);
+                console.log(token);
+                const res = await resetPassword({
+                    new_password1: newPassword1,
+                    new_password2: newPassword2,
+                    uid: uid.toString(),
+                    token: token.toString(),
+                });
+            } catch (error: any) {
+                setErrorMessages(handleError(error));
+            }
+        }
+    };
     return (
         <>
             <BaseHeader />
@@ -39,32 +62,37 @@ export default function ResetPassword() {
                                 </div>
                                 <div className="col-md-6 col-lg-7 d-flex align-items-center">
                                     <div className="card-body p-4 p-lg-5 text-black">
-                                        <form>
-                                            <div className="d-flex align-items-center mb-3 pb-1">
-                                                <i className="fas fa-cubes fa-2x me-3" />
-                                                <span className="h1 fw-bold mb-0">Wachtwoord vergeten.</span>
-                                            </div>
-
-                                            <p>Vul je e-mailadres is om je account terug te vinden</p>
-
-                                            <div className="form-outline mb-4">
-                                                <label className="form-label">E-mailadres</label>
-                                                <input
-                                                    type="email"
-                                                    className={`form-control form-control-lg ${styles.input}`}
-                                                    value={email}
-                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                        setEmail(e.target.value)
-                                                    }
-                                                    required
-                                                    placeholder="naam@voorbeeld.com"
-                                                />
-                                            </div>
-                                            <button onClick={handleSubmit}>Reset</button>
-                                            <p className="mb-5 pb-lg-2">
-                                                Geheugen opgefrist? <a href="/login">Ga naar login</a>
-                                            </p>
-                                        </form>
+                                        <h2>Nieuw wachtwoord instellen</h2>
+                                        <br />
+                                        <ErrorMessageAlert
+                                            errorMessages={errorMessages}
+                                            setErrorMessages={setErrorMessages}
+                                        />
+                                        <PasswordInput
+                                            value={newPassword1}
+                                            setPassword={setNewPassword1}
+                                            handlePasswordVisibility={handlePasswordVisibility}
+                                            showPassword={showPassword}
+                                            label="Nieuw wachtwoord:"
+                                            placeholder="Voer uw nieuwe wachtwoord in"
+                                            showIconButton={true}
+                                        />
+                                        <PasswordInput
+                                            value={newPassword2}
+                                            setPassword={setNewPassword2}
+                                            handlePasswordVisibility={() => null}
+                                            showPassword={false}
+                                            label="Bevestig nieuw wachtwoord:"
+                                            placeholder="Voer uw nieuwe wachtwoord opnieuw in"
+                                            showIconButton={false}
+                                        />
+                                        <a className="small text-muted" href="/login">
+                                            Terug naar login
+                                        </a>
+                                        <br />
+                                        <Button variant="primary" className="btn-dark" onClick={handleSubmit}>
+                                            Opslaan
+                                        </Button>
                                     </div>
                                 </div>
                             </div>

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { handleError } from "@/lib/error";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 export default function ({
     show,
@@ -77,20 +78,11 @@ export default function ({
             }}
         >
             <Modal.Header closeButton>{edit ? "Bewerk template" : "Nieuwe template"}</Modal.Header>
-            {errorMessages.length !== 0 && (
-                <div className={"visible alert alert-danger alert-dismissible fade show"}>
-                    <ul>
-                        {errorMessages.map((err, i) => (
-                            <li key={i}>{t(err)}</li>
-                        ))}
-                    </ul>
-                    <button type="button" className="btn-close" onClick={() => setErrorMessages([])}></button>
-                </div>
-            )}
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <Modal.Body>
                 <Form>
                     <div className="form-outline mb-4">
-                        <label className="form-label">Naam emailtemplate:</label>
+                        <label className="form-label">Naam email template:</label>
                         <input
                             type="text"
                             className={`form-control form-control-lg`}
@@ -110,9 +102,11 @@ export default function ({
                         />
                     </div>
                     <div className="form-outline mb-4">
-                        <label className="form-label">Template:</label>
-                        <label className="form-label small">{`* mogelijke variabelen in de template zijn {{name}} en {{address}}`}</label>
+                        <label className="form-label">Template: </label>
+                        <br/>
+                        <label className="form-label small">{`*mogelijke variabelen in de template zijn {{name}} en {{address}}`}</label>
                         <textarea
+                            rows={12}
                             className={`form-control form-control-lg`}
                             value={selectedEmail ? selectedEmail.template : ""}
                             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {

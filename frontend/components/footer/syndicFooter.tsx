@@ -2,17 +2,16 @@ import React from "react";
 
 const SyndicFooter = () => {
     return (
-        <footer
-            className="navbar navbar-expand-sm navbar-dark bg-dark"
-            style={{ position: "absolute", bottom: "0", width: "100%" }}
-        >
-            <div className="container-fluid" style={{ color: "yellow" }}>
-                <span style={{ margin: "auto auto" }}>
-                    Vragen? Contacteer:{" "}
-                    <a style={{ color: "yellow", textDecoration: "underline" }} href="mailto:help@drtrottoir.be">
+        <footer className="navbar navbar-expand-sm navbar-dark bg-dark"
+                style={{position: "relative", bottom: "0", width: "100%"}}>
+            <div className="container-fluid"
+                 style={{color: 'yellow', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                <label>
+                    Vragen? Contacteer:
+                    <a style={{color: "yellow", textDecoration: "underline"}} href="mailto:help@drtrottoir.be">
                         help@drtrottoir.be
                     </a>
-                </span>
+                </label>
             </div>
         </footer>
     );

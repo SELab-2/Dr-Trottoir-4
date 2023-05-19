@@ -1,15 +1,14 @@
-import styles from "@/styles/Login.module.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import React, { FormEvent, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useRouter } from "next/router";
+import React, {FormEvent, useState} from "react";
+import {useRouter} from "next/router";
 import signup from "@/lib/signup";
-import { handleError } from "@/lib/error";
+import {handleError} from "@/lib/error";
 import PasswordInput from "@/components/password/passwordInput";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import {Button, Col, Form, FormControl, InputGroup, Row} from "react-bootstrap";
 
 function SignupForm() {
-    const { t } = useTranslation();
     const router = useRouter();
     const [firstname, setFirstname] = useState<string>("");
     const [lastname, setLastname] = useState<string>("");
@@ -20,9 +19,15 @@ function SignupForm() {
     const [verificationCode, setVerificationCode] = useState<string>("");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showRepeatPassword, setShowRepeatPassword] = useState<boolean>(false);
+
 
     const handlePasswordVisibility = () => {
         setShowPassword(!showPassword);
+    };
+
+    const handleRepeatPasswordVisibility = () => {
+        setShowRepeatPassword(!showRepeatPassword);
     };
 
     const handleSubmit = async (event: FormEvent) => {
@@ -34,7 +39,7 @@ function SignupForm() {
                     await router.push(
                         {
                             pathname: "/login",
-                            query: { createdAccount: true },
+                            query: {createdAccount: true},
                         },
                         "/login"
                     );
@@ -48,160 +53,167 @@ function SignupForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="d-flex align-items-center mb-3 pb-1">
-                <i className="fas fa-cubes fa-2x me-3" />
-                <span className="h1 fw-bold mb-0">Sign up.</span>
+        <Form onSubmit={handleSubmit}>
+            <div>
+                <Form.Label className="title">Sign up.</Form.Label>
             </div>
+            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+            <Row>
+                <Col md={6}>
+                    <div>
+                        <Form.Label className="normal_text">Voornaam</Form.Label>
+                        <InputGroup className="input">
+                            <FormControl
+                                className="form_control"
+                                type="text"
+                                title="Geef je voornaam in."
+                                value={firstname}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    setFirstname(e.target.value);
+                                    e.target.setCustomValidity("");
+                                }}
+                                onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    e.target.setCustomValidity("Voornaam is verplicht.");
+                                }}
+                                required
+                                placeholder="Voornaam"
+                            />
+                        </InputGroup>
+                    </div>
 
-            <div
-                className={
-                    errorMessages.length !== 0 ? "visible alert alert-danger alert-dismissible fade show" : "invisible"
-                }
-            >
-                <ul>
-                    {errorMessages.map((err, i) => (
-                        <li key={i}>{t(err)}</li>
-                    ))}
-                </ul>
-                <button type="button" className="btn-close" data-bs-dismiss="alert" />
-            </div>
+                    <div>
+                        <Form.Label className="normal_text">Achternaam</Form.Label>
+                        <InputGroup className="input">
+                            <FormControl
+                                className="form_control"
+                                type="text"
+                                title="Geef je achternaam in."
+                                value={lastname}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    setLastname(e.target.value);
+                                    e.target.setCustomValidity("");
+                                }}
+                                onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    e.target.setCustomValidity("Achternaam is verplicht.");
+                                }}
+                                required
+                                placeholder="Achternaam"
+                            />
+                        </InputGroup>
+                    </div>
 
-            <div className="form-outline mb-4">
-                <label className="form-label">Voornaam</label>
-                <input
-                    type="text"
-                    title="Geef je voornaam in."
-                    className={`form-control form-control-lg ${styles.input}`}
-                    value={firstname}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setFirstname(e.target.value);
-                        e.target.setCustomValidity("");
-                    }}
-                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        e.target.setCustomValidity("Voornaam is verplicht.");
-                    }}
-                    required
-                    placeholder="Voornaam"
-                />
-            </div>
+                    <div>
+                        <Form.Label className="normal_text">Gsm-nummer</Form.Label>
+                        <InputGroup className="input">
+                            <PhoneInput
+                                country={"be"}
+                                value={phoneNumber}
+                                preferredCountries={["be", "nl"]}
+                                onChange={(phone) => setPhoneNumber("+" + phone)}
+                                inputClass="form_control"
+                                inputStyle={{
+                                    height: '40px',
+                                    background: '#f8f9fa',
+                                    fontSize: '15px',
+                                    width: '100%',
+                                    maxWidth: '300px'
+                                }}
+                            />
+                        </InputGroup>
+                    </div>
+                    <div>
+                        <Form.Label className="normal_text">Verificatiecode</Form.Label>
+                        <InputGroup className="input">
+                            <FormControl
+                                className="form_control"
+                                type="text"
+                                title="Geef de verificatiecode die je verkreeg via een platformbeheerder."
+                                value={verificationCode}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    setVerificationCode(e.target.value);
+                                    e.target.setCustomValidity("");
+                                }}
+                                onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    e.target.setCustomValidity("Een verificatiecode is verplicht.");
+                                }}
+                                required
+                                placeholder="Verificatiecode"
+                            />
+                        </InputGroup>
+                    </div>
+                </Col>
+                <Col md={6}>
+                    <div>
+                        <Form.Label className="normal_text">E-mailadres</Form.Label>
+                        <InputGroup className="input">
+                            <FormControl
+                                className="form_control"
+                                type="email"
+                                title="Geef het e-mailadres die je hebt opgegeven aan een platformbeheerder."
+                                value={email}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    setEmail(e.target.value);
+                                }}
+                                required
+                                placeholder="naam@voorbeeld.com"
+                            />
+                        </InputGroup>
+                    </div>
 
-            <div className="form-outline mb-4">
-                <label className="form-label">Achternaam</label>
-                <input
-                    type="text"
-                    title="Geef je achternaam in."
-                    className={`form-control form-control-lg ${styles.input}`}
-                    value={lastname}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setLastname(e.target.value);
-                        e.target.setCustomValidity("");
-                    }}
-                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        e.target.setCustomValidity("Achternaam is verplicht.");
-                    }}
-                    required
-                    placeholder="Achternaam"
-                />
-            </div>
+                    <PasswordInput
+                        value={password1}
+                        setPassword={setPassword1}
+                        handlePasswordVisibility={handlePasswordVisibility}
+                        showPassword={showPassword}
+                        label="Wachtwoord"
+                        placeholder="Wachtwoord"
+                        showIconButton={true}
+                        customOnInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            e.target.setCustomValidity("");
+                        }}
+                        customOnInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            e.target.setCustomValidity("Wachtwoord is verplicht.");
+                        }}
+                    />
 
-            <div className="form-outline mb-4">
-                <label className="form-label">Gsm-nummer</label>
-                <PhoneInput
-                    country={"be"}
-                    value={phoneNumber}
-                    preferredCountries={["be", "nl"]}
-                    onChange={(phone) => setPhoneNumber("+" + phone)}
-                    // TODO: Adapt styling to match other fields?
-                    //containerClass={`form-control form-control-lg ${styles.input}`}
-                />
-            </div>
-
-            <div className="form-outline mb-4">
-                <label className="form-label">E-mailadres</label>
-                <input
-                    type="email"
-                    title="Geef het e-mailadres die je hebt opgegeven aan een platformbeheerder."
-                    className={`form-control form-control-lg ${styles.input}`}
-                    value={email}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setEmail(e.target.value);
-                    }}
-                    required
-                    placeholder="naam@voorbeeld.com"
-                />
-            </div>
-
-            <PasswordInput
-                value={password1}
-                setPassword={setPassword1}
-                handlePasswordVisibility={handlePasswordVisibility}
-                showPassword={showPassword}
-                label="Wachtwoord"
-                placeholder="Wachtwoord"
-                showIconButton={true}
-                customOnInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    e.target.setCustomValidity("");
-                }}
-                customOnInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    e.target.setCustomValidity("Wachtwoord is verplicht.");
-                }}
-            />
-
-            <PasswordInput
-                value={password2}
-                setPassword={setPassword2}
-                handlePasswordVisibility={() => null}
-                showPassword={false}
-                label="Bevestig wachtwoord"
-                placeholder="Wachtwoord"
-                showIconButton={false}
-                customOnInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    e.target.setCustomValidity("");
-                    if (password1 !== e.target.value) {
-                        e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
-                    } else {
-                        e.target.setCustomValidity("");
-                    }
-                }}
-                customOnInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    if (password1 !== e.target.value) {
-                        e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
-                    } else {
-                        e.target.setCustomValidity("");
-                    }
-                }}
-            />
-
-            <div className="form-outline mb-4">
-                <label className="form-label">Verificatiecode</label>
-                <input
-                    type="text"
-                    title="Geef de verificatiecode die je verkreeg via een platformbeheerder."
-                    className={`form-control form-control-lg ${styles.input}`}
-                    value={verificationCode}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setVerificationCode(e.target.value);
-                        e.target.setCustomValidity("");
-                    }}
-                    onInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        e.target.setCustomValidity("Een verificatiecode is verplicht.");
-                    }}
-                    required
-                    placeholder="Verificatiecode"
-                />
-            </div>
-
-            <div className="pt-1 mb-4">
-                <button className={`btn btn-dark btn-lg btn-block ${styles.button}`} type="submit">
-                    Sign up
-                </button>
-            </div>
-
-            <p className="mb-5 pb-lg-2">
-                Heb je al een account? <a href="/login">Ga naar login</a>
-            </p>
-        </form>
+                    <PasswordInput
+                        value={password2}
+                        setPassword={setPassword2}
+                        handlePasswordVisibility={handleRepeatPasswordVisibility}
+                        showPassword={showRepeatPassword}
+                        label="Bevestig wachtwoord"
+                        placeholder="Wachtwoord"
+                        showIconButton={true}
+                        customOnInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            e.target.setCustomValidity("");
+                            if (password1 !== e.target.value) {
+                                e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
+                            } else {
+                                e.target.setCustomValidity("");
+                            }
+                        }}
+                        customOnInvalid={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            if (password1 !== e.target.value) {
+                                e.target.setCustomValidity("Wachtwoorden zijn niet gelijk.");
+                            } else {
+                                e.target.setCustomValidity("");
+                            }
+                        }}
+                    />
+                    <Form.Label className="small_text">
+                        Heb je al een account? <a href="/login">Ga naar login</a>
+                    </Form.Label>
+                    <div className="padding">
+                        <Button
+                            className="wide_button"
+                            size="lg"
+                            type="submit">
+                            Registreer
+                        </Button>
+                    </div>
+                </Col>
+            </Row>
+        </Form>
     );
 }
 

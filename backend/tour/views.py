@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from base.models import Tour, BuildingOnTour, Building
-from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent
+from base.permissions import IsAdmin, IsSuperStudent, ReadOnlyStudent, NoStudentWorkingOnTour
 from base.serializers import TourSerializer, BuildingSerializer, SuccessSerializer, BuildingSwapRequestSerializer
 from util.request_response_util import *
 
@@ -33,7 +33,7 @@ class Default(APIView):
 
 
 class BuildingSwapView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
+    permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent, NoStudentWorkingOnTour]
     serializer_class = TourSerializer
 
     description = "Note that buildingID should also be an integer."
@@ -43,9 +43,11 @@ class BuildingSwapView(APIView):
         "This enables the frontend to restructure a tour in 1 request instead of multiple. If a building is "
         "added to the tour (no BuildingOnTour entry existed before), a new entry will be created. If buildings that "
         "were originally on the tour are left out, they will be removed from the tour."
-        "The indices that should be used in the request start at 0 and should be incremented 1 at a time.",
+        "The indices that should be used in the request start at 0 and should be incremented 1 at a time."
+        "You can't use this endpoint if a student is working on this tour, you'll get a 403 if this is "
+        "the case.",
         request=BuildingSwapRequestSerializer,
-        responses={200: SuccessSerializer, 400: None},
+        responses={200: SuccessSerializer, 400: None, 403: None},
         examples=[
             OpenApiExample(
                 "Set 2 buildings on the tour",
@@ -66,6 +68,7 @@ class BuildingSwapView(APIView):
         tour = Tour.objects.filter(id=tour_id).first()
         if not tour:
             return not_found("Tour")
+        self.check_object_permissions(request, tour)
         items = BuildingOnTour.objects.filter(tour=tour)
         items.delete()
         q = PriorityQueue()
@@ -161,12 +164,29 @@ class AllToursView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = TourSerializer
 
-    @extend_schema(responses=get_docs(TourSerializer))
+    @extend_schema(
+        description="GET all tours in the database. There is the possibility to filter as well. If the parameter name "
+        "includes 'list' then you can add multiple entries of"
+        "those in the url. For example: ?region-id-list[]=1&region-id-list[]=2&",
+        parameters=param_docs(
+            {
+                "region-id-list": ("Filter by region ids", False, OpenApiTypes.INT),
+            }
+        ),
+        responses=get_docs(TourSerializer),
+    )
     def get(self, request):
         """
         Get all tours
         """
         tour_instances = Tour.objects.all()
+
+        filters = {"region-id-list": get_filter_object("region__in")}
+
+        try:
+            tour_instances = filter_instances(request, tour_instances, filters)
+        except BadRequest as e:
+            return bad_request_custom_error_message(e)
 
         serializer = TourSerializer(tour_instances, many=True)
         return get_success(serializer)

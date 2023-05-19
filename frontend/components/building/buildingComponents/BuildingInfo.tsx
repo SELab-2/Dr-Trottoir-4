@@ -1,10 +1,20 @@
-import { TiPencil } from "react-icons/ti";
 import React, { useEffect, useState } from "react";
+import { TiPencil } from "react-icons/ti";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
 import { BuildingInterface } from "@/lib/building";
-import { getRegion, RegionInterface } from "@/lib/region";
-import PatchBuildingAdminModal from "@/components/building/buildingComponents/editModals/PatchBuildingAdminModal";
+import { getRegion } from "@/lib/region";
 import { useRouter } from "next/router";
+import { Button } from "react-bootstrap";
+// @ts-ignore
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { handleError } from "@/lib/error";
+import ManualList from "@/components/manual/ManualList";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
+import { getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
+
+interface BuildingQuery {
+    id?: string;
+}
 
 function BuildingInfo({
     building,
@@ -13,15 +23,22 @@ function BuildingInfo({
 }: {
     building: BuildingInterface;
     setBuilding: (b: any) => void;
-    type: "syndic" | "admin" | "";
+    type: "syndic" | "admin" | "public";
 }) {
     const router = useRouter();
+    const query = router.query as BuildingQuery;
+
     const [editBuilding, setEditBuilding] = useState(false);
-    const [regionName, setRegionName] = useState("/");
+    const [regionName, setRegionName] = useState("-");
+
+    const publicId = (building && building.public_id) || "-";
+    const [buildingComment, setBuildingComment] = useState<string>("Geen opmerkingen");
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (building) {
-            get_region_name("region");
+            get_region_name();
+            getBuildingComment();
         }
     }, [building]);
 
@@ -31,72 +48,127 @@ function BuildingInfo({
         }
     }, [editBuilding]);
 
-    function get_building_key(key: string) {
-        if (building) {
-            // @ts-ignore
-            return building[key] || "/";
-        }
-        return "/";
-    }
-
-    async function get_region_name(key: string) {
-        const region_id = get_building_key("region");
-
-        if (isNaN(region_id)) {
-            setRegionName("/");
-        }
-
+    async function get_region_name() {
         try {
-            const region = await getRegion(region_id);
+            const region = await getRegion(building.region);
             const regionName = region.data.region;
             setRegionName(regionName);
+            setErrorMessages([]);
         } catch (error) {
-            console.error(error);
-            setRegionName("/");
+            setErrorMessages(handleError(error));
+            setRegionName("-");
         }
+    }
+
+    function getBuildingComment() {
+        getAllBuildingCommentsByBuildingID(building.id, true)
+            .then((comment) => {
+                if (comment.data.length > 0) {
+                    setBuildingComment(comment.data.comment);
+                } else {
+                    setBuildingComment("Geen opmerkingen");
+                }
+            })
+            .catch((error) => {
+                setErrorMessages(handleError(error));
+                setBuildingComment("Geen opmerkingen");
+            });
+    }
+
+    function getPublicLink(fullLink = true) {
+        return (
+            (fullLink ? `${process.env.NEXT_PUBLIC_HOST}` : "") +
+            `/public/building?id=${building?.public_id ? building?.public_id : "<public_id>"}`
+        );
     }
 
     return (
-        <>
-            {type == "syndic" ? (
+        <div>
+            {type === "syndic" && (
                 <PatchBuildingSyndicModal
                     show={editBuilding}
                     closeModal={() => setEditBuilding(false)}
                     building={building}
                     setBuilding={setBuilding}
                 />
-            ) : null}
+            )}
+            <label className="title">Gebouw</label>
+            {building && (
+                <div>
+                    <p>
+                        <strong> Naam:</strong> {building.name ? building.name : "-"}
+                    </p>
+                    <strong>Adres:</strong>
+                    <p>
+                        {building.street} {building.house_number}, {building.bus}
+                        <br />
+                        {building.city} {building.postal_code}
+                    </p>
+                    <p>
+                        <strong>Regio:</strong> {regionName}
+                    </p>
+                    <p>
+                        <strong>Werktijd:</strong> {building.duration}
+                    </p>
+                    <p>
+                        <strong>Klant id:</strong> {building.client_number ? building.client_number : "-"}
+                    </p>
+                    {type != "public" ? (
+                        <p
+                            style={{ wordWrap: "break-word", width: "100%", maxWidth: "100%" }}
+                            title={`De inwoners van het gebouw kunnen de info van dit gebouw raadplegen via de link: 
+                        ${getPublicLink()}`}
+                        >
+                            <strong>Publiek id:</strong>
+                            <br />
+                            {publicId && publicId !== "-" ? (
+                                <a href={getPublicLink(false)} target={"_blank"}>
+                                    {publicId}
+                                </a>
+                            ) : (
+                                publicId
+                            )}
+                        </p>
+                    ) : null}
+                    <br />
 
-            {/*type == "admin" ? <PatchBuildingAdminModal
-                show={editBuilding}
-                closeModal={() => setEditBuilding(false)}
-                building={building}
-                setBuilding={setBuilding} />
-            : null*/}
-
-            <h1>
-                Gebouw{" "}
-                <TiPencil
-                    className={"clickable"}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        setEditBuilding(true);
-                    }}
-                ></TiPencil>
-            </h1>
-            <p>ID: {get_building_key("id")} </p>
-            <p>Naam: {get_building_key("name")}</p>
-            <p>Stad: {get_building_key("city")}</p>
-            <p>Postcode: {get_building_key("postal_code")}</p>
-            <p>Straat: {get_building_key("street")}</p>
-            <p>Nr: {get_building_key("house_number")}</p>
-            <p>Bus: {get_building_key("bus")}</p>
-            <p>RegionInterface: {regionName} </p>
-            <p>Werktijd: {get_building_key("duration")}</p>
-            <p>Client id: {get_building_key("client_id")}</p>
-            <p>Public id: {get_building_key("public_id")}</p>
-        </>
+                    {query.id && type != "public" ? (
+                        <>
+                            <h3>Handleiding</h3>
+                            <ManualList id={query.id} type={type} />
+                        </>
+                    ) : null}
+                </div>
+            )}
+            {type === "syndic" && (
+                <div className="padding" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Button
+                        size="lg"
+                        className="wide_button"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setEditBuilding(true);
+                        }}
+                    >
+                        <TiPencil /> Bewerk
+                    </Button>
+                </div>
+            )}
+            {type === "admin" && (
+                <div className="padding" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Button
+                        size="lg"
+                        className="wide_button"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.push(`/admin/data/buildings/edit?building=${building.id}`);
+                        }}
+                    >
+                        <TiPencil /> Bewerk
+                    </Button>
+                </div>
+            )}
+        </div>
     );
 }
-
 export default BuildingInfo;

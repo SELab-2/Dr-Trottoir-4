@@ -7,12 +7,13 @@ import { useRouter } from "next/router";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { Button } from "react-bootstrap";
-import { Delete, Edit } from "@mui/icons-material";
+import { CalendarMonth, Delete, Edit } from "@mui/icons-material";
 import { BuildingInterface, getAddress } from "@/lib/building";
 import { TourView } from "@/types";
 import { TourDeleteModal } from "@/components/admin/tourDeleteModal";
+import { handleError } from "@/lib/error";
+import Link from "next/link";
 
-// https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=68-429&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
 function AdminDataTours() {
     const router = useRouter();
     const [allTours, setAllTours] = useState<Tour[]>([]);
@@ -41,6 +42,46 @@ function AdminDataTours() {
                 accessorKey: "tour_id", //normal accessorKey
                 header: "tour_id",
             },
+            {
+                header: "Acties",
+                id: "actions",
+                enableColumnActions: false,
+                Cell: ({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                        <Tooltip arrow placement="left" title="Pas aan">
+                            <IconButton
+                                onClick={() => {
+                                    const tourView: TourView = row.original;
+                                    routeToEditView(tourView).then();
+                                }}
+                            >
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Verwijder">
+                            <IconButton
+                                onClick={() => {
+                                    const tourView: TourView = row.original;
+                                    setSelectedTour(tourView);
+                                    setShowDeleteModal(true);
+                                }}
+                            >
+                                <Delete />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip arrow placement="right" title="Vuilophaling">
+                            <IconButton
+                                onClick={() => {
+                                    const tourView: TourView = row.original;
+                                    routeToGarbageSchedule(tourView).then();
+                                }}
+                            >
+                                <CalendarMonth />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                ),
+            },
         ],
         []
     );
@@ -54,7 +95,7 @@ function AdminDataTours() {
                 setRegions(regions);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }, []);
@@ -86,7 +127,7 @@ function AdminDataTours() {
                 setAllTours(tours);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }
@@ -99,12 +140,11 @@ function AdminDataTours() {
         setBuildingsOfTour([]);
         getBuildingsOfTour(tourID).then(
             (res) => {
-                const buildings: BuildingInterface[] = res.data;
-                buildingsOfTour[tourID] = buildings;
+                buildingsOfTour[tourID] = res.data;
                 setBuildingsOfTour(buildingsOfTour);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
     }
@@ -131,83 +171,75 @@ function AdminDataTours() {
         setSelectedTour(null);
     }
 
+    async function routeToGarbageSchedule(tourView: TourView) {
+        await router.push({
+            pathname: `/admin/data/garbage-collection`,
+            query: { tour: tourView.tour_id },
+        });
+    }
+
     return (
-        <>
+        <div className="tablepageContainer">
             <AdminHeader />
-            <TourDeleteModal
-                closeModal={closeDeleteModal}
-                show={showDeleteModal}
-                selectedTour={selectedTour}
-                setSelectedTour={setSelectedTour}
-                onDelete={closeDeleteModal}
-            />
-            <MaterialReactTable
-                displayColumnDefOptions={{
-                    "mrt-row-actions": {
-                        muiTableHeadCellProps: {
-                            align: "center",
-                        },
-                        header: "Acties",
-                    },
-                }}
-                enablePagination={false}
-                enableBottomToolbar={false}
-                columns={columns}
-                data={tourViews}
-                state={{ isLoading: loading }}
-                enableEditing
-                enableRowNumbers
-                // Don't show the tour_id
-                enableHiding={false}
-                initialState={{ columnVisibility: { tour_id: false } }}
-                renderRowActions={({ row }) => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
-                        <Tooltip arrow placement="left" title="Pas aan">
-                            <IconButton
-                                onClick={() => {
-                                    const tourView: TourView = row.original;
-                                    routeToEditView(tourView).then();
-                                }}
-                            >
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip arrow placement="right" title="Verwijder">
-                            <IconButton
-                                onClick={() => {
-                                    const tourView: TourView = row.original;
-                                    setSelectedTour(tourView);
-                                    setShowDeleteModal(true);
-                                }}
-                            >
-                                <Delete />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                )}
-                renderDetailPanel={({ row }) => {
-                    const tourView: TourView = row.original;
-                    const buildings: BuildingInterface[] = buildingsOfTour[tourView.tour_id];
-                    return (
-                        buildings && (
-                            <>
-                                <label>Gebouwen op deze tour:</label>
-                                <ul>
-                                    {buildings.map((building: BuildingInterface, index: number) => (
-                                        <li key={`${building.id}-${index}`}>{getAddress(building)}</li>
-                                    ))}
-                                </ul>
-                            </>
-                        )
-                    );
-                }}
-                renderTopToolbarCustomActions={() => (
-                    <Button onClick={() => router.push(`${router.pathname}/edit`)} variant="warning">
-                        Maak nieuwe ronde aan
-                    </Button>
-                )}
-            />
-        </>
+            <div className="tableContainer">
+                <TourDeleteModal
+                    closeModal={closeDeleteModal}
+                    show={showDeleteModal}
+                    selectedTour={selectedTour}
+                    setSelectedTour={setSelectedTour}
+                    onDelete={closeDeleteModal}
+                />
+                <MaterialReactTable
+                    enablePagination={false}
+                    enableBottomToolbar={false}
+                    columns={columns}
+                    data={tourViews}
+                    state={{ isLoading: loading }}
+                    enableRowNumbers
+                    // Don't show the tour_id
+                    enableHiding={false}
+                    enableRowActions={false}
+                    initialState={{ columnVisibility: { tour_id: false } }}
+                    renderDetailPanel={({ row }) => {
+                        const tourView: TourView = row.original;
+                        const buildings: BuildingInterface[] = buildingsOfTour[tourView.tour_id];
+                        return (
+                            buildings && (
+                                <>
+                                    <label>Gebouwen op deze tour:</label>
+                                    <ol>
+                                        {buildings.map((building: BuildingInterface, index: number) => (
+                                            <li key={`${building.id}-${index}`}>
+                                                <Link
+                                                    style={{
+                                                        textDecoration: "underline",
+                                                        color: "royalblue",
+                                                    }}
+                                                    href={{
+                                                        pathname: "/admin/building/",
+                                                        query: {
+                                                            id: building.id,
+                                                        },
+                                                    }}
+                                                    target="_blank"
+                                                >
+                                                    {getAddress(building)}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ol>
+                                </>
+                            )
+                        );
+                    }}
+                    renderTopToolbarCustomActions={() => (
+                        <Button onClick={() => router.push(`${router.pathname}/edit`)} variant="warning">
+                            Maak nieuwe ronde aan
+                        </Button>
+                    )}
+                />
+            </div>
+        </div>
     );
 }
 

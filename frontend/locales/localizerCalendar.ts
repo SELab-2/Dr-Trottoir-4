@@ -10,6 +10,7 @@ const messages = {
     date: 'Datum',
     time: 'Tijd',
     event: 'Evenement',
+    showMore: (count : number) => `+${count} meer`
 }
 
 export {messages};

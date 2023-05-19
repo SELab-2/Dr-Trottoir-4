@@ -1,4 +1,3 @@
-from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -140,7 +139,7 @@ class AllUsersView(APIView):
     @extend_schema(
         description="GET all users in the database. There is the possibility to filter as well. You can filter on "
         "various parameters. If the parameter name includes 'list' then you can add multiple entries of "
-        "those in the url.",
+        "those in the url. For example: ?region-id-list[]=1&region-id-list[]=2&include-role-name-list[]=Admin&",
         parameters=param_docs(
             {
                 "region-id-list": ("Filter by region ids", False, OpenApiTypes.INT),
@@ -149,6 +148,7 @@ class AllUsersView(APIView):
                 "exclude-role-name-list": ("Exclude all the users with specific role names", False, OpenApiTypes.STR),
             }
         ),
+        responses=get_docs(UserSerializer),
     )
     def get(self, request):
         """
@@ -174,7 +174,7 @@ class AllUsersView(APIView):
         try:
             user_instances = filter_instances(request, user_instances, filters, transformations)
         except BadRequest as e:
-            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return bad_request_custom_error_message(str(e))
 
         serializer = UserSerializer(user_instances, many=True)
         return get_success(serializer)

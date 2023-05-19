@@ -33,12 +33,6 @@
     }
 }
 
-@media (max-width: 992px) {
-    .menuIcon {
-        padding-left: 10px;
-    }
-}
-
 .grid {
     display: grid;
     grid-template-rows: auto auto;

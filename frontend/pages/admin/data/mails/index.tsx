@@ -8,8 +8,10 @@ import { Button } from "react-bootstrap";
 import { useRouter } from "next/router";
 import EditEmailModal from "@/components/admin/editEmailModal";
 import { DeleteEmailModal } from "@/components/admin/deleteEmailModal";
+import { handleError } from "@/lib/error";
+import { withAuthorisation } from "@/components/withAuthorisation";
 
-export default function AdminDataMails() {
+function AdminDataMails() {
     const router = useRouter();
     const [emailTemplates, setEmailTemplates] = useState<Emailtemplate[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -24,74 +26,11 @@ export default function AdminDataMails() {
                 accessorKey: "name", //access nested data with dot notation
                 header: "Naam",
             },
-        ],
-        []
-    );
-
-    useEffect(() => {
-        getMails();
-    }, []);
-
-    function getMails() {
-        getAllMailTemplates().then(
-            (res) => {
-                const templates: Emailtemplate[] = res.data;
-                setEmailTemplates(templates);
-                setLoading(false);
-            },
-            (err) => {
-                console.error(err);
-            }
-        );
-    }
-
-    function closeModal() {
-        setSelectedTemplate(null);
-        setShowEditModal(false);
-        setShowDeleteModal(false);
-        getMails();
-    }
-
-    async function routeToCommunication(mailTemplate: Emailtemplate) {
-        await router.push({
-            pathname: `/admin/communication`,
-            query: { template: mailTemplate.id },
-        });
-    }
-
-    return (
-        <>
-            <AdminHeader />
-            <EditEmailModal
-                show={showEditModal}
-                hideModal={closeModal}
-                setEmail={setSelectedTemplate}
-                selectedEmail={selectedTemplate}
-                edit={editMail}
-            />
-            <DeleteEmailModal
-                show={showDeleteModal}
-                closeModal={closeModal}
-                selectedMail={selectedTemplate}
-                setMail={setSelectedTemplate}
-            />
-            <MaterialReactTable
-                displayColumnDefOptions={{
-                    "mrt-row-actions": {
-                        muiTableHeadCellProps: {
-                            align: "center",
-                            size: "small",
-                        },
-                        header: "Acties",
-                    },
-                }}
-                enablePagination={false}
-                enableBottomToolbar={false}
-                columns={columns}
-                data={emailTemplates}
-                state={{ isLoading: loading }}
-                enableEditing
-                renderRowActions={({ row }) => (
+            {
+                header: "Acties",
+                id: "actions",
+                enableColumnActions: false,
+                Cell: ({ row }) => (
                     <Box>
                         <Tooltip arrow placement="right" title="Pas aan">
                             <IconButton
@@ -127,23 +66,87 @@ export default function AdminDataMails() {
                             </IconButton>
                         </Tooltip>
                     </Box>
-                )}
-                renderDetailPanel={({ row }) => {
-                    const emailtemplate: Emailtemplate = row.original;
-                    return <pre>{emailtemplate.template}</pre>;
-                }}
-                renderTopToolbarCustomActions={() => (
-                    <Button
-                        onClick={() => {
-                            setShowEditModal(true);
-                            setEditMail(false);
-                        }}
-                        variant="warning"
-                    >
-                        Maak nieuwe mail template aan
-                    </Button>
-                )}
-            />
-        </>
+                ),
+            },
+        ],
+        []
+    );
+
+    useEffect(() => {
+        getMails();
+    }, []);
+
+    function getMails() {
+        getAllMailTemplates().then(
+            (res) => {
+                const templates: Emailtemplate[] = res.data;
+                setEmailTemplates(templates);
+                setLoading(false);
+            },
+            (err) => {
+                handleError(err);
+            }
+        );
+    }
+
+    function closeModal() {
+        setSelectedTemplate(null);
+        setShowEditModal(false);
+        setShowDeleteModal(false);
+        getMails();
+    }
+
+    async function routeToCommunication(mailTemplate: Emailtemplate) {
+        await router.push({
+            pathname: `/admin/communication`,
+            query: { template: mailTemplate.id },
+        });
+    }
+
+    return (
+        <div className="tablepageContainer">
+            <AdminHeader />
+            <div className="tableContainer">
+                <EditEmailModal
+                    show={showEditModal}
+                    hideModal={closeModal}
+                    setEmail={setSelectedTemplate}
+                    selectedEmail={selectedTemplate}
+                    edit={editMail}
+                />
+                <DeleteEmailModal
+                    show={showDeleteModal}
+                    closeModal={closeModal}
+                    selectedMail={selectedTemplate}
+                    setMail={setSelectedTemplate}
+                />
+                <MaterialReactTable
+                    enablePagination={false}
+                    enableBottomToolbar={false}
+                    columns={columns}
+                    data={emailTemplates}
+                    state={{ isLoading: loading }}
+                    renderDetailPanel={({ row }) => {
+                        const emailtemplate: Emailtemplate = row.original;
+                        return <pre>{emailtemplate.template}</pre>;
+                    }}
+                    enableRowActions={false}
+                    renderTopToolbarCustomActions={() => (
+                        <Button
+                            className="wide_button"
+                            size="lg"
+                            onClick={() => {
+                                setShowEditModal(true);
+                                setEditMail(false);
+                            }}
+                        >
+                            Maak nieuwe mail template aan
+                        </Button>
+                    )}
+                />
+            </div>
+        </div>
     );
 }
+
+export default withAuthorisation(AdminDataMails, ["Admin", "Superstudent"]);

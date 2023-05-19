@@ -2,47 +2,62 @@ import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete, { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
 import { AxiosResponse } from "axios/index";
-import { Button, Form, Dropdown, InputGroup } from "react-bootstrap";
+import { Form } from "react-bootstrap";
+import { CircularProgress } from "@mui/material";
 
-//A lot of typings here are any to make the AutocompleteComponentGeneric
+/**
+ * The AutocompleteComponent aims to be as generic as possible to suit many use-cases. Therefore, a lot of the typings
+ * have been set to 'any'.
+ *
+ * To make your own AutocompleteComponent, all you have to do is provide the AutocompleteComponent 5 fields, those being:
+ * @param initialId: The ID of the initial value that has to be displayed
+ * @param label: The label of the AutocompleteComponent
+ * @param fetchOptions: A function that fetches all possible options in the dropdown of the AutocompleteComponent
+ * @param mapping: A function that takes an object (of the same type as the items of the return value of fetchOptions())
+ * and returns the string representation that should get displayed in the AutocompleteComponent
+ * @param setObjectId: A state setter that will set the ID of the currently selected option in order for the parent
+ * component to be able to access it.
+ */
 
 interface Props {
-    value: string;
+    initialId: number;
     label: string;
     fetchOptions: () => Promise<AxiosResponse<any>>;
-    onChange: (value: string) => void;
     mapping: (value: any) => any;
-    searchField: string;
-    // a function that takes the displayed input value and extract the search term from it
-    searchTermHandler: (value: string) => string | null;
     setObjectId: (value: any) => void;
+    disabled?: boolean;
 }
 
 export interface GenericProps {
-    value: any;
-    onChange: (value: any) => void;
+    initialId: any;
     setObjectId: (value: any) => void;
     required: boolean;
 }
 
-function getIdBySearchTerm(arr: any[], field: string, searchTerm: string | null) {
-    if (searchTerm) {
-        const foundObj = arr.find((obj) => obj[field].toLowerCase() === searchTerm.toLowerCase());
-        return foundObj ? foundObj.id : null;
-    }
-    return null;
+//used to make 2 autocomplete components work together
+export interface MatchProps {
+    initialId: any;
+    setObjectId: (value: any) => void;
+    matchId?: number | null;
+}
+
+export interface StudentOnTourProps {
+    initialId: any;
+    setObjectId: (value: any) => void;
+    required: boolean;
+    studentId: number;
+    disabled?: boolean;
 }
 
 const AutocompleteComponent: React.FC<Props> = ({
-    value,
+    initialId,
     label,
     fetchOptions,
-    onChange,
     mapping,
-    searchField,
-    searchTermHandler,
     setObjectId,
+    disabled = false,
 }) => {
+    const [value, setValue] = React.useState<any>();
     const [inputValue, setInputValue] = useState("");
     const [options, setOptions] = useState<string[]>([]);
 
@@ -50,40 +65,57 @@ const AutocompleteComponent: React.FC<Props> = ({
         async function fetch() {
             try {
                 const res = await fetchOptions();
-                const availableOptions = res.data;
+                let availableOptions: any[] = [];
+                for (let data of res.data) {
+                    availableOptions.push({ label: mapping(data), id: data.id });
+                }
                 setOptions(availableOptions);
+
+                //Set the initial value to the object with the same id
+                const initialOption = availableOptions.find((option) => Number(option.id) === Number(initialId));
+                if (initialOption) {
+                    setValue(initialOption);
+                    setInputValue(initialOption.label);
+                }
             } catch (err) {
                 console.error(err);
             }
         }
 
         fetch().then();
-    }, [fetchOptions]);
+    }, [fetchOptions, initialId]);
 
     return (
-        <>
+        <div>
             <Form.Label> {label} </Form.Label>
+            <br />
             <Autocomplete
                 //our option and value are different but without this line it will give warnings as the default
                 //implementations checks whether options === value
                 isOptionEqualToValue={(option: { toString: () => any }, value: { toString: () => any }) => true}
-                value={value}
+                value={value ?? ""}
                 inputValue={inputValue}
                 onChange={(e: React.SyntheticEvent, newValue: any) => {
                     if (newValue) {
-                        setObjectId(getIdBySearchTerm(options, searchField, searchTermHandler(newValue)));
-                        onChange(newValue ?? "");
+                        setValue(newValue);
+                        setObjectId(newValue.id);
+                    } else {
+                        setValue("");
+                        setObjectId(-1);
                     }
                 }}
                 onInputChange={(e: React.SyntheticEvent, newInputValue: string) => {
                     setInputValue(newInputValue);
                 }}
-                options={options.map(mapping)}
+                options={options}
+                getOptionLabel={(option: any) => option.label || ""}
+                disabled={disabled}
                 renderInput={(params: AutocompleteRenderInputParams) => (
-                    <TextField {...params} variant="outlined" fullWidth />
+                    <TextField {...params} variant="outlined" fullWidth style={{ minWidth: "300px" }} />
                 )}
+                ListboxProps={{ style: { maxHeight: 200, overflowY: "auto" } }}
             />
-        </>
+        </div>
     );
 };
 

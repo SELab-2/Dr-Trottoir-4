@@ -1,69 +1,44 @@
 import AdminHeader from "@/components/header/adminHeader";
-import { BuildingComment, getAllBuildingComments } from "@/lib/building-comment";
 import { EmailTemplate, getAllEmailTemplates } from "@/lib/email-template";
 import { ChangeEvent, useEffect, useState } from "react";
-import styles from "styles/Welcome.module.css";
-import { Button, FloatingLabel, Form } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
-import { getAllUsers, User, userSearchString } from "@/lib/user";
-import SyndicAutoComplete from "@/components/autocompleteComponents/syndicAutocomplete";
+import { getAllUsers, User } from "@/lib/user";
+import UserAutoComplete from "@/components/autocompleteComponents/userAutocomplete";
 import { useRouter } from "next/router";
 import { withAuthorisation } from "@/components/withAuthorisation";
+import { Send } from "@mui/icons-material";
+import { handleError } from "@/lib/error";
 
 interface ParsedUrlQuery {}
 
 interface DataCommunicationQuery extends ParsedUrlQuery {
     template?: number;
-    syndic?: string;
+    user?: number;
 }
 
 function AdminCommunication() {
     const [allTemplates, setAllTemplates] = useState<EmailTemplate[]>([]);
-    const [allComments, setAllComments] = useState<BuildingComment[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
-    const [allSyndics, setAllSyndics] = useState<User[]>([]);
-    const [selectedTemplate, setSelectedTemplate] = useState("");
-    const [selectedSyndic, setSelectedSyndic] = useState("");
+    const [allUsers, setAllUsers] = useState<User[]>([]);
 
     const [templateText, setTemplateText] = useState("");
     const [updatedTemplateText, setUpdatedTemplateText] = useState("");
-    const [templateId, setTemplateId] = useState("");
-    const [syndicId, setSyndicId] = useState("");
-    const [buildingId, setBuildingId] = useState("");
+    const [templateId, setTemplateId] = useState<number>();
+    const [userId, setUserId] = useState<number>();
     const router = useRouter();
     const query: DataCommunicationQuery = router.query as DataCommunicationQuery;
 
     const replaceVariable = (str: string, variable: string, value: string): string => {
-        const regex = new RegExp(`{{\\s*${variable}\\s*}}`, "g");
+        const regex = new RegExp(`\\{\\{\\s*${variable}\\s*\\}\\}`, "g");
         return str.replace(regex, value);
     };
 
     const fillInVariables = (input: string): string => {
-        const currentSyndic = allSyndics.find((e) => e.id === Number(syndicId));
-        if (currentSyndic) {
-            const currentBuilding = allBuildings.find((e) => e.syndic === currentSyndic.id);
-
-            const replacedName = replaceVariable(
-                input,
-                "name",
-                currentSyndic.first_name + " " + currentSyndic.last_name
-            );
-            if (currentBuilding) {
-                const replacedAddress = replaceVariable(
-                    replacedName,
-                    "address",
-                    currentBuilding.street +
-                        " " +
-                        currentBuilding.house_number +
-                        " (" +
-                        currentBuilding.postal_code +
-                        " " +
-                        currentBuilding.city +
-                        ")"
-                );
-                return replacedAddress;
-            }
+        const currentUser = allUsers.find((e) => e.id === Number(userId));
+        if (currentUser) {
+            return replaceVariable(input, "name", currentUser.first_name + " " + currentUser.last_name);
         }
 
         return input;
@@ -74,11 +49,11 @@ function AdminCommunication() {
         setUpdatedTemplateText(changedVariablesText);
     };
 
-    async function routeToBuildings(syndicId: string) {
-        const currentSyndic = allSyndics.find((e) => e.id === Number(syndicId));
+    async function routeToBuildings(syndicId: number) {
+        const currentUser = allUsers.find((e) => e.id === syndicId);
         await router.push({
             pathname: `data/buildings/`,
-            query: { syndic: currentSyndic?.email },
+            query: { syndic: currentUser?.email },
         });
     }
 
@@ -89,37 +64,24 @@ function AdminCommunication() {
                 setAllTemplates(emailTemplates);
                 let currentTemplate = emailTemplates[0];
                 if (query.template) {
-                    currentTemplate = emailTemplates.find((e) => e.id === Number(query.template)) || emailTemplates[0];
+                    currentTemplate = emailTemplates.find((e) => e.id === query.template) || emailTemplates[0];
                 }
-                setSelectedTemplate(currentTemplate.name);
-                setTemplateId(currentTemplate.id.toString());
+                setTemplateId(currentTemplate.id);
                 setTemplateText(currentTemplate.template);
             },
             (err) => {
-                console.error(err);
+                handleError(err);
             }
         );
 
-        getAllBuildingComments().then(
-            (res) => {
-                const buildingComments: BuildingComment[] = res.data;
-                setAllComments(buildingComments);
-            },
-            (err) => {
-                console.error(err);
-            }
-        );
-
-        // change this to getAllSyndics when it's available
         getAllUsers().then((res) => {
             const users: User[] = res.data;
-            setAllSyndics(users);
-            let currentSyndic = users[0];
-            if (query.syndic) {
-                currentSyndic = users.find((e) => e.email === query.syndic) || users[0];
+            setAllUsers(users);
+            let currentUser = users[0];
+            if (query.user) {
+                currentUser = users.find((e) => e.id == query.user) || users[0];
             }
-            setSelectedSyndic(userSearchString(currentSyndic));
-            setSyndicId(currentSyndic.id.toString());
+            setUserId(currentUser.id);
         });
 
         getAllBuildings().then((res) => {
@@ -132,75 +94,90 @@ function AdminCommunication() {
         const changedVariablesText = fillInVariables(templateText);
         setUpdatedTemplateText(changedVariablesText);
 
-        const template = allTemplates.find((e) => e.id === Number(templateId));
-        const syndic = allSyndics.find((e) => e.id === Number(syndicId));
-        const building = allBuildings.find((e) => e.syndic === Number(syndicId));
+        const template = allTemplates.find((e) => e.id === templateId);
         if (template) {
             setTemplateText(template.template);
         }
+    }, [allTemplates, allUsers, allBuildings, templateId, userId, templateText]);
 
-        if (building) {
-            setBuildingId(building.id.toString());
+    function getSelectedUserMail() {
+        const user = allUsers.find((e) => e.id === Number(userId));
+        if (user) {
+            return user.email;
         }
-    }, [allTemplates, allSyndics, allBuildings, templateId, syndicId, templateText]);
+        return "";
+    }
 
     return (
         <>
-            <>
-                <AdminHeader />
-                <p className={styles.title}>Communicatie extern</p>
-                <div style={{ display: "flex", width: "100%" }}>
-                    <div style={{ width: "10%" }}></div>
-                    <div style={{ display: "flex", width: "100%" }}>
-                        <div style={{ width: "33%" }}>
-                            <TemplateAutocomplete
-                                value={selectedTemplate}
-                                onChange={setSelectedTemplate}
-                                setObjectId={setTemplateId}
-                                required={false}
-                            ></TemplateAutocomplete>
-                        </div>
-                        <div style={{ width: "33%" }}>
-                            <SyndicAutoComplete
-                                value={selectedSyndic}
-                                onChange={setSelectedSyndic}
-                                setObjectId={setSyndicId}
-                                required={false}
-                            ></SyndicAutoComplete>
-                        </div>
-                        <div style={{ width: "33%" }}>
-                            <Button
-                                variant="secondary"
-                                size="lg"
-                                onClick={() => {
-                                    routeToBuildings(syndicId).then();
-                                }}
-                            >
-                                Gebouw
-                            </Button>
-                        </div>
-                    </div>
-                    <div style={{ width: "10%" }}></div>
+            <AdminHeader />
+            <Container>
+                <p className="title">Communicatie extern</p>
+                <div>
+                    <Row>
+                        <Col md={3}>
+                            <Row>
+                                <TemplateAutocomplete
+                                    initialId={templateId}
+                                    setObjectId={setTemplateId}
+                                    required={false}
+                                />
+                            </Row>
+                            <Row>
+                                <UserAutoComplete initialId={userId} setObjectId={setUserId} required={false} />
+                            </Row>
+                            <Row>
+                                <div className="padding">
+                                    <Button
+                                        className="small_button"
+                                        size="sm"
+                                        onClick={() => {
+                                            if (userId) {
+                                                routeToBuildings(userId).then();
+                                            }
+                                        }}
+                                    >
+                                        Gebouw
+                                    </Button>
+                                </div>
+                            </Row>
+                        </Col>
+                        <Col md={9}>
+                            <Row>
+                                <div style={{ display: "flex" }}>
+                                    <Form.Control
+                                        as="textarea"
+                                        className="mail_area"
+                                        placeholder="Schrijf je email hier"
+                                        value={updatedTemplateText}
+                                        onChange={handleEditTemplate}
+                                    />
+                                </div>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={{ span: 3, offset: 3 }}>
+                            <div className="padding mt-auto">
+                                <Button
+                                    href={`mailto:${getSelectedUserMail()}?body=${encodeURIComponent(
+                                        updatedTemplateText
+                                    )}`}
+                                    className="wide_button"
+                                    size="lg"
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    Verstuur mail
+                                    <Send style={{ height: "10px", paddingLeft: "10px", marginRight: "0.5em" }} />
+                                </Button>
+                            </div>
+                        </Col>
+                    </Row>
                 </div>
-                <div style={{ display: "flex" }}>
-                    <div style={{ width: "10%" }}></div>
-                    <FloatingLabel
-                        controlId="floatingTextarea"
-                        label="Email"
-                        className="mb-3"
-                        style={{ width: "100%" }}
-                    >
-                        <Form.Control
-                            as="textarea"
-                            placeholder="Schrijf je email hier"
-                            style={{ height: "400px" }}
-                            value={updatedTemplateText}
-                            onChange={handleEditTemplate}
-                        />
-                    </FloatingLabel>
-                    <div style={{ width: "10%" }}></div>
-                </div>
-            </>
+            </Container>
         </>
     );
 }

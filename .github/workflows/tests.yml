@@ -1,7 +1,7 @@
 name: Test Code Base
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
       - develop
@@ -14,23 +14,46 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
-      - name: Build Docker
-        run: docker-compose build
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
-      - name: Run Tests
+      - name: 'Create .env file'
         run: |
-          docker-compose run -e "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" -e "SECRET_EMAIL_USER=${{ secrets.SECRET_EMAIL_USER }}" -e "SECRET_EMAIL_USER_PSWD=${{ secrets.SECRET_EMAIL_USER_PSWD }}" --name backend_test backend python manage.py test picture_of_remark/tests.py users/tests.py remark_at_building/tests.py lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role,remark_at_building,picture_of_remark,users --with-xunit --xunit-file=/app/coverage.xml
-          docker cp backend_test:/app/coverage.xml coverage.xml
-          docker-compose down
-      
+          echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Build Docker
+        run: docker-compose --env-file .env build
+
+      - name: Start Docker
+        run: docker-compose --env-file .env up -d
+
+      - name: Make migrations
+        run: |
+          docker-compose exec -T backend python manage.py makemigrations
+          docker-compose exec -T backend python manage.py migrate
+
+      - name: Run Backend Tests
+        run: |
+          docker-compose run --name backend_test backend python manage.py test picture_of_remark/tests.py users/tests.py remark_at_building/tests.py lobby/tests.py email_template/tests.py building/tests.py role/tests.py building_comment/tests.py building_on_tour/tests.py garbage_collection/tests.py manual/tests.py region/tests.py tour/tests.py --with-coverage --cover-package=lobby,email_template,building,building_on_tour,garbage_collection,manual,region,tour,building_comment,role,remark_at_building,picture_of_remark,users --with-xunit --xunit-file=/app/coverage.xml
+
+      - name: Run Frontend Tests
+        run: |
+          docker-compose exec -T frontend npm test
+
+      - name: Copy Test Results
+        run: docker cp backend_test:/app/coverage.xml coverage.xml
+
+      - name: Stop Docker
+        run: docker-compose down
+
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2.6.1
         if: always()
         with:
           files: |
             coverage.xml
-          
+
 
       - name: Clean up
         if: always()

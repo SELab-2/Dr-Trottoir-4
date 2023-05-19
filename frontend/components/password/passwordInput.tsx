@@ -1,8 +1,7 @@
 import React from "react";
-import IconButton from "@mui/material/IconButton";
+import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import styles from "@/styles/Login.module.css";
 
 interface PasswordInputProps {
     value: string;
@@ -23,7 +22,6 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
     showPassword,
     label,
     placeholder,
-    showIconButton,
     customOnInput,
     customOnInvalid,
 }) => {
@@ -43,33 +41,25 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
     };
 
     return (
-        <div className={`form-outline mb-4`}>
-            <label className="form-label">{label}</label>
-            <div style={{ position: "relative" }}>
-                <input
+        <div>
+            <Form.Label htmlFor={"password"} className="normal_text">
+                {label}
+            </Form.Label>
+            <InputGroup className="input">
+                <FormControl
+                    className="form_control"
+                    id={"password"}
                     type={showPassword ? "text" : "password"}
-                    className={`form-control form-control-lg ${styles.input}`}
                     value={value}
-                    onInput={handleInput}
+                    onChange={handleInput}
                     onInvalid={handleInvalid}
                     required
                     placeholder={placeholder}
-                    style={{ paddingRight: "40px" }}
                 />
-                {showIconButton && (
-                    <IconButton
-                        onClick={handlePasswordVisibility}
-                        style={{
-                            position: "absolute",
-                            top: "50%",
-                            right: "40px",
-                            transform: "translateY(-50%)",
-                        }}
-                    >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                )}
-            </div>
+                <Button variant="light" onClick={handlePasswordVisibility}>
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                </Button>
+            </InputGroup>
         </div>
     );
 };

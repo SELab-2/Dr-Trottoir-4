@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import styles from "@/styles//PDFUploader.module.css";
 import { Form } from "react-bootstrap";
 
@@ -14,6 +14,7 @@ const PDFUploader: React.FC<Props> = ({ onUpload }) => {
             const file = event.target.files[0];
             if (file.type === "application/pdf") {
                 setSelectedFile(file);
+                onUpload(file);
             } else {
                 alert("Selecteer een PDF-bestand.");
             }
@@ -22,7 +23,7 @@ const PDFUploader: React.FC<Props> = ({ onUpload }) => {
 
     return (
         <div>
-            <Form.Group controlId="manual">
+            <Form.Group controlId="manual" style={{paddingLeft: '20px'}}>
                 <Form.Label>Handleiding PDF</Form.Label>
                 <br />
                 <label htmlFor="pdf-upload" className={styles.customFileUpload}>

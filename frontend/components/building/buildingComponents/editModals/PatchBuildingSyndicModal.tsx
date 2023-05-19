@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { Button, Form, Modal } from "react-bootstrap";
-import { BuildingInterface, BuildingSyndicPostInterface } from "@/lib/building";
+import React, {useEffect, useState} from "react";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {Button, Form, FormControl, InputGroup, Modal} from "react-bootstrap";
+import {BuildingInterface, BuildingSyndicPostInterface} from "@/lib/building";
 import {
     getNewPublicIdUtil,
     handleInputChangeUtil,
     handleSubmitUtil,
 } from "@/components/building/buildingComponents/editModals/handleUtil";
+import {IconButton} from "@mui/material";
+import {Casino} from "@mui/icons-material";
+import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 function PatchBuildingSyndicModal({
-    show,
-    closeModal,
-    building,
-    setBuilding,
-}: {
+                                      show,
+                                      closeModal,
+                                      building,
+                                      setBuilding,
+                                  }: {
     show: boolean;
     closeModal: () => void;
     building: BuildingInterface | null;
@@ -24,7 +27,7 @@ function PatchBuildingSyndicModal({
         public_id: "",
     });
 
-    const [errorText, setErrorText] = useState("");
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         setFormData({
@@ -35,88 +38,82 @@ function PatchBuildingSyndicModal({
 
     const newPublicId = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
-
-        try {
-            getNewPublicIdUtil(event, formData, setFormData);
-        } catch (error) {
-            //TODO: generic component
-            console.error(JSON.stringify(error));
-        }
+        getNewPublicIdUtil(event, formData, setFormData, setErrorMessages);
     };
 
-    const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
+    const handleSubmit = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
         event?.preventDefault();
 
-        try {
-            await handleSubmitUtil(event, formData, building, setBuilding, closeModal);
-        } catch (error: any) {
-            //TODO: generic error component
-            setErrorText(JSON.stringify(error.response.data));
-        }
+        handleSubmitUtil(event, formData, building, setBuilding, closeModal, setErrorMessages);
     };
 
     return (
         <>
-            <Modal show={show} onHide={closeModal}>
-                <Modal.Header closeButton>Bewerk gebouw</Modal.Header>
+            <Modal
+                show={show}
+                onHide={closeModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Bewerk gebouw</Modal.Title>
+                </Modal.Header>
                 <Modal.Body>
-                    <Form>
+                    <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                    <>
                         <Form.Group className="mb-3" controlId="formPatchBuilding">
                             <Form.Group controlId={"name"}>
-                                <Form.Label>Naam</Form.Label>
-                                <Form.Control
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
-                                    placeholder="Vul de naam van het gebouw in"
-                                />
+                                <Form.Label className="normal_text">Naam:</Form.Label>
+                                <InputGroup style={{padding: '5px 10px 15px', width: '400px'}}>
+                                    <Form.Control
+                                        className="form_control"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
+                                        placeholder="Vul de naam van het gebouw in"
+                                    />
+                                </InputGroup>
                             </Form.Group>
-
-                            <Form.Label>Public id</Form.Label>
-                            <Form.Group controlId="public_id">
-                                <Form.Control
-                                    name="public_id"
-                                    value={formData.public_id}
-                                    onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
-                                    placeholder="vul het public id van het gebouw in"
-                                />
-                                <Button variant={"success"} size={"sm"} onClick={newPublicId}>
-                                    Willekeurig
-                                </Button>
-                            </Form.Group>
+                            <Form>
+                                <Form.Group controlId="public_id">
+                                    <Form.Label className="normal_text">Publiek id:</Form.Label>
+                                    <InputGroup style={{padding: '5px 10px 15px', width: '400px'}}>
+                                        <FormControl
+                                            className="form_control"
+                                            name="public_id"
+                                            value={formData.public_id ? formData.public_id : ""}
+                                            onChange={(event) => handleInputChangeUtil(event, formData, setFormData)}
+                                            placeholder="Vul het public id van het gebouw in"
+                                        />
+                                        <IconButton
+                                            style={{
+                                                backgroundColor: 'lightgray',
+                                                borderBottomRightRadius: '5px', borderTopRightRadius: '5px'
+                                            }}
+                                            onClick={newPublicId}>
+                                            <Casino/>
+                                        </IconButton>
+                                    </InputGroup>
+                                </Form.Group>
+                            </Form>
                             <Form.Text className="text-muted">
-                                De inwoners van uw gebouw kunnen info over vuilnisophaling zien op de link{" "}
-                                <a
-                                    href={
-                                        building?.public_id
-                                            ? `${process.env.NEXT_PUBLIC_HOST}public/building/${building?.public_id}`
-                                            : "#"
-                                    }
-                                >
-                                    {`${process.env.NEXT_PUBLIC_HOST}public/building/${
+                                De inwoners van uw gebouw kunnen info over vuilnisophaling zien op onderstaande
+                                link<br/>
+                                <a href={building?.public_id ? `/public/building?id=${building?.public_id}` : ""}>
+                                    {`${process.env.NEXT_PUBLIC_HOST}/public/building?id=${
                                         building?.public_id ? building?.public_id : "<public_id>"
                                     }`}
                                 </a>
                             </Form.Text>
                         </Form.Group>
 
-                        {/*TODO: below line should probably a custom component with a state boolean*/}
-                        <div style={{ background: "red" }}>{errorText}</div>
-
-                        <Button
-                            variant="danger"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                closeModal();
-                            }}
-                        >
-                            Annuleer
-                        </Button>
-                        <Button variant="primary" type="submit" onClick={handleSubmit}>
-                            Opslaan
-                        </Button>
-                    </Form>
+                    </>
                 </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" className="btn-light" onClick={closeModal}>
+                        Sluit
+                    </Button>
+                    <Button variant="primary" className="btn-dark" onClick={handleSubmit}>
+                        Sla op
+                    </Button>
+                </Modal.Footer>
             </Modal>
         </>
     );

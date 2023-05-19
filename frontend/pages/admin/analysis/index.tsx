@@ -1,9 +1,9 @@
 import AdminHeader from "@/components/header/adminHeader";
 import { withAuthorisation } from "@/components/withAuthorisation";
-import { LocationOn, Schedule, School } from "@mui/icons-material";
+import { Schedule, School } from "@mui/icons-material";
 import Link from "next/link";
 import { Card, Col, Container, Row } from "react-bootstrap";
-import styles from "styles/Welcome.module.css";
+import { Divider } from "@mui/material";
 
 function AdminAnalysis() {
     interface CardProps {
@@ -17,47 +17,46 @@ function AdminAnalysis() {
     const cardData: CardProps[] = [
         {
             id: 1,
-            title: "Students",
-            description: "Overzicht gewerkte tijden per ronde en per gebouw",
-            icon: <School fontSize="large" />,
-            url: "analysis/students",
+            title: "Rondes",
+            description: "Overzicht van een student op een ronde",
+            icon: <School style={{ fontSize: "100px" }} />,
+            url: "/admin/analysis/tour",
         },
         {
             id: 2,
-            title: "Tours",
-            description: "Overzicht gespendeerde tijd versus gebudgeteerde tijd",
-            icon: <LocationOn fontSize="large" />,
-            url: "analysis/tours",
-        },
-        {
-            id: 3,
-            title: "Working Hours",
-            description: "Overzicht gewerkte tijden per student per week",
-            icon: <Schedule fontSize="large" />,
-            url: "analysis/working-hours",
+            title: "Gewerkte uren",
+            description: "Overzicht gewerkte tijden per student",
+            icon: <Schedule style={{ fontSize: "100px" }} />,
+            url: "/admin/analysis/worked-hours",
         },
     ];
 
     return (
-        <>
-            <>
-                <AdminHeader />
-                <p className={`${styles.title} text-start`}>Dashboard.</p>
-                <Container fluid className="mt-3">
-                    <Row xs={1} sm={2} md={3} className="g-3">
+        <div className="tablepageContainer">
+            <AdminHeader />
+            <div className="tableContainer" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Container style={{ flex: "1" }} className="center_container">
+                    <Row>
                         {cardData.map((data) => (
                             <Col key={data.id}>
-                                <Link href={data.url}>
-                                    <Card className="h-100" style={{ width: "100%", height: "100%", margin: "0 auto" }}>
+                                <Link href={data.url} style={{ color: "black" }} passHref>
+                                    <Card style={{ height: "300px" }}>
                                         <Card.Body>
                                             <div
-                                                className="d-flex justify-content-center align-items-center mb-3"
-                                                style={{ height: "50%", background: "#303030" }}
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    marginBottom: "10px",
+                                                    color: "black",
+                                                }}
                                             >
                                                 {data.icon}
                                             </div>
-                                            <Card.Title className="h5">{data.title}</Card.Title>
-                                            <Card.Text className="text-muted fs-6">{data.description}</Card.Text>
+                                            <Divider />
+                                            <div style={{ padding: "10px" }} />
+                                            <Card.Title>{data.title}</Card.Title>
+                                            <Card.Text>{data.description}</Card.Text>
                                         </Card.Body>
                                     </Card>
                                 </Link>
@@ -65,8 +64,8 @@ function AdminAnalysis() {
                         ))}
                     </Row>
                 </Container>
-            </>
-        </>
+            </div>
+        </div>
     );
 }
 
