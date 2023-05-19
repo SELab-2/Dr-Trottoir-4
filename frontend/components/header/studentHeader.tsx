@@ -5,46 +5,38 @@ import logo from "@/public/logo.png";
 import person from "@/public/icons/person.svg";
 import Link from "next/link";
 import Logout from "@/components/logout";
+import {Navbar, NavDropdown} from "react-bootstrap";
 
 const StudentHeader = () => {
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <Navbar bg="dark" variant="dark" expand="lg">
             <div className="container-fluid text-center">
                 <Link href="/student/dashboard">
-                    <Image src={logo} alt="My App Logo" width={120} height={30} />
+                    <Navbar.Brand>
+                        <Image src={logo} alt="My App Logo" width={120} height={30}/>
+                    </Navbar.Brand>
                 </Link>
-                <div className="ms-auto">
-                    <a
-                        className="nav-link dropdown-toggle"
-                        href="#"
-                        id="navbarDropdown1"
-                        role="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                    >
+                <NavDropdown
+                    id="navbarDropdown1"
+                    menuVariant="dark"
+                    align="end"
+                    title={
                         <Image
                             src={person}
                             alt="My App Logo"
-                            className={`rounded-circle ${styles.person}`}
+                            className={styles.person}
                             height={24}
                         />
-                    </a>
-                    <ul className="dropdown-menu dropdown-menu-en dropdown-menu-end" aria-labelledby="navbarDropdown1">
-                        <li>
-                            <Link className="dropdown-item" href="/user/profile">
-                                Bewerk account
-                            </Link>
-                        </li>
-                        <li>
-                            <hr className="dropdown-divider" />
-                        </li>
-                        <li>
-                            <Logout />
-                        </li>
-                    </ul>
-                </div>
+                    }
+                >
+                    <NavDropdown.Item href="/user/profile">Bewerk account</NavDropdown.Item>
+                    <NavDropdown.Divider/>
+                    <NavDropdown.ItemText>
+                        <Logout/>
+                    </NavDropdown.ItemText>
+                </NavDropdown>
             </div>
-        </nav>
+        </Navbar>
     );
 };
 

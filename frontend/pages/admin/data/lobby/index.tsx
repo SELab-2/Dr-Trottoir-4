@@ -20,8 +20,6 @@ function LobbyPage() {
     const [showRemoveDialog, setShowRemoveDialog] = useState<boolean>(false);
     const [selectedLobby, setSelectedLobby] = useState<Lobby | null>(null);
 
-    const [errorMessages, setErrorMessages] = useState<string[]>([]);
-
     // The columns for the lobby table
     const columns = useMemo<MRT_ColumnDef<Lobby>[]>(
         () => [
@@ -162,50 +160,52 @@ function LobbyPage() {
     }
 
     return (
-        <>
+        <div className="tablepageContainer">
             <AdminHeader />
-            <DeleteConfirmationDialog
-                open={showRemoveDialog}
-                title="Verwijder uit lobby"
-                description={`Weet u zeker dat u ${selectedLobby?.email} (${
-                    selectedLobby ? t(getUserRole(selectedLobby.role.toString())) : ""
-                }) uit de lobby wilt verwijderen?`}
-                handleClose={closeRemoveModal}
-                handleConfirm={removeLobby}
-                confirmButtonText="Verwijder"
-                cancelButtonText="Annuleer"
-            />
-            <EditLobbyModal
-                selectedLobby={selectedLobby}
-                show={showCreateLobbyModal}
-                onHide={hideModal}
-                onPatch={afterPatch}
-                onPost={afterPost}
-                onNewVerificationCode={afterNewVerificationPost}
-            />
-            <MaterialReactTable
-                enablePagination={false}
-                enableBottomToolbar={false}
-                columns={columns}
-                data={lobbies}
-                state={{ isLoading: loading }}
-                enableHiding={false}
-                enableRowActions={false}
-                initialState={{ columnVisibility: { id: false } }}
-                renderTopToolbarCustomActions={() => (
-                    <Button
-                        variant="primary"
-                        className="btn-dark"
-                        onClick={async () => {
-                            setShowCreateLobbyModal(true);
-                        }}
-                    >
-                        Voeg toe aan lobby
-                    </Button>
-                )}
-                enableColumnActions={false}
-            />
-        </>
+            <div className="tableContainer">
+                <DeleteConfirmationDialog
+                    open={showRemoveDialog}
+                    title="Verwijder uit lobby"
+                    description={`Weet u zeker dat u ${selectedLobby?.email} (${
+                        selectedLobby ? t(getUserRole(selectedLobby.role.toString())) : ""
+                    }) uit de lobby wilt verwijderen?`}
+                    handleClose={closeRemoveModal}
+                    handleConfirm={removeLobby}
+                    confirmButtonText="Verwijder"
+                    cancelButtonText="Annuleer"
+                />
+                <EditLobbyModal
+                    selectedLobby={selectedLobby}
+                    show={showCreateLobbyModal}
+                    onHide={hideModal}
+                    onPatch={afterPatch}
+                    onPost={afterPost}
+                    onNewVerificationCode={afterNewVerificationPost}
+                />
+                <MaterialReactTable
+                    enablePagination={false}
+                    enableBottomToolbar={false}
+                    columns={columns}
+                    data={lobbies}
+                    state={{ isLoading: loading }}
+                    enableHiding={false}
+                    enableRowActions={false}
+                    initialState={{ columnVisibility: { id: false } }}
+                    renderTopToolbarCustomActions={() => (
+                        <Button
+                            className="wide_button"
+                            size="lg"
+                            onClick={async () => {
+                                setShowCreateLobbyModal(true);
+                            }}
+                        >
+                            Voeg toe aan lobby
+                        </Button>
+                    )}
+                    enableColumnActions={false}
+                />
+            </div>
+        </div>
     );
 }
 

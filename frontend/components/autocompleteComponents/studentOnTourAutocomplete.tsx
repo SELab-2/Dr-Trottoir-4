@@ -19,7 +19,7 @@ const StudentOnTourAutocomplete: React.FC<StudentOnTourProps> = ({
     return (
         <AutocompleteComponent
             initialId={initialId}
-            label={`Selecteer ronde${required ? "*" : ""}`}
+            label={""}
             fetchOptions={() => getActualToursOfStudent(studentId)}
             mapping={(tour: Tour) => tour.name}
             setObjectId={setObjectId}

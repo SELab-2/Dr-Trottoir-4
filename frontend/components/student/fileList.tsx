@@ -1,8 +1,10 @@
 import { IconButton, Tooltip } from "@mui/material";
-import { Delete } from "@mui/icons-material";
-import React, { useState } from "react";
 import { FileListElement } from "@/types";
 import { deletePictureOfRemark } from "@/lib/picture-of-remark";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import ClearIcon from "@mui/icons-material/Clear";
+import { Button } from "react-bootstrap";
+import React, { useState } from "react";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { handleError } from "@/lib/error";
 
@@ -20,20 +22,17 @@ export function FileList({
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     // Handle when a file is selected
-    function handleFileAdd(event: React.ChangeEvent<HTMLInputElement>) {
+    function handleFileAdd(event: React.ChangeEvent<any>) {
         const newFiles: FileList | null = event.target.files;
         if (!newFiles || newFiles.length <= 0) {
             return;
         }
-        const f: File = newFiles[0];
-        setFiles([
-            ...files,
-            {
-                url: URL.createObjectURL(f),
-                file: f,
-                pictureId: null,
-            },
-        ]);
+        const updatedFiles = Array.from(newFiles).map((file: File) => ({
+            url: URL.createObjectURL(file),
+            file: file,
+            pictureId: null,
+        }));
+        setFiles([...files, ...updatedFiles]);
     }
 
     // Remove a file from the list of selected files
@@ -59,32 +58,61 @@ export function FileList({
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             {editable && (
                 <div>
-                    <label data-testid="upload-label" htmlFor={"photos"} className="form-label">{`Upload foto's ${
-                        optional ? "(Optioneel)" : ""
-                    }:`}</label>
+                    <label htmlFor={"photos"} className="custom-file-input-label">
+                        <Button
+                            type="button"
+                            style={{
+                                height: "40px",
+                                backgroundColor: "#1d1d1d",
+                                color: "white",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                            onClick={(e) => document.getElementById("photos")?.click()}
+                        >
+                            <CameraAltIcon style={{ marginRight: "5px", height: "20px" }} />
+                            Upload foto's
+                        </Button>
+                    </label>
                     <input
                         id={"photos"}
-                        className="form-control"
                         type="file"
-                        onChange={(e) => {
-                            handleFileAdd(e);
-                            e.target.value = ""; // reset the value of the input field
-                        }}
+                        multiple
+                        onChange={handleFileAdd}
                         accept="image/*"
+                        className="custom-file-input"
                     />
                 </div>
             )}
-            <ul>
+            <ul
+                style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    listStyle: "none",
+                    padding: 3,
+                }}
+            >
                 {files.map((fileEl, index) => {
                     return (
-                        <li key={index}>
+                        <li
+                            key={index}
+                            style={{
+                                marginRight: "3px",
+                                marginBottom: "3px",
+                                paddingLeft: "8px",
+                                backgroundColor: "lightgray",
+                                borderRadius: "3px",
+                                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                            }}
+                        >
                             <a href={fileEl.url} download style={{ textDecoration: "underline", color: "royalblue" }}>
                                 {`upload_${index + 1}`}
                             </a>
                             {editable && (
                                 <Tooltip arrow placement="right" title="Verwijder" data-testid="delete-button">
                                     <IconButton onClick={() => handleRemoveFile(index)}>
-                                        <Delete />
+                                        <ClearIcon />
                                     </IconButton>
                                 </Tooltip>
                             )}

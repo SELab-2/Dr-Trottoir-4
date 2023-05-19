@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { convertToSensibleDateShort } from "@/lib/dateUtil";
+import {formatDate} from "@/lib/date";
 
 function LatestCollections({ building }: { building: number }) {
     const [collections, setCollections] = useState<GarbageCollectionInterface[]>([]);
@@ -33,7 +34,7 @@ function LatestCollections({ building }: { building: number }) {
     function getNewBuildingDateUrl(date: Date) {
         const url = new URL(window.location.href);
         const queryParams = new URLSearchParams(url.search);
-        queryParams.set("date", date + "");
+        queryParams.set("date", formatDate(date));
         url.search = queryParams.toString();
         return url.toString();
     }
@@ -41,7 +42,7 @@ function LatestCollections({ building }: { building: number }) {
     return (
         <>
             <div style={{ height: "100%", overflowY: "scroll" }}>
-                <h1>Recente ophalingen</h1>
+                <label className="title">Recente ophalingen</label>
 
                 <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
 
@@ -52,7 +53,7 @@ function LatestCollections({ building }: { building: number }) {
                                 <>
                                     Type: {collection.garbage_type} <br />
                                     Datum:&nbsp;
-                                    <a href={getNewBuildingDateUrl(collection.date)}>
+                                    <a href={getNewBuildingDateUrl(new Date(collection.date))}>
                                         {convertToSensibleDateShort(collection.date)}
                                     </a>
                                     <br />
@@ -61,7 +62,7 @@ function LatestCollections({ building }: { building: number }) {
                         ))}
                     </ul>
                 ) : (
-                    <p>Er zijn geen ophalingen gevonden in de voorbije maand.</p>
+                    <p className="normal_text">Er zijn geen ophalingen gevonden in de voorbije maand.</p>
                 )}
             </div>
         </>

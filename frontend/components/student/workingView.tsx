@@ -6,7 +6,7 @@ import {
     remarkTypes,
 } from "@/lib/remark-at-building";
 import React, { useEffect, useState } from "react";
-import { endStudentOnTour, getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
+import { getStudentOnTour, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
 import { FileListElement, Progress } from "@/types";
 import { BuildingInterface } from "@/lib/building";
 import { getBuildingsOfTour } from "@/lib/tour";
@@ -85,6 +85,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                 setStudentOnTour(sot);
                 getBuildingsOnTour(sots.tour);
             })
+
             .catch((err) => setErrorMessages(handleError(err)));
     }, [studentOnTourId]);
 
@@ -401,10 +402,33 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                     amountOfBuildings={buildingsOnTour.length}
                 />
                 <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                <span className="subtitle">{typeNames[progress.step]}</span>
+                <br />
+                {globalRemarks.length > 0 && (
+                    <>
+                        <label className="bold_text" style={{ paddingTop: "5px" }}>
+                            Mijn algemene opmerkingen:
+                        </label>
+                        <ul>
+                            {globalRemarks.map((remark, index) => (
+                                <li key={index}>
+                                    <a
+                                        style={{ color: "royalblue" }}
+                                        onClick={() => {
+                                            setSelectedGlobalRemark(remark);
+                                            setShowRemarkModal(true);
+                                        }}
+                                    >
+                                        {`Opmerking ${index + 1}`}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </>
+                )}
                 <Form onSubmit={handleSubmit} className="mt-2 mb-2">
-                    <span className="h5 fw-bold mt-2">{typeNames[progress.step]}</span>
                     <Form.Group className="mb-2 mt-2">
-                        <Form.Label>Beschrijving (optioneel):</Form.Label>
+                        <Form.Label>Beschrijving bij foto's (optioneel):</Form.Label>
                         <Form.Control
                             as="textarea"
                             rows={2}
@@ -412,9 +436,7 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                             onChange={(e) => setStepDescription(e.target.value)}
                         />
                     </Form.Group>
-
                     <FileList files={picturesAtStep} setFiles={setPicturesAtStep} optional={false} editable />
-
                     <ButtonGroup className="d-flex gap-0 m-0" role="group">
                         {(progress.step > 0 || progress.currentIndex > 0) && (
                             <Button
@@ -435,26 +457,6 @@ export function WorkingView({ redirectTo, studentOnTourId }: { redirectTo: strin
                         </Button>
                     </ButtonGroup>
                 </Form>
-                {globalRemarks.length > 0 && (
-                    <>
-                        <span className="h6 fw-bold">Mijn algemene opmerkingen:</span>
-                        <ul>
-                            {globalRemarks.map((remark, index) => (
-                                <li key={index}>
-                                    <a
-                                        style={{ color: "royalblue" }}
-                                        onClick={() => {
-                                            setSelectedGlobalRemark(remark);
-                                            setShowRemarkModal(true);
-                                        }}
-                                    >
-                                        {`Opmerking ${index + 1}`}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </>
-                )}
             </div>
         </>
     );

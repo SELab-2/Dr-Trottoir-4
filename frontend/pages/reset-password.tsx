@@ -2,7 +2,7 @@ import BaseHeader from "@/components/header/baseHeader";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import filler_image from "@/public/filler_image.png";
+import filler_image from "@/public/filler_image_1.png";
 import styles from "@/styles/Login.module.css";
 import PasswordInput from "@/components/password/passwordInput";
 import { resetPassword } from "@/lib/authentication";

@@ -1,11 +1,12 @@
 import ToursList from "@/components/student/toursList";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getCurrentUser, User } from "@/lib/user";
 import { getToursOfStudent, StudentOnTour, StudentOnTourStringDate } from "@/lib/student-on-tour";
 import { getTour, Tour } from "@/lib/tour";
 import { getRegion, RegionInterface } from "@/lib/region";
 import { datesEqual } from "@/lib/date";
 import { useRouter } from "next/router";
+import { Container } from "react-bootstrap";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { handleError } from "@/lib/error";
 
@@ -95,6 +96,12 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
                     const currentDate: Date = new Date();
                     return d < currentDate && !datesEqual(d, currentDate);
                 });
+
+                // Sort finishedTours in descending order based on the date
+                finishedTours.sort((a: StudentOnTour, b: StudentOnTour) => {
+                    return b.date.getTime() - a.date.getTime();
+                });
+
                 setPrevTours(finishedTours);
 
                 // Get the tours the student is assigned to in the future
@@ -118,7 +125,8 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
     }
 
     return (
-        <>
+        <Container>
+            <p className="title">Overzicht rondes</p>
             <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
             <ToursList
                 studentOnTours={toursToday}
@@ -141,6 +149,6 @@ export default function PersonalSchedule({ redirectTo }: { redirectTo: string })
                 allTours={tours}
                 allRegions={regions}
             />
-        </>
+        </Container>
     );
 }

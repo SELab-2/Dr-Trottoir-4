@@ -1,11 +1,12 @@
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { BuildingInterface, getBuildingInfo, getBuildingInfoByPublicId } from "@/lib/building";
-import { AxiosResponse } from "axios/index";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {BuildingInterface, getBuildingInfo, getBuildingInfoByPublicId} from "@/lib/building";
+import {AxiosResponse} from "axios/index";
 import BuildingInfo from "@/components/building/buildingComponents/BuildingInfo";
 import LatestCollections from "@/components/building/buildingComponents/LatestCollections";
 import CollectionCards from "@/components/building/buildingComponents/CollectionCards";
-import { handleError } from "@/lib/error";
+import {Col, Container, Row} from "react-bootstrap";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
 interface BuildingQuery {
@@ -13,7 +14,7 @@ interface BuildingQuery {
     date?: string;
 }
 
-function BuildingPage({ type }: { type: "syndic" | "admin" | "public" }) {
+function BuildingPage({type}: { type: "syndic" | "admin" | "public" }) {
     const router = useRouter();
     const query = router.query as BuildingQuery;
 
@@ -53,19 +54,22 @@ function BuildingPage({ type }: { type: "syndic" | "admin" | "public" }) {
 
     return (
         <>
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
-
-            <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-                <div style={{ flex: "1" }}>
-                    <BuildingInfo building={building} setBuilding={setBuilding} type={type} />
-                </div>
-                <div style={{ flex: "1" }}>
-                    <CollectionCards building={building ? building.id : 0} date={query.date ? query.date : null} />
-                </div>
-                <div style={{ flex: "1" }}>
-                    <LatestCollections building={building ? building.id : 0} />
-                </div>
-            </div>
+            <Container style={{flex: "1"}}>
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
+                <Row>
+                    <Col md={4} style={{backgroundColor: '#ECECEC', borderLeft: '10px solid #F6BE00'}}>
+                        <div>
+                            <BuildingInfo building={building} setBuilding={setBuilding} type={type}/>
+                        </div>
+                    </Col>
+                    <Col md={4}>
+                        <CollectionCards building={building ? building.id : 0} date={query.date ? query.date : null}/>
+                    </Col>
+                    <Col md={4} style={{backgroundColor: '#ECECEC'}}>
+                        <LatestCollections building={building ? building.id : 0}/>
+                    </Col>
+                </Row>
+            </Container>
         </>
     );
 }

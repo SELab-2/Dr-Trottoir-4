@@ -3,6 +3,7 @@ import { withAuthorisation } from "@/components/withAuthorisation";
 import { Schedule, School } from "@mui/icons-material";
 import Link from "next/link";
 import { Card, Col, Container, Row } from "react-bootstrap";
+import { Divider } from "@mui/material";
 
 function AdminAnalysis() {
     interface CardProps {
@@ -18,45 +19,42 @@ function AdminAnalysis() {
             id: 1,
             title: "Rondes",
             description: "Overzicht van een student op een ronde",
-            icon: <School fontSize="large" />,
-            url: "/admin/tour",
+            icon: <School style={{ fontSize: "100px" }} />,
+            url: "/admin/analysis/tour",
         },
         {
             id: 2,
             title: "Gewerkte uren",
             description: "Overzicht gewerkte tijden per student",
-            icon: <Schedule fontSize="large" />,
-            url: "/admin/analysis/working-hours",
+            icon: <Schedule style={{ fontSize: "100px" }} />,
+            url: "/admin/analysis/worked-hours",
         },
     ];
 
     return (
-        <>
+        <div className="tablepageContainer">
             <AdminHeader />
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100vh", // Adjust the height based on your needs
-                }}
-            >
-                <Container>
+            <div className="tableContainer" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Container style={{ flex: "1" }} className="center_container">
                     <Row>
                         {cardData.map((data) => (
                             <Col key={data.id}>
-                                <Link href={data.url}>
-                                    <Card>
+                                <Link href={data.url} style={{ color: "black" }} passHref>
+                                    <Card style={{ height: "300px" }}>
                                         <Card.Body>
                                             <div
                                                 style={{
                                                     display: "flex",
                                                     alignItems: "center",
                                                     justifyContent: "center",
+                                                    marginBottom: "10px",
+                                                    color: "black",
                                                 }}
                                             >
                                                 {data.icon}
                                             </div>
+                                            <Divider />
+                                            <div style={{ padding: "10px" }} />
                                             <Card.Title>{data.title}</Card.Title>
                                             <Card.Text>{data.description}</Card.Text>
                                         </Card.Body>
@@ -67,7 +65,7 @@ function AdminAnalysis() {
                     </Row>
                 </Container>
             </div>
-        </>
+        </div>
     );
 }
 

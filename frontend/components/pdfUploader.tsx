@@ -23,7 +23,7 @@ const PDFUploader: React.FC<Props> = ({ onUpload }) => {
 
     return (
         <div>
-            <Form.Group controlId="manual">
+            <Form.Group controlId="manual" style={{paddingLeft: '20px'}}>
                 <Form.Label>Handleiding PDF</Form.Label>
                 <br />
                 <label htmlFor="pdf-upload" className={styles.customFileUpload}>

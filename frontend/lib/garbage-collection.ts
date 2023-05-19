@@ -5,7 +5,7 @@ import api from "@/lib/api/axios";
 export interface GarbageCollectionInterface {
     id: number;
     building: number;
-    date: Date;
+    date: string;
     garbage_type: string;
 }
 
@@ -20,17 +20,24 @@ export const garbageTypes: Record<string, string> = {
     "RES": "Restafval",
 }
 
-export function getGarbageColor(garbageType: string) {
+export function getGarbageColor(garbageType: string, today: boolean = true) {
     const garbageColors: Record<string, string> = {
-        "GFT": "green",
-        "Glas": "gainsboro",
-        "Grof vuil": "sienna",
-        "Kerstbomen": "seagreen",
-        "Papier": "goldenrod",
-        "PMD": "dodgerblue",
-        "Restafval": "dimgrey",
+        "GFT": "0, 128, 0",         // RGB value for green
+        "Glas": "220, 220, 220",    // RGB value for gainsboro
+        "Grof vuil": "160, 82, 45", // RGB value for sienna
+        "Kerstbomen": "46, 139, 87",// RGB value for seagreen
+        "Papier": "218, 165, 32",   // RGB value for goldenrod
+        "PMD": "30, 144, 255",      // RGB value for dodgerblue
+        "Restafval": "105, 105, 105",// RGB value for dimgrey
     };
-    return garbageColors[garbageType] ? garbageColors[garbageType] : "blue";
+
+    const baseColor = garbageColors[garbageType] ? garbageColors[garbageType] : "0, 0, 255"; // Default RGB value for blue
+
+    if (!today) {
+        return `rgba(${baseColor}, 0.4)`; // Adjust the alpha value for transparency if today is false
+    }
+
+    return `rgb(${baseColor})`;
 }
 
 

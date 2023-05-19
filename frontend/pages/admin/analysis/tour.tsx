@@ -24,9 +24,10 @@ import LinearProgress from "@mui/material/LinearProgress";
 import TourUserAutocomplete from "@/components/autocompleteComponents/tourUserAutocomplete";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/system";
+import CheckIcon from "@mui/icons-material/Check";
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import { Card, Col, Container, Row, Table } from "react-bootstrap";
 import { Tooltip } from "@mui/material";
 
 interface ParsedUrlQuery {}
@@ -415,156 +416,201 @@ function AdminTour() {
     return (
         <div>
             <AdminHeader />
-            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
-            <div style={{ display: "flex", marginTop: "10px", marginBottom: "50px", marginLeft: "10px" }}>
-                <div style={{ flex: 1 }}>
-                    <label style={{ marginBottom: "10px" }} htmlFor="tourautocomplete">
-                        Selecteer student
-                    </label>
-                    <TourUserAutocomplete initialId={selectedStudentId} setObjectId={setSelectedStudentId} />
-                </div>
-                <div style={{ flex: 1 }}>
-                    <StudentOnTourAutocomplete
-                        initialId={selectedTourId}
-                        setObjectId={setSelectedTourId}
-                        required={false}
-                        studentId={selectedStudentId}
-                        disabled={!validTourUser}
-                    />
-                </div>
-                <div style={{ flex: 1 }}>
-                    <label style={{ marginBottom: "10px" }} htmlFor="datepicker">
-                        Selecteer datum
-                    </label>
-                    <ReactDatePicker
-                        selected={selectedDate}
-                        onChange={(date: Date) => setSelectedDate(date)}
-                        highlightDates={validDates} // highlight valid dates
-                        filterDate={(date: Date) =>
-                            validDates.map((d) => d.toLocaleDateString()).includes(date.toLocaleDateString())
-                        }
-                        disabled={!validTourUser}
-                    />
-                </div>
-            </div>
-            {validTourUser ? (
-                <div style={{ display: "flex", marginLeft: "10px" }}>
-                    <div style={{ width: "20%" }}>
-                        <h2>{selectedTourName}</h2>
-                        <b>Verantwoordelijke:</b>
-                        <p>{`${usersRecord[selectedStudentId]?.first_name} ${usersRecord[selectedStudentId]?.last_name}`}</p>
-                        <b>Datum:</b>
-                        <p>{selectedDate.toLocaleDateString()}</p>
-                        <b>Contactinformatie:</b>
-                        <br></br>
-                        <>
-                            Telefoonnummer:{" "}
-                            <a href={`tel:${usersRecord[selectedStudentId]?.phone_number}`}>
-                                {usersRecord[selectedStudentId]?.phone_number}
-                            </a>
-                        </>
-                        <br></br>
-                        <>
-                            E-mailadres:{" "}
-                            <a href={`mailto:${usersRecord[selectedStudentId]?.email}`}>
-                                {usersRecord[selectedStudentId]?.email}
-                            </a>
-                        </>
+            <Row style={{ display: "flex", alignItems: "center", padding: "10px" }}>
+                <div style={{ display: "flex" }}>
+                    <div style={{ marginRight: "20px" }}>
+                        <label style={{ marginBottom: "10px" }} htmlFor="tourautocomplete">
+                            Selecteer student
+                        </label>
+                        <TourUserAutocomplete initialId={selectedStudentId} setObjectId={setSelectedStudentId} />
                     </div>
-
-                    <div style={{ width: "80%" }}>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>Gebouw</th>
-                                    <th>Adres</th>
-                                    <th>Status</th>
-                                    <th>Tijdstip afwerking</th>
-                                    <th>Tijdsduur</th>
-                                    <th>Opmerkingen</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {allBuildings.map((building) => {
-                                    const ba = getBuildingAnalysis(building.id);
-                                    const durationInSeconds = ba ? ba.duration_in_seconds : 0;
-                                    const expectedDurationInSeconds = ba ? ba.expected_duration_in_seconds : 0;
-                                    const timeColor = getSpentTimeColor(expectedDurationInSeconds, durationInSeconds);
-                                    const buildingStatus = getBuildingStatus(building.id);
-                                    const isDone = buildingStatus === "Afgewerkt";
-                                    return (
-                                        <tr key={building.id}>
-                                            <td
-                                                style={{ textDecoration: "underline", cursor: "pointer" }}
-                                                onClick={() => goToBuildingPage(building.id)}
-                                            >
-                                                {building.name
-                                                    ? building.name
-                                                    : `Gebouw ${getBuildingIndex(building.id)}`}
-                                            </td>
-                                            <td>{getAddress(building)}</td>
-                                            <td>{buildingStatus}</td>
-                                            <td>{isDone ? getDepartureTimeString(building.id) : ""}</td>
-                                            <td
-                                                style={{
-                                                    textDecoration: "underline",
-                                                    cursor: "pointer",
-                                                    color: timeColor,
-                                                }}
-                                                onClick={goToAnalysisPage}
-                                            >
-                                                {isDone ? secondsToTime(durationInSeconds) : ""}
-                                            </td>
-                                            <td
-                                                style={{ textDecoration: "underline", cursor: "pointer" }}
-                                                onClick={() => goToBuildingPage(building.id)}
-                                                title={
-                                                    remarksRecord[building.id]
-                                                        ? remarksRecord[building.id].join("\n")
-                                                        : ""
-                                                }
-                                            >
-                                                {remarksRecord[building.id] ? remarksRecord[building.id].length : 0}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                        <b style={{ marginTop: "20px" }}>Voortgang:</b>
-                        <Tooltip
-                            title={
-                                isCompleted()
-                                    ? `Klaar met alle gebouwen.`
-                                    : maxBuildingIndex
-                                    ? `Momenteel bezig met gebouw ${currentBuildingIndex} van de ${maxBuildingIndex}.`
-                                    : `Nog niet begonnen.`
+                    <div style={{ marginRight: "20px" }}>
+                        <label style={{ marginBottom: "10px" }} htmlFor="tourautocomplete">
+                            Selecteer ronde
+                        </label>
+                        <StudentOnTourAutocomplete
+                            initialId={selectedTourId}
+                            setObjectId={setSelectedTourId}
+                            required={false}
+                            studentId={selectedStudentId}
+                            disabled={!validTourUser}
+                        />
+                    </div>
+                    <div>
+                        <label style={{ paddingBottom: "35px" }} htmlFor="datepicker">
+                            Selecteer datum
+                        </label>
+                        <ReactDatePicker
+                            className="custom-datepicker"
+                            selected={selectedDate}
+                            onChange={(date: Date) => setSelectedDate(date)}
+                            highlightDates={validDates} // highlight valid dates
+                            filterDate={(date: Date) =>
+                                validDates.map((d) => d.toLocaleDateString()).includes(date.toLocaleDateString())
                             }
-                        >
-                            <Box sx={{ width: "40%", position: "relative" }}>
-                                <GreenLinearProgress variant="determinate" value={getProgress()} />
-                                {isCompleted() && (
-                                    <Box
-                                        sx={{
-                                            position: "absolute",
-                                            top: "-20%",
-                                            right: "50%",
-                                            transform: "translateY(-50%, -50%)",
-                                            color: "white",
-                                        }}
-                                    >
-                                        <CheckCircleOutlineIcon />
-                                    </Box>
-                                )}
-                            </Box>
-                        </Tooltip>
+                            disabled={!validTourUser}
+                        />
                     </div>
                 </div>
-            ) : (
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <h3>Deze gebruiker heeft nog geen rondes gedaan.</h3>
-                </div>
-            )}
+            </Row>
+            <Container>
+                <Card>
+                    <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
+                    {validTourUser ? (
+                        <Row>
+                            <Col xs={12} md={3}>
+                                <div>
+                                    <div>
+                                        <p className="title">{selectedTourName}</p>
+                                        <label className="normal_text">
+                                            <strong>Verantwoordelijke:</strong>{" "}
+                                            {`${usersRecord[selectedStudentId]?.first_name} ${usersRecord[selectedStudentId]?.last_name}`}
+                                        </label>
+                                        <br />
+                                        <label className="normal_text">
+                                            <strong>Datum:</strong> {selectedDate.toLocaleDateString()}
+                                        </label>
+                                        <br />
+                                        <label className="normal_text">
+                                            <strong>Contactinformatie:</strong>
+                                        </label>
+                                        <br />
+                                        <label className="normal_text">
+                                            Telefoonnummer:{" "}
+                                            <a href={`tel:${usersRecord[selectedStudentId]?.phone_number}`}>
+                                                {usersRecord[selectedStudentId]?.phone_number}
+                                            </a>
+                                        </label>
+                                        <br />
+                                        <label className="normal_text">
+                                            E-mailadres:{" "}
+                                            <a href={`mailto:${usersRecord[selectedStudentId]?.email}`}>
+                                                {usersRecord[selectedStudentId]?.email}
+                                            </a>
+                                        </label>
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col xs={12} md={9}>
+                                <p className="title" />
+                                <div className="padding">
+                                    <Table className="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Gebouw</th>
+                                                <th>Adres</th>
+                                                <th>Status</th>
+                                                <th>Tijdstip afwerking</th>
+                                                <th>Tijdsduur</th>
+                                                <th>Opmerkingen</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {allBuildings.map((building) => {
+                                                const ba = getBuildingAnalysis(building.id);
+                                                const durationInSeconds = ba ? ba.duration_in_seconds : 0;
+                                                const expectedDurationInSeconds = ba
+                                                    ? ba.expected_duration_in_seconds
+                                                    : 0;
+                                                const timeColor = getSpentTimeColor(
+                                                    expectedDurationInSeconds,
+                                                    durationInSeconds
+                                                );
+                                                const buildingStatus = getBuildingStatus(building.id);
+                                                const isDone = buildingStatus === "Afgewerkt";
+                                                return (
+                                                    <tr key={building.id}>
+                                                        <td
+                                                            style={{ textDecoration: "underline", cursor: "pointer" }}
+                                                            onClick={() => goToBuildingPage(building.id)}
+                                                        >
+                                                            {building.name
+                                                                ? building.name
+                                                                : `Gebouw ${getBuildingIndex(building.id)}`}
+                                                        </td>
+                                                        <td>{getAddress(building)}</td>
+                                                        <td>{buildingStatus}</td>
+                                                        <td>{isDone ? getDepartureTimeString(building.id) : ""}</td>
+                                                        <td
+                                                            style={{
+                                                                textDecoration: "underline",
+                                                                cursor: "pointer",
+                                                                color: timeColor,
+                                                            }}
+                                                            onClick={goToAnalysisPage}
+                                                        >
+                                                            {isDone ? secondsToTime(durationInSeconds) : ""}
+                                                        </td>
+                                                        <td
+                                                            style={{ textDecoration: "underline", cursor: "pointer" }}
+                                                            onClick={() => goToBuildingPage(building.id)}
+                                                            title={
+                                                                remarksRecord[building.id]
+                                                                    ? remarksRecord[building.id].join("\n")
+                                                                    : ""
+                                                            }
+                                                        >
+                                                            {remarksRecord[building.id]
+                                                                ? remarksRecord[building.id].length
+                                                                : 0}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </Table>
+                                    <label style={{ fontWeight: "bold", marginBottom: "10px" }} className="normal_text">
+                                        Vooruitgang:
+                                    </label>
+                                    <Tooltip
+                                        title={
+                                            isCompleted()
+                                                ? `Klaar met alle gebouwen.`
+                                                : maxBuildingIndex
+                                                ? `Momenteel bezig met gebouw ${currentBuildingIndex} van de ${maxBuildingIndex}.`
+                                                : `Nog niet begonnen.`
+                                        }
+                                    >
+                                        <Box sx={{ width: "100%", position: "relative" }}>
+                                            {isCompleted() ? (
+                                                <>
+                                                    <GreenLinearProgress variant="determinate" value={100} />
+                                                    <CheckIcon
+                                                        style={{
+                                                            position: "absolute",
+                                                            top: "50%",
+                                                            left: "50%",
+                                                            transform: "translate(-50%, -50%)",
+                                                            color: "white",
+                                                        }}
+                                                    />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <GreenLinearProgress variant="determinate" value={getProgress()} />
+                                                    <CheckIcon
+                                                        style={{
+                                                            position: "absolute",
+                                                            top: "50%",
+                                                            left: "50%",
+                                                            transform: "translate(-50%, -50%)",
+                                                            color: "white",
+                                                        }}
+                                                    />
+                                                </>
+                                            )}
+                                        </Box>
+                                    </Tooltip>
+                                </div>
+                            </Col>
+                        </Row>
+                    ) : (
+                        <div>
+                            <label className="title">Deze gebruiker heeft nog geen rondes gedaan.</label>
+                        </div>
+                    )}
+                </Card>
+            </Container>
         </div>
     );
 }

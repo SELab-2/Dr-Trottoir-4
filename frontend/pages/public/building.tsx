@@ -4,10 +4,12 @@ import BaseHeader from "@/components/header/baseHeader";
 
 function PublicBuilding() {
     return (
-        <>
-            <BaseHeader />
-            <BuildingPage type={"public"} />
-        </>
+        <div className="tablepageContainer">
+            <BaseHeader/>
+            <div className="tableContainer">
+                <BuildingPage type={"public"}/>
+            </div>
+        </div>
     );
 }
 

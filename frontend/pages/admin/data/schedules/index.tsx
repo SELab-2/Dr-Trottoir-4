@@ -46,16 +46,16 @@ function AdminDataSchedule() {
     }
 
     return (
-        <>
+        <div className="tablepageContainer">
             <AdminHeader />
             {loading ? (
                 <Loading />
             ) : (
-                <div>
+                <div className="tableContainer">
                     <ScheduleCalendar tourUsers={allTourUsers} tours={allTours} />
                 </div>
             )}
-        </>
+        </div>
     );
 }
 

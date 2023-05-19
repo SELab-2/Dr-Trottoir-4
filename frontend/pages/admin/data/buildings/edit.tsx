@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { Form } from "react-bootstrap";
+import React, {ChangeEvent, useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {
     deleteBuildingComment,
     getBuildingComment,
@@ -11,18 +11,17 @@ import {
     postBuilding,
     postBuildingComment,
 } from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { getUserInfo } from "@/lib/user";
+import {getRegion} from "@/lib/region";
+import {getUserInfo} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import PDFUploader from "@/components/pdfUploader";
-import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
 import SyndicAutocomplete from "@/components/autocompleteComponents/syndicAutocomplete";
-import { handleError } from "@/lib/error";
-import { postManual } from "@/lib/building-manual";
+import {handleError} from "@/lib/error";
+import {postManual} from "@/lib/building-manual";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -99,7 +98,7 @@ function AdminDataBuildingsEdit() {
                     }
                 }
                 if (manual) {
-                    await postManual({ building: buildingId, file: manual });
+                    await postManual({building: buildingId, file: manual});
                 }
                 setShowConfirmation(true);
             } catch (error: any) {
@@ -151,132 +150,161 @@ function AdminDataBuildingsEdit() {
     });
 
     return (
-        <>
-            <AdminHeader />
-            <div className={styles.container}>
-                <ConfirmationMessage
-                    showConfirm={showConfirmation}
-                    confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
-                    onClose={setShowConfirmation}
-                />
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
-                <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
-                    <Form.Group controlId="buildingName">
-                        <Form.Label>Gebouw naam</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={name}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-                        />
-                    </Form.Group>
+        <div className="tablepageContainer">
+            <AdminHeader/>
+            <Container className="tableContainer" style={{flex: '1'}}>
+                <Form id="buildingForm" noValidate validated={validated}>
+                    <Row>
+                        <Col md={6} style={{paddingLeft: '20px'}}>
+                            <p className="subtitle">Bewerk gebouw</p>
+                            <ConfirmationMessage
+                                showConfirm={showConfirmation}
+                                confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
+                                onClose={setShowConfirmation}
+                            />
+                            <ErrorMessageAlert errorMessages={errorMessages}
+                                               setErrorMessages={setErrorMessages}/>
+                            <Form.Group controlId="buildingName" className="input">
+                                <Form.Label className="normal_text">Gebouw naam</Form.Label>
+                                <Form.Control
+                                    className="form_control"
+                                    type="text"
+                                    value={name}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                                />
+                            </Form.Group>
 
-                    <Form.Group controlId="postalCode">
-                        <Form.Label>Postcode*</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={postalCode}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setPostalCode(e.target.value)}
-                            required
-                        />
-                        <Form.Control.Feedback type="invalid">Please provide a postal code.</Form.Control.Feedback>
-                    </Form.Group>
+                            <Form.Group controlId="postalCode" className="input">
+                                <Form.Label className="normal_text">Postcode*</Form.Label>
+                                <Form.Control
+                                    className="form_control"
+                                    type="text"
+                                    value={postalCode ? postalCode : ""}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setPostalCode(e.target.value)}
+                                    required
+                                />
+                                <Form.Control.Feedback type="invalid">Vul een postcode
+                                    in.</Form.Control.Feedback>
+                            </Form.Group>
 
-                    <Form.Group controlId="city">
-                        <Form.Label>Gemeente*</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={city}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setCity(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
+                            <Form.Group controlId="city" className="input">
+                                <Form.Label className="normal_text">Gemeente*</Form.Label>
+                                <Form.Control
+                                    className="form_control"
+                                    type="text"
+                                    value={city ? city : ""}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setCity(e.target.value)}
+                                    required
+                                />
+                            </Form.Group>
 
-                    <Form.Group controlId="street">
-                        <Form.Label>Straat*</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={street}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setStreet(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
+                            <Form.Group controlId="street" className="input">
+                                <Form.Label className="normal_text">Straat*</Form.Label>
+                                <Form.Control
+                                    className="form_control"
+                                    type="text"
+                                    value={street ? street : ""}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setStreet(e.target.value)}
+                                    required
+                                />
+                            </Form.Group>
 
-                    <Form.Group controlId="houseNumber">
-                        <Form.Label>Huisnummer*</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={houseNumber}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setHouseNumber(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
+                            <Form.Group controlId="houseNumber" className="input">
+                                <Form.Label className="normal_text">Huisnummer*</Form.Label>
+                                <Form.Control
+                                    className="form_control"
+                                    type="text"
+                                    value={houseNumber ? houseNumber : ""}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setHouseNumber(e.target.value)}
+                                    required
+                                />
+                            </Form.Group>
 
-                    <Form.Group controlId="busNumber">
-                        <Form.Label>Busnummer</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={busNumber}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setBusNumber(e.target.value)}
-                        />
-                    </Form.Group>
+                            <Form.Group controlId="busNumber" className="input">
+                                <Form.Label className="normal_text">Busnummer</Form.Label>
+                                <Form.Control
+                                    className="form_control"
+                                    type="text"
+                                    value={busNumber ? busNumber : ""}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setBusNumber(e.target.value)}
+                                />
+                            </Form.Group>
+                            <PDFUploader onUpload={setManual}/>
+                        </Col>
+                        <Col md={6} style={{paddingLeft: '20px'}}>
+                            <p className="subtitle"></p>
+                            <Form.Group controlId="clientId" className="input">
+                                <Form.Label className="normal_text">Klantennummer afvalophaaldienst</Form.Label>
+                                <Form.Control
+                                    className="form_control"
+                                    type="text"
+                                    value={clientNumber ? clientNumber : ""}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setClientNumber(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="publicId" className="input">
+                                <Form.Label className="normal_text">Publieke identificatie (voor
+                                    bewoners)</Form.Label>
+                                <Form.Control
+                                    className="form_control"
+                                    type="text"
+                                    value={publicId ? publicId : ""}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setPublicId(e.target.value)}
+                                />
+                            </Form.Group>
 
-                    <Form.Group controlId="clientId">
-                        <Form.Label>Klantennummer afvalophaaldienst</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={clientNumber}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setClientNumber(e.target.value)}
-                        />
-                    </Form.Group>
-
-                    <Form.Group controlId="publicId">
-                        <Form.Label>Publieke identificatie (voor bewoners)</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={publicId}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setPublicId(e.target.value)}
-                        />
-                    </Form.Group>
-
-                    <Form.Group controlId="duration">
-                        <Form.Label>Duur van een ronde (in minuten)*</Form.Label>
-                        <Form.Control
-                            type="number"
-                            min="0"
-                            value={durationInMinutes}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                setDurationInMinutes(e.target.value === "" ? 0 : parseInt(e.target.value))
-                            }
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="opmerkingen">
-                        <Form.Label>Opmerkingen</Form.Label>
-                        <Form.Control
-                            as="textarea"
-                            value={buildingComments}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setBuildingComments(e.target.value)}
-                        />
-                    </Form.Group>
-                    <RegionAutocomplete
-                        initialId={regionId}
-                        setObjectId={setRegionId}
-                        required={true}
-                    ></RegionAutocomplete>
-                    <SyndicAutocomplete
-                        initialId={syndicId}
-                        setObjectId={setSyndicId}
-                        required={true}
-                    ></SyndicAutocomplete>
-                    <PDFUploader onUpload={setManual}></PDFUploader>
+                            <Form.Group controlId="duration" className="input">
+                                <Form.Label className="normal_text">Duur van een ronde (in
+                                    minuten)*</Form.Label>
+                                <Form.Control
+                                    className="form_control"
+                                    type="number"
+                                    min="0"
+                                    value={durationInMinutes}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                        setDurationInMinutes(e.target.value === "" ? 0 : parseInt(e.target.value))
+                                    }
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="opmerkingen" className="input">
+                                <Form.Label className="normal_text">Opmerkingen</Form.Label>
+                                <Form.Control
+                                    className="form_control"
+                                    style={{height: '100px'}}
+                                    as="textarea"
+                                    value={buildingComments}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setBuildingComments(e.target.value)}
+                                />
+                            </Form.Group>
+                            <div style={{paddingLeft: '15px', paddingBottom: '15px', maxWidth: "300px", width: '100%'}}>
+                                <RegionAutocomplete
+                                    initialId={regionId}
+                                    setObjectId={setRegionId}
+                                    required={true}
+                                />
+                                <p style={{paddingTop: '10px'}}/>
+                                <SyndicAutocomplete
+                                    initialId={syndicId}
+                                    setObjectId={setSyndicId}
+                                    required={true}
+                                />
+                            </div>
+                            <div style={{paddingTop: '20px'}}>
+                                <Button variant="secondary" className="btn-light" style={{maxWidth: '140px', width: '100%'}}
+                                        onClick={goBack}>
+                                    Terug
+                                </Button>
+                                <Button variant="primary" className="btn-dark"
+                                        style={{marginLeft: '20px', maxWidth: '140px', width: '100%'}}
+                                        onClick={handleSubmit}>
+                                    Opslaan
+                                </Button>
+                            </div>
+                        </Col>
+                    </Row>
                 </Form>
-                <button onClick={goBack} className="ml-2">
-                    Terug
-                </button>
-                <button onClick={handleSubmit} type="button">
-                    Opslaan
-                </button>
-            </div>
-        </>
+            </Container>
+        </div>
     );
 }
 

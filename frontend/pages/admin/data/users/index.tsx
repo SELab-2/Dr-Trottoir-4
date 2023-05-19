@@ -5,7 +5,7 @@ import { getAllRegions, RegionInterface } from "@/lib/region";
 import { UserView } from "@/types";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
-import { Delete, Edit, Check, Clear, Email } from "@mui/icons-material";
+import { Check, Clear, Delete, Edit, Email } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { UserEditModal } from "@/components/admin/userEditModal";
@@ -181,48 +181,52 @@ function AdminDataUsers() {
     }
 
     return (
-        <>
+        <div className="tablepageContainer">
             <AdminHeader />
-            <UserDeleteModal
-                show={showDeleteModal}
-                closeModal={closeRemoveModal}
-                selectedUser={selectedUser}
-                setSelectedUser={setSelectedUser}
-            />
-            <UserEditModal
-                show={showEditModal}
-                closeModal={closeEditModal}
-                selectedUser={selectedUser}
-                setSelectedUser={setSelectedUser}
-            />
-            <MaterialReactTable
-                enablePagination={false}
-                enableBottomToolbar={false}
-                columns={columns}
-                data={allUserViews}
-                state={{ isLoading: loading }}
-                enableRowNumbers
-                enableHiding={false}
-                enableRowActions={false}
-                initialState={{ columnVisibility: { userId: false } }}
-                renderTopToolbarCustomActions={() => (
-                    <div className="form-check form-switch">
-                        <label className="form-check-label" htmlFor="switchCheckbox">
-                            Inclusief inactieve gebruikers
-                        </label>
-                        <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="switchCheckbox"
-                            checked={inactiveUsers}
-                            onChange={() => {
-                                setInactiveUsers(!inactiveUsers);
-                            }}
-                        />
-                    </div>
-                )}
-            />
-        </>
+            <div className="tableContainer">
+                <UserDeleteModal
+                    show={showDeleteModal}
+                    closeModal={closeRemoveModal}
+                    selectedUser={selectedUser}
+                    setSelectedUser={setSelectedUser}
+                />
+
+                <UserEditModal
+                    show={showEditModal}
+                    closeModal={closeEditModal}
+                    selectedUser={selectedUser}
+                    setSelectedUser={setSelectedUser}
+                />
+
+                <MaterialReactTable
+                    enablePagination={false}
+                    enableBottomToolbar={false}
+                    columns={columns}
+                    data={allUserViews}
+                    state={{ isLoading: loading }}
+                    enableRowNumbers
+                    enableHiding={false}
+                    enableRowActions={false}
+                    initialState={{ columnVisibility: { userId: false } }}
+                    renderTopToolbarCustomActions={() => (
+                        <div className="form-check form-switch">
+                            <label className="form-check-label" htmlFor="switchCheckbox">
+                                Inclusief inactieve gebruikers
+                            </label>
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id="switchCheckbox"
+                                checked={inactiveUsers}
+                                onChange={() => {
+                                    setInactiveUsers(!inactiveUsers);
+                                }}
+                            />
+                        </div>
+                    )}
+                />
+            </div>
+        </div>
     );
 }
 

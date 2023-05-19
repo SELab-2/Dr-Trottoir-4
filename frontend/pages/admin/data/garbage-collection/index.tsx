@@ -20,7 +20,8 @@ import { add, addDays, endOfMonth, startOfMonth, sub } from "date-fns";
 import { useRouter } from "next/router";
 import { BuildingInterface, getAllBuildings } from "@/lib/building";
 import GarbageEditModal from "@/components/garbage/GarbageEditModal";
-import { Button } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
+import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 import SelectedBuildingList from "@/components/garbage/SelectedBuildingList";
 import { GarbageCollectionEvent, GarbageCollectionWebSocketInterface } from "@/types";
 import GarbageCollectionEventComponentWithAddress from "@/components/garbage/GarbageCollectionEventComponentWithAddress";
@@ -31,8 +32,8 @@ import TourAutocomplete from "@/components/autocompleteComponents/tourAutocomple
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import BulkMoveGarbageModal from "@/components/garbage/BulkMoveGarbageModal";
 import { AxiosResponse } from "axios";
+import { formatDate } from "@/lib/date";
 import { handleError } from "@/lib/error";
-import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 
 interface ParsedUrlQuery {}
 
@@ -132,9 +133,9 @@ function GarbageCollectionSchedule() {
                         (col) => col.id === Number(g.id)
                     );
                     if (obj) {
-                        onPatch({ ...g, date: new Date(g.date) });
+                        onPatch({ ...g, date: formatDate(new Date(g.date)) });
                     } else {
-                        onPost([{ ...g, date: new Date(g.date) }]);
+                        onPost([{ ...g, date: formatDate(new Date(g.date)) }]);
                     }
                 }
             }
@@ -387,125 +388,148 @@ function GarbageCollectionSchedule() {
 
     // @ts-ignore
     return (
-        <>
+        <div className="tablepageContainer">
             <AdminHeader />
-            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
-            <DuplicateScheduleModal
-                closeModal={closeDuplicateModal}
-                show={showDuplicateModal}
-                onSubmit={duplicateSchedule}
-                weekStartsOn={1}
-                title="Dupliceer vuilophaling schema voor geselecteerde gebouwen"
-            />
-            <BulkMoveGarbageModal
-                buildings={buildingList}
-                closeModal={closeBulkOperationModal}
-                show={showBulkMoveModal}
-            />
-            <GarbageEditModal
-                closeModal={closeEditModal}
-                onPatch={onPatch}
-                onPost={onPost}
-                onDelete={onDelete}
-                selectedEvent={selectedEvent}
-                show={showEditModal}
-                clickedDate={selectedDate}
-                buildings={buildingList}
-            />
-            <SelectedBuildingList
-                buildings={buildingList}
-                closeModal={() => setShowBuildingListModal(false)}
-                show={showBuildingListModal}
-                removeBuilding={removeBuildingFromList}
-                removeTour={removeTourBuildings}
-                selectedTours={tourList}
-                removeAllBuildings={removeAllBuildings}
-            />
-            <div className="container">
-                <div className="row justify-content-start">
-                    <div className="col">
-                        <Button variant="primary" className="btn-dark" onClick={() => setShowDuplicateModal(true)}>
-                            Dupliceer planning
-                        </Button>
-                    </div>
-                    <div className="col">
-                        <Button variant="primary" className="btn-dark" onClick={() => setShowBulkMoveModal(true)}>
-                            Verplaats ophaling
-                        </Button>
-                    </div>
-                    <div className="col">
-                        <Button variant="primary" className="btn-dark" onClick={() => setShowBuildingListModal(true)}>
-                            {buildingList.length > 0
-                                ? `${buildingList.length} geselecteerde gebouwen`
-                                : "Geen gebouwen geselecteerd"}
-                        </Button>
-                    </div>
-                    <div className="col">
-                        <BuildingAutocomplete initialId={0} setObjectId={setSearchedBuilding} required={false} />
-                    </div>
-                    <div className="col">
-                        <TourAutocomplete initialId={0} setObjectId={setSearchedTour} />
-                    </div>
+            <div className="tableContainer">
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
+                <DuplicateScheduleModal
+                    closeModal={closeDuplicateModal}
+                    show={showDuplicateModal}
+                    onSubmit={duplicateSchedule}
+                    weekStartsOn={1}
+                    title="Dupliceer vuilophaling schema voor geselecteerde gebouwen"
+                />
+                <BulkMoveGarbageModal
+                    buildings={buildingList}
+                    closeModal={closeBulkOperationModal}
+                    show={showBulkMoveModal}
+                />
+                <GarbageEditModal
+                    closeModal={closeEditModal}
+                    onPatch={onPatch}
+                    onPost={onPost}
+                    onDelete={onDelete}
+                    selectedEvent={selectedEvent}
+                    show={showEditModal}
+                    clickedDate={selectedDate}
+                    buildings={buildingList}
+                />
+                <SelectedBuildingList
+                    buildings={buildingList}
+                    closeModal={() => setShowBuildingListModal(false)}
+                    show={showBuildingListModal}
+                    removeBuilding={removeBuildingFromList}
+                    removeTour={removeTourBuildings}
+                    selectedTours={tourList}
+                    removeAllBuildings={removeAllBuildings}
+                />
+                <div>
+                    <Row style={{ display: "flex", alignItems: "center", padding: "10px" }}>
+                        <Col md={6} style={{ display: "flex", alignItems: "center" }}>
+                            <div className="padding" style={{ display: "flex", alignItems: "center" }}>
+                                <button
+                                    className="button"
+                                    style={{ marginRight: "10px" }}
+                                    onClick={() => setShowDuplicateModal(true)}
+                                >
+                                    Dupliceer planning
+                                </button>
+                                <button
+                                    className="button"
+                                    style={{ marginRight: "10px" }}
+                                    onClick={() => setShowBulkMoveModal(true)}
+                                >
+                                    Verplaats ophaling
+                                </button>
+                                <button
+                                    className="button"
+                                    style={{ marginRight: "10px" }}
+                                    onClick={() => setShowBuildingListModal(true)}
+                                >
+                                    {buildingList.length > 0
+                                        ? `${buildingList.length} geselecteerde gebouwen`
+                                        : "Geen gebouwen geselecteerd"}
+                                </button>
+                            </div>
+                        </Col>
+                        <Col md={6} style={{ alignItems: "center" }}>
+                            <Row>
+                                <Col md={5}>
+                                    <div style={{ display: "flex" }}>
+                                        <BuildingAutocomplete
+                                            initialId={0}
+                                            setObjectId={setSearchedBuilding}
+                                            required={false}
+                                        />
+                                    </div>
+                                </Col>
+                                <Col md={5}>
+                                    <div>
+                                        <TourAutocomplete initialId={0} setObjectId={setSearchedTour} />
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
                 </div>
+                <Calendar
+                    messages={messages}
+                    culture={"nl-BE"}
+                    defaultView="month"
+                    views={["month", "week"]}
+                    events={garbageCollection.map((g) => {
+                        const s: Date = new Date(g.date);
+                        let e = addDays(s, 1);
+                        s.setHours(0);
+                        e.setHours(0);
+                        const b = allBuildings.find((b) => b.id === g.building)!;
+                        const event: GarbageCollectionEvent = {
+                            start: s,
+                            end: e,
+                            garbageType: garbageTypes[g.garbage_type],
+                            id: g.id,
+                            building: b,
+                        };
+                        return event;
+                    })}
+                    components={{
+                        //@ts-ignore
+                        event: GarbageCollectionEventComponentWithAddress,
+                    }}
+                    localizer={loc}
+                    eventPropGetter={(e) => {
+                        const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
+                        const backgroundColor = getGarbageColor(event.garbageType);
+                        return { style: { backgroundColor, color: "black" } };
+                    }}
+                    drilldownView="week"
+                    selectable
+                    onSelectSlot={(slotInfo) => {
+                        if (buildingList.length <= 0) {
+                            return;
+                        }
+                        setSelectedDate(slotInfo.start);
+                        setShowEditModal(true);
+                    }}
+                    onSelectEvent={(e) => {
+                        const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
+                        if (buildingList.length <= 0) {
+                            return;
+                        }
+                        const building = buildingList.find((b) => b.id === event.building.id);
+                        if (!building) {
+                            return;
+                        }
+                        setSelectedEvent(event);
+                        setShowEditModal(true);
+                    }}
+                    onRangeChange={getFromRange}
+                    style={{ height: "100vh" }}
+                    step={60}
+                    timeslots={1}
+                />
             </div>
-
-            <Calendar
-                messages={messages}
-                culture={"nl-BE"}
-                defaultView="month"
-                views={["month", "week"]}
-                events={garbageCollection.map((g) => {
-                    const s: Date = new Date(g.date);
-                    let e = addDays(s, 1);
-                    s.setHours(0);
-                    e.setHours(0);
-                    const b = allBuildings.find((b) => b.id === g.building)!;
-                    const event: GarbageCollectionEvent = {
-                        start: s,
-                        end: e,
-                        garbageType: garbageTypes[g.garbage_type],
-                        id: g.id,
-                        building: b,
-                    };
-                    return event;
-                })}
-                components={{
-                    //@ts-ignore
-                    event: GarbageCollectionEventComponentWithAddress,
-                }}
-                localizer={loc}
-                eventPropGetter={(e) => {
-                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
-                    const backgroundColor = getGarbageColor(event.garbageType);
-                    return { style: { backgroundColor, color: "black" } };
-                }}
-                drilldownView="week"
-                selectable
-                onSelectSlot={(slotInfo) => {
-                    if (buildingList.length <= 0) {
-                        return;
-                    }
-                    setSelectedDate(slotInfo.start);
-                    setShowEditModal(true);
-                }}
-                onSelectEvent={(e) => {
-                    const event: GarbageCollectionEvent = e as GarbageCollectionEvent;
-                    if (buildingList.length <= 0) {
-                        return;
-                    }
-                    const building = buildingList.find((b) => b.id === event.building.id);
-                    if (!building) {
-                        return;
-                    }
-                    setSelectedEvent(event);
-                    setShowEditModal(true);
-                }}
-                onRangeChange={getFromRange}
-                style={{ height: "100vh" }}
-                step={60}
-                timeslots={1}
-            />
-        </>
+        </div>
     );
 }
 

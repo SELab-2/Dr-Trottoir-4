@@ -104,45 +104,48 @@ function AdminDataMails() {
     }
 
     return (
-        <>
+        <div className="tablepageContainer">
             <AdminHeader />
-            <EditEmailModal
-                show={showEditModal}
-                hideModal={closeModal}
-                setEmail={setSelectedTemplate}
-                selectedEmail={selectedTemplate}
-                edit={editMail}
-            />
-            <DeleteEmailModal
-                show={showDeleteModal}
-                closeModal={closeModal}
-                selectedMail={selectedTemplate}
-                setMail={setSelectedTemplate}
-            />
-            <MaterialReactTable
-                enablePagination={false}
-                enableBottomToolbar={false}
-                columns={columns}
-                data={emailTemplates}
-                state={{ isLoading: loading }}
-                renderDetailPanel={({ row }) => {
-                    const emailtemplate: Emailtemplate = row.original;
-                    return <pre>{emailtemplate.template}</pre>;
-                }}
-                enableRowActions={false}
-                renderTopToolbarCustomActions={() => (
-                    <Button
-                        onClick={() => {
-                            setShowEditModal(true);
-                            setEditMail(false);
-                        }}
-                        variant="warning"
-                    >
-                        Maak nieuwe mail template aan
-                    </Button>
-                )}
-            />
-        </>
+            <div className="tableContainer">
+                <EditEmailModal
+                    show={showEditModal}
+                    hideModal={closeModal}
+                    setEmail={setSelectedTemplate}
+                    selectedEmail={selectedTemplate}
+                    edit={editMail}
+                />
+                <DeleteEmailModal
+                    show={showDeleteModal}
+                    closeModal={closeModal}
+                    selectedMail={selectedTemplate}
+                    setMail={setSelectedTemplate}
+                />
+                <MaterialReactTable
+                    enablePagination={false}
+                    enableBottomToolbar={false}
+                    columns={columns}
+                    data={emailTemplates}
+                    state={{ isLoading: loading }}
+                    renderDetailPanel={({ row }) => {
+                        const emailtemplate: Emailtemplate = row.original;
+                        return <pre>{emailtemplate.template}</pre>;
+                    }}
+                    enableRowActions={false}
+                    renderTopToolbarCustomActions={() => (
+                        <Button
+                            className="wide_button"
+                            size="lg"
+                            onClick={() => {
+                                setShowEditModal(true);
+                                setEditMail(false);
+                            }}
+                        >
+                            Maak nieuwe mail template aan
+                        </Button>
+                    )}
+                />
+            </div>
+        </div>
     );
 }
 

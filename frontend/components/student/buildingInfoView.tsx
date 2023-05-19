@@ -9,7 +9,8 @@ import { BuildingComment, getAllBuildingCommentsByBuildingID } from "@/lib/build
 import React, { useEffect, useState } from "react";
 import { ManualInterface, getManualPath, getManualsForBuilding } from "@/lib/building-manual";
 import { addDays, subDays } from "date-fns";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
+import { Col, ListGroup, ListGroupItem, Row } from "react-bootstrap";
+import { formatDate } from "@/lib/date";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { handleError } from "@/lib/error";
 
@@ -96,48 +97,79 @@ export default function BuildingInfoView({
             <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
             <ListGroup>
                 <ListGroupItem>
-                    <span className="h4 fw-bold">{building ? getAddress(building) : ""}</span>
-                    <p className="mb-0">{building ? `Gebouw ${currentIndex + 1}/${amountOfBuildings}` : ""}</p>
+                    <div style={{ paddingTop: "10px", paddingBottom: "10px" }}>
+                        <span className="h4 fw-bold">{building ? getAddress(building) : ""}</span>
+                        <p className="mb-0">{building ? `Gebouw ${currentIndex + 1} / ${amountOfBuildings}` : ""}</p>
+                    </div>
                 </ListGroupItem>
-                <ListGroupItem className="m-0 p-0" style={{ display: "flex" }}>
-                    {Object.keys(garbageCollections)
-                        .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
-                        .map((key, index) => {
-                            const col = garbageCollections[key];
-                            const isLast = index + 1 === Object.keys(garbageCollections).length;
-                            return (
-                                <div key={key} style={{ flex: 1, borderRight: isLast ? "none" : "1px solid #ccc" }}>
-                                    <p className="text-center m-0 p-0" style={{ borderBottom: "1px solid #ccc" }}>
-                                        {new Date(key).toLocaleDateString("en-GB")}
-                                    </p>
-                                    {col.length === 0 && (
+                <ListGroupItem style={{ minHeight: "120px" }}>
+                    <Row>
+                        {Object.keys(garbageCollections)
+                            .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+                            .map((key, index) => {
+                                const col = garbageCollections[key];
+                                const isLast = index + 1 === Object.keys(garbageCollections).length;
+                                return (
+                                    <Col
+                                        key={key}
+                                        xs={4}
+                                        sm={4}
+                                        md={4}
+                                        lg={4}
+                                        xl={4}
+                                        style={{ borderRight: isLast ? "none" : "1px solid #ccc" }}
+                                    >
                                         <p
-                                            key={0}
+                                            className="text-center m-0 p-2"
                                             style={{
-                                                color: "black",
+                                                borderBottom: "1px solid #ccc",
+                                                fontWeight: col[0]?.date === formatDate(new Date()) ? "bold" : "normal",
                                             }}
-                                            className="text-center m-0 p-0"
                                         >
-                                            Geen ophaling
+                                            {new Date(key).toLocaleDateString("en-GB")}
                                         </p>
-                                    )}
-                                    {col.map((gar: GarbageCollectionInterface) => (
-                                        <p
-                                            key={gar.id}
-                                            style={{
-                                                backgroundColor: getGarbageColor(garbageTypes[gar.garbage_type]),
-                                                color: "black",
-                                            }}
-                                            className="text-center m-0 p-0"
-                                        >
-                                            {garbageTypes[gar.garbage_type]
-                                                ? garbageTypes[gar.garbage_type]
-                                                : gar.garbage_type}
-                                        </p>
-                                    ))}
-                                </div>
-                            );
-                        })}
+                                        {col.length === 0 ? (
+                                            <p
+                                                key={0}
+                                                className="text-center m-0 p-2"
+                                                style={{
+                                                    backgroundColor: "#f8f9fa",
+                                                    color: "#212529",
+                                                    paddingTop: 1,
+                                                    borderRadius: "2px",
+                                                }}
+                                            >
+                                                Geen ophaling
+                                            </p>
+                                        ) : (
+                                            col.map((gar: GarbageCollectionInterface) => (
+                                                <p
+                                                    key={gar.id}
+                                                    className="text-center m-0 p-2"
+                                                    style={{
+                                                        backgroundColor: getGarbageColor(
+                                                            garbageTypes[gar.garbage_type],
+                                                            col[0].date === formatDate(new Date())
+                                                        ),
+                                                        color: "black",
+                                                        paddingTop: 1,
+                                                        borderRadius: "2px",
+                                                        height: "35px",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                    }}
+                                                >
+                                                    {garbageTypes[gar.garbage_type]
+                                                        ? garbageTypes[gar.garbage_type]
+                                                        : gar.garbage_type}
+                                                </p>
+                                            ))
+                                        )}
+                                    </Col>
+                                );
+                            })}
+                    </Row>
                 </ListGroupItem>
                 <ListGroupItem>
                     {manual && (
@@ -146,14 +178,14 @@ export default function BuildingInfoView({
                         </a>
                     )}
                     {buildingComments.length > 0 && (
-                        <>
+                        <div className="padding">
                             <p className="fw-bold mb-0">Opmerkingen van superstudent/admin:</p>
                             <ul className="mt-0 mb-0">
                                 {buildingComments.map((bc: BuildingComment) => (
                                     <li key={bc.id}>{bc.comment}</li>
                                 ))}
                             </ul>
-                        </>
+                        </div>
                     )}
                 </ListGroupItem>
             </ListGroup>

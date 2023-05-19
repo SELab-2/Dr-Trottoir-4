@@ -25,6 +25,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import EditScheduleEventModal from "@/components/calendar/editScheduleEvent";
 import CustomDisplay from "@/components/calendar/customEvent";
 import AddScheduleEventModal from "@/components/calendar/addScheduleEvent";
+
 import { Tour } from "@/lib/tour";
 import { User } from "@/lib/user";
 import { add, addDays, endOfMonth, endOfWeek, startOfDay, startOfMonth, sub } from "date-fns";
@@ -36,6 +37,7 @@ import { ScheduleEvent, StudentOnTourWebSocketInterface } from "@/types";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import SuccessMessageAlert from "@/components/successMessageAlert";
 import AddTourScheduleModal from "@/components/calendar/addTourSchedule";
+import { Col, Row } from "react-bootstrap";
 import DuplicateScheduleModal from "@/components/calendar/duplicateScheduleModal";
 
 function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour[] }) {
@@ -322,24 +324,37 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
     return (
         <>
             <div>
-                <button
-                    className={styles.button}
-                    onClick={() => {
-                        setPopupIsOpenAddTour(true);
-                    }}
-                >
-                    Plan ronde voor hele week
-                </button>
-                <button
-                    className={styles.button}
-                    onClick={() => {
-                        setPopupIsOpenCopy(true);
-                    }}
-                >
-                    Kopieer planning
-                </button>
-                <SuccessMessageAlert successmessages={successMessages} setSuccessMessages={setSuccessMessages} />
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                <Row>
+                    <Col md={6} style={{ display: "flex", alignItems: "center" }}>
+                        <div className="padding" style={{ display: "flex", alignItems: "center" }}>
+                            <button
+                                className="button"
+                                style={{ marginRight: "10px" }}
+                                onClick={() => {
+                                    setPopupIsOpenAddTour(true);
+                                }}
+                            >
+                                Plan ronde voor hele week
+                            </button>
+                            <button
+                                className="button"
+                                style={{ marginRight: "10px" }}
+                                onClick={() => {
+                                    setPopupIsOpenCopy(true);
+                                }}
+                            >
+                                Kopieer planning
+                            </button>
+                        </div>
+                    </Col>
+                    <Col md={6}>
+                        <SuccessMessageAlert
+                            successmessages={successMessages}
+                            setSuccessMessages={setSuccessMessages}
+                        />
+                        <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                    </Col>
+                </Row>
             </div>
             <DnDCalendar
                 messages={messages}

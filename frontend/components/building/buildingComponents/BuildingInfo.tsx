@@ -1,11 +1,14 @@
-import { TiPencil } from "react-icons/ti";
 import React, { useEffect, useState } from "react";
+import { TiPencil } from "react-icons/ti";
 import PatchBuildingSyndicModal from "@/components/building/buildingComponents/editModals/PatchBuildingSyndicModal";
 import { BuildingInterface } from "@/lib/building";
 import { getRegion } from "@/lib/region";
 import { useRouter } from "next/router";
-import ManualList from "@/components/manual/ManualList";
+import { Button } from "react-bootstrap";
+// @ts-ignore
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import { handleError } from "@/lib/error";
+import ManualList from "@/components/manual/ManualList";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { getAllBuildingCommentsByBuildingID } from "@/lib/building-comment";
 
@@ -26,13 +29,15 @@ function BuildingInfo({
     const query = router.query as BuildingQuery;
 
     const [editBuilding, setEditBuilding] = useState(false);
-    const [regionName, setRegionName] = useState("/");
+    const [regionName, setRegionName] = useState("-");
+
+    const publicId = (building && building.public_id) || "-";
     const [buildingComment, setBuildingComment] = useState<string>("Geen opmerkingen");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     useEffect(() => {
         if (building) {
-            get_region_name("region");
+            get_region_name();
             getBuildingComment();
         }
     }, [building]);
@@ -43,29 +48,15 @@ function BuildingInfo({
         }
     }, [editBuilding]);
 
-    function get_building_key(key: string) {
-        if (building) {
-            // @ts-ignore
-            return building[key] || "/";
-        }
-        return "/";
-    }
-
-    async function get_region_name(key: string) {
-        const region_id = get_building_key("region");
-
-        if (isNaN(region_id)) {
-            setRegionName("/");
-        }
-
+    async function get_region_name() {
         try {
-            const region = await getRegion(region_id);
+            const region = await getRegion(building.region);
             const regionName = region.data.region;
             setRegionName(regionName);
             setErrorMessages([]);
         } catch (error) {
             setErrorMessages(handleError(error));
-            setRegionName("/");
+            setRegionName("-");
         }
     }
 
@@ -92,84 +83,92 @@ function BuildingInfo({
     }
 
     return (
-        <>
-            {type === "syndic" ? (
+        <div>
+            {type === "syndic" && (
                 <PatchBuildingSyndicModal
                     show={editBuilding}
                     closeModal={() => setEditBuilding(false)}
                     building={building}
                     setBuilding={setBuilding}
                 />
-            ) : null}
+            )}
+            <label className="title">Gebouw</label>
+            {building && (
+                <div>
+                    <p>
+                        <strong> Naam:</strong> {building.name ? building.name : "-"}
+                    </p>
+                    <strong>Adres:</strong>
+                    <p>
+                        {building.street} {building.house_number}, {building.bus}
+                        <br />
+                        {building.city} {building.postal_code}
+                    </p>
+                    <p>
+                        <strong>Regio:</strong> {regionName}
+                    </p>
+                    <p>
+                        <strong>Werktijd:</strong> {building.duration}
+                    </p>
+                    <p>
+                        <strong>Klant id:</strong> {building.client_number ? building.client_number : "-"}
+                    </p>
+                    {type != "public" ? (
+                        <p
+                            style={{ wordWrap: "break-word", width: "100%", maxWidth: "100%" }}
+                            title={`De inwoners van het gebouw kunnen de info van dit gebouw raadplegen via de link: 
+                        ${getPublicLink()}`}
+                        >
+                            <strong>Publiek id:</strong>
+                            <br />
+                            {publicId && publicId !== "-" ? (
+                                <a href={getPublicLink(false)} target={"_blank"}>
+                                    {publicId}
+                                </a>
+                            ) : (
+                                publicId
+                            )}
+                        </p>
+                    ) : null}
+                    <br />
 
-            <h1>
-                Gebouw{" "}
-                {type == "syndic" ? (
-                    <TiPencil
-                        className={"clickable"}
+                    {query.id && type != "public" ? (
+                        <>
+                            <h3>Handleiding</h3>
+                            <ManualList id={query.id} type={type} />
+                        </>
+                    ) : null}
+                </div>
+            )}
+            {type === "syndic" && (
+                <div className="padding" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Button
+                        size="lg"
+                        className="wide_button"
                         onClick={(e) => {
                             e.preventDefault();
                             setEditBuilding(true);
                         }}
-                    ></TiPencil>
-                ) : type == "admin" ? (
-                    <TiPencil
-                        className={"clickable"}
+                    >
+                        <TiPencil /> Bewerk
+                    </Button>
+                </div>
+            )}
+            {type === "admin" && (
+                <div className="padding" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Button
+                        size="lg"
+                        className="wide_button"
                         onClick={(e) => {
                             e.preventDefault();
                             router.push(`/admin/data/buildings/edit?building=${building.id}`);
                         }}
-                    ></TiPencil>
-                ) : null}
-            </h1>
-
-            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
-
-            {type != "public" ? (
-                <div>
-                    <h3>Algemene opmerking</h3>
-                    <p>{buildingComment}</p>
-                    <br />
+                    >
+                        <TiPencil /> Bewerk
+                    </Button>
                 </div>
-            ) : null}
-
-            <p>ID: {get_building_key("id")} </p>
-            <p>Naam: {get_building_key("name")}</p>
-            <p>Stad: {get_building_key("city")}</p>
-            <p>Postcode: {get_building_key("postal_code")}</p>
-            <p>Straat: {get_building_key("street")}</p>
-            <p>Nr: {get_building_key("house_number")}</p>
-            <p>Bus: {get_building_key("bus")}</p>
-            <p>Regio: {regionName} </p>
-            <p>Werktijd: {get_building_key("duration")}</p>
-            <p>Client id: {get_building_key("client_id")}</p>
-
-            {type != "public" ? (
-                <p
-                    title={`De inwoners van het gebouw kunnen de info van dit gebouw raadplegen via de link: 
-                        ${getPublicLink()}`}
-                >
-                    Public id:{" "}
-                    {building?.public_id ? (
-                        <a href={getPublicLink(false)} target={"_blank"}>
-                            {get_building_key("public_id")}
-                        </a>
-                    ) : (
-                        get_building_key("public_id")
-                    )}
-                </p>
-            ) : null}
-
-            <br />
-
-            {query.id && type != "public" ? (
-                <>
-                    <h3>Handleiding</h3>
-                    <ManualList id={query.id} type={type} />
-                </>
-            ) : null}
-        </>
+            )}
+        </div>
     );
 }
-
 export default BuildingInfo;

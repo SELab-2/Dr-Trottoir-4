@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { BuildingInterface, deleteBuilding, getAddress, getAllBuildings } from "@/lib/building";
 import { withAuthorisation } from "@/components/withAuthorisation";
 import { useRouter } from "next/router";
-import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { Button } from "react-bootstrap";
 import { CalendarMonth, Delete, Edit, Email, Info } from "@mui/icons-material";
@@ -216,42 +216,47 @@ function AdminDataBuildings() {
     }
 
     return (
-        <>
+        <div className="tablepageContainer">
             <AdminHeader />
-            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
-            <MaterialReactTable
-                enablePagination={false}
-                enableBottomToolbar={false}
-                columns={columns}
-                data={buildingViews}
-                state={{ isLoading: loading }}
-                enableHiding={false}
-                enableRowActions={false}
-                initialState={{ columnVisibility: { building_id: false } }}
-                renderTopToolbarCustomActions={() => (
-                    <Button onClick={() => router.push(`${router.pathname}/edit`)} variant="warning">
-                        Maak nieuw gebouw aan
-                    </Button>
-                )}
-            />
-            <>
-                {/* Other components */}
-                <DeleteConfirmationDialog
-                    open={deleteDialogOpen}
-                    title="Verwijder Gebouw"
-                    description="Weet u zeker dat u dit gebouw wilt verwijderen?"
-                    handleClose={() => setDeleteDialogOpen(false)}
-                    handleConfirm={() => {
-                        if (selectedBuilding) {
-                            removeBuilding(selectedBuilding);
-                        }
-                        setDeleteDialogOpen(false);
-                    }}
-                    confirmButtonText="Verwijderen"
-                    cancelButtonText="Annuleren"
+            <div className="tableContainer">
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
+                <MaterialReactTable
+                    enablePagination={false}
+                    enableBottomToolbar={false}
+                    columns={columns}
+                    data={buildingViews}
+                    state={{ isLoading: loading }}
+                    enableHiding={false}
+                    enableRowActions={false}
+                    initialState={{ columnVisibility: { building_id: false } }}
+                    renderTopToolbarCustomActions={() => (
+                        <Button
+                            className="wide_button"
+                            size="lg"
+                            onClick={() => router.push(`${router.pathname}/edit`)}
+                        >
+                            Maak nieuw gebouw aan
+                        </Button>
+                    )}
                 />
-            </>
-        </>
+                <>
+                    <DeleteConfirmationDialog
+                        open={deleteDialogOpen}
+                        title="Verwijder Gebouw"
+                        description="Weet u zeker dat u dit gebouw wilt verwijderen?"
+                        handleClose={() => setDeleteDialogOpen(false)}
+                        handleConfirm={() => {
+                            if (selectedBuilding) {
+                                removeBuilding(selectedBuilding);
+                            }
+                            setDeleteDialogOpen(false);
+                        }}
+                        confirmButtonText="Verwijderen"
+                        cancelButtonText="Annuleren"
+                    />
+                </>
+            </div>
+        </div>
     );
 }
 

@@ -81,6 +81,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    environment:
+      WATCHPACK_POLLING: true
     command: sh -c 'if [ "${ENVIRONMENT}" = "production" ]; then npm start; else npm run dev; fi'
     expose:
       - 3000

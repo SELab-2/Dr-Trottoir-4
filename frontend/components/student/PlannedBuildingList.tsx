@@ -114,14 +114,41 @@ export default function PlannedBuildingList({
                 setBuilding={setSelectedBuilding}
                 studentOnTour={studentOnTour}
             />
-            <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
-            <div className="mt-3 mb-1 ms-2 me-2">
-                <span className="h1 fw-bold">{tour ? `Ronde ${tour?.name}` : ""}</span>
-                <p className="h5 fw-bold">{region ? `Regio ${region}` : ""}</p>
-                <p className="h">{studentOnTour ? studentOnTour.date.toLocaleDateString("nl-BE") : ""}</p>
+            <div>
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
+                <label
+                    style={{
+                        fontWeight: "bolder",
+                        fontSize: "24px",
+                        marginLeft: 10,
+                    }}
+                >
+                    {tour ? `Ronde ${tour?.name}` : ""}
+                </label>
+                <br />
+                <label
+                    style={{
+                        fontWeight: "bold",
+                        fontSize: "20px",
+                        marginLeft: 10,
+                    }}
+                >
+                    {region ? `Regio ${region}` : ""}
+                </label>
+                <br />
+                <label
+                    style={{
+                        fontSize: "16px",
+                        marginLeft: 10,
+                    }}
+                >
+                    {studentOnTour ? studentOnTour.date.toLocaleDateString("nl-BE") : ""}
+                </label>
                 {buildings.length > 0 && (
                     <>
-                        <p>Gebouwen op deze ronde:</p>
+                        <p className="normal_text" style={{ fontWeight: "bold" }}>
+                            Gebouwen op deze ronde:
+                        </p>
                         <ListGroup>
                             {buildings.map((el: BuildingInterface, index: number) => {
                                 return (
@@ -147,16 +174,17 @@ export default function PlannedBuildingList({
                         </ListGroup>
                     </>
                 )}
-                <div className="mt-1">
+                <div>
                     {(studentOnTour ? datesEqual(new Date(), studentOnTour.date) : false) &&
                         !studentOnTour?.completed_tour && (
-                            <Button
-                                variant="primary"
-                                className="btn-dark"
-                                onClick={() => routeToFirstBuilding().then()}
+                            <div
+                                className="padding"
+                                style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
                             >
-                                {getStartButtonText()}
-                            </Button>
+                                <Button className="wide_button" onClick={() => routeToFirstBuilding().then()}>
+                                    {getStartButtonText()}
+                                </Button>
+                            </div>
                         )}
                     {studentOnTour &&
                         !datesEqual(new Date(), studentOnTour.date) &&
