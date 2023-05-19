@@ -1,19 +1,19 @@
 import AdminHeader from "@/components/header/adminHeader";
-import React, {useEffect, useMemo, useState} from "react";
-import {getAllTours, getBuildingsOfTour, Tour} from "@/lib/tour";
-import {getAllRegions, RegionInterface} from "@/lib/region";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {useRouter} from "next/router";
-import MaterialReactTable, {MRT_ColumnDef} from "material-react-table";
-import {Box, IconButton, Tooltip} from "@mui/material";
-import {Button} from "react-bootstrap";
-import {CalendarMonth, Delete, Edit} from "@mui/icons-material";
-import {BuildingInterface, getAddress} from "@/lib/building";
-import {TourView} from "@/types";
-import {TourDeleteModal} from "@/components/admin/tourDeleteModal";
-import {handleError} from "@/lib/error";
+import React, { useEffect, useMemo, useState } from "react";
+import { getAllTours, getBuildingsOfTour, Tour } from "@/lib/tour";
+import { getAllRegions, RegionInterface } from "@/lib/region";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { useRouter } from "next/router";
+import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import { Button } from "react-bootstrap";
+import { CalendarMonth, Delete, Edit } from "@mui/icons-material";
+import { BuildingInterface, getAddress } from "@/lib/building";
+import { TourView } from "@/types";
+import { TourDeleteModal } from "@/components/admin/tourDeleteModal";
+import { handleError } from "@/lib/error";
 import Link from "next/link";
-import {formatDate} from "@/lib/date";
+import { formatDate } from "@/lib/date";
 
 // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=68-429&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
 function AdminDataTours() {
@@ -48,8 +48,8 @@ function AdminDataTours() {
                 header: "Acties",
                 id: "actions",
                 enableColumnActions: false,
-                Cell: ({row}) => (
-                    <Box sx={{display: "flex", gap: "1rem"}}>
+                Cell: ({ row }) => (
+                    <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Tooltip arrow placement="left" title="Pas aan">
                             <IconButton
                                 onClick={() => {
@@ -57,7 +57,7 @@ function AdminDataTours() {
                                     routeToEditView(tourView).then();
                                 }}
                             >
-                                <Edit/>
+                                <Edit />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Verwijder">
@@ -68,7 +68,7 @@ function AdminDataTours() {
                                     setShowDeleteModal(true);
                                 }}
                             >
-                                <Delete/>
+                                <Delete />
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Vuilophaling">
@@ -78,7 +78,7 @@ function AdminDataTours() {
                                     routeToGarbageSchedule(tourView).then();
                                 }}
                             >
-                                <CalendarMonth/>
+                                <CalendarMonth />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -163,7 +163,7 @@ function AdminDataTours() {
     async function routeToEditView(tourView: TourView) {
         await router.push({
             pathname: `${router.pathname}/edit`,
-            query: {tour: tourView.tour_id},
+            query: { tour: tourView.tour_id },
         });
     }
 
@@ -176,13 +176,13 @@ function AdminDataTours() {
     async function routeToGarbageSchedule(tourView: TourView) {
         await router.push({
             pathname: `/admin/data/garbage-collection`,
-            query: {tour: tourView.tour_id},
+            query: { tour: tourView.tour_id },
         });
     }
 
     return (
         <>
-            <AdminHeader/>
+            <AdminHeader />
             <TourDeleteModal
                 closeModal={closeDeleteModal}
                 show={showDeleteModal}
@@ -195,13 +195,13 @@ function AdminDataTours() {
                 enableBottomToolbar={false}
                 columns={columns}
                 data={tourViews}
-                state={{isLoading: loading}}
+                state={{ isLoading: loading }}
                 enableRowNumbers
                 // Don't show the tour_id
                 enableHiding={false}
                 enableRowActions={false}
-                initialState={{columnVisibility: {tour_id: false}}}
-                renderDetailPanel={({row}) => {
+                initialState={{ columnVisibility: { tour_id: false } }}
+                renderDetailPanel={({ row }) => {
                     const tourView: TourView = row.original;
                     const buildings: BuildingInterface[] = buildingsOfTour[tourView.tour_id];
                     return (
@@ -222,7 +222,8 @@ function AdminDataTours() {
                                                         id: building.id,
                                                     },
                                                 }}
-                                                target="_blank">
+                                                target="_blank"
+                                            >
                                                 {getAddress(building)}
                                             </Link>
                                         </li>
