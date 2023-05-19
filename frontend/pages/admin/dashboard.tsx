@@ -185,7 +185,7 @@ function AdminDashboard() {
     const redirectToRemarksPage = async (studentOnTour: StudentOnTour) => {
         // Redirect to the specific tour page
         await router.push({
-            pathname: `tour/`,
+            pathname: `analysis/tour/`,
             query: {
                 student: studentOnTour.student,
                 tour: studentOnTour.tour,
