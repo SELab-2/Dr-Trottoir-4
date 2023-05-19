@@ -479,7 +479,7 @@ function GarbageCollectionSchedule() {
                                     />
                                 </Col>
                                 <Col md={5}>
-                                    <TourAutocomplete initialId={0} setObjectId={setSearchedTour} required={false} />
+                                    <TourAutocomplete initialId={0} setObjectId={setSearchedTour}/>
                                 </Col>
                             </Row>
                         </Col>

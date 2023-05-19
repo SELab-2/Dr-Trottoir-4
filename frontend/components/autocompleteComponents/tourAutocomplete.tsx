@@ -1,13 +1,16 @@
 import React from "react";
-import AutocompleteComponent, { GenericProps } from "@/components/autocompleteComponents/autocompleteComponent";
-import { getAllTours, Tour } from "@/lib/tour";
+import AutocompleteComponent, {
+    GenericProps,
+    MatchProps,
+} from "@/components/autocompleteComponents/autocompleteComponent";
+import { getToursFromRegions, Tour } from "@/lib/tour";
 
-const TourAutocomplete: React.FC<GenericProps> = ({ initialId, setObjectId, required }) => {
+const TourAutocomplete: React.FC<MatchProps> = ({ initialId, setObjectId, matchId = null }) => {
     return (
         <AutocompleteComponent
             initialId={initialId}
-            label={`Selecteer ronde${required ? "*" : ""}`}
-            fetchOptions={getAllTours}
+            label={"Selecteer ronde"}
+            fetchOptions={() => getToursFromRegions(matchId)}
             mapping={(tour: Tour) => tour.name}
             setObjectId={setObjectId}
         />

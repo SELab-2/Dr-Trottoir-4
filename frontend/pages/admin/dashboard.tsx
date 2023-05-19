@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import {getAllTours, Tour} from "@/lib/tour";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { getAllTours, Tour } from "@/lib/tour";
 import {
     getAllStudentOnTourFromToday,
     getStudentOnTourAllProgressWS,
@@ -9,9 +9,9 @@ import {
     getStudentOnTourProgress,
     StudentOnTour,
 } from "@/lib/student-on-tour";
-import {getAllUsers, User} from "@/lib/user";
+import { getAllUsers, User } from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import Loading from "@/components/loading";
 import LinearProgress from "@mui/material/LinearProgress";
 import {styled} from "@mui/system";
@@ -19,6 +19,7 @@ import {getAllRemarksOfStudentOnTour,} from "@/lib/remark-at-building";
 import Box from "@mui/material/Box";
 import CheckIcon from '@mui/icons-material/Check';
 import {handleError} from "@/lib/error";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import {Divider, Tooltip} from "@mui/material";
 import {Card, Container, Table} from "react-bootstrap";
@@ -51,14 +52,11 @@ function AdminDashboard() {
     const [studentsOnTours, setStudentsOnTours] = useState<StudentOnTour[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
-    const [remarksRecord, setRemarksRecord] = useState<Record<number, number>>(
-        {}
-    );
+    const [remarksRecord, setRemarksRecord] = useState<Record<number, number>>({});
     const [startedStudentOnTourIds, setStartedStudentOnTourIds] = useState<number[]>([]);
     const [startedStudentOnTours, setStartedStudentOnTours] = useState<StudentOnTour[]>([]);
     const [notYetStartedStudentOnTours, setNotYetStartedStudentOnTours] = useState<StudentOnTour[]>([]);
     const [completedStudentOnTours, setCompletedStudentsOnTours] = useState<StudentOnTour[]>([]);
-
 
     const [currentBuildingIndex, setCurrentBuildingIndex] = useState<Record<string, number>>({});
     const [maxBuildingIndex, setMaxBuildingIndex] = useState<Record<string, number>>({});
@@ -90,7 +88,7 @@ function AdminDashboard() {
         const currentIndex = currentBuildingIndex[studentOnTourId];
 
         return (currentIndex / maxIndex) * 100;
-    }
+    };
 
     const setupWebSocketForAllStudentOnTours = () => {
         const ws = getStudentOnTourAllProgressWS();
@@ -98,10 +96,7 @@ function AdminDashboard() {
         ws.addEventListener("message", (event) => {
             const data: AllWebSocketsResponse = JSON.parse(event.data);
             if (data.state === "started") {
-                setStartedStudentOnTourIds((prevState) => [
-                    ...prevState,
-                    data.student_on_tour_id,
-                ]);
+                setStartedStudentOnTourIds((prevState) => [...prevState, data.student_on_tour_id]);
             }
 
             if (data.state === "completed") {
@@ -117,9 +112,7 @@ function AdminDashboard() {
         return ws;
     };
 
-    const setupWebSocketForIndividualStudentOnTour = (
-        studentOnTourId: number
-    ) => {
+    const setupWebSocketForIndividualStudentOnTour = (studentOnTourId: number) => {
         const wsProgress = getStudentOnTourIndividualProgressWS(studentOnTourId);
         const wsRemarks = getStudentOnTourIndividualRemarkWS(studentOnTourId);
 
@@ -148,10 +141,10 @@ function AdminDashboard() {
             setRemarksRecord((prevState) => ({
                 ...prevState,
                 [studentOnTourId]: (prevState[studentOnTourId] || 0) + 1,
-            }))
-        })
+            }));
+        });
 
-        return {wsProgress, wsRemarks};
+        return { wsProgress, wsRemarks };
     };
 
     const setInitialData = async (studentOnTourId: number) => {
@@ -229,7 +222,7 @@ function AdminDashboard() {
 
         studentsOnTours.forEach(async (studentOnTour) => {
             await setInitialData(studentOnTour.id);
-            const {wsProgress, wsRemarks} = setupWebSocketForIndividualStudentOnTour(studentOnTour.id);
+            const { wsProgress, wsRemarks } = setupWebSocketForIndividualStudentOnTour(studentOnTour.id);
             webSocketConnections.push(wsProgress);
             webSocketConnections.push(wsRemarks);
             if (studentOnTour.started_tour) {
@@ -253,7 +246,7 @@ function AdminDashboard() {
 
     useEffect(() => {
         for (const sot of studentsOnTours) {
-            if (completionRecord[sot.id]) {
+            if (completionRecord[sot.id] || sot.completed_tour) {
                 if (!completedStudentOnTours.some((completedSot) => completedSot.id === sot.id)) {
                     setCompletedStudentsOnTours((prevState) => [...prevState, sot]);
                 }
@@ -262,7 +255,9 @@ function AdminDashboard() {
                 if (!startedStudentOnTours.some((startedSot) => startedSot.id === sot.id)) {
                     setStartedStudentOnTours((prevState) => [...prevState, sot]);
                 }
-                setNotYetStartedStudentOnTours((prevState) => prevState.filter((notStartedSot) => notStartedSot.id !== sot.id));
+                setNotYetStartedStudentOnTours((prevState) =>
+                    prevState.filter((notStartedSot) => notStartedSot.id !== sot.id)
+                );
             } else {
                 if (!notYetStartedStudentOnTours.some((notStartedSot) => notStartedSot.id === sot.id)) {
                     setNotYetStartedStudentOnTours((prevState) => [...prevState, sot]);

@@ -164,12 +164,29 @@ class AllToursView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsSuperStudent]
     serializer_class = TourSerializer
 
-    @extend_schema(responses=get_docs(TourSerializer))
+    @extend_schema(
+        description="GET all tours in the database. There is the possibility to filter as well. If the parameter name "
+        "includes 'list' then you can add multiple entries of"
+        "those in the url. For example: ?region-id-list[]=1&region-id-list[]=2&",
+        parameters=param_docs(
+            {
+                "region-id-list": ("Filter by region ids", False, OpenApiTypes.INT),
+            }
+        ),
+        responses=get_docs(TourSerializer),
+    )
     def get(self, request):
         """
         Get all tours
         """
         tour_instances = Tour.objects.all()
+
+        filters = {"region-id-list": get_filter_object("region__in")}
+
+        try:
+            tour_instances = filter_instances(request, tour_instances, filters)
+        except BadRequest as e:
+            return bad_request_custom_error_message(e)
 
         serializer = TourSerializer(tour_instances, many=True)
         return get_success(serializer)

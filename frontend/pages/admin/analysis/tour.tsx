@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from "react-datepicker";
-import {getTour, Tour} from "@/lib/tour";
+import { getTour, Tour } from "@/lib/tour";
 import {
     getStudentOnTourAllProgressWS,
     getStudentOnTourIndividualProgressWS,
@@ -9,19 +9,19 @@ import {
     getToursOfStudent,
     StudentOnTour,
 } from "@/lib/student-on-tour";
-import {getTourUsers, User} from "@/lib/user";
-import {BuildingOnTour, getAllBuildingsOnTourWithTourID} from "@/lib/building-on-tour";
-import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
-import {withAuthorisation} from "@/components/withAuthorisation";
-import {useRouter} from "next/router";
+import { getTourUsers, User } from "@/lib/user";
+import { BuildingOnTour, getAllBuildingsOnTourWithTourID } from "@/lib/building-on-tour";
+import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
+import { withAuthorisation } from "@/components/withAuthorisation";
+import { useRouter } from "next/router";
 import AdminHeader from "@/components/header/adminHeader";
 import Loading from "@/components/loading";
 import StudentOnTourAutocomplete from "@/components/autocompleteComponents/studentOnTourAutocomplete";
-import {BuildingAnalysis} from "@/types";
-import {getAnalysisStudentOnTour} from "@/lib/analysis";
-import {getRemarksOfStudentOnTourAtBuilding, RemarkAtBuildingInterface,} from "@/lib/remark-at-building";
+import { BuildingAnalysis } from "@/types";
+import { getAnalysisStudentOnTour } from "@/lib/analysis";
+import { getRemarksOfStudentOnTourAtBuilding, RemarkAtBuildingInterface } from "@/lib/remark-at-building";
 import LinearProgress from "@mui/material/LinearProgress";
-import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
+import TourUserAutocomplete from "@/components/autocompleteComponents/tourUserAutocomplete";
 import Box from "@mui/material/Box";
 import {styled} from "@mui/system";
 import CheckIcon from '@mui/icons-material/Check';
@@ -30,8 +30,7 @@ import ErrorMessageAlert from "@/components/errorMessageAlert";
 import {Card, Col, Container, Row, Table} from "react-bootstrap";
 import {Tooltip} from "@mui/material";
 
-interface ParsedUrlQuery {
-}
+interface ParsedUrlQuery {}
 
 interface DataAdminTourQuery extends ParsedUrlQuery {
     student?: number;
@@ -109,12 +108,12 @@ function AdminTour() {
         }
 
         return (currentBuildingIndex / maxBuildingIndex) * 100;
-    }
+    };
 
     const isCompleted = () => {
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
-        return (sotObject && completionRecord[sotObject.sot.id]);
-    }
+        return sotObject && completionRecord[sotObject.sot.id];
+    };
 
     const getStudentOnTour = (sots: StudentOnTour[], tourId: number, date: Date) => {
         const sot = sots.find(
@@ -122,11 +121,13 @@ function AdminTour() {
                 sot.tour === tourId &&
                 new Date(sot.date).toISOString().split("T")[0] === new Date(date).toISOString().split("T")[0]
         );
-        return sot ? {
-            sot,
-            current_building_index: sot.current_building_index,
-            max_building_index: sot.max_building_index
-        } : null;
+        return sot
+            ? {
+                  sot,
+                  current_building_index: sot.current_building_index,
+                  max_building_index: sot.max_building_index,
+              }
+            : null;
     };
 
     const getBuildingIndex = (buildingId: number) => {
@@ -146,7 +147,7 @@ function AdminTour() {
                 if (currentBuildingIndex > buildingIndex) {
                     returnText = "Afgewerkt";
                 } else if (currentBuildingIndex === buildingIndex) {
-                    returnText = (sotObject.sot.completed_tour) ? "Afgewerkt" : "Bezig";
+                    returnText = sotObject.sot.completed_tour ? "Afgewerkt" : "Bezig";
                 }
             }
         }
@@ -203,7 +204,7 @@ function AdminTour() {
         if (sotObject) {
             router.push({
                 pathname: "/admin/analysis/student-on-tour",
-                query: {studentOnTour: sotObject.sot.id},
+                query: { studentOnTour: sotObject.sot.id },
             });
         } else {
             router.push({
@@ -236,7 +237,7 @@ function AdminTour() {
             }
         });
 
-        return {wsProgress, wsRemarks};
+        return { wsProgress, wsRemarks };
     };
 
     const setupWebSocketForAllStudentOnTours = () => {
@@ -265,10 +266,10 @@ function AdminTour() {
             getTourUsers().then((res) => {
                 const students: User[] = res.data;
 
-                const studentsRecord: Record<number, User> = {}
+                const studentsRecord: Record<number, User> = {};
                 students.forEach((student) => {
                     studentsRecord[student.id] = student;
-                })
+                });
                 setUsersRecord(studentsRecord);
 
                 students.filter((e) => e.role === 4);
@@ -282,7 +283,7 @@ function AdminTour() {
 
                 return () => {
                     ws.close();
-                }
+                };
             });
         } catch (error) {
             setErrorMessages(handleError(error));
@@ -312,16 +313,14 @@ function AdminTour() {
                 setMaxBuildingIndex(currentSot.max_building_index);
                 updateValidDates(sots, currentSot.tour);
 
-
                 let completionStatus: Record<number, boolean> = {};
-                sots.forEach(sot => {
+                sots.forEach((sot) => {
                     completionStatus[sot.id] = sot.completed_tour !== null;
                 });
                 setCompletionRecord(completionStatus);
             } else {
                 setValidTourUser(false);
             }
-
         });
     }, [selectedStudentId, refreshKey]);
 
@@ -336,13 +335,13 @@ function AdminTour() {
                 const tour: Tour = res.data;
                 setSelectedTourName(tour.name);
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
 
         getAllBuildingsOnTourWithTourID(selectedTourId)
             .then((res) => {
                 setAllBuildingsOnTour(res.data);
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
 
         updateValidDates(allToursOfStudent, selectedTourId);
     }, [selectedTourId]);
@@ -355,7 +354,7 @@ function AdminTour() {
             .then((responses) => {
                 setAllBuildings(responses.map((response) => response.data));
             })
-            .catch(err => setErrorMessages(handleError(err)));
+            .catch((err) => setErrorMessages(handleError(err)));
 
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
         if (sotObject) {
@@ -392,7 +391,7 @@ function AdminTour() {
                 })
                 .catch(console.error);
 
-            const {wsProgress, wsRemarks} = setupWebsocketsForStudentOnTour(sotObject.sot.id);
+            const { wsProgress, wsRemarks } = setupWebsocketsForStudentOnTour(sotObject.sot.id);
 
             setLoading(false);
 
@@ -408,8 +407,8 @@ function AdminTour() {
     if (loading) {
         return (
             <>
-                <AdminHeader/>
-                <Loading/>
+                <AdminHeader />
+                <Loading />
             </>
         );
     }

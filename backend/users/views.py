@@ -148,6 +148,7 @@ class AllUsersView(APIView):
                 "exclude-role-name-list": ("Exclude all the users with specific role names", False, OpenApiTypes.STR),
             }
         ),
+        responses=get_docs(UserSerializer),
     )
     def get(self, request):
         """

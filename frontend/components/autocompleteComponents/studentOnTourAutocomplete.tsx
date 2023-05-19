@@ -1,22 +1,20 @@
 import React from "react";
-import AutocompleteComponent, {
-  StudentOnTourProps,
-} from "@/components/autocompleteComponents/autocompleteComponent";
+import AutocompleteComponent, { StudentOnTourProps } from "@/components/autocompleteComponents/autocompleteComponent";
 import {
     getActualToursOfStudent,
-  getToursOfStudent,
-  StudentOnTour,
-  studentOnTourSearchString,
-  StudentOnTourStringDate,
+    getToursOfStudent,
+    StudentOnTour,
+    studentOnTourSearchString,
+    StudentOnTourStringDate,
 } from "@/lib/student-on-tour";
 import { getTour, Tour } from "@/lib/tour";
 
 const StudentOnTourAutocomplete: React.FC<StudentOnTourProps> = ({
-  initialId,
-  setObjectId,
-  required,
-  studentId,
-  disabled = false,
+    initialId,
+    setObjectId,
+    required,
+    studentId,
+    disabled = false,
 }) => {
   return (
     <AutocompleteComponent

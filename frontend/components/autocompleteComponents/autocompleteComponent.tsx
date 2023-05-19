@@ -34,7 +34,8 @@ export interface GenericProps {
     required: boolean;
 }
 
-export interface UserProps {
+//used to make 2 autocomplete components work together
+export interface MatchProps {
     initialId: any;
     setObjectId: (value: any) => void;
     matchId?: number | null;

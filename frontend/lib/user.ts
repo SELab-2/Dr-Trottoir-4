@@ -88,7 +88,7 @@ export async function getTourUsers(includeInactiveUser: boolean = false) {
 
 export async function getTourUsersFromRegion(tourId: number | null, includeInactiveUser: boolean = false) {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
-    if (tourId) {
+    if (tourId && tourId >= 0) {
         const res = await getTour(tourId);
         return await api.get(request_url, {
             params: {
@@ -109,9 +109,10 @@ export async function getTourUsersFromRegion(tourId: number | null, includeInact
 
 export async function getUsersFromRegion(regionId: number | null, includeInactiveUser: boolean = false) {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_ALL_USERS}`;
-    if (regionId) {
+    if (regionId && regionId >= 0) {
         return await api.get(request_url, {
             params: {
+                "region-id-list": [regionId],
                 "include-inactive-bool": includeInactiveUser,
                 "include-role-name-list": ["syndic"]
             }
@@ -119,7 +120,6 @@ export async function getUsersFromRegion(regionId: number | null, includeInactiv
     } else {
         return await api.get(request_url, {
             params: {
-                "region-id-list": [regionId],
                 "include-inactive-bool": includeInactiveUser,
                 "include-role-name-list": ["syndic"]
             }

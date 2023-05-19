@@ -1,18 +1,18 @@
 import AdminHeader from "@/components/header/adminHeader";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { getStudentOnTour, StudentOnTour } from "@/lib/student-on-tour";
-import { getAnalysisStudentOnTour } from "@/lib/analysis";
-import { BuildingAnalysis } from "@/types";
-import { BuildingInterface, getAddress, getBuildingInfo } from "@/lib/building";
-import { Card, Col, Container, ListGroup, ListGroupItem, ProgressBar, Row } from "react-bootstrap";
-import { Tooltip } from "@mui/material";
-import { getFullName, getUserInfo, User } from "@/lib/user";
-import { getTour, Tour } from "@/lib/tour";
-import { getRegion, RegionInterface } from "@/lib/region";
+import {useRouter} from "next/router";
+import React, {useEffect, useState} from "react";
+import {getStudentOnTour, StudentOnTour} from "@/lib/student-on-tour";
+import {getAnalysisStudentOnTour} from "@/lib/analysis";
+import {BuildingAnalysis} from "@/types";
+import {BuildingInterface, getAddress, getBuildingInfo} from "@/lib/building";
+import {Card, Col, Container, ListGroup, ListGroupItem, ProgressBar, Row} from "react-bootstrap";
+import {Tooltip} from "@mui/material";
+import {getFullName, getUserInfo, User} from "@/lib/user";
+import {getTour, Tour} from "@/lib/tour";
+import {getRegion, RegionInterface} from "@/lib/region";
 import Link from "next/link";
-import { formatDate } from "@/lib/date";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {formatDate} from "@/lib/date";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
 interface StudentOnTourQuery {
     studentOnTour?: number;
@@ -40,7 +40,8 @@ function AnalysisStudentOnTour() {
                 getTourWithTourId(sot.tour);
                 getStudent(sot.student);
             },
-            () => {}
+            () => {
+            }
         );
 
         getAnalysisStudentOnTour(studentOnTourId).then(
@@ -53,10 +54,12 @@ function AnalysisStudentOnTour() {
                         const buildings: BuildingInterface[] = res.map((r) => r.data);
                         setBuildings(buildings);
                     },
-                    () => {}
+                    () => {
+                    }
                 );
             },
-            () => {}
+            () => {
+            }
         );
     }, [router.isReady]);
 
@@ -71,10 +74,12 @@ function AnalysisStudentOnTour() {
                             const r: RegionInterface = resp.data;
                             setRegion(r);
                         },
-                        () => {}
+                        () => {
+                        }
                     );
                 },
-                () => {}
+                () => {
+                }
             );
         }
     }
@@ -85,7 +90,8 @@ function AnalysisStudentOnTour() {
                 const u: User = res.data;
                 setStudent(u);
             },
-            () => {}
+            () => {
+            }
         );
     }
 
@@ -105,7 +111,11 @@ function AnalysisStudentOnTour() {
         const departureHours = departureTime.getHours();
         const departureMinutes = departureTime.getMinutes();
 
-        return `${arrivalHours.toString().padStart(2, "0")}:${arrivalMinutes.toString().padStart(2, "0")} - ${
+        return `${
+            isNaN(arrivalHours)
+                ? "..."
+                : `${arrivalHours.toString().padStart(2, "0")}:${arrivalMinutes.toString().padStart(2, "0")}`
+        } - ${
             isNaN(departureHours)
                 ? "..."
                 : `${departureHours.toString().padStart(2, "0")}:${departureMinutes.toString().padStart(2, "0")}`
@@ -124,11 +134,11 @@ function AnalysisStudentOnTour() {
                 // More than 25 % faster
                 return (
                     <div className="text-center">
-                        <label style={{ fontSize: "14px", fontWeight: "bold", color: "green" }}>{minString}</label>
-                        <br />
+                        <label style={{fontSize: "14px", fontWeight: "bold", color: "green"}}>{minString}</label>
+                        <br/>
                         <div className="progress-bar-container">
                             <ProgressBar className="progress_bar">
-                                <ProgressBar now={50} style={{ backgroundColor: "lightgreen" }} />
+                                <ProgressBar now={50} style={{backgroundColor: "lightgreen"}}/>
                             </ProgressBar>
                         </div>
                     </div>
@@ -137,12 +147,12 @@ function AnalysisStudentOnTour() {
             const empty: number = 50 - per * 2;
             return (
                 <div className="text-center">
-                    <label style={{ fontSize: "14px", fontWeight: "bold", color: "green" }}>{minString}</label>
-                    <br />
+                    <label style={{fontSize: "14px", fontWeight: "bold", color: "green"}}>{minString}</label>
+                    <br/>
                     <div className="progress-bar-container">
                         <ProgressBar max={50} className="progress_bar">
-                            <ProgressBar className="invisible" now={empty} key={1} />
-                            <ProgressBar now={per * 2} key={2} style={{ backgroundColor: "lightgreen" }} />
+                            <ProgressBar className="invisible" now={empty} key={1}/>
+                            <ProgressBar now={per * 2} key={2} style={{backgroundColor: "lightgreen"}}/>
                         </ProgressBar>
                     </div>
                 </div>
@@ -153,12 +163,12 @@ function AnalysisStudentOnTour() {
                 // More than 25 % slower
                 return (
                     <div className="text-center">
-                        <label style={{ fontSize: "14px", fontWeight: "bold", color: "indianred" }}>{minString}</label>
-                        <br />
+                        <label style={{fontSize: "14px", fontWeight: "bold", color: "indianred"}}>{minString}</label>
+                        <br/>
                         <div className="progress-bar-container">
                             <ProgressBar className="progress_bar">
-                                <ProgressBar className="invisible" now={50} key={1} />
-                                <ProgressBar now={50} key={2} style={{ backgroundColor: "indianred" }} />
+                                <ProgressBar className="invisible" now={50} key={1}/>
+                                <ProgressBar now={50} key={2} style={{backgroundColor: "indianred"}}/>
                             </ProgressBar>
                         </div>
                     </div>
@@ -166,12 +176,12 @@ function AnalysisStudentOnTour() {
             }
             return (
                 <div className="text-center">
-                    <label style={{ fontSize: "14px", fontWeight: "bold", color: "orange" }}>{minString}</label>
-                    <br />
+                    <label style={{fontSize: "14px", fontWeight: "bold", color: "orange"}}>{minString}</label>
+                    <br/>
                     <div className="progress-bar-container">
                         <ProgressBar className="progress_bar">
-                            <ProgressBar className="invisible" now={50} key={1} />
-                            <ProgressBar now={per * 2} key={2} style={{ backgroundColor: "orange" }} />
+                            <ProgressBar className="invisible" now={50} key={1}/>
+                            <ProgressBar now={per * 2} key={2} style={{backgroundColor: "orange"}}/>
                         </ProgressBar>
                     </div>
                 </div>
@@ -180,10 +190,10 @@ function AnalysisStudentOnTour() {
             // Equal
             return (
                 <div className="text-center">
-                    <label style={{ fontSize: "14px", fontWeight: "bold", color: "green" }}>{minString}</label>
-                    <br />
+                    <label style={{fontSize: "14px", fontWeight: "bold", color: "green"}}>{minString}</label>
+                    <br/>
                     <div className="progress-bar-container">
-                        <ProgressBar now={100} style={{ backgroundColor: "lightgreen" }} />
+                        <ProgressBar now={100} style={{backgroundColor: "lightgreen"}}/>
                     </div>
                 </div>
             );
@@ -192,40 +202,40 @@ function AnalysisStudentOnTour() {
 
     return (
         <div className="tablepageContainer">
-            <AdminHeader />
+            <AdminHeader/>
             <div className="tableContainer">
                 <Container>
                     <Card className="shadow">
-                        <div style={{ paddingLeft: "20px" }}>
+                        <div style={{paddingLeft: "20px"}}>
                             {tour && (
                                 <label className="title">{`Ronde: ${tour.name} ${
                                     region ? `(${region.region})` : ""
                                 }`}</label>
                             )}
-                            <br />
+                            <br/>
                             {tour &&
-                                buildingsAnalysis.length > 0 &&
-                                new Date(tour.modified_at) > new Date(buildingsAnalysis[0].arrival_time) && (
-                                    <label
-                                        className="text-muted"
-                                        style={{ paddingLeft: "10px" }}
-                                    >{`Dit is een oudere versie van de ronde (laatst aangepast: ${new Date(
-                                        tour.modified_at
-                                    ).toLocaleString("en-GB")})`}</label>
-                                )}
+                            buildingsAnalysis.length > 0 &&
+                            new Date(tour.modified_at) > new Date(buildingsAnalysis[0].arrival_time) && (
+                                <label
+                                    className="text-muted"
+                                    style={{paddingLeft: "10px"}}
+                                >{`Dit is een oudere versie van de ronde (laatst aangepast: ${new Date(
+                                    tour.modified_at
+                                ).toLocaleString("en-GB")})`}</label>
+                            )}
                             {student && studentOnTour && studentOnTour.started_tour && studentOnTour.completed_tour && (
                                 <p className="bold_text">
                                     {`${getFullName(student)} op ${new Date(studentOnTour.date).toLocaleDateString(
                                         "en-GB"
                                     )} 
                             ${getTimeIntervalString(
-                                new Date(studentOnTour.started_tour),
-                                new Date(studentOnTour.completed_tour)
-                            )}`}
+                                        new Date(studentOnTour.started_tour),
+                                        new Date(studentOnTour.completed_tour)
+                                    )}`}
                                 </p>
                             )}
                         </div>
-                        <ListGroup style={{ marginLeft: "20px", marginRight: "20px", marginBottom: "20px" }}>
+                        <ListGroup style={{marginLeft: "20px", marginRight: "20px", marginBottom: "20px"}}>
                             {buildingsAnalysis.map((analysis, index) => {
                                 const building: BuildingInterface | undefined = buildings.find(
                                     (b) => b.id === analysis.building_id
@@ -236,14 +246,14 @@ function AnalysisStudentOnTour() {
                                             <Col md={9}>
                                                 <label
                                                     className="bold_text"
-                                                    style={{ marginTop: "10px", paddingBottom: "0px" }}
+                                                    style={{marginTop: "10px", paddingBottom: "0px"}}
                                                 >
                                                     {building ? getAddress(building) : ""}
                                                 </label>{" "}
-                                                <br />
+                                                <br/>
                                                 <label
                                                     className="small_text"
-                                                    style={{ paddingTop: "0px", marginRight: "10px" }}
+                                                    style={{paddingTop: "0px", marginRight: "10px"}}
                                                 >
                                                     {getTimeIntervalString(
                                                         new Date(analysis.arrival_time),
@@ -252,15 +262,17 @@ function AnalysisStudentOnTour() {
                                                 </label>
                                             </Col>
                                             <Col md={3}>
-                                                <div style={{ marginTop: "10px", paddingLeft: "10px" }}>
+                                                <div style={{marginTop: "10px", paddingLeft: "10px"}}>
                                                     <Link
-                                                        style={{ fontSize: "14px" }}
+                                                        style={{fontSize: "14px"}}
                                                         className="link"
                                                         href={{
                                                             pathname: "/admin/building/",
                                                             query: {
                                                                 id: building ? building.id : -1,
-                                                                date: formatDate(new Date(analysis.departure_time)),
+                                                                date: studentOnTour
+                                                                    ? formatDate(new Date(studentOnTour?.date))
+                                                                    : formatDate(new Date()),
                                                             },
                                                         }}
                                                     >
@@ -269,14 +281,14 @@ function AnalysisStudentOnTour() {
                                                 </div>
                                             </Col>
                                         </Row>
-                                        <div style={{ paddingTop: "5px", paddingBottom: "10px" }}>
+                                        <div style={{paddingTop: "5px", paddingBottom: "10px"}}>
                                             <Tooltip
                                                 title={
                                                     <div>
                                                         {`Ingeplande duur: ${convertSecondsToString(
                                                             analysis.expected_duration_in_seconds
                                                         )}`}
-                                                        <br />
+                                                        <br/>
                                                         {`Duur: ${convertSecondsToString(
                                                             analysis.duration_in_seconds
                                                         )}`}
@@ -294,7 +306,7 @@ function AnalysisStudentOnTour() {
                             })}
                         </ListGroup>
                     </Card>
-                    <div className="padding" />
+                    <div className="padding"/>
                 </Container>
             </div>
         </div>
