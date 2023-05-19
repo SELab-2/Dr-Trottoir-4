@@ -21,7 +21,7 @@ import {BuildingAnalysis} from "@/types";
 import {getAnalysisStudentOnTour} from "@/lib/analysis";
 import {getRemarksOfStudentOnTourAtBuilding, RemarkAtBuildingInterface,} from "@/lib/remark-at-building";
 import LinearProgress from "@mui/material/LinearProgress";
-import TourUserAutocomplete from "@/components/autocompleteComponents/tourUsersAutocomplete";
+import TourUserAutocomplete from "@/components/autocompleteComponents/tourUserAutocomplete";
 import Box from "@mui/material/Box";
 import {styled} from "@mui/system";
 import {handleError} from "@/lib/error";
