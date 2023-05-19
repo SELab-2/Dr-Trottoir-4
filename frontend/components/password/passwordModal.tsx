@@ -1,20 +1,21 @@
-import React, { useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import React, {useState} from "react";
+import {Button, Modal} from "react-bootstrap";
 import PasswordInput from "./passwordInput";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { changePassword } from "@/lib/authentication";
-import { handleError } from "@/lib/error";
+import {changePassword} from "@/lib/authentication";
+import {handleError} from "@/lib/error";
 
 interface PasswordModalProps {
     show: boolean;
     closeModal: () => void;
 }
 
-const PasswordModal: React.FC<PasswordModalProps> = ({ show, closeModal }) => {
+const PasswordModal: React.FC<PasswordModalProps> = ({show, closeModal}) => {
     const [newPassword1, setNewPassword1] = useState<string>("");
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [currentPassword, setCurrentPassword] = useState<string>("");
     const [showCurrentPassword, setShowCurrentPassword] = useState<boolean>(false);
+    const [showRepeatPassword, setShowRepeatPassword] = useState<boolean>(false);
     const [newPassword2, setNewPassword2] = useState<string>("");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
@@ -24,6 +25,10 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ show, closeModal }) => {
 
     const handleCurrentPasswordVisibility = () => {
         setShowCurrentPassword(!showCurrentPassword);
+    };
+
+    const handleRepeatPasswordVisibility = () => {
+        setShowRepeatPassword(!showRepeatPassword);
     };
 
     const handleSubmit = async () => {
@@ -54,7 +59,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ show, closeModal }) => {
                 <Modal.Title>Wijzig wachtwoord</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <PasswordInput
                     value={currentPassword}
                     setPassword={setCurrentPassword}
@@ -76,11 +81,11 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ show, closeModal }) => {
                 <PasswordInput
                     value={newPassword2}
                     setPassword={setNewPassword2}
-                    handlePasswordVisibility={() => null}
-                    showPassword={false}
+                    handlePasswordVisibility={handleRepeatPasswordVisibility}
+                    showPassword={showRepeatPassword}
                     label="Bevestig nieuw wachtwoord:"
                     placeholder="Voer uw nieuwe wachtwoord opnieuw in"
-                    showIconButton={false}
+                    showIconButton={true}
                 />
             </Modal.Body>
             <Modal.Footer>

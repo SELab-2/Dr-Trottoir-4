@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { getCurrentUser, getUserRole, patchUser, User } from "@/lib/user";
-import { useTranslation } from "react-i18next";
-import { getAllRegions, RegionInterface } from "@/lib/region";
+import React, {useEffect, useState} from "react";
+import {getCurrentUser, getUserRole, patchUser, User} from "@/lib/user";
+import {useTranslation} from "react-i18next";
+import {getAllRegions, RegionInterface} from "@/lib/region";
 import AdminHeader from "@/components/header/adminHeader";
 import StudentHeader from "@/components/header/studentHeader";
 import SyndicHeader from "@/components/header/syndicHeader";
-import { handleError } from "@/lib/error";
+import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
-import { Button, Card, Col, Container, Form, FormCheck, FormControl, InputGroup, Row } from "react-bootstrap";
+import {Button, Card, Col, Container, Form, FormCheck, FormControl, InputGroup, Row} from "react-bootstrap";
 import PhoneInput from "react-phone-input-2";
 import PasswordInput from "@/components/password/passwordInput";
-import { changePassword } from "@/lib/authentication";
-import { Divider } from "@mui/material";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {changePassword} from "@/lib/authentication";
+import {Divider} from "@mui/material";
+import {withAuthorisation} from "@/components/withAuthorisation";
 
 function UserProfile() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [user, setUser] = useState<User | null>(null);
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
@@ -32,6 +32,8 @@ function UserProfile() {
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [succesPatch, setSuccessPatch] = useState<boolean>(false);
     const [succesPass, setSuccessPass] = useState<boolean>(false);
+    const [showRepeatPassword, setShowRepeatPassword] = useState<boolean>(false);
+
 
     const handlePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -39,6 +41,10 @@ function UserProfile() {
 
     const handleCurrentPasswordVisibility = () => {
         setShowCurrentPassword(!showCurrentPassword);
+    };
+
+    const handleRepeatPasswordVisibility = () => {
+        setShowRepeatPassword(!showRepeatPassword);
     };
 
     useEffect(() => {
@@ -128,22 +134,22 @@ function UserProfile() {
 
     return (
         <>
-            {["Admin", "Superstudent"].includes(role) && <AdminHeader />}
-            {"Student" === role && <StudentHeader />}
-            {"Syndic" === role && <SyndicHeader />}
+            {["Admin", "Superstudent"].includes(role) && <AdminHeader/>}
+            {"Student" === role && <StudentHeader/>}
+            {"Syndic" === role && <SyndicHeader/>}
             <Container className="center_container">
-                <Card className="padding" style={{ maxWidth: "700px", width: "100%" }}>
+                <Card className="padding" style={{maxWidth: "700px", width: "100%"}}>
                     <Row>
                         <Col md={6} className="column_padding">
-                            <label className="title">Profiel</label> <br />
+                            <label className="title">Profiel</label> <br/>
                             <label className="normal_text">
                                 Rol : <strong> {`${user ? t(getUserRole(user.role.toString())) : ""}`}</strong>
                             </label>
-                            <Divider style={{ backgroundColor: "black" }} />
+                            <Divider style={{backgroundColor: "black"}}/>
                             {succesPass && (
                                 <div className={"visible alert alert-success alert-dismissible fade show"}>
                                     <strong>Succes!</strong> Uw wachtwoord werd met succes gewijzigd!
-                                    <button type="button" className="btn-close" onClick={() => setSuccessPass(false)} />
+                                    <button type="button" className="btn-close" onClick={() => setSuccessPass(false)}/>
                                 </div>
                             )}
                             {succesPatch && (
@@ -156,7 +162,7 @@ function UserProfile() {
                                     />
                                 </div>
                             )}
-                            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                             <PasswordInput
                                 value={currentPassword}
                                 setPassword={setCurrentPassword}
@@ -178,13 +184,13 @@ function UserProfile() {
                             <PasswordInput
                                 value={newPassword2}
                                 setPassword={setNewPassword2}
-                                handlePasswordVisibility={() => null}
-                                showPassword={false}
+                                handlePasswordVisibility={handleRepeatPasswordVisibility}
+                                showPassword={showRepeatPassword}
                                 label="Bevestig nieuw wachtwoord:"
                                 placeholder="Voer uw nieuwe wachtwoord opnieuw in"
-                                showIconButton={false}
+                                showIconButton={true}
                             />
-                            <div style={{ paddingLeft: "10px" }}>
+                            <div style={{paddingLeft: "10px"}}>
                                 <Button
                                     className="wide_button"
                                     size="lg"
@@ -211,7 +217,7 @@ function UserProfile() {
                                                                 <FormCheck
                                                                     value={r.id}
                                                                     id={r.id.toString()}
-                                                                    style={{ paddingLeft: "15px" }}
+                                                                    style={{paddingLeft: "15px"}}
                                                                     checked={selectedRegions.some(
                                                                         (n: number) => n === r.id
                                                                     )}
@@ -327,7 +333,7 @@ function UserProfile() {
                                         />
                                     </InputGroup>
                                 </div>
-                                <div style={{ paddingLeft: "15px" }}>
+                                <div style={{paddingLeft: "15px"}}>
                                     <Button className="wide_button" size="lg" onClick={submit}>
                                         Pas aan
                                     </Button>

@@ -19,9 +19,15 @@ function SignupForm() {
     const [verificationCode, setVerificationCode] = useState<string>("");
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showRepeatPassword, setShowRepeatPassword] = useState<boolean>(false);
+
 
     const handlePasswordVisibility = () => {
         setShowPassword(!showPassword);
+    };
+
+    const handleRepeatPasswordVisibility = () => {
+        setShowRepeatPassword(!showRepeatPassword);
     };
 
     const handleSubmit = async (event: FormEvent) => {
@@ -105,7 +111,13 @@ function SignupForm() {
                                 preferredCountries={["be", "nl"]}
                                 onChange={(phone) => setPhoneNumber("+" + phone)}
                                 inputClass="form_control"
-                                inputStyle={{height: '40px', background: '#f8f9fa', fontSize: '15px', width: '100%', maxWidth: '300px'}}
+                                inputStyle={{
+                                    height: '40px',
+                                    background: '#f8f9fa',
+                                    fontSize: '15px',
+                                    width: '100%',
+                                    maxWidth: '300px'
+                                }}
                             />
                         </InputGroup>
                     </div>
@@ -167,11 +179,11 @@ function SignupForm() {
                     <PasswordInput
                         value={password2}
                         setPassword={setPassword2}
-                        handlePasswordVisibility={() => null}
-                        showPassword={false}
+                        handlePasswordVisibility={handleRepeatPasswordVisibility}
+                        showPassword={showRepeatPassword}
                         label="Bevestig wachtwoord"
                         placeholder="Wachtwoord"
-                        showIconButton={false}
+                        showIconButton={true}
                         customOnInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                             e.target.setCustomValidity("");
                             if (password1 !== e.target.value) {

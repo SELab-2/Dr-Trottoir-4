@@ -48,7 +48,7 @@ export default function ForgotPassword() {
                                 />
                                 <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
                                 <Form.Label className="title">Wachtwoord vergeten.</Form.Label>
-                                <p className="normal_text">Vul je e-mailadres is om je account terug te vinden</p>
+                                <p className="normal_text">Vul je e-mailadres in om je account terug te vinden</p>
                                 <Form.Label className="normal_text">E-mailadres</Form.Label>
                                 <InputGroup className="input">
                                     <Form.Control
