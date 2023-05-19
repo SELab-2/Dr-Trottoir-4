@@ -11,7 +11,6 @@ import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { Button, Form, InputGroup } from "react-bootstrap";
 
 function LoginForm() {
-
     const router = useRouter();
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -90,7 +89,6 @@ function LoginForm() {
                 </Link>
             </p>
         </Form>
-
     );
 }
 
