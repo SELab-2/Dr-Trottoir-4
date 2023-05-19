@@ -26,6 +26,7 @@ import Box from "@mui/material/Box";
 import {styled} from "@mui/system";
 import {handleError} from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface ParsedUrlQuery {
 }
@@ -104,12 +105,13 @@ function AdminTour() {
         if (!maxBuildingIndex) {
             return 0;
         }
-        const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
-        if (sotObject && completionRecord[sotObject.sot.id]) {
-            return (currentBuildingIndex / maxBuildingIndex) * 100;
-        }
+        
+        return (currentBuildingIndex / maxBuildingIndex) * 100;
+    }
 
-        return ((currentBuildingIndex - 1) / maxBuildingIndex) * 100;
+    const isCompleted = () => {
+        const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
+        return (sotObject && completionRecord[sotObject.sot.id]);
     }
 
     const getStudentOnTour = (sots: StudentOnTour[], tourId: number, date: Date) => {
@@ -518,13 +520,24 @@ function AdminTour() {
                             </tbody>
                         </table>
                         <b style={{marginTop: "20px"}}>Voortgang:</b>
-                        <Box sx={{width: "40%"}}>
+                        <Box sx={{width: "40%", position: "relative"}}>
                             <GreenLinearProgress
                                 variant="determinate"
                                 value={
                                     getProgress()
                                 }
                             />
+                            { isCompleted() && 
+                                <Box sx={{
+                                    position: 'absolute', 
+                                    top: '-20%',
+                                    right: '50%', 
+                                    transform: 'translateY(-50%, -50%)', 
+                                    color: 'white'
+                                }}>
+                                    <CheckCircleOutlineIcon />
+                                </Box>
+                            }
                         </Box>
                     </div>
                 </div>

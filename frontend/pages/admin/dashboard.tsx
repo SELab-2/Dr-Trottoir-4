@@ -15,6 +15,7 @@ import {withAuthorisation} from "@/components/withAuthorisation";
 import Loading from "@/components/loading";
 import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import {styled} from "@mui/system";
 import {getAllRemarksOfStudentOnTour} from "@/lib/remark-at-building";
 import {handleError} from "@/lib/error";
@@ -51,14 +52,11 @@ function AdminDashboard() {
     const [remarksRecord, setRemarksRecord] = useState<Record<number, number>>(
         {}
     );
-    const [startedStudentOnTourIds, setStartedStudentOnTourIds] = useState<
-        number[]
-    >([]);
-    const [startedStudentOnTours, setStartedStudentOnTours] = useState<
-        StudentOnTour[]
-    >([]);
-    const [notYetStartedStudentOnTours, setNotYetStartedStudentOnTours] =
-        useState<StudentOnTour[]>([]);
+    const [startedStudentOnTourIds, setStartedStudentOnTourIds] = useState<number[]>([]);
+    const [startedStudentOnTours, setStartedStudentOnTours] = useState<StudentOnTour[]>([]);
+    const [notYetStartedStudentOnTours, setNotYetStartedStudentOnTours] = useState<StudentOnTour[]>([]);
+    const [completedStudentOnTours, setCompletedStudentsOnTours] = useState<StudentOnTour[]>([]);
+
 
     const [currentBuildingIndex, setCurrentBuildingIndex] = useState<
         Record<string, number>
@@ -92,13 +90,8 @@ function AdminDashboard() {
         }
 
         const currentIndex = currentBuildingIndex[studentOnTourId];
-        const completed = completionRecord[studentOnTourId];
 
-        if (completed) {
-            return (currentIndex / maxIndex) * 100;
-        } else {
-            return ((currentIndex - 1) / maxIndex) * 100;
-        }
+        return (currentIndex / maxIndex) * 100;
     }
 
     const setupWebSocketForAllStudentOnTours = () => {
@@ -262,7 +255,12 @@ function AdminDashboard() {
 
     useEffect(() => {
         for (const sot of studentsOnTours) {
-            if (startedStudentOnTourIds.includes(sot.id)) {
+            if (completionRecord[sot.id]) {
+                if (!completedStudentOnTours.some((completedSot) => completedSot.id === sot.id)) {
+                    setCompletedStudentsOnTours((prevState) => [...prevState, sot]);
+                }
+                setStartedStudentOnTours((prevState) => prevState.filter((startedSot) => startedSot.id !== sot.id));
+            } else if (startedStudentOnTourIds.includes(sot.id)) {
                 if (!startedStudentOnTours.some((startedSot) => startedSot.id === sot.id)) {
                     setStartedStudentOnTours((prevState) => [...prevState, sot]);
                 }
@@ -273,7 +271,7 @@ function AdminDashboard() {
                 }
             }
         }
-    }, [startedStudentOnTourIds, studentsOnTours]);
+    }, [startedStudentOnTourIds, studentsOnTours, completionRecord]);
 
     if (loading) {
         return (
@@ -300,6 +298,63 @@ function AdminDashboard() {
             {studentsOnTours.length > 0 ? (
                 <>
                     <h2>Rondes van vandaag</h2>
+                    {completedStudentOnTours.length > 0 ? (
+                        <>
+                            <h3>Voltooid</h3>
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                    <th style={{width: "25%"}}>Ronde</th>
+                                    <th style={{width: "25%"}}>Student</th>
+                                    <th style={{width: "25%"}}>Voortgang</th>
+                                    <th style={{width: "25%"}}>Opmerkingen</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {completedStudentOnTours.map((studentOnTour) => {
+                                    const tour = tours.find((t) => t.id === studentOnTour.tour);
+                                    const user = users.find((u) => u.id === studentOnTour.student);
+
+                                    if (!tour || !user) return null;
+
+                                    return (
+                                        <tr key={studentOnTour.id} style={{cursor: "pointer"}}
+                                            onClick={() => redirectToRemarksPage(studentOnTour)}>
+                                            <td style={{textDecoration: "underline"}}>{tour.name}</td>
+                                            <td>{`${user.first_name} ${user.last_name}`}</td>
+                                            <td>
+                                                <Box sx={{width: "100%", position: "relative"}}>
+                                                    <GreenLinearProgress
+                                                        variant="determinate"
+                                                        value={
+                                                            100
+                                                        }
+                                                    />
+                                                    {
+                                                    <Box sx={{
+                                                        position: 'absolute', 
+                                                        top: '-20%',
+                                                        right: '50%', 
+                                                        transform: 'translateY(-50%, -50%)', 
+                                                        color: 'white'
+                                                    }}>
+                                                        <CheckCircleOutlineIcon />
+                                                    </Box>
+                                                    }
+                                                    
+                                                </Box>
+                                            </td>
+
+                                            <td>
+                                                {getRemarkText(remarksRecord[studentOnTour.id])}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                                </tbody>
+                            </table>
+                        </>
+                    ) : (<></>)}
                     {startedStudentOnTours.length > 0 ? (
                         <>
                             <h3>Bezig</h3>
