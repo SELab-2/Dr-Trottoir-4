@@ -20,7 +20,7 @@ daphne==4.0.0
 defusedxml==0.7.1
 dj-rest-auth==3.0.0
 django-allauth==0.54.0
-django-cors-headers==3.14.0
+django-cors-headers==4.0.0
 django-csp==3.7
 django-nose==1.4.7
 django-phonenumber-field==7.1.0
