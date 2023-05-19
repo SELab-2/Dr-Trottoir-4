@@ -8,13 +8,6 @@ export interface ManualInterface {
     file: string;
 }
 
-export interface BuildingManual {
-    id: number,
-    building: number,
-    version_number: 0,
-    file: string
-}
-
 export interface BuildingManualPostInterface {
     building: number,
     file: File

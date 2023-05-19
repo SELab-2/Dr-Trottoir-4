@@ -1,17 +1,17 @@
 import React from "react";
-import { getTourUsersFromRegion, User, userSearchString } from "@/lib/user";
+import {getTourUsersFromRegion, getUsersFromRegion, User, userSearchString} from "@/lib/user";
 import AutocompleteComponent, { UserProps } from "@/components/autocompleteComponents/autocompleteComponent";
 
-const TourUserAutocomplete: React.FC<UserProps> = ({ initialId, setObjectId, matchId = null }) => {
+const UsersFromRegionAutocomplete: React.FC<UserProps> = ({ initialId, setObjectId, matchId = null }) => {
     return (
         <AutocompleteComponent
             initialId={initialId}
             label={""}
-            fetchOptions={() => getTourUsersFromRegion(matchId)}
+            fetchOptions={() => getUsersFromRegion(matchId)}
             mapping={(user: User) => userSearchString(user)}
             setObjectId={setObjectId}
         />
     );
 };
 
-export default TourUserAutocomplete;
+export default UsersFromRegionAutocomplete;
