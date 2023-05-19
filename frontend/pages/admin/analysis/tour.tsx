@@ -437,7 +437,9 @@ function AdminTour() {
                         />
                     </div>
                     <div>
-                        <label style={{paddingBottom: '35px'}} htmlFor="datepicker">Selecteer datum</label>
+                        <label style={{ paddingBottom: "35px" }} htmlFor="datepicker">
+                            Selecteer datum
+                        </label>
                         <ReactDatePicker
                             className="custom-datepicker"
                             selected={selectedDate}
