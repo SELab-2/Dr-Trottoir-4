@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { EventProps } from "react-big-calendar";
 import styles from "./calendar.module.css";
-import {ScheduleEvent} from "@/types";
+import { ScheduleEvent } from "@/types";
 
 const CustomDisplay: FC<EventProps<ScheduleEvent>> = ({ event }) => {
     return (

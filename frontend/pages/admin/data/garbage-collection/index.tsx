@@ -471,7 +471,7 @@ function GarbageCollectionSchedule() {
                 })}
                 components={{
                     //@ts-ignore
-                    event: GarbageCollectionEventComponentWithAddress
+                    event: GarbageCollectionEventComponentWithAddress,
                 }}
                 localizer={loc}
                 eventPropGetter={(e) => {
