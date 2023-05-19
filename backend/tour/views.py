@@ -40,12 +40,12 @@ class BuildingSwapView(APIView):
 
     @extend_schema(
         description="POST body consists of a list of building_id - index pairs that will be assigned to this tour. "
-                    "This enables the frontend to restructure a tour in 1 request instead of multiple. If a building is "
-                    "added to the tour (no BuildingOnTour entry existed before), a new entry will be created. If buildings that "
-                    "were originally on the tour are left out, they will be removed from the tour."
-                    "The indices that should be used in the request start at 0 and should be incremented 1 at a time."
-                    "You can't use this endpoint if a student is working on this tour, you'll get a 403 if this is "
-                    "the case.",
+        "This enables the frontend to restructure a tour in 1 request instead of multiple. If a building is "
+        "added to the tour (no BuildingOnTour entry existed before), a new entry will be created. If buildings that "
+        "were originally on the tour are left out, they will be removed from the tour."
+        "The indices that should be used in the request start at 0 and should be incremented 1 at a time."
+        "You can't use this endpoint if a student is working on this tour, you'll get a 403 if this is "
+        "the case.",
         request=BuildingSwapRequestSerializer,
         responses={200: SuccessSerializer, 400: None, 403: None},
         examples=[
@@ -166,14 +166,14 @@ class AllToursView(APIView):
 
     @extend_schema(
         description="GET all tours in the database. There is the possibility to filter as well. If the parameter name "
-                    "includes 'list' then you can add multiple entries of"
-                    "those in the url. For example: ?region-id-list[]=1&region-id-list[]=2&",
+        "includes 'list' then you can add multiple entries of"
+        "those in the url. For example: ?region-id-list[]=1&region-id-list[]=2&",
         parameters=param_docs(
             {
                 "region-id-list": ("Filter by region ids", False, OpenApiTypes.INT),
             }
         ),
-        responses=get_docs(TourSerializer)
+        responses=get_docs(TourSerializer),
     )
     def get(self, request):
         """
@@ -181,9 +181,7 @@ class AllToursView(APIView):
         """
         tour_instances = Tour.objects.all()
 
-        filters = {
-            "region-id-list": get_filter_object("region__in")
-        }
+        filters = {"region-id-list": get_filter_object("region__in")}
 
         try:
             tour_instances = filter_instances(request, tour_instances, filters)
