@@ -51,7 +51,7 @@ function AdminDataUsers() {
             },
             {
                 accessorKey: "regions",
-                header: "Geselecteerde regio's"
+                header: "Geselecteerde regio's",
             },
             {
                 accessorKey: "userId",
@@ -144,7 +144,7 @@ function AdminDataUsers() {
     // Once retrieved all the users & regions, set the userViews for the table
     useEffect(() => {
         const userViews = allUsers.map((user: User) => {
-            const selectedRegions : RegionInterface[] = allRegions.filter(r => user.region.some(n => n === r.id));
+            const selectedRegions: RegionInterface[] = allRegions.filter((r) => user.region.some((n) => n === r.id));
             const userView: UserView = {
                 email: user.email,
                 first_name: user.first_name,
@@ -152,7 +152,10 @@ function AdminDataUsers() {
                 role: getUserRole(user.role.toString()),
                 phone_number: user.phone_number,
                 userId: user.id,
-                regions: selectedRegions.map(r => r.region).sort().join(", "),
+                regions: selectedRegions
+                    .map((r) => r.region)
+                    .sort()
+                    .join(", "),
                 isActive: user.is_active,
             };
             return userView;
