@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { Form } from "react-bootstrap";
+import React, {ChangeEvent, useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {Form} from "react-bootstrap";
 import {
     deleteBuildingComment,
     getBuildingComment,
@@ -11,18 +11,18 @@ import {
     postBuilding,
     postBuildingComment,
 } from "@/lib/building";
-import { getRegion } from "@/lib/region";
-import { getUserInfo } from "@/lib/user";
+import {getRegion} from "@/lib/region";
+import {getUserInfo} from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import { withAuthorisation } from "@/components/withAuthorisation";
+import {withAuthorisation} from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import PDFUploader from "@/components/pdfUploader";
 import styles from "@/styles/AdminDataBuildingsEdit.module.css";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
 import SyndicAutocomplete from "@/components/autocompleteComponents/syndicAutocomplete";
-import { handleError } from "@/lib/error";
-import { postManual } from "@/lib/building-manual";
+import {handleError} from "@/lib/error";
+import {postManual} from "@/lib/building-manual";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -99,7 +99,7 @@ function AdminDataBuildingsEdit() {
                     }
                 }
                 if (manual) {
-                    await postManual({ building: buildingId, file: manual });
+                    await postManual({building: buildingId, file: manual});
                 }
                 setShowConfirmation(true);
             } catch (error: any) {
@@ -112,6 +112,7 @@ function AdminDataBuildingsEdit() {
     };
 
     const goBack = () => {
+        setShowConfirmation(false);
         router.back();
     };
 
@@ -151,14 +152,14 @@ function AdminDataBuildingsEdit() {
 
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             <div className={styles.container}>
                 <ConfirmationMessage
                     showConfirm={showConfirmation}
                     confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
                     onClose={setShowConfirmation}
                 />
-                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
+                <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages}/>
                 <Form id="buildingForm" className={styles.form} noValidate validated={validated}>
                     <Form.Group controlId="buildingName">
                         <Form.Label>Gebouw naam</Form.Label>
