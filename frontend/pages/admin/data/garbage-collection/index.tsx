@@ -360,18 +360,6 @@ function GarbageCollectionSchedule() {
         );
     }
 
-    function dragAndDrop(args: EventInteractionArgs<object>): void {
-        const { event, start } = args;
-        const garbageCollectionEvent: GarbageCollectionEvent = event as GarbageCollectionEvent;
-        patchGarbageCollection(garbageCollectionEvent.id, { date: formatDate(new Date(start)) }).then(
-            (res) => {
-                const g: GarbageCollectionInterface = res.data;
-                onPatch(g);
-            },
-            (err) => setErrorMessages(handleError(err))
-        );
-    }
-
     // Closes the duplicate modal
     function closeDuplicateModal() {
         setShowDuplicateModal(false);
@@ -400,8 +388,6 @@ function GarbageCollectionSchedule() {
             "nl-BE": nlBE,
         },
     });
-
-    const DnDCalendar = withDragAndDrop(Calendar);
 
     // @ts-ignore
     return (
@@ -467,10 +453,11 @@ function GarbageCollectionSchedule() {
                 </div>
             </div>
 
-            <DnDCalendar
+            <Calendar
                 messages={messages}
                 culture={"nl-BE"}
-                defaultView="week"
+                defaultView="month"
+                views={["month", "week"]}
                 events={garbageCollection.map((g) => {
                     const s: Date = new Date(g.date);
                     let e = addDays(s, 1);
@@ -488,10 +475,7 @@ function GarbageCollectionSchedule() {
                 })}
                 components={{
                     //@ts-ignore
-                    event:
-                        buildingList.length > 1
-                            ? GarbageCollectionEventComponentWithAddress
-                            : GarbageCollectionEventComponentWithoutAddress,
+                    event: GarbageCollectionEventComponentWithAddress
                 }}
                 localizer={loc}
                 eventPropGetter={(e) => {
@@ -520,9 +504,7 @@ function GarbageCollectionSchedule() {
                     setSelectedEvent(event);
                     setShowEditModal(true);
                 }}
-                onEventDrop={dragAndDrop}
                 onRangeChange={getFromRange}
-                views={["week"]}
                 style={{ height: "100vh" }}
                 step={60}
                 timeslots={1}

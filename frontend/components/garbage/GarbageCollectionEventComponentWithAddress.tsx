@@ -1,8 +1,11 @@
-import { GarbageCollectionEvent } from "@/types";
+import {GarbageCollectionEvent} from "@/types";
 import styles from "@/components/calendar/calendar.module.css";
 import { getAddress } from "@/lib/building";
+import {FC} from "react";
+import {EventProps} from "react-big-calendar";
 
-export default function GarbageCollectionEventComponentWithAddress({ event }: { event: GarbageCollectionEvent }) {
+
+const GarbageCollectionEventComponentWithAddress: FC<EventProps<GarbageCollectionEvent>> = ({event}) => {
     return (
         <div>
             <label style={{ fontSize: "15px" }}>{event.garbageType}</label>
@@ -13,3 +16,5 @@ export default function GarbageCollectionEventComponentWithAddress({ event }: { 
         </div>
     );
 }
+
+export default GarbageCollectionEventComponentWithAddress;
