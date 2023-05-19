@@ -256,7 +256,7 @@ function AdminDashboard() {
 
     useEffect(() => {
         for (const sot of studentsOnTours) {
-            if (completionRecord[sot.id]) {
+            if (completionRecord[sot.id] || sot.completed_tour) {
                 if (!completedStudentOnTours.some((completedSot) => completedSot.id === sot.id)) {
                     setCompletedStudentsOnTours((prevState) => [...prevState, sot]);
                 }
