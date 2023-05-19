@@ -350,7 +350,7 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                 events={events}
                 components={{
                     // @ts-ignore
-                    event: CustomDisplay
+                    event: CustomDisplay,
                 }}
                 eventPropGetter={(event: any) => {
                     const backgroundColor = tourColors[event.tour.id];
