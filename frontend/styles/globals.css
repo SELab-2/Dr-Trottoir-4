@@ -310,3 +310,9 @@
     background-color: black;
     z-index: 1;
 }
+
+.custom-datepicker {
+  height: 56px;
+  max-width: 200px;
+  width: 100%;
+}

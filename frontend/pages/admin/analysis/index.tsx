@@ -20,7 +20,7 @@ function AdminAnalysis() {
             title: "Rondes",
             description: "Overzicht van een student op een ronde",
             icon: <School style={{fontSize: '100px'}}/>,
-            url: "/admin/tour",
+            url: "/admin/analysis/tour",
         },
         {
             id: 2,
