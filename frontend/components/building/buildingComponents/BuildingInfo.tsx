@@ -29,7 +29,7 @@ function BuildingInfo({
     const query = router.query as BuildingQuery;
 
     const [editBuilding, setEditBuilding] = useState(false);
-    const [regionName, setRegionName] = useState("");
+    const [regionName, setRegionName] = useState("-");
 
     const publicId = (building && building.public_id) || "-";
     const [buildingComment, setBuildingComment] = useState<string>("Geen opmerkingen");
@@ -56,7 +56,7 @@ function BuildingInfo({
             setErrorMessages([]);
         } catch (error) {
             setErrorMessages(handleError(error));
-            setRegionName("/");
+            setRegionName("-");
         }
     }
 
