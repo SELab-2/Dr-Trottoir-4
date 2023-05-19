@@ -12,6 +12,8 @@ import { BuildingInterface, getAddress } from "@/lib/building";
 import { TourView } from "@/types";
 import { TourDeleteModal } from "@/components/admin/tourDeleteModal";
 import { handleError } from "@/lib/error";
+import Link from "next/link";
+import { formatDate } from "@/lib/date";
 
 // https://www.figma.com/proto/9yLULhNn8b8SlsWlOnRSpm/SeLab2-mockup?node-id=68-429&scaling=contain&page-id=0%3A1&starting-point-node-id=118%3A1486
 function AdminDataTours() {
@@ -208,7 +210,23 @@ function AdminDataTours() {
                                 <label>Gebouwen op deze tour:</label>
                                 <ol>
                                     {buildings.map((building: BuildingInterface, index: number) => (
-                                        <li key={`${building.id}-${index}`}>{getAddress(building)}</li>
+                                        <li key={`${building.id}-${index}`}>
+                                            <Link
+                                                style={{
+                                                    textDecoration: "underline",
+                                                    color: "royalblue",
+                                                }}
+                                                href={{
+                                                    pathname: "/admin/building/",
+                                                    query: {
+                                                        id: building.id,
+                                                    },
+                                                }}
+                                                target="_blank"
+                                            >
+                                                {getAddress(building)}
+                                            </Link>
+                                        </li>
                                     ))}
                                 </ol>
                             </>

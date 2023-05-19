@@ -105,7 +105,11 @@ function AnalysisStudentOnTour() {
         const departureHours = departureTime.getHours();
         const departureMinutes = departureTime.getMinutes();
 
-        return `${arrivalHours.toString().padStart(2, "0")}:${arrivalMinutes.toString().padStart(2, "0")} - ${
+        return `${
+            isNaN(arrivalHours)
+                ? "..."
+                : `${arrivalHours.toString().padStart(2, "0")}:${arrivalMinutes.toString().padStart(2, "0")}`
+        } - ${
             isNaN(departureHours)
                 ? "..."
                 : `${departureHours.toString().padStart(2, "0")}:${departureMinutes.toString().padStart(2, "0")}`
@@ -240,7 +244,9 @@ function AnalysisStudentOnTour() {
                                                     pathname: "/admin/building/",
                                                     query: {
                                                         id: building ? building.id : -1,
-                                                        date: formatDate(new Date(analysis.departure_time)),
+                                                        date: studentOnTour
+                                                            ? formatDate(new Date(studentOnTour?.date))
+                                                            : formatDate(new Date()),
                                                     },
                                                 }}
                                             >
