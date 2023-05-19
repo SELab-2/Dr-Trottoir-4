@@ -1,4 +1,5 @@
 import React, { FormEvent, useState } from "react";
+
 import { useRouter } from "next/router";
 import login from "@/lib/login";
 import setSessionStorage from "@/lib/storage";
@@ -10,6 +11,7 @@ import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { Button, Form, InputGroup } from "react-bootstrap";
 
 function LoginForm() {
+
     const router = useRouter();
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -39,6 +41,7 @@ function LoginForm() {
     return (
         <Form onSubmit={handleSubmit}>
             <Form.Label className="title">Login.</Form.Label>
+
             {router.query.createdAccount && (
                 <div className={"visible alert alert-success alert-dismissible fade show"}>
                     <strong>Succes!</strong> Uw account werd met succes aangemaakt!
@@ -71,7 +74,6 @@ function LoginForm() {
                 placeholder={"Wachtwoord"}
                 showIconButton={true}
             />
-
             <a href="/forgot-password">
                 <label className="small_text">Wachtwoord vergeten?</label>
             </a>
@@ -88,6 +90,7 @@ function LoginForm() {
                 </Link>
             </p>
         </Form>
+
     );
 }
 

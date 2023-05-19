@@ -10,6 +10,7 @@ import { Button } from "react-bootstrap";
 import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 
+
 export default function ResetPasswordPage() {
     const router = useRouter();
     const [newPassword1, setNewPassword1] = useState<string>("");

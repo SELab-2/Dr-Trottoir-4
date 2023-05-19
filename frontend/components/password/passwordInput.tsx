@@ -3,6 +3,7 @@ import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
+
 interface PasswordInputProps {
     value: string;
     setPassword: (pw: string) => void;
@@ -60,6 +61,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
                     {showPassword ? <Visibility /> : <VisibilityOff />}
                 </Button>
             </InputGroup>
+
         </div>
     );
 };
