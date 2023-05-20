@@ -63,8 +63,11 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
         if (tourUsers.length > 0 && tours.length > 0) {
             assignColors(tours);
             getFromRange(range);
+            let ws = setUpWebsocket();
+            return () => {
+                ws.close();
+            }
         }
-        setUpWebsocket();
     }, [tourUsers, tours]);
 
     useEffect(() => {
@@ -77,7 +80,8 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
     }, [range]);
 
     function setUpWebsocket() {
-        getAllStudentOnTourChanges().addEventListener("message", (event) => {
+        const ws = getAllStudentOnTourChanges();
+        ws.addEventListener("message", (event) => {
             const data: StudentOnTourWebSocketInterface = JSON.parse(event.data);
             const sots: StudentOnTourStringDate = data.student_on_tour;
             if (rangeRef.current.start <= new Date(sots.date) && new Date(sots.date) <= rangeRef.current.end) {
@@ -111,6 +115,7 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
                 }
             }
         });
+        return ws;
     }
 
     function getFromRange(range: Date[] | { start: Date; end: Date }) {
