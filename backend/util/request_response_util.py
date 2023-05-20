@@ -14,10 +14,10 @@ def get_id_param(request, name, required=False):
     param = request.GET.get(name, None)
     if param:
         if not param.isdigit():
-            raise BadRequest(_(f"The query parameter {name} should be an integer"))
+            raise BadRequest(_("The query parameter {name} should be an integer").format(name=name))
     else:
         if required:
-            raise BadRequest(_(f"The query parameter {name} is required"))
+            raise BadRequest(_("The query parameter {name} is required").format(name=name))
     return param
 
 
