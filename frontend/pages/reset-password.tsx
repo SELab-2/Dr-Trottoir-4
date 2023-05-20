@@ -1,10 +1,10 @@
 import BaseHeader from "@/components/header/baseHeader";
-import React, {useState} from "react";
-import {useRouter} from "next/router";
+import React, { useState } from "react";
+import { useRouter } from "next/router";
 import PasswordInput from "@/components/password/passwordInput";
-import {resetPassword} from "@/lib/authentication";
-import {Button, Card, Col, Container, Row} from "react-bootstrap";
-import {handleError} from "@/lib/error";
+import { resetPassword } from "@/lib/authentication";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import { handleError } from "@/lib/error";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import CarouselComponent from "@/components/imageCarousel";
 
@@ -19,7 +19,7 @@ export default function ResetPasswordPage() {
         setShowPassword(!showPassword);
     };
 
-    const {token, uid} = router.query;
+    const { token, uid } = router.query;
 
     const handleSubmit = async () => {
         if (newPassword1 !== newPassword2) {
@@ -49,21 +49,18 @@ export default function ResetPasswordPage() {
     };
     return (
         <>
-            <BaseHeader/>
+            <BaseHeader />
             <Container className="center_container">
-                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages}/>
+                <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
                 <Card>
                     <Row>
-                        <Col md={6} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                            <CarouselComponent/>
+                        <Col md={6} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            <CarouselComponent />
                         </Col>
                         <Col md={6} className="column_padding">
                             <p className="title">Nieuw wachtwoord instellen</p>
-                            <br/>
-                            <ErrorMessageAlert
-                                errorMessages={errorMessages}
-                                setErrorMessages={setErrorMessages}
-                            />
+                            <br />
+                            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                             <PasswordInput
                                 value={newPassword1}
                                 setPassword={setNewPassword1}
@@ -82,7 +79,7 @@ export default function ResetPasswordPage() {
                                 placeholder="Voer uw nieuwe wachtwoord opnieuw in"
                                 showIconButton={false}
                             />
-                            <a className="link" style={{paddingLeft: '10px'}} href="/login">
+                            <a className="link" style={{ paddingLeft: "10px" }} href="/login">
                                 Terug naar login
                             </a>
                             <div className="padding">
