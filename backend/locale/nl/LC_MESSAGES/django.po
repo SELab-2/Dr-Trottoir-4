@@ -407,3 +407,4 @@ msgid ""
 msgstr ""
 "de startdatum van de periode waarnaar je wilt kopiëren moet, op zijn minst, "
 "in de week direct volgend na de einddatum van de originele periode liggen"
+
