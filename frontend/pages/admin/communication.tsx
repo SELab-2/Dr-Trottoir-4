@@ -103,7 +103,7 @@ function AdminCommunication() {
     }, [allTemplates, allUsers, allBuildings, templateId, userId, templateText]);
 
     useEffect(() => {
-        const currentUser = allUsers.find(user => user.id === userId) || null;
+        const currentUser = allUsers.find((user) => user.id === userId) || null;
         setSelectedUser(currentUser);
     }, [userId]);
 
@@ -113,12 +113,11 @@ function AdminCommunication() {
         } else {
             setUpdatedTemplateText(fillInVariables(modifiedText));
         }
-
     }, [selectedUser, modifiedText]);
 
     useEffect(() => {
         setModifiedText(null);
-    }, [templateId])
+    }, [templateId]);
 
     function getSelectedUserMail() {
         const user = allUsers.find((e) => e.id === Number(userId));
