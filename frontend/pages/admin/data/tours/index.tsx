@@ -233,8 +233,11 @@ function AdminDataTours() {
                         );
                     }}
                     renderTopToolbarCustomActions={() => (
-                        <Button onClick={() => router.push(`${router.pathname}/edit`)} className="wide_button"
-                                size="lg">
+                        <Button
+                            onClick={() => router.push(`${router.pathname}/edit`)}
+                            className="wide_button"
+                            size="lg"
+                        >
                             Maak nieuwe ronde aan
                         </Button>
                     )}

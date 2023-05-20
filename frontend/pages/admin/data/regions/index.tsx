@@ -137,8 +137,7 @@ function AdminDataRegions() {
                     enableHiding={false}
                     enableRowActions={false}
                     renderTopToolbarCustomActions={() => (
-                        <Button onClick={() => setAddDialogOpen(true)} className="wide_button"
-                                size="lg">
+                        <Button onClick={() => setAddDialogOpen(true)} className="wide_button" size="lg">
                             Maak nieuwe regio aan
                         </Button>
                     )}
