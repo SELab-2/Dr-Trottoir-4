@@ -66,7 +66,7 @@ function ScheduleCalendar({ tourUsers, tours }: { tourUsers: User[]; tours: Tour
             let ws = setUpWebsocket();
             return () => {
                 ws.close();
-            }
+            };
         }
     }, [tourUsers, tours]);
 
