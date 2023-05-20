@@ -104,7 +104,7 @@ export default function ({
                     <div className="form-outline mb-4">
                         <label className="form-label">Template: </label>
                         <br/>
-                        <label className="form-label small">{`*mogelijke variabelen in de template zijn {{name}} en {{address}}`}</label>
+                        <label className="form-label small">{`*mogelijke variabelen in de template zijn {{name}}`}</label>
                         <textarea
                             rows={12}
                             className={`form-control form-control-lg`}
