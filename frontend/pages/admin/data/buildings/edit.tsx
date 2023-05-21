@@ -2,7 +2,7 @@ import React, {ChangeEvent, useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {
-    deleteBuildingComment,
+    deleteBuildingComment, durationToMinutes,
     getBuildingComment,
     getBuildingInfo,
     getDurationFromMinutes,
@@ -35,7 +35,7 @@ function AdminDataBuildingsEdit() {
     const [regionId, setRegionId] = useState<number>(-1); //used for collecting the right id to post/patch
     const [syndicId, setSyndicId] = useState<number>(-1); //used for collecting the right id to post/patch
     const [manual, setManual] = useState<File | null>(null);
-    const [duration, setDuration] = useState<string>("00:00");
+    // const [duration, setDuration] = useState<string>("00:00");
     const [publicId, setPublicId] = useState<string>("");
     const [validated, setValidated] = useState<boolean>(false);
     const [durationInMinutes, setDurationInMinutes] = useState<number>(0);
@@ -124,7 +124,8 @@ function AdminDataBuildingsEdit() {
                 setPostalCode(res.data.postal_code);
                 setCity(res.data.city);
                 setName(res.data.name ? res.data.name : "");
-                setDuration(res.data.duration);
+                console.log(res.data.duration);
+                setDurationInMinutes(durationToMinutes(res.data.duration));
                 setPublicId(res.data.public_id ?? "");
                 const region = await getRegion(res.data.region);
                 setRegionId(region.data.id);
