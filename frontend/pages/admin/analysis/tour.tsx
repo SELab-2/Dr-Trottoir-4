@@ -420,39 +420,39 @@ function AdminTour() {
             <AdminHeader />
             <Container>
                 <Row style={{ display: "flex", alignItems: "center", padding: "10px" }}>
-                        <Col sm={12} md={4}>
-                            <label style={{ marginBottom: "10px" }} htmlFor="tourautocomplete">
-                                Selecteer student
-                            </label>
-                            <TourUserAutocomplete initialId={selectedStudentId} setObjectId={setSelectedStudentId} />
-                        </Col>
-                        <Col sm={12} md={4}>
-                            <label style={{ marginBottom: "10px" }} htmlFor="tourautocomplete">
-                                Selecteer ronde
-                            </label>
-                            <StudentOnTourAutocomplete
-                                initialId={selectedTourId}
-                                setObjectId={setSelectedTourId}
-                                required={false}
-                                studentId={selectedStudentId}
-                                disabled={!validTourUser}
-                            />
-                        </Col>
-                        <Col sm={12} md={4}>
-                            <label style={{ paddingBottom: "35px" }} htmlFor="datepicker">
-                                Selecteer datum
-                            </label>
-                            <ReactDatePicker
-                                className="custom-datepicker"
-                                selected={selectedDate}
-                                onChange={(date: Date) => setSelectedDate(date)}
-                                highlightDates={validDates} // highlight valid dates
-                                filterDate={(date: Date) =>
-                                    validDates.map((d) => d.toLocaleDateString()).includes(date.toLocaleDateString())
-                                }
-                                disabled={!validTourUser}
-                            />
-                        </Col>
+                    <Col sm={12} md={4}>
+                        <label style={{ marginBottom: "10px" }} htmlFor="tourautocomplete">
+                            Selecteer student
+                        </label>
+                        <TourUserAutocomplete initialId={selectedStudentId} setObjectId={setSelectedStudentId} />
+                    </Col>
+                    <Col sm={12} md={4}>
+                        <label style={{ marginBottom: "10px" }} htmlFor="tourautocomplete">
+                            Selecteer ronde
+                        </label>
+                        <StudentOnTourAutocomplete
+                            initialId={selectedTourId}
+                            setObjectId={setSelectedTourId}
+                            required={false}
+                            studentId={selectedStudentId}
+                            disabled={!validTourUser}
+                        />
+                    </Col>
+                    <Col sm={12} md={4}>
+                        <label style={{ paddingBottom: "35px" }} htmlFor="datepicker">
+                            Selecteer datum
+                        </label>
+                        <ReactDatePicker
+                            className="custom-datepicker"
+                            selected={selectedDate}
+                            onChange={(date: Date) => setSelectedDate(date)}
+                            highlightDates={validDates} // highlight valid dates
+                            filterDate={(date: Date) =>
+                                validDates.map((d) => d.toLocaleDateString()).includes(date.toLocaleDateString())
+                            }
+                            disabled={!validTourUser}
+                        />
+                    </Col>
                 </Row>
                 <Card>
                     <ErrorMessageAlert setErrorMessages={setErrorMessages} errorMessages={errorMessages} />
