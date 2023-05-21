@@ -82,7 +82,7 @@ function AdminTour() {
         const validDatesArray = sots.filter((sot) => sot.tour === tourId).map((sot) => new Date(sot.date));
         setValidDates(validDatesArray);
 
-        const startedTours = sots.filter((sot) => sot.started_tour !== null);
+        const startedTours = sots.filter((sot) => sot.started_tour !== null && sot.tour === tourId);
 
         const latestStartedTour = startedTours.reduce((latest, current) => {
             const currentStartDate = new Date(current.date);
