@@ -112,7 +112,7 @@ function AdminTour() {
 
     const isCompleted = () => {
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
-        return sotObject && completionRecord[sotObject.sot.id];
+        return sotObject && completionRecord[sotObject.sot.id] && currentBuildingIndex >= maxBuildingIndex;
     };
 
     const getStudentOnTour = (sots: StudentOnTour[], tourId: number, date: Date) => {
@@ -380,6 +380,8 @@ function AdminTour() {
     useEffect(() => {
         if (!validTourUser) return;
 
+        setCurrentBuildingIndex(0);
+        setMaxBuildingIndex(0);
         const sotObject = getStudentOnTour(allToursOfStudent, selectedTourId, selectedDate);
         if (sotObject) {
             setCurrentBuildingIndex(sotObject.current_building_index);
@@ -566,9 +568,9 @@ function AdminTour() {
                                         title={
                                             isCompleted()
                                                 ? `Klaar met alle gebouwen.`
-                                                : maxBuildingIndex
+                                                : maxBuildingIndex && currentBuildingIndex !== 0
                                                 ? `Momenteel bezig met gebouw ${currentBuildingIndex} van de ${maxBuildingIndex}.`
-                                                : `Nog niet begonnen.`
+                                                : `Nog niet aangekomen.`
                                         }
                                     >
                                         <Box sx={{ width: "100%", position: "relative" }}>
@@ -588,15 +590,6 @@ function AdminTour() {
                                             ) : (
                                                 <>
                                                     <GreenLinearProgress variant="determinate" value={getProgress()} />
-                                                    <CheckIcon
-                                                        style={{
-                                                            position: "absolute",
-                                                            top: "50%",
-                                                            left: "50%",
-                                                            transform: "translate(-50%, -50%)",
-                                                            color: "white",
-                                                        }}
-                                                    />
                                                 </>
                                             )}
                                         </Box>
