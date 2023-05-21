@@ -22,13 +22,13 @@ describe("Logout", () => {
 
     it("renders without crashing", () => {
         render(<Logout />);
-        expect(screen.getByText("Log out")).toBeInTheDocument();
+        expect(screen.getByText("Log uit")).toBeInTheDocument();
     });
 
     it("opens modal on logout click", () => {
         render(<Logout />);
-        fireEvent.click(screen.getByText("Log out"));
-        expect(screen.getByText("Are you sure you want to log out?")).toBeInTheDocument();
+        fireEvent.click(screen.getByText("Log uit"));
+        expect(screen.getByText("Zeker dat je wil uitloggen?")).toBeInTheDocument();
     });
 
     it("calls logout and router push on modal logout click", async () => {
@@ -37,8 +37,8 @@ describe("Logout", () => {
             push: pushMock,
         });
         render(<Logout />);
-        fireEvent.click(screen.getByText("Log out")); // open the modal
-        fireEvent.click(screen.getByText("Log out", { selector: "button" })); // click on the logout button in the modal
+        fireEvent.click(screen.getByText("Log uit")); // open the modal
+        fireEvent.click(screen.getByText("Log uit", { selector: "button" })); // click on the logout button in the modal
         expect(logout).toHaveBeenCalled();
 
         // Use waitFor for asynchronous assertions

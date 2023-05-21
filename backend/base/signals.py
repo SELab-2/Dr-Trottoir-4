@@ -78,7 +78,7 @@ def set_max_building_index_or_notify(sender, instance: StudentOnTour, **kwargs):
 
 
 @receiver(post_save, sender=StudentOnTour)
-def notify_student_on_tour_subscribers(sender, instance: StudentOnTour, **kwargs):
+def notify_student_on_tour_subscribers_create(sender, instance: StudentOnTour, **kwargs):
     if not instance.started_tour:
         student_on_tour = StudOnTourSerializer(instance).data
         channel = get_channel_layer()
@@ -92,7 +92,7 @@ def notify_student_on_tour_subscribers(sender, instance: StudentOnTour, **kwargs
 
 
 @receiver(post_delete, sender=StudentOnTour)
-def notify_student_on_tour_subscribers(sender, instance: StudentOnTour, **kwargs):
+def notify_student_on_tour_subscribers_delete(sender, instance: StudentOnTour, **kwargs):
     student_on_tour = StudOnTourSerializer(instance).data
     channel = get_channel_layer()
     async_to_sync(channel.group_send)(
@@ -105,7 +105,7 @@ def notify_student_on_tour_subscribers(sender, instance: StudentOnTour, **kwargs
 
 
 @receiver(post_save, sender=GarbageCollection)
-def notify_garbage_collection_subscribers(sender, instance: GarbageCollection, **kwargs):
+def notify_garbage_collection_subscribers_create(sender, instance: GarbageCollection, **kwargs):
     garbage_collection = GarbageCollectionSerializer(instance).data
     channel = get_channel_layer()
     async_to_sync(channel.group_send)(
@@ -118,7 +118,7 @@ def notify_garbage_collection_subscribers(sender, instance: GarbageCollection, *
 
 
 @receiver(post_delete, sender=GarbageCollection)
-def notify_garbage_collection_subscribers(sender, instance: GarbageCollection, **kwargs):
+def notify_garbage_collection_subscribers_remove(sender, instance: GarbageCollection, **kwargs):
     garbage_collection = GarbageCollectionSerializer(instance).data
     channel = get_channel_layer()
     async_to_sync(channel.group_send)(
