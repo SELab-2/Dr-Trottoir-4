@@ -461,8 +461,8 @@ function GarbageCollectionSchedule() {
                         </Col>
                         <Col md={6} style={{ alignItems: "center" }}>
                             <Row>
-                                <Col md={5}>
-                                    <div style={{ display: "flex" }}>
+                                <Col md={6}>
+                                    <div>
                                         <BuildingAutocomplete
                                             initialId={0}
                                             setObjectId={setSearchedBuilding}
@@ -470,7 +470,7 @@ function GarbageCollectionSchedule() {
                                         />
                                     </div>
                                 </Col>
-                                <Col md={5}>
+                                <Col md={6}>
                                     <div>
                                         <TourAutocomplete initialId={0} setObjectId={setSearchedTour} />
                                     </div>
