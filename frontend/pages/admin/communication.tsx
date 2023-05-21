@@ -135,7 +135,7 @@ function AdminCommunication() {
                 <p className="title">Communicatie extern</p>
                 <div>
                     <Row style={{paddingBottom: '20px'}}>
-                        <Col>
+                        <Col sm={12} md={4}>
                             <div>
                                 <TemplateAutocomplete
                                     initialId={templateId}
@@ -144,7 +144,7 @@ function AdminCommunication() {
                                 />
                             </div>
                         </Col>
-                        <Col>
+                        <Col sm={12} md={4}>
                             <div>
                                 <UserAutoComplete
                                     initialId={userId}
@@ -153,7 +153,6 @@ function AdminCommunication() {
                                 />
                             </div>
                         </Col>
-
                         <Col style={{display: 'flex', alignItems: 'end', justifyContent: 'end'}}>
                             <div className="padding">
                                 <Button
