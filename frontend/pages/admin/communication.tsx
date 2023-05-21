@@ -1,17 +1,18 @@
 import AdminHeader from "@/components/header/adminHeader";
-import { EmailTemplate, getAllEmailTemplates } from "@/lib/email-template";
-import { ChangeEvent, useEffect, useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import {EmailTemplate, getAllEmailTemplates} from "@/lib/email-template";
+import {ChangeEvent, useEffect, useState} from "react";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import TemplateAutocomplete from "@/components/autocompleteComponents/templateAutocomplete";
-import { BuildingInterface, getAllBuildings } from "@/lib/building";
-import { getAllUsers, User } from "@/lib/user";
+import {BuildingInterface, getAllBuildings} from "@/lib/building";
+import {getAllUsers, User} from "@/lib/user";
 import UserAutoComplete from "@/components/autocompleteComponents/userAutocomplete";
-import { useRouter } from "next/router";
-import { withAuthorisation } from "@/components/withAuthorisation";
-import { Send } from "@mui/icons-material";
-import { handleError } from "@/lib/error";
+import {useRouter} from "next/router";
+import {withAuthorisation} from "@/components/withAuthorisation";
+import {Send} from "@mui/icons-material";
+import {handleError} from "@/lib/error";
 
-interface ParsedUrlQuery {}
+interface ParsedUrlQuery {
+}
 
 interface DataCommunicationQuery extends ParsedUrlQuery {
     template?: number;
@@ -54,7 +55,7 @@ function AdminCommunication() {
     async function routeToBuildings(syndicId: number) {
         await router.push({
             pathname: `data/buildings/`,
-            query: { syndic: selectedUser?.email },
+            query: {syndic: selectedUser?.email},
         });
     }
 
@@ -129,59 +130,68 @@ function AdminCommunication() {
 
     return (
         <>
-            <AdminHeader />
+            <AdminHeader/>
             <Container>
                 <p className="title">Communicatie extern</p>
                 <div>
-                    <Row>
-                        <Col md={3}>
-                            <Row>
+                    <Row style={{paddingBottom: '20px'}}>
+                        <Col>
+                            <div>
                                 <TemplateAutocomplete
                                     initialId={templateId}
                                     setObjectId={setTemplateId}
                                     required={false}
                                 />
-                            </Row>
-                            <Row>
-                                <UserAutoComplete initialId={userId} setObjectId={setUserId} required={false} />
-                            </Row>
-                            <Row>
-                                <div className="padding">
-                                    <Button
-                                        className="small_button"
-                                        size="sm"
-                                        onClick={() => {
-                                            if (userId) {
-                                                routeToBuildings(userId).then();
-                                            }
-                                        }}
-                                    >
-                                        Gebouw
-                                    </Button>
-                                </div>
-                            </Row>
+                            </div>
                         </Col>
-                        <Col md={9}>
+                        <Col>
+                            <div>
+                                <UserAutoComplete
+                                    initialId={userId}
+                                    setObjectId={setUserId}
+                                    required={false}
+                                />
+                            </div>
+                        </Col>
+
+                        <Col style={{display: 'flex', alignItems: 'end', justifyContent: 'end'}}>
+                            <div className="padding">
+                                <Button
+                                    style={{height: '50px'}}
+                                    className="button"
+                                    onClick={() => {
+                                        if (userId) {
+                                            routeToBuildings(userId).then();
+                                        }
+                                    }}
+                                >
+                                    Gebouw
+                                </Button>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
                             <Row>
-                                <div style={{ display: "flex" }}>
-                                    <Form.Control
-                                        as="textarea"
-                                        className="mail_area"
-                                        placeholder="Schrijf je email hier"
-                                        value={updatedTemplateText}
-                                        onChange={handleEditTemplate}
-                                    />
-                                </div>
+                                <Col>
+                                    <div className="input-field">
+                                        <Form.Control
+                                            as="textarea"
+                                            className="mail_area"
+                                            placeholder="Schrijf je email hier"
+                                            value={updatedTemplateText}
+                                            onChange={handleEditTemplate}
+                                        />
+                                    </div>
+                                </Col>
                             </Row>
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={{ span: 3, offset: 3 }}>
+                        <Col>
                             <div className="padding mt-auto">
                                 <Button
-                                    href={`mailto:${getSelectedUserMail()}?body=${encodeURIComponent(
-                                        updatedTemplateText
-                                    )}`}
+                                    href={`mailto:${getSelectedUserMail()}?body=${encodeURIComponent(updatedTemplateText)}`}
                                     className="wide_button"
                                     size="lg"
                                     style={{
@@ -190,11 +200,12 @@ function AdminCommunication() {
                                     }}
                                 >
                                     Verstuur mail
-                                    <Send style={{ height: "10px", paddingLeft: "10px", marginRight: "0.5em" }} />
+                                    <Send style={{height: "10px", paddingLeft: "10px", marginRight: "0.5em"}}/>
                                 </Button>
                             </div>
                         </Col>
                     </Row>
+
                 </div>
             </Container>
         </>
