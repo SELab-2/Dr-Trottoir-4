@@ -115,11 +115,17 @@ function GarbageCollectionSchedule() {
     }, [router.isReady]);
 
     useEffect(() => {
-        setUpWebsocket();
+        if (allBuildings.length > 0) {
+            const ws = setUpWebsocket();
+            return () => {
+                ws.close();
+            };
+        }
     }, [allBuildings]);
 
     function setUpWebsocket() {
-        getAllGarbageCollectionChanges().addEventListener("message", (event) => {
+        const ws = getAllGarbageCollectionChanges();
+        ws.addEventListener("message", (event) => {
             const data: GarbageCollectionWebSocketInterface = JSON.parse(event.data);
             const g: GarbageCollectionInterface = data.garbage_collection;
             if (rangeRef.current.start <= new Date(g.date) && new Date(g.date) <= rangeRef.current.end) {
@@ -140,6 +146,7 @@ function GarbageCollectionSchedule() {
                 }
             }
         });
+        return ws;
     }
 
     // Add the searched building to the list
