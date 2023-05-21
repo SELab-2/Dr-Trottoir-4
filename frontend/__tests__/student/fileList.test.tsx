@@ -26,7 +26,10 @@ describe("FileList", () => {
         const file = new File(["hello"], "hello.png", { type: "image/png" });
         render(<FileList files={files} setFiles={mockSetFiles} optional={false} editable={true} />);
 
-        const input = screen.getByTestId("upload-label");
+        const uploadButton = screen.getByText("Upload foto's");
+        fireEvent.click(uploadButton);
+
+        const input = screen.getByTestId("photos");
         await userEvent.upload(input, file);
 
         await waitFor(() => expect(mockSetFiles).toHaveBeenCalled());

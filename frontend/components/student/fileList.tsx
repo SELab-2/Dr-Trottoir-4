@@ -82,6 +82,7 @@ export function FileList({
                         onChange={handleFileAdd}
                         accept="image/*"
                         className="custom-file-input"
+                        data-testid="photos"
                     />
                 </div>
             )}
