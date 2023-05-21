@@ -494,7 +494,7 @@ function AdminTour() {
                             <Col xs={12} md={9}>
                                 <p className="title" />
                                 <div className="padding">
-                                    <Table className="table">
+                                    <Table responsive className="table">
                                         <thead>
                                             <tr>
                                                 <th>Gebouw</th>
