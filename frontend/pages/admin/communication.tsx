@@ -22,9 +22,11 @@ function AdminCommunication() {
     const [allTemplates, setAllTemplates] = useState<EmailTemplate[]>([]);
     const [allBuildings, setAllBuildings] = useState<BuildingInterface[]>([]);
     const [allUsers, setAllUsers] = useState<User[]>([]);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
     const [templateText, setTemplateText] = useState("");
     const [updatedTemplateText, setUpdatedTemplateText] = useState("");
+    const [modifiedText, setModifiedText] = useState<string | null>(null);
     const [templateId, setTemplateId] = useState<number>();
     const [userId, setUserId] = useState<number>();
     const router = useRouter();
@@ -36,9 +38,8 @@ function AdminCommunication() {
     };
 
     const fillInVariables = (input: string): string => {
-        const currentUser = allUsers.find((e) => e.id === Number(userId));
-        if (currentUser) {
-            return replaceVariable(input, "name", currentUser.first_name + " " + currentUser.last_name);
+        if (selectedUser) {
+            return replaceVariable(input, "name", selectedUser?.first_name + " " + selectedUser?.last_name);
         }
 
         return input;
@@ -47,13 +48,13 @@ function AdminCommunication() {
     const handleEditTemplate = (event: ChangeEvent<HTMLTextAreaElement>) => {
         const changedVariablesText = fillInVariables(event.target.value);
         setUpdatedTemplateText(changedVariablesText);
+        setModifiedText(event.target.value);
     };
 
     async function routeToBuildings(syndicId: number) {
-        const currentUser = allUsers.find((e) => e.id === syndicId);
         await router.push({
             pathname: `data/buildings/`,
-            query: { syndic: currentUser?.email },
+            query: { syndic: selectedUser?.email },
         });
     }
 
@@ -82,6 +83,7 @@ function AdminCommunication() {
                 currentUser = users.find((e) => e.id == query.user) || users[0];
             }
             setUserId(currentUser.id);
+            setSelectedUser(currentUser);
         });
 
         getAllBuildings().then((res) => {
@@ -99,6 +101,23 @@ function AdminCommunication() {
             setTemplateText(template.template);
         }
     }, [allTemplates, allUsers, allBuildings, templateId, userId, templateText]);
+
+    useEffect(() => {
+        const currentUser = allUsers.find((user) => user.id === userId) || null;
+        setSelectedUser(currentUser);
+    }, [userId]);
+
+    useEffect(() => {
+        if (modifiedText === null) {
+            setUpdatedTemplateText(fillInVariables(templateText));
+        } else {
+            setUpdatedTemplateText(fillInVariables(modifiedText));
+        }
+    }, [selectedUser, modifiedText]);
+
+    useEffect(() => {
+        setModifiedText(null);
+    }, [templateId]);
 
     function getSelectedUserMail() {
         const user = allUsers.find((e) => e.id === Number(userId));
