@@ -7,7 +7,7 @@ const SyndicFooter = () => {
             <div className="container-fluid"
                  style={{color: 'yellow', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                 <label>
-                    Vragen? Contacteer:
+                    Vragen? Contacteer: &nbsp;
                     <a style={{color: "yellow", textDecoration: "underline"}} href="mailto:help@drtrottoir.be">
                         help@drtrottoir.be
                     </a>
