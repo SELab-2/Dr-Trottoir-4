@@ -48,13 +48,13 @@ class CustomSignUpSerializer(Serializer):
             raise auth_serializers.ValidationError(
                 {
                     "email": _(
-                        f"{data['email']} has no entry in the lobby, you must contact an admin to gain access to the platform"
-                    ),
+                        "{data} has no entry in the lobby, you must contact an admin to gain access to the platform"
+                    ).format(email=data["email"])
                 }
             )
         # check if the verification code is valid
         if lobby_instance.verification_code != data["verification_code"]:
-            raise auth_serializers.ValidationError({"verification_code": _(f"invalid verification code")})
+            raise auth_serializers.ValidationError({"verification_code": _("invalid verification code")})
         # add role to the validated data
         data["role"] = lobby_instance.role_id
         # check if passwords match
