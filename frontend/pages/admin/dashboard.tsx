@@ -19,7 +19,6 @@ import { getAllRemarksOfStudentOnTour } from "@/lib/remark-at-building";
 import Box from "@mui/material/Box";
 import CheckIcon from "@mui/icons-material/Check";
 import { handleError } from "@/lib/error";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import { Divider, Tooltip } from "@mui/material";
 import { Card, Container, Table } from "react-bootstrap";
@@ -296,7 +295,7 @@ function AdminDashboard() {
                                     {completedStudentOnTours.length > 0 ? (
                                         <>
                                             <label className="subtitle">Voltooid</label>
-                                            <Table responsive className="table">
+                                            <Table responsive className="table"  style={{overflow: 'auto'}}>
                                                 <thead>
                                                     <tr>
                                                         <th>Ronde</th>
@@ -359,7 +358,7 @@ function AdminDashboard() {
                                     {startedStudentOnTours.length > 0 ? (
                                         <>
                                             <label className="subtitle">Bezig</label>
-                                            <Table className="table">
+                                            <Table responsive className="table">
                                                 <thead>
                                                     <tr>
                                                         <th>Ronde</th>
@@ -417,7 +416,7 @@ function AdminDashboard() {
                                     {notYetStartedStudentOnTours.length > 0 ? (
                                         <>
                                             <label className="subtitle">Nog niet gestarte rondes</label>
-                                            <Table className="table">
+                                            <Table responsive className="table">
                                                 <thead>
                                                     <tr>
                                                         <th>Ronde</th>

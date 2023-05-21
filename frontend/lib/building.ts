@@ -157,6 +157,10 @@ export function getDurationFromMinutes(durationInMinutes: number) {
         .padStart(2, "0")}`
 }
 
+export function durationToMinutes(duration: string): number {
+    const [hours, minutes, seconds] = duration.split(':').map(Number);
+    return hours * 60 + minutes;
+}
 
 export const getNewPublicId = async () => {
     const request_url: string = `${process.env.NEXT_PUBLIC_BASE_API_URL}${process.env.NEXT_PUBLIC_API_GET_NEW_PUBLIC_ID_BUILDING}`;

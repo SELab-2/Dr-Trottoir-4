@@ -146,9 +146,7 @@ export function studentOnTourSearchString(studentOnTour: StudentOnTour) {
       const tour: Tour = res.data;
       return `${tour.name} (${studentOnTour.date})`;
     },
-    (err) => {
-      console.error(err);
-    }
+    () => {}
   );
 }
 
@@ -184,8 +182,6 @@ export async function getActualToursOfStudent(
        };
     
       } catch (err) {
-        // Handle any errors that occurred while fetching data
-        console.error(err);
         throw err;
       }
   }

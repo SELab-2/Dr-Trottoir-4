@@ -133,50 +133,56 @@ function AdminCommunication() {
             <Container>
                 <p className="title">Communicatie extern</p>
                 <div>
-                    <Row>
-                        <Col md={3}>
-                            <Row>
+                    <Row style={{ paddingBottom: "20px" }}>
+                        <Col sm={12} md={4}>
+                            <div>
                                 <TemplateAutocomplete
                                     initialId={templateId}
                                     setObjectId={setTemplateId}
                                     required={false}
                                 />
-                            </Row>
-                            <Row>
-                                <UserAutoComplete initialId={userId} setObjectId={setUserId} required={false} />
-                            </Row>
-                            <Row>
-                                <div className="padding">
-                                    <Button
-                                        className="small_button"
-                                        size="sm"
-                                        onClick={() => {
-                                            if (userId) {
-                                                routeToBuildings(userId).then();
-                                            }
-                                        }}
-                                    >
-                                        Gebouw
-                                    </Button>
-                                </div>
-                            </Row>
+                            </div>
                         </Col>
-                        <Col md={9}>
+                        <Col sm={12} md={4}>
+                            <div>
+                                <UserAutoComplete initialId={userId} setObjectId={setUserId} required={false} />
+                            </div>
+                        </Col>
+                        <Col style={{ display: "flex", alignItems: "end", justifyContent: "end" }}>
+                            <div className="padding">
+                                <Button
+                                    style={{ height: "50px" }}
+                                    className="button"
+                                    onClick={() => {
+                                        if (userId) {
+                                            routeToBuildings(userId).then();
+                                        }
+                                    }}
+                                >
+                                    Gebouw
+                                </Button>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
                             <Row>
-                                <div style={{ display: "flex" }}>
-                                    <Form.Control
-                                        as="textarea"
-                                        className="mail_area"
-                                        placeholder="Schrijf je email hier"
-                                        value={updatedTemplateText}
-                                        onChange={handleEditTemplate}
-                                    />
-                                </div>
+                                <Col>
+                                    <div className="input-field">
+                                        <Form.Control
+                                            as="textarea"
+                                            className="mail_area"
+                                            placeholder="Schrijf je email hier"
+                                            value={updatedTemplateText}
+                                            onChange={handleEditTemplate}
+                                        />
+                                    </div>
+                                </Col>
                             </Row>
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={{ span: 3, offset: 3 }}>
+                        <Col>
                             <div className="padding mt-auto">
                                 <Button
                                     href={`mailto:${getSelectedUserMail()}?body=${encodeURIComponent(

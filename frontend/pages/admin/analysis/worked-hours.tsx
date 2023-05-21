@@ -1,8 +1,8 @@
 import AdminHeader from "@/components/header/adminHeader";
 import React, { useEffect, useState } from "react";
-import { addDays, differenceInMinutes, startOfWeek, subDays, subMonths } from "date-fns";
+import { differenceInMinutes, startOfWeek, subMonths } from "date-fns";
 import { Card, Col, Container, Form, ListGroup, Row } from "react-bootstrap";
-import { datesEqual, formatDate } from "@/lib/date";
+import { datesEqual } from "@/lib/date";
 import { getWorkedHours } from "@/lib/analysis";
 import { getAllTours, Tour } from "@/lib/tour";
 import { getAllRegions, RegionInterface } from "@/lib/region";
@@ -181,15 +181,6 @@ function AdminAnalysisWorkingHours() {
                         <Form className="m-2">
                             <Row>
                                 <Form.Group as={Col} sm={12} md={3} lg={3}>
-                                    <Form.Label>Periode:</Form.Label>
-                                    <LocaleDateRangePicker
-                                        startDate={startDate}
-                                        setStartDate={setStartDate}
-                                        endDate={endDate}
-                                        setEndDate={setEndDate}
-                                    />
-                                </Form.Group>
-                                <Form.Group as={Col} sm={12} md={3} lg={3}>
                                     <Form.Label>Sorteer op:</Form.Label>
                                     <Select
                                         value={{ value: sortType.toString(), label: sortType.toString() }}
@@ -238,6 +229,17 @@ function AdminAnalysisWorkingHours() {
                                         }}
                                         menuPortalTarget={document.querySelector("body")}
                                     />
+                                </Form.Group>
+                                <Form.Group as={Col} sm={12} md={3} lg={3}>
+                                    <Form.Label>Periode:</Form.Label>
+                                    <div style={{ maxWidth: "150px" }}>
+                                        <LocaleDateRangePicker
+                                            startDate={startDate}
+                                            setStartDate={setStartDate}
+                                            endDate={endDate}
+                                            setEndDate={setEndDate}
+                                        />
+                                    </div>
                                 </Form.Group>
                             </Row>
                         </Form>

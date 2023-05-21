@@ -20,7 +20,6 @@ function ResetPassword() {
         event.preventDefault();
 
         // Handle the reset password process here
-        console.log("Reset password");
     };
 
     return (

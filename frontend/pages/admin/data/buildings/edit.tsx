@@ -1,8 +1,9 @@
-import React, {ChangeEvent, useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import {
     deleteBuildingComment,
+    durationToMinutes,
     getBuildingComment,
     getBuildingInfo,
     getDurationFromMinutes,
@@ -11,17 +12,17 @@ import {
     postBuilding,
     postBuildingComment,
 } from "@/lib/building";
-import {getRegion} from "@/lib/region";
-import {getUserInfo} from "@/lib/user";
+import { getRegion } from "@/lib/region";
+import { getUserInfo } from "@/lib/user";
 import AdminHeader from "@/components/header/adminHeader";
-import {withAuthorisation} from "@/components/withAuthorisation";
+import { withAuthorisation } from "@/components/withAuthorisation";
 import RegionAutocomplete from "@/components/autocompleteComponents/regionAutocomplete";
 import PDFUploader from "@/components/pdfUploader";
 import ErrorMessageAlert from "@/components/errorMessageAlert";
 import ConfirmationMessage from "@/components/confirmMessage";
 import SyndicAutocomplete from "@/components/autocompleteComponents/syndicAutocomplete";
-import {handleError} from "@/lib/error";
-import {postManual} from "@/lib/building-manual";
+import { handleError } from "@/lib/error";
+import { postManual } from "@/lib/building-manual";
 
 function AdminDataBuildingsEdit() {
     const requiredFieldsNotFilledMessage = "Gelieve alle verplichte velden (*) in te vullen.";
@@ -35,7 +36,6 @@ function AdminDataBuildingsEdit() {
     const [regionId, setRegionId] = useState<number>(-1); //used for collecting the right id to post/patch
     const [syndicId, setSyndicId] = useState<number>(-1); //used for collecting the right id to post/patch
     const [manual, setManual] = useState<File | null>(null);
-    const [duration, setDuration] = useState<string>("00:00");
     const [publicId, setPublicId] = useState<string>("");
     const [validated, setValidated] = useState<boolean>(false);
     const [durationInMinutes, setDurationInMinutes] = useState<number>(0);
@@ -98,7 +98,7 @@ function AdminDataBuildingsEdit() {
                     }
                 }
                 if (manual) {
-                    await postManual({building: buildingId, file: manual});
+                    await postManual({ building: buildingId, file: manual });
                 }
                 setShowConfirmation(true);
             } catch (error: any) {
@@ -124,7 +124,7 @@ function AdminDataBuildingsEdit() {
                 setPostalCode(res.data.postal_code);
                 setCity(res.data.city);
                 setName(res.data.name ? res.data.name : "");
-                setDuration(res.data.duration);
+                setDurationInMinutes(durationToMinutes(res.data.duration));
                 setPublicId(res.data.public_id ?? "");
                 const region = await getRegion(res.data.region);
                 setRegionId(region.data.id);
@@ -151,19 +151,18 @@ function AdminDataBuildingsEdit() {
 
     return (
         <div className="tablepageContainer">
-            <AdminHeader/>
-            <Container className="tableContainer" style={{flex: '1'}}>
+            <AdminHeader />
+            <Container className="tableContainer" style={{ flex: "1" }}>
                 <Form id="buildingForm" noValidate validated={validated}>
                     <Row>
-                        <Col md={6} style={{paddingLeft: '20px'}}>
+                        <Col md={6} style={{ paddingLeft: "20px" }}>
                             <p className="subtitle">Bewerk gebouw</p>
                             <ConfirmationMessage
                                 showConfirm={showConfirmation}
                                 confirmMessage={"De informatie voor dit gebouw is opgeslagen!"}
                                 onClose={setShowConfirmation}
                             />
-                            <ErrorMessageAlert errorMessages={errorMessages}
-                                               setErrorMessages={setErrorMessages}/>
+                            <ErrorMessageAlert errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
                             <Form.Group controlId="buildingName" className="input">
                                 <Form.Label className="normal_text">Gebouw naam</Form.Label>
                                 <Form.Control
@@ -183,8 +182,7 @@ function AdminDataBuildingsEdit() {
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setPostalCode(e.target.value)}
                                     required
                                 />
-                                <Form.Control.Feedback type="invalid">Vul een postcode
-                                    in.</Form.Control.Feedback>
+                                <Form.Control.Feedback type="invalid">Vul een postcode in.</Form.Control.Feedback>
                             </Form.Group>
 
                             <Form.Group controlId="city" className="input">
@@ -229,9 +227,9 @@ function AdminDataBuildingsEdit() {
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setBusNumber(e.target.value)}
                                 />
                             </Form.Group>
-                            <PDFUploader onUpload={setManual}/>
+                            <PDFUploader onUpload={setManual} />
                         </Col>
-                        <Col md={6} style={{paddingLeft: '20px'}}>
+                        <Col md={6} style={{ paddingLeft: "20px" }}>
                             <p className="subtitle"></p>
                             <Form.Group controlId="clientId" className="input">
                                 <Form.Label className="normal_text">Klantennummer afvalophaaldienst</Form.Label>
@@ -243,8 +241,7 @@ function AdminDataBuildingsEdit() {
                                 />
                             </Form.Group>
                             <Form.Group controlId="publicId" className="input">
-                                <Form.Label className="normal_text">Publieke identificatie (voor
-                                    bewoners)</Form.Label>
+                                <Form.Label className="normal_text">Publieke identificatie (voor bewoners)</Form.Label>
                                 <Form.Control
                                     className="form_control"
                                     type="text"
@@ -254,8 +251,7 @@ function AdminDataBuildingsEdit() {
                             </Form.Group>
 
                             <Form.Group controlId="duration" className="input">
-                                <Form.Label className="normal_text">Duur van een ronde (in
-                                    minuten)*</Form.Label>
+                                <Form.Label className="normal_text">Duur van een ronde (in minuten)*</Form.Label>
                                 <Form.Control
                                     className="form_control"
                                     type="number"
@@ -270,33 +266,34 @@ function AdminDataBuildingsEdit() {
                                 <Form.Label className="normal_text">Opmerkingen</Form.Label>
                                 <Form.Control
                                     className="form_control"
-                                    style={{height: '100px'}}
+                                    style={{ height: "100px" }}
                                     as="textarea"
                                     value={buildingComments}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setBuildingComments(e.target.value)}
                                 />
                             </Form.Group>
-                            <div style={{paddingLeft: '15px', paddingBottom: '15px', maxWidth: "300px", width: '100%'}}>
-                                <RegionAutocomplete
-                                    initialId={regionId}
-                                    setObjectId={setRegionId}
-                                    required={true}
-                                />
-                                <p style={{paddingTop: '10px'}}/>
-                                <SyndicAutocomplete
-                                    initialId={syndicId}
-                                    setObjectId={setSyndicId}
-                                    required={true}
-                                />
+                            <div
+                                style={{ paddingLeft: "15px", paddingBottom: "15px", maxWidth: "300px", width: "100%" }}
+                            >
+                                <RegionAutocomplete initialId={regionId} setObjectId={setRegionId} required={true} />
+                                <p style={{ paddingTop: "10px" }} />
+                                <SyndicAutocomplete initialId={syndicId} setObjectId={setSyndicId} required={true} />
                             </div>
-                            <div style={{paddingTop: '20px'}}>
-                                <Button variant="secondary" className="btn-light" style={{maxWidth: '140px', width: '100%'}}
-                                        onClick={goBack}>
+                            <div style={{ paddingTop: "20px" }}>
+                                <Button
+                                    variant="secondary"
+                                    className="btn-light"
+                                    style={{ maxWidth: "140px", width: "100%" }}
+                                    onClick={goBack}
+                                >
                                     Terug
                                 </Button>
-                                <Button variant="primary" className="btn-dark"
-                                        style={{marginLeft: '20px', maxWidth: '140px', width: '100%'}}
-                                        onClick={handleSubmit}>
+                                <Button
+                                    variant="primary"
+                                    className="btn-dark"
+                                    style={{ marginLeft: "20px", maxWidth: "140px", width: "100%" }}
+                                    onClick={handleSubmit}
+                                >
                                     Opslaan
                                 </Button>
                             </div>
