@@ -86,7 +86,7 @@ const AutocompleteComponent: React.FC<Props> = ({
     }, [fetchOptions, initialId]);
 
     return (
-        <div style={{ position: "relative", display: "inline-block", width: "100%" }}>
+        <div>
             <Form.Label> {label} </Form.Label>
             <br />
             <Autocomplete
