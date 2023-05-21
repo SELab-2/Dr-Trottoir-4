@@ -78,7 +78,7 @@ const AutocompleteComponent: React.FC<Props> = ({
                     setInputValue(initialOption.label);
                 }
             } catch (err) {
-                console.error(err);
+
             }
         }
 
