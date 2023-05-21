@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-19 22:50+0000\n"
+"POT-Creation-Date: 2023-05-20 13:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,12 +23,13 @@ msgid "a user is already registered with this e-mail address"
 msgstr "een gebruiker is al geregistreerd met dit e-mailadres"
 
 #: authentication/serializers.py:51
+#, python-brace-format
 msgid ""
-"{data['email']} has no entry in the lobby, you must contact an admin to gain "
-"access to the platform"
+"{data} has no entry in the lobby, you must contact an admin to gain access "
+"to the platform"
 msgstr ""
-"{data['email']} zit niet in de lobby, u moet contact opnemen met een "
-"beheerder om toegang te krijgen tot het platform"
+"{data} zit niet in de lobby, u moet contact opnemen met een beheerder om "
+"toegang te krijgen tot het platform"
 
 #: authentication/serializers.py:57
 msgid "invalid verification code"
@@ -406,125 +407,3 @@ msgid ""
 msgstr ""
 "de startdatum van de periode waarnaar je wilt kopiëren moet, op zijn minst, "
 "in de week direct volgend na de einddatum van de originele periode liggen"
-
-#~ msgid "Enter a valid value."
-#~ msgstr "Vul een geldige waarde in"
-
-#~ msgid "Enter a valid URL."
-#~ msgstr "Vul een geldige URL in"
-
-#~ msgid "Enter a valid integer."
-#~ msgstr "Vul een geldig getal in"
-
-#~ msgid "Enter a valid email address."
-#~ msgstr "Vul een geldig e-mailadres in"
-
-#, fuzzy
-#~| msgid "Enter a valid email address."
-#~ msgid "Enter a valid IPv4 address."
-#~ msgstr "Vul een geldig e-mailadres in"
-
-#, fuzzy
-#~| msgid "Enter a valid email address."
-#~ msgid "Enter a valid IPv6 address."
-#~ msgstr "Vul een geldig e-mailadres in"
-
-#, fuzzy
-#~| msgid "Enter a valid email address."
-#~ msgid "Enter a valid IPv4 or IPv6 address."
-#~ msgstr "Vul een geldig e-mailadres in"
-
-#~ msgid "Enter a number."
-#~ msgstr "Vul een nummer in"
-
-#, fuzzy, python-format
-#~| msgid "A building with this address already exists."
-#~ msgid "%(model_name)s with this %(field_labels)s already exists."
-#~ msgstr "Er bestaat al een gebouw met dit adres."
-
-#~ msgid "This field cannot be null."
-#~ msgstr "Dit veld mag niet null zijn"
-
-#~ msgid "This field cannot be blank."
-#~ msgstr "dit veld mag niet leeg zijn"
-
-#, fuzzy, python-format
-#~| msgid "The name for this template already exists."
-#~ msgid "%(model_name)s with this %(field_label)s already exists."
-#~ msgstr "De naam van deze template bestaat al."
-
-#, fuzzy
-#~| msgid "Enter a number."
-#~ msgid "Decimal number"
-#~ msgstr "Vul een nummer in"
-
-#, fuzzy
-#~| msgid "Enter a valid email address."
-#~ msgid "Email address"
-#~ msgstr "Vul een geldig e-mailadres in"
-
-#, fuzzy
-#~| msgid "Email is required"
-#~ msgid "This field is required."
-#~ msgstr "E-mail is vereist"
-
-#, fuzzy
-#~| msgid "Enter a number."
-#~ msgid "Enter a whole number."
-#~ msgstr "Vul een nummer in"
-
-#, fuzzy
-#~| msgid "Enter a valid value."
-#~ msgid "Enter a valid date."
-#~ msgstr "Vul een geldige waarde in"
-
-#, fuzzy
-#~| msgid "Enter a valid integer."
-#~ msgid "Enter a valid time."
-#~ msgstr "Vul een geldig getal in"
-
-#, fuzzy
-#~| msgid "Enter a valid integer."
-#~ msgid "Enter a valid date/time."
-#~ msgstr "Vul een geldig getal in"
-
-#, fuzzy
-#~| msgid "Enter a valid integer."
-#~ msgid "Enter a valid duration."
-#~ msgstr "Vul een geldig getal in"
-
-#, fuzzy
-#~| msgid "Enter a valid value."
-#~ msgid "Enter a list of values."
-#~ msgstr "Vul een geldige waarde in"
-
-#, fuzzy
-#~| msgid "Enter a valid value."
-#~ msgid "Enter a complete value."
-#~ msgstr "Vul een geldige waarde in"
-
-#, fuzzy
-#~| msgid "Enter a valid URL."
-#~ msgid "Enter a valid UUID."
-#~ msgstr "Vul een geldige URL in"
-
-#, fuzzy
-#~| msgid "Enter a valid URL."
-#~ msgid "Enter a valid JSON."
-#~ msgstr "Vul een geldige URL in"
-
-#, fuzzy, python-format
-#~| msgid "Enter a valid value."
-#~ msgid "“%(pk)s” is not a valid value."
-#~ msgstr "Vul een geldige waarde in"
-
-#, fuzzy
-#~| msgid "Enter a valid email address."
-#~ msgid "This is not a valid IPv6 address."
-#~ msgstr "Vul een geldig e-mailadres in"
-
-#~ msgid "No bus"
-#~ msgstr "Geen bus"
-
-#~ msgid "successfully copied the garbage collections"
-#~ msgstr "de vuilnisophalingen zijn succesvol gekopieerd"

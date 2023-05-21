@@ -35,8 +35,8 @@ jobs:
       - name: Make and compile messages
         run: |
           cd backend
-          django-admin makemessages --all --ignore=env
-          django-admin compilemessages --ignore=env
+          django-admin makemessages --all
+          django-admin compilemessages
 
       - name: Commit translation changes
         uses: stefanzweifel/git-auto-commit-action@v4
