@@ -46,7 +46,7 @@
     "@types/bootstrap": "^5.2.6",
     "@types/jest": "^29.5.1",
     "@types/js-cookie": "^3.0.3",
-    "@types/react-big-calendar": "^1.6.3",
+    "@types/react-big-calendar": "^1.6.4",
     "@types/react-datepicker": "^4.11.2",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
