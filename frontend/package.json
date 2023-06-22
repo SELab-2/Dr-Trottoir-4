@@ -34,7 +34,7 @@
     "react-datepicker": "^4.11.0",
     "react-dom": "18.2.0",
     "react-i18next": "^12.2.2",
-    "react-icons": "^4.8.0",
+    "react-icons": "^4.10.1",
     "react-phone-input-2": "^2.15.1",
     "react-select": "^5.7.3",
     "swr": "^2.1.5",
